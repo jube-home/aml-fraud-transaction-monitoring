@@ -36,7 +36,7 @@
       - ASPNETCORE_URLS=http://0.0.0.0:5001
       - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
-      - EnableSandbox=True
+      - EnableSandbox=False
       - JWTKey=IMPORTANT:_ChangeThisKey_Updated_~%pvif3KRo!3Mk|1oMC50TvAPi%{mUt<9"B&|>DP|GZy"YY}mz{L_UsingThisKeyIsDangerous
       - RedisConnectionString=redis
       - EnableExhaustiveTraining=False
