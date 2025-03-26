@@ -37,7 +37,7 @@
       - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - EnableSandbox=False
-      - JWTKey=IMPORTANT:_ChangeThisKey_Updated_~%pvif3KRo!3Mk|1oMC50TvAPi%{mUt<9"B&|>DP|GZy"YY}mz{L_UsingThisKeyIsDangerous
+      - JWTKey=IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous
       - RedisConnectionString=redis
       - EnableExhaustiveTraining=False
       - EnableCacheIndex=False
@@ -69,7 +69,7 @@
       - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - RedisConnectionString=redis
-      - JWTKey=IMPORTANT:_ChangeThisKey_Updated_~%pvif3KRo!3Mk|1oMC50TvAPi%{mUt<9"B&|>DP|GZy"YY}mz{L_UsingThisKeyIsDangerous
+      - JWTKey=IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous
       - EnableExhaustiveTraining=True
       - EnableCacheIndex=True
       - EnableReprocessing=True

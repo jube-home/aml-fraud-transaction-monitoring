@@ -162,7 +162,7 @@ public class DynamicEnvironment
     {
         if (appSettings["PasswordHashingKey"] ==
             // ReSharper disable once StringLiteralTypo
-            "IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mk|1oMC50TvAPi%{mUt<9\"B&|>DP|GZy\"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous")
+            "IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous")
         {
             throw new Exception("Not permitted to use the same PasswordHashingKey used in the documentation.");
         }
@@ -177,7 +177,7 @@ public class DynamicEnvironment
 
         if (appSettings["JWTKey"] ==
             // ReSharper disable once StringLiteralTypo
-            "IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mk|1oMC50TvAPi%{mUt<9\"B&|>DP|GZy\"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous")
+            "IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous")
         {
             throw new Exception("Not permitted to use the same JWTKey used in the documentation.");
         }
