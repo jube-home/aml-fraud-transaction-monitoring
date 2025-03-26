@@ -43,9 +43,9 @@ With the prerequisites in place, Jube can be up and running in just a few minute
 
 ```shell
 git clone https://github.com/jube-home/aml-transaction-monitoring
-cd jube
+cd aml-transaction-monitoring
 export DockerComposePostgresPassword="SuperSecretPasswordToChange"
-export DockerComposeJWTKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mk|1oMC50TvAPi%{mUt<9"B&|>DP|GZy"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
+export DockerComposeJWTKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9"B&m>DPjGZy"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
 docker compose up -d
 ```
 
@@ -67,11 +67,11 @@ Subject to prerequisites, Jube can be up and running in minutes:
 
 ```shell
 git clone https://github.com/jube-home/aml-transaction-monitoring
-cd jube/Jube.App
+cd aml-transaction-monitoring/Jube.App
 export ConnectionString="Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=SuperSecretPasswordToChange;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;SSL Mode=Require;Trust Server Certificate=true;"
 export RedisConnectionString="localhost"
 export ASPNETCORE_URLS="https://localhost:5001"
-export JWTKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mk|1oMC50TvAPi%{mUt<9"B&|>DP|GZy"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
+export JWTKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9"B&m>DPjGZy"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
 dotnet run
 ```
 
@@ -101,7 +101,7 @@ export Redis="False"
 There are sensitive cryptographic values that need to be included at startup. At a minimum the JWTKey value is required:
 
 ```shell
-export JWTKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mk|1oMC50TvAPi%{mUt<9"B&|>DP|GZy"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
+export JWTKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9"B&m>DPjGZy"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
 ```
 
 The JWTKey value is used to encrypt access tokens providing for API authentication, and therefore user interface
@@ -111,7 +111,7 @@ While outside the scope of this installation documentation, other sensitive vari
 suggested:
 
 ```shell
-export PasswordHashingKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mk|1oMC50TvAPi%{mUt<9"B&|>DP|GZy"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
+export PasswordHashingKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9"B&m>DPjGZy"YYWeVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
 ```
 
 It is imperative that the keys be changed from their defaults and kept safe in appropriate storage. Jube will not start
