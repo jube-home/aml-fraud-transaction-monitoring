@@ -42,6 +42,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using RabbitMQ.Client;
 using StackExchange.Redis;
+using Npgsql;
 
 namespace Jube.App
 {
@@ -77,49 +78,13 @@ namespace Jube.App
             IDatabase redisDatabase = null;
             if (dynamicEnvironment.AppSettings("Redis").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
-                log.Info("Start: Is going to make a connection to Redis Endpoints string showing " +
-                         "endpoints and port seperated by :,  then combined seperated by comma " +
-                         "for example localhost:1234,localhost4321.  Value for parsing is " +
-                         dynamicEnvironment.AppSettings("RedisEndpoints") + "");
-                
-                var redisConnection =
-                    ConnectionMultiplexer.Connect(dynamicEnvironment.AppSettings("RedisConnectionString"));
-                redisDatabase = redisConnection.GetDatabase();
-                redisDatabase.HashSet("Connections", Dns.GetHostName(),
-                    DateTime.Now.ToUnixTimeMilliSeconds());
-
-                services.AddSingleton(redisDatabase);
+                redisDatabase = ConnectToRedis(services, dynamicEnvironment.AppSettings("RedisConnectionString"), log);
             }
 
             IModel rabbitMqChannel = null;
             if (dynamicEnvironment.AppSettings("AMQP").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
-                try
-                {
-                    log.Info("Start: Is going to make a connection to AMQP Uri " +
-                             dynamicEnvironment.AppSettings("AMQPUri") + "");
-
-                    var uri = new Uri(dynamicEnvironment.AppSettings("AMQPUri"));
-                    var rabbitMqConnectionFactory = new ConnectionFactory {Uri = uri};
-                    var rabbitMqConnection = rabbitMqConnectionFactory.CreateConnection();
-                    services.AddSingleton(rabbitMqConnection);
-
-                    log.Info("Start: Has made a connection to AMQP Uri " + dynamicEnvironment.AppSettings("AMQP") +
-                             "");
-
-                    rabbitMqChannel = rabbitMqConnection.CreateModel();
-                    rabbitMqChannel.QueueDeclare("jubeNotifications", false, false, false, null);
-                    rabbitMqChannel.QueueDeclare("jubeInbound", false, false, false, null);
-                    rabbitMqChannel.ExchangeDeclare("jubeActivations", ExchangeType.Fanout);
-                    rabbitMqChannel.ExchangeDeclare("jubeOutbound", ExchangeType.Fanout);
-
-                    services.AddSingleton(rabbitMqChannel);
-                }
-                catch (Exception ex)
-                {
-                    log.Info("Start: Error making a connection to AMQP Uri " +
-                             dynamicEnvironment.AppSettings("AMQP") + " with error " + ex);
-                }
+                rabbitMqChannel = ConnectToRabbitMqChannel(services, log, dynamicEnvironment.AppSettings("AMQPUri"));
             }
             else
             {
@@ -138,6 +103,8 @@ namespace Jube.App
             var jwtValidIssuer = dynamicEnvironment.AppSettings("JWTValidIssuer");
             var jwtKey = dynamicEnvironment.AppSettings("JWTKey");
 
+            ValidateConnectionToPostgres(dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             if (dynamicEnvironment.AppSettings("EnableMigration").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 RunFluentMigrator(dynamicEnvironment);
@@ -145,6 +112,8 @@ namespace Jube.App
                 var cacheConnectionString = dynamicEnvironment.AppSettings("CacheConnectionString");
                 if (cacheConnectionString != null)
                 {
+                    ValidateConnectionToPostgres(dynamicEnvironment.AppSettings("CacheConnectionString"), log);
+
                     RunFluentMigrator(dynamicEnvironment);
                 }
             }
@@ -225,7 +194,7 @@ namespace Jube.App
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Jube.App.Api", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Jube.App.Api", Version = "v1" });
                 c.CustomSchemaIds(type => type.FullName);
                 c.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
             });
@@ -247,13 +216,120 @@ namespace Jube.App
             Console.WriteLine(
                 @"If you are seeing this message it means that database migrations have completed and the database is fully configured with required Tables, Indexes and Constraints.");
             Console.WriteLine(@"");
-            Console.WriteLine(@"Comprehensive documentation is available via https://github.com/jube-home/aml-transaction-monitoring.");
+            Console.WriteLine(
+                @"Comprehensive documentation is available via https://github.com/jube-home/aml-transaction-monitoring.");
             Console.WriteLine(@"");
             Console.WriteLine(
                 @"Use a web browser (e.g. Chrome) to navigate to the user interface via default endpoint https://<ASPNETCORE_URLS Environment Variable>/ (for example https://127.0.0.1:5001/ given ASPNETCORE_URLS=https://127.0.0.1:5001/). The default user name \ password is 'Administrator' \ 'Administrator' but will need to be changed on first use.  Availability of the user interface may be a few moments after this messages as the Kestrel web server starts and endpoint routing is established.");
             Console.WriteLine(@"");
             Console.WriteLine(
                 @"The default endpoint for posting example transaction payload is https://<ASPNETCORE_URLS Environment Variable>/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc/.Example JSON payload is available in the documentation via at https://jube-home.github.io/aml-transaction-monitoring/Configuration/Models/Models/.");
+        }
+
+        private static void ValidateConnectionToPostgres(string connectionString, ILog log)
+        {
+            const int retryConnectionToPostgres = 10;
+            for (var i = 0; i < retryConnectionToPostgres; i++)
+            {
+                try
+                {
+                    log.Info("Is attempting a connection validation for Postgres.");
+
+                    var connection = new NpgsqlConnection(connectionString);
+                    var command = new NpgsqlCommand("select true");
+                    connection.Open();
+                    command.Connection = connection;
+                    command.ExecuteNonQuery();
+                    connection.Close();
+
+                    log.Info("Postgres connection validated.");
+
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    log.Info($"Could not connect to Postgres after {i} attempts for {ex.Message}.");
+
+                    Task.Delay(6000).Wait();
+                }
+            }
+
+            throw new Exception($"Could not connect to Postgres after {retryConnectionToPostgres}.");
+        }
+
+        private static IModel ConnectToRabbitMqChannel(IServiceCollection services, ILog log,
+            string amqpUrl)
+        {
+            const int retryRabbitMqConnection = 10;
+            for (var i = 0; i < retryRabbitMqConnection; i++)
+            {
+                try
+                {
+                    log.Info("Start: Is going to make a connection to AMQP Uri " +
+                             amqpUrl + "");
+
+                    var uri = new Uri(amqpUrl);
+                    var rabbitMqConnectionFactory = new ConnectionFactory { Uri = uri };
+                    var rabbitMqConnection = rabbitMqConnectionFactory.CreateConnection();
+                    services.AddSingleton(rabbitMqConnection);
+
+                    log.Info("Start: Has made a connection to AMQP Uri " + amqpUrl + "");
+
+                    var rabbitMqChannel = rabbitMqConnection.CreateModel();
+                    rabbitMqChannel.QueueDeclare("jubeNotifications", false, false, false, null);
+                    rabbitMqChannel.QueueDeclare("jubeInbound", false, false, false, null);
+                    rabbitMqChannel.ExchangeDeclare("jubeActivations", ExchangeType.Fanout);
+                    rabbitMqChannel.ExchangeDeclare("jubeOutbound", ExchangeType.Fanout);
+
+                    services.AddSingleton(rabbitMqChannel);
+
+                    return rabbitMqChannel;
+                }
+                catch (Exception ex)
+                {
+                    log.Info($"Start: Error making a connection to AMQP Uri after {i} attempts " +
+                             amqpUrl + " with error " + ex);
+
+                    Task.Delay(3000).Wait();
+                }
+            }
+
+            throw new Exception($"Could not connect to RabbitMQ after {retryRabbitMqConnection} attempts.");
+        }
+
+        private static IDatabase ConnectToRedis(IServiceCollection services,
+            string redisEndpoint, ILog log)
+        {
+            const int retryRedisConnectionRetry = 10;
+            for (var i = 0; i < retryRedisConnectionRetry; i++)
+            {
+                try
+                {
+                    log.Info("Start: Is going to make a connection to Redis Endpoints string showing " +
+                             "endpoints and port seperated by :,  then combined seperated by comma " +
+                             "for example localhost:1234,localhost4321.  Value for parsing is " +
+                             redisEndpoint + "");
+
+                    var redisConnection =
+                        ConnectionMultiplexer.Connect(redisEndpoint);
+                    var redisDatabase = redisConnection.GetDatabase();
+                    redisDatabase.SetAdd(Dns.GetHostName(), DateTime.Now.ToUnixTimeMilliSeconds());
+
+                    services.AddSingleton(redisDatabase);
+
+                    log.Info("Connected to Redis.  Returning connection for startup.");
+
+                    return redisDatabase;
+                }
+                catch (Exception ex)
+                {
+                    log.Info($"Can't make a connection to Redis after {i} attempt(s) for {ex.Message}.");
+
+                    Task.Delay(1500).Wait();
+                }
+            }
+
+            throw new Exception($"Could not connect to Redis after {retryRedisConnectionRetry} attempts.");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
@@ -295,12 +371,14 @@ namespace Jube.App
                     var request = context.HttpContext.Request;
                     var response = context.HttpContext.Response;
 
-                    if (response.StatusCode == (int) HttpStatusCode.Unauthorized)
+                    if (response.StatusCode != (int)HttpStatusCode.Unauthorized)
                     {
-                        if (!request.Path.StartsWithSegments("/api"))
-                        {
-                            response.Redirect("/Account/Login");
-                        }
+                        return Task.CompletedTask;
+                    }
+
+                    if (!request.Path.StartsWithSegments("/api"))
+                    {
+                        response.Redirect("/Account/Login");
                     }
 
                     return Task.CompletedTask;
