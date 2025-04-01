@@ -3,9 +3,9 @@
     image: "postgres"
     container_name: "postgres"
     environment:
-      - POSTGRES_PASSWORD=postgres
+      POSTGRES_PASSWORD: $DockerComposePostgresPassword
     volumes:
-      - ./postgres/data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
@@ -14,7 +14,7 @@
     image: "redis/redis-stack:latest"
     container_name: "redis"
     volumes:
-      - ./redis/data:/data
+      - redis:/data
     ports:
       - "6379:6379"
       - "8001:8001"
@@ -22,8 +22,23 @@
       - default
     environment:
       REDIS_ARGS: --appendonly yes
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: "rabbitmq"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=$DockerComposeRabbitMQPassword
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - default
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq/
+      - rabbitmq:/var/log/rabbitmq
   jube.webapi:
     image: jube.app
+    container_name: "jube.webapi"
     depends_on:
       postgres:
         condition: service_started
@@ -32,12 +47,13 @@
     links:
       - redis
       - postgres
+      - rabbitmq
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5001
-      - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
-      - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
+      - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
+      - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - EnableSandbox=False
-      - JWTKey=IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous
+      - JWTKey=$DockerComposeJWTKey
       - RedisConnectionString=redis
       - EnableExhaustiveTraining=False
       - EnableCacheIndex=False
@@ -48,6 +64,10 @@
       - EnableSearchKeyCache=False
       - EnableCasesAutomation=False
       - EnableSandpit=True
+      - AMQP=True
+      - AMQPUri=amqp://admin:$DockerComposeRabbitMQPassword@rabbitmq:5672/
+      - PasswordHashingKey=$DockerComposePasswordHashingKey
+      - EnableMigration=True
     ports:
       - "5001:5001"
     networks:
@@ -57,6 +77,7 @@
       dockerfile: Jube.App/Dockerfile
   jube.jobs:
     image: jube.app
+    container_name: "jube.jobs"
     depends_on:
       postgres:
         condition: service_started
@@ -65,11 +86,12 @@
     links:
       - redis
       - postgres
+      - rabbitmq
     environment:
-      - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
-      - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
+      - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
+      - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - RedisConnectionString=redis
-      - JWTKey=IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous
+      - JWTKey=$DockerComposeJWTKey
       - EnableExhaustiveTraining=True
       - EnableCacheIndex=True
       - EnableReprocessing=True
@@ -81,12 +103,22 @@
       - StreamingActivationWatcher=False
       - EnableCallback=True
       - EnablePublicInvokeController=True
+      - AMQP=True
+      - AMQPUri=amqp://admin:$DockerComposeRabbitMQPassword@rabbitmq:5672/
+      - PasswordHashingKey=$DockerComposePasswordHashingKey
+      - EnableMigration=False
     networks:
       - default
     build:
       context: .
       dockerfile: Jube.App/Dockerfile
-
 networks:
   default:
     driver: bridge
+volumes:
+  postgres:
+    external: false
+  redis:
+    external: false
+  rabbitmq:
+    external: false

@@ -33,80 +33,80 @@ public class DynamicEnvironment
 
             appSettings = new Dictionary<string, string>
             {
-                {"ModelSynchronisationWait", "10000"},
-                {"EnableNotification", "True"},
-                {"EnableTtlCounter", "True"},
-                {"ConnectionString", null},
-                {"CacheConnectionString", null},
-                {"ReportConnectionString", null},
-                {"EnableSearchKeyCache", "True"},
-                {"EnableCasesAutomation", "True"},
-                {"CasesAutomationWait", "60000"},
-                {"EnableEntityModel", "True"},
-                {"ArchiverPersistThreads", "1   "},
-                {"ModelInvokeAsynchronousThreads", "1"},
-                {"BulkCopyThreshold", "100"},
-                {"ActivationWatcherBulkCopyThreshold", "100"},
-                {"ReprocessingThreads", "1"},
-                {"ThreadPoolManualControl", "False"},
-                {"MinThreadPoolThreads", "30"},
-                {"MaxThreadPoolThreads", "1000"},
-                {"MaximumModelInvokeAsyncQueue", "10000"},
-                {"SMTPHost", null},
-                {"SMTPPort", "587"},
-                {"SMTPUser", null},
-                {"SMTPPassword", null},
-                {"SMTPFrom", null},
-                {"ClickatellAPIKey", null},
-                {"HttpAdaptationUrl", "https://localhost:5001"},
-                {"HttpAdaptationTimeout", "1000"},
-                {"HttpAdaptationValidateSsl", "False"},
-                {"ReprocessingBulkLimit", "10000"},
-                {"EnableMigration", "True"},
-                {"EnableSanction", "True"},
-                {"NegotiateAuthentication", "False"},
-                {"EnableExhaustiveTraining", "True"},
-                {"EnableCacheIndex", "True"},
-                {"EnableReprocessing", "True"},
-                {"UseMockDataExhaustive", "True"},
-                {"SanctionLoaderWait", "60000"},
-                {"EnableSanctionLoader", "False"},
-                {"ActivationWatcherAllowPersist", "True"},
-                {"ActivationWatcherPersistThreads", "1"},
-                {"AMQP", "False"},
-                {"AMQPUri", null},
-                {"JWTValidAudience", "http://localhost:5001"},
-                {"JWTValidIssuer", "http://localhost:5001"},
-                {"JWTKey", null},
-                {"PasswordHashingKey", null},
-                {"EnablePublicInvokeController", "True"},
-                {"EnableEngine", "True"},
-                {"ExhaustiveTrialsLimit", "1000"},
-                {"ExhaustiveMinVariableCount", "5"},
-                {"ExhaustiveMaxVariableCount", "30"},
-                {"ExhaustiveTrainingDataSamplePercentage", "0.6"},
-                {"ExhaustiveCrossValidationDataSamplePercentage", "0.2"},
-                {"ExhaustiveTestingDataSamplePercentage", "0.2"},
-                {"ExhaustiveValidationTestingActivationThreshold", "0.5"},
-                {"ExhaustiveTopologySinceImprovementLimit", "10"},
-                {"ExhaustiveLayerDepthLimit", "4"},
-                {"ExhaustiveLayerWidthLimitInputLayerFactor", "4"},
-                {"ExhaustiveTopologyComplexityLimit", "10000"},
-                {"ExhaustiveActivationFunctionExplorationEpochs", "3"},
-                {"ExhaustiveTopologyExplorationEpochs", "3"},
-                {"ExhaustiveTopologyFinalisationEpochs", "20"},
-                {"ExhaustiveSimulationsCount", "100"},
-                {"EnableCallback", "True"},
-                {"CallbackTimeout", "3000"},
-                {"StreamingActivationWatcher", "True"},
-                {"WaitPollFromActivationWatcherTable", "5000"},
-                {"WaitTtlCounterDecrement", "60000"},
-                {"Redis", "True"},
-                {"RedisConnectionString", "localhost"},
-                {"StoreFullPayloadLatest", "True"},
-                {"CachePruneServer", "True"},
-                {"WaitCachePrune", "10000"},
-                {"EnableSandbox","False"}
+                { "ModelSynchronisationWait", "10000" },
+                { "EnableNotification", "True" },
+                { "EnableTtlCounter", "True" },
+                { "ConnectionString", null },
+                { "CacheConnectionString", null },
+                { "ReportConnectionString", null },
+                { "EnableSearchKeyCache", "True" },
+                { "EnableCasesAutomation", "True" },
+                { "CasesAutomationWait", "60000" },
+                { "EnableEntityModel", "True" },
+                { "ArchiverPersistThreads", "1   " },
+                { "ModelInvokeAsynchronousThreads", "1" },
+                { "BulkCopyThreshold", "100" },
+                { "ActivationWatcherBulkCopyThreshold", "100" },
+                { "ReprocessingThreads", "1" },
+                { "ThreadPoolManualControl", "False" },
+                { "MinThreadPoolThreads", "30" },
+                { "MaxThreadPoolThreads", "1000" },
+                { "MaximumModelInvokeAsyncQueue", "10000" },
+                { "SMTPHost", null },
+                { "SMTPPort", "587" },
+                { "SMTPUser", null },
+                { "SMTPPassword", null },
+                { "SMTPFrom", null },
+                { "ClickatellAPIKey", null },
+                { "HttpAdaptationUrl", "https://localhost:5001" },
+                { "HttpAdaptationTimeout", "1000" },
+                { "HttpAdaptationValidateSsl", "False" },
+                { "ReprocessingBulkLimit", "10000" },
+                { "EnableMigration", "True" },
+                { "EnableSanction", "True" },
+                { "NegotiateAuthentication", "False" },
+                { "EnableExhaustiveTraining", "True" },
+                { "EnableCacheIndex", "True" },
+                { "EnableReprocessing", "True" },
+                { "UseMockDataExhaustive", "True" },
+                { "SanctionLoaderWait", "60000" },
+                { "EnableSanctionLoader", "False" },
+                { "ActivationWatcherAllowPersist", "True" },
+                { "ActivationWatcherPersistThreads", "1" },
+                { "AMQP", "False" },
+                { "AMQPUri", null },
+                { "JWTValidAudience", "http://localhost:5001" },
+                { "JWTValidIssuer", "http://localhost:5001" },
+                { "JWTKey", null },
+                { "PasswordHashingKey", null },
+                { "EnablePublicInvokeController", "True" },
+                { "EnableEngine", "True" },
+                { "ExhaustiveTrialsLimit", "1000" },
+                { "ExhaustiveMinVariableCount", "5" },
+                { "ExhaustiveMaxVariableCount", "30" },
+                { "ExhaustiveTrainingDataSamplePercentage", "0.6" },
+                { "ExhaustiveCrossValidationDataSamplePercentage", "0.2" },
+                { "ExhaustiveTestingDataSamplePercentage", "0.2" },
+                { "ExhaustiveValidationTestingActivationThreshold", "0.5" },
+                { "ExhaustiveTopologySinceImprovementLimit", "10" },
+                { "ExhaustiveLayerDepthLimit", "4" },
+                { "ExhaustiveLayerWidthLimitInputLayerFactor", "4" },
+                { "ExhaustiveTopologyComplexityLimit", "10000" },
+                { "ExhaustiveActivationFunctionExplorationEpochs", "3" },
+                { "ExhaustiveTopologyExplorationEpochs", "3" },
+                { "ExhaustiveTopologyFinalisationEpochs", "20" },
+                { "ExhaustiveSimulationsCount", "100" },
+                { "EnableCallback", "True" },
+                { "CallbackTimeout", "3000" },
+                { "StreamingActivationWatcher", "True" },
+                { "WaitPollFromActivationWatcherTable", "5000" },
+                { "WaitTtlCounterDecrement", "60000" },
+                { "Redis", "True" },
+                { "RedisConnectionString", "localhost" },
+                { "StoreFullPayloadLatest", "True" },
+                { "CachePruneServer", "True" },
+                { "WaitCachePrune", "10000" },
+                { "EnableSandbox", "False" }
             };
 
             foreach (DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
@@ -160,11 +160,9 @@ public class DynamicEnvironment
 
     private void ValidatePasswordHashingKey()
     {
-        if (appSettings["PasswordHashingKey"] ==
-            // ReSharper disable once StringLiteralTypo
-            "IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous")
+        if (string.IsNullOrEmpty(appSettings["PasswordHashingKey"]))
         {
-            throw new Exception("Not permitted to use the same PasswordHashingKey used in the documentation.");
+            throw new Exception("Missing PasswordHashingKey in Environment Variables.");
         }
     }
 
@@ -173,13 +171,6 @@ public class DynamicEnvironment
         if (string.IsNullOrEmpty(appSettings["JWTKey"]))
         {
             throw new Exception("Missing JWTKey in Environment Variables.");
-        }
-
-        if (appSettings["JWTKey"] ==
-            // ReSharper disable once StringLiteralTypo
-            "IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous")
-        {
-            throw new Exception("Not permitted to use the same JWTKey used in the documentation.");
         }
     }
 

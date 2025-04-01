@@ -44,10 +44,14 @@ With the prerequisites in place, Jube can be up and running in just a few minute
 ```shell
 git clone https://github.com/jube-home/aml-transaction-monitoring
 cd aml-transaction-monitoring
-export DockerComposePostgresPassword="SuperSecretPasswordToChange"
+export DockerComposePostgresPassword="SuperSecretPasswordToChangeForPg"
+export DockerComposeRabbitMQPassword="SuperSecretPasswordToChangeForAmqp"
 export DockerComposeJWTKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
+export DockerComposePasswordHashingKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
 docker compose up -d
 ```
+
+SECURITY NOTICE: Environment variables set out above are for illustrative purposes only.  BE SURE TO CHANGE ENVIRONMENT VARIABLES FROM THEIR DEFAULTS.
 
 Upon conclusion Jube will be listening on the docker host, on port 5001, hence (http://localhost:5001).
 
@@ -68,12 +72,15 @@ Subject to prerequisites, Jube can be up and running in minutes:
 ```shell
 git clone https://github.com/jube-home/aml-transaction-monitoring
 cd aml-transaction-monitoring/Jube.App
-export ConnectionString="Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=SuperSecretPasswordToChange;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;SSL Mode=Require;Trust Server Certificate=true;"
+export ConnectionString="Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=SuperSecretPasswordToChangeForPg;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;SSL Mode=Require;Trust Server Certificate=true;"
 export RedisConnectionString="localhost"
 export ASPNETCORE_URLS="https://localhost:5001"
 export JWTKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
+export PasswordHashingKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
 dotnet run
 ```
+
+SECURITY NOTICE: Environment variables set out above are for illustrative purposes only.  BE SURE TO CHANGE ENVIRONMENT VARIABLES FROM THEIR DEFAULTS.
 
 # Quickstart notes
 
