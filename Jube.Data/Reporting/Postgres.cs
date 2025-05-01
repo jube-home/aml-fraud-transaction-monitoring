@@ -84,12 +84,17 @@ namespace Jube.Data.Reporting
             {
                 await connection.OpenAsync();
 
-                var command = new NpgsqlCommand(sql);
+                var command = new NpgsqlCommand();
                 command.Connection = connection;
 
                 for (var i = 0; i < parameters.Count; i++)
-                    command.Parameters.AddWithValue("@" + (i + 1), parameters[i]);
+                {
+                    var paramName = "@param" + (i + 1);
+                    sql = sql.Replace("@" + (i + 1), paramName);
+                    command.Parameters.AddWithValue(paramName, parameters[i]);
+                }
 
+                command.CommandText = sql;
                 await command.PrepareAsync();
             }
             catch
