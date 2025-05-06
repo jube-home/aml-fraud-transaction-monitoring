@@ -40,6 +40,7 @@
         <ProjectReference Include="..\Accord.Math\Accord.Math.csproj"/>
         <ProjectReference Include="..\Accord.Neuro\Accord.Neuro.csproj"/>
         <ProjectReference Include="..\Accord.Statistics\Accord.Statistics.csproj"/>
+        <ProjectReference Include="..\Jube.Cache\Jube.Cache.csproj" />
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
         <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj"/>
         <ProjectReference Include="..\Jube.Parser\Jube.Parser.csproj"/>

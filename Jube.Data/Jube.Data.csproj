@@ -42,6 +42,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Accord.Statistics\Accord.Statistics.csproj"/>
+        <ProjectReference Include="..\Jube.Cache\Jube.Cache.csproj" />
         <ProjectReference Include="..\Jube.Extensions\Jube.Extensions.csproj" />
     </ItemGroup>
 

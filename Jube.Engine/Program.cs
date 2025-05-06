@@ -76,6 +76,7 @@ namespace Jube.Engine
         private readonly DynamicEnvironment.DynamicEnvironment jubeEnvironment;
         private readonly IModel rabbitMqChannel;
         private readonly IDatabase redisDatabase;
+        private readonly Cache.Cache jubeCache;
         private readonly Dictionary<int, SanctionEntryDto> sanctionsEntries = new();
         public readonly Dictionary<int, SanctionEntriesSource> SanctionSources = new();
         public bool SanctionsHasLoadedForStartup;
@@ -356,6 +357,7 @@ namespace Jube.Engine
             EntityAnalysisModelManager.JubeEnvironment = jubeEnvironment;
             EntityAnalysisModelManager.RabbitMqChannel = rabbitMqChannel;
             EntityAnalysisModelManager.RedisDatabase = redisDatabase;
+            EntityAnalysisModelManager.JubeCache = jubeCache;
             EntityAnalysisModelManager.PendingNotification = PendingNotification;
             EntityAnalysisModelManager.Start();
 

@@ -66,6 +66,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Jube.Cache\Jube.Cache.csproj" />
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
         <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj"/>
         <ProjectReference Include="..\Jube.Engine\Jube.Engine.csproj"/>

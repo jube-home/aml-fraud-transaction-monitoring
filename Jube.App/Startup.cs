@@ -43,6 +43,7 @@ using Newtonsoft.Json.Serialization;
 using RabbitMQ.Client;
 using StackExchange.Redis;
 using Npgsql;
+using JubeCache = Jube.Cache;
 
 namespace Jube.App
 {
@@ -92,6 +93,18 @@ namespace Jube.App
                     "Start: No connection to AMQP is being made.  AMQP will be bypassed throughout the application.");
             }
 
+            Cache.Cache cache = null;
+            if (dynamicEnvironment.AppSettings("JubeCache").Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                cache = new Cache.Cache();
+                services.AddSingleton(cache);
+            }
+            else
+            {
+                log.Info(
+                    "Start: No connection to Jube Cache is being made.  Jube Cache will be bypassed throughout the application.");
+            }
+            
             if (dynamicEnvironment.AppSettings("EnableEngine").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 var engine = new Jube.Engine.Program(dynamicEnvironment, log, seeded, rabbitMqChannel, redisDatabase,

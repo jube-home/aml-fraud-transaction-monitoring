@@ -148,9 +148,11 @@ namespace Jube.Engine.Model
 
         // ReSharper disable once UnassignedField.Global
         public IDatabase RedisDatabase;
+        // ReSharper disable once UnassignedField.Global
+        public IDatabase JubeCache;
         public char CacheTtlInterval { get; set; }
         public int CacheTtlIntervalValue { get; set; }
-
+        
         public async Task AbstractionRuleCachingAsync()
         {
             Log.Info(

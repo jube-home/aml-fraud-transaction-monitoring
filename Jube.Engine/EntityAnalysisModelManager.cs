@@ -95,6 +95,7 @@ namespace Jube.Engine
         public DynamicEnvironment.DynamicEnvironment JubeEnvironment { get; set; }
         public IModel RabbitMqChannel { get; set; }
         public IDatabase RedisDatabase { get; set; }
+        public Cache.Cache JubeCache { get; set; }
         public ConcurrentQueue<Notification> PendingNotification { get; set; }
         public bool EntityModelsHasLoadedForStartup { get; set; }
         public ConcurrentDictionary<Guid, Callback> PendingCallbacks { get; set; }
