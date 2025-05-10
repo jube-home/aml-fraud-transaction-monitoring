@@ -43,6 +43,7 @@ using EntityAnalysisModel = Jube.Engine.Model.EntityAnalysisModel;
 using EntityAnalysisModelAbstractionRule = Jube.Engine.Model.EntityAnalysisModelAbstractionRule;
 using EntityAnalysisModelActivationRule = Jube.Engine.Model.EntityAnalysisModelActivationRule;
 using Redis = Jube.Data.Cache.Redis;
+using JubeCache = Jube.Data.Cache.Jube;
 using Postgres = Jube.Data.Cache.Postgres;
 
 namespace Jube.Engine.Invoke
@@ -52,6 +53,7 @@ namespace Jube.Engine.Invoke
         DynamicEnvironment.DynamicEnvironment jubeEnvironment,
         IModel rabbitMqChannel,
         IDatabase redisDatabase,
+        Cache.Cache jubeCache,
         ConcurrentQueue<Notification> pendingNotification,
         Random seeded,
         Dictionary<int, EntityAnalysisModel> models)
@@ -774,6 +776,10 @@ namespace Jube.Engine.Invoke
             {
                 cacheReferenceDate = new Redis.CacheReferenceDate(redisDatabase, log);
             }
+            else if (jubeCache != null)
+            {
+                cacheReferenceDate = new JubeCache.CacheReferenceDate(jubeCache, log);
+            }
             else
             {
                 cacheReferenceDate = new Postgres.CacheReferenceDate(jubeEnvironment.AppSettings(
@@ -789,6 +795,10 @@ namespace Jube.Engine.Invoke
             if (redisDatabase != null)
             {
                 cachePayloadRepository = new Redis.CachePayloadRepository(redisDatabase, log);
+            }
+            else if (jubeCache != null)
+            {
+                cachePayloadRepository = new JubeCache.CachePayloadRepository(jubeCache, log);
             }
             else
             {
@@ -910,6 +920,10 @@ namespace Jube.Engine.Invoke
             if (redisDatabase != null)
             {
                 cachePayloadLatestRepository = new Redis.CachePayloadLatestRepository(redisDatabase, log);
+            }
+            else if(jubeCache != null)
+            {
+                cachePayloadLatestRepository = new JubeCache.CachePayloadLatestRepository(jubeCache, log);
             }
             else
             {
@@ -1334,6 +1348,11 @@ namespace Jube.Engine.Invoke
             {
                 cacheTtlCounterRepository = new Redis.CacheTtlCounterRepository(
                     redisDatabase, log);
+            }
+            else if (jubeCache != null)
+            {
+                cacheTtlCounterRepository = new JubeCache.CacheTtlCounterRepository(
+                    jubeCache, log);
             }
             else
             {
@@ -2067,6 +2086,10 @@ namespace Jube.Engine.Invoke
             {
                 cacheSanctionRepository = new Redis.CacheSanctionRepository(redisDatabase, log);
             }
+            else if (jubeCache != null)
+            {
+                cacheSanctionRepository = new JubeCache.CacheSanctionRepository(jubeCache, log);
+            }
             else
             {
                 cacheSanctionRepository = new Postgres.CacheSanctionRepository(jubeEnvironment.AppSettings(
@@ -2795,6 +2818,11 @@ namespace Jube.Engine.Invoke
                 cacheAbstractionRepository =
                     new Redis.CacheAbstractionRepository(redisDatabase, log);
             }
+            else if (jubeCache != null)
+            {
+                cacheAbstractionRepository =
+                    new JubeCache.CacheAbstractionRepository(jubeCache, log);
+            }
             else
             {
                 cacheAbstractionRepository =
@@ -3043,6 +3071,11 @@ namespace Jube.Engine.Invoke
             {
                 cacheTtlCounterEntryRepository = new Redis.CacheTtlCounterEntryRepository(
                     redisDatabase, log);
+            }
+            else if (jubeCache != null)
+            {
+                cacheTtlCounterEntryRepository = new JubeCache.CacheTtlCounterEntryRepository(
+                    jubeCache, log); 
             }
             else
             {

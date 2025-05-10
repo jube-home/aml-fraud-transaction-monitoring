@@ -14,13 +14,12 @@
 using System;
 using System.Threading.Tasks;
 using Jube.Data.Cache.Interfaces;
-using Jube.Extensions;
 using log4net;
-using StackExchange.Redis;
+using JubeCache = Jube.Cache.Cache;
 
 namespace Jube.Data.Cache.Jube;
 
-public class CacheReferenceDate(IDatabaseAsync redisDatabase, ILog log) : ICacheReferenceDate
+public class CacheReferenceDate(JubeCache cache, ILog log) : ICacheReferenceDate
 {
     public async Task UpsertReferenceDate(int tenantRegistryId, int entityAnalysisModelId, DateTime referenceDate)
     {
@@ -29,7 +28,7 @@ public class CacheReferenceDate(IDatabaseAsync redisDatabase, ILog log) : ICache
             var redisKey = $"ReferenceDate:{tenantRegistryId}";
             var redisHSetKey = $"{entityAnalysisModelId}";
 
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, referenceDate.ToUnixTimeMilliSeconds());
+            await cache.HashSetAsync(redisKey, redisHSetKey, referenceDate);
         }
         catch (Exception ex)
         {
@@ -43,8 +42,7 @@ public class CacheReferenceDate(IDatabaseAsync redisDatabase, ILog log) : ICache
         {
             var redisKey = $"ReferenceDate:{tenantRegistryId}";
             var redisHSetKey = $"{entityAnalysisModelId}";
-            var referenceDateTimestamp = (long) await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
-            return referenceDateTimestamp.FromUnixTimeMilliSeconds();
+            return await cache.HashGetDateTimeAsync(redisKey, redisHSetKey);
         }
         catch (Exception ex)
         {

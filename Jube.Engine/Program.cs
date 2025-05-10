@@ -44,6 +44,7 @@ using RabbitMQ.Client.Events;
 using StackExchange.Redis;
 using EntityAnalysisModel = Jube.Engine.Model.EntityAnalysisModel;
 using Tag = Jube.Engine.Model.Archive.Tag;
+using JubeCache = Jube.Cache.Cache;
 
 namespace Jube.Engine
 {
@@ -91,7 +92,7 @@ namespace Jube.Engine
         private Task trainingTask;
 
         public Program(DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log, Random seeded,
-            IModel rabbitMqChannel, IDatabase redisDatabase,
+            IModel rabbitMqChannel, IDatabase redisDatabase,JubeCache jubeCache,
             ConcurrentQueue<EntityAnalysisModelInvoke> pendingEntityInvoke, DefaultContractResolver contractResolver)
         {
             this.log = log;
@@ -99,6 +100,7 @@ namespace Jube.Engine
             this.seeded = seeded;
             this.rabbitMqChannel = rabbitMqChannel;
             this.redisDatabase = redisDatabase;
+            this.jubeCache = jubeCache;
             this.pendingEntityInvoke = pendingEntityInvoke;
             this.contractResolver = contractResolver;
 
@@ -1616,6 +1618,7 @@ namespace Jube.Engine
                                                 jubeEnvironment,
                                                 rabbitMqChannel,
                                                 redisDatabase,
+                                                jubeCache,
                                                 PendingNotification,
                                                 seeded,
                                                 EntityAnalysisModelManager.ActiveEntityAnalysisModels);

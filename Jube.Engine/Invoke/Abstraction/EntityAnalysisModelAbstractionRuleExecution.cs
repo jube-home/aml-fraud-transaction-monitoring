@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Postgres = Jube.Data.Cache.Postgres;
 using Redis = Jube.Data.Cache.Redis;
+using JubeCache = Jube.Data.Cache.Jube;
 using Jube.Data.Extension;
 using Jube.Engine.Invoke.Reflect;
 using Jube.Engine.Model;
@@ -38,6 +39,7 @@ namespace Jube.Engine.Invoke.Abstraction
         public bool Finished { get; private set; }
         public ILog Log { get; init; }
         public IDatabase RedisDatabase { get; set; }
+        public Jube.Cache.Cache JubeCache { get; set; }
         public DynamicEnvironment.DynamicEnvironment DynamicEnvironment { get; set; }
         public List<Task> PendingWritesTasks { get; set; }
 
@@ -54,7 +56,27 @@ namespace Jube.Engine.Invoke.Abstraction
                 if (RedisDatabase != null)
                 {
                     var cachePayloadRepository = new Redis.CachePayloadRepository(RedisDatabase, Log);
-
+                     
+                                         PendingWritesTasks.Add(cachePayloadRepository
+                                             .InsertAsync(EntityAnalysisModel.TenantRegistryId,
+                                                 EntityAnalysisModel.Id,
+                                                 AbstractionRuleGroupingKey,
+                                                 CachePayloadDocument[AbstractionRuleGroupingKey].AsString(),
+                                                 EntityAnalysisModelInstanceEntryPayload.Payload,
+                                                 EntityAnalysisModelInstanceEntryPayload.ReferenceDate,
+                                                 EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid));
+                     
+                                         documents = await cachePayloadRepository.GetExcludeCurrent(EntityAnalysisModel.TenantRegistryId,
+                                             EntityAnalysisModel.Id,
+                                             AbstractionRuleGroupingKey,
+                                             CachePayloadDocument[AbstractionRuleGroupingKey].AsString(),
+                                             limit, EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
+                                         );
+                }
+                else if (JubeCache != null)
+                {
+                    var cachePayloadRepository = new Jube.Data.Cache.Jube.CachePayloadRepository(JubeCache, Log);
+                     
                     PendingWritesTasks.Add(cachePayloadRepository
                         .InsertAsync(EntityAnalysisModel.TenantRegistryId,
                             EntityAnalysisModel.Id,
@@ -63,7 +85,7 @@ namespace Jube.Engine.Invoke.Abstraction
                             EntityAnalysisModelInstanceEntryPayload.Payload,
                             EntityAnalysisModelInstanceEntryPayload.ReferenceDate,
                             EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid));
-
+                     
                     documents = await cachePayloadRepository.GetExcludeCurrent(EntityAnalysisModel.TenantRegistryId,
                         EntityAnalysisModel.Id,
                         AbstractionRuleGroupingKey,

@@ -39,6 +39,7 @@ using StackExchange.Redis;
 using ExhaustiveSearchInstance = Jube.Engine.Model.Exhaustive.ExhaustiveSearchInstance;
 using Tag = Jube.Engine.Model.Archive.Tag;
 using Redis = Jube.Data.Cache.Redis;
+using JubeCache = Jube.Data.Cache.Jube;
 
 // ReSharper disable CollectionNeverUpdated.Global
 
@@ -149,7 +150,7 @@ namespace Jube.Engine.Model
         // ReSharper disable once UnassignedField.Global
         public IDatabase RedisDatabase;
         // ReSharper disable once UnassignedField.Global
-        public IDatabase JubeCache;
+        public Jube.Cache.Cache JubeCache;
         public char CacheTtlInterval { get; set; }
         public int CacheTtlIntervalValue { get; set; }
         
@@ -441,6 +442,11 @@ namespace Jube.Engine.Model
                 cacheAbstractionRepository =
                     new Redis.CacheAbstractionRepository(RedisDatabase, Log);
             }
+            else if (JubeCache != null)
+            {
+                cacheAbstractionRepository =
+                    new JubeCache.CacheAbstractionRepository(JubeCache, Log);
+            }
             else
             {
                 cacheAbstractionRepository =
@@ -726,6 +732,10 @@ namespace Jube.Engine.Model
             {
                 cachePayloadLatestRepository = new Redis.CachePayloadLatestRepository(RedisDatabase, Log);
             }
+            else if (JubeCache != null)
+            {
+                cachePayloadLatestRepository = new JubeCache.CachePayloadLatestRepository(JubeCache, Log);
+            }
             else
             {
                 cachePayloadLatestRepository = new CachePayloadLatestRepository(JubeEnvironment.AppSettings(
@@ -741,6 +751,10 @@ namespace Jube.Engine.Model
             if (RedisDatabase != null)
             {
                 cacheTtlCounterRepository = new Redis.CacheTtlCounterRepository(RedisDatabase, Log);
+            }
+            else if (JubeCache != null)
+            {
+                cacheTtlCounterRepository = new JubeCache.CacheTtlCounterRepository(JubeCache, Log);
             }
             else
             {
@@ -912,6 +926,10 @@ namespace Jube.Engine.Model
             {
                 cacheReferenceDate = new Redis.CacheReferenceDate(RedisDatabase, Log);
             }
+            else if (JubeCache != null)
+            {
+                cacheReferenceDate = new JubeCache.CacheReferenceDate(JubeCache, Log);
+            }
             else
             {
                 cacheReferenceDate = new CacheReferenceDate(JubeEnvironment.AppSettings(
@@ -928,6 +946,10 @@ namespace Jube.Engine.Model
             if (RedisDatabase != null)
             {
                 cacheTtlCounterEntryRepository = new Redis.CacheTtlCounterEntryRepository(RedisDatabase, Log);
+            }
+            else if (JubeCache != null)
+            {
+                cacheTtlCounterEntryRepository = new JubeCache.CacheTtlCounterEntryRepository(JubeCache, Log);
             }
             else
             {

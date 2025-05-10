@@ -15,11 +15,11 @@ using System;
 using System.Threading.Tasks;
 using Jube.Data.Cache.Interfaces;
 using log4net;
-using StackExchange.Redis;
+using JubeCache = Jube.Cache.Cache;
 
 namespace Jube.Data.Cache.Jube;
 
-public class CacheTtlCounterRepository(IDatabaseAsync redisDatabase, ILog log) : ICacheTtlCounterRepository
+public class CacheTtlCounterRepository(JubeCache cache, ILog log) : ICacheTtlCounterRepository
 {
     public async Task DecrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
         int entityAnalysisModelTtlCounterId,
@@ -31,7 +31,7 @@ public class CacheTtlCounterRepository(IDatabaseAsync redisDatabase, ILog log) :
                 $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
             var redisHSetKey = $"{dataValue}";
 
-            await redisDatabase.HashDecrementAsync(redisKey, redisHSetKey, decrement);
+            await cache.HashDecrementAsync(redisKey, redisHSetKey, decrement);
         }
         catch (Exception ex)
         {
@@ -47,7 +47,7 @@ public class CacheTtlCounterRepository(IDatabaseAsync redisDatabase, ILog log) :
             var redisKey =
                 $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
             var redisHSetKey = $"{dataValue}";
-            return (int) await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
+            return await cache.HashGetAsync(redisKey, redisHSetKey) ?? 0;
         }
         catch (Exception ex)
         {
@@ -67,7 +67,7 @@ public class CacheTtlCounterRepository(IDatabaseAsync redisDatabase, ILog log) :
                 $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
             var redisHSetKey = $"{dataValue}";
 
-            await redisDatabase.HashIncrementAsync(redisKey, redisHSetKey, increment);
+            await cache.HashIncrementAsync(redisKey, redisHSetKey, increment);
         }
         catch (Exception ex)
         {

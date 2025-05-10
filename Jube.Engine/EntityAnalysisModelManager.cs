@@ -63,6 +63,7 @@ using Newtonsoft.Json;
 using StackExchange.Redis;
 using EntityAnalysisModelRequestXPath = Jube.Parser.EntityAnalysisModelRequestXPath;
 using Redis = Jube.Data.Cache.Redis;
+using JubeCache = Jube.Data.Cache.Redis;
 
 namespace Jube.Engine
 {
@@ -265,6 +266,10 @@ namespace Jube.Engine
             {
                 cachePayload = new Redis.CachePayloadRepository(RedisDatabase, Log);
             }
+            else if (JubeCache != null)
+            {
+                cachePayload = new JubeCache.CachePayloadRepository(RedisDatabase, Log);
+            }
             else
             {
                 cachePayload = new CachePayloadRepository(JubeEnvironment.AppSettings(
@@ -281,6 +286,10 @@ namespace Jube.Engine
             {
                 cachePayloadLatest = new Redis.CachePayloadLatestRepository(RedisDatabase, Log);
             }
+            else if (JubeCache != null)
+            {
+                cachePayloadLatest = new JubeCache.CachePayloadLatestRepository(RedisDatabase, Log);
+            }
             else
             {
                 cachePayloadLatest = new CachePayloadLatestRepository(JubeEnvironment.AppSettings(
@@ -296,6 +305,10 @@ namespace Jube.Engine
             if (RedisDatabase != null)
             {
                 cacheReferenceDate = new Redis.CacheReferenceDate(RedisDatabase, Log);
+            }
+            else if (JubeCache != null)
+            {
+                cacheReferenceDate = new JubeCache.CacheReferenceDate(RedisDatabase, Log);
             }
             else
             {
@@ -3920,7 +3933,7 @@ namespace Jube.Engine
                 foreach (var distinctSearchKey in shadowDistinctSearchKeys)
                 {
                     distinctSearchKey.Value.SqlSelect =
-                        $"select * from (select \"CreatedDate\",\"ReferenceDate\" AS \"{value.ReferenceDateName}\"";
+                        $"select * from (select \"CreatedDate\",\"ReferenceDate\" AS \"{value.ReferenceDateName}\")";
 
                     foreach (var selectedPayloadData in distinctSearchKey.Value.SelectedPayloadData)
                     {
@@ -5599,6 +5612,7 @@ namespace Jube.Engine
 
             entityAnalysisModelInvoke = new EntityAnalysisModelInvoke(Log, JubeEnvironment, RabbitMqChannel,
                 RedisDatabase,
+                JubeCache,
                 PendingNotification, Seeded,
                 ActiveEntityAnalysisModels);
             cachePayloadDocumentStore = new Dictionary<string, object>();

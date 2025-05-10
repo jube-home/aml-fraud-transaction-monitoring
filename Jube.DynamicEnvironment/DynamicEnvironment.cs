@@ -106,7 +106,8 @@ public class DynamicEnvironment
                 { "StoreFullPayloadLatest", "True" },
                 { "CachePruneServer", "True" },
                 { "WaitCachePrune", "10000" },
-                { "EnableSandbox", "False" }
+                { "EnableSandbox", "False" },
+                { "JubeCache", "True" }
             };
 
             foreach (DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())

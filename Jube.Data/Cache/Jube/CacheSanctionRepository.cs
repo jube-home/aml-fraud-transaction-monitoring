@@ -19,11 +19,11 @@ using Jube.Data.Cache.Interfaces;
 using Jube.Data.Cache.Redis.MessagePack;
 using log4net;
 using MessagePack;
-using StackExchange.Redis;
+using JubeCache = Jube.Cache.Cache;
 
 namespace Jube.Data.Cache.Jube;
 
-public class CacheSanctionRepository(IDatabaseAsync redisDatabase, ILog log) : ICacheSanctionRepository
+public class CacheSanctionRepository(JubeCache cache, ILog log) : ICacheSanctionRepository
 {
     public async Task<CacheSanctionDto> GetByMultiPartStringDistanceThresholdAsync(int tenantRegistryId,
         int entityAnalysisModelId, string multiPartString,
@@ -34,19 +34,20 @@ public class CacheSanctionRepository(IDatabaseAsync redisDatabase, ILog log) : I
             var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelId}";
             var redisHSetKey = $"{multiPartString}:{distanceThreshold}";
 
-            var hashValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
+            var hashValue = await cache.HashGetDateTimeAsync(redisKey, redisHSetKey);
 
             if (!hashValue.HasValue) return null;
 
-            var sanction = MessagePackSerializer
-                .Deserialize<Sanction>(hashValue,
-                    MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(false));
-
-            return new CacheSanctionDto
-            {
-                CreatedDate = sanction.CreatedDate,
-                Value = sanction.Value
-            };
+            // var sanction = MessagePackSerializer
+            //     .Deserialize<Sanction>(hashValue,
+            //         MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(false));
+            //
+            // return new CacheSanctionDto
+            // {
+            //     CreatedDate = sanction.CreatedDate,
+            //     Value = sanction.Value
+            // };
+            return new CacheSanctionDto();
         }
         catch (Exception ex)
         {
@@ -74,7 +75,7 @@ public class CacheSanctionRepository(IDatabaseAsync redisDatabase, ILog log) : I
             var ms = new MemoryStream();
             await MessagePackSerializer.SerializeAsync(ms, sanction,
                 MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(false));
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, ms.ToArray());
+            await cache.HashSetAsync(redisKey, redisHSetKey, ms.ToArray());
         }
         catch (Exception ex)
         {

@@ -93,11 +93,11 @@ namespace Jube.App
                     "Start: No connection to AMQP is being made.  AMQP will be bypassed throughout the application.");
             }
 
-            Cache.Cache cache = null;
+            JubeCache.Cache jubeCache = null;
             if (dynamicEnvironment.AppSettings("JubeCache").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
-                cache = new Cache.Cache();
-                services.AddSingleton(cache);
+                jubeCache = new JubeCache.Cache();
+                services.AddSingleton(jubeCache);
             }
             else
             {
@@ -107,7 +107,7 @@ namespace Jube.App
             
             if (dynamicEnvironment.AppSettings("EnableEngine").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
-                var engine = new Jube.Engine.Program(dynamicEnvironment, log, seeded, rabbitMqChannel, redisDatabase,
+                var engine = new Jube.Engine.Program(dynamicEnvironment, log, seeded, rabbitMqChannel, redisDatabase,jubeCache,
                     pendingEntityInvoke, contractResolver);
                 services.AddSingleton(engine);
             }

@@ -13,16 +13,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Jube.Data.Cache.Interfaces;
 using Jube.Extensions;
 using log4net;
-using StackExchange.Redis;
+using JubeCache = Jube.Cache.Cache;
 
 namespace Jube.Data.Cache.Jube;
 
-public class CacheTtlCounterEntryRepository(IDatabaseAsync redisDatabase, ILog log) : ICacheTtlCounterEntryRepository
+public class CacheTtlCounterEntryRepository(JubeCache cache, ILog log) : ICacheTtlCounterEntryRepository
 {
     public async Task<List<Postgres.CacheTtlCounterEntryRepository.ExpiredTtlCounterEntryDto>>
         GetExpiredTtlCounterCacheCountsAsync(int tenantRegistryId, int entityAnalysisModelId,
@@ -34,23 +33,23 @@ public class CacheTtlCounterEntryRepository(IDatabaseAsync redisDatabase, ILog l
             var redisKeyTtlCounter =
                 $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
 
-            foreach (var dataValue in await redisDatabase.HashKeysAsync(redisKeyTtlCounter))
+            foreach (var dataValue in await cache.HashKeysAsync(redisKeyTtlCounter))
             {
                 var redisKeyTtlCounterEntry = $"TtlCounterEntry:{tenantRegistryId}" +
                                               $":{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}" +
                                               $":{dataName}:{dataValue}";
 
-                foreach (var keyTtlCounterEntry in await redisDatabase.HashKeysAsync(redisKeyTtlCounterEntry))
+                foreach (var keyTtlCounterEntry in await cache.HashKeysAsync(redisKeyTtlCounterEntry))
                 {
                     var referenceDateTimestamp = long.Parse(keyTtlCounterEntry).FromUnixTimeMilliSeconds();
                     if (referenceDateTimestamp >= referenceDate) continue;
 
-                    var redisValue = await redisDatabase.HashGetAsync(redisKeyTtlCounterEntry, keyTtlCounterEntry);
+                    var redisValue = await cache.HashGetIntAsync(redisKeyTtlCounterEntry, keyTtlCounterEntry);
                     if (redisValue.HasValue)
                     {
                         expired.Add(new Postgres.CacheTtlCounterEntryRepository.ExpiredTtlCounterEntryDto
                         {
-                            Value = (int) redisValue,
+                            Value = redisValue.Value,
                             DataValue = dataValue,
                             ReferenceDate = referenceDateTimestamp
                         });
@@ -85,12 +84,15 @@ public class CacheTtlCounterEntryRepository(IDatabaseAsync redisDatabase, ILog l
         var redisKey =
             $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelId}" +
             $":{entityAnalysisModelTtlCounterId}:{dataName}:{dataValue}";
-
-        return (from hashEntry in await redisDatabase.HashGetAllAsync(redisKey)
-            let referenceDateTimestamp = long.Parse(hashEntry.Name)
-            where referenceDateTimestamp >= referenceDateFromTimestamp
-                  && referenceDateTimestamp <= referenceDateToTimestamp
-            select (int) hashEntry.Value).Sum();
+        //
+        // var s = await cache.HashGetAllAsync(redisKey);
+        //
+        // return (from hashEntry in await redisDatabase.HashGetAllAsync(redisKey)
+        //     let referenceDateTimestamp = long.Parse(hashEntry.Name)
+        //     where referenceDateTimestamp >= referenceDateFromTimestamp
+        //           && referenceDateTimestamp <= referenceDateToTimestamp
+        //     select (int) hashEntry.Value).Sum();
+        return 0;
     }
 
     public async Task UpsertAsync(int tenantRegistryId, int entityAnalysisModelId, string dataName, string dataValue,
@@ -102,7 +104,7 @@ public class CacheTtlCounterEntryRepository(IDatabaseAsync redisDatabase, ILog l
                 $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}:{dataValue}";
             var redisHSetKey = $"{referenceDate.ToUnixTimeMilliSeconds()}";
 
-            await redisDatabase.HashIncrementAsync(redisKey, redisHSetKey, increment);
+            await cache.HashIncrementAsync(redisKey, redisHSetKey, increment);
         }
         catch (Exception ex)
         {
@@ -120,7 +122,7 @@ public class CacheTtlCounterEntryRepository(IDatabaseAsync redisDatabase, ILog l
                 $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}:{dataValue}";
             var redisHSetKey = $"{referenceDate.ToUnixTimeMilliSeconds()}";
 
-            await redisDatabase.HashDeleteAsync(redisKey, redisHSetKey);
+            await cache.HashDeleteAsync(redisKey, redisHSetKey);
         }
         catch (Exception ex)
         {

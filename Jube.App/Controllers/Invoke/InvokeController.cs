@@ -33,6 +33,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
 using StackExchange.Redis;
+using JubeCache = Jube.Cache.Cache;
 
 namespace Jube.App.Controllers.Invoke
 {
@@ -46,6 +47,7 @@ namespace Jube.App.Controllers.Invoke
         private readonly ConcurrentQueue<EntityAnalysisModelInvoke> pendingEntityInvoke;
         private readonly IModel rabbitMqChannel;
         private readonly IDatabase redisDatabase;
+        private readonly JubeCache jubeCache;
         private readonly Random seeded;
 
         public InvokeController(ILog log,
@@ -53,7 +55,9 @@ namespace Jube.App.Controllers.Invoke
             ConcurrentQueue<EntityAnalysisModelInvoke> pendingEntityInvoke,
             Jube.Engine.Program engine = null,
             IModel rabbitMqChannel = null,
-            IDatabase redisDatabase = null)
+            IDatabase redisDatabase = null,
+            JubeCache jubeCache = null
+        )
         {
             this.engine = engine;
             this.log = log;
@@ -62,11 +66,12 @@ namespace Jube.App.Controllers.Invoke
             this.pendingEntityInvoke = pendingEntityInvoke;
             this.rabbitMqChannel = rabbitMqChannel;
             this.redisDatabase = redisDatabase;
+            this.jubeCache = jubeCache;
             if (this.engine != null) this.engine.HttpCounterAllRequests += 1;
         }
 
         [HttpGet("EntityAnalysisModel/Callback/{guid:Guid}")]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> EntityAnalysisModelCallback(Guid guid, int? timeout)
         {
             try
@@ -90,7 +95,7 @@ namespace Jube.App.Controllers.Invoke
                     if (value != null)
                     {
                         var cacheCallbackRepository = new CacheCallbackRepository(
-                            dynamicEnvironment.AppSettings(new[] {"CacheConnectionString", "ConnectionString"}),
+                            dynamicEnvironment.AppSettings(new[] { "CacheConnectionString", "ConnectionString" }),
                             log);
 
                         await cacheCallbackRepository.DeleteAsync(guid);
@@ -118,7 +123,7 @@ namespace Jube.App.Controllers.Invoke
         }
 
         [HttpGet("Sanction")]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<List<SanctionEntryDto>> Sanction(string multiPartString, int distance)
         {
             try
@@ -158,7 +163,7 @@ namespace Jube.App.Controllers.Invoke
         }
 
         [HttpPut("Archive/Tag")]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult EntityAnalysisModelInstanceEntryGuid([FromBody] TagRequestDto model)
         {
             try
@@ -222,7 +227,7 @@ namespace Jube.App.Controllers.Invoke
 
         [HttpPost("EntityAnalysisModel/{guid}")]
         [HttpPost("EntityAnalysisModel/{guid}/{async}")]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> EntityAnalysisModelGuidAsync()
         {
             try
@@ -274,7 +279,7 @@ namespace Jube.App.Controllers.Invoke
                             $"HTTP Handler Entity: GUID payload {guid} model id is {entityAnalysisModel.Id} will now begin payload parsing.");
 
                         var entityModelInvoke = new EntityAnalysisModelInvoke(log, dynamicEnvironment,
-                            rabbitMqChannel, redisDatabase, engine.PendingNotification, seeded,
+                            rabbitMqChannel, redisDatabase, jubeCache, engine.PendingNotification, seeded,
                             engine.EntityAnalysisModelManager.ActiveEntityAnalysisModels);
 
                         if (Request.ContentLength != null)
@@ -320,7 +325,7 @@ namespace Jube.App.Controllers.Invoke
         }
 
         [HttpPost("ExhaustiveSearchInstance/{guid}")]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<double>> ExhaustiveSearchInstanceAsync()
         {
             try
@@ -358,7 +363,7 @@ namespace Jube.App.Controllers.Invoke
         }
 
         [HttpPost("ExampleFraudScoreLocalEndpoint")]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<double>> ExampleFraudScoreLocalEndpointAsync()
         {
             try

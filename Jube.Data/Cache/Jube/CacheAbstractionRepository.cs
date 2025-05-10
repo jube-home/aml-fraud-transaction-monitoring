@@ -17,11 +17,11 @@ using System.Threading.Tasks;
 using Jube.Data.Cache.Interfaces;
 using Jube.Data.Cache.Postgres;
 using log4net;
-using JubeCache = Jube.Cache;
+using JubeCache = Jube.Cache.Cache;
 
 namespace Jube.Data.Cache.Jube;
 
-public class CacheAbstractionRepository(JubeCache.Cache cache, ILog log) : ICacheAbstractionRepository
+public class CacheAbstractionRepository(JubeCache cache, ILog log) : ICacheAbstractionRepository
 {
     public async Task DeleteAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue,
         string name)
@@ -31,7 +31,7 @@ public class CacheAbstractionRepository(JubeCache.Cache cache, ILog log) : ICach
             var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
             
-            await JubeCache.HashDeleteAsync(redisKey, redisHSetKey);
+            await cache.HashDeleteAsync(redisKey, redisHSetKey);
         }
         catch (Exception ex)
         {
@@ -48,7 +48,7 @@ public class CacheAbstractionRepository(JubeCache.Cache cache, ILog log) : ICach
             var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue);
+            await cache.HashSetAsync(redisKey, redisHSetKey, searchValue);
         }
         catch (Exception ex)
         {
@@ -65,7 +65,7 @@ public class CacheAbstractionRepository(JubeCache.Cache cache, ILog log) : ICach
             var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue);
+            await cache.HashSetAsync(redisKey, redisHSetKey, searchValue);
         }
         catch (Exception ex)
         {
@@ -81,10 +81,8 @@ public class CacheAbstractionRepository(JubeCache.Cache cache, ILog log) : ICach
         {
             var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
-            var redisValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
-
-            if (!redisValue.HasValue) return null;
-            return (double) redisValue;
+            var redisValue = await cache.HashGetDoubleAsync(redisKey, redisHSetKey);
+            return redisValue;
         }
         catch (Exception ex)
         {
@@ -113,10 +111,10 @@ public class CacheAbstractionRepository(JubeCache.Cache cache, ILog log) : ICach
                 var redisHSetKey =
                     $"{entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest.AbstractionRuleName}";
 
-                var redisValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
+                var redisValue = await cache.HashGetDoubleAsync(redisKey, redisHSetKey);
 
                 value.Add(entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest.AbstractionRuleName,
-                    redisValue.HasValue ? (double) redisValue : 0);
+                    redisValue ?? 0);
             }
         }
         catch (Exception ex)
