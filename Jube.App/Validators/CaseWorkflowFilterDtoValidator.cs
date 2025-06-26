@@ -27,8 +27,6 @@ namespace Jube.App.Validators
             
             RuleFor(p => p.SelectJson).NotEmpty();
             RuleFor(p => p.FilterJson).NotEmpty();
-            RuleFor(p => p.FilterSql).NotEmpty();
-            RuleFor(p => p.FilterTokens).NotEmpty();
         }
     }
 }
