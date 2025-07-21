@@ -2,20 +2,20 @@
 
 🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
 
-# Open-Source Anti-Money Laundering (AML) Transaction Monitoring
+# Open-Source Anti-Money Laundering (AML) and Fraud Detection Transaction Monitoring
 
-Jube is an open-source, real-time transaction and event monitoring software designed to support **Anti-Money
-Laundering (AML)** compliance efforts. It aligns with
+Jube is an open-source, real-time software designed to support **Anti-Money
+Laundering (AML)** compliance efforts and Fraud Detection Transaction Monitoring use cases. It aligns with
 the [Jube AML Monitoring Compliance Guidance](https://jube.io/JubeAMLMonitoringComplianceGuidance.pdf), helping
 organizations adapt to regulatory obligations based on **FATF guidelines** and the **Wolfsberg Principles**. While
-focused on AML, Jube also addresses other transaction monitoring use cases, leveraging similar methodologies with slight
+focused on AML and Fraud Detection Transaction Monitoring use cases, Jube also addresses other transaction monitoring use cases, leveraging similar methodologies with slight
 variations.
 
 ⭐ Please consider giving this project a GitHub star, gratefully received, in advance.
 
 # Documentation
 
-The [Jube documentation](https://jube-home.github.io/aml-transaction-monitoring) is comprehensive and designed to cover all features, ensuring
+The [Jube documentation](https://jube-home.github.io/aml-fraud-transaction-monitoring) is comprehensive and designed to cover all features, ensuring
 there is no undocumented know-how. It adopts an **instructional style**, providing step-by-step explanations with
 extensive use of **screenshots** to guide users through each feature.
 
@@ -28,16 +28,16 @@ installed. This Docker Compose file creates and configures the following compone
 * postgres image and start.
 * redis/redis-stack:latest image and start.
 * The building of an image of Jube:
-    * Starting an image of Jube for WebAPI Services (API and User Interface).
-    * Starting an image of Jube for the Background Jobs.
+  * Starting an image of Jube for WebAPI Services (API and User Interface).
+  * Starting an image of Jube for the Background Jobs.
 
 Jube is not built to a Docker Hub image, instead an image will be built to the dockerfile specification in the project.
 
 With the prerequisites in place, Jube can be up and running in just a few minutes:
 
 ```shell
-git clone https://github.com/jube-home/aml-transaction-monitoring
-cd aml-transaction-monitoring
+git clone https://github.com/jube-home/aml-fraud-transaction-monitoring
+cd aml-fraud-transaction-monitoring
 export DockerComposePostgresPassword="SuperSecretPasswordToChangeForPg"
 export DockerComposeRabbitMQPassword="SuperSecretPasswordToChangeForAmqp"
 export DockerComposeJWTKey="IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous"
@@ -64,8 +64,8 @@ Jube runs on commodity Linux. For running directly, there exists the following p
 Subject to prerequisites, Jube can be up and running in minutes:
 
 ```shell
-git clone https://github.com/jube-home/aml-transaction-monitoring
-cd aml-transaction-monitoring/Jube.App
+git clone https://github.com/jube-home/aml-fraud-transaction-monitoring
+cd aml-fraud-transaction-monitoring/Jube.App
 export ConnectionString="Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=SuperSecretPasswordToChangeForPg;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;SSL Mode=Require;Trust Server Certificate=true;"
 export RedisConnectionString="localhost"
 export ASPNETCORE_URLS="https://localhost:5001"
@@ -129,8 +129,8 @@ The default username \ password combination is Administrator \ Administrator, al
 changed on first login.
 
 A more comprehensive installation guide is available in
-the [Getting Started](https://jube-home.github.io/aml-transaction-monitoring/GettingStarted) of
-the [documentation](https://jube-home.github.io/aml-transaction-monitoring).
+the [Getting Started](https://jube-home.github.io/aml-fraud-transaction-monitoring/GettingStarted) of
+the [documentation](https://jube-home.github.io/aml-fraud-transaction-monitoring).
 
 # Reporting Vulnerabilities
 
@@ -145,8 +145,8 @@ Please report any security problems to Jube before disclosing them publicly.
 # Governance
 
 Jube Holdings Limited is a Cyprus company registered HE404521. Jube Holdings Limited owns Jube software and Trademarks (
-registered or otherwise). Jube is maintained by Jube Operations Limited, a United Kingdom company with registration 14442207. 
-Jube Operations Limited is a wholly owned subsidiary of Jube Holdings Limited. Jube Operations Limited 
+registered or otherwise). Jube is maintained by Jube Operations Limited, a United Kingdom company with registration 14442207.
+Jube Operations Limited is a wholly owned subsidiary of Jube Holdings Limited. Jube Operations Limited
 provides training and support services for Jube. Jube and "Jooby" (the logo) is a registered trademark in Cyprus.
 
 # Licence

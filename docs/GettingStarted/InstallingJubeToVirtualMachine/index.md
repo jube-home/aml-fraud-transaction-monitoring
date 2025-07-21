@@ -12,8 +12,8 @@ parent: Getting Started
 Start by cloning the project from Github and changing to the executable directory:
 
 ```shell
-git clone https://github.com/jube-home/aml-transaction-monitoring
-cd aml-transaction-monitoring/Jube.App
+git clone https://github.com/jube-home/aml-fraud-transaction-monitoring
+cd aml-fraud-transaction-monitoring/Jube.App
 ```
 
 Noting the credentials from the Managed Postgres Database:
