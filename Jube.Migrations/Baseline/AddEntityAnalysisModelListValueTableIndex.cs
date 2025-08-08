@@ -2,54 +2,53 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
 using System;
 using FluentMigrator;
 
-namespace Jube.Migrations.Baseline
+namespace Jube.Migrations.Baseline;
+
+[Migration(20220426071437)]
+public class AddEntityAnalysisModelListValueTableIndex : Migration
 {
-    [Migration(20220426071437)]
-    public class AddEntityAnalysisModelListValueTableIndex : Migration
+    public override void Up()
     {
-        public override void Up()
-        {
-            Create.Table("EntityAnalysisModelListValue")
-                .WithColumn("Id").AsInt32().PrimaryKey().Identity()
-                .WithColumn("EntityAnalysisModelListId").AsInt32().Nullable()
-                .WithColumn("ListValue").AsString().Nullable()
-                .WithColumn("CreatedDate").AsDateTime2().Nullable()
-                .WithColumn("CreatedUser").AsString().Nullable()
-                .WithColumn("Deleted").AsByte().Nullable()
-                .WithColumn("DeletedDate").AsDateTime2().Nullable()
-                .WithColumn("DeletedUser").AsString().Nullable()
-                .WithColumn("InheritedId").AsInt32().Nullable()
-                .WithColumn("Version").AsInt32().Nullable();
-            
-            Create.Index().OnTable("EntityAnalysisModelListValue")
-                .OnColumn("EntityAnalysisModelListId").Ascending()
-                .OnColumn("Deleted").Ascending();
+        Create.Table("EntityAnalysisModelListValue")
+            .WithColumn("Id").AsInt32().PrimaryKey().Identity()
+            .WithColumn("EntityAnalysisModelListId").AsInt32().Nullable()
+            .WithColumn("ListValue").AsString().Nullable()
+            .WithColumn("CreatedDate").AsDateTime2().Nullable()
+            .WithColumn("CreatedUser").AsString().Nullable()
+            .WithColumn("Deleted").AsByte().Nullable()
+            .WithColumn("DeletedDate").AsDateTime2().Nullable()
+            .WithColumn("DeletedUser").AsString().Nullable()
+            .WithColumn("InheritedId").AsInt32().Nullable()
+            .WithColumn("Version").AsInt32().Nullable();
 
-            Insert.IntoTable("EntityAnalysisModelListValue").Row(new
-            {
-                EntityAnalysisModelListId = 1,
-                ListValue = "123.456.789.123",
-                CreatedDate = DateTime.Now,
-                CreatedUser = "Administrator",
-                Version = 1
-            });
-        }
+        Create.Index().OnTable("EntityAnalysisModelListValue")
+            .OnColumn("EntityAnalysisModelListId").Ascending()
+            .OnColumn("Deleted").Ascending();
 
-        public override void Down()
+        Insert.IntoTable("EntityAnalysisModelListValue").Row(new
         {
-            Delete.Table("EntityAnalysisModelListValue");
-        }
+            EntityAnalysisModelListId = 1,
+            ListValue = "123.456.789.123",
+            CreatedDate = DateTime.Now,
+            CreatedUser = "Administrator",
+            Version = 1
+        });
+    }
+
+    public override void Down()
+    {
+        Delete.Table("EntityAnalysisModelListValue");
     }
 }

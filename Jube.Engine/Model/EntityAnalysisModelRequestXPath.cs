@@ -11,28 +11,27 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-namespace Jube.Engine.Model
+namespace Jube.Engine.Model;
+
+public class EntityAnalysisModelRequestXPath
 {
-    public class EntityAnalysisModelRequestXPath
-    {
-        public string Name { get; set; }
-        public int DataTypeId { get; set; }
-        public string XPath { get; set; }
-        public bool SearchKey { get; set; }
-        public bool SearchKeyCache { get; set; }
-        public bool SearchKeyCacheSample { get; set; }
-        public string SearchKeyCacheInterval { get; set; }
-        public int SearchKeyCacheValue { get; set; }
-        public string SearchKeyCacheTtlIntervalType { get; set; }
-        public int SearchKeyCacheTtlValue { get; set; }
-        public int Id { get; init; }
-        public bool ResponsePayload { get; set; }
-        public int SearchKeyCacheFetchLimit { get; set; }
-        public bool ReportTable { get; set; }
-        public bool EnableSuppression { get; set; }
-        public string DefaultValue { get; set; }
-        public int SearchKeyFetchLimit { get; set; }
-        public string SearchKeyTtlInterval { get; set; }
-        public int SearchKeyTtlIntervalValue { get; set; }
-    }
+    public string Name { get; set; }
+    public int DataTypeId { get; set; }
+    public string XPath { get; set; }
+    public bool SearchKey { get; set; }
+    public bool SearchKeyCache { get; set; }
+    public bool SearchKeyCacheSample { get; set; }
+    public string SearchKeyCacheInterval { get; set; }
+    public int SearchKeyCacheValue { get; set; }
+    public string SearchKeyCacheTtlIntervalType { get; set; }
+    public int SearchKeyCacheTtlValue { get; set; }
+    public int Id { get; init; }
+    public bool ResponsePayload { get; set; }
+    public int SearchKeyCacheFetchLimit { get; set; }
+    public bool ReportTable { get; set; }
+    public bool EnableSuppression { get; set; }
+    public string DefaultValue { get; set; }
+    public int SearchKeyFetchLimit { get; set; }
+    public string SearchKeyTtlInterval { get; set; }
+    public int SearchKeyTtlIntervalValue { get; set; }
 }

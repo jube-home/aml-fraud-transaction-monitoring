@@ -1,6 +1,8 @@
-.fCStyle { padding: 5px; }
+.fCStyle {
+    padding: 5px;
+}
 
-.tTStyle { 
+.tTStyle {
     width: 99%;
 }
 
@@ -16,9 +18,13 @@
     width: 100%;
 }
 
-.tTStyle tr:nth-child(even) { background: #f0f8ed }
+.tTStyle tr:nth-child(even) {
+    background: #f0f8ed
+}
 
-.tTStyle tr:nth-child(odd) { background: #FFF }
+.tTStyle tr:nth-child(odd) {
+    background: #FFF
+}
 
 .tTStyle td:nth-child(1) {
     padding-top: .3em;
@@ -52,12 +58,12 @@
     height: 30px;
 }
 
-.sTStyle tr:nth-child(even) { 
-    background: #f0f8ed 
+.sTStyle tr:nth-child(even) {
+    background: #f0f8ed
 }
 
-.sTStyle tr:nth-child(odd) { 
-    background: #FFF 
+.sTStyle tr:nth-child(odd) {
+    background: #FFF
 }
 
 .sTBorderStyle {
@@ -105,9 +111,9 @@
 
 .treeTitle {
     background: #f0f8ed;
-    height:30px;
-    padding-left:.3em;
-    padding-top:.7em;
+    height: 30px;
+    padding-left: .3em;
+    padding-top: .7em;
 }
 
 .coder {
@@ -277,15 +283,17 @@
     color: green;
 }
 
-.hiddenParams { display: none; }
+.hiddenParams {
+    display: none;
+}
 
 .footerCopyright {
     padding-top: 3px;
     padding-bottom: 3px;
     padding-left: 3px;
-    position:fixed;
-    bottom:0;
-    float:left;
+    position: fixed;
+    bottom: 0;
+    float: left;
     width: 400px;
 }
 
@@ -323,4 +331,8 @@
     padding-top: 3px;
     padding-bottom: 3px;
     padding-right: 3px;
+}
+
+.cellLinkMiddle {
+    vertical-align: middle
 }

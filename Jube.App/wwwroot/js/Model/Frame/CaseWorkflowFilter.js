@@ -16,7 +16,7 @@ var parentKeyName = "caseWorkflowId";
 var validationFail = "There is invalid data in the form. Please check fields and correct.";
 
 if (typeof id === "undefined") {
-    initCaseFilterBuilder(parentKey);
+    initCaseFilterBuilder(false, parentKey);
     ReadyNew();
 } else {
     $.get(endpoint + "/" + id,
@@ -26,7 +26,7 @@ if (typeof id === "undefined") {
                 selectJson: JSON.parse(data.selectJson)
             };
 
-            initCaseFilterBuilder(parentKey, casesFilterBuilder);
+            initCaseFilterBuilder(false, parentKey, casesFilterBuilder);
 
             ReadyExisting(data);
         });

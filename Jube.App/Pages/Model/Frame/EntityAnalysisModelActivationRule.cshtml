@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  *@
 @page
-@model Jube.App.Pages.Model.Frame.EntityAnalysisModelActivationRule
+@model EntityAnalysisModelActivationRule
 
 @{
     Layout = null;
@@ -22,366 +22,382 @@
 <script src="/js/Model/Frame/EntityAnalysisModelActivationRule.js"></script>
 
 <form id="Form" class="k-form">
-<body>
-<div class="fCStyle">
-<table id="TemplateTable" class="tTStyle">
-<tr>
-    <td>
-        <label for="Name">Name</label>
-    </td>
-    <td>
-        <input type="text" id="Name" class="k-textbox large" name="Name" required validationMessage="Please enter a valid Name.">
-        <span class="k-invalid-msg" data-for="Name"></span>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="Active" class="k-checkbox-label">Active</label>
-    </td>
-    <td>
-        <input id="Active" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="Locked" class="k-checkbox-label">Locked</label>
-    </td>
-    <td>
-        <input id="Locked" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="ReviewStatusId">Activation Rule Review Status</label>
-    </td>
-    <td>
-        <select id="ReviewStatusId">
-            <option value="0">New</option>
-            <option value="1">New Pending Review</option>
-            <option value="2">Updated Pending Review</option>
-            <option value="3">Rejected by Review</option>
-            <option value="4">Approved by Review</option>
-        </select>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="EnableSuppression">Enable Suppression</label>
-    </td>
-    <td>
-        <input id="EnableSuppression" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="rule">Rule</label>
-    </td>
-    <td>
-        <div id="rule"></div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="EnableCaseWorkflow" class="k-checkbox-label">Cases</label>
-    </td>
-    <td>
-        <input id="EnableCaseWorkflow" type="checkbox"/>
-        <table id="CaseWorkflowTable" class="sTStyle">
+    <body>
+    <div class="fCStyle">
+        <table id="TemplateTable" class="tTStyle">
             <tr>
-                <td class="sTBorderStyle">
-                    <label for="CaseWorkflowId">Case Workflow</label>
+                <td>
+                    <label for="Name">Name</label>
                 </td>
                 <td>
-                    <select id="CaseWorkflowId">
+                    <input type="text" id="Name" class="k-textbox large" name="Name" required
+                           validationMessage="Please enter a valid Name.">
+                    <span class="k-invalid-msg" data-for="Name"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Active" class="k-checkbox-label">Active</label>
+                </td>
+                <td>
+                    <input id="Active" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Locked" class="k-checkbox-label">Locked</label>
+                </td>
+                <td>
+                    <input id="Locked" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ReviewStatusId">Activation Rule Review Status</label>
+                </td>
+                <td>
+                    <select id="ReviewStatusId">
+                        <option value="0">New</option>
+                        <option value="1">New Pending Review</option>
+                        <option value="2">Updated Pending Review</option>
+                        <option value="3">Rejected by Review</option>
+                        <option value="4">Approved by Review</option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <td class="sTBorderStyle">
-                    <label for="CaseWorkflowStatusId">Case Workflow Status</label>
+                <td>
+                    <label for="EnableSuppression">Enable Suppression</label>
                 </td>
                 <td>
-                    <select id="CaseWorkflowStatusId">
-                    </select>
+                    <input id="EnableSuppression" type="checkbox"/>
                 </td>
             </tr>
             <tr>
-                <td class="sTBorderStyle">
-                    <label for="CaseKey">Case Key</label>
+                <td>
+                    <label for="rule">Rule</label>
                 </td>
                 <td>
-                    <select id="CaseKey">
-                    </select>
+                    <div id="rule"></div>
                 </td>
             </tr>
             <tr>
-            <td class="sTBorderStyle"><label>Bypass</label></td>
-            <td>
-                <input id="EnableBypass" type="checkbox" onchange=""/>
-                <table id="BypassSuspendTable" class="sTStyle">
-                    <tr>
-                        <td class="sTBorderStyle">
-                            <label for="BypassSuspendSample">Bypass Sample</label>
-                        </td>
-                        <td>
-                            <input id="BypassSuspendSample" value="0"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="sTBorderStyle"><label for="BypassSuspendInterval">Bypass Interval</label></td>
-                        <td>
-                            <ul id="BypassSuspendInterval" class="fieldlist">
-                                <li>
-                                    <input type="radio" class="k-radio" id="BypassSuspendIntervalMin" value="n" name="BypassSuspendInterval"/>
-                                    <label class="k-radio-label" for="BypassSuspendIntervalMin">Minutes</label>
-                                </li>
-                                <li>
-                                    <input type="radio" checked class="k-radio" id="BypassSuspendIntervalHour" value="h" name="BypassSuspendInterval"/>
-                                    <label class="k-radio-label" for="BypassSuspendIntervalHour">Hours</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="k-radio" id="BypassSuspendIntervalDay" value="d" name="BypassSuspendInterval"/>
-                                    <label class="k-radio-label" for="BypassSuspendIntervalDay">Days</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="k-radio" id="BypassSuspendIntervalMonth" value="m" name="BypassSuspendInterval"/>
-                                    <label class="k-radio-label" for="BypassSuspendIntervalMonth">Months</label>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="sTBorderStyle">
-                            <label for="BypassSuspendValue">Bypass Value</label>
-                        </td>
-                        <td>
-                            <input id="BypassSuspendValue" value="0"/>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="EnableResponseElevation" class="k-checkbox-label">Response Elevation</label>
-    </td>
-    <td>
-        <input id="EnableResponseElevation" type="checkbox"/>
-        <table id="ResponseElevationTable" class="sTStyle">
-            <tr>
-                <td class="sTBorderStyle">
-                    <label for="ResponseElevation">Response Elevation</label>
+                <td>
+                    <label for="EnableCaseWorkflow" class="k-checkbox-label">Cases</label>
                 </td>
                 <td>
-                    <input id="ResponseElevation" value="0"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="sTBorderStyle">
-                    <label for="ResponseElevationContent">Response Elevation Content</label>
-                </td>
-                <td>
-                    <textarea class="generalTextArea" id="ResponseElevationContent"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td class="sTBorderStyle">
-                    <label for="ResponseElevationRedirect">Response Elevation Redirect</label>
-                </td>
-                <td>
-                    <input id="ResponseElevationRedirect" class="k-textbox large"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="sTBorderStyle">
-                    <label>Send To Activation Watcher</label>
-                </td>
-                <td>
-                    <input id="SendToActivationWatcher" type="checkbox"/> <label for="SendToActivationWatcher" class="k-checkbox-label"></label>
-                    <table id="SendToActivationWatcherTable" class="sTStyle">
+                    <input id="EnableCaseWorkflow" type="checkbox"/>
+                    <table id="CaseWorkflowTable" class="sTStyle">
                         <tr>
                             <td class="sTBorderStyle">
-                                <label for="ResponseElevationKey">Response Elevation Key</label>
+                                <label for="CaseWorkflowGuid">Case Workflow</label>
                             </td>
                             <td>
-                                <select id="ResponseElevationKey"></select>
+                                <select id="CaseWorkflowGuid">
+                                </select>
                             </td>
                         </tr>
                         <tr>
                             <td class="sTBorderStyle">
-                                <label for="ResponseElevationForeColor">Response Elevation Fore Color</label>
+                                <label for="CaseWorkflowStatusGuid">Case Workflow Status</label>
                             </td>
                             <td>
-                                <input id="ResponseElevationForeColor"/>
+                                <select id="CaseWorkflowStatusGuid">
+                                </select>
                             </td>
                         </tr>
                         <tr>
                             <td class="sTBorderStyle">
-                                <label for="ResponseElevationBackColor">Response Elevation Back Color</label>
+                                <label for="CaseKey">Case Key</label>
                             </td>
                             <td>
-                                <input id="ResponseElevationBackColor"/>
+                                <select id="CaseKey">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sTBorderStyle"><label>Bypass</label></td>
+                            <td>
+                                <input id="EnableBypass" type="checkbox" onchange=""/>
+                                <table id="BypassSuspendTable" class="sTStyle">
+                                    <tr>
+                                        <td class="sTBorderStyle">
+                                            <label for="BypassSuspendSample">Bypass Sample</label>
+                                        </td>
+                                        <td>
+                                            <input id="BypassSuspendSample" value="0"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="sTBorderStyle"><label for="BypassSuspendInterval">Bypass
+                                                Interval</label></td>
+                                        <td>
+                                            <ul id="BypassSuspendInterval" class="fieldlist">
+                                                <li>
+                                                    <input type="radio" class="k-radio" id="BypassSuspendIntervalMin"
+                                                           value="n" name="BypassSuspendInterval"/>
+                                                    <label class="k-radio-label"
+                                                           for="BypassSuspendIntervalMin">Minutes</label>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" checked class="k-radio"
+                                                           id="BypassSuspendIntervalHour" value="h"
+                                                           name="BypassSuspendInterval"/>
+                                                    <label class="k-radio-label"
+                                                           for="BypassSuspendIntervalHour">Hours</label>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" class="k-radio" id="BypassSuspendIntervalDay"
+                                                           value="d" name="BypassSuspendInterval"/>
+                                                    <label class="k-radio-label"
+                                                           for="BypassSuspendIntervalDay">Days</label>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" class="k-radio" id="BypassSuspendIntervalMonth"
+                                                           value="m" name="BypassSuspendInterval"/>
+                                                    <label class="k-radio-label"
+                                                           for="BypassSuspendIntervalMonth">Months</label>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="sTBorderStyle">
+                                            <label for="BypassSuspendValue">Bypass Value</label>
+                                        </td>
+                                        <td>
+                                            <input id="BypassSuspendValue" value="0"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="EnableResponseElevation" class="k-checkbox-label">Response Elevation</label>
+                </td>
+                <td>
+                    <input id="EnableResponseElevation" type="checkbox"/>
+                    <table id="ResponseElevationTable" class="sTStyle">
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="ResponseElevation">Response Elevation</label>
+                            </td>
+                            <td>
+                                <input id="ResponseElevation" value="0"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="ResponseElevationContent">Response Elevation Content</label>
+                            </td>
+                            <td>
+                                <textarea class="generalTextArea" id="ResponseElevationContent"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="ResponseElevationRedirect">Response Elevation Redirect</label>
+                            </td>
+                            <td>
+                                <input id="ResponseElevationRedirect" class="k-textbox large"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label>Send To Activation Watcher</label>
+                            </td>
+                            <td>
+                                <input id="SendToActivationWatcher" type="checkbox"/> <label
+                                    for="SendToActivationWatcher" class="k-checkbox-label"></label>
+                                <table id="SendToActivationWatcherTable" class="sTStyle">
+                                    <tr>
+                                        <td class="sTBorderStyle">
+                                            <label for="ResponseElevationKey">Response Elevation Key</label>
+                                        </td>
+                                        <td>
+                                            <select id="ResponseElevationKey"></select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="sTBorderStyle">
+                                            <label for="ResponseElevationForeColor">Response Elevation Fore
+                                                Color</label>
+                                        </td>
+                                        <td>
+                                            <input id="ResponseElevationForeColor"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="sTBorderStyle">
+                                            <label for="ResponseElevationBackColor">Response Elevation Back
+                                                Color</label>
+                                        </td>
+                                        <td>
+                                            <input id="ResponseElevationBackColor"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="EnableNotification" class="k-checkbox-label">Notification</label>
+                </td>
+                <td>
+                    <input id="EnableNotification" type="checkbox"/>
+                    <table id="NotificationTable" class="sTStyle">
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="NotificationTypeId">Type</label>
+                            </td>
+                            <td>
+                                <ul id="NotificationTypeId" class="fieldlist">
+                                    <li>
+                                        <input type="radio" class="k-radio" id="NotificationEmail" checked value="1"
+                                               name="NotificationTypeId"/>
+                                        <label class="k-radio-label" for="NotificationEmail">Email</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" class="k-radio" id="NotificationSMS" value="2"
+                                               name="NotificationTypeId"/>
+                                        <label class="k-radio-label" for="NotificationSMS">SMS</label>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="NotificationDestination">Destination</label>
+                            </td>
+                            <td>
+                                <input id="NotificationDestination" class="k-textbox large"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="NotificationSubject">Subject</label>
+                            </td>
+                            <td>
+                                <input id="NotificationSubject" class="k-textbox large"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="NotificationBody">Body</label>
+                            </td>
+                            <td>
+                                <textarea class="generalTextArea" id="NotificationBody"></textarea>
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <label for="EnableTTLCounter" class="k-checkbox-label">Increment TTL Counter</label>
+                </td>
+                <td>
+                    <input id="EnableTTLCounter" type="checkbox"/>
+                    <table id="TTLCounterTable" class="sTStyle">
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="EntityAnalysisModelGuidTtlCounter">Model</label>
+                            </td>
+                            <td>
+                                <select id="EntityAnalysisModelGuidTtlCounter">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="EntityAnalysisModelTtlCounterGuid">TTL Counter</label>
+                            </td>
+                            <td>
+                                <select id="EntityAnalysisModelTtlCounterGuid">
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ActivationSample">Activation Sample</label>
+                </td>
+                <td>
+                    <input id="ActivationSample" value="100"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Visible"><label for="Visible">Visible</label></label>
+                </td>
+                <td>
+                    <input id="Visible" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="EnableReprocessing"><label for="EnableReprocessing">Enable Reprocessing</label></label>
+                </td>
+                <td>
+                    <input id="EnableReprocessing" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ReportTable">Report Table</label>
+                </td>
+                <td>
+                    <input id="ReportTable" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ResponsePayload">Response Payload</label>
+                </td>
+                <td>
+                    <input id="ResponsePayload" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Version">Version</label>
+                </td>
+                <td>
+                    <div id="Version"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="CreatedUser">User Created</label>
+                </td>
+                <td>
+                    <div id="CreatedUser"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="CreatedDate">Created Date</label>
+                </td>
+                <td>
+                    <div id="CreatedDate"></div>
+                </td>
+            </tr>
         </table>
-
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="EnableNotification" class="k-checkbox-label">Notification</label>
-    </td>
-    <td>
-        <input id="EnableNotification" type="checkbox"/>
-        <table id="NotificationTable" class="sTStyle">
-            <tr>
-                <td class="sTBorderStyle">
-                    <label for="NotificationTypeId">Type</label>
-                </td>
-                <td>
-                    <ul id="NotificationTypeId" class="fieldlist">
-                        <li>
-                            <input type="radio" class="k-radio" id="NotificationEmail" checked value="1" name="NotificationTypeId"/> 
-                            <label class="k-radio-label" for="NotificationEmail">Email</label>
-                        </li>
-                        <li>
-                            <input type="radio" class="k-radio" id="NotificationSMS" value="2" name="NotificationTypeId"/> 
-                            <label class="k-radio-label" for="NotificationSMS">SMS</label>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td class="sTBorderStyle">
-                    <label for="NotificationDestination">Destination</label>
-                </td>
-                <td>
-                    <input id="NotificationDestination" class="k-textbox large"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="sTBorderStyle">
-                    <label for="NotificationSubject">Subject</label>
-                </td>
-                <td>
-                    <input id="NotificationSubject" class="k-textbox large"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="sTBorderStyle">
-                    <label for="NotificationBody">Body</label>
-                </td>
-                <td>
-                    <textarea class="generalTextArea" id="NotificationBody"></textarea>
-                </td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="EnableTTLCounter" class="k-checkbox-label">Increment TTL Counter</label>
-    </td>
-    <td>
-        <input id="EnableTTLCounter" type="checkbox"/>
-        <table id="TTLCounterTable" class="sTStyle">
-            <tr>
-                <td class="sTBorderStyle">
-                    <label for="EntityAnalysisModelIdTtlCounter">Model</label>
-                </td>
-                <td>
-                    <select id="EntityAnalysisModelIdTtlCounter">
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="sTBorderStyle">
-                    <label for="EntityAnalysisModelTtlCounterId">TTL Counter</label>
-                </td>
-                <td>
-                    <select id="EntityAnalysisModelTtlCounterId">
-                    </select>
-                </td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="ActivationSample">Activation Sample</label>
-    </td>
-    <td>
-        <input id="ActivationSample" value="100"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="Visible"><label for="Visible">Visible</label></label>
-    </td>
-    <td>
-        <input id="Visible" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="EnableReprocessing"><label for="EnableReprocessing">Enable Reprocessing</label></label>
-    </td>
-    <td>
-        <input id="EnableReprocessing" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="ReportTable">Report Table</label>
-    </td>
-    <td>
-        <input id="ReportTable" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="ResponsePayload">Response Payload</label>
-    </td>
-    <td>
-        <input id="ResponsePayload" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="Version">Version</label>
-    </td>
-    <td>
-        <div id="Version"></div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="CreatedUser">User Created</label>
-    </td>
-    <td>
-        <div id="CreatedUser"></div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="CreatedDate">Created Date</label>
-    </td>
-    <td>
-        <div id="CreatedDate"></div>
-    </td>
-</tr>
-</table>
-<div class="footerStyle">
-    <div id="ErrorMessage" class="errorMessage"></div>
-    <button type="button" id="Add" class="ButtonDefault">Add</button> 
-    <button type="button" id="Update" class="ButtonDefault">Update</button> 
-    <button type="button" id="Delete" class="ButtonDefault">Delete</button>
-</div>
-</div>
-</body>
+        <div class="footerStyle">
+            <div id="ErrorMessage" class="errorMessage"></div>
+            <button type="button" id="Add" class="ButtonDefault">Add</button>
+            <button type="button" id="Update" class="ButtonDefault">Update</button>
+            <button type="button" id="Delete" class="ButtonDefault">Delete</button>
+        </div>
+    </div>
+    </body>
 </form>

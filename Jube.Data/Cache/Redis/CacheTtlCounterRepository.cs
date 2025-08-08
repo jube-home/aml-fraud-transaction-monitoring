@@ -19,7 +19,10 @@ using StackExchange.Redis;
 
 namespace Jube.Data.Cache.Redis;
 
-public class CacheTtlCounterRepository(IDatabaseAsync redisDatabase, ILog log) : ICacheTtlCounterRepository
+public class CacheTtlCounterRepository(
+    IDatabaseAsync redisDatabase,
+    ILog log,
+    CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheTtlCounterRepository
 {
     public async Task DecrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
         int entityAnalysisModelTtlCounterId,
@@ -31,7 +34,8 @@ public class CacheTtlCounterRepository(IDatabaseAsync redisDatabase, ILog log) :
                 $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
             var redisHSetKey = $"{dataValue}";
 
-            await redisDatabase.HashDecrementAsync(redisKey, redisHSetKey, decrement);
+            await redisDatabase.HashDecrementAsync(redisKey, redisHSetKey, decrement,
+                commandFlag);
         }
         catch (Exception ex)
         {
@@ -47,7 +51,7 @@ public class CacheTtlCounterRepository(IDatabaseAsync redisDatabase, ILog log) :
             var redisKey =
                 $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
             var redisHSetKey = $"{dataValue}";
-            return (int) await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
+            return (int)await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
         }
         catch (Exception ex)
         {
@@ -67,7 +71,8 @@ public class CacheTtlCounterRepository(IDatabaseAsync redisDatabase, ILog log) :
                 $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
             var redisHSetKey = $"{dataValue}";
 
-            await redisDatabase.HashIncrementAsync(redisKey, redisHSetKey, increment);
+            await redisDatabase.HashIncrementAsync(redisKey, redisHSetKey, increment,
+                commandFlag);
         }
         catch (Exception ex)
         {

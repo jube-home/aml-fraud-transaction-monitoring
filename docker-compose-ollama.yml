@@ -1,0 +1,25 @@
+services:
+  ollama:
+    image: "ghcr.io/rjmalagon/ollama-linux-amd-apu:rocm-6.4.1-latest"
+    container_name: "ollama"
+    environment:
+      OLLAMA_FLASH_ATTENTION: true
+      HSA_OVERRIDE_GFX_VERSION: "11.0.2"
+      OLLAMA_KV_CACHE_TYPE: "q8_0"
+      OLLAMA_DEBUG: 0
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    build:
+      context: .
+      args: 
+        FLAVOR: rocm
+networks:
+  default:
+    driver: bridge
+volumes:
+  ollama:

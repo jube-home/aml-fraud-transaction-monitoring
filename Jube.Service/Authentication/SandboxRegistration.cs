@@ -28,60 +28,60 @@ public class SandboxRegistration(DbContext dbContext)
 
         AssignToUserRegistryToTenantRegistry(sandboxRegistrationRequestDto.UserName, tenantRegistry);
 
-        var entityAnalysisModelId = InsertEntityAnalysisModel(userRegistry.Name);
-        InsertEntityAnalysisModelRequestXPaths(entityAnalysisModelId, userRegistry.Name);
-        InsertEntityAnalysisModelInlineScript(entityAnalysisModelId, 1, userRegistry.Name);
-        InsertEntityAnalysisModelAbstractionCalculation(entityAnalysisModelId, userRegistry.Name);
-        InsertEntityAnalysisModelAbstractionRule(entityAnalysisModelId, userRegistry.Name);
+        var entityAnalysisModel = InsertEntityAnalysisModel(userRegistry.Name);
+        InsertEntityAnalysisModelRequestXPaths(entityAnalysisModel.Id, userRegistry.Name);
+        InsertEntityAnalysisModelInlineScript(entityAnalysisModel.Id, 1, userRegistry.Name);
+        InsertEntityAnalysisModelAbstractionCalculation(entityAnalysisModel.Id, userRegistry.Name);
+        InsertEntityAnalysisModelAbstractionRule(entityAnalysisModel.Id, userRegistry.Name);
 
         var entityAnalysisModelDictionaryId =
-            InsertEntityAnalysisModelDictionary(entityAnalysisModelId, userRegistry.Name);
+            InsertEntityAnalysisModelDictionary(entityAnalysisModel.Guid, userRegistry.Name);
 
         InsertEntityAnalysisModelDictionaryKvp(entityAnalysisModelDictionaryId, userRegistry.Name);
-        InsertEntityAnalysisModelGatewayRule(entityAnalysisModelId, userRegistry.Name);
-        InsertEntityAnalysisModelHttpAdaptation(entityAnalysisModelId, userRegistry.Name);
-        InsertEntityAnalysisModelInlineFunction(entityAnalysisModelId, userRegistry.Name);
+        InsertEntityAnalysisModelGatewayRule(entityAnalysisModel.Id, userRegistry.Name);
+        InsertEntityAnalysisModelHttpAdaptation(entityAnalysisModel.Id, userRegistry.Name);
+        InsertEntityAnalysisModelInlineFunction(entityAnalysisModel.Id, userRegistry.Name);
 
-        var entityAnalysisModelListId = InsertEntityAnalysisModelList(entityAnalysisModelId, userRegistry.Name);
+        var entityAnalysisModelListId = InsertEntityAnalysisModelList(entityAnalysisModel.Guid, userRegistry.Name);
 
         InsertEntityAnalysisModelListValue(entityAnalysisModelListId, userRegistry.Name);
-        InsertEntityAnalysisModelSanction(entityAnalysisModelId, userRegistry.Name);
-        InsertEntityAnalysisModelTag(entityAnalysisModelId, userRegistry.Name);
+        InsertEntityAnalysisModelSanction(entityAnalysisModel.Id, userRegistry.Name);
+        InsertEntityAnalysisModelTag(entityAnalysisModel.Id, userRegistry.Name);
         var entityEntityAnalysisModelTtlCounterId =
-            InsertEntityAnalysisModelTtlCounter(entityAnalysisModelId, userRegistry.Name);
+            InsertEntityAnalysisModelTtlCounter(entityAnalysisModel.Id, userRegistry.Name);
 
         var insertVisualisationRegistryExampleVisualisationId =
             InsertVisualisationRegistryExampleVisualisation(userRegistry.Name);
 
-        var insertVisualisationRegistryExampleEmbeddedVisualisationId =
+        var insertVisualisationRegistryExampleEmbeddedVisualisation =
             InsertVisualisationRegistryExampleEmbeddedVisualisation(userRegistry.Name);
 
         InsertVisualisationRegistryParameterEmbeddedVisualisation(
-            insertVisualisationRegistryExampleEmbeddedVisualisationId, userRegistry.Name);
+            insertVisualisationRegistryExampleEmbeddedVisualisation.Id, userRegistry.Name);
 
         InsertVisualisationRegistryParameterExampleEmbeddedVisualisation(
             insertVisualisationRegistryExampleVisualisationId, userRegistry.Name);
 
         await InsertVisualisationRegistryDatasourceExampleEmbeddedVisualisation(
-            insertVisualisationRegistryExampleEmbeddedVisualisationId, userRegistry.Name);
+            insertVisualisationRegistryExampleEmbeddedVisualisation.Id, userRegistry.Name);
 
         await InsertVisualisationRegistryDatasourceExampleVisualisation(
             insertVisualisationRegistryExampleVisualisationId, userRegistry.Name);
 
-        var caseWorkflowId = InsertCaseWorkflow(entityAnalysisModelId,
-            insertVisualisationRegistryExampleEmbeddedVisualisationId, userRegistry.Name);
+        var caseWorkflow = InsertCaseWorkflow(entityAnalysisModel.Id,
+            insertVisualisationRegistryExampleEmbeddedVisualisation.Guid, userRegistry.Name);
 
-        InsertCaseWorkflowAction(caseWorkflowId, userRegistry.Name);
-        InsertCaseWorkflowDisplay(caseWorkflowId, userRegistry.Name);
-        InsertCaseWorkflowFilter(caseWorkflowId, userRegistry.Name);
-        InsertCaseWorkflowForm(caseWorkflowId, userRegistry.Name);
-        InsertCaseWorkflowMacro(caseWorkflowId, userRegistry.Name);
-        InsertCaseWorkflowXPath(caseWorkflowId, userRegistry.Name);
+        InsertCaseWorkflowAction(caseWorkflow.Id, userRegistry.Name);
+        InsertCaseWorkflowDisplay(caseWorkflow.Id, userRegistry.Name);
+        InsertCaseWorkflowFilter(caseWorkflow.Id, userRegistry.Name);
+        InsertCaseWorkflowForm(caseWorkflow.Id, userRegistry.Name);
+        InsertCaseWorkflowMacro(caseWorkflow.Id, userRegistry.Name);
+        InsertCaseWorkflowXPath(caseWorkflow.Id, userRegistry.Name);
 
-        var caseWorkflowStatusId = InsertCaseWorkflowStatus(caseWorkflowId, userRegistry.Name);
+        var caseWorkflowStatusId = InsertCaseWorkflowStatus(caseWorkflow.Id, userRegistry.Name);
 
-        InsertEntityAnalysisModelActivationRule(entityAnalysisModelId,
-            caseWorkflowId, caseWorkflowStatusId, entityEntityAnalysisModelTtlCounterId,
+        InsertEntityAnalysisModelActivationRule(entityAnalysisModel,
+            caseWorkflow.Guid, caseWorkflowStatusId, entityEntityAnalysisModelTtlCounterId,
             userRegistry.Name);
         InsertEntityAnalysisModelSynchronisationSchedule(userRegistry.Name);
 
@@ -93,7 +93,7 @@ public class SandboxRegistration(DbContext dbContext)
         };
     }
 
-    private int InsertCaseWorkflowStatus(int caseWorkflowId, string userName)
+    private Guid InsertCaseWorkflowStatus(int caseWorkflowId, string userName)
     {
         var caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
 
@@ -104,8 +104,9 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             Priority = 5,
             ForeColor = "#260080",
-            BackColor = "#abc8f7"
-        }).Id;
+            BackColor = "#abc8f7",
+            Guid = Guid.NewGuid()
+        }).Guid;
 
         caseWorkflowStatusRepository.Insert(new CaseWorkflowStatus
         {
@@ -114,7 +115,8 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             Priority = 4,
             ForeColor = "#260080",
-            BackColor = "#fafcb1"
+            BackColor = "#fafcb1",
+            Guid = Guid.NewGuid()
         });
 
         caseWorkflowStatusRepository.Insert(new CaseWorkflowStatus
@@ -124,7 +126,8 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             Priority = 3,
             ForeColor = "#260080",
-            BackColor = "#fce9c5"
+            BackColor = "#fce9c5",
+            Guid = Guid.NewGuid()
         });
 
         caseWorkflowStatusRepository.Insert(new CaseWorkflowStatus
@@ -134,7 +137,8 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             Priority = 4,
             ForeColor = "#260080",
-            BackColor = "#facaf4"
+            BackColor = "#facaf4",
+            Guid = Guid.NewGuid()
         });
 
         caseWorkflowStatusRepository.Insert(new CaseWorkflowStatus
@@ -144,7 +148,8 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             Priority = 1,
             ForeColor = "#260080",
-            BackColor = "#f77781"
+            BackColor = "#f77781",
+            Guid = Guid.NewGuid()
         });
 
         return returnCaseWorkflowStatusId;
@@ -973,7 +978,7 @@ public class SandboxRegistration(DbContext dbContext)
         });
     }
 
-    private int InsertCaseWorkflow(int entityAnalysisModelId, int visualisationRegistryId, string userName)
+    private CaseWorkflow InsertCaseWorkflow(int entityAnalysisModelId, Guid visualisationRegistryGuid, string userName)
     {
         var caseWorkflowRepository = new CaseWorkflowRepository(dbContext, userName);
 
@@ -983,8 +988,8 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             EntityAnalysisModelId = entityAnalysisModelId,
             EnableVisualisation = 1,
-            VisualisationRegistryId = visualisationRegistryId
-        }).Id;
+            VisualisationRegistryGuid = visualisationRegistryGuid
+        });
     }
 
     private void InsertCaseWorkflowMacro(int caseWorkflowId, string userName)
@@ -1043,7 +1048,7 @@ public class SandboxRegistration(DbContext dbContext)
                          "{\"id\": \"CaseKeyValue\", \"type\": \"string\", " +
                          "\"field\": \"\\\"CaseKeyValue\\\"\", " +
                          "\"input\": \"radio\", \"value\": \"ASC\", " +
-                         "\"operator\": \"order\"}, {\"id\": \"CaseWorkflowStatusId\", " +
+                         "\"operator\": \"order\"}, {\"id\": \"CaseWorkflowStatusGuid\", " +
                          "\"type\": \"string\", \"field\": \"\\\"CaseWorkflowStatus\\\".\\\"Id\\\"\", " +
                          "\"input\": \"radio\", \"value\": \"ASC\", \"operator\": \"order\"}, " +
                          "{\"id\": \"Payload.CurrencyAmount\", " +
@@ -1107,7 +1112,8 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             DataTypeId = 1,
             Required = 1,
-            DefaultValue = "Test1"
+            DefaultValue = "Test1",
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1124,7 +1130,8 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             DataTypeId = 3,
             Required = 1,
-            DefaultValue = "0"
+            DefaultValue = "0",
+            Guid = Guid.NewGuid()
         });
 
         visualisationRegistryParameterRepository.Insert(new VisualisationRegistryParameter
@@ -1144,7 +1151,7 @@ public class SandboxRegistration(DbContext dbContext)
         var visualisationRegistryDatasourceRepository =
             new VisualisationRegistryDatasourceRepository(dbContext, userName);
 
-        await visualisationRegistryDatasourceRepository.InsertAsync(new VisualisationRegistryDatasource
+        await visualisationRegistryDatasourceRepository.InsertWithValidationAsync(new VisualisationRegistryDatasource
         {
             VisualisationRegistryId = visualisationRegistryId,
             Name = "ExamplePie",
@@ -1179,10 +1186,11 @@ public class SandboxRegistration(DbContext dbContext)
                                 "        visible: true," + Environment.NewLine +
                                 "        template: \"${ category } - ${ value }%\"" + Environment.NewLine +
                                 "    }" + Environment.NewLine +
-                                "})" + Environment.NewLine
+                                "})" + Environment.NewLine,
+            Guid = Guid.NewGuid()
         });
 
-        await visualisationRegistryDatasourceRepository.InsertAsync(new VisualisationRegistryDatasource
+        await visualisationRegistryDatasourceRepository.InsertWithValidationAsync(new VisualisationRegistryDatasource
         {
             VisualisationRegistryId = visualisationRegistryId,
             Name = "ExampleBar",
@@ -1231,7 +1239,8 @@ public class SandboxRegistration(DbContext dbContext)
                                 "        visible: true," + Environment.NewLine +
                                 "        template: \"#= series.name #: #= value #\"" + Environment.NewLine +
                                 "    }" + Environment.NewLine +
-                                "})" + Environment.NewLine
+                                "})" + Environment.NewLine,
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1241,7 +1250,7 @@ public class SandboxRegistration(DbContext dbContext)
         var visualisationRegistryDatasourceRepository =
             new VisualisationRegistryDatasourceRepository(dbContext, userName);
 
-        await visualisationRegistryDatasourceRepository.InsertAsync(new VisualisationRegistryDatasource
+        await visualisationRegistryDatasourceRepository.InsertWithValidationAsync(new VisualisationRegistryDatasource
         {
             VisualisationRegistryId = visualisationRegistryId,
             Name = "ExamplePie",
@@ -1274,10 +1283,11 @@ public class SandboxRegistration(DbContext dbContext)
                                 "        visible: true," + Environment.NewLine +
                                 "        template: \"${ category } - ${ value }%\"" + Environment.NewLine +
                                 "    }" + Environment.NewLine +
-                                "})" + Environment.NewLine
+                                "})" + Environment.NewLine,
+            Guid = Guid.NewGuid()
         });
 
-        await visualisationRegistryDatasourceRepository.InsertAsync(new VisualisationRegistryDatasource
+        await visualisationRegistryDatasourceRepository.InsertWithValidationAsync(new VisualisationRegistryDatasource
         {
             VisualisationRegistryId = visualisationRegistryId,
             Name = "ExampleBar",
@@ -1324,7 +1334,8 @@ public class SandboxRegistration(DbContext dbContext)
                                 "        visible: true," + Environment.NewLine +
                                 "        template: \"#= series.name #: #= value #\"" + Environment.NewLine +
                                 "    }" + Environment.NewLine +
-                                "})" + Environment.NewLine
+                                "})" + Environment.NewLine,
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1340,11 +1351,12 @@ public class SandboxRegistration(DbContext dbContext)
             TenantRegistryId = 1,
             Columns = 6,
             ColumnWidth = 300,
-            RowHeight = 300
+            RowHeight = 300,
+            Guid = Guid.NewGuid()
         }).Id;
     }
 
-    private int InsertVisualisationRegistryExampleEmbeddedVisualisation(string userName)
+    private VisualisationRegistry InsertVisualisationRegistryExampleEmbeddedVisualisation(string userName)
     {
         var visualisationRegistryRepository = new VisualisationRegistryRepository(dbContext, userName);
 
@@ -1356,8 +1368,9 @@ public class SandboxRegistration(DbContext dbContext)
             TenantRegistryId = 1,
             Columns = 6,
             ColumnWidth = 300,
-            RowHeight = 300
-        }).Id;
+            RowHeight = 300,
+            Guid = Guid.NewGuid()
+        });
     }
 
     private void InsertEntityAnalysisModelInlineScript(int entityAnalysisModelId, int entityAnalysisInlineScriptId,
@@ -1371,7 +1384,8 @@ public class SandboxRegistration(DbContext dbContext)
             EntityAnalysisModelId = entityAnalysisModelId,
             Name = "Issue OTP",
             Active = 1,
-            EntityAnalysisInlineScriptId = entityAnalysisInlineScriptId
+            EntityAnalysisInlineScriptId = entityAnalysisInlineScriptId,
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1383,7 +1397,8 @@ public class SandboxRegistration(DbContext dbContext)
         {
             EntityAnalysisModelId = entityAnalysisModelId,
             Name = "Fraud",
-            Active = 1
+            Active = 1,
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1408,7 +1423,8 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             ResponsePayload = 1,
             CacheValue = 1,
-            CacheInterval = 'h'
+            CacheInterval = 'h',
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1419,7 +1435,8 @@ public class SandboxRegistration(DbContext dbContext)
         entityAnalysisModelListValueRepository.Insert(new EntityAnalysisModelListValue
         {
             EntityAnalysisModelListId = entityAnalysisModelListId,
-            ListValue = "123.456.789.123"
+            ListValue = "123.456.789.123",
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1434,11 +1451,12 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 0,
             Name = "ExampleFraudScoreLocalEndpoint",
             ResponsePayload = 1,
-            HttpEndpoint = "/api/invoke/ExampleFraudScoreLocalEndpoint"
+            HttpEndpoint = "/api/invoke/ExampleFraudScoreLocalEndpoint",
+            Guid = Guid.NewGuid()
         });
     }
 
-    private int InsertEntityAnalysisModelTtlCounter(int entityAnalysisModelId, string userName)
+    private Guid InsertEntityAnalysisModelTtlCounter(int entityAnalysisModelId, string userName)
     {
         var entityAnalysisModelTtlCounterRepository = new EntityAnalysisModelTtlCounterRepository(dbContext, userName);
 
@@ -1452,19 +1470,21 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             TtlCounterDataName = "AccountId",
             OnlineAggregation = 0,
-            EnableLiveForever = 0
-        }).Id;
+            EnableLiveForever = 0,
+            Guid = Guid.NewGuid()
+        }).Guid;
     }
 
-    private int InsertEntityAnalysisModelList(int entityAnalysisModelId, string userName)
+    private int InsertEntityAnalysisModelList(Guid entityAnalysisModelGuid, string userName)
     {
         var entityAnalysisModelListRepository = new EntityAnalysisModelListRepository(dbContext, userName);
 
         return entityAnalysisModelListRepository.Insert(new EntityAnalysisModelList
         {
-            EntityAnalysisModelId = entityAnalysisModelId,
+            EntityAnalysisModelGuid = entityAnalysisModelGuid,
             Name = "IPDenyList",
-            Active = 1
+            Active = 1,
+            Guid = Guid.NewGuid()
         }).Id;
     }
 
@@ -1480,7 +1500,8 @@ public class SandboxRegistration(DbContext dbContext)
             FunctionScript = "Return Payload.BillingFirstName & \" \" & Payload.BillingLastName",
             ReturnDataTypeId = 1,
             Active = 1,
-            ResponsePayload = 1
+            ResponsePayload = 1,
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1508,21 +1529,23 @@ public class SandboxRegistration(DbContext dbContext)
             CoderRuleScript = "Return = True",
             RuleScriptTypeId = 1,
             GatewaySample = 1,
-            Active = 1
+            Active = 1,
+            Guid = Guid.NewGuid()
         });
     }
 
-    private int InsertEntityAnalysisModelDictionary(int entityAnalysisModelId, string userName)
+    private int InsertEntityAnalysisModelDictionary(Guid entityAnalysisModelGuid, string userName)
     {
         var entityAnalysisModelDictionaryRepository = new EntityAnalysisModelDictionaryRepository(dbContext, userName);
 
         return entityAnalysisModelDictionaryRepository.Insert(new EntityAnalysisModelDictionary
         {
-            EntityAnalysisModelId = entityAnalysisModelId,
+            EntityAnalysisModelGuid = entityAnalysisModelGuid,
             Name = "VolumeThresholdByAccountId",
             Active = 1,
             ResponsePayload = 1,
-            DataName = "AccountId"
+            DataName = "AccountId",
+            Guid = Guid.NewGuid()
         }).Id;
     }
 
@@ -1531,11 +1554,12 @@ public class SandboxRegistration(DbContext dbContext)
         var entityAnalysisModelDictionaryKvpRepository =
             new EntityAnalysisModelDictionaryKvpRepository(dbContext, userName);
 
-        entityAnalysisModelDictionaryKvpRepository.Insert(new EntityAnalysisModelDictionaryKvp()
+        entityAnalysisModelDictionaryKvpRepository.Insert(new EntityAnalysisModelDictionaryKvp
         {
             EntityAnalysisModelDictionaryId = entityAnalysisModelDictionaryId,
             KvpKey = "Test1",
-            KvpValue = 1000
+            KvpValue = 1000,
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1568,7 +1592,8 @@ public class SandboxRegistration(DbContext dbContext)
             SearchKey = "AccountId",
             Active = 1,
             ResponsePayload = 1,
-            Json = jsonApproved
+            Json = jsonApproved,
+            Guid = Guid.NewGuid()
         });
 
         var builderRuleScriptDeclined = "If (NOT ( Payload.ResponseCode = \"0\" )) Then " + Environment.NewLine +
@@ -1594,7 +1619,8 @@ public class SandboxRegistration(DbContext dbContext)
             SearchKey = "AccountId",
             Active = 1,
             ResponsePayload = 1,
-            Json = jsonDeclined
+            Json = jsonDeclined,
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1614,31 +1640,33 @@ public class SandboxRegistration(DbContext dbContext)
             Active = 1,
             AbstractionCalculationTypeId = 5,
             ResponsePayload = 1,
-            FunctionScript = functionScript
+            FunctionScript = functionScript,
+            Guid = Guid.NewGuid()
         });
     }
 
-    private void InsertEntityAnalysisModelActivationRule(int entityAnalysisModelId, int caseWorkflowId,
-        int caseWorkflowStatusId, int entityAnalysisModelTtlCounterId, string userName)
+    private void InsertEntityAnalysisModelActivationRule(EntityAnalysisModel entityAnalysisModel,
+        Guid caseWorkflowGuid,
+        Guid caseWorkflowStatusGuid, Guid entityAnalysisModelTtlCounterGuid,
+        string userName)
     {
         var entityAnalysisModelActivationRuleRepository =
             new EntityAnalysisModelActivationRuleRepository(dbContext, userName);
 
         entityAnalysisModelActivationRuleRepository.Insert(new EntityAnalysisModelActivationRule
         {
-            EntityAnalysisModelId = entityAnalysisModelId,
+            EntityAnalysisModelId = entityAnalysisModel.Id,
             Name = "IncrementTtlCounterAll",
             BuilderRuleScript = "Return False",
             CoderRuleScript = "Return True",
             RuleScriptTypeId = 2,
             ResponseElevation = 0,
             EnableCaseWorkflow = 0,
-            CaseWorkflowId = 0,
             CaseKey = "",
             Active = 1,
             EnableTtlCounter = 1,
-            EntityAnalysisModelTtlCounterId = entityAnalysisModelTtlCounterId,
-            EntityAnalysisModelIdTtlCounter = entityAnalysisModelId,
+            EntityAnalysisModelTtlCounterGuid = entityAnalysisModelTtlCounterGuid,
+            EntityAnalysisModelGuidTtlCounter = entityAnalysisModel.Guid,
             ResponsePayload = 0,
             EnableNotification = 0,
             EnableResponseElevation = 0,
@@ -1648,12 +1676,13 @@ public class SandboxRegistration(DbContext dbContext)
             EnableReprocessing = 0,
             EnableSuppression = 0,
             ActivationSample = 1,
-            ReviewStatusId = 4
+            ReviewStatusId = 4,
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelActivationRuleRepository.Insert(new EntityAnalysisModelActivationRule
         {
-            EntityAnalysisModelId = entityAnalysisModelId,
+            EntityAnalysisModelId = entityAnalysisModel.Id,
             Name = "ThresholdTtlCounterAll",
             BuilderRuleScript = "If (TTLCounter.TtlCounterAll > 5) Then " + Environment.NewLine +
                                 "  Return True" + Environment.NewLine +
@@ -1667,11 +1696,11 @@ public class SandboxRegistration(DbContext dbContext)
             ResponseElevation = 1,
             Active = 1,
             EnableCaseWorkflow = 1,
-            CaseWorkflowId = caseWorkflowId,
+            CaseWorkflowGuid = caseWorkflowGuid,
             CaseKey = "AccountId",
             EnableTtlCounter = 0,
-            EntityAnalysisModelTtlCounterId = 1,
-            EntityAnalysisModelIdTtlCounter = 1,
+            EntityAnalysisModelTtlCounterGuid = entityAnalysisModelTtlCounterGuid,
+            EntityAnalysisModelGuidTtlCounter = entityAnalysisModel.Guid,
             ResponsePayload = 1,
             EnableNotification = 0,
             EnableResponseElevation = 1,
@@ -1686,13 +1715,14 @@ public class SandboxRegistration(DbContext dbContext)
             ResponseElevationForeColor = "#fb0707",
             ResponseElevationBackColor = "#f5f2cb",
             SendToActivationWatcher = 1,
-            CaseWorkflowStatusId = caseWorkflowStatusId,
-            ResponseElevationRedirect = "https://www.jube.io"
+            CaseWorkflowStatusGuid = caseWorkflowStatusGuid,
+            ResponseElevationRedirect = "https://www.jube.io",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelActivationRuleRepository.Insert(new EntityAnalysisModelActivationRule
         {
-            EntityAnalysisModelId = entityAnalysisModelId,
+            EntityAnalysisModelId = entityAnalysisModel.Id,
             Name = "ThresholdSanctionsDistance",
             BuilderRuleScript = "If (Sanction.FuzzyMatchDistance2JoinedName < 1) Then " + Environment.NewLine +
                                 "  Return True" + Environment.NewLine +
@@ -1705,11 +1735,11 @@ public class SandboxRegistration(DbContext dbContext)
                    "\"valid\": true, \"condition\": \"AND\"}",
             ResponseElevation = 2,
             EnableCaseWorkflow = 1,
-            CaseWorkflowId = caseWorkflowId,
+            CaseWorkflowGuid = caseWorkflowGuid,
             CaseKey = "AccountId",
             EnableTtlCounter = 0,
-            EntityAnalysisModelTtlCounterId = 1,
-            EntityAnalysisModelIdTtlCounter = 1,
+            EntityAnalysisModelTtlCounterGuid = entityAnalysisModelTtlCounterGuid,
+            EntityAnalysisModelGuidTtlCounter = entityAnalysisModel.Guid,
             ResponsePayload = 1,
             EnableNotification = 0,
             EnableResponseElevation = 1,
@@ -1725,13 +1755,14 @@ public class SandboxRegistration(DbContext dbContext)
             ResponseElevationForeColor = "#fb0707",
             ResponseElevationBackColor = "#f5f2cb",
             SendToActivationWatcher = 1,
-            CaseWorkflowStatusId = caseWorkflowStatusId,
-            ResponseElevationRedirect = "https://www.jube.io"
+            CaseWorkflowStatusGuid = caseWorkflowStatusGuid,
+            ResponseElevationRedirect = "https://www.jube.io",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelActivationRuleRepository.Insert(new EntityAnalysisModelActivationRule
         {
-            EntityAnalysisModelId = entityAnalysisModelId,
+            EntityAnalysisModelId = entityAnalysisModel.Id,
             Name = "AllIPDenyList",
             BuilderRuleScript = "If (( List.IPDenyList.contains(Payload.IP))) Then" + Environment.NewLine +
                                 "  Return True" + Environment.NewLine +
@@ -1743,12 +1774,12 @@ public class SandboxRegistration(DbContext dbContext)
                    "\"valid\": true, \"condition\": \"AND\"}",
             ResponseElevation = 2,
             EnableCaseWorkflow = 1,
-            CaseWorkflowId = caseWorkflowId,
+            CaseWorkflowGuid = caseWorkflowGuid,
             CaseKey = "AccountId",
             Active = 1,
             EnableTtlCounter = 0,
-            EntityAnalysisModelTtlCounterId = 1,
-            EntityAnalysisModelIdTtlCounter = 1,
+            EntityAnalysisModelTtlCounterGuid = entityAnalysisModelTtlCounterGuid,
+            EntityAnalysisModelGuidTtlCounter = entityAnalysisModel.Guid,
             ResponsePayload = 1,
             EnableNotification = 0,
             EnableResponseElevation = 1,
@@ -1763,13 +1794,14 @@ public class SandboxRegistration(DbContext dbContext)
             ResponseElevationForeColor = "#fb0707",
             ResponseElevationBackColor = "#f5f2cb",
             SendToActivationWatcher = 1,
-            CaseWorkflowStatusId = caseWorkflowStatusId,
-            ResponseElevationRedirect = "https://www.jube.io"
+            CaseWorkflowStatusGuid = caseWorkflowStatusGuid,
+            ResponseElevationRedirect = "https://www.jube.io",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelActivationRuleRepository.Insert(new EntityAnalysisModelActivationRule
         {
-            EntityAnalysisModelId = entityAnalysisModelId,
+            EntityAnalysisModelId = entityAnalysisModel.Id,
             Name = "VolumeThresholdByAccountId",
             BuilderRuleScript = "Return False",
             CoderRuleScript =
@@ -1780,11 +1812,11 @@ public class SandboxRegistration(DbContext dbContext)
             RuleScriptTypeId = 2,
             ResponseElevation = 2,
             EnableCaseWorkflow = 1,
-            CaseWorkflowId = caseWorkflowId,
+            CaseWorkflowGuid = caseWorkflowGuid,
             CaseKey = "AccountId",
             EnableTtlCounter = 0,
-            EntityAnalysisModelTtlCounterId = 1,
-            EntityAnalysisModelIdTtlCounter = 1,
+            EntityAnalysisModelTtlCounterGuid = entityAnalysisModelTtlCounterGuid,
+            EntityAnalysisModelGuidTtlCounter = entityAnalysisModel.Guid,
             ResponsePayload = 1,
             EnableNotification = 0,
             EnableResponseElevation = 1,
@@ -1800,8 +1832,9 @@ public class SandboxRegistration(DbContext dbContext)
             ResponseElevationForeColor = "#fb0707",
             ResponseElevationBackColor = "#f5f2cb",
             SendToActivationWatcher = 1,
-            CaseWorkflowStatusId = caseWorkflowStatusId,
-            ResponseElevationRedirect = "https://www.jube.io"
+            CaseWorkflowStatusGuid = caseWorkflowStatusGuid,
+            ResponseElevationRedirect = "https://www.jube.io",
+            Guid = Guid.NewGuid()
         });
     }
 
@@ -1825,7 +1858,8 @@ public class SandboxRegistration(DbContext dbContext)
             SearchKeyTtlIntervalValue = 1,
             SearchKeyTtlInterval = "h",
             Active = 1,
-            DefaultValue = "Test1"
+            DefaultValue = "Test1",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1838,7 +1872,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "2022-08-19T21:41:37.247"
+            DefaultValue = "2022-08-19T21:41:37.247",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1851,7 +1886,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "826"
+            DefaultValue = "826",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1864,7 +1900,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "1"
+            DefaultValue = "1",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1877,7 +1914,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "123.45"
+            DefaultValue = "123.45",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1890,7 +1928,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "123.45"
+            DefaultValue = "123.45",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1903,7 +1942,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "566"
+            DefaultValue = "566",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1916,7 +1956,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "1"
+            DefaultValue = "1",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1929,7 +1970,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "12.34"
+            DefaultValue = "12.34",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1942,7 +1984,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "DID"
+            DefaultValue = "DID",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1955,7 +1998,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Android"
+            DefaultValue = "Android",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1968,7 +2012,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "ZTE"
+            DefaultValue = "ZTE",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1981,7 +2026,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Barby"
+            DefaultValue = "Barby",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -1994,7 +2040,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "36.1408"
+            DefaultValue = "36.1408",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2007,7 +2054,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "5.3536"
+            DefaultValue = "5.3536",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2020,7 +2068,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Lollypop"
+            DefaultValue = "Lollypop",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2033,7 +2082,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "720*1280"
+            DefaultValue = "720*1280",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2046,7 +2096,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "true"
+            DefaultValue = "true",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2059,7 +2110,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "true"
+            DefaultValue = "true",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2072,7 +2124,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "false"
+            DefaultValue = "false",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2085,7 +2138,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "94:23:44f:2:d3"
+            DefaultValue = "94:23:44f:2:d3",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2098,7 +2152,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Test2"
+            DefaultValue = "Test2",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2111,7 +2166,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "ChurchmanR"
+            DefaultValue = "ChurchmanR",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2124,7 +2180,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "SMS"
+            DefaultValue = "SMS",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2137,7 +2194,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "1"
+            DefaultValue = "1",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2150,7 +2208,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "true"
+            DefaultValue = "true",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2163,7 +2222,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "0"
+            DefaultValue = "0",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2176,7 +2236,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "jhjkhjkhsjh2hjhjkhj2k"
+            DefaultValue = "jhjkhjkhsjh2hjhjkhj2k",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2189,7 +2250,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Travel"
+            DefaultValue = "Travel",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2202,7 +2264,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "100.00"
+            DefaultValue = "100.00",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2214,7 +2277,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "113.05"
+            DefaultValue = "113.05",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2227,7 +2291,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "1.1305502954"
+            DefaultValue = "1.1305502954",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2240,7 +2305,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "86.5866"
+            DefaultValue = "86.5866",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2253,7 +2319,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "0.8658658602"
+            DefaultValue = "0.8658658602",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2266,7 +2333,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "true"
+            DefaultValue = "true",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2279,7 +2347,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "100"
+            DefaultValue = "100",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2292,7 +2361,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "EUR"
+            DefaultValue = "EUR",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2305,7 +2375,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "please@hash.me"
+            DefaultValue = "please@hash.me",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2318,7 +2389,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "1FDA39A3EE5E6B4HKAJAA890AFD80709"
+            DefaultValue = "1FDA39A3EE5E6B4HKAJAA890AFD80709",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2331,7 +2403,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Caixa"
+            DefaultValue = "Caixa",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2344,7 +2417,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "2022-08-19T21:41:37.247"
+            DefaultValue = "2022-08-19T21:41:37.247",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2357,7 +2431,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Skrill123456789"
+            DefaultValue = "Skrill123456789",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2370,7 +2445,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "57"
+            DefaultValue = "57",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2383,7 +2459,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Address Line 1"
+            DefaultValue = "Address Line 1",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2396,7 +2473,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Address Line 2"
+            DefaultValue = "Address Line 2",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2409,7 +2487,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "DE"
+            DefaultValue = "DE",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2422,7 +2501,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Richard"
+            DefaultValue = "Richard",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2435,7 +2515,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "Churchman"
+            DefaultValue = "Churchman",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2448,7 +2529,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "1234567890"
+            DefaultValue = "1234567890",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2461,7 +2543,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "DE"
+            DefaultValue = "DE",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2474,7 +2557,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "123456"
+            DefaultValue = "123456",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2487,7 +2571,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "true"
+            DefaultValue = "true",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2500,7 +2585,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "false"
+            DefaultValue = "false",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2513,7 +2599,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "false"
+            DefaultValue = "false",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2526,7 +2613,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "true"
+            DefaultValue = "true",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2539,7 +2627,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "false"
+            DefaultValue = "false",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2552,7 +2641,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "true"
+            DefaultValue = "true",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2565,7 +2655,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "1000"
+            DefaultValue = "1000",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2578,7 +2669,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "2000"
+            DefaultValue = "2000",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2591,7 +2683,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "123.456.789.200"
+            DefaultValue = "123.456.789.200",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2604,7 +2697,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "1"
+            DefaultValue = "1",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2620,7 +2714,8 @@ public class SandboxRegistration(DbContext dbContext)
             SearchKeyCacheInterval = "h",
             SearchKeyTtlIntervalValue = 1,
             Active = 1,
-            DefaultValue = "OlaRoseGoldPhone6"
+            DefaultValue = "OlaRoseGoldPhone6",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2633,7 +2728,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "false"
+            DefaultValue = "false",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2646,7 +2742,8 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "10607324128"
+            DefaultValue = "10607324128",
+            Guid = Guid.NewGuid()
         });
 
         entityAnalysisModelRequestXPathRepository.Insert(new EntityAnalysisModelRequestXpath
@@ -2659,11 +2756,12 @@ public class SandboxRegistration(DbContext dbContext)
             ResponsePayload = 1,
             SearchKey = 0,
             Active = 1,
-            DefaultValue = "0987654321"
+            DefaultValue = "0987654321",
+            Guid = Guid.NewGuid()
         });
     }
 
-    private int InsertEntityAnalysisModel(string userName)
+    private EntityAnalysisModel InsertEntityAnalysisModel(string userName)
     {
         var entityAnalysisModelRepository = new EntityAnalysisModelRepository(dbContext, userName);
         return entityAnalysisModelRepository.Insert(new EntityAnalysisModel
@@ -2692,7 +2790,7 @@ public class SandboxRegistration(DbContext dbContext)
                 MaxResponseElevation = 10,
                 ActivationWatcherSample = 1
             }
-        ).Id;
+        );
     }
 
     private void AssignToUserRegistryToTenantRegistry(string userName, TenantRegistry tenantRegistry)
@@ -2715,9 +2813,7 @@ public class SandboxRegistration(DbContext dbContext)
                          Active = 1,
                          PermissionSpecificationId = permissionSpecification.Id
                      }))
-        {
             roleRegistryPermissionRepository.Insert(roleRegistryPermission);
-        }
     }
 
     private UserRegistry CreateUserRegistry(string userName, string password, string passwordHashingKey,

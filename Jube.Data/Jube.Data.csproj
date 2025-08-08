@@ -28,32 +28,32 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="AutoMapper" Version="13.0.1"/>
         <PackageReference Include="FluentMigrator.Runner" Version="3.3.2"/>
         <PackageReference Include="Isopoh.Cryptography.Argon2" Version="1.1.12"/>
         <PackageReference Include="linq2db" Version="3.6.0"/>
         <PackageReference Include="log4net" Version="2.0.14"/>
-        <PackageReference Include="MessagePack" Version="2.5.187" />
+        <PackageReference Include="MessagePack" Version="3.1.4"/>
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.0"/>
         <PackageReference Include="Npgsql" Version="5.0.18"/>
         <PackageReference Include="Npgsql.Json.NET" Version="5.0.13"/>
-        <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+        <PackageReference Include="StackExchange.Redis" Version="2.7.33"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Accord.Statistics\Accord.Statistics.csproj"/>
-        <ProjectReference Include="..\Jube.Extensions\Jube.Extensions.csproj" />
+        <ProjectReference Include="..\Jube.Extensions\Jube.Extensions.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Cache\CacheAbstractionRepository.cs" />
-      <Compile Remove="Cache\CacheCallbackRepository.cs" />
-      <Compile Remove="Cache\CachePayloadRepository.cs" />
-      <Compile Remove="Cache\CacheSanctionRepository.cs" />
-      <Compile Remove="Cache\CacheTtlCounterEntryRepository.cs" />
-      <Compile Remove="Cache\CacheTtlCounterRepository.cs" />
-      <Compile Remove="Cache\Callback.cs" />
-      <Compile Remove="Cache\CachePayloadLatestRepository.cs" />
+        <Compile Remove="Cache\CacheAbstractionRepository.cs"/>
+        <Compile Remove="Cache\CacheCallbackRepository.cs"/>
+        <Compile Remove="Cache\CachePayloadRepository.cs"/>
+        <Compile Remove="Cache\CacheSanctionRepository.cs"/>
+        <Compile Remove="Cache\CacheTtlCounterEntryRepository.cs"/>
+        <Compile Remove="Cache\CacheTtlCounterRepository.cs"/>
+        <Compile Remove="Cache\Callback.cs"/>
+        <Compile Remove="Cache\CachePayloadLatestRepository.cs"/>
     </ItemGroup>
 
 </Project>

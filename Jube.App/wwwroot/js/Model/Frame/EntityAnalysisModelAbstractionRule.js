@@ -201,7 +201,7 @@ $.get("../api/EntityAnalysisModelRequestXPath/ByEntityAnalysisModelId/" + parent
                     initBuilderCoder(3, parentKey, builderCoderData);
 
                     search.data("kendoSwitch").check(data.search);
-                    
+
                     ExpandCollapseSearchKey();
 
                     searchKey.data("kendoDropDownList").value(data.searchKey);
@@ -240,7 +240,7 @@ function GetData() {
     const builderCoder = getBuilderCoder();
 
     let searchFunctionTypeIdValue = searchFunctionTypeId.data("kendoDropDownList").value();
-    
+
     let searchFunctionKeyValue;
     if (searchFunctionTypeIdValue === '2' || searchFunctionTypeIdValue === '12') {
         searchFunctionKeyValue = searchFunctionKeyString.data("kendoDropDownList").value();

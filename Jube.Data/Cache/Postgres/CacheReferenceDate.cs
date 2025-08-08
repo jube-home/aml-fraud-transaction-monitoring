@@ -18,76 +18,75 @@ using Jube.Data.Extension;
 using log4net;
 using Npgsql;
 
-namespace Jube.Data.Cache.Postgres
+namespace Jube.Data.Cache.Postgres;
+
+public class CacheReferenceDate(string connectionString, ILog log) : ICacheReferenceDate
 {
-    public class CacheReferenceDate(string connectionString, ILog log) : ICacheReferenceDate
+    public async Task UpsertReferenceDate(int tenantRegistryId, int entityAnalysisModelId, DateTime referenceDate)
     {
-        public async Task UpsertReferenceDate(int tenantRegistryId, int entityAnalysisModelId, DateTime referenceDate)
+        var connection = new NpgsqlConnection(connectionString);
+        try
         {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                connection.Open();
+            connection.Open();
 
-                var sql =
-                    "insert into \"CacheReferenceDate\"(\"EntityAnalysisModelId\",\"ReferenceDate\",\"UpdatedDate\")" +
-                    "values((@entityAnalysisModelId),(@referenceDate),(@updatedDate)) " +
-                    " ON CONFLICT (\"EntityAnalysisModelId\") " +
-                    " DO UPDATE set \"ReferenceDate\" = (@referenceDate)," +
-                    "\"UpdatedDate\" = (@updatedDate)";
+            var sql =
+                "insert into \"CacheReferenceDate\"(\"EntityAnalysisModelId\",\"ReferenceDate\",\"UpdatedDate\")" +
+                "values((@entityAnalysisModelId),(@referenceDate),(@updatedDate)) " +
+                " ON CONFLICT (\"EntityAnalysisModelId\") " +
+                " DO UPDATE set \"ReferenceDate\" = (@referenceDate)," +
+                "\"UpdatedDate\" = (@updatedDate)";
 
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("EntityAnalysisModelTtlCounterId", referenceDate);
-                command.Parameters.AddWithValue("updatedDate", DateTime.Now);
-                command.Parameters.AddWithValue("referenceDate", referenceDate);
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("EntityAnalysisModelTtlCounterId", referenceDate);
+            command.Parameters.AddWithValue("updatedDate", DateTime.Now);
+            command.Parameters.AddWithValue("referenceDate", referenceDate);
 
-                await command.PrepareAsync();
-                await command.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
+            await command.PrepareAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<DateTime?> GetReferenceDate(int tenantRegistryId, int entityAnalysisModelId)
+    {
+        var connection = new NpgsqlConnection(connectionString);
+        DateTime value = default;
+        try
+        {
+            await connection.OpenAsync();
+
+            var sql = "select \"ReferenceDate\" from \"CacheReferenceDate\"" +
+                      " where \"EntityAnalysisModelId\" = (@entityAnalysisModelId); ";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+
+            await command.PrepareAsync();
+
+            var scalarReturnValue = await command.ExecuteScalarAsync();
+            if (scalarReturnValue != null) value = scalarReturnValue.AsDateTime();
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task<DateTime?> GetReferenceDate(int tenantRegistryId, int entityAnalysisModelId)
-        {
-            var connection = new NpgsqlConnection(connectionString);
-            DateTime value = default;
-            try
-            {
-                await connection.OpenAsync();
-
-                var sql = "select \"ReferenceDate\" from \"CacheReferenceDate\"" +
-                          " where \"EntityAnalysisModelId\" = (@entityAnalysisModelId); ";
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-
-                await command.PrepareAsync();
-
-                var scalarReturnValue = await command.ExecuteScalarAsync();
-                if (scalarReturnValue != null) value = scalarReturnValue.AsDateTime();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-
-            return value;
-        }
+        return value;
     }
 }

@@ -20,7 +20,10 @@ using StackExchange.Redis;
 
 namespace Jube.Data.Cache.Redis;
 
-public class CacheReferenceDate(IDatabaseAsync redisDatabase, ILog log) : ICacheReferenceDate
+public class CacheReferenceDate(
+    IDatabaseAsync redisDatabase,
+    ILog log,
+    CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheReferenceDate
 {
     public async Task UpsertReferenceDate(int tenantRegistryId, int entityAnalysisModelId, DateTime referenceDate)
     {
@@ -29,7 +32,9 @@ public class CacheReferenceDate(IDatabaseAsync redisDatabase, ILog log) : ICache
             var redisKey = $"ReferenceDate:{tenantRegistryId}";
             var redisHSetKey = $"{entityAnalysisModelId}";
 
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, referenceDate.ToUnixTimeMilliSeconds());
+            await redisDatabase.HashSetAsync(redisKey, redisHSetKey,
+                referenceDate.ToUnixTimeMilliSeconds(),
+                When.Always, commandFlag);
         }
         catch (Exception ex)
         {
@@ -43,7 +48,7 @@ public class CacheReferenceDate(IDatabaseAsync redisDatabase, ILog log) : ICache
         {
             var redisKey = $"ReferenceDate:{tenantRegistryId}";
             var redisHSetKey = $"{entityAnalysisModelId}";
-            var referenceDateTimestamp = (long) await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
+            var referenceDateTimestamp = (long)await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
             return referenceDateTimestamp.FromUnixTimeMilliSeconds();
         }
         catch (Exception ex)

@@ -2,33 +2,32 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Jube.Engine.Helpers
+namespace Jube.Engine.Helpers;
+
+public static class Hash
 {
-    public static class Hash
+    public static string GetHash(string theInput)
     {
-        public static string GetHash(string theInput)
-        {
-            using var hasher = MD5.Create();
-            var bytes = hasher.ComputeHash(Encoding.UTF8.GetBytes(theInput));
+        using var hasher = MD5.Create();
+        var bytes = hasher.ComputeHash(Encoding.UTF8.GetBytes(theInput));
 
-            var sBuilder = new StringBuilder();
+        var sBuilder = new StringBuilder();
 
-            foreach (var t in bytes)
-                sBuilder.Append(t.ToString("X2"));
+        foreach (var t in bytes)
+            sBuilder.Append(t.ToString("X2"));
 
-            return sBuilder.ToString();
-        }
+        return sBuilder.ToString();
     }
 }

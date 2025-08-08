@@ -18,121 +18,120 @@ using Jube.Data.Extension;
 using log4net;
 using Npgsql;
 
-namespace Jube.Data.Cache.Postgres
+namespace Jube.Data.Cache.Postgres;
+
+public class CacheTtlCounterRepository(string connectionString, ILog log) : ICacheTtlCounterRepository
 {
-    public class CacheTtlCounterRepository(string connectionString, ILog log) : ICacheTtlCounterRepository
+    public async Task DecrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
+        int entityAnalysisModelTtlCounterId,
+        string dataName, string dataValue, int decrement)
     {
-        public async Task DecrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
-            int entityAnalysisModelTtlCounterId,
-            string dataName, string dataValue, int decrement)
+        var connection = new NpgsqlConnection(connectionString);
+        try
         {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                connection.Open();
+            connection.Open();
 
-                var sql = "update \"CacheTtlCounter\"" +
-                          " set \"Value\" = \"Value\" - (@decrement)" +
-                          " where \"EntityAnalysisModelTtlCounterId\" = (@entityAnalysisModelTtlCounterId)" +
-                          " and \"DataName\" = (@dataName)" +
-                          " and \"DataValue\" = (@dataValue)" +
-                          " and \"EntityAnalysisModelId\" = (@entityAnalysisModelId);";
+            var sql = "update \"CacheTtlCounter\"" +
+                      " set \"Value\" = \"Value\" - (@decrement)" +
+                      " where \"EntityAnalysisModelTtlCounterId\" = (@entityAnalysisModelTtlCounterId)" +
+                      " and \"DataName\" = (@dataName)" +
+                      " and \"DataValue\" = (@dataValue)" +
+                      " and \"EntityAnalysisModelId\" = (@entityAnalysisModelId);";
 
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("EntityAnalysisModelTtlCounterId", entityAnalysisModelTtlCounterId);
-                command.Parameters.AddWithValue("dataName", dataName);
-                command.Parameters.AddWithValue("dataValue", dataValue);
-                command.Parameters.AddWithValue("decrement", decrement);
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("EntityAnalysisModelTtlCounterId", entityAnalysisModelTtlCounterId);
+            command.Parameters.AddWithValue("dataName", dataName);
+            command.Parameters.AddWithValue("dataValue", dataValue);
+            command.Parameters.AddWithValue("decrement", decrement);
 
-                await command.PrepareAsync();
-                await command.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
+            await command.PrepareAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<int> GetByNameDataNameDataValueAsync(int tenantRegistryId, int entityAnalysisModelId,
+        int entityAnalysisModelTtlCounterId, string dataName, string dataValue)
+    {
+        var connection = new NpgsqlConnection(connectionString);
+        var value = 0;
+        try
+        {
+            await connection.OpenAsync();
+
+            var sql = "select \"Value\" from \"CacheTtlCounter\"" +
+                      " where \"EntityAnalysisModelTtlCounterId\" = (@entityAnalysisModelTtlCounterId) and \"DataName\" = (@dataName) " +
+                      "and \"DataValue\" = (@dataValue) and \"EntityAnalysisModelId\" = (@entityAnalysisModelId);";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("entityAnalysisModelTtlCounterId", entityAnalysisModelTtlCounterId);
+            command.Parameters.AddWithValue("dataName", dataName);
+            command.Parameters.AddWithValue("dataValue", dataValue);
+            await command.PrepareAsync();
+
+            var scalarReturnValue = await command.ExecuteScalarAsync();
+            if (scalarReturnValue != null) value = scalarReturnValue.AsInt();
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task<int> GetByNameDataNameDataValueAsync(int tenantRegistryId, int entityAnalysisModelId,
-            int entityAnalysisModelTtlCounterId, string dataName, string dataValue)
+        return value;
+    }
+
+    public async Task IncrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
+        string dataName, string dataValue, int entityAnalysisModelTtlCounterId, int increment,
+        DateTime referenceDate)
+    {
+        var connection = new NpgsqlConnection(connectionString);
+        try
         {
-            var connection = new NpgsqlConnection(connectionString);
-            var value = 0;
-            try
-            {
-                await connection.OpenAsync();
+            await connection.OpenAsync();
 
-                var sql = "select \"Value\" from \"CacheTtlCounter\"" +
-                          " where \"EntityAnalysisModelTtlCounterId\" = (@entityAnalysisModelTtlCounterId) and \"DataName\" = (@dataName) " +
-                          "and \"DataValue\" = (@dataValue) and \"EntityAnalysisModelId\" = (@entityAnalysisModelId);";
+            var sql = "insert into \"CacheTtlCounter\"(\"EntityAnalysisModelId\",\"DataName\",\"DataValue\"," +
+                      "\"EntityAnalysisModelTtlCounterId\",\"Value\",\"ReferenceDate\",\"UpdatedDate\")" +
+                      " values((@entityAnalysisModelId),(@dataName),(@dataValue)," +
+                      "(@entityAnalysisModelTtlCounterId),1,(@referenceDate),(@updatedDate)) " +
+                      " ON CONFLICT (\"EntityAnalysisModelId\",\"EntityAnalysisModelTtlCounterId\",\"DataName\",\"DataValue\") " +
+                      " DO UPDATE set \"Value\" = \"CacheTtlCounter\".\"Value\" + " + increment + "";
 
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("entityAnalysisModelTtlCounterId", entityAnalysisModelTtlCounterId);
-                command.Parameters.AddWithValue("dataName", dataName);
-                command.Parameters.AddWithValue("dataValue", dataValue);
-                await command.PrepareAsync();
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("dataName", dataName);
+            command.Parameters.AddWithValue("dataValue", dataValue);
+            command.Parameters.AddWithValue("entityAnalysisModelTtlCounterId", entityAnalysisModelTtlCounterId);
+            command.Parameters.AddWithValue("referenceDate", referenceDate);
+            command.Parameters.AddWithValue("updatedDate", DateTime.Now);
 
-                var scalarReturnValue = await command.ExecuteScalarAsync();
-                if (scalarReturnValue != null) value = scalarReturnValue.AsInt();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-
-            return value;
+            await command.PrepareAsync();
+            await command.ExecuteNonQueryAsync();
         }
-
-        public async Task IncrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
-            string dataName, string dataValue, int entityAnalysisModelTtlCounterId, int increment,
-            DateTime referenceDate)
+        catch (Exception ex)
         {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                await connection.OpenAsync();
-
-                var sql = "insert into \"CacheTtlCounter\"(\"EntityAnalysisModelId\",\"DataName\",\"DataValue\"," +
-                          "\"EntityAnalysisModelTtlCounterId\",\"Value\",\"ReferenceDate\",\"UpdatedDate\")" +
-                          " values((@entityAnalysisModelId),(@dataName),(@dataValue)," +
-                          "(@entityAnalysisModelTtlCounterId),1,(@referenceDate),(@updatedDate)) " +
-                          " ON CONFLICT (\"EntityAnalysisModelId\",\"EntityAnalysisModelTtlCounterId\",\"DataName\",\"DataValue\") " +
-                          " DO UPDATE set \"Value\" = \"CacheTtlCounter\".\"Value\" + " + increment + "";
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("dataName", dataName);
-                command.Parameters.AddWithValue("dataValue", dataValue);
-                command.Parameters.AddWithValue("entityAnalysisModelTtlCounterId", entityAnalysisModelTtlCounterId);
-                command.Parameters.AddWithValue("referenceDate", referenceDate);
-                command.Parameters.AddWithValue("updatedDate", DateTime.Now);
-
-                await command.PrepareAsync();
-                await command.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-            }
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
         }
     }
 }

@@ -13,7 +13,4 @@
 
 namespace Jube.Service.Exceptions.Authentication;
 
-public class PasswordLockedException : Exception
-{
-    
-}
+public class PasswordLockedException : Exception;

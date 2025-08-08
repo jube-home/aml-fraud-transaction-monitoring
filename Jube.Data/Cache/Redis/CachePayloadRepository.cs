@@ -18,14 +18,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Jube.Data.Cache.Interfaces;
 using Jube.Data.Cache.Redis.MessagePack;
+using Jube.Extensions;
 using log4net;
 using MessagePack;
 using StackExchange.Redis;
-using Jube.Extensions;
 
 namespace Jube.Data.Cache.Redis;
 
-public class CachePayloadRepository(IDatabaseAsync redisDatabase, ILog log) : ICachePayloadRepository
+public class CachePayloadRepository(
+    IDatabaseAsync redisDatabase,
+    ILog log,
+    CommandFlags commandFlag = CommandFlags.FireAndForget) : ICachePayloadRepository
 {
     public Task CreateIndexAsync(int tenantRegistryId,
         int entityAnalysisModelId, string name, string date, string expression)
@@ -47,7 +50,8 @@ public class CachePayloadRepository(IDatabaseAsync redisDatabase, ILog log) : IC
         {
             var ms = new MemoryStream();
             await MessagePackSerializer.SerializeAsync(ms, payload,
-                MessagePackSerializerOptionsHelper.ContractlessStandardResolverWithCompressionMessagePackSerializerOptions(true));
+                MessagePackSerializerOptionsHelper
+                    .ContractlessStandardResolverWithCompressionMessagePackSerializerOptions(true));
 
             var keyPayload = $"Payload:{tenantRegistryId}:{entityAnalysisModelId}";
             var hSetKey = $"{entityAnalysisModelInstanceEntryGuid}";
@@ -56,11 +60,13 @@ public class CachePayloadRepository(IDatabaseAsync redisDatabase, ILog log) : IC
 
             var tasks = new List<Task>
             {
-                redisDatabase.HashSetAsync(keyPayload, hSetKey, ms.ToArray()),
-                redisDatabase.SortedSetAddAsync(keyReferenceDate, sortedSet, referenceDate.ToUnixTimeMilliSeconds())
+                redisDatabase.HashSetAsync(keyPayload, hSetKey, ms.ToArray(),
+                    When.Always, commandFlag),
+                redisDatabase.SortedSetAddAsync(keyReferenceDate, sortedSet, referenceDate.ToUnixTimeMilliSeconds(),
+                    commandFlag)
             };
 
-            Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks.ToArray());
         }
         catch (Exception ex)
         {
@@ -77,7 +83,8 @@ public class CachePayloadRepository(IDatabaseAsync redisDatabase, ILog log) : IC
         {
             var redisKey = $"Payload:{tenantRegistryId}:{entityAnalysisModelId}:{key}:{value}";
             var set = $"{entityAnalysisModelInstanceEntryGuid}";
-            await redisDatabase.SortedSetAddAsync(redisKey, set, referenceDate.ToUnixTimeMilliSeconds());
+            await redisDatabase.SortedSetAddAsync(redisKey, set, referenceDate.ToUnixTimeMilliSeconds(),
+                commandFlag);
         }
         catch (Exception ex)
         {
@@ -118,21 +125,17 @@ public class CachePayloadRepository(IDatabaseAsync redisDatabase, ILog log) : IC
                              where sortedSetEntry.Element.ToString() !=
                                    entityInconsistentAnalysisModelInstanceEntryGuid.ToString()
                              select sortedSetEntry.Element).ToArray()))
-            {
                 try
                 {
                     if (redisValue.HasValue)
-                    {
                         documents.Add(MessagePackSerializer.Deserialize<Dictionary<string, object>>(redisValue,
                             MessagePackSerializerOptionsHelper
                                 .ContractlessStandardResolverWithCompressionMessagePackSerializerOptions(true)));
-                    }
                 }
                 catch (Exception ex)
                 {
                     log.Info($"Cache Redis: Serialisation error on unpacking {redisValue} with {ex}.");
                 }
-            }
         }
         catch (Exception ex)
         {
@@ -167,16 +170,10 @@ public class CachePayloadRepository(IDatabaseAsync redisDatabase, ILog log) : IC
 
             var redisValuesToDelete = new List<RedisValue>();
             foreach (var sortedSetEntry in sortedSetEntries)
-            {
                 if (sortedSetEntry.Score <= referenceDateTimestampThreshold)
-                {
                     redisValuesToDelete.Add(new RedisValue(sortedSetEntry.Element));
-                }
                 else
-                {
                     breakWhile = true;
-                }
-            }
 
             if (redisValuesToDelete.Count <= 0) continue;
 
@@ -188,7 +185,7 @@ public class CachePayloadRepository(IDatabaseAsync redisDatabase, ILog log) : IC
                 redisDatabase.HashDecrementAsync(redisKeyCount, entityAnalysisModelId, redisValuesToDelete.Count)
             };
 
-            Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks.ToArray());
         }
     }
 }

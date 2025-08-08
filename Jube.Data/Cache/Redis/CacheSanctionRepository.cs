@@ -14,16 +14,19 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Jube.Data.Cache.Interfaces;
-using log4net;
-using StackExchange.Redis;
 using Jube.Data.Cache.Dto;
+using Jube.Data.Cache.Interfaces;
 using Jube.Data.Cache.Redis.MessagePack;
+using log4net;
 using MessagePack;
+using StackExchange.Redis;
 
 namespace Jube.Data.Cache.Redis;
 
-public class CacheSanctionRepository(IDatabaseAsync redisDatabase, ILog log) : ICacheSanctionRepository
+public class CacheSanctionRepository(
+    IDatabaseAsync redisDatabase,
+    ILog log,
+    CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheSanctionRepository
 {
     public async Task<CacheSanctionDto> GetByMultiPartStringDistanceThresholdAsync(int tenantRegistryId,
         int entityAnalysisModelId, string multiPartString,
@@ -74,7 +77,8 @@ public class CacheSanctionRepository(IDatabaseAsync redisDatabase, ILog log) : I
             var ms = new MemoryStream();
             await MessagePackSerializer.SerializeAsync(ms, sanction,
                 MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(false));
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, ms.ToArray());
+            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, ms.ToArray(),
+                When.Always, commandFlag);
         }
         catch (Exception ex)
         {

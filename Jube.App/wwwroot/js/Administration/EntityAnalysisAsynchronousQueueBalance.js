@@ -15,12 +15,12 @@ var dataSourceEntity = new kendo.data.DataSource({
     transport: {
         read: {
             url: "/api/EntityAnalysisAsynchronousQueueBalance",
-            type:"GET",
+            type: "GET",
             dataType: "json"
         },
-        parameterMap: function(options, operation) {
+        parameterMap: function (options, operation) {
             if (operation !== "read" && options.models) {
-                return { models: kendo.stringify(options.models) };
+                return {models: kendo.stringify(options.models)};
             }
         }
     },
@@ -28,16 +28,16 @@ var dataSourceEntity = new kendo.data.DataSource({
         model: {
             id: "entityAnalysisAsynchronousQueueBalanceId",
             fields: {
-                instance: { type: "string" },
-                createdDate: { type: "date" },
-                tagging: { type: "number" },
-                asynchronousEntityInvoke: { type: "number" }
+                instance: {type: "string"},
+                createdDate: {type: "date"},
+                tagging: {type: "number"},
+                asynchronousEntityInvoke: {type: "number"}
             }
         }
     }
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
     $("#grid").kendoGrid({
         groupable: true,
         dataSource: dataSourceEntity,
@@ -45,16 +45,16 @@ $(document).ready(function() {
         height: $(window).height() - 210,
         scrollable: true,
         filterable: true,
-        dataBound: function() {
+        dataBound: function () {
             for (let i = 0; i < this.columns.length; i++) {
                 this.autoFitColumn(i);
             }
         },
         columns: [
-            { field: "instance", title: "Instance" },
-            { field: "createdDate", title: "Created Date" },
-            { field: "tagging", title: "Tagging" },
-            { field: "asynchronousEntityInvoke", title: "Asynchronous Model Invoke" }
+            {field: "instance", title: "Instance"},
+            {field: "createdDate", title: "Created Date"},
+            {field: "tagging", title: "Tagging"},
+            {field: "asynchronousEntityInvoke", title: "Asynchronous Model Invoke"}
         ]
     });
 });

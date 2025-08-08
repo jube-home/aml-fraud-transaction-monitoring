@@ -18,235 +18,225 @@ using Jube.Data.Cache.Interfaces;
 using log4net;
 using Npgsql;
 
-namespace Jube.Data.Cache.Postgres
+namespace Jube.Data.Cache.Postgres;
+
+public class EntityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueDto
 {
-    public class EntityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueDto
+    public string AbstractionRuleName { get; set; }
+    public string SearchKey { get; set; }
+    public string SearchValue { get; set; }
+}
+
+public class CacheAbstractionRepository(string connectionString, ILog log) : ICacheAbstractionRepository
+{
+    public async Task DeleteAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey,
+        string searchValue, string name)
     {
-        public string AbstractionRuleName { get; set; }
-        public string SearchKey { get; set; }
-        public string SearchValue { get; set; }
+        var connection = new NpgsqlConnection(connectionString);
+        try
+        {
+            connection.Open();
+
+            var sql = "delete \"CacheAbstraction\"" +
+                      " where \"Name\" = (@name) and \"SearchKey\" = (@searchKey)" +
+                      " and \"SearchValue\" = (@searchValue)" +
+                      " and \"EntityAnalysisModelId\" = (@entityAnalysisModelId)";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("searchKey", searchKey);
+            command.Parameters.AddWithValue("searchValue", searchValue);
+            command.Parameters.AddWithValue("name", name);
+            command.Parameters.AddWithValue("createdDate", DateTime.Now);
+
+            await command.PrepareAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+        }
     }
 
-    public class CacheAbstractionRepository(string connectionString, ILog log) : ICacheAbstractionRepository
+    public async Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey,
+        string searchValue, string name,
+        double value)
     {
-        public async Task DeleteAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey,
-            string searchValue, string name)
+        var connection = new NpgsqlConnection(connectionString);
+        try
         {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                connection.Open();
+            await connection.OpenAsync();
 
-                var sql = "delete \"CacheAbstraction\"" +
-                          " where \"Name\" = (@name) and \"SearchKey\" = (@searchKey)" +
-                          " and \"SearchValue\" = (@searchValue)" +
-                          " and \"EntityAnalysisModelId\" = (@entityAnalysisModelId)";
+            var sql = "insert into\"CacheAbstraction\"(\"EntityAnalysisModelId\",\"SearchKey\"," +
+                      "\"SearchValue\",\"Name\",\"Value\",\"CreatedDate\")" +
+                      " values((@entityAnalysisModelId),(@searchKey),(@searchValue)," +
+                      "(@name),(@value),(@createdDate)); ";
 
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("searchKey", searchKey);
-                command.Parameters.AddWithValue("searchValue", searchValue);
-                command.Parameters.AddWithValue("name", name);
-                command.Parameters.AddWithValue("createdDate", DateTime.Now);
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("searchKey", searchKey);
+            command.Parameters.AddWithValue("searchValue", searchValue);
+            command.Parameters.AddWithValue("name", name);
+            command.Parameters.AddWithValue("value", value);
+            command.Parameters.AddWithValue("createdDate", DateTime.Now);
 
-                await command.PrepareAsync();
-                await command.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
+            await command.PrepareAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+        }
+    }
+
+    public async Task UpdateAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey,
+        string searchValue, string name, double value)
+    {
+        var connection = new NpgsqlConnection(connectionString);
+        try
+        {
+            await connection.OpenAsync();
+
+            var sql = "update \"CacheAbstraction\" " +
+                      $"set \"Value\" = {value},\"UpdatedDate\" = (@updatedDate) " +
+                      "where \"Name\" = (@name) and \"SearchKey\" = (@searchKey) " +
+                      "and \"SearchValue\" = (@searchValue) " +
+                      "and \"EntityAnalysisModelId\" = (@entityAnalysisModelId)";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("searchKey", searchKey);
+            command.Parameters.AddWithValue("searchValue", searchValue);
+            command.Parameters.AddWithValue("name", name);
+            command.Parameters.AddWithValue("value", value);
+            command.Parameters.AddWithValue("updatedDate", DateTime.Now);
+
+            await command.PrepareAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<double?> GetByNameSearchNameSearchValueAsync(int tenantRegistryId, int entityAnalysisModelId,
+        string name,
+        string searchKey, string searchValue)
+    {
+        var connection = new NpgsqlConnection(connectionString);
+        double? value = null;
+        try
+        {
+            await connection.OpenAsync();
+
+            var sql = "select \"Value\" from \"CacheAbstraction\"" +
+                      " where \"Name\" = (@name) and \"SearchKey\" = (@searchKey)" +
+                      " and \"SearchValue\" = (@searchValue)" +
+                      " and \"EntityAnalysisModelId\" = (@entityAnalysisModelId)";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("searchKey", searchKey);
+            command.Parameters.AddWithValue("searchValue", searchValue);
+            command.Parameters.AddWithValue("name", name);
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync()) value = (double)reader.GetValue(1);
+
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey,
-            string searchValue, string name,
-            double value)
+        return value;
+    }
+
+    public async Task<Dictionary<string, double>>
+        GetByNameSearchNameSearchValueReturnValueOnlyTreatingMissingAsNullByReturnZeroRecordAsync(
+            int tenantRegistryId, int entityAnalysisModelId,
+            List<EntityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueDto>
+                entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests)
+    {
+        var connection = new NpgsqlConnection(connectionString);
+        var value = new Dictionary<string, double>();
+        try
         {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                await connection.OpenAsync();
+            await connection.OpenAsync();
 
-                var sql = "insert into\"CacheAbstraction\"(\"EntityAnalysisModelId\",\"SearchKey\"," +
-                          "\"SearchValue\",\"Name\",\"Value\",\"CreatedDate\")" +
-                          " values((@entityAnalysisModelId),(@searchKey),(@searchValue)," +
-                          "(@name),(@value),(@createdDate)); ";
+            var sql = "select \"Value\",\"Name\" from \"CacheAbstraction\"" +
+                      " where \"EntityAnalysisModelId\" = (@entityAnalysisModelId) and (";
 
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("searchKey", searchKey);
-                command.Parameters.AddWithValue("searchValue", searchValue);
-                command.Parameters.AddWithValue("name", name);
-                command.Parameters.AddWithValue("value", value);
-                command.Parameters.AddWithValue("createdDate", DateTime.Now);
+            var command = new NpgsqlCommand();
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
 
-                await command.PrepareAsync();
-                await command.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
+            for (var i = 0; i < entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests.Count; i++)
             {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
+                if (i > 0) sql += " or ";
+
+                sql +=
+                    $"(\"Name\" = (@name{i}) " +
+                    $"and \"SearchKey\" = (@searchKey{i}) " +
+                    $"and \"SearchValue\" = (@searchValue{i}))";
+
+                command.Parameters.AddWithValue($"searchKey{i}",
+                    entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests[i].SearchKey);
+                command.Parameters.AddWithValue($"searchValue{i}",
+                    entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests[i].SearchValue);
+                command.Parameters.AddWithValue($"name{i}",
+                    entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests[i].AbstractionRuleName);
+
+                value.Add(entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests[i]
+                    .AbstractionRuleName, 0);
             }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
+
+            command.CommandText = sql + ")";
+
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync()) value[(string)reader.GetValue(1)] = (double)reader.GetValue(0);
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task UpdateAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey,
-            string searchValue, string name, double value)
-        {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                await connection.OpenAsync();
-
-                var sql = "update \"CacheAbstraction\" " +
-                          $"set \"Value\" = {value},\"UpdatedDate\" = (@updatedDate) " +
-                          "where \"Name\" = (@name) and \"SearchKey\" = (@searchKey) " +
-                          "and \"SearchValue\" = (@searchValue) " +
-                          "and \"EntityAnalysisModelId\" = (@entityAnalysisModelId)";
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("searchKey", searchKey);
-                command.Parameters.AddWithValue("searchValue", searchValue);
-                command.Parameters.AddWithValue("name", name);
-                command.Parameters.AddWithValue("value", value);
-                command.Parameters.AddWithValue("updatedDate", DateTime.Now);
-
-                await command.PrepareAsync();
-                await command.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-        }
-
-        public async Task<double?> GetByNameSearchNameSearchValueAsync(int tenantRegistryId, int entityAnalysisModelId,
-            string name,
-            string searchKey, string searchValue)
-        {
-            var connection = new NpgsqlConnection(connectionString);
-            double? value = null;
-            try
-            {
-                await connection.OpenAsync();
-
-                var sql = "select \"Value\" from \"CacheAbstraction\"" +
-                          " where \"Name\" = (@name) and \"SearchKey\" = (@searchKey)" +
-                          " and \"SearchValue\" = (@searchValue)" +
-                          " and \"EntityAnalysisModelId\" = (@entityAnalysisModelId)";
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("searchKey", searchKey);
-                command.Parameters.AddWithValue("searchValue", searchValue);
-                command.Parameters.AddWithValue("name", name);
-                await command.PrepareAsync();
-
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    value = (double) reader.GetValue(1);
-                }
-
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-
-            return value;
-        }
-
-        public async Task<Dictionary<string, double>>
-            GetByNameSearchNameSearchValueReturnValueOnlyTreatingMissingAsNullByReturnZeroRecordAsync(
-                int tenantRegistryId, int entityAnalysisModelId,
-                List<EntityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueDto>
-                    entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests)
-        {
-            var connection = new NpgsqlConnection(connectionString);
-            var value = new Dictionary<string, double>();
-            try
-            {
-                await connection.OpenAsync();
-
-                var sql = "select \"Value\",\"Name\" from \"CacheAbstraction\"" +
-                          " where \"EntityAnalysisModelId\" = (@entityAnalysisModelId) and (";
-
-                var command = new NpgsqlCommand();
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-
-                for (int i = 0; i < entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests.Count; i++)
-                {
-                    if (i > 0)
-                    {
-                        sql += " or ";
-                    }
-
-                    sql +=
-                        $"(\"Name\" = (@name{i}) " +
-                        $"and \"SearchKey\" = (@searchKey{i}) " +
-                        $"and \"SearchValue\" = (@searchValue{i}))";
-
-                    command.Parameters.AddWithValue($"searchKey{i}",
-                        entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests[i].SearchKey);
-                    command.Parameters.AddWithValue($"searchValue{i}",
-                        entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests[i].SearchValue);
-                    command.Parameters.AddWithValue($"name{i}",
-                        entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests[i].AbstractionRuleName);
-
-                    value.Add(entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests[i]
-                        .AbstractionRuleName, 0);
-                }
-
-                command.CommandText = sql + ")";
-
-                await command.PrepareAsync();
-
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    value[(string) reader.GetValue(1)] = (double) reader.GetValue(0);
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-
-            return value;
-        }
+        return value;
     }
 }

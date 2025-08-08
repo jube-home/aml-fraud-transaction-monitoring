@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -17,64 +17,63 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
 
-namespace Jube.Data.Repository
+namespace Jube.Data.Repository;
+
+public class EntityAnalysisModelSyncronisationNodeStatusEntryRepository
 {
-    public class EntityAnalysisModelSyncronisationNodeStatusEntryRepository
+    private readonly DbContext _dbContext;
+
+    public EntityAnalysisModelSyncronisationNodeStatusEntryRepository(DbContext dbContext)
     {
-        private readonly DbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public EntityAnalysisModelSyncronisationNodeStatusEntryRepository(DbContext dbContext)
+    public EntityAnalysisModelSynchronisationNodeStatusEntry UpsertSynchronisation(
+        EntityAnalysisModelSynchronisationNodeStatusEntry model)
+    {
+        var existing =
+            _dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
+                .FirstOrDefault(w
+                    => w.TenantRegistryId == model.TenantRegistryId
+                       && w.Instance == model.Instance);
+
+        if (existing == null)
         {
-            _dbContext = dbContext;
+            model.SynchronisedDate = DateTime.Now;
+            model.HeartbeatDate = DateTime.Now;
+            model.Id = _dbContext.InsertWithInt32Identity(model);
+        }
+        else
+        {
+            existing.SynchronisedDate = DateTime.Now;
+            existing.HeartbeatDate = DateTime.Now;
+            _dbContext.Update(existing);
         }
 
-        public EntityAnalysisModelSynchronisationNodeStatusEntry UpsertSynchronisation(
-            EntityAnalysisModelSynchronisationNodeStatusEntry model)
+        return model;
+    }
+
+    public EntityAnalysisModelSynchronisationNodeStatusEntry UpsertHeartbeat(
+        EntityAnalysisModelSynchronisationNodeStatusEntry model)
+    {
+        var existing =
+            _dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
+                .FirstOrDefault(w
+                    => w.TenantRegistryId == model.TenantRegistryId
+                       && w.Instance == model.Instance);
+
+        if (existing == null)
         {
-            var existing =
-                _dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
-                    .FirstOrDefault(w
-                        => w.TenantRegistryId == model.TenantRegistryId
-                           && w.Instance == model.Instance);
-
-            if (existing == null)
-            {
-                model.SynchronisedDate = DateTime.Now;
-                model.HeartbeatDate = DateTime.Now;
-                model.Id = _dbContext.InsertWithInt32Identity(model);
-            }
-            else
-            {
-                existing.SynchronisedDate = DateTime.Now;
-                existing.HeartbeatDate = DateTime.Now;
-                _dbContext.Update(existing);
-            }
-
-            return model;
+            model.SynchronisedDate = DateTime.Now;
+            model.HeartbeatDate = DateTime.Now;
+            model.Id = _dbContext.InsertWithInt32Identity(model);
+        }
+        else
+        {
+            existing.HeartbeatDate = DateTime.Now;
+            _dbContext.Update(existing);
         }
 
-        public EntityAnalysisModelSynchronisationNodeStatusEntry UpsertHeartbeat(
-            EntityAnalysisModelSynchronisationNodeStatusEntry model)
-        {
-            var existing =
-                _dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
-                    .FirstOrDefault(w
-                        => w.TenantRegistryId == model.TenantRegistryId
-                           && w.Instance == model.Instance);
-
-            if (existing == null)
-            {
-                model.SynchronisedDate = DateTime.Now;
-                model.HeartbeatDate = DateTime.Now;
-                model.Id = _dbContext.InsertWithInt32Identity(model);
-            }
-            else
-            {
-                existing.HeartbeatDate = DateTime.Now;
-                _dbContext.Update(existing);
-            }
-
-            return model;
-        }
+        return model;
     }
 }

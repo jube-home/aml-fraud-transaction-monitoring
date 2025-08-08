@@ -64,7 +64,7 @@ $(document).ready(function () {
                         i++;
                     }
                     errorString = errorString + '</ul>';
-                    
+
                     $("#MessageSandboxRegistration").html(errorString);
                     $("#SandboxRegistration").data("kendoValidator").reset();
                 }

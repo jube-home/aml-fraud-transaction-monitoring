@@ -239,7 +239,7 @@ $(document).ready(function () {
         $("#CacheTtlIntervalValue").kendoNumericTextBox({
             format: "#"
         });
-        
+
         $(function () {
             deleteButton
                 .click(function () {

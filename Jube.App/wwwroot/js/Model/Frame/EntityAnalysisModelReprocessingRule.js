@@ -197,7 +197,7 @@ if (typeof id === "undefined") {
 
             reprocessingSample.data("kendoSlider").value(data.reprocessingSample);
 
-            initBuilderCoder(2,parentKey, builderCoderData);
+            initBuilderCoder(2, parentKey, builderCoderData);
             GetInstances();
             ReadyExisting(data);
 
@@ -239,7 +239,7 @@ $(function () {
     addButton
         .click(function () {
             if (validator.validate()) {
-                Create(endpoint, GetData(), "id", parentKeyName,Callback());
+                Create(endpoint, GetData(), "id", parentKeyName, Callback());
             } else {
                 $("#ErrorMessage").html(validationFail);
             }

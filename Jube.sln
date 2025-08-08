@@ -43,6 +43,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jube.Preservation", "Jube.Preservation\Jube.Preservation.csproj", "{E5619986-913D-46DB-A843-06AB34B925FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jube.Cryptography", "Jube.Cryptography\Jube.Cryptography.csproj", "{3A8A1072-8832-4964-AD7F-22AFF60AB4DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +133,14 @@ Global
 		{6080B03C-B1F7-4AEB-A046-2BA8FEA634BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6080B03C-B1F7-4AEB-A046-2BA8FEA634BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6080B03C-B1F7-4AEB-A046-2BA8FEA634BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5619986-913D-46DB-A843-06AB34B925FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5619986-913D-46DB-A843-06AB34B925FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5619986-913D-46DB-A843-06AB34B925FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5619986-913D-46DB-A843-06AB34B925FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A8A1072-8832-4964-AD7F-22AFF60AB4DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A8A1072-8832-4964-AD7F-22AFF60AB4DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A8A1072-8832-4964-AD7F-22AFF60AB4DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A8A1072-8832-4964-AD7F-22AFF60AB4DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

@@ -58,7 +58,7 @@ $(document).ready(function () {
                 showHomePage();
             }
         });
-        
+
         $(function () {
             deleteButton
                 .click(function () {
@@ -69,10 +69,9 @@ $(document).ready(function () {
         });
 
         function GetData() {
-            return {
-            };
+            return {};
         }
-        
+
         $(function () {
             addButton
                 .click(function () {

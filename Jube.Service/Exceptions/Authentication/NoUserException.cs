@@ -13,7 +13,4 @@
 
 namespace Jube.Service.Exceptions.Authentication;
 
-public class NoUserException : Exception
-{
-    
-}
+public class NoUserException : Exception;

@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -45,7 +45,7 @@ namespace Jube.App.Controllers.Repository
         private readonly IValidator<EntityAnalysisModelAbstractionCalculationDto> _validator;
 
         public EntityAnalysisModelAbstractionCalculationController(ILog log,
-            IHttpContextAccessor httpContextAccessor,DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+            IHttpContextAccessor httpContextAccessor, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
                 _userName = httpContextAccessor.HttpContext.User.Identity.Name;
@@ -54,7 +54,7 @@ namespace Jube.App.Controllers.Repository
             _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
             _permissionValidation = new PermissionValidation(_dbContext, _userName);
-            
+
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<EntityAnalysisModelAbstractionCalculationDto,
@@ -62,7 +62,7 @@ namespace Jube.App.Controllers.Repository
                 cfg.CreateMap<EntityAnalysisModelAbstractionCalculation,
                     EntityAnalysisModelAbstractionCalculationDto>();
                 cfg.CreateMap<List<EntityAnalysisModelAbstractionCalculation>,
-                    List<EntityAnalysisModelAbstractionCalculationDto>>()
+                        List<EntityAnalysisModelAbstractionCalculationDto>>()
                     .ForMember("Item", opt => opt.Ignore());
             });
             _mapper = new Mapper(config);
@@ -77,15 +77,16 @@ namespace Jube.App.Controllers.Repository
                 _dbContext.Close();
                 _dbContext.Dispose();
             }
+
             base.Dispose(disposing);
         }
-        
+
         [HttpGet]
         public ActionResult<List<EntityAnalysisModelAbstractionCalculationDto>> Get()
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {14})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 14 })) return Forbid();
 
                 return Ok(_mapper.Map<List<EntityAnalysisModelAbstractionCalculationDto>>(_repository.Get()));
             }
@@ -102,10 +103,10 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {14})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 14 })) return Forbid();
 
                 return Ok(_mapper.Map<List<EntityAnalysisModelAbstractionCalculationDto>>(
-                    _repository.GetByEntityAnalysisModelId(entityAnalysisModelId)));
+                    _repository.GetByEntityAnalysisModelIdOrderByIdDesc(entityAnalysisModelId)));
             }
             catch (Exception e)
             {
@@ -119,7 +120,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {14})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 14 })) return Forbid();
 
                 return Ok(_mapper.Map<EntityAnalysisModelAbstractionCalculationDto>(_repository.GetById(id)));
             }
@@ -131,14 +132,14 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(EntityAnalysisModelAbstractionCalculationDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(EntityAnalysisModelAbstractionCalculationDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<EntityAnalysisModelAbstractionCalculationDto> Create(
             [FromBody] EntityAnalysisModelAbstractionCalculationDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {14}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 14 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid)
@@ -154,14 +155,14 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(EntityAnalysisModelAbstractionCalculationDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(EntityAnalysisModelAbstractionCalculationDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<EntityAnalysisModelAbstractionCalculationDto> Update(
             [FromBody] EntityAnalysisModelAbstractionCalculationDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {14}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 14 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid)
@@ -186,7 +187,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {14}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 14 }, true)) return Forbid();
 
                 _repository.Delete(id);
                 return Ok();

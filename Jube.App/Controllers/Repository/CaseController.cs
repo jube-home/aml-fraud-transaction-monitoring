@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -54,11 +54,11 @@ namespace Jube.App.Controllers.Repository
             if (httpContextAccessor.HttpContext?.User.Identity != null)
                 _userName = httpContextAccessor.HttpContext.User.Identity.Name;
             _log = log;
-            
+
             _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
             _permissionValidation = new PermissionValidation(_dbContext, _userName);
-            
+
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Case, CaseDto>();
@@ -72,7 +72,7 @@ namespace Jube.App.Controllers.Repository
             _validator = new CaseDtoValidator();
             _dynamicEnvironment = dynamicEnvironment;
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -80,6 +80,7 @@ namespace Jube.App.Controllers.Repository
                 _dbContext.Close();
                 _dbContext.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -88,7 +89,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {1})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 1 })) return Forbid();
 
                 return Ok(_mapper.Map<List<CaseDto>>(_repositoryCase.Get()));
             }
@@ -105,7 +106,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {1})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 1 })) return Forbid();
 
                 return Ok(_mapper.Map<CaseDto>(
                     _repositoryCase.GetById(id)));
@@ -118,13 +119,13 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(CaseDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(CaseDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<CaseDto> CreateCase([FromBody] CaseDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {1}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 1 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid) return Ok(_repositoryCase.Insert(_mapper.Map<Case>(model)));
@@ -139,266 +140,259 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(CaseDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(CaseDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<CaseDto> UpdateCase([FromBody] CaseDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {1}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 1 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
-                if (results.IsValid)
-                {
-                    var existing = _repositoryCase.GetById(model.Id);
 
-                    var caseEvents = new List<CaseEvent>();
+                if (!results.IsValid) return BadRequest(results);
 
-                    if (existing.ClosedStatusId is 0 or 1 or 2)
+                var existing = _repositoryCase.GetById(model.Id);
+
+                var caseEvents = new List<CaseEvent>();
+
+                if (existing.ClosedStatusId is 0 or 1 or 2)
+                    switch (model.ClosedStatusId)
                     {
-                        switch (model.ClosedStatusId)
-                        {
-                            case 3:
-                                existing.ClosedUser = _userName;
-                                existing.ClosedDate = DateTime.Now;
+                        case 3:
+                            existing.ClosedUser = _userName;
+                            existing.ClosedDate = DateTime.Now;
 
-                                caseEvents.Add(new CaseEvent
-                                    {
-                                        CaseEventTypeId = 5,
-                                        CaseId = existing.Id,
-                                        CaseKey = existing.CaseKey,
-                                        CaseKeyValue = existing.CaseKeyValue,
-                                        After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
-                                        CreatedDate = existing.ClosedDate,
-                                        CreatedUser = _userName
-                                    }
-                                );
-                                break;
-                            case 2:
-                                caseEvents.Add(new CaseEvent
-                                    {
-                                        CaseEventTypeId = 12,
-                                        CaseId = existing.Id,
-                                        CaseKey = existing.CaseKey,
-                                        CaseKeyValue = existing.CaseKeyValue,
-                                        Before = existing.ClosedDate.ToString(),
-                                        After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
-                                        CreatedDate = DateTime.Now,
-                                        CreatedUser = _userName
-                                    }
-                                );
-                                break;
-                            case 1:
-                                caseEvents.Add(new CaseEvent
-                                    {
-                                        CaseEventTypeId = 13,
-                                        CaseId = existing.Id,
-                                        CaseKey = existing.CaseKey,
-                                        CaseKeyValue = existing.CaseKeyValue,
-                                        Before = existing.ClosedDate.ToString(),
-                                        After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
-                                        CreatedDate = DateTime.Now,
-                                        CreatedUser = _userName
-                                    }
-                                );
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        switch (model.ClosedStatusId)
-                        {
-                            case 2:
-                                caseEvents.Add(new CaseEvent
-                                    {
-                                        CaseEventTypeId = 12,
-                                        CaseId = existing.Id,
-                                        CaseKey = existing.CaseKey,
-                                        CaseKeyValue = existing.CaseKeyValue,
-                                        Before = existing.ClosedDate.ToString(),
-                                        After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
-                                        CreatedDate = DateTime.Now,
-                                        CreatedUser = _userName
-                                    }
-                                );
-                                break;
-                            case 1:
-                                caseEvents.Add(new CaseEvent
-                                    {
-                                        CaseEventTypeId = 13,
-                                        CaseId = existing.Id,
-                                        CaseKey = existing.CaseKey,
-                                        CaseKeyValue = existing.CaseKeyValue,
-                                        Before = existing.ClosedDate.ToString(),
-                                        After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
-                                        CreatedDate = DateTime.Now,
-                                        CreatedUser = _userName
-                                    }
-                                );
-                                break;
-                        }
-                    }
-
-                    existing.ClosedStatusId = model.ClosedStatusId;
-
-                    if (existing.LockedUser != model.LockedUser)
-                        caseEvents.Add(new CaseEvent
-                            {
-                                CaseEventTypeId = 14,
-                                CaseId = existing.Id,
-                                CaseKey = existing.CaseKey,
-                                CaseKeyValue = existing.CaseKeyValue,
-                                Before = existing.LockedUser,
-                                After = model.LockedUser,
-                                CreatedDate = DateTime.Now,
-                                CreatedUser = _userName
-                            }
-                        );
-
-                    existing.LockedUser = model.LockedUser;
-
-                    if (existing.Locked is 0 or null)
-                    {
-                        if (existing.Locked == 1)
-                        {
                             caseEvents.Add(new CaseEvent
                                 {
-                                    CaseEventTypeId = 6,
+                                    CaseEventTypeId = 5,
                                     CaseId = existing.Id,
                                     CaseKey = existing.CaseKey,
                                     CaseKeyValue = existing.CaseKeyValue,
-                                    CreatedDate = DateTime.Now,
+                                    After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
+                                    CreatedDate = existing.ClosedDate,
                                     CreatedUser = _userName
                                 }
                             );
-
-                            existing.LockedDate = DateTime.Now;
-                            existing.LockedUser = _userName;
-                        }
-                        else
-                        {
-                            existing.LockedDate = null;
-                        }
-                    }
-
-                    existing.Locked = (byte) (model.Locked ? 1 : 0);
-
-                    if (existing.DiaryDate != model.DiaryDate)
-                        caseEvents.Add(new CaseEvent
-                            {
-                                CaseEventTypeId = 10,
-                                CaseId = existing.Id,
-                                CaseKey = existing.CaseKey,
-                                CaseKeyValue = existing.LockedUser,
-                                Before = existing.DiaryDate.ToString(),
-                                After = model.DiaryDate.ToString(CultureInfo.InvariantCulture),
-                                CreatedDate = DateTime.Now,
-                                CreatedUser = _userName
-                            }
-                        );
-
-                    existing.DiaryDate = model.DiaryDate;
-
-                    if (existing.Diary is 0 or null)
-                        if (model.Diary)
-                        {
+                            break;
+                        case 2:
                             caseEvents.Add(new CaseEvent
                                 {
-                                    CaseEventTypeId = 7,
+                                    CaseEventTypeId = 12,
                                     CaseId = existing.Id,
                                     CaseKey = existing.CaseKey,
-                                    CaseKeyValue = existing.LockedUser,
+                                    CaseKeyValue = existing.CaseKeyValue,
+                                    Before = existing.ClosedDate.ToString(),
+                                    After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
                                     CreatedDate = DateTime.Now,
                                     CreatedUser = _userName
                                 }
                             );
+                            break;
+                        case 1:
+                            caseEvents.Add(new CaseEvent
+                                {
+                                    CaseEventTypeId = 13,
+                                    CaseId = existing.Id,
+                                    CaseKey = existing.CaseKey,
+                                    CaseKeyValue = existing.CaseKeyValue,
+                                    Before = existing.ClosedDate.ToString(),
+                                    After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
+                                    CreatedDate = DateTime.Now,
+                                    CreatedUser = _userName
+                                }
+                            );
+                            break;
+                    }
+                else
+                    switch (model.ClosedStatusId)
+                    {
+                        case 2:
+                            caseEvents.Add(new CaseEvent
+                                {
+                                    CaseEventTypeId = 12,
+                                    CaseId = existing.Id,
+                                    CaseKey = existing.CaseKey,
+                                    CaseKeyValue = existing.CaseKeyValue,
+                                    Before = existing.ClosedDate.ToString(),
+                                    After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
+                                    CreatedDate = DateTime.Now,
+                                    CreatedUser = _userName
+                                }
+                            );
+                            break;
+                        case 1:
+                            caseEvents.Add(new CaseEvent
+                                {
+                                    CaseEventTypeId = 13,
+                                    CaseId = existing.Id,
+                                    CaseKey = existing.CaseKey,
+                                    CaseKeyValue = existing.CaseKeyValue,
+                                    Before = existing.ClosedDate.ToString(),
+                                    After = model.ClosedDate.ToString(CultureInfo.InvariantCulture),
+                                    CreatedDate = DateTime.Now,
+                                    CreatedUser = _userName
+                                }
+                            );
+                            break;
+                    }
 
-                            existing.DiaryUser = _userName;
+                existing.ClosedStatusId = model.ClosedStatusId;
+
+                if (existing.LockedUser != model.LockedUser)
+                    caseEvents.Add(new CaseEvent
+                        {
+                            CaseEventTypeId = 14,
+                            CaseId = existing.Id,
+                            CaseKey = existing.CaseKey,
+                            CaseKeyValue = existing.CaseKeyValue,
+                            Before = existing.LockedUser,
+                            After = model.LockedUser,
+                            CreatedDate = DateTime.Now,
+                            CreatedUser = _userName
                         }
+                    );
 
-                    existing.Diary = (byte) (model.Diary ? 1 : 0);
+                existing.LockedUser = model.LockedUser;
 
-                    if (existing.CaseWorkflowStatusId != model.CaseWorkflowStatusId)
+                if (existing.Locked is 0 or null)
+                {
+                    if (existing.Locked == 1)
                     {
                         caseEvents.Add(new CaseEvent
                             {
-                                CaseEventTypeId = 9,
+                                CaseEventTypeId = 6,
                                 CaseId = existing.Id,
                                 CaseKey = existing.CaseKey,
-                                CaseKeyValue = existing.LockedUser,
-                                Before = existing.CaseWorkflowStatusId.ToString(),
-                                After = model.CaseWorkflowStatusId.ToString(),
+                                CaseKeyValue = existing.CaseKeyValue,
                                 CreatedDate = DateTime.Now,
                                 CreatedUser = _userName
                             }
                         );
 
-                        if (model.Payload != null)
-                        {
-                            var jObject = JObject.Parse(model.Payload);
+                        existing.LockedDate = DateTime.Now;
+                        existing.LockedUser = _userName;
+                    }
+                    else
+                    {
+                        existing.LockedDate = null;
+                    }
+                }
 
-                            var values = new Dictionary<string, string>();
-                            foreach (var (key, value) in jObject)
+                existing.Locked = (byte)(model.Locked ? 1 : 0);
+
+                if (existing.DiaryDate != model.DiaryDate)
+                    caseEvents.Add(new CaseEvent
+                        {
+                            CaseEventTypeId = 10,
+                            CaseId = existing.Id,
+                            CaseKey = existing.CaseKey,
+                            CaseKeyValue = existing.LockedUser,
+                            Before = existing.DiaryDate.ToString(),
+                            After = model.DiaryDate.ToString(CultureInfo.InvariantCulture),
+                            CreatedDate = DateTime.Now,
+                            CreatedUser = _userName
+                        }
+                    );
+
+                existing.DiaryDate = model.DiaryDate;
+
+                if (existing.Diary is 0 or null)
+                    if (model.Diary)
+                    {
+                        caseEvents.Add(new CaseEvent
                             {
-                                if (value != null) values.Add(key, value.ToString());
+                                CaseEventTypeId = 7,
+                                CaseId = existing.Id,
+                                CaseKey = existing.CaseKey,
+                                CaseKeyValue = existing.LockedUser,
+                                CreatedDate = DateTime.Now,
+                                CreatedUser = _userName
+                            }
+                        );
+
+                        existing.DiaryUser = _userName;
+                    }
+
+                existing.Diary = (byte)(model.Diary ? 1 : 0);
+
+                if (existing.CaseWorkflowStatusGuid != model.CaseWorkflowStatusGuid)
+                {
+                    caseEvents.Add(new CaseEvent
+                        {
+                            CaseEventTypeId = 9,
+                            CaseId = existing.Id,
+                            CaseKey = existing.CaseKey,
+                            CaseKeyValue = existing.LockedUser,
+                            Before = existing.CaseWorkflowStatusGuid.ToString(),
+                            After = model.CaseWorkflowStatusGuid.ToString(),
+                            CreatedDate = DateTime.Now,
+                            CreatedUser = _userName
+                        }
+                    );
+
+                    if (model.Payload != null)
+                    {
+                        var jObject = JObject.Parse(model.Payload);
+
+                        var values = new Dictionary<string, string>();
+                        foreach (var (key, value) in jObject)
+                            if (value != null)
+                                values.Add(key, value.ToString());
+
+                        var caseWorkflowStatusRepository =
+                            new CaseWorkflowStatusRepository(_dbContext, _userName);
+
+                        var caseWorkflowStatus =
+                            caseWorkflowStatusRepository.GetByGuid(model.CaseWorkflowStatusGuid);
+
+                        if (caseWorkflowStatus.EnableNotification == 1 ||
+                            caseWorkflowStatus.EnableHttpEndpoint == 1)
+                        {
+                            if (caseWorkflowStatus.EnableNotification == 1)
+                            {
+                                var notification = new Notification(_log, _dynamicEnvironment);
+                                notification.Send(caseWorkflowStatus.NotificationTypeId ?? 1,
+                                    caseWorkflowStatus.NotificationDestination,
+                                    caseWorkflowStatus.NotificationSubject,
+                                    caseWorkflowStatus.NotificationBody, values);
                             }
 
-                            var caseWorkflowStatusRepository =
-                                new CaseWorkflowStatusRepository(_dbContext, _userName);
-
-                            var caseWorkflowStatus =
-                                caseWorkflowStatusRepository.GetById(model.CaseWorkflowStatusId);
-
-                            if (caseWorkflowStatus.EnableNotification == 1 ||
-                                caseWorkflowStatus.EnableHttpEndpoint == 1)
+                            if (caseWorkflowStatus.EnableHttpEndpoint == 1)
                             {
-                                if (caseWorkflowStatus.EnableNotification == 1)
-                                {
-                                    var notification = new Notification(_log, _dynamicEnvironment);
-                                    notification.Send(caseWorkflowStatus.NotificationTypeId ?? 1,
-                                        caseWorkflowStatus.NotificationDestination,
-                                        caseWorkflowStatus.NotificationSubject,
-                                        caseWorkflowStatus.NotificationBody, values);
-                                }
-
-                                if (caseWorkflowStatus.EnableHttpEndpoint == 1)
-                                {
-                                    var sendHttpEndpoint = new SendHttpEndpoint();
-                                    if (caseWorkflowStatus.HttpEndpointTypeId != null)
-                                        sendHttpEndpoint.Send(caseWorkflowStatus.HttpEndpoint,
-                                            caseWorkflowStatus.HttpEndpointTypeId.Value
-                                            , values);
-                                }
+                                var sendHttpEndpoint = new SendHttpEndpoint();
+                                if (caseWorkflowStatus.HttpEndpointTypeId != null)
+                                    sendHttpEndpoint.Send(caseWorkflowStatus.HttpEndpoint,
+                                        caseWorkflowStatus.HttpEndpointTypeId.Value
+                                        , values);
                             }
                         }
                     }
-
-                    existing.CaseWorkflowStatusId = model.CaseWorkflowStatusId;
-
-                    if (existing.Rating != model.Rating)
-                        caseEvents.Add(new CaseEvent
-                            {
-                                CaseEventTypeId = 11,
-                                CaseId = existing.Id,
-                                CaseKey = existing.CaseKey,
-                                CaseKeyValue = existing.LockedUser,
-                                Before = existing.Rating.ToString(),
-                                After = model.Rating.ToString(),
-                                CreatedDate = DateTime.Now,
-                                CreatedUser = _userName
-                            }
-                        );
-
-                    existing.Rating = model.Rating;
-
-                    existing = _repositoryCase.Update(existing);
-
-                    _repositoryCaseEvent.BulkInsert(caseEvents);
-
-                    return Ok(existing);
                 }
 
-                return BadRequest(results);
+                existing.CaseWorkflowStatusGuid = model.CaseWorkflowStatusGuid;
+
+                if (existing.Rating != model.Rating)
+                    caseEvents.Add(new CaseEvent
+                        {
+                            CaseEventTypeId = 11,
+                            CaseId = existing.Id,
+                            CaseKey = existing.CaseKey,
+                            CaseKeyValue = existing.LockedUser,
+                            Before = existing.Rating.ToString(),
+                            After = model.Rating.ToString(),
+                            CreatedDate = DateTime.Now,
+                            CreatedUser = _userName
+                        }
+                    );
+
+                existing.Rating = model.Rating;
+
+                existing = _repositoryCase.Update(existing);
+
+                _repositoryCaseEvent.BulkInsert(caseEvents);
+
+                return Ok(existing);
             }
             catch (KeyNotFoundException)
             {

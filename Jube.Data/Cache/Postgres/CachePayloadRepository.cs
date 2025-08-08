@@ -20,388 +20,380 @@ using Newtonsoft.Json;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace Jube.Data.Cache.Postgres
+namespace Jube.Data.Cache.Postgres;
+
+public class CachePayloadRepository() : ICachePayloadRepository
 {
-    public class CachePayloadRepository() : ICachePayloadRepository
+    private readonly string _connectionString;
+    private readonly ILog _log;
+    private readonly string _sqlFrom;
+    private readonly string _sqlOrderBy;
+    private readonly string _sqlSelect;
+
+    public CachePayloadRepository(string connectionString, string sqlSelect,
+        string sqlFrom, string sqlOrderBy, ILog log) : this()
     {
-        private readonly string connectionString;
-        private readonly string sqlSelect;
-        private readonly string sqlFrom;
-        private readonly string sqlOrderBy;
-        private readonly ILog log;
+        _connectionString = connectionString;
+        _log = log;
+        _sqlSelect = sqlSelect;
+        _sqlFrom = sqlFrom;
+        _sqlOrderBy = sqlOrderBy;
+        _log = log;
+    }
 
-        public CachePayloadRepository(string connectionString, string sqlSelect,
-            string sqlFrom, string sqlOrderBy, ILog log) : this()
+    public CachePayloadRepository(string connectionString, ILog log) : this()
+    {
+        _connectionString = connectionString;
+        _log = log;
+    }
+
+    public async Task CreateIndexAsync(int tenantRegistryId,
+        int entityAnalysisModelId,
+        string name, string date, string expression)
+    {
+        var connection = new NpgsqlConnection(_connectionString);
+        try
         {
-            this.connectionString = connectionString;
-            this.log = log;
-            this.sqlSelect = sqlSelect;
-            this.sqlFrom = sqlFrom;
-            this.sqlOrderBy = sqlOrderBy;
-            this.log = log;
+            await connection.OpenAsync();
+
+            var sql = "create index \"" + name + "\" on \"CachePayload\"" +
+                      " (\"EntityAnalysisModelId\"," + date + " DESC," + expression + ")" +
+                      " where \"EntityAnalysisModelId\" = " + entityAnalysisModelId;
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            _log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<List<string>> GetIndexesAsync(int tenantRegistryId, int entityAnalysisModelId)
+    {
+        var connection = new NpgsqlConnection(_connectionString);
+        var value = new List<string>();
+        try
+        {
+            await connection.OpenAsync();
+
+            // ReSharper disable once StringLiteralTypo
+            var sql = "select indexname" +
+                      " from pg_indexes " +
+                      // ReSharper disable once StringLiteralTypo
+                      " where tablename =  'CachePayload';";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+                if (!reader.IsDBNull(0))
+                    value.Add(reader.GetValue(0).ToString());
+
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
+        }
+        catch (Exception ex)
+        {
+            _log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public CachePayloadRepository(string connectionString, ILog log) : this()
+        return value;
+    }
+
+    public async Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId,
+        Dictionary<string, object> payload,
+        DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid)
+    {
+        var connection = new NpgsqlConnection(_connectionString);
+        try
         {
-            this.connectionString = connectionString;
-            this.log = log;
+            await connection.OpenAsync();
+
+            var sql = "insert into\"CachePayload\"(\"EntityAnalysisModelId\",\"Json\",\"ReferenceDate\"," +
+                      "\"CreatedDate\",\"EntityAnalysisModelInstanceEntryGuid\")" +
+                      " values((@entityAnalysisModelId),(@json),(@referenceDate),(@createdDate)," +
+                      "(@entityAnalysisModelInstanceEntryGuid))";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("json", NpgsqlDbType.Jsonb, JsonConvert.SerializeObject(payload));
+            command.Parameters.AddWithValue("referenceDate", referenceDate);
+            command.Parameters.AddWithValue("createdDate", DateTime.Now);
+            command.Parameters.AddWithValue("entityAnalysisModelInstanceEntryGuid",
+                entityAnalysisModelInstanceEntryGuid);
+
+            await command.PrepareAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            _log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
+    public Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string key, string value,
+        Dictionary<string, object> payload,
+        DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task UpsertAsync(int tenantRegistryId, int entityAnalysisModelId,
+        Dictionary<string, object> payload,
+        DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid)
+    {
+        var connection = new NpgsqlConnection(_connectionString);
+        try
+        {
+            await connection.OpenAsync();
+
+            var sql = "insert into\"CachePayload\"(\"EntityAnalysisModelId\",\"Json\",\"ReferenceDate\"," +
+                      "\"CreatedDate\",\"EntityAnalysisModelInstanceEntryGuid\")" +
+                      " values((@entityAnalysisModelId),(@json),(@referenceDate),(@createdDate)," +
+                      "(@entityAnalysisModelInstanceEntryGuid)) " +
+                      "ON CONFLICT (\"EntityAnalysisModelInstanceEntryGuid\") " +
+                      " DO UPDATE set \"Json\" = (@json), \"UpdatedDate\" = (@updatedDate)";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            command.Parameters.AddWithValue("json", NpgsqlDbType.Jsonb, JsonConvert.SerializeObject(payload));
+            command.Parameters.AddWithValue("referenceDate", referenceDate);
+            command.Parameters.AddWithValue("createdDate", DateTime.Now);
+            command.Parameters.AddWithValue("updatedDate", DateTime.Now);
+            command.Parameters.AddWithValue("entityAnalysisModelInstanceEntryGuid",
+                entityAnalysisModelInstanceEntryGuid);
+
+            await command.PrepareAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            _log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
+    public async Task<List<Dictionary<string, object>>> GetExcludeCurrent(int tenantRegistryId,
+        int entityAnalysisModelId,
+        string key, string value, int limit,
+        Guid entityInconsistentAnalysisModelInstanceEntryGuid)
+    {
+        var connection = new NpgsqlConnection(_connectionString);
+        var documents = new List<Dictionary<string, object>>();
+        try
+        {
+            await connection.OpenAsync();
+
+            var sql = _sqlSelect + _sqlFrom + " and \"EntityAnalysisModelInstanceEntryGuid\" " +
+                      "!= @entityAnalysisModelInstanceEntryGuid " + _sqlOrderBy;
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("key", key);
+            command.Parameters.AddWithValue("value", value);
+            command.Parameters.AddWithValue("limit", limit);
+            command.Parameters.AddWithValue("entityAnalysisModelInstanceEntryGuid",
+                entityInconsistentAnalysisModelInstanceEntryGuid);
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var document = new Dictionary<string, object>();
+                for (var index = 0; index < reader.FieldCount; index++)
+                    if (!reader.IsDBNull(index))
+                    {
+                        if (document.ContainsKey(reader.GetName(index))) continue;
+
+                        document.Add(reader.GetName(index), reader.GetValue(index));
+                    }
+
+                documents.Add(document);
+            }
+
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
+        }
+        catch (Exception ex)
+        {
+            _log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task CreateIndexAsync(int tenantRegistryId,
-            int entityAnalysisModelId,
-            string name, string date, string expression)
+        return documents;
+    }
+
+    public async Task<List<Dictionary<string, object>>> GetInitialCountsAsync(int tenantRegistryId,
+        int entityAnalysisModelId)
+    {
+        var connection = new NpgsqlConnection(_connectionString);
+        var documents = new List<Dictionary<string, object>>();
+        try
         {
-            var connection = new NpgsqlConnection(connectionString);
-            try
+            await connection.OpenAsync();
+
+            var sql = "select count(*) as \"Count\",max(\"ReferenceDate\") as \"Max\"," +
+                      "min(\"ReferenceDate\") as \"Min\" from \"CachePayload\" " +
+                      "where \"EntityAnalysisModelId\" = (@entityAnalysisModelId)";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                await connection.OpenAsync();
-
-                var sql = "create index \"" + name + "\" on \"CachePayload\"" +
-                          " (\"EntityAnalysisModelId\"," + date + " DESC," + expression + ")" +
-                          " where \"EntityAnalysisModelId\" = " + entityAnalysisModelId;
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                await command.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-        }
-
-        public async Task<List<string>> GetIndexesAsync(int tenantRegistryId, int entityAnalysisModelId)
-        {
-            var connection = new NpgsqlConnection(connectionString);
-            var value = new List<string>();
-            try
-            {
-                await connection.OpenAsync();
-
-                // ReSharper disable once StringLiteralTypo
-                var sql = "select indexname" +
-                          " from pg_indexes " +
-                          // ReSharper disable once StringLiteralTypo
-                          " where tablename =  'CachePayload';";
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                await command.PrepareAsync();
-
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                    if (!reader.IsDBNull(0))
-                        value.Add(reader.GetValue(0).ToString());
-
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-
-            return value;
-        }
-
-        public async Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId,
-            Dictionary<string, object> payload,
-            DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid)
-        {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                await connection.OpenAsync();
-
-                var sql = "insert into\"CachePayload\"(\"EntityAnalysisModelId\",\"Json\",\"ReferenceDate\"," +
-                          "\"CreatedDate\",\"EntityAnalysisModelInstanceEntryGuid\")" +
-                          " values((@entityAnalysisModelId),(@json),(@referenceDate),(@createdDate)," +
-                          "(@entityAnalysisModelInstanceEntryGuid))";
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("json", NpgsqlDbType.Jsonb, JsonConvert.SerializeObject(payload));
-                command.Parameters.AddWithValue("referenceDate", referenceDate);
-                command.Parameters.AddWithValue("createdDate", DateTime.Now);
-                command.Parameters.AddWithValue("entityAnalysisModelInstanceEntryGuid",
-                    entityAnalysisModelInstanceEntryGuid);
-
-                await command.PrepareAsync();
-                await command.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-            }
-        }
-
-        public Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string key, string value,
-            Dictionary<string, object> payload,
-            DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task UpsertAsync(int tenantRegistryId, int entityAnalysisModelId,
-            Dictionary<string, object> payload,
-            DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid)
-        {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                await connection.OpenAsync();
-
-                var sql = "insert into\"CachePayload\"(\"EntityAnalysisModelId\",\"Json\",\"ReferenceDate\"," +
-                          "\"CreatedDate\",\"EntityAnalysisModelInstanceEntryGuid\")" +
-                          " values((@entityAnalysisModelId),(@json),(@referenceDate),(@createdDate)," +
-                          "(@entityAnalysisModelInstanceEntryGuid)) " +
-                          "ON CONFLICT (\"EntityAnalysisModelInstanceEntryGuid\") " +
-                          " DO UPDATE set \"Json\" = (@json), \"UpdatedDate\" = (@updatedDate)";
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                command.Parameters.AddWithValue("json", NpgsqlDbType.Jsonb, JsonConvert.SerializeObject(payload));
-                command.Parameters.AddWithValue("referenceDate", referenceDate);
-                command.Parameters.AddWithValue("createdDate", DateTime.Now);
-                command.Parameters.AddWithValue("updatedDate", DateTime.Now);
-                command.Parameters.AddWithValue("entityAnalysisModelInstanceEntryGuid",
-                    entityAnalysisModelInstanceEntryGuid);
-
-                await command.PrepareAsync();
-                await command.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-            }
-        }
-
-
-        public async Task<List<Dictionary<string, object>>> GetSqlByKeyValueLimitAsync(
-            int tenantRegistryId,
-            int entityAnalysisModelId, string sql,
-            string key, string value, string order, int limit)
-        {
-            var connection = new NpgsqlConnection(connectionString);
-            var documents = new List<Dictionary<string, object>>();
-            try
-            {
-                await connection.OpenAsync();
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("key", key);
-                command.Parameters.AddWithValue("value", value);
-                command.Parameters.AddWithValue("order", order);
-                command.Parameters.AddWithValue("limit", limit);
-                await command.PrepareAsync();
-
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    var document = new Dictionary<string, object>();
-                    for (var index = 0; index < reader.FieldCount; index++)
-                        if (!reader.IsDBNull(index))
-                        {
-                            if (document.ContainsKey(reader.GetName(index))) continue;
-
+                var document = new Dictionary<string, object>();
+                for (var index = 0; index < reader.FieldCount; index++)
+                    if (!reader.IsDBNull(index))
+                        if (!document.ContainsKey(reader.GetName(index)))
                             document.Add(reader.GetName(index), reader.GetValue(index));
-                        }
 
-                    documents.Add(document);
-                }
-
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
+                documents.Add(document);
             }
 
-            return documents;
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
         }
-
-        public async Task<List<Dictionary<string, object>>> GetExcludeCurrent(int tenantRegistryId,
-            int entityAnalysisModelId,
-            string key, string value, int limit,
-            Guid entityInconsistentAnalysisModelInstanceEntryGuid)
+        catch (Exception ex)
         {
-            var connection = new NpgsqlConnection(connectionString);
-            var documents = new List<Dictionary<string, object>>();
-            try
-            {
-                await connection.OpenAsync();
-
-                var sql = sqlSelect + sqlFrom + " and \"EntityAnalysisModelInstanceEntryGuid\" " +
-                          "!= @entityAnalysisModelInstanceEntryGuid " + sqlOrderBy;
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("key", key);
-                command.Parameters.AddWithValue("value", value);
-                command.Parameters.AddWithValue("limit", limit);
-                command.Parameters.AddWithValue("entityAnalysisModelInstanceEntryGuid",
-                    entityInconsistentAnalysisModelInstanceEntryGuid);
-                await command.PrepareAsync();
-
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    var document = new Dictionary<string, object>();
-                    for (var index = 0; index < reader.FieldCount; index++)
-                        if (!reader.IsDBNull(index))
-                        {
-                            if (document.ContainsKey(reader.GetName(index))) continue;
-
-                            document.Add(reader.GetName(index), reader.GetValue(index));
-                        }
-
-                    documents.Add(document);
-                }
-
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-
-            return documents;
+            _log.Error($"Cache SQL: Has created an exception as {ex}.");
         }
-
-        public Task<List<Dictionary<string, object>>> GetExcludeCurrent(int tenantRegistryId, int entityAnalysisModelId,
-            string key, string value, int limit,
-            DateTime referenceDate, DateTime referenceDateTtlThreshold,
-            Guid entityInconsistentAnalysisModelInstanceEntryGuid,
-            List<Task> pendingWritesTasks)
+        finally
         {
-            throw new NotImplementedException();
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task<List<Dictionary<string, object>>> GetInitialCountsAsync(int tenantRegistryId,
-            int entityAnalysisModelId)
+        return documents;
+    }
+
+    public async Task DeleteByReferenceDate(int tenantRegistryId, int entityAnalysisModelId,
+        DateTime referenceDate, int limit)
+    {
+        var connection = new NpgsqlConnection(_connectionString);
+        try
         {
-            var connection = new NpgsqlConnection(connectionString);
-            var documents = new List<Dictionary<string, object>>();
-            try
-            {
-                await connection.OpenAsync();
+            await connection.OpenAsync();
 
-                var sql = "select count(*) as \"Count\",max(\"ReferenceDate\") as \"Max\"," +
-                          "min(\"ReferenceDate\") as \"Min\" from \"CachePayload\" " +
-                          "where \"EntityAnalysisModelId\" = (@entityAnalysisModelId)";
+            // ReSharper disable once StringLiteralTypo
+            var sql = "with i as (select ctid from \"CachePayload\" " +
+                      "where \"ReferenceDate\" <= (@referenceDate) limit (@limit)) " +
+                      // ReSharper disable once StringLiteralTypo
+                      "delete from \"CachePayload\" where ctid " +
+                      // ReSharper disable once StringLiteralTypo
+                      "in (select CTID from i)";
 
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-                await command.PrepareAsync();
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("referenceDate", referenceDate);
+            command.Parameters.AddWithValue("limit", limit);
 
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    var document = new Dictionary<string, object>();
-                    for (var index = 0; index < reader.FieldCount; index++)
-                        if (!reader.IsDBNull(index))
-                        {
-                            if (!document.ContainsKey(reader.GetName(index)))
-                            {
-                                document.Add(reader.GetName(index), reader.GetValue(index));
-                            }
-                        }
+            int? rowsAffected = null;
+            while (rowsAffected > 0 || rowsAffected == null) rowsAffected = await command.ExecuteNonQueryAsync();
 
-                    documents.Add(document);
-                }
-
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-
-            return documents;
+            await command.DisposeAsync();
         }
-
-        public async Task DeleteByReferenceDate(int tenantRegistryId, int entityAnalysisModelId,
-            DateTime referenceDate, int limit)
+        catch (Exception ex)
         {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                await connection.OpenAsync();
-
-                // ReSharper disable once StringLiteralTypo
-                var sql = "with i as (select ctid from \"CachePayload\" " +
-                          "where \"ReferenceDate\" <= (@referenceDate) limit (@limit)) " +
-                          // ReSharper disable once StringLiteralTypo
-                          "delete from \"CachePayload\" where ctid " +
-                          // ReSharper disable once StringLiteralTypo
-                          "in (select CTID from i)";
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("referenceDate", referenceDate);
-                command.Parameters.AddWithValue("limit", limit);
-
-                int? rowsAffected = null;
-                while (rowsAffected > 0 || rowsAffected == null)
-                {
-                    rowsAffected = await command.ExecuteNonQueryAsync();
-                }
-
-                await command.DisposeAsync();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
+            _log.Error($"Cache SQL: Has created an exception as {ex}.");
         }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+        }
+    }
+
+
+    public async Task<List<Dictionary<string, object>>> GetSqlByKeyValueLimitAsync(
+        int tenantRegistryId,
+        int entityAnalysisModelId, string sql,
+        string key, string value, string order, int limit)
+    {
+        var connection = new NpgsqlConnection(_connectionString);
+        var documents = new List<Dictionary<string, object>>();
+        try
+        {
+            await connection.OpenAsync();
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("key", key);
+            command.Parameters.AddWithValue("value", value);
+            command.Parameters.AddWithValue("order", order);
+            command.Parameters.AddWithValue("limit", limit);
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var document = new Dictionary<string, object>();
+                for (var index = 0; index < reader.FieldCount; index++)
+                    if (!reader.IsDBNull(index))
+                    {
+                        if (document.ContainsKey(reader.GetName(index))) continue;
+
+                        document.Add(reader.GetName(index), reader.GetValue(index));
+                    }
+
+                documents.Add(document);
+            }
+
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
+        }
+        catch (Exception ex)
+        {
+            _log.Error($"Cache SQL: Has created an exception as {ex}.");
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+        }
+
+        return documents;
+    }
+
+    public Task<List<Dictionary<string, object>>> GetExcludeCurrent(int tenantRegistryId, int entityAnalysisModelId,
+        string key, string value, int limit,
+        DateTime referenceDate, DateTime referenceDateTtlThreshold,
+        Guid entityInconsistentAnalysisModelInstanceEntryGuid,
+        List<Task> pendingWritesTasks)
+    {
+        throw new NotImplementedException();
     }
 }

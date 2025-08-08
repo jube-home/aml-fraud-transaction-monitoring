@@ -13,7 +13,7 @@
 
 const endpoint = "/api/EntityAnalysisModelList";
 const endpointValues = "/api/EntityAnalysisModelListValue";
-const parentKeyName = "entityAnalysisModelId";
+const parentKeyName = "entityAnalysisModelGuid";
 const validationFail = "There is invalid data in the form. Please check fields and correct.";
 
 const addValue = $("#AddValue").kendoButton().click(function (e) {
@@ -29,8 +29,8 @@ function LoadFiles() {
             multiple: false
         },
         success: onSuccess,
-        upload: function(e) {
-            e.data = { entityAnalysisModelListId: id};
+        upload: function (e) {
+            e.data = {entityAnalysisModelListId: id};
         }
     });
     $("#FilesDiv").show();
@@ -109,7 +109,7 @@ function LoadList() {
         template: kendo.template($("#template").html()),
         editTemplate: kendo.template($("#editTemplate").html())
     }).data("kendoListView");
-    
+
     $("#ListValuesDiv").show();
 }
 
@@ -131,7 +131,7 @@ $(function () {
     deleteButton
         .click(function () {
             if (confirm('Are you sure you want to delete?')) {
-                Delete(endpoint,id);
+                Delete(endpoint, id);
             }
         });
 });
@@ -141,14 +141,13 @@ $(function () {
         .click(function () {
             if (validator.validate()) {
                 let data = {};
-                
-                Create(endpoint,data,"id",parentKeyName);
+
+                Create(endpoint, data, "id", parentKeyName);
 
                 LoadFiles();
                 LoadList();
                 addValue.show();
-            }
-            else {
+            } else {
                 $("#ErrorMessage").html(validationFail);
             }
         });
@@ -159,10 +158,9 @@ $(function () {
         .click(function () {
             if (validator.validate()) {
                 let data = {};
-                
-                Update(endpoint,data,"id",parentKeyName);
-            }
-            else {
+
+                Update(endpoint, data, "id", parentKeyName);
+            } else {
                 $("#ErrorMessage").html(validationFail);
             }
         });

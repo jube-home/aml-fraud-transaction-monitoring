@@ -16,8 +16,8 @@ var dataSourceCases = new kendo.data.DataSource({
         read: {
             url: "../api/Invoke/Sanction",
             data: {
-                multiPartString:"",
-                distance:0
+                multiPartString: "",
+                distance: 0
             },
             dataType: "json"
         }
@@ -38,7 +38,7 @@ var dataSourceCases = new kendo.data.DataSource({
     }
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
     $("#Distance").kendoSlider({
         increaseButtonTitle: "Right",
         decreaseButtonTitle: "Left",
@@ -55,16 +55,16 @@ $(document).ready(function() {
         height: 500,
         autoBind: false,
         columns: [
-            { field: "id", title: "Id" },
-            { field: "distance", title: "Distance" },
-            { field: "value", title: "Element" },
-            { field: "source", title: "Source" },
-            { field: "reference", title: "Reference" }
+            {field: "id", title: "Id"},
+            {field: "distance", title: "Distance"},
+            {field: "value", title: "Element"},
+            {field: "source", title: "Source"},
+            {field: "reference", title: "Reference"}
         ]
     });
-    
+
     $("#Check").kendoButton({
-        click: function() {
+        click: function () {
             const grid = $('#Sanctions').data('kendoGrid');
             grid.dataSource.options.transport.read.data.multiPartString = $("#MultiPartString").val();
             grid.dataSource.options.transport.read.data.distance = $("#Distance").data("kendoSlider").value();

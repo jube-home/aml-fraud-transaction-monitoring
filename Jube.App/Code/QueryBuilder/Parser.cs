@@ -22,24 +22,24 @@ namespace Jube.App.Code.QueryBuilder
 {
     public class Parser
     {
-        public string Sql;
-        public readonly List<object> Tokens = new();
+        private readonly List<GetModelFieldByEntityAnalysisModelIdParseTypeIdQuery.Dto> _completionDto;
         public readonly List<Rule> Rules = new();
-        private readonly List<GetModelFieldByEntityAnalysisModelIdParseTypeIdQuery.Dto> completionDto;
+        public readonly List<object> Tokens = new();
+        public string Sql;
 
-        public Parser(Rule rule, DbContext dbContext, int caseWorkflowId, string userName)
+        public Parser(Rule rule, DbContext dbContext, Guid caseWorkflowGuid, string userName)
         {
-            completionDto = GetCompletions(dbContext, caseWorkflowId, userName);
+            _completionDto = GetCompletions(dbContext, caseWorkflowGuid, userName);
             ExtractRule(rule);
         }
 
         private List<GetModelFieldByEntityAnalysisModelIdParseTypeIdQuery.Dto> GetCompletions(DbContext dbContext,
-            int caseWorkflowId, string userName)
+            Guid caseWorkflowGuid, string userName)
         {
             var caseWorkflowRepository = new CaseWorkflowRepository(dbContext, userName);
 
             var entityAnalysisModelId =
-                caseWorkflowRepository.GetByIdIncludingDeleted(caseWorkflowId).EntityAnalysisModelId;
+                caseWorkflowRepository.GetByGuidIncludingDeleted(caseWorkflowGuid).EntityAnalysisModelId;
 
             var getModelFieldByEntityAnalysisModelIdParseTypeIdQuery
                 = new GetModelFieldByEntityAnalysisModelIdParseTypeIdQuery(dbContext, userName);
@@ -64,16 +64,13 @@ namespace Jube.App.Code.QueryBuilder
         private void ProcessChildrenRules(Rule ruleChild)
         {
             if (ruleChild?.Rules == null) return;
-            
+
             Sql += "(";
             for (var j = 0; j < ruleChild.Rules.Count; j++)
             {
                 ExtractRule(ruleChild.Rules.ElementAt(j));
 
-                if (j < ruleChild.Rules.Count - 1)
-                {
-                    Sql = Sql + " " + ruleChild.Condition + " ";
-                }
+                if (j < ruleChild.Rules.Count - 1) Sql = Sql + " " + ruleChild.Condition + " ";
             }
 
             Sql += ")";
@@ -81,29 +78,42 @@ namespace Jube.App.Code.QueryBuilder
 
         private void ConcatenateSql(Rule ruleChild)
         {
-            if (ruleChild != null)
+            if (ruleChild == null) return;
+
+            var field = ReturnField(ruleChild.Id);
+
+            if (ruleChild.Id == "CaseWorkflowStatusGuid" && ruleChild.Operator != "order")
             {
-                var field = ReturnField(ruleChild.Id);
                 Sql += ruleChild.Operator switch
                 {
-                    "equal" => $"{field} = (@{Tokens.Count})",
-                    "not_equal" => $"not {field} = (@{Tokens.Count})",
-                    "less" => $"{field} < (@{Tokens.Count})",
-                    "less_or_equal" => $"{field} <= (@{Tokens.Count})",
-                    "greater" => $"{field} >= (@{Tokens.Count})",
-                    "greater_or_equal" => $"{field} >= (@{Tokens.Count})",
-                    "like" => $"{field} like (@{Tokens.Count})",
-                    "not_like" => $"not {field} like (@{Tokens.Count})",
+                    "equal" => $"{field} = uuid(@{Tokens.Count})",
+                    "not_equal" => $"not {field} = uuid(@{Tokens.Count})",
                     "order" => ruleChild.Operator,
                     _ => throw new InvalidOperationException($"Invalid SQL operator {ruleChild.Operator}.")
                 };
+
+                return;
             }
+
+            Sql += ruleChild.Operator switch
+            {
+                "equal" => $"{field} = (@{Tokens.Count})",
+                "not_equal" => $"not {field} = (@{Tokens.Count})",
+                "less" => $"{field} < (@{Tokens.Count})",
+                "less_or_equal" => $"{field} <= (@{Tokens.Count})",
+                "greater" => $"{field} >= (@{Tokens.Count})",
+                "greater_or_equal" => $"{field} >= (@{Tokens.Count})",
+                "like" => $"{field} like (@{Tokens.Count})",
+                "not_like" => $"not {field} like (@{Tokens.Count})",
+                "order" => ruleChild.Operator,
+                _ => throw new InvalidOperationException($"Invalid SQL operator {ruleChild.Operator}.")
+            };
         }
 
         private static bool ValidateRuleNotNull(Rule ruleChild)
         {
             if (ruleChild?.Rules != null) return true;
-            return ruleChild is not {Value: not null, Operator: not null, Field: not null};
+            return ruleChild is not { Value: not null, Operator: not null, Field: not null };
         }
 
         private void AddRule(Rule ruleChild)
@@ -140,14 +150,22 @@ namespace Jube.App.Code.QueryBuilder
         private string ReturnField(string id)
         {
             if (IsCaseField(id) != null) return $"\"Case\".\"{id}\"";
+            if (IsCaseWorkflowStatusField(id) != null) return $"\"CaseWorkflowStatus\".\"{id}\"";
 
-            var matched = completionDto.FirstOrDefault(f => f.Name == id);
-            if (matched != null)
-            {
-                return matched.ValueSqlPath;
-            }
+            var matched = _completionDto.FirstOrDefault(f => f.Name == id);
+            if (matched != null) return matched.ValueSqlPath;
 
             throw new InvalidOperationException($"Not found {id} in completions list.");
+        }
+
+        private static string IsCaseWorkflowStatusField(string name)
+        {
+            return name switch
+            {
+                "Priority" => name,
+                "CaseWorkflowStatus" => name,
+                _ => null
+            };
         }
 
         private static string IsCaseField(string name)
@@ -158,7 +176,7 @@ namespace Jube.App.Code.QueryBuilder
                 "EntityAnalysisModelInstanceEntryGuid" => name,
                 "DiaryDate" => name,
                 "CaseWorkflowId" => name,
-                "CaseWorkflowStatusId" => name,
+                "CaseWorkflowStatusGuid" => name,
                 "CreatedDate" => name,
                 "Locked" => name,
                 "LockedUser" => name,

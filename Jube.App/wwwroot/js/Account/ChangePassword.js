@@ -11,11 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-$( document ).ready(function() {
+$(document).ready(function () {
     $("#FormChange").kendoValidator({
         errorTemplate: "<span class='errorMessage'>#=message#</span>",
         rules: {
-            verifyPasswords: function(input){
+            verifyPasswords: function (input) {
                 if (input.is("#VerifyNewPassword")) {
                     return input.val() === $("#NewPassword").val();
                 }
@@ -23,31 +23,31 @@ $( document ).ready(function() {
             }
         }
     });
-    
+
     $("#MessageChange").hide();
-    
+
     $("#Change").kendoButton({
-        click: function(e) {
+        click: function (e) {
             $("#MessageAuthenticate").html("");
             if ($("#FormChange").data("kendoValidator").validate()) {
                 $("#Change").data("kendoButton").enable(false);
-                
+
                 const message = $("#DoneMessage");
                 message.css('color', 'green');
                 message.html("Changing.")
-                
+
                 PostAuthentication();
             }
         }
     });
-    
+
     function PostAuthentication() {
         let data = {
             userName: $("#UserName").val(),
             password: $("#ExistingPassword").val(),
             newPassword: $("#NewPassword").val()
         };
-        
+
         $.ajax({
             url: "../api/Authentication/ChangePassword",
             type: "POST",

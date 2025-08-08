@@ -33,25 +33,25 @@ namespace Jube.App.Controllers.Authentication
     [AllowAnonymous]
     public class SandboxRegistrationController : Controller
     {
-        private readonly DbContext dbContext;
-        private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
-        private readonly SandboxRegistration service;
+        private readonly DbContext _dbContext;
+        private readonly DynamicEnvironment.DynamicEnvironment _dynamicEnvironment;
+        private readonly SandboxRegistration _service;
 
         public SandboxRegistrationController(DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
-            this.dynamicEnvironment = dynamicEnvironment;
-            dbContext =
+            _dynamicEnvironment = dynamicEnvironment;
+            _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(
-                    this.dynamicEnvironment.AppSettings("ConnectionString"));
-            service = new SandboxRegistration(dbContext);
+                    _dynamicEnvironment.AppSettings("ConnectionString"));
+            _service = new SandboxRegistration(_dbContext);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                dbContext.Close();
-                dbContext.Dispose();
+                _dbContext.Close();
+                _dbContext.Dispose();
             }
 
             base.Dispose(disposing);
@@ -62,15 +62,16 @@ namespace Jube.App.Controllers.Authentication
         public async Task<ActionResult<AuthenticationResponseDto>> Register(
             [FromBody] SandboxRegistrationRequestDto model)
         {
-            if (!dynamicEnvironment.AppSettings("EnableSandbox").Equals("True")) return Unauthorized();
-            
+            if (!_dynamicEnvironment.AppSettings("EnableSandbox").Equals("True")) return Unauthorized();
+
             var validator = new SandboxRegistrationRequestDtoValidator();
             var results = await validator.ValidateAsync(model);
             if (!results.IsValid) return BadRequest(results);
 
             try
             {
-                var sandboxRegistrationResponseDto = await service.Register(model, dynamicEnvironment.AppSettings("PasswordHashingKey"));
+                var sandboxRegistrationResponseDto =
+                    await _service.Register(model, _dynamicEnvironment.AppSettings("PasswordHashingKey"));
                 SetAuthenticationCookie(model);
                 return Ok(sandboxRegistrationResponseDto);
             }
@@ -87,9 +88,9 @@ namespace Jube.App.Controllers.Authentication
         private void SetAuthenticationCookie(SandboxRegistrationRequestDto model)
         {
             var token = Jwt.CreateToken(model.UserName,
-                dynamicEnvironment.AppSettings("JWTKey"),
-                dynamicEnvironment.AppSettings("JWTValidIssuer"),
-                dynamicEnvironment.AppSettings("JWTValidAudience")
+                _dynamicEnvironment.AppSettings("JWTKey"),
+                _dynamicEnvironment.AppSettings("JWTValidIssuer"),
+                _dynamicEnvironment.AppSettings("JWTValidAudience")
             );
 
             var expiration = DateTime.Now.AddMinutes(15);

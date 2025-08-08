@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -45,16 +45,16 @@ namespace Jube.App.Controllers.Repository
         private readonly IValidator<EntityAnalysisModelsListDto> _validator;
 
         public EntityAnalysisModelListController(ILog log,
-            IHttpContextAccessor httpContextAccessor,DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+            IHttpContextAccessor httpContextAccessor, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
                 _userName = httpContextAccessor.HttpContext.User.Identity.Name;
             _log = log;
-            
+
             _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
             _permissionValidation = new PermissionValidation(_dbContext, _userName);
-            
+
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<EntityAnalysisModelsListDto, EntityAnalysisModelList>();
@@ -66,7 +66,7 @@ namespace Jube.App.Controllers.Repository
             _repository = new EntityAnalysisModelListRepository(_dbContext, _userName);
             _validator = new EntityAnalysisModelListDtoValidator();
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -74,6 +74,7 @@ namespace Jube.App.Controllers.Repository
                 _dbContext.Close();
                 _dbContext.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -82,7 +83,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {3})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 3 })) return Forbid();
 
                 return Ok(_mapper.Map<List<EntityAnalysisModelsListDto>>(_repository.Get()));
             }
@@ -98,10 +99,10 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {3})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 3 })) return Forbid();
 
                 return Ok(_mapper.Map<List<EntityAnalysisModelsListDto>>(
-                    _repository.GetByEntityAnalysisModelId(entityAnalysisModelId)));
+                    _repository.GetByEntityAnalysisModelIdOrderById(entityAnalysisModelId)));
             }
             catch (Exception e)
             {
@@ -115,7 +116,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {3})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 3 })) return Forbid();
 
                 return Ok(_mapper.Map<EntityAnalysisModelsListDto>(_repository.GetById(id)));
             }
@@ -127,13 +128,13 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(EntityAnalysisModelsListDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(EntityAnalysisModelsListDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<EntityAnalysisModelsListDto> Create([FromBody] EntityAnalysisModelsListDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {3}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 3 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid) return Ok(_repository.Insert(_mapper.Map<EntityAnalysisModelList>(model)));
@@ -148,13 +149,13 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(EntityAnalysisModelsListDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(EntityAnalysisModelsListDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<EntityAnalysisModelsListDto> Update([FromBody] EntityAnalysisModelsListDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {3}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 3 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid) return Ok(_repository.Update(_mapper.Map<EntityAnalysisModelList>(model)));
@@ -178,7 +179,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {3}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 3 }, true)) return Forbid();
 
                 _repository.Delete(id);
                 return Ok();

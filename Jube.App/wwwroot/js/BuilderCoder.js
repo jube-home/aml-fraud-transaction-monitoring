@@ -173,7 +173,7 @@ function createBuilderRuleText() {
     return ruleTextBuilder;
 }
 
-function FilterExists(name,filters) {
+function FilterExists(name, filters) {
     for (let i = 0; i < filters.length; i++) {
         if (filters[i].id === name) {
             return true;
@@ -192,7 +192,7 @@ function initBuilder(data) {
     let listSelects = {};
 
     for (const completion of completions) {
-        if (!FilterExists(completion.name,filters)) {
+        if (!FilterExists(completion.name, filters)) {
             if (completion.dataType === "string") {
                 let filter = {
                     optgroup: completion.group,
@@ -411,7 +411,7 @@ function initBuilderCoder(parseType, modelId, data) {
                             if (data) {
                                 ruleType = data.ruleType;
                                 tabStrip.select(ruleType - 1);
-                                
+
                                 checkDivergence();
                             } else {
                                 tabStrip.select(0);
@@ -421,7 +421,7 @@ function initBuilderCoder(parseType, modelId, data) {
                             function onSelect(e) {
                                 setRuleType($(e.item).index() + 1);
                             }
-                            
+
                             tabStrip.bind("select", onSelect);
                         });
                     }

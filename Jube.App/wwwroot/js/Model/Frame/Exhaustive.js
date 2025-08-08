@@ -115,7 +115,7 @@ function generateModel(gridData) {
             }
         }
     }
-    
+
     model.fields = fields;
     return model;
 }
@@ -626,7 +626,7 @@ function LoadModelSummery(data, force) {
             currentStatus.text('Correlation analysis');
             break;
         case 13:
-            currentStatus.text('Multicolinarity analysis');
+            currentStatus.text('Multicollinearity analysis');
             break;
         case 14:
             currentStatus.text('Supervised Learning');
@@ -640,7 +640,7 @@ function LoadModelSummery(data, force) {
         default:
             currentStatus.text('Stopped for reasons unexpected');
     }
-    
+
     if (hideUpdateButton) {
         updateButton.hide();
     }
@@ -856,13 +856,13 @@ function LoadModelSummery(data, force) {
         }
 
         $("#grid").data("kendoGrid").dataSource.read();
-        
+
         let statistics = $("#statistics");
         let records = statistics.data("kendoGrid").dataSource.view().length;
         if (records === 0) {
             statistics.data("kendoGrid").dataSource.read();
         }
-        
+
         $("#chart").data("kendoChart").dataSource.read();
     }
 }
@@ -907,7 +907,7 @@ function sliderOnSlide(e) {
 function BuildSliders() {
     Params = {};
     $("#SlidersPlaceholder tr").remove();
-    
+
     $.get('api/GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery/' + id,
         function (data) {
             if (data.length > 0) {
@@ -1050,7 +1050,7 @@ function GetData() {
         data["anomaly"] = true;
         data["AnomalyProbability"] = anomalyProbability.data("kendoSlider").value();
     }
-    
+
     return data;
 }
 

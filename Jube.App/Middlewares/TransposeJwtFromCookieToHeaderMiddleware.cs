@@ -18,11 +18,11 @@ namespace Jube.App.Middlewares
 {
     public class TransposeJwtFromCookieToHeaderMiddleware
     {
-        private readonly RequestDelegate next;
+        private readonly RequestDelegate _next;
 
         public TransposeJwtFromCookieToHeaderMiddleware(RequestDelegate next)
         {
-            this.next = next;
+            _next = next;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -31,7 +31,7 @@ namespace Jube.App.Middlewares
             var cookie = context.Request.Cookies[authenticationCookieName];
             if (cookie != null) context.Request.Headers.Append("Authorization", "Bearer " + cookie);
 
-            await next.Invoke(context);
+            await _next.Invoke(context);
         }
     }
 }

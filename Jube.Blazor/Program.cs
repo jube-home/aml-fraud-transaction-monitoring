@@ -13,13 +13,14 @@
 
 using FluentMigrator.Runner;
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using Jube.Blazor.Components;
 using Jube.Blazor.Components.Code;
 using Jube.DynamicEnvironment;
 using Jube.Migrations.Baseline;
+using Jube.Validations.Authentication;
 using log4net;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,7 +54,7 @@ builder.Services.AddAuthorizationBuilder()
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
 builder.Services
-    .AddValidatorsFromAssemblyContaining<Jube.Validations.Authentication.AuthenticationRequestDtoValidator>();
+    .AddValidatorsFromAssemblyContaining<AuthenticationRequestDtoValidator>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -64,10 +65,7 @@ if (dynamicEnvironment.AppSettings("EnableMigration").Equals("True", StringCompa
     RunFluentMigrator(dynamicEnvironment);
 
     var cacheConnectionString = dynamicEnvironment.AppSettings("CacheConnectionString");
-    if (cacheConnectionString != null)
-    {
-        RunFluentMigrator(dynamicEnvironment);
-    }
+    if (cacheConnectionString != null) RunFluentMigrator(dynamicEnvironment);
 }
 
 var app = builder.Build();
@@ -78,7 +76,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error", true);
     app.UseHsts();
 }
 
@@ -93,8 +91,8 @@ app.MapRazorComponents<App>()
 
 app.UseRequestLocalization(new RequestLocalizationOptions()
     .SetDefaultCulture("en-US")
-    .AddSupportedCultures(["en-US"])
-    .AddSupportedUICultures(["en-US"]));
+    .AddSupportedCultures("en-US")
+    .AddSupportedUICultures("en-US"));
 
 app.Run();
 return;

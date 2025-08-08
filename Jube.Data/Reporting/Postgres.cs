@@ -20,289 +20,282 @@ using Jube.Data.Extension;
 using Newtonsoft.Json;
 using Npgsql;
 
-namespace Jube.Data.Reporting
+namespace Jube.Data.Reporting;
+
+public class Postgres(string connectionString)
 {
-    public class Postgres(string connectionString)
+    public async Task<Dictionary<string, string>> IntrospectAsync(string sql, Dictionary<string, object> parameters)
     {
-        public async Task<Dictionary<string, string>> IntrospectAsync(string sql, Dictionary<string, object> parameters)
+        var connection = new NpgsqlConnection(connectionString);
+        var values = new Dictionary<string, string>();
+        try
         {
-            var connection = new NpgsqlConnection(connectionString);
-            var values = new Dictionary<string, string>();
-            try
-            {
-                await connection.OpenAsync();
+            await connection.OpenAsync();
 
-                var tableName = "Temp_" + Guid.NewGuid().ToString("N");
+            var tableName = "Temp_" + Guid.NewGuid().ToString("N");
 
-                var wrapSql = $"select * into TEMPORARY TABLE {tableName} from (select * from ({sql}) b LIMIT 0) c";
-                var commandTempTable = new NpgsqlCommand(wrapSql);
-                commandTempTable.Connection = connection;
+            var wrapSql = $"select * into TEMPORARY TABLE {tableName} from (select * from ({sql}) b LIMIT 0) c";
+            var commandTempTable = new NpgsqlCommand(wrapSql);
+            commandTempTable.Connection = connection;
 
-                foreach (var (key, value) in parameters.Where(parameter => sql.Contains("@" + parameter.Key)))
-                    commandTempTable.Parameters.AddWithValue(key, value);
+            foreach (var (key, value) in parameters.Where(parameter => sql.Contains("@" + parameter.Key)))
+                commandTempTable.Parameters.AddWithValue(key, value);
 
-                await commandTempTable.ExecuteNonQueryAsync();
+            await commandTempTable.ExecuteNonQueryAsync();
 
-                var introspectionSql = "SELECT attname, format_type(atttypid, atttypmod) AS type" +
-                                       " FROM pg_attribute" +
-                                       $" WHERE attrelid = '{tableName}'::regclass" +
-                                       " AND attnum > 0 " +
-                                       " AND NOT attisdropped " +
-                                       " ORDER BY attnum";
+            var introspectionSql = "SELECT attname, format_type(atttypid, atttypmod) AS type" +
+                                   " FROM pg_attribute" +
+                                   $" WHERE attrelid = '{tableName}'::regclass" +
+                                   " AND attnum > 0 " +
+                                   " AND NOT attisdropped " +
+                                   " ORDER BY attnum";
 
 
-                var command = new NpgsqlCommand(introspectionSql);
-                command.Connection = connection;
+            var command = new NpgsqlCommand(introspectionSql);
+            command.Connection = connection;
 
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                    values.Add(reader.GetValue(0).AsString(), reader.GetValue(1).AsString());
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+                values.Add(reader.GetValue(0).AsString(), reader.GetValue(1).AsString());
 
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-                throw;
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-
-            return values;
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
+        }
+        catch
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task PrepareAsync(string sql, List<object> parameters)
+        return values;
+    }
+
+    public async Task PrepareAsync(string sql, List<object> parameters)
+    {
+        var connection = new NpgsqlConnection(connectionString);
+        try
         {
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                await connection.OpenAsync();
+            await connection.OpenAsync();
 
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
 
-                for (var i = 0; i < parameters.Count; i++)
-                    command.Parameters.AddWithValue("@" + (i + 1), parameters[i]);
+            for (var i = 0; i < parameters.Count; i++)
+                command.Parameters.AddWithValue("@" + (i + 1), parameters[i]);
 
-                await command.PrepareAsync();
-            }
-            catch
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-                throw;
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
+            await command.PrepareAsync();
+        }
+        catch
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<List<string>> ExecuteReturnOnlyJsonFromArchiveSampleAsync(int entityAnalysisModelId,
+        string filterSql,
+        string filterTokens,
+        int limit, bool mockData)
+    {
+        var value = new List<string>();
+        var connection = new NpgsqlConnection(connectionString);
+        try
+        {
+            await connection.OpenAsync();
+
+            var tokens = JsonConvert.DeserializeObject<List<object>>(filterTokens);
+            tokens.Add(entityAnalysisModelId);
+            tokens.Add(limit);
+
+            var tableName = mockData ? "MockArchive" : "Archive";
+
+            var sql =
+                $"select \"Json\" from \"{tableName}\" where \"EntityAnalysisModelId\" = (@{tokens.Count - 1})"
+                + " and " + filterSql
+                + $" order by \"EntityAnalysisModelInstanceEntryGuid\" limit (@{limit})";
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+
+            for (var i = 0; i < tokens.Count; i++) command.Parameters.AddWithValue("@" + (i + 1), tokens[i]);
+
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync()) value.Add(reader.GetValue(0).AsString());
+
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
+        }
+        catch
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task<List<string>> ExecuteReturnOnlyJsonFromArchiveSampleAsync(int entityAnalysisModelId,
-            string filterSql,
-            string filterTokens,
-            int limit, bool mockData)
+        return value;
+    }
+
+    public async Task<List<IDictionary<string, object>>> ExecuteReturnPayloadFromArchiveWithSkipLimitAsync(
+        string sql,
+        DateTime adjustedStartDate,
+        int skip,
+        int limit)
+    {
+        var value = new List<IDictionary<string, object>>();
+        var connection = new NpgsqlConnection(connectionString);
+        try
         {
-            var value = new List<string>();
-            var connection = new NpgsqlConnection(connectionString);
-            try
+            await connection.OpenAsync();
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+            command.Parameters.AddWithValue("adjustedStartDate", adjustedStartDate);
+            command.Parameters.AddWithValue("limit", limit);
+            command.Parameters.AddWithValue("skip", skip);
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                await connection.OpenAsync();
+                IDictionary<string, object> eo = new ExpandoObject();
+                for (var index = 0; index < reader.FieldCount; index++)
+                    if (!eo.ContainsKey(reader.GetName(index)))
+                        eo.Add(reader.GetName(index), reader.IsDBNull(index) ? null : reader.GetValue(index));
 
-                var tokens = JsonConvert.DeserializeObject<List<object>>(filterTokens);
-                tokens.Add(entityAnalysisModelId);
-                tokens.Add(limit);
-
-                var tableName = mockData ? "MockArchive" : "Archive";
-
-                var sql =
-                    $"select \"Json\" from \"{tableName}\" where \"EntityAnalysisModelId\" = (@{tokens.Count - 1})"
-                    + " and " + filterSql
-                    + $" order by \"EntityAnalysisModelInstanceEntryGuid\" limit (@{limit})";
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-
-                for (var i = 0; i < tokens.Count; i++) command.Parameters.AddWithValue("@" + (i + 1), tokens[i]);
-
-                await command.PrepareAsync();
-
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync()) value.Add(reader.GetValue(0).AsString());
-
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-                throw;
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
+                value.Add(eo);
             }
 
-            return value;
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
+        }
+        catch
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task<List<IDictionary<string, object>>> ExecuteReturnPayloadFromArchiveWithSkipLimitAsync(
-            string sql,
-            DateTime adjustedStartDate,
-            int skip,
-            int limit)
+        return value;
+    }
+
+    public async Task<List<IDictionary<string, object>>> ExecuteByNamedParametersAsync(string sql,
+        Dictionary<string, object> parameters)
+    {
+        var value = new List<IDictionary<string, object>>();
+        var connection = new NpgsqlConnection(connectionString);
+        try
         {
-            var value = new List<IDictionary<string, object>>();
-            var connection = new NpgsqlConnection(connectionString);
-            try
+            await connection.OpenAsync();
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+
+            foreach (var (key, o) in parameters)
+                command.Parameters.AddWithValue("@" + key, o);
+
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                await connection.OpenAsync();
+                IDictionary<string, object> eo = new ExpandoObject();
+                for (var index = 0; index < reader.FieldCount; index++)
+                    if (!eo.ContainsKey(reader.GetName(index)))
+                        eo.Add(reader.GetName(index), reader.IsDBNull(index) ? null : reader.GetValue(index));
 
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-                command.Parameters.AddWithValue("adjustedStartDate", adjustedStartDate);
-                command.Parameters.AddWithValue("limit", limit);
-                command.Parameters.AddWithValue("skip", skip);
-                await command.PrepareAsync();
-
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    var eo = new ExpandoObject() as IDictionary<string, object>;
-                    for (var index = 0; index < reader.FieldCount; index++)
-                        if (!eo.ContainsKey(reader.GetName(index)))
-                        {
-                            eo.Add(reader.GetName(index), reader.IsDBNull(index) ? null : reader.GetValue(index));
-                        }
-
-                    value.Add(eo);
-                }
-
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-                throw;
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
+                value.Add(eo);
             }
 
-            return value;
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
+        }
+        catch
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task<List<IDictionary<string, object>>> ExecuteByNamedParametersAsync(string sql,
-            Dictionary<string, object> parameters)
+        return value;
+    }
+
+    public async Task<List<IDictionary<string, object>>> ExecuteByOrderedParametersAsync(string sql,
+        List<object> parameters)
+    {
+        var value = new List<IDictionary<string, object>>();
+        var connection = new NpgsqlConnection(connectionString);
+        try
         {
-            var value = new List<IDictionary<string, object>>();
-            var connection = new NpgsqlConnection(connectionString);
-            try
+            await connection.OpenAsync();
+
+            var command = new NpgsqlCommand(sql);
+            command.Connection = connection;
+
+            for (var i = 0; i < parameters.Count; i++)
+                command.Parameters.AddWithValue("@" + (i + 1), parameters[i]);
+
+            await command.PrepareAsync();
+
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                await connection.OpenAsync();
+                IDictionary<string, object> eo = new ExpandoObject();
+                for (var index = 0; index < reader.FieldCount; index++)
+                    if (!eo.ContainsKey(reader.GetName(index)))
+                        eo.Add(reader.GetName(index), reader.IsDBNull(index) ? null : reader.GetValue(index));
 
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-
-                foreach (var (key, o) in parameters)
-                    command.Parameters.AddWithValue("@" + key, o);
-
-                await command.PrepareAsync();
-
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    var eo = new ExpandoObject() as IDictionary<string, object>;
-                    for (var index = 0; index < reader.FieldCount; index++)
-                        if (!eo.ContainsKey(reader.GetName(index)))
-                        {
-                            eo.Add(reader.GetName(index), reader.IsDBNull(index) ? null : reader.GetValue(index));
-                        }
-
-                    value.Add(eo);
-                }
-
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-                throw;
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
+                value.Add(eo);
             }
 
-            return value;
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
+            await command.DisposeAsync();
+        }
+        catch
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+            await connection.DisposeAsync();
         }
 
-        public async Task<List<IDictionary<string, object>>> ExecuteByOrderedParametersAsync(string sql,
-            List<object> parameters)
-        {
-            var value = new List<IDictionary<string, object>>();
-            var connection = new NpgsqlConnection(connectionString);
-            try
-            {
-                await connection.OpenAsync();
-
-                var command = new NpgsqlCommand(sql);
-                command.Connection = connection;
-
-                for (var i = 0; i < parameters.Count; i++)
-                    command.Parameters.AddWithValue("@" + (i + 1), parameters[i]);
-
-                await command.PrepareAsync();
-
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    var eo = new ExpandoObject() as IDictionary<string, object>;
-                    for (var index = 0; index < reader.FieldCount; index++)
-                        if (!eo.ContainsKey(reader.GetName(index)))
-                        {
-                            eo.Add(reader.GetName(index), reader.IsDBNull(index) ? null : reader.GetValue(index));
-                        }
-
-                    value.Add(eo);
-                }
-
-                await reader.CloseAsync();
-                await reader.DisposeAsync();
-                await command.DisposeAsync();
-            }
-            catch
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-                throw;
-            }
-            finally
-            {
-                await connection.CloseAsync();
-                await connection.DisposeAsync();
-            }
-
-            return value;
-        }
+        return value;
     }
 }

@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -43,8 +43,9 @@ namespace Jube.App.Controllers.Helper
             if (httpContextAccessor.HttpContext?.User.Identity != null)
                 _userName = httpContextAccessor.HttpContext.User.Identity.Name;
             _log = log;
-            
-            _dbContext = DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
+
+            _dbContext =
+                DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
             _permissionValidation = new PermissionValidation(_dbContext, _userName);
         }
 
@@ -55,6 +56,7 @@ namespace Jube.App.Controllers.Helper
                 _dbContext.Close();
                 _dbContext.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -63,13 +65,13 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {25,17,20})) return Forbid();
-                
+                if (!_permissionValidation.Validate(new[] { 25, 17, 20 })) return Forbid();
+
                 var caseWorkflowRepository = new CaseWorkflowRepository(_dbContext, _userName);
                 var entityAnalysisModelId = caseWorkflowRepository.GetById(caseWorkflowId).EntityAnalysisModelId;
 
                 if (entityAnalysisModelId == null) return NotFound();
-                
+
                 var completionDtos = CompletionDtos(entityAnalysisModelId.Value, 5, _userName, true);
 
                 return Ok(completionDtos);
@@ -80,26 +82,51 @@ namespace Jube.App.Controllers.Helper
                 return StatusCode(500);
             }
         }
-        
+
+        [HttpGet("ByCaseWorkflowGuidIncludingDeleted")]
+        public ActionResult<List<CompletionDto>> GetByCaseWorkflowGuidIncludingDeleted(Guid caseWorkflowGuid)
+        {
+            try
+            {
+                if (!_permissionValidation.Validate(new[] { 1 })) return Forbid();
+
+                var caseWorkflowRepository = new CaseWorkflowRepository(_dbContext, _userName);
+                var entityAnalysisModelId =
+                    caseWorkflowRepository.GetByGuidIncludingDeleted(caseWorkflowGuid).EntityAnalysisModelId;
+
+                if (entityAnalysisModelId == null) return NotFound();
+
+                var completionDtos = CompletionDtos(entityAnalysisModelId.Value, 5, _userName, true);
+
+                return Ok(completionDtos);
+            }
+            catch (KeyNotFoundException)
+            {
+                return StatusCode(204);
+            }
+            catch (Exception e)
+            {
+                _log.Error(e);
+                return StatusCode(500);
+            }
+        }
+
         [HttpGet("ByCaseWorkflowIdIncludingDeleted")]
         public ActionResult<List<CompletionDto>> GetByCaseWorkflowIdIncludingDeleted(int caseWorkflowId)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {1})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 1 })) return Forbid();
 
                 var caseWorkflowRepository = new CaseWorkflowRepository(_dbContext, _userName);
                 var entityAnalysisModelId =
                     caseWorkflowRepository.GetByIdIncludingDeleted(caseWorkflowId).EntityAnalysisModelId;
 
-                if (entityAnalysisModelId != null)
-                {
-                    var completionDtos = CompletionDtos(entityAnalysisModelId.Value, 5, _userName, true);
+                if (entityAnalysisModelId == null) return NotFound();
 
-                    return Ok(completionDtos);
-                }
-                
-                return NotFound();
+                var completionDtos = CompletionDtos(entityAnalysisModelId.Value, 5, _userName, true);
+
+                return Ok(completionDtos);
             }
             catch (KeyNotFoundException)
             {
@@ -117,7 +144,7 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {16})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 16 })) return Forbid();
 
                 var completionDtos = CompletionDtos(entityAnalysisModelId, 6, _userName, true);
 
@@ -136,7 +163,7 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {8,10,13,14,17,20,26})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 8, 10, 13, 14, 17, 20, 26 })) return Forbid();
 
                 var completionDtos = CompletionDtos(entityAnalysisModelId, parseTypeId, _userName, false);
 
@@ -166,7 +193,7 @@ namespace Jube.App.Controllers.Helper
                     Meta = $"{field.Name}:{field.JQueryBuilderDataType}",
                     Group = field.Group,
                     DataType = field.JQueryBuilderDataType,
-                    XPath =  field.ValueJsonPath
+                    XPath = field.ValueJsonPath
                 })
                 .ToList();
 

@@ -14,7 +14,7 @@
 var dateFields = [];
 var Params;
 var Visualisation;
-var VisualisationRegistryId;
+var VisualisationRegistryGuid;
 var ShowParams;
 
 function KendoDataToJSONArray(kendoData) {
@@ -67,11 +67,10 @@ function generateGrid(gridData, gridName, series, autoBind) {
     let height;
     if (gridDiv.parent().children().length > 1) {
         height = gridDiv.parent().height() / 2
-    }
-    else {
+    } else {
         height = gridDiv.parent().height()
     }
-    
+
     gridDiv.kendoGrid({
         dataSource: gridData,
         columns: generateColumns(series),
@@ -136,7 +135,7 @@ function generateModel(gridData) {
 
         }
     }
-    
+
     model.fields = fields;
     return model;
 }
@@ -148,7 +147,7 @@ function onClick(e) {
 
 function Run() {
     $("#Datasources").empty();
-    
+
     let valid;
     const paramsValues = [];
     if (ShowParams) {
@@ -190,8 +189,7 @@ function Run() {
                 paramsValues.push(paramValue);
             }
         }
-    }
-    else {
+    } else {
         valid = true;
         for (let i = 0, l = Params.length; i < l; i++) {
             const param = Params[i];
@@ -199,17 +197,16 @@ function Run() {
             paramValue["id"] = param.id;
             if (typeof values[param.name] !== 'undefined') {
                 paramValue["value"] = values[param.name];
-            }
-            else {
+            } else {
                 paramValue["value"] = param.defaultValue;
             }
             paramsValues.push(paramValue);
         }
     }
-    
+
     if (valid) {
         const serviceRootDatasources =
-            "../api/VisualisationRegistryDatasource/ByVisualisationRegistryIdActiveOnly/" + VisualisationRegistryId;
+            "../api/VisualisationRegistryDatasource/ByVisualisationRegistryIdActiveOnly/" + Visualisation.id;
 
         $.get(serviceRootDatasources,
             function (datasources) {
@@ -221,7 +218,7 @@ function Run() {
                     // noinspection JSJQueryEfficiency
                     const grid = $('#' + gridName).data('kendoGrid');
                     let divIdTile;
-                    
+
                     if (datasourceTile.includeGrid) {
                         if (typeof grid !== "undefined") {
                             grid.destroy();
@@ -233,20 +230,18 @@ function Run() {
                                     "' style='height:50%; width:100%'></div>";
 
                                 divIdTile = divIdTile + "<div id='" + gridName + "' style='width:100%'></div>";
-                            }
-                            else {
+                            } else {
                                 divIdTile = "<div id='" + gridName + "' style='width:100%'></div>";
                             }
                         }
-                    }
-                    else {
+                    } else {
                         if (datasourceTile.includeDisplay) {
                             divIdTile = "<div id='Display" +
                                 datasourceTile.id +
-                                "' style='height:100%; width:100%'></div>";   
+                                "' style='height:100%; width:100%'></div>";
                         }
                     }
-                    
+
                     containers.push({
                         colSpan: datasourceTile.columnSpan,
                         rowSpan: datasourceTile.rowSpan,
@@ -255,7 +250,7 @@ function Run() {
                         },
                         bodyTemplate: divIdTile
                     });
-                    
+
                 }
 
                 $("#Datasources").kendoTileLayout({
@@ -263,7 +258,7 @@ function Run() {
                     columns: Visualisation.columns,
                     columnsWidth: Visualisation.columnWidth,
                     rowsHeight: Visualisation.rowHeight,
-                    
+
                     resize: function (e) {
                         kendo.resize(e.container, true);
                     }
@@ -433,7 +428,11 @@ function Run() {
                                                 this.id,
                                             data: kendo.stringify(paramsValues),
                                             dataType: 'json',
-                                            context: {visualisationText: this.visualisationText,id: this.id,includeGrid: this.includeGrid},
+                                            context: {
+                                                visualisationText: this.visualisationText,
+                                                id: this.id,
+                                                includeGrid: this.includeGrid
+                                            },
                                             success: function (data) {
                                                 let first = true;
                                                 const html = unescape(this.visualisationText);
@@ -497,7 +496,7 @@ function getUrlVars() {
 }
 
 function InitVisualisation() {
-    $.get("../api/VisualisationRegistry/" + VisualisationRegistryId,
+    $.get("../api/VisualisationRegistry/" + VisualisationRegistryGuid,
         function (dataVisualisation) {
             Visualisation = dataVisualisation;
             const serviceRootParams = "../api/VisualisationRegistryParameter/ByVisualisationRegistryIdActiveOnly/" +
@@ -641,11 +640,10 @@ function InitVisualisation() {
     );
 }
 
-$(document).ready(function() {
-    if (getUrlVars()["VisualisationRegistryId"])
-    {
+$(document).ready(function () {
+    if (getUrlVars()["Guid"]) {
         ShowParams = true;
-        VisualisationRegistryId = getUrlVars()["VisualisationRegistryId"];
-        InitVisualisation(VisualisationRegistryId,true);
+        VisualisationRegistryGuid = getUrlVars()["Guid"];
+        InitVisualisation(VisualisationRegistryGuid, true);
     }
 });

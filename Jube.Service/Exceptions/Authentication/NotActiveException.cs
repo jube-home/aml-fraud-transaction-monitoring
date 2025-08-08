@@ -13,7 +13,4 @@
 
 namespace Jube.Service.Exceptions.Authentication;
 
-public class NotActiveException : Exception
-{
-    
-}
+public class NotActiveException : Exception;

@@ -20,7 +20,6 @@ using FluentMigrator.Runner;
 using FluentValidation;
 using FluentValidation.Results;
 using Jube.App.Code;
-using Jube.App.Code.QueryBuilder;
 using Jube.App.Dto;
 using Jube.App.Validators;
 using Jube.Data.Context;
@@ -41,27 +40,25 @@ namespace Jube.App.Controllers.Session
     [Authorize]
     public class SessionCaseSearchCompiledSqlController : Controller
     {
-        private readonly DbContext dbContext;
-        private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
-        private readonly ILog log;
-        private readonly IMapper mapper;
-        private readonly PermissionValidation permissionValidation;
-        private readonly SessionCaseSearchCompiledSqlRepository repository;
-        private readonly IValidator<SessionCaseSearchCompiledSqlDto> validator;
-        private readonly string userName;
+        private readonly DbContext _dbContext;
+        private readonly DynamicEnvironment.DynamicEnvironment _dynamicEnvironment;
+        private readonly ILog _log;
+        private readonly IMapper _mapper;
+        private readonly PermissionValidation _permissionValidation;
+        private readonly string _userName;
+        private readonly IValidator<SessionCaseSearchCompiledSqlDto> _validator;
 
         public SessionCaseSearchCompiledSqlController(ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IHttpContextAccessor httpContextAccessor)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
-                userName = httpContextAccessor.HttpContext.User.Identity.Name;
-            this.log = log;
+                _userName = httpContextAccessor.HttpContext.User.Identity.Name;
+            _log = log;
 
-            dbContext =
+            _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
-            permissionValidation = new PermissionValidation(dbContext, userName);
-
+            _permissionValidation = new PermissionValidation(_dbContext, _userName);
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -70,18 +67,18 @@ namespace Jube.App.Controllers.Session
                 cfg.CreateMap<List<SessionCaseSearchCompiledSql>, List<SessionCaseSearchCompiledSqlDto>>()
                     .ForMember("Item", opt => opt.Ignore());
             });
-            mapper = new Mapper(config);
-            repository = new SessionCaseSearchCompiledSqlRepository(dbContext, userName);
-            validator = new SessionCaseUserDtoValidator();
-            this.dynamicEnvironment = dynamicEnvironment;
+            _mapper = new Mapper(config);
+
+            _validator = new SessionCaseSearchCompiledSqlDtoValidator();
+            _dynamicEnvironment = dynamicEnvironment;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                dbContext.Close();
-                dbContext.Dispose();
+                _dbContext.Close();
+                _dbContext.Dispose();
             }
 
             base.Dispose(disposing);
@@ -92,11 +89,15 @@ namespace Jube.App.Controllers.Session
         {
             try
             {
-                if (!permissionValidation.Validate(new[] {1})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 1 })) return Forbid();
+
+                var repository = new SessionCaseSearchCompiledSqlRepository(_dbContext, _userName);
 
                 var modelCompiled = repository.GetByGuid(guid);
+                if (modelCompiled == null) return NotFound();
+                await CheckRebuild(modelCompiled);
 
-                var postgres = new Postgres(dynamicEnvironment.AppSettings("ConnectionString"));
+                var postgres = new Postgres(_dynamicEnvironment.AppSettings("ConnectionString"));
                 var tokens = JsonConvert.DeserializeObject<List<object>>(modelCompiled.FilterTokens);
 
                 var sw = new StopWatch();
@@ -116,7 +117,7 @@ namespace Jube.App.Controllers.Session
                 };
 
                 var sessionCaseSearchCompiledSqlExecutionRepository =
-                    new SessionCaseSearchCompiledSqlExecutionRepository(dbContext, userName);
+                    new SessionCaseSearchCompiledSqlExecutionRepository(_dbContext, _userName);
 
                 sessionCaseSearchCompiledSqlExecutionRepository.Insert(modelInsert);
 
@@ -124,158 +125,60 @@ namespace Jube.App.Controllers.Session
             }
             catch (Exception e)
             {
-                log.Error(e);
+                _log.Error(e);
                 return StatusCode(500);
             }
         }
 
+        private async Task<SessionCaseSearchCompiledSql> CheckRebuild(SessionCaseSearchCompiledSql modelCompiled)
+        {
+            if (modelCompiled.Rebuild == 1 && modelCompiled.RebuildDate != null)
+                return await CompileSql.Compile(_dbContext, modelCompiled, _userName);
+            return modelCompiled;
+        }
+
         [HttpGet("ByLast")]
-        public ActionResult<SessionCaseSearchCompiledSqlDto> ExecuteByLast()
+        public async Task<ActionResult<SessionCaseSearchCompiledSqlDto>> ExecuteByLast()
         {
             try
             {
-                if (!permissionValidation.Validate(new[] {1})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 1 })) return Forbid();
 
-                return Ok(mapper.Map<SessionCaseSearchCompiledSqlDto>(repository.GetByLast()));
+                var repository = new SessionCaseSearchCompiledSqlRepository(_dbContext, _userName);
+
+                var modelCompiled = repository.GetByLast();
+                if (modelCompiled == null) return new SessionCaseSearchCompiledSqlDto { NotFound = true };
+                modelCompiled = await CheckRebuild(modelCompiled);
+
+                return Ok(_mapper.Map<SessionCaseSearchCompiledSqlDto>(modelCompiled));
             }
             catch (Exception e)
             {
-                log.Error(e);
+                _log.Error(e);
                 return StatusCode(500);
             }
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(SessionCaseSearchCompiledSqlDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(SessionCaseSearchCompiledSqlDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<SessionCaseSearchCompiledSqlDto>> Create(
             [FromBody] SessionCaseSearchCompiledSqlDto model)
         {
             try
             {
-                if (!permissionValidation.Validate(new[] {1}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 1 }, true)) return Forbid();
 
-                var results = await validator.ValidateAsync(model);
+                var results = await _validator.ValidateAsync(model);
                 if (!results.IsValid) return BadRequest(results);
 
-                var insert = mapper.Map<SessionCaseSearchCompiledSql>(model);
-
-                var filterJsonRule = JsonConvert.DeserializeObject<Rule>(model.FilterJson);
-                var filterRule = new Code.QueryBuilder.Parser(filterJsonRule,dbContext,model.CaseWorkflowId,userName);
-                var selectTokensRule = JsonConvert.DeserializeObject<Rule>(model.SelectJson);
-                var selectRule = new Code.QueryBuilder.Parser(selectTokensRule,dbContext,model.CaseWorkflowId,userName);
-                
-                insert.SelectSqlDisplay = "select \"Case\".\"Id\" as \"Id\"," +
-                                          "\"Case\".\"EntityAnalysisModelInstanceEntryGuid\" as \"EntityAnalysisModelInstanceEntryGuid\"," +
-                                          "\"Case\".\"DiaryDate\" as \"DiaryDate\"," +
-                                          "\"Case\".\"CaseWorkflowId\" as \"CaseWorkflowId\"," +
-                                          "\"Case\".\"CaseWorkflowStatusId\" as \"CaseWorkflowStatusId\"," +
-                                          "\"Case\".\"CreatedDate\" as \"CreatedDate\"," +
-                                          "\"Case\".\"Locked\" as \"Locked\"," +
-                                          "\"Case\".\"LockedUser\" as \"LockedUser\"," +
-                                          "\"Case\".\"LockedDate\" as \"LockedDate\"," +
-                                          "\"Case\".\"ClosedStatusId\" as \"ClosedStatusId\"," +
-                                          "\"Case\".\"ClosedDate\" as \"ClosedDate\"," +
-                                          "\"Case\".\"ClosedUser\" as \"ClosedUser\"," +
-                                          "\"Case\".\"CaseKey\" as \"CaseKey\"," +
-                                          "\"Case\".\"Diary\" as \"Diary\"," +
-                                          "\"Case\".\"DiaryUser\" as \"DiaryUser\"," +
-                                          "\"Case\".\"Rating\" as \"Rating\"," +
-                                          "\"Case\".\"CaseKeyValue\" as \"CaseKeyValue\"," +
-                                          "\"Case\".\"ClosedStatusMigrationDate\" as \"ClosedStatusMigrationDate\"," +
-                                          "\"Case\".\"Json\" as \"Json\"," +
-                                          "\"CaseWorkflow\".\"EnableVisualisation\" as \"EnableVisualisation\"," +
-                                          "\"CaseWorkflow\".\"VisualisationRegistryId\" as \"VisualisationRegistryId\"," +
-                                          "\"CaseWorkflowStatus\".\"ForeColor\" as \"ForeColor\"," +
-                                          "\"CaseWorkflowStatus\".\"BackColor\" as \"BackColor\" ";
-
-                var columnsSelect = new List<string>
-                {
-                    "\"Case\".\"Id\" as \"Id\"",
-                    "\"CaseWorkflowStatus\".\"BackColor\" as \"BackColor\"",
-                    "\"CaseWorkflowStatus\".\"ForeColor\" as \"ForeColor\""
-                };
-
-                var columnsOrder = new List<string>();
-                foreach (var rule in selectRule.Rules)
-                {
-                    if (rule.Field == null || rule.Id == null) continue;
-
-                    var convertedColumnSelectField = rule.Id switch
-                    {
-                        "Locked" => $"case when {rule.Field} = 1 then 'Yes' else 'No' end",
-                        "Diary" => $"case when {rule.Field} = 1 then 'Yes' else 'No' end",
-                        "ClosedStatusId" => "case " + $"when {rule.Field} = 0 then 'Open' " +
-                                            $"when {rule.Field} = 1 then 'Suspend Open' " +
-                                            $"when {rule.Field} = 2 then 'Suspend Closed' " +
-                                            $"when {rule.Field} = 3 then 'Closed' " +
-                                            $"when {rule.Field} = 4 then 'Suspend Bypass' " + "end",
-                        "Priority" => "case " + $"when {rule.Field} = 1 then 'Ultra High' " +
-                                      $"when {rule.Field} = 2 then 'High' " +
-                                      $"when {rule.Field} = 3 then 'Normal' " +
-                                      $"when {rule.Field} = 4 then 'Low' " +
-                                      $"when {rule.Field} = 5 then 'Ultra Low' " + "end",
-                        _ => rule.Field
-                    };
-
-                    columnsOrder.Add(rule.Field + " " + rule.Value);
-
-                    if (rule.Id == "Id") continue;
-
-                    if (rule.Id.Contains('.'))
-                        columnsSelect.Add(convertedColumnSelectField
-                                          + " as \"" + rule.Id.Replace(".", "") + "\"");
-                    else
-                        columnsSelect.Add(convertedColumnSelectField
-                                          + " as \"" + rule.Id + "\"");
-                }
-
-                if (filterRule.Tokens == null)
-                    return Ok(mapper.Map<SessionCaseSearchCompiledSqlDto>(repository.Insert(insert)));
-
-                filterRule.Tokens.Add(insert.CaseWorkflowId);
-                var positionCaseWorkflowId = filterRule.Tokens.Count;
-
-                filterRule.Tokens.Add(userName);
-                var positionUser = filterRule.Tokens.Count;
-
-                insert.SelectSqlSearch = "select " + string.Join(",", columnsSelect);
-
-                insert.WhereSql = "from \"Case\",\"CaseWorkflow\",\"EntityAnalysisModel\",\"TenantRegistry\"," +
-                                  "\"CaseWorkflowStatus\",\"UserInTenant\"" +
-                                  " where \"EntityAnalysisModel\".\"Id\" = \"CaseWorkflow\".\"EntityAnalysisModelId\"" +
-                                  " and \"EntityAnalysisModel\".\"TenantRegistryId\" = \"TenantRegistry\".\"Id\"" +
-                                  " and \"UserInTenant\".\"TenantRegistryId\" = \"TenantRegistry\".\"Id\"" +
-                                  " and \"Case\".\"CaseWorkflowId\" = \"CaseWorkflow\".\"Id\"" +
-                                  " and (\"Case\".\"CaseWorkflowStatusId\" = \"CaseWorkflowStatus\".\"Id\"" +
-                                  " and \"Case\".\"CaseWorkflowId\" = \"CaseWorkflowStatus\".\"CaseWorkflowId\"" +
-                                  " and (\"CaseWorkflowStatus\".\"Deleted\" = 0" +
-                                  " or \"CaseWorkflowStatus\".\"Deleted\" IS null) ) and " + filterRule.Sql +
-                                  " and \"CaseWorkflow\".\"Id\" = (@" + positionCaseWorkflowId + ")" +
-                                  " and \"UserInTenant\".\"User\" = (@" + positionUser + ")";
-
-                insert.OrderSql = "order by " + string.Join(",", columnsOrder);
-
-                insert.FilterTokens = JsonConvert.SerializeObject(filterRule.Tokens);
-
-                try
-                {
-                    var postgres = new Postgres(dynamicEnvironment.AppSettings("ConnectionString"));
-                    await postgres.PrepareAsync(insert.SelectSqlSearch + " " + insert.WhereSql + " " + insert.OrderSql,
-                        filterRule.Tokens);
-                    insert.Prepared = 1;
-                }
-                catch (Exception e)
-                {
-                    insert.Prepared = 0;
-                    insert.Error = e.Message;
-                }
-
-                return Ok(mapper.Map<SessionCaseSearchCompiledSqlDto>(repository.Insert(insert)));
+                return Ok(_mapper.Map<SessionCaseSearchCompiledSqlDto>(await CompileSql.Compile(_dbContext,
+                    _mapper.Map<SessionCaseSearchCompiledSql>(model),
+                    _userName)));
             }
             catch (Exception e)
             {
-                log.Error(e);
+                _log.Error(e);
                 return StatusCode(500);
             }
         }

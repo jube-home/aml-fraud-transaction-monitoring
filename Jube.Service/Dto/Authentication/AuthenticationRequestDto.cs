@@ -11,17 +11,16 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-namespace Jube.Service.Dto.Authentication
+namespace Jube.Service.Dto.Authentication;
+
+public class AuthenticationRequestDto
 {
-    public class AuthenticationRequestDto
-    {
-        public string? UserName { get; set; }
-        public string? Password { get; set; }
-        public string? NewPassword { get; set; }
-        public string? RepeatNewPassword { get; set; }
-        public string? RemoteIp { get; set; }
-        public string? LocalIp { get; set; }
-        public string? UserAgent { get; set; }
-        public bool PasswordChangeState { get; set; }
-    }
+    public string? UserName { get; set; }
+    public string? Password { get; set; }
+    public string? NewPassword { get; set; }
+    public string? RepeatNewPassword { get; set; }
+    public string? RemoteIp { get; set; }
+    public string? LocalIp { get; set; }
+    public string? UserAgent { get; set; }
+    public bool PasswordChangeState { get; set; }
 }

@@ -11,25 +11,56 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Linq;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository.Interface;
 using LinqToDB;
 
-namespace Jube.Data.Repository
+namespace Jube.Data.Repository;
+
+public class ExhaustiveSearchInstanceVariableClassificationRepository : IGenericRepository
 {
-    public class ExhaustiveSearchInstanceVariableClassificationRepository : IGenericRepository
+    private readonly DbContext _dbContext;
+    private readonly int? _tenantRegistryId;
+
+    public ExhaustiveSearchInstanceVariableClassificationRepository(DbContext dbContext)
     {
-        private readonly DbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public ExhaustiveSearchInstanceVariableClassificationRepository(DbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public ExhaustiveSearchInstanceVariableClassificationRepository(DbContext dbContext, int tenantRegistryId)
+    {
+        _dbContext = dbContext;
+        _tenantRegistryId = tenantRegistryId;
+    }
 
-        public int Insert(object arg)
-        {
-            return _dbContext.InsertWithInt32Identity((ExhaustiveSearchInstanceVariableClassification)arg);
-        }
+    public int Insert(object arg)
+    {
+        return _dbContext.InsertWithInt32Identity((ExhaustiveSearchInstanceVariableClassification)arg);
+    }
+
+    public IQueryable<ExhaustiveSearchInstanceVariableClassification> GetByExhaustiveSearchInstanceVariableIdOrderById(
+        int exhaustiveSearchInstanceVariableId)
+    {
+        return _dbContext.ExhaustiveSearchInstanceVariableClassification.Where(w =>
+                w.ExhaustiveSearchInstanceVariableId == exhaustiveSearchInstanceVariableId)
+            .OrderBy(o => o.Id);
+    }
+
+    public void DeleteByTenantRegistryId(int tenantRegistryId, int importId)
+    {
+        var records = _dbContext.ExhaustiveSearchInstanceVariableClassification
+            .Where(d =>
+                (d.ExhaustiveSearchInstanceVariable.ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId ==
+                    _tenantRegistryId || !_tenantRegistryId.HasValue)
+                && d.ExhaustiveSearchInstanceVariable.ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId ==
+                tenantRegistryId
+                && (d.Deleted == 0 || d.Deleted == null))
+            .Set(s => s.ImportId, importId)
+            .Set(s => s.Deleted, Convert.ToByte(1))
+            .Set(s => s.DeletedDate, DateTime.Now)
+            .Update();
     }
 }

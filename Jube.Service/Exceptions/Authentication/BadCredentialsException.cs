@@ -13,7 +13,4 @@
 
 namespace Jube.Service.Exceptions.Authentication;
 
-public class BadCredentialsException : Exception
-{
-    
-}
+public class BadCredentialsException : Exception;

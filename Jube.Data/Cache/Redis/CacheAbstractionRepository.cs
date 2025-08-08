@@ -21,7 +21,10 @@ using StackExchange.Redis;
 
 namespace Jube.Data.Cache.Redis;
 
-public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) : ICacheAbstractionRepository
+public class CacheAbstractionRepository(
+    IDatabaseAsync redisDatabase,
+    ILog log,
+    CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheAbstractionRepository
 {
     public async Task DeleteAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue,
         string name)
@@ -31,7 +34,7 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
             var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
-            await redisDatabase.HashDeleteAsync(redisKey, redisHSetKey);
+            await redisDatabase.HashDeleteAsync(redisKey, redisHSetKey, commandFlag);
         }
         catch (Exception ex)
         {
@@ -48,7 +51,8 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
             var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue);
+            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue,
+                When.Always, commandFlag);
         }
         catch (Exception ex)
         {
@@ -65,7 +69,8 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
             var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue);
+            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue,
+                When.Always, commandFlag);
         }
         catch (Exception ex)
         {
@@ -84,7 +89,7 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
             var redisValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
 
             if (!redisValue.HasValue) return null;
-            return (double) redisValue;
+            return (double)redisValue;
         }
         catch (Exception ex)
         {
@@ -116,7 +121,7 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
                 var redisValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
 
                 value.Add(entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest.AbstractionRuleName,
-                    redisValue.HasValue ? (double) redisValue : 0);
+                    redisValue.HasValue ? (double)redisValue : 0);
             }
         }
         catch (Exception ex)

@@ -21,17 +21,17 @@ namespace Jube.DynamicEnvironment;
 
 public class DynamicEnvironment
 {
-    private readonly Dictionary<string, string> appSettings;
-    private readonly ILog log;
+    private readonly Dictionary<string, string> _appSettings;
+    private readonly ILog _log;
 
     public DynamicEnvironment(ILog log)
     {
-        this.log = log;
+        _log = log;
         try
         {
-            this.log.Info("Dynamic Variables:  The default and hardcoded values are going to be added.");
+            _log.Info("Dynamic Variables:  The default and hardcoded values are going to be added.");
 
-            appSettings = new Dictionary<string, string>
+            _appSettings = new Dictionary<string, string>
             {
                 { "ModelSynchronisationWait", "10000" },
                 { "EnableNotification", "True" },
@@ -79,6 +79,7 @@ public class DynamicEnvironment
                 { "JWTValidIssuer", "http://localhost:5001" },
                 { "JWTKey", null },
                 { "PasswordHashingKey", null },
+                { "PreservationSaltingKey", null },
                 { "EnablePublicInvokeController", "True" },
                 { "EnableEngine", "True" },
                 { "ExhaustiveTrialsLimit", "1000" },
@@ -103,6 +104,7 @@ public class DynamicEnvironment
                 { "WaitTtlCounterDecrement", "60000" },
                 { "Redis", "True" },
                 { "RedisConnectionString", "localhost" },
+                { "RedisCommandFlag", "0" },
                 { "StoreFullPayloadLatest", "True" },
                 { "CachePruneServer", "True" },
                 { "WaitCachePrune", "10000" },
@@ -110,11 +112,10 @@ public class DynamicEnvironment
             };
 
             foreach (DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
-            {
-                if (appSettings.ContainsKey(Convert.ToString(environmentVariable.Key) ?? string.Empty))
+                if (_appSettings.ContainsKey(Convert.ToString(environmentVariable.Key) ?? string.Empty))
                 {
                     if (Convert.ToString(environmentVariable.Value) ==
-                        appSettings[environmentVariable.Key.ToString() ?? string.Empty])
+                        _appSettings[environmentVariable.Key.ToString() ?? string.Empty])
                     {
                         log.Info("Jube Environment Synchronisation Start: Environment variable " +
                                  environmentVariable.Key +
@@ -122,7 +123,7 @@ public class DynamicEnvironment
                     }
                     else
                     {
-                        appSettings[environmentVariable.Key.ToString() ?? string.Empty] =
+                        _appSettings[environmentVariable.Key.ToString() ?? string.Empty] =
                             Convert.ToString(environmentVariable.Value);
 
                         log.Info("Jube Environment Synchronisation Start: Environment variable " +
@@ -135,7 +136,6 @@ public class DynamicEnvironment
                     log.Info("Jube Environment Synchronisation Start: Environment variable " +
                              environmentVariable.Key + " is not a valid Application Setting.");
                 }
-            }
 
             ValidateConnectionString();
             ValidateJwtKey();
@@ -152,26 +152,20 @@ public class DynamicEnvironment
 
     private void ValidateConnectionString()
     {
-        if (string.IsNullOrEmpty(appSettings["ConnectionString"]))
-        {
+        if (string.IsNullOrEmpty(_appSettings["ConnectionString"]))
             throw new Exception("Missing ConnectionString in Environment Variables.");
-        }
     }
 
     private void ValidatePasswordHashingKey()
     {
-        if (string.IsNullOrEmpty(appSettings["PasswordHashingKey"]))
-        {
+        if (string.IsNullOrEmpty(_appSettings["PasswordHashingKey"]))
             throw new Exception("Missing PasswordHashingKey in Environment Variables.");
-        }
     }
 
     private void ValidateJwtKey()
     {
-        if (string.IsNullOrEmpty(appSettings["JWTKey"]))
-        {
+        if (string.IsNullOrEmpty(_appSettings["JWTKey"]))
             throw new Exception("Missing JWTKey in Environment Variables.");
-        }
     }
 
     public string AppSettings(string[] keys)
@@ -184,11 +178,11 @@ public class DynamicEnvironment
         string value = null;
         try
         {
-            if (appSettings.TryGetValue(key, out var setting)) value = setting;
+            if (_appSettings.TryGetValue(key, out var setting)) value = setting;
         }
         catch (Exception ex)
         {
-            log.Error("Jube Environment Variable: Error fetching variable with key " + key + " with error " + ex);
+            _log.Error("Jube Environment Variable: Error fetching variable with key " + key + " with error " + ex);
         }
 
         return value;
