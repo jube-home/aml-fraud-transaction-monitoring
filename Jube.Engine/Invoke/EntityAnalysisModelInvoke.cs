@@ -22,6 +22,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Jube.Data.Cache.Interfaces;
+using Jube.Data.Cache.Postgres.Callback;
 using Jube.Data.Extension;
 using Jube.Data.Messaging;
 using Jube.Data.Poco;
@@ -705,7 +706,7 @@ public class EntityAnalysisModelInvoke(
             log.Info(
                 $"Entity Invoke: GUID {EntityAnalysisModelInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} has started invocation timer.  Will now update the reference date.");
 
-            UpdateReferenceDate(EntityAnalysisModel.TenantRegistryId, EntityAnalysisModel.Id,
+            UpdateReferenceDate(EntityAnalysisModel.TenantRegistryId, EntityAnalysisModel.Guid,
                 EntityAnalysisModelInstanceEntryPayloadStore.ReferenceDate);
 
             log.Info(
@@ -769,7 +770,7 @@ public class EntityAnalysisModelInvoke(
         }
     }
 
-    private void UpdateReferenceDate(int tenantRegistryId, int entityAnalysisModelId, DateTime referenceDate)
+    private void UpdateReferenceDate(int tenantRegistryId, Guid entityAnalysisModelGuid, DateTime referenceDate)
     {
         ICacheReferenceDate cacheReferenceDate;
         if (redisDatabase != null)
@@ -778,7 +779,7 @@ public class EntityAnalysisModelInvoke(
             cacheReferenceDate = new Postgres.CacheReferenceDate(jubeEnvironment.AppSettings(
                 ["CacheConnectionString", "ConnectionString"]), log);
 
-        cacheReferenceDate.UpsertReferenceDate(tenantRegistryId, entityAnalysisModelId, referenceDate);
+        cacheReferenceDate.UpsertReferenceDate(tenantRegistryId, entityAnalysisModelGuid, referenceDate);
     }
 
     private ICachePayloadRepository BuildCachePayloadRepository()
@@ -877,7 +878,7 @@ public class EntityAnalysisModelInvoke(
         if (!AsyncEnableCallback) return;
 
         var cacheCallbackRepository =
-            new Postgres.CacheCallbackRepository(jubeEnvironment.AppSettings(
+            new CacheCallbackRepository(jubeEnvironment.AppSettings(
                 ["CacheConnectionString", "ConnectionString"]), log);
 
         pendingWriteTasks.Add(cacheCallbackRepository.InsertAsync(ResponseJson.ToArray(),
@@ -923,7 +924,7 @@ public class EntityAnalysisModelInvoke(
                 .Equals("True", StringComparison.OrdinalIgnoreCase))
                 pendingWriteTasks.Add(cachePayloadLatestRepository.UpsertAsync(
                     EntityAnalysisModel.TenantRegistryId,
-                    EntityAnalysisModel.Id,
+                    EntityAnalysisModel.Guid,
                     entityAnalysisModelInstanceEntryPayload.Payload,
                     entityAnalysisModelInstanceEntryPayload.ReferenceDate,
                     entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid,
@@ -931,7 +932,7 @@ public class EntityAnalysisModelInvoke(
             else
                 pendingWriteTasks.Add(cachePayloadLatestRepository.UpsertAsync(
                     EntityAnalysisModel.TenantRegistryId,
-                    EntityAnalysisModel.Id,
+                    EntityAnalysisModel.Guid,
                     entityAnalysisModelInstanceEntryPayload.ReferenceDate,
                     entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid,
                     key, searchKeyValue?.ToString()));
@@ -948,7 +949,7 @@ public class EntityAnalysisModelInvoke(
             {
                 pendingWriteTasks.Add(cachePayloadRepository.UpsertAsync(
                     EntityAnalysisModel.TenantRegistryId,
-                    EntityAnalysisModel.Id,
+                    EntityAnalysisModel.Guid,
                     entityAnalysisModelInstanceEntryPayload.Payload,
                     entityAnalysisModelInstanceEntryPayload.ReferenceDate,
                     entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid));
@@ -960,7 +961,7 @@ public class EntityAnalysisModelInvoke(
             {
                 pendingWriteTasks.Add(cachePayloadRepository.InsertAsync(
                     EntityAnalysisModel.TenantRegistryId,
-                    EntityAnalysisModel.Id,
+                    EntityAnalysisModel.Guid,
                     entityAnalysisModelInstanceEntryPayload.Payload,
                     entityAnalysisModelInstanceEntryPayload.ReferenceDate,
                     entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid));
@@ -1262,11 +1263,11 @@ public class EntityAnalysisModelInvoke(
                                             .ReferenceDate.Floor(TimeSpan.FromMinutes(1));
 
                                         pendingWriteTasks.Add(cacheTtlCounterEntryRepository.UpsertAsync(
-                                            EntityAnalysisModel.TenantRegistryId, EntityAnalysisModel.Id,
+                                            EntityAnalysisModel.TenantRegistryId, EntityAnalysisModel.Guid,
                                             foundTtlCounter.TtlCounterDataName,
                                             CachePayloadDocumentStore[foundTtlCounter.TtlCounterDataName]
                                                 .AsString(),
-                                            foundTtlCounter.Id,
+                                            foundTtlCounter.Guid,
                                             resolution, 1));
                                     }
                                     else
@@ -1277,11 +1278,11 @@ public class EntityAnalysisModelInvoke(
 
                                     pendingWriteTasks.Add(cacheTtlCounterRepository
                                         .IncrementTtlCounterCacheAsync(EntityAnalysisModel.TenantRegistryId,
-                                            EntityAnalysisModel.Id,
+                                            EntityAnalysisModel.Guid,
                                             foundTtlCounter.TtlCounterDataName,
                                             CachePayloadDocumentStore[foundTtlCounter.TtlCounterDataName]
                                                 .AsString(),
-                                            foundTtlCounter.Id, 1,
+                                            foundTtlCounter.Guid, 1,
                                             EntityAnalysisModelInstanceEntryPayloadStore.ReferenceDate
                                         ));
                                 }
@@ -1831,7 +1832,7 @@ public class EntityAnalysisModelInvoke(
 
                         var sanction = await cacheSanctionRepository.GetByMultiPartStringDistanceThresholdAsync(
                             EntityAnalysisModel.TenantRegistryId,
-                            EntityAnalysisModel.Id, multiPartStringValue,
+                            EntityAnalysisModel.Guid, multiPartStringValue,
                             entityAnalysisModelSanction.Distance
                         );
 
@@ -1992,7 +1993,7 @@ public class EntityAnalysisModelInvoke(
 
                                 pendingWriteTasks.Add(cacheSanctionRepository.InsertAsync(
                                     EntityAnalysisModel.TenantRegistryId,
-                                    EntityAnalysisModel.Id,
+                                    EntityAnalysisModel.Guid,
                                     multiPartStringValue,
                                     entityAnalysisModelSanction.Distance, averageLevenshteinDistance));
 
@@ -2007,7 +2008,7 @@ public class EntityAnalysisModelInvoke(
 
                                 pendingWriteTasks.Add(
                                     cacheSanctionRepository.UpdateAsync(EntityAnalysisModel.TenantRegistryId,
-                                        EntityAnalysisModel.Id,
+                                        EntityAnalysisModel.Guid,
                                         multiPartStringValue,
                                         entityAnalysisModelSanction.Distance,
                                         averageLevenshteinDistance));
@@ -2748,7 +2749,7 @@ public class EntityAnalysisModelInvoke(
 
                 foreach (var abstractionRuleNameValue in await cacheAbstractionRepository
                              .GetByNameSearchNameSearchValueReturnValueOnlyTreatingMissingAsNullByReturnZeroRecordAsync(
-                                 EntityAnalysisModel.TenantRegistryId, EntityAnalysisModel.Id,
+                                 EntityAnalysisModel.TenantRegistryId, EntityAnalysisModel.Guid,
                                  listEntityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest))
                     AddComputedValuesToAbstractionRulePayload(abstractionRuleNameValue.Value, abstractionRule);
             }
@@ -2838,8 +2839,8 @@ public class EntityAnalysisModelInvoke(
             {
                 var ttlCounterValue = await cacheTtlCounterRepository
                     .GetByNameDataNameDataValueAsync(EntityAnalysisModel.TenantRegistryId,
-                        EntityAnalysisModel.Id,
-                        ttlCounter.Id,
+                        EntityAnalysisModel.Guid,
+                        ttlCounter.Guid,
                         ttlCounter.TtlCounterDataName,
                         CachePayloadDocumentStore[ttlCounter.TtlCounterDataName].AsString());
 
@@ -2925,7 +2926,7 @@ public class EntityAnalysisModelInvoke(
 
                     var count = await
                         cacheTtlCounterEntryRepository.GetAsync(EntityAnalysisModel.TenantRegistryId,
-                            EntityAnalysisModel.Id, ttlCounter.Id,
+                            EntityAnalysisModel.Guid, ttlCounter.Guid,
                             ttlCounter.TtlCounterDataName,
                             CachePayloadDocumentStore[ttlCounter.TtlCounterDataName].AsString(),
                             adjustedTtlCounterDate,

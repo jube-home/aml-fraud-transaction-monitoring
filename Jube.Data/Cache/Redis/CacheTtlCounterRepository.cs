@@ -24,14 +24,14 @@ public class CacheTtlCounterRepository(
     ILog log,
     CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheTtlCounterRepository
 {
-    public async Task DecrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
-        int entityAnalysisModelTtlCounterId,
+    public async Task DecrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        Guid entityAnalysisModelTtlCounterGuid,
         string dataName, string dataValue, int decrement)
     {
         try
         {
             var redisKey =
-                $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
+                $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
             var redisHSetKey = $"{dataValue}";
 
             await redisDatabase.HashDecrementAsync(redisKey, redisHSetKey, decrement,
@@ -43,13 +43,13 @@ public class CacheTtlCounterRepository(
         }
     }
 
-    public async Task<int> GetByNameDataNameDataValueAsync(int tenantRegistryId, int entityAnalysisModelId,
-        int entityAnalysisModelTtlCounterId, string dataName, string dataValue)
+    public async Task<int> GetByNameDataNameDataValueAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        Guid entityAnalysisModelTtlCounterGuid, string dataName, string dataValue)
     {
         try
         {
             var redisKey =
-                $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
+                $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
             var redisHSetKey = $"{dataValue}";
             return (int)await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
         }
@@ -61,14 +61,14 @@ public class CacheTtlCounterRepository(
         return 0;
     }
 
-    public async Task IncrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId, string dataName,
+    public async Task IncrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string dataName,
         string dataValue,
-        int entityAnalysisModelTtlCounterId, int increment, DateTime referenceDate)
+        Guid entityAnalysisModelTtlCounterGuid, int increment, DateTime referenceDate)
     {
         try
         {
             var redisKey =
-                $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
+                $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
             var redisHSetKey = $"{dataValue}";
 
             await redisDatabase.HashIncrementAsync(redisKey, redisHSetKey, increment,

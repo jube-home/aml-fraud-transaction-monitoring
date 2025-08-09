@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Jube.Data.Cache.Dto;
 using Jube.Data.Cache.Interfaces;
 using Jube.Extensions;
 using log4net;
@@ -27,20 +28,20 @@ public class CacheTtlCounterEntryRepository(
     ILog log,
     CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheTtlCounterEntryRepository
 {
-    public async Task<List<Postgres.CacheTtlCounterEntryRepository.ExpiredTtlCounterEntryDto>>
-        GetExpiredTtlCounterCacheCountsAsync(int tenantRegistryId, int entityAnalysisModelId,
-            int entityAnalysisModelTtlCounterId, string dataName, DateTime referenceDate)
+    public async Task<List<ExpiredTtlCounterEntryDto>>
+        GetExpiredTtlCounterCacheCountsAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+            Guid entityAnalysisModelTtlCounterGuid, string dataName, DateTime referenceDate)
     {
-        var expired = new List<Postgres.CacheTtlCounterEntryRepository.ExpiredTtlCounterEntryDto>();
+        var expired = new List<ExpiredTtlCounterEntryDto>();
         try
         {
             var redisKeyTtlCounter =
-                $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}";
+                $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
 
             foreach (var dataValue in await redisDatabase.HashKeysAsync(redisKeyTtlCounter))
             {
                 var redisKeyTtlCounterEntry = $"TtlCounterEntry:{tenantRegistryId}" +
-                                              $":{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}" +
+                                              $":{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}" +
                                               $":{dataName}:{dataValue}";
 
                 foreach (var keyTtlCounterEntry in await redisDatabase.HashKeysAsync(redisKeyTtlCounterEntry))
@@ -50,7 +51,7 @@ public class CacheTtlCounterEntryRepository(
 
                     var redisValue = await redisDatabase.HashGetAsync(redisKeyTtlCounterEntry, keyTtlCounterEntry);
                     if (redisValue.HasValue)
-                        expired.Add(new Postgres.CacheTtlCounterEntryRepository.ExpiredTtlCounterEntryDto
+                        expired.Add(new ExpiredTtlCounterEntryDto
                         {
                             Value = (int)redisValue,
                             DataValue = dataValue,
@@ -68,7 +69,7 @@ public class CacheTtlCounterEntryRepository(
     }
 
     public async Task<int> GetAsync(int tenantRegistryId,
-        int entityAnalysisModelId, int entityAnalysisModelTtlCounterId,
+        Guid entityAnalysisModelGuid, Guid entityAnalysisModelTtlCounterGuid,
         string dataName, string dataValue,
         DateTime referenceDateFrom, DateTime referenceDateTo)
     {
@@ -84,8 +85,8 @@ public class CacheTtlCounterEntryRepository(
         var referenceDateToTimestamp = referenceDateTo.ToUnixTimeMilliSeconds();
 
         var redisKey =
-            $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelId}" +
-            $":{entityAnalysisModelTtlCounterId}:{dataName}:{dataValue}";
+            $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelGuid:N}" +
+            $":{entityAnalysisModelTtlCounterGuid:N}:{dataName}:{dataValue}";
 
         return (from hashEntry in await redisDatabase.HashGetAllAsync(redisKey)
             let referenceDateTimestamp = long.Parse(hashEntry.Name)
@@ -94,13 +95,13 @@ public class CacheTtlCounterEntryRepository(
             select (int)hashEntry.Value).Sum();
     }
 
-    public async Task UpsertAsync(int tenantRegistryId, int entityAnalysisModelId, string dataName, string dataValue,
-        int entityAnalysisModelTtlCounterId, DateTime referenceDate, int increment)
+    public async Task UpsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string dataName, string dataValue,
+        Guid entityAnalysisModelTtlCounterGuid, DateTime referenceDate, int increment)
     {
         try
         {
             var redisKey =
-                $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}:{dataValue}";
+                $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}:{dataValue}";
             var redisHSetKey = $"{referenceDate.ToUnixTimeMilliSeconds()}";
 
             await redisDatabase.HashIncrementAsync(redisKey, redisHSetKey, increment,
@@ -112,14 +113,15 @@ public class CacheTtlCounterEntryRepository(
         }
     }
 
-    public async Task DeleteAsync(int tenantRegistryId, int entityAnalysisModelId, int entityAnalysisModelTtlCounterId,
+    public async Task DeleteAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        Guid entityAnalysisModelTtlCounterGuid,
         string dataName,
         string dataValue, DateTime referenceDate)
     {
         try
         {
             var redisKey =
-                $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelId}:{entityAnalysisModelTtlCounterId}:{dataName}:{dataValue}";
+                $"TtlCounterEntry:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}:{dataValue}";
             var redisHSetKey = $"{referenceDate.ToUnixTimeMilliSeconds()}";
 
             await redisDatabase.HashDeleteAsync(redisKey, redisHSetKey,

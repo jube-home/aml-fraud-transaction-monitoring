@@ -29,12 +29,12 @@ public class CacheSanctionRepository(
     CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheSanctionRepository
 {
     public async Task<CacheSanctionDto> GetByMultiPartStringDistanceThresholdAsync(int tenantRegistryId,
-        int entityAnalysisModelId, string multiPartString,
+        Guid entityAnalysisModelGuid, string multiPartString,
         int distanceThreshold)
     {
         try
         {
-            var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelId}";
+            var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
             var redisHSetKey = $"{multiPartString}:{distanceThreshold}";
 
             var hashValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
@@ -59,13 +59,13 @@ public class CacheSanctionRepository(
         return null;
     }
 
-    public async Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string multiPartString,
+    public async Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string multiPartString,
         int distanceThreshold,
         double? value)
     {
         try
         {
-            var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelId}";
+            var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
             var redisHSetKey = $"{multiPartString}:{distanceThreshold}";
 
             var sanction = new Sanction
@@ -86,13 +86,13 @@ public class CacheSanctionRepository(
         }
     }
 
-    public async Task UpdateAsync(int tenantRegistryId, int entityAnalysisModelId, string multiPartString,
+    public async Task UpdateAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string multiPartString,
         int distanceThreshold,
         double? value)
     {
         try
         {
-            await InsertAsync(tenantRegistryId, entityAnalysisModelId, multiPartString, distanceThreshold, value);
+            await InsertAsync(tenantRegistryId, entityAnalysisModelGuid, multiPartString, distanceThreshold, value);
         }
         catch (Exception ex)
         {

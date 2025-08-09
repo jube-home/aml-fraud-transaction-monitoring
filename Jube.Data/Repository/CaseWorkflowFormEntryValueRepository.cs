@@ -48,7 +48,9 @@ public class CaseWorkflowFormEntryValueRepository
                 => (w.CaseWorkflowsFormsEntry.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId ==
                     _tenantRegistryId ||
                     !_tenantRegistryId.HasValue)
-                   && w.CaseWorkflowFormEntryId == caseWorkflowFormEntryId)
+                   && (w.CaseWorkflowFormEntryId == caseWorkflowFormEntryId)
+                   & (w.CaseWorkflowsFormsEntry.Case.CaseWorkflow.EntityAnalysisModel.Deleted == 0 ||
+                      w.CaseWorkflowsFormsEntry.Case.CaseWorkflow.EntityAnalysisModel.Deleted == null))
             .OrderByDescending(o => o.Id);
     }
 

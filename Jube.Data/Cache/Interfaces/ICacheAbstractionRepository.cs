@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Jube.Data.Cache.Postgres;
@@ -19,22 +20,23 @@ namespace Jube.Data.Cache.Interfaces;
 
 public interface ICacheAbstractionRepository
 {
-    Task DeleteAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue,
+    Task DeleteAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string searchKey, string searchValue,
         string name);
 
-    Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue, string name,
+    Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string searchKey, string searchValue,
+        string name,
         double value);
 
-    Task UpdateAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey,
+    Task UpdateAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string searchKey,
         string searchValue, string name, double value);
 
-    Task<double?> GetByNameSearchNameSearchValueAsync(int tenantRegistryId, int entityAnalysisModelId,
+    Task<double?> GetByNameSearchNameSearchValueAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
         string name,
         string searchKey, string searchValue);
 
     Task<Dictionary<string, double>>
         GetByNameSearchNameSearchValueReturnValueOnlyTreatingMissingAsNullByReturnZeroRecordAsync(
-            int tenantRegistryId, int entityAnalysisModelId,
+            int tenantRegistryId, Guid entityAnalysisModelGuid,
             List<EntityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueDto>
                 entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests);
 }

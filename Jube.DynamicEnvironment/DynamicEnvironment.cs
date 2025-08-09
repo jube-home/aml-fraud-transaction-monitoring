@@ -66,7 +66,6 @@ public class DynamicEnvironment
                 { "EnableSanction", "True" },
                 { "NegotiateAuthentication", "False" },
                 { "EnableExhaustiveTraining", "True" },
-                { "EnableCacheIndex", "True" },
                 { "EnableReprocessing", "True" },
                 { "UseMockDataExhaustive", "True" },
                 { "SanctionLoaderWait", "60000" },

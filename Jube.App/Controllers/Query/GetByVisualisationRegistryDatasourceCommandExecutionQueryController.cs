@@ -67,7 +67,8 @@ namespace Jube.App.Controllers.Query
             base.Dispose(disposing);
         }
 
-        [HttpPost("int:{id}")]
+        // ReSharper disable once RouteTemplates.RouteParameterIsNotPassedToMethod
+        [HttpPost("{id}")]
         public async Task<ActionResult<dynamic>> ExecuteAsync()
         {
             try

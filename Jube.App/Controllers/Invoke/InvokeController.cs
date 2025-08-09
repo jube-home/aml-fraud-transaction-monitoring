@@ -23,7 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Jube.App.Dto;
-using Jube.Data.Cache.Postgres;
+using Jube.Data.Cache.Postgres.Callback;
 using Jube.Data.Extension;
 using Jube.Engine.Invoke;
 using Jube.Engine.Model;

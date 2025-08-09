@@ -296,7 +296,7 @@ $(document).ready(function () {
         click: function (e) {
             var builderResult = getCasesFilter();
             CompileSqlOnServer(builderResult.filterJson, builderResult.selectJson, builderResult.filterTokens, currentCaseWorkflowGuid, currentCaseWorkflowFilterGuid, false, false);
-            window.location.href = '/Case/Case?SessionCaseSearchCompiledSqlControllerGuid=  ' + currentCaseSessionGuid;
+            window.location.href = '/Case/Case?SessionCaseSearchCompiledSqlControllerGuid=' + currentCaseSessionGuid;
         }
     }).hide();
 

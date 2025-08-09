@@ -14,124 +14,27 @@
 using System;
 using System.Threading.Tasks;
 using Jube.Data.Cache.Interfaces;
-using Jube.Data.Extension;
 using log4net;
-using Npgsql;
 
 namespace Jube.Data.Cache.Postgres;
 
 public class CacheTtlCounterRepository(string connectionString, ILog log) : ICacheTtlCounterRepository
 {
-    public async Task DecrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
-        int entityAnalysisModelTtlCounterId,
-        string dataName, string dataValue, int decrement)
+    public Task DecrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        Guid entityAnalysisModelTtlCounterGuid, string dataName, string dataValue, int decrement)
     {
-        var connection = new NpgsqlConnection(connectionString);
-        try
-        {
-            connection.Open();
-
-            var sql = "update \"CacheTtlCounter\"" +
-                      " set \"Value\" = \"Value\" - (@decrement)" +
-                      " where \"EntityAnalysisModelTtlCounterId\" = (@entityAnalysisModelTtlCounterId)" +
-                      " and \"DataName\" = (@dataName)" +
-                      " and \"DataValue\" = (@dataValue)" +
-                      " and \"EntityAnalysisModelId\" = (@entityAnalysisModelId);";
-
-            var command = new NpgsqlCommand(sql);
-            command.Connection = connection;
-            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-            command.Parameters.AddWithValue("EntityAnalysisModelTtlCounterId", entityAnalysisModelTtlCounterId);
-            command.Parameters.AddWithValue("dataName", dataName);
-            command.Parameters.AddWithValue("dataValue", dataValue);
-            command.Parameters.AddWithValue("decrement", decrement);
-
-            await command.PrepareAsync();
-            await command.ExecuteNonQueryAsync();
-        }
-        catch (Exception ex)
-        {
-            log.Error($"Cache SQL: Has created an exception as {ex}.");
-        }
-        finally
-        {
-            await connection.CloseAsync();
-            await connection.DisposeAsync();
-        }
+        throw new NotImplementedException();
     }
 
-    public async Task<int> GetByNameDataNameDataValueAsync(int tenantRegistryId, int entityAnalysisModelId,
-        int entityAnalysisModelTtlCounterId, string dataName, string dataValue)
+    public Task<int> GetByNameDataNameDataValueAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        Guid entityAnalysisModelTtlCounterGuid, string dataName, string dataValue)
     {
-        var connection = new NpgsqlConnection(connectionString);
-        var value = 0;
-        try
-        {
-            await connection.OpenAsync();
-
-            var sql = "select \"Value\" from \"CacheTtlCounter\"" +
-                      " where \"EntityAnalysisModelTtlCounterId\" = (@entityAnalysisModelTtlCounterId) and \"DataName\" = (@dataName) " +
-                      "and \"DataValue\" = (@dataValue) and \"EntityAnalysisModelId\" = (@entityAnalysisModelId);";
-
-            var command = new NpgsqlCommand(sql);
-            command.Connection = connection;
-            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-            command.Parameters.AddWithValue("entityAnalysisModelTtlCounterId", entityAnalysisModelTtlCounterId);
-            command.Parameters.AddWithValue("dataName", dataName);
-            command.Parameters.AddWithValue("dataValue", dataValue);
-            await command.PrepareAsync();
-
-            var scalarReturnValue = await command.ExecuteScalarAsync();
-            if (scalarReturnValue != null) value = scalarReturnValue.AsInt();
-        }
-        catch (Exception ex)
-        {
-            log.Error($"Cache SQL: Has created an exception as {ex}.");
-        }
-        finally
-        {
-            await connection.CloseAsync();
-            await connection.DisposeAsync();
-        }
-
-        return value;
+        throw new NotImplementedException();
     }
 
-    public async Task IncrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
-        string dataName, string dataValue, int entityAnalysisModelTtlCounterId, int increment,
-        DateTime referenceDate)
+    public Task IncrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string dataName,
+        string dataValue, Guid entityAnalysisModelTtlCounterGuid, int increment, DateTime referenceDate)
     {
-        var connection = new NpgsqlConnection(connectionString);
-        try
-        {
-            await connection.OpenAsync();
-
-            var sql = "insert into \"CacheTtlCounter\"(\"EntityAnalysisModelId\",\"DataName\",\"DataValue\"," +
-                      "\"EntityAnalysisModelTtlCounterId\",\"Value\",\"ReferenceDate\",\"UpdatedDate\")" +
-                      " values((@entityAnalysisModelId),(@dataName),(@dataValue)," +
-                      "(@entityAnalysisModelTtlCounterId),1,(@referenceDate),(@updatedDate)) " +
-                      " ON CONFLICT (\"EntityAnalysisModelId\",\"EntityAnalysisModelTtlCounterId\",\"DataName\",\"DataValue\") " +
-                      " DO UPDATE set \"Value\" = \"CacheTtlCounter\".\"Value\" + " + increment + "";
-
-            var command = new NpgsqlCommand(sql);
-            command.Connection = connection;
-            command.Parameters.AddWithValue("entityAnalysisModelId", entityAnalysisModelId);
-            command.Parameters.AddWithValue("dataName", dataName);
-            command.Parameters.AddWithValue("dataValue", dataValue);
-            command.Parameters.AddWithValue("entityAnalysisModelTtlCounterId", entityAnalysisModelTtlCounterId);
-            command.Parameters.AddWithValue("referenceDate", referenceDate);
-            command.Parameters.AddWithValue("updatedDate", DateTime.Now);
-
-            await command.PrepareAsync();
-            await command.ExecuteNonQueryAsync();
-        }
-        catch (Exception ex)
-        {
-            log.Error($"Cache SQL: Has created an exception as {ex}.");
-        }
-        finally
-        {
-            await connection.CloseAsync();
-        }
+        throw new NotImplementedException();
     }
 }

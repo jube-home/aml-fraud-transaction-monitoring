@@ -593,10 +593,23 @@ function GetCase() {
         function (data) {
             $.each(data,
                 function (i, value) {
-                    $("#LockedUser").getKendoDropDownList().dataSource.add({
-                        "value": value.user,
-                        "text": value.user
-                    })
+                    let lockUserDropDown = $("#LockedUser");
+
+                    let exists = false;
+                    for (let i = 0; i < lockUserDropDown.getKendoDropDownList().dataSource.data().length; i++) {
+                        let dataItem = lockUserDropDown.getKendoDropDownList().dataSource.data()[i];
+                        if (dataItem.value === value.user) {
+                            exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!exists) {
+                        lockUserDropDown.getKendoDropDownList().dataSource.add({
+                            "value": value.user,
+                            "text": value.user
+                        })
+                    }
                 });
 
             if (CaseId) {

@@ -14,30 +14,30 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Jube.Data.Cache.Postgres;
+using Jube.Data.Cache.Dto;
 
 namespace Jube.Data.Cache.Interfaces;
 
 public interface ICacheTtlCounterEntryRepository
 {
-    Task<List<CacheTtlCounterEntryRepository.ExpiredTtlCounterEntryDto>> GetExpiredTtlCounterCacheCountsAsync(
+    Task<List<ExpiredTtlCounterEntryDto>> GetExpiredTtlCounterCacheCountsAsync(
         int tenantRegistryId,
-        int entityAnalysisModelId,
-        int entityAnalysisModelTtlCounterId,
+        Guid entityAnalysisModelGuid,
+        Guid entityAnalysisModelTtlCounterGuid,
         string dataName, DateTime referenceDate);
 
     Task<int> GetAsync(int tenantRegistryId,
-        int entityAnalysisModelId, int entityAnalysisModelTtlCounterId,
+        Guid entityAnalysisModelGuid, Guid entityAnalysisModelTtlCounterGuid,
         string dataName, string dataValue,
         DateTime referenceDateFrom, DateTime referenceDateTo);
 
     Task UpsertAsync(int tenantRegistryId,
-        int entityAnalysisModelId, string dataName, string dataValue,
-        int entityAnalysisModelTtlCounterId,
+        Guid entityAnalysisModelGuid, string dataName, string dataValue,
+        Guid entityAnalysisModelTtlCounterGuid,
         DateTime referenceDate, int increment);
 
     Task DeleteAsync(int tenantRegistryId,
-        int entityAnalysisModelId, int entityAnalysisModelTtlCounterId,
+        Guid entityAnalysisModelGuid, Guid entityAnalysisModelTtlCounterGuid,
         string dataName, string dataValue,
         DateTime referenceDate);
 }

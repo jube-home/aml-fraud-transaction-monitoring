@@ -13,7 +13,7 @@
 
 using System;
 
-namespace Jube.Data.Cache.Postgres;
+namespace Jube.Data.Cache.Postgres.Callback;
 
 public class Callback
 {

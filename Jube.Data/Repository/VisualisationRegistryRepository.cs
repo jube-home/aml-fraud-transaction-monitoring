@@ -56,6 +56,14 @@ public class VisualisationRegistryRepository
                                                                     && (w.Deleted == 0 || w.Deleted == null));
     }
 
+    public VisualisationRegistry GetById(int id)
+    {
+        return _dbContext.VisualisationRegistry.FirstOrDefault(w => w.Id == id
+                                                                    && w.TenantRegistryId == _tenantRegistryId
+                                                                    && (w.Deleted == 0 || w.Deleted == null));
+    }
+
+
     public IEnumerable<VisualisationRegistry> GetByShowInDirectory()
     {
         return _dbContext.VisualisationRegistry.Where(w => w.ShowInDirectory == 1

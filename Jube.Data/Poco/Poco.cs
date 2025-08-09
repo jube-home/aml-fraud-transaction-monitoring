@@ -1472,7 +1472,6 @@ public class EntityAnalysisModelAbstractionRuleVersion
     [Column] [Nullable] [Key(26)] public string CoderRuleScript { get; set; }
     [Column] [Nullable] [Key(27)] public byte? RuleScriptTypeId { get; set; }
     [Column] [Nullable] [Key(28)] public Guid Guid { get; set; }
-    [Column] [Nullable] [Key(29)] public int? ImportId { get; set; }
 }
 
 [Table]

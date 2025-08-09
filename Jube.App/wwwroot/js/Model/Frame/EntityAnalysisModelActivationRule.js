@@ -192,27 +192,42 @@ function ExpandCollapseTTLCounter() {
     }
 }
 
-function PopulateTTLCounters(value, set) {
+function PopulateTTLCounters(entityAnalysisModelGuid, set) {
     $.ajax({
         url: "../api/EntityAnalysisModel",
-        context: {entityAnalysisModelId: value, entityAnalysisModelTtlCounterGuid: set},
+        context: {entityAnalysisModelGuid: entityAnalysisModelGuid, entityAnalysisModelTtlCounterGuid: set},
         success: function (data) {
             for (const value of data) {
-                entityAnalysisModelGuidTtlCounter.getKendoDropDownList().dataSource.add({
-                    "value": value.guid,
-                    "text": value.name
-                });
+
+                let exists = false;
+                for (let i = 0; i < entityAnalysisModelGuidTtlCounter.getKendoDropDownList().dataSource.data().length; i++) {
+                    let dataItem = entityAnalysisModelGuidTtlCounter.getKendoDropDownList().dataSource.data()[i];
+                    if (dataItem.value === value.guid) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists) {
+                    entityAnalysisModelGuidTtlCounter.getKendoDropDownList().dataSource.add({
+                        "value": value.guid,
+                        "text": value.name
+                    });
+                }
             }
 
-            if (typeof this.entityAnalysisModelId !== 'undefined') {
-                entityAnalysisModelGuidTtlCounter.data("kendoDropDownList").value(this.guid);
+            let entityAnalysisModelGuidToSelectTtlCountersWith;
+            if (typeof this.entityAnalysisModelGuid !== 'undefined') {
+                entityAnalysisModelGuidTtlCounter.data("kendoDropDownList").value(entityAnalysisModelGuid);
+                entityAnalysisModelGuidToSelectTtlCountersWith = entityAnalysisModelGuid;
             } else {
                 entityAnalysisModelGuidTtlCounter.data("kendoDropDownList").select(0);
+                entityAnalysisModelGuidToSelectTtlCountersWith = entityAnalysisModelGuidTtlCounter.data("kendoDropDownList").dataItem().value;
             }
 
             $.ajax({
-                url: "../api/EntityAnalysisModelTtlCounter/ByEntityAnalysisModelGuid/" + value,
-                context: {entityAnalysisModelId: value, entityAnalysisModelTtlCounterGuid: set},
+                url: "../api/EntityAnalysisModelTtlCounter/ByEntityAnalysisModelGuid/" + entityAnalysisModelGuidToSelectTtlCountersWith,
+                context: {entityAnalysisModelId: entityAnalysisModelGuid, entityAnalysisModelTtlCounterGuid: set},
                 success: function (data) {
                     if (typeof data !== 'undefined') {
                         const TTLCounters = entityAnalysisModelTtlCounterGuid.getKendoDropDownList();
@@ -234,8 +249,6 @@ function PopulateTTLCounters(value, set) {
                     }
 
                     if (entityAnalysisModelTtlCounterGuid.data("kendoDropDownList").dataSource.data().length === 0) {
-                        enableTTLCounter.data("kendoSwitch").check(false);
-                        enableTTLCounter.data("kendoSwitch").enable(false);
                         ExpandCollapseTTLCounter();
                     }
                 }
@@ -377,7 +390,7 @@ function Ready() {
     if (typeof id === "undefined") {
         initBuilderCoder(5, parentKey);
         ReadyNew();
-        PopulateTTLCounters(parentKey);
+        PopulateTTLCounters();
         PopulateCasesWorkflowsStatus($("#CaseWorkflowGuid" +
             "").data("kendoDropDownList").value());
         ExpandCollapseTTLCounter();

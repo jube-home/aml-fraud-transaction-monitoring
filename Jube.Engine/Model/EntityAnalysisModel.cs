@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Jube.Data.Cache.Dto;
 using Jube.Data.Cache.Interfaces;
 using Jube.Data.Cache.Postgres;
 using Jube.Data.Context;
@@ -474,7 +475,7 @@ public class EntityAnalysisModel
             Log.Info(
                 $"Abstraction Rule Caching: For model {Id} and for Grouping Value {groupingValue} and Grouping Key {distinctSearchKey.SearchKey} for abstraction rule {abstractionRule.Name}  has returned aggregated value of {abstractionValue}.  The cache will be searched with the rule name {abstractionRule.Name}.  As the abstraction value is zero, it will be deleted to save storage.");
 
-            await cacheAbstractionRepository.DeleteAsync(TenantRegistryId, Id, distinctSearchKey.SearchKey,
+            await cacheAbstractionRepository.DeleteAsync(TenantRegistryId, Guid, distinctSearchKey.SearchKey,
                 groupingValue, abstractionRule.Name);
 
             Log.Info(
@@ -485,7 +486,7 @@ public class EntityAnalysisModel
             Log.Info(
                 $"Abstraction Rule Caching: For model {Id} and for Grouping Value {groupingValue} and Grouping Key {distinctSearchKey.SearchKey} for abstraction rule {abstractionRule.Name}  has returned aggregated value of {abstractionValue}.  The cache will be searched with the rule name {abstractionRule.Name}.  As the abstraction value is not zero, it will be updated.");
 
-            await cacheAbstractionRepository.UpdateAsync(TenantRegistryId, Id, distinctSearchKey.SearchKey,
+            await cacheAbstractionRepository.UpdateAsync(TenantRegistryId, Guid, distinctSearchKey.SearchKey,
                 groupingValue, abstractionRule.Name, abstractionValue);
 
             Log.Info(
@@ -503,7 +504,7 @@ public class EntityAnalysisModel
         Log.Info(
             $"Abstraction Rule Caching: For model {Id} and for Grouping Value {groupingValue} and Grouping Key {distinctSearchKey.SearchKey} for abstraction rule {key}  has returned aggregated value of {abstractionValue}.  The cache will be searched with the rule name {abstractionRule.Name}. As there are no existing cache values, it will be inserted.");
 
-        await cacheAbstractionRepository.InsertAsync(TenantRegistryId, Id, distinctSearchKey.SearchKey,
+        await cacheAbstractionRepository.InsertAsync(TenantRegistryId, Guid, distinctSearchKey.SearchKey,
             groupingValue, abstractionRule.Name, abstractionValue);
 
         Log.Info(
@@ -517,7 +518,7 @@ public class EntityAnalysisModel
         double abstractionValue)
     {
         var value = await cacheAbstractionRepository.GetByNameSearchNameSearchValueAsync(
-            TenantRegistryId, Id, abstractionRule.Name, distinctSearchKey.SearchKey, groupingValue);
+            TenantRegistryId, Guid, abstractionRule.Name, distinctSearchKey.SearchKey, groupingValue);
 
         Log.Info(
             $"Abstraction Rule Caching: For model {Id} and for Grouping Value {groupingValue} and Grouping Key {distinctSearchKey.SearchKey} for abstraction rule {abstractionRuleMatch.Key}  has returned aggregated value of {abstractionValue}.  The cache has returned for rule name {abstractionRule.Name} with {value == null} null document.  An upsert will now take place.");
@@ -629,7 +630,7 @@ public class EntityAnalysisModel
         List<Dictionary<string, object>> documents;
         if (distinctSearchKey.SearchKeyCacheSample)
         {
-            documents = await cachePayloadRepository.GetSqlByKeyValueLimitAsync(TenantRegistryId, Id,
+            documents = await cachePayloadRepository.GetSqlByKeyValueLimitAsync(TenantRegistryId, Guid,
                 cachePayloadSql, distinctSearchKey.SearchKey,
                 groupingValue, "RANDOM()", distinctSearchKey.SearchKeyCacheFetchLimit);
 
@@ -638,7 +639,7 @@ public class EntityAnalysisModel
         }
         else
         {
-            documents = await cachePayloadRepository.GetSqlByKeyValueLimitAsync(TenantRegistryId, Id,
+            documents = await cachePayloadRepository.GetSqlByKeyValueLimitAsync(TenantRegistryId, Guid,
                 cachePayloadSql, distinctSearchKey.SearchKey,
                 groupingValue, "CreatedDate", distinctSearchKey.SearchKeyCacheFetchLimit);
 
@@ -702,7 +703,7 @@ public class EntityAnalysisModel
         Log.Info(
             $"Abstraction Rule Caching: For model {Id} and grouping key {distinctSearchKey.SearchKey} the date threshold for cache keys that have expired is {deleteLineCacheKeys}.");
 
-        return await cachePayloadLatestRepository.GetDistinctKeysAsync(TenantRegistryId, Id,
+        return await cachePayloadLatestRepository.GetDistinctKeysAsync(TenantRegistryId, Guid,
             distinctSearchKey.SearchKey,
             deleteLineCacheKeys);
     }
@@ -743,7 +744,7 @@ public class EntityAnalysisModel
             Log.Info(
                 $"Abstraction Rule Caching: For model {Id} and grouping key {distinctSearchKey.SearchKey} has been set to a ready state and will now check if there has been any new records since it was last calculated on {LastAbstractionRuleCache[distinctSearchKey.SearchKey]} then bring back a distinct list of all grouping keys.");
 
-            value = await cachePayloadLatestRepository.GetDistinctKeysAsync(TenantRegistryId, Id,
+            value = await cachePayloadLatestRepository.GetDistinctKeysAsync(TenantRegistryId, Guid,
                 distinctSearchKey.SearchKey,
                 LastAbstractionRuleCache[distinctSearchKey.SearchKey], toDate);
 
@@ -757,7 +758,7 @@ public class EntityAnalysisModel
             Log.Info(
                 $"Abstraction Rule Caching: For model {Id} and grouping key {distinctSearchKey.SearchKey} has been set to a ready state and is now bringing back a distinct list of values for the grouping key.");
 
-            value = await cachePayloadLatestRepository.GetDistinctKeysAsync(TenantRegistryId, Id,
+            value = await cachePayloadLatestRepository.GetDistinctKeysAsync(TenantRegistryId, Guid,
                 distinctSearchKey.SearchKey);
 
             Log.Info(
@@ -894,7 +895,7 @@ public class EntityAnalysisModel
             cacheReferenceDate = new CacheReferenceDate(JubeEnvironment.AppSettings(
                 ["CacheConnectionString", "ConnectionString"]), Log);
 
-        var referenceDate = await cacheReferenceDate.GetReferenceDate(TenantRegistryId, Id);
+        var referenceDate = await cacheReferenceDate.GetReferenceDate(TenantRegistryId, Guid);
         return referenceDate;
     }
 
@@ -915,22 +916,22 @@ public class EntityAnalysisModel
     {
         var cacheTtlCounterRepository = BuildCacheTtlCounterRepository();
 
-        await cacheTtlCounterRepository.DecrementTtlCounterCacheAsync(TenantRegistryId, Id, ttlCounter.Id,
+        await cacheTtlCounterRepository.DecrementTtlCounterCacheAsync(TenantRegistryId, Guid, ttlCounter.Guid,
             ttlCounter.TtlCounterDataName, value, decrement);
 
         Log.Info(
             $"TTL Counter Administration: has finished aggregation for {ttlCounter.Name} and Data Name {ttlCounter.TtlCounterDataName} and has also decremented value {value} by {decrement} in the TTL counter cache.  Will now use the same date criteria to delete the records from the entries table.");
     }
 
-    private async Task<List<CacheTtlCounterEntryRepository.ExpiredTtlCounterEntryDto>>
+    private async Task<List<ExpiredTtlCounterEntryDto>>
         GetExpiredTtlCounterCacheCountsAsync(
             ICacheTtlCounterEntryRepository cacheTtlCounterEntryRepository,
             EntityAnalysisModelTtlCounter ttlCounter,
             DateTime adjustedTtlCounterDate)
     {
         return await cacheTtlCounterEntryRepository.GetExpiredTtlCounterCacheCountsAsync(
-            TenantRegistryId, Id,
-            ttlCounter.Id, ttlCounter.TtlCounterDataName, adjustedTtlCounterDate);
+            TenantRegistryId, Guid,
+            ttlCounter.Guid, ttlCounter.TtlCounterDataName, adjustedTtlCounterDate);
     }
 
     private async Task DeleteTtlCounterEntryAsync(
@@ -939,8 +940,8 @@ public class EntityAnalysisModel
         string dataValue,
         DateTime referenceDate)
     {
-        await cacheTtlCounterEntryRepository.DeleteAsync(TenantRegistryId, Id,
-            ttlCounter.Id, ttlCounter.TtlCounterDataName, dataValue, referenceDate);
+        await cacheTtlCounterEntryRepository.DeleteAsync(TenantRegistryId, Guid,
+            ttlCounter.Guid, ttlCounter.TtlCounterDataName, dataValue, referenceDate);
     }
 
     private DateTime GetAdjustedTtlCounterDate(EntityAnalysisModelTtlCounter ttlCounter, DateTime referenceDate)
@@ -1234,96 +1235,6 @@ public class EntityAnalysisModel
             dbContext.Dispose();
 
             Log.Info("Case Creation: closed the database connection.");
-        }
-    }
-
-    public async Task MountCollectionsAndSyncCacheDbIndexAsync()
-    {
-        if (JubeEnvironment.AppSettings("EnableCacheIndex").Equals("True", StringComparison.OrdinalIgnoreCase))
-            await BuildGroupingKeyIndexAsync();
-    }
-
-    private async Task BuildGroupingKeyIndexAsync()
-    {
-        try
-        {
-            var cachePayloadRepository = new CachePayloadRepository(JubeEnvironment.AppSettings(
-                ["CacheConnectionString", "ConnectionString"]), Log);
-            var indexes = await cachePayloadRepository.GetIndexesAsync(TenantRegistryId, Id);
-
-            Log.Debug(
-                "Cache Indexing: Retrieved a list of indexes on the Entries collection for model " +
-                Id +
-                ",  will now check to see if the Grouping Keys have already been added.");
-
-            foreach (var (key, _) in DistinctSearchKeys)
-            {
-                Log.Debug(
-                    "Cache Indexing: Retrieved a list of indexes on the Entries collection " +
-                    "will now check to see if the Grouping Key " +
-                    key + " has already been added.");
-                try
-                {
-                    var compoundIndexSearchKeyNameReferenceDateName =
-                        "IX_CachePayload_EntityAnalysisModelId_" + key + "_ReferenceDate";
-                    if (!indexes.Contains(compoundIndexSearchKeyNameReferenceDateName))
-                        try
-                        {
-                            Log.Debug("Cache Indexing: Entries index does not exist for " +
-                                      compoundIndexSearchKeyNameReferenceDateName + " and grouping key "
-                                      + key + " it is being created.");
-
-                            await cachePayloadRepository.CreateIndexAsync(TenantRegistryId, Id,
-                                compoundIndexSearchKeyNameReferenceDateName,
-                                "\"ReferenceDate\"",
-                                "(\"Json\"->>'" + key + "')");
-
-                            Log.Debug("Cache Indexing: Entries index has been created for " +
-                                      compoundIndexSearchKeyNameReferenceDateName + " and grouping key "
-                                      + key + ".");
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error("Cache Indexing: Entries index for " +
-                                      compoundIndexSearchKeyNameReferenceDateName + " and grouping key "
-                                      + key + " has created an error as " + ex + ".");
-                        }
-
-                    var compoundIndexSearchKeyNameCreatedDate =
-                        "IX_CachePayload_EntityAnalysisModelId_" + key + "_CreatedDate";
-                    if (!indexes.Contains(compoundIndexSearchKeyNameCreatedDate))
-                        try
-                        {
-                            Log.Debug("Cache Indexing: Entries index does not exist for " +
-                                      compoundIndexSearchKeyNameReferenceDateName + " and grouping key "
-                                      + key + " it is being created.");
-
-                            await cachePayloadRepository.CreateIndexAsync(TenantRegistryId, Id,
-                                compoundIndexSearchKeyNameCreatedDate,
-                                "\"CreatedDate\"",
-                                "(\"Json\"->>'" + key + "')");
-
-                            Log.Debug("Cache Indexing: Entries index has been created for " +
-                                      compoundIndexSearchKeyNameReferenceDateName + " and grouping key "
-                                      + key + ".");
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error("Cache Indexing: Entries index for " +
-                                      compoundIndexSearchKeyNameReferenceDateName + " and grouping key "
-                                      + key + " has created an error as " + ex + ".");
-                        }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("Cache Indexing: Entries index failure for " + key + " " +
-                              ex + ".");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error("Cache Indexing: Entries index failure for EntityAnalysisModel " + Id + " " + ex + ".");
         }
     }
 }

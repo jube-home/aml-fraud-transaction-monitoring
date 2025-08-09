@@ -94,6 +94,22 @@ namespace Jube.App.Controllers.Repository
             }
         }
 
+        [HttpGet("{id:int}")]
+        public ActionResult<VisualisationRegistryDto> GetByGuid(int id)
+        {
+            try
+            {
+                if (!_permissionValidation.Validate(new[] { 31, 28, 1 })) return Forbid();
+
+                return Ok(_mapper.Map<VisualisationRegistryDto>(_repository.GetById(id)));
+            }
+            catch (Exception e)
+            {
+                _log.Error(e);
+                return StatusCode(500);
+            }
+        }
+
         [HttpGet("{guid:guid}")]
         public ActionResult<VisualisationRegistryDto> GetByGuid(Guid guid)
         {

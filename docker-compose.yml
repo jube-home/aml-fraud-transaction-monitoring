@@ -56,7 +56,6 @@
       - JWTKey=$DockerComposeJWTKey
       - RedisConnectionString=redis
       - EnableExhaustiveTraining=False
-      - EnableCacheIndex=False
       - EnableReprocessing=False
       - EnableSanctionLoader=False
       - CachePruneServer=False
@@ -93,7 +92,6 @@
       - RedisConnectionString=redis
       - JWTKey=$DockerComposeJWTKey
       - EnableExhaustiveTraining=True
-      - EnableCacheIndex=True
       - EnableReprocessing=True
       - EnableSanctionLoader=True
       - CachePruneServer=True

@@ -26,12 +26,13 @@ public class CacheAbstractionRepository(
     ILog log,
     CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheAbstractionRepository
 {
-    public async Task DeleteAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue,
+    public async Task DeleteAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string searchKey,
+        string searchValue,
         string name)
     {
         try
         {
-            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
+            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
             await redisDatabase.HashDeleteAsync(redisKey, redisHSetKey, commandFlag);
@@ -42,13 +43,14 @@ public class CacheAbstractionRepository(
         }
     }
 
-    public async Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue,
+    public async Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string searchKey,
+        string searchValue,
         string name,
         double value)
     {
         try
         {
-            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
+            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
             await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue,
@@ -60,13 +62,14 @@ public class CacheAbstractionRepository(
         }
     }
 
-    public async Task UpdateAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue,
+    public async Task UpdateAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string searchKey,
+        string searchValue,
         string name,
         double value)
     {
         try
         {
-            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
+            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
             await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue,
@@ -78,13 +81,13 @@ public class CacheAbstractionRepository(
         }
     }
 
-    public async Task<double?> GetByNameSearchNameSearchValueAsync(int tenantRegistryId, int entityAnalysisModelId,
+    public async Task<double?> GetByNameSearchNameSearchValueAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
         string name, string searchKey,
         string searchValue)
     {
         try
         {
-            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
+            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
             var redisValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
 
@@ -101,7 +104,7 @@ public class CacheAbstractionRepository(
 
     public async Task<Dictionary<string, double>>
         GetByNameSearchNameSearchValueReturnValueOnlyTreatingMissingAsNullByReturnZeroRecordAsync(int tenantRegistryId,
-            int entityAnalysisModelId,
+            Guid entityAnalysisModelGuid,
             List<EntityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueDto>
                 entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests)
     {
@@ -112,7 +115,7 @@ public class CacheAbstractionRepository(
                      in entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests)
             {
                 var redisKey =
-                    $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:" +
+                    $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:" +
                     $"{entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest.SearchKey}:" +
                     $"{entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest.SearchValue}";
                 var redisHSetKey =

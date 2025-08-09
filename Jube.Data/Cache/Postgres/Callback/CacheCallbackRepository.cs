@@ -19,7 +19,7 @@ using log4net;
 using Npgsql;
 using Exception = System.Exception;
 
-namespace Jube.Data.Cache.Postgres;
+namespace Jube.Data.Cache.Postgres.Callback;
 
 public class CacheCallbackRepository(
     string connectionString,
@@ -84,7 +84,7 @@ public class CacheCallbackRepository(
             await connection.OpenAsync();
 
             var sqlNotify =
-                $"NOTIFY callback, '{entityAnalysisModelInstanceEntryGuid},{Encoding.UTF8.GetString(json)}'";
+                $"NOTIFY callback, '{entityAnalysisModelInstanceEntryGuid:N},{Encoding.UTF8.GetString(json)}'";
 
             var commandNotify = new NpgsqlCommand(sqlNotify);
             commandNotify.Connection = connection;
@@ -108,7 +108,7 @@ public class CacheCallbackRepository(
         {
             await connection.OpenAsync();
 
-            var sqlNotify = $"NOTIFY callback, '{entityAnalysisModelInstanceEntryGuid}'";
+            var sqlNotify = $"NOTIFY callback, '{entityAnalysisModelInstanceEntryGuid:N}'";
 
             var commandNotify = new NpgsqlCommand(sqlNotify);
             commandNotify.Connection = connection;

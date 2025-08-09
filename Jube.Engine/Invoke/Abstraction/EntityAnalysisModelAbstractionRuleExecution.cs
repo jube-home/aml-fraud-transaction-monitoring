@@ -57,7 +57,7 @@ public class Execute
 
                 PendingWritesTasks.Add(cachePayloadRepository
                     .InsertAsync(EntityAnalysisModel.TenantRegistryId,
-                        EntityAnalysisModel.Id,
+                        EntityAnalysisModel.Guid,
                         AbstractionRuleGroupingKey,
                         CachePayloadDocument[AbstractionRuleGroupingKey].AsString(),
                         EntityAnalysisModelInstanceEntryPayload.Payload,
@@ -65,7 +65,7 @@ public class Execute
                         EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid));
 
                 documents = await cachePayloadRepository.GetExcludeCurrent(EntityAnalysisModel.TenantRegistryId,
-                    EntityAnalysisModel.Id,
+                    EntityAnalysisModel.Guid,
                     AbstractionRuleGroupingKey,
                     CachePayloadDocument[AbstractionRuleGroupingKey].AsString(),
                     limit, EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
@@ -77,7 +77,7 @@ public class Execute
                         DynamicEnvironment.AppSettings("ConnectionString"),
                         DistinctSearchKey.SqlSelect, DistinctSearchKey.SqlSelectFrom,
                         DistinctSearchKey.SqlSelectOrderBy, Log)
-                    .GetExcludeCurrent(EntityAnalysisModel.TenantRegistryId, EntityAnalysisModel.Id,
+                    .GetExcludeCurrent(EntityAnalysisModel.TenantRegistryId, EntityAnalysisModel.Guid,
                         AbstractionRuleGroupingKey, CachePayloadDocument[AbstractionRuleGroupingKey].AsString(),
                         limit,
                         EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid);

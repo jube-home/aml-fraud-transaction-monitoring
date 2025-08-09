@@ -259,6 +259,7 @@ function ReadyNew() {
 
     if (locked.length > 0) {
         locked.data("kendoSwitch").check(false);
+        locked.data("kendoSwitch").enable(false);
     }
 
     SetTable();
@@ -313,6 +314,7 @@ function ReadyExisting(data) {
             locked.data("kendoSwitch").check(false);
             Lock(false);
         }
+        locked.data("kendoSwitch").enable(false);
     }
 }
 

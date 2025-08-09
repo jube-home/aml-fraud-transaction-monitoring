@@ -27,6 +27,7 @@ using Accord.Neuro;
 using AutoMapper.Internal;
 using Jube.Data.Cache.Interfaces;
 using Jube.Data.Cache.Postgres;
+using Jube.Data.Cache.Postgres.Callback;
 using Jube.Data.Context;
 using Jube.Data.Extension;
 using Jube.Data.Poco;
@@ -202,7 +203,7 @@ public class EntityAnalysisModelManager
                 Log.Debug(
                     $"Cache Prune: For model {model.Id} the reference date will be looked up.");
 
-                var referenceDate = await cacheReferenceDate.GetReferenceDate(model.TenantRegistryId, model.Id);
+                var referenceDate = await cacheReferenceDate.GetReferenceDate(model.TenantRegistryId, model.Guid);
 
                 Log.Debug(
                     $"Cache Prune: For model {model.Id} the reference date for {model.ReferenceDateName} is {referenceDate}.  " +
@@ -218,13 +219,13 @@ public class EntityAnalysisModelManager
 
                 if (thresholdReferenceDatePayload == null) continue;
 
-                await cachePayload.DeleteByReferenceDate(model.TenantRegistryId, model.Id,
+                await cachePayload.DeleteByReferenceDate(model.TenantRegistryId, model.Guid,
                     thresholdReferenceDatePayload.Value, limit);
 
                 Log.Debug(
                     $"Cache Prune: For model {model.Id} deletion routine has returned in the Payload repository.");
 
-                await cachePayloadLatest.DeleteByReferenceDate(model.TenantRegistryId, model.Id,
+                await cachePayloadLatest.DeleteByReferenceDate(model.TenantRegistryId, model.Guid,
                     referenceDate.Value, thresholdReferenceDatePayload.Value, limit,
                     model.DistinctSearchKeys.Select(distinctSearchKey
                         => (distinctSearchKey.Key,
@@ -643,18 +644,10 @@ public class EntityAnalysisModelManager
         }
     }
 
-    private async Task StartupModelAsync(DbContext dbContext)
+    private Task StartupModelAsync(DbContext dbContext)
     {
         foreach (var (key, value) in ActiveEntityAnalysisModels)
         {
-            Log.Debug(
-                "Entity Start: About to perform index synchronisation with model.");
-
-            await value.MountCollectionsAndSyncCacheDbIndexAsync();
-
-            Log.Debug(
-                "Entity Start: Has finished index synchronisation with model.");
-
             Log.Debug(
                 $"Entity Start: Checking if model {key} is started for the purpose of starting the thread.");
 
@@ -687,6 +680,8 @@ public class EntityAnalysisModelManager
             value.Started = true;
             Log.Info($"Entity Start: has started {value.Id}.");
         }
+
+        return Task.CompletedTask;
     }
 
     private void CreateDataTableBuffersIfNotExist()
@@ -1594,6 +1589,19 @@ public class EntityAnalysisModelManager
                     {
                         Id = record.Id
                     };
+
+                    if (record.Guid != Guid.Empty)
+                    {
+                        entityAnalysisModelTtlCounter.Guid = record.Guid;
+
+                        Log.Debug(
+                            $"Entity Start: Model {key} and TTL Counter {entityAnalysisModelTtlCounter.Id} set Guid as {entityAnalysisModelTtlCounter.Guid}.");
+                    }
+                    else
+                    {
+                        Log.Debug(
+                            $"Entity Start: Model {key} and Cross Model Abstraction {entityAnalysisModelTtlCounter.Id} has a missing guid.");
+                    }
 
                     if (record.Name == null)
                     {
@@ -4316,6 +4324,7 @@ public class EntityAnalysisModelManager
 
         var records = repository.Get();
 
+        var listEntityAnalysisModelIdsAdded = new List<int>();
         foreach (var record in records)
             try
             {
@@ -4752,10 +4761,14 @@ public class EntityAnalysisModelManager
                             $"Entity Start: Model {entityAnalysisModel.Id} with DEFAULT Enable Database value {entityAnalysisModel.EnableRdbmsArchive}.");
                     }
 
+                    listEntityAnalysisModelIdsAdded.Add(entityAnalysisModel.Id);
+
                     Log.Debug(
                         ActiveEntityAnalysisModels.TryAdd(entityAnalysisModel.Id, entityAnalysisModel)
                             ? $"Entity Start: Model {entityAnalysisModel.Id} does not exist in the list of active models,  hence it has just been added."
                             : $"Entity Start: Model {entityAnalysisModel.Id} already exists,  hence it has just been updated.");
+
+                    listEntityAnalysisModelIdsAdded.Add(entityAnalysisModel.Id);
                 }
                 else
                 {
@@ -4763,6 +4776,17 @@ public class EntityAnalysisModelManager
                         ActiveEntityAnalysisModels.Remove(record.Id)
                             ? $"Entity Start: Model {record.Id} already exists but is marked as inactive,  hence it has just been removed from the list of active models."
                             : $"Entity Start: Model {record.Id} is marked as inactive but it does not exist in the list in of Active Models.");
+                }
+
+                Log.Debug(
+                    $"Entity Start: Loaded {ActiveEntityAnalysisModels.Count} active models but need to remove models that have been deleted and are orphaned.");
+
+                foreach (var id in ActiveEntityAnalysisModels.Keys.Where(id =>
+                             !listEntityAnalysisModelIdsAdded.Contains(id)))
+                {
+                    ActiveEntityAnalysisModels.Remove(id);
+
+                    Log.Debug($"Entity Start: Removed orphan {id} from active models.");
                 }
             }
             catch (Exception ex)
@@ -5266,7 +5290,7 @@ public class EntityAnalysisModelManager
 
                             var documentsInitialCounts =
                                 await GetInitialCountsAsync(modelKvp.Value.TenantRegistryId,
-                                    modelKvp.Value.Id);
+                                    modelKvp.Value.Guid);
 
                             EstablishProcessingDateRange(entityAnalysisModelRuleReprocessingInstance,
                                 documentsInitialCounts, ref lastReferenceDate, ref allCount,
@@ -5688,13 +5712,13 @@ public class EntityAnalysisModelManager
     }
 
     private async Task<IEnumerable<Dictionary<string, object>>> GetInitialCountsAsync(
-        int tenantRegistryId, int entityAnalysisModelId)
+        int tenantRegistryId, Guid entityAnalysisModelGuid)
     {
         ICachePayloadRepository cachePayloadRepository = new CachePayloadRepository(JubeEnvironment.AppSettings(
             ["CacheConnectionString", "ConnectionString"]), Log);
 
         return await cachePayloadRepository
-            .GetInitialCountsAsync(tenantRegistryId, entityAnalysisModelId);
+            .GetInitialCountsAsync(tenantRegistryId, entityAnalysisModelGuid);
     }
 
     private void GetEntityAnalysisModelRuleReprocessingInstance(DbContext dbContext,

@@ -19,32 +19,32 @@ namespace Jube.Data.Cache.Interfaces;
 
 public interface ICachePayloadRepository
 {
-    Task CreateIndexAsync(int tenantRegistryId, int entityAnalysisModelId,
+    Task CreateIndexAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
         string name, string date, string expression);
 
-    Task<List<string>> GetIndexesAsync(int tenantRegistryId, int entityAnalysisModelId);
+    Task<List<string>> GetIndexesAsync(int tenantRegistryId, Guid entityAnalysisModelGuid);
 
     Task InsertAsync(int tenantRegistryId,
-        int entityAnalysisModelId, Dictionary<string, object> payload,
+        Guid entityAnalysisModelGuid, Dictionary<string, object> payload,
         DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid);
 
-    Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string key,
+    Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string key,
         string value,
         Dictionary<string, object> payload,
         DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid);
 
     Task UpsertAsync(int tenantRegistryId,
-        int entityAnalysisModelId, Dictionary<string, object> payload,
+        Guid entityAnalysisModelGuid, Dictionary<string, object> payload,
         DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid);
 
     public Task<List<Dictionary<string, object>>> GetExcludeCurrent(int tenantRegistryId,
-        int entityAnalysisModelId,
+        Guid entityAnalysisModelGuid,
         string key, string value, int limit,
         Guid entityInconsistentAnalysisModelInstanceEntryGuid);
 
     Task<List<Dictionary<string, object>>> GetInitialCountsAsync(int tenantRegistryId,
-        int entityAnalysisModelId);
+        Guid entityAnalysisModelGuid);
 
-    Task DeleteByReferenceDate(int tenantRegistryId, int entityAnalysisModelId,
+    Task DeleteByReferenceDate(int tenantRegistryId, Guid entityAnalysisModelGuid,
         DateTime referenceDate, int limit);
 }
