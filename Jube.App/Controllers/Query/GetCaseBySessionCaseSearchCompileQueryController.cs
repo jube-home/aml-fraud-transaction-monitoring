@@ -33,36 +33,36 @@ namespace Jube.App.Controllers.Query
     [Authorize]
     public class GetCaseBySessionCaseSearchCompileQueryController : Controller
     {
-        private readonly DbContext dbContext;
-        private readonly CaseEventRepository caseEventRepository;
-        private readonly CaseRepository caseRepository;
-        private readonly ILog log;
-        private readonly PermissionValidation permissionValidation;
-        private readonly GetCaseBySessionCaseSearchCompileQuery query;
-        private readonly string userName;
+        private readonly CaseEventRepository _caseEventRepository;
+        private readonly CaseRepository _caseRepository;
+        private readonly DbContext _dbContext;
+        private readonly ILog _log;
+        private readonly PermissionValidation _permissionValidation;
+        private readonly GetCaseBySessionCaseSearchCompileQuery _query;
+        private readonly string _userName;
 
         public GetCaseBySessionCaseSearchCompileQueryController(ILog log,
             IHttpContextAccessor httpContextAccessor, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
-                userName = httpContextAccessor.HttpContext.User.Identity.Name;
-            this.log = log;
+                _userName = httpContextAccessor.HttpContext.User.Identity.Name;
+            _log = log;
 
-            dbContext =
+            _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
-            permissionValidation = new PermissionValidation(dbContext, userName);
+            _permissionValidation = new PermissionValidation(_dbContext, _userName);
 
-            query = new GetCaseBySessionCaseSearchCompileQuery(dbContext, userName);
-            caseEventRepository = new CaseEventRepository(dbContext, userName);
-            caseRepository = new CaseRepository(dbContext, userName);
+            _query = new GetCaseBySessionCaseSearchCompileQuery(_dbContext, _userName);
+            _caseEventRepository = new CaseEventRepository(_dbContext, _userName);
+            _caseRepository = new CaseRepository(_dbContext, _userName);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                dbContext.Close();
-                dbContext.Dispose();
+                _dbContext.Close();
+                _dbContext.Dispose();
             }
 
             base.Dispose(disposing);
@@ -73,11 +73,11 @@ namespace Jube.App.Controllers.Query
         {
             try
             {
-                if (!permissionValidation.Validate(new[] {1})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 1 })) return Forbid();
 
-                var value = await this.query.ExecuteAsync(guid);
+                var value = await _query.ExecuteAsync(guid);
 
-                if (query == null) return NotFound();
+                if (_query == null) return NotFound();
 
                 var caseEvent = new CaseEvent
                 {
@@ -87,11 +87,11 @@ namespace Jube.App.Controllers.Query
                     CaseKeyValue = value.CaseKeyValue
                 };
 
-                caseEventRepository.Insert(caseEvent);
+                _caseEventRepository.Insert(caseEvent);
 
-                caseRepository.LockToUser(caseEvent.Id);
+                _caseRepository.LockToUser(caseEvent.Id);
                 value.Locked = true;
-                value.LockedUser = userName;
+                value.LockedUser = _userName;
 
                 return Ok(value);
             }
@@ -101,7 +101,7 @@ namespace Jube.App.Controllers.Query
             }
             catch (Exception e)
             {
-                log.Error(e);
+                _log.Error(e);
                 return StatusCode(500);
             }
         }

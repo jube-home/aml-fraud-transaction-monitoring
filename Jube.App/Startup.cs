@@ -40,9 +40,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+using Npgsql;
 using RabbitMQ.Client;
 using StackExchange.Redis;
-using Npgsql;
 
 namespace Jube.App
 {
@@ -63,10 +63,10 @@ namespace Jube.App
             };
             services.AddSingleton(contractResolver);
 
-            var log = LogManager.GetLogger(typeof(ILog));
-            services.AddSingleton(log);
+            var dynamicEnvironment = new DynamicEnvironment.DynamicEnvironment();
+            var log = dynamicEnvironment.Log;
 
-            var dynamicEnvironment = new DynamicEnvironment.DynamicEnvironment(log);
+            services.AddSingleton(log);
             services.AddSingleton(dynamicEnvironment);
 
             Random seeded = new(Guid.NewGuid().GetHashCode());
@@ -75,26 +75,19 @@ namespace Jube.App
             var pendingEntityInvoke = new ConcurrentQueue<EntityAnalysisModelInvoke>();
             services.AddSingleton(pendingEntityInvoke);
 
-            IDatabase redisDatabase = null;
-            if (dynamicEnvironment.AppSettings("Redis").Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
-                redisDatabase = ConnectToRedis(services, dynamicEnvironment.AppSettings("RedisConnectionString"), log);
-            }
+            var (redisDatabase, redisConnection) =
+                ConnectToRedis(services, dynamicEnvironment.AppSettings("RedisConnectionString"), log);
 
             IModel rabbitMqChannel = null;
             if (dynamicEnvironment.AppSettings("AMQP").Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
                 rabbitMqChannel = ConnectToRabbitMqChannel(services, log, dynamicEnvironment.AppSettings("AMQPUri"));
-            }
             else
-            {
                 log.Info(
                     "Start: No connection to AMQP is being made.  AMQP will be bypassed throughout the application.");
-            }
 
             if (dynamicEnvironment.AppSettings("EnableEngine").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
-                var engine = new Jube.Engine.Program(dynamicEnvironment, log, seeded, rabbitMqChannel, redisDatabase,
+                var engine = new Engine.Program(dynamicEnvironment, log, seeded, rabbitMqChannel, redisDatabase,
                     pendingEntityInvoke, contractResolver);
                 services.AddSingleton(engine);
             }
@@ -106,17 +99,7 @@ namespace Jube.App
             ValidateConnectionToPostgres(dynamicEnvironment.AppSettings("ConnectionString"), log);
 
             if (dynamicEnvironment.AppSettings("EnableMigration").Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
-                RunFluentMigrator(dynamicEnvironment);
-
-                var cacheConnectionString = dynamicEnvironment.AppSettings("CacheConnectionString");
-                if (cacheConnectionString != null)
-                {
-                    ValidateConnectionToPostgres(dynamicEnvironment.AppSettings("CacheConnectionString"), log);
-
-                    RunFluentMigrator(dynamicEnvironment);
-                }
-            }
+                RunFluentMigrator(dynamicEnvironment, redisDatabase, redisConnection, log);
 
             services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
             services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
@@ -224,13 +207,13 @@ namespace Jube.App
             Console.WriteLine(@"");
             Console.WriteLine(
                 @"The default endpoint for posting example transaction payload is https://<ASPNETCORE_URLS Environment Variable>/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc/.Example JSON payload is available in the documentation via at https://jube-home.github.io/aml-transaction-monitoring/Configuration/Models/Models/.");
+            Console.WriteLine();
         }
 
         private static void ValidateConnectionToPostgres(string connectionString, ILog log)
         {
             const int retryConnectionToPostgres = 10;
             for (var i = 0; i < retryConnectionToPostgres; i++)
-            {
                 try
                 {
                     log.Info("Is attempting a connection validation for Postgres.");
@@ -252,7 +235,6 @@ namespace Jube.App
 
                     Task.Delay(6000).Wait();
                 }
-            }
 
             throw new Exception($"Could not connect to Postgres after {retryConnectionToPostgres}.");
         }
@@ -262,7 +244,6 @@ namespace Jube.App
         {
             const int retryRabbitMqConnection = 10;
             for (var i = 0; i < retryRabbitMqConnection; i++)
-            {
                 try
                 {
                     log.Info("Start: Is going to make a connection to AMQP Uri " +
@@ -292,26 +273,27 @@ namespace Jube.App
 
                     Task.Delay(3000).Wait();
                 }
-            }
 
             throw new Exception($"Could not connect to RabbitMQ after {retryRabbitMqConnection} attempts.");
         }
 
-        private static IDatabase ConnectToRedis(IServiceCollection services,
-            string redisEndpoint, ILog log)
+        private static (IDatabase, ConnectionMultiplexer) ConnectToRedis(IServiceCollection services,
+            string connectionString, ILog log)
         {
             const int retryRedisConnectionRetry = 10;
             for (var i = 0; i < retryRedisConnectionRetry; i++)
-            {
                 try
                 {
                     log.Info("Start: Is going to make a connection to Redis Endpoints string showing " +
                              "endpoints and port seperated by :,  then combined seperated by comma " +
                              "for example localhost:1234,localhost4321.  Value for parsing is " +
-                             redisEndpoint + "");
+                             connectionString + "");
 
                     var redisConnection =
-                        ConnectionMultiplexer.Connect(redisEndpoint);
+                        ConnectionMultiplexer.Connect(connectionString);
+
+                    services.AddSingleton(redisConnection);
+
                     var redisDatabase = redisConnection.GetDatabase();
                     redisDatabase.SetAdd(Dns.GetHostName(), DateTime.Now.ToUnixTimeMilliSeconds());
 
@@ -319,7 +301,7 @@ namespace Jube.App
 
                     log.Info("Connected to Redis.  Returning connection for startup.");
 
-                    return redisDatabase;
+                    return (redisDatabase, redisConnection);
                 }
                 catch (Exception ex)
                 {
@@ -327,7 +309,6 @@ namespace Jube.App
 
                     Task.Delay(1500).Wait();
                 }
-            }
 
             throw new Exception($"Could not connect to Redis after {retryRedisConnectionRetry} attempts.");
         }
@@ -371,15 +352,9 @@ namespace Jube.App
                     var request = context.HttpContext.Request;
                     var response = context.HttpContext.Response;
 
-                    if (response.StatusCode != (int)HttpStatusCode.Unauthorized)
-                    {
-                        return Task.CompletedTask;
-                    }
+                    if (response.StatusCode != (int)HttpStatusCode.Unauthorized) return Task.CompletedTask;
 
-                    if (!request.Path.StartsWithSegments("/api"))
-                    {
-                        response.Redirect("/Account/Login");
-                    }
+                    if (!request.Path.StartsWithSegments("/api")) response.Redirect("/Account/Login");
 
                     return Task.CompletedTask;
                 })
@@ -434,10 +409,14 @@ namespace Jube.App
             app.StartEngine();
         }
 
-        private static void RunFluentMigrator(DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+        private static void RunFluentMigrator(DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IDatabase redisDatabase, ConnectionMultiplexer redisConnection, ILog log)
         {
             var serviceCollection = new ServiceCollection().AddFluentMigratorCore()
                 .AddSingleton(dynamicEnvironment)
+                .AddSingleton(redisDatabase)
+                .AddSingleton(redisConnection)
+                .AddSingleton(log)
                 .ConfigureRunner(rb => rb
                     .AddPostgres11_0()
                     .WithGlobalConnectionString(dynamicEnvironment.AppSettings("ConnectionString"))

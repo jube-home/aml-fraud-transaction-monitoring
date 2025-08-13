@@ -124,12 +124,12 @@ $.get("/api/Completions/ByCaseWorkflowId",
                 });
             }
         }
-        
+
         if (typeof id === "undefined") {
             if (fields.dataSource.data().length > 0) {
                 fields.select(0);
             }
-            
+
             SetEnableHttpEndpoint();
             SetEnableNotification();
             SetConditionalRegularExpressionFormatting();
@@ -201,7 +201,7 @@ $.get("/api/Completions/ByCaseWorkflowId",
                     SetEnableNotification();
                     SetConditionalRegularExpressionFormatting();
                     SetBoldLineMatched();
-                    
+
                     ReadyExisting(data);
                 });
         }

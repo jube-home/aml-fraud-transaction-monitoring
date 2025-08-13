@@ -6,7 +6,7 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Rule Compilation Algorithm
 Jube relies on the injection of VB .Net code which is subsequently complied by reflection in the .net core runtime.  While this allows for extremely fast rules to be created it does expose security issues in the possibility of code injection.  This code injection could be sinister given the breadth of the .net API (although the Jube instance should be run with the least privileges, not needing to perform any disk IO or operating system level interaction beyond logging, and even logging can be offloaded via syslog).

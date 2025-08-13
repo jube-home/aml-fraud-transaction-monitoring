@@ -123,7 +123,7 @@ function initExhaustiveFilterBuilder(entityAnalysisModelId, data) {
                         }
                     }
                 }
-            
+
                 where = $('#Where').queryBuilder({
                     filters: filters,
                     operators: [

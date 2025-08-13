@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Threading.Tasks;
 using Jube.Data.Cache.Dto;
 
@@ -18,13 +19,14 @@ namespace Jube.Data.Cache.Interfaces;
 
 public interface ICacheSanctionRepository
 {
-    Task<CacheSanctionDto> GetByMultiPartStringDistanceThresholdAsync(int tenantRegistryId, int entityAnalysisModelId,
+    Task<CacheSanctionDto> GetByMultiPartStringDistanceThresholdAsync(int tenantRegistryId,
+        Guid entityAnalysisModelGuid,
         string multiPartString,
         int distanceThreshold);
 
-    Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string multiPartString,
+    Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string multiPartString,
         int distanceThreshold, double? value);
 
-    Task UpdateAsync(int tenantRegistryId, int entityAnalysisModelId, string multiPartString,
+    Task UpdateAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string multiPartString,
         int distanceThreshold, double? value);
 }

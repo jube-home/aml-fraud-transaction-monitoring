@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -23,18 +23,18 @@ namespace Jube.App.Dto
         public string Json { get; set; }
         public string Name { get; set; }
         public double ResponseElevation { get; set; }
-        public int CaseWorkflowId { get; set; }
+        public Guid CaseWorkflowGuid { get; set; }
         public bool EnableCaseWorkflow { get; set; }
         public bool Active { get; set; }
         public bool Locked { get; set; }
-        public int EntityAnalysisModelTtlCounterId { get; set; }
+        public Guid EntityAnalysisModelTtlCounterGuid { get; set; }
         public bool ResponsePayload { get; set; }
         public bool EnableTtlCounter { get; set; }
         public string ResponseElevationContent { get; set; }
         public bool SendToActivationWatcher { get; set; }
         public string ResponseElevationForeColor { get; set; }
         public string ResponseElevationBackColor { get; set; }
-        public int CaseWorkflowStatusId { get; set; }
+        public Guid CaseWorkflowStatusGuid { get; set; }
         public double ActivationSample { get; set; }
         public long ActivationCounter { get; set; }
         public DateTime ActivationCounterDate { get; set; }
@@ -57,7 +57,7 @@ namespace Jube.App.Dto
         public bool Visible { get; set; }
         public bool EnableReprocessing { get; set; }
         public bool EnableSuppression { get; set; }
-        public int EntityAnalysisModelIdTtlCounter { get; set; }
+        public Guid EntityAnalysisModelGuidTtlCounter { get; set; }
         public string ResponseElevationKey { get; set; }
         public int Id { get; set; }
         public string CreatedUser { get; set; }

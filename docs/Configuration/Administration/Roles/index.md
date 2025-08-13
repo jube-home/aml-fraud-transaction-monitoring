@@ -6,7 +6,7 @@ parent: Administration
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Roles
 Roles are a collection of both users and permissions,  for the purpose of authentication and authorisation in the user interface. It follows that permissions do not individually need to be allocated to a user, rather users allocated a role,  with the permissions being allocated to the role.

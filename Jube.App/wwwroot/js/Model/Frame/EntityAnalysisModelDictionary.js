@@ -13,7 +13,7 @@
 
 const endpoint = "/api/EntityAnalysisModelDictionary";
 const endpointValues = "/api/EntityAnalysisModelDictionaryKvp";
-const parentKeyName = "entityAnalysisModelId";
+const parentKeyName = "entityAnalysisModelGuid";
 const validationFail = "There is invalid data in the form. Please check fields and correct.";
 
 var dataName = $("#DataName").kendoDropDownList({
@@ -29,8 +29,8 @@ function LoadFiles() {
             multiple: false
         },
         success: onSuccess,
-        upload: function(e) {
-            e.data = { entityAnalysisModelDictionaryId: id};
+        upload: function (e) {
+            e.data = {entityAnalysisModelDictionaryId: id};
         }
     });
     $("#FilesDiv").show();
@@ -128,7 +128,7 @@ function LoadList() {
         editTemplate: kendo.template($("#editTemplate").html())
     }).data("kendoListView");
 
-    $("#AddValue").kendoButton().click(function(e) {
+    $("#AddValue").kendoButton().click(function (e) {
         listView.add();
         e.preventDefault();
     });
@@ -160,7 +160,7 @@ $(function () {
     deleteButton
         .click(function () {
             if (confirm('Are you sure you want to delete?')) {
-                Delete(endpoint,id);
+                Delete(endpoint, id);
             }
         });
 });
@@ -175,12 +175,11 @@ $(function () {
     addButton
         .click(function () {
             if (validator.validate()) {
-                Create(endpoint,GetData(),"id",parentKeyName);
+                Create(endpoint, GetData(), "id", parentKeyName);
                 LoadFiles();
                 LoadList();
                 $("#AddValue").show();
-            }
-            else {
+            } else {
                 $("#ErrorMessage").html(validationFail);
             }
         });
@@ -190,9 +189,8 @@ $(function () {
     updateButton
         .click(function () {
             if (validator.validate()) {
-                Update(endpoint,GetData(),"id",parentKeyName);
-            }
-            else {
+                Update(endpoint, GetData(), "id", parentKeyName);
+            } else {
                 $("#ErrorMessage").html(validationFail);
             }
         });

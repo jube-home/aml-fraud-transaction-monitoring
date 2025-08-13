@@ -5,7 +5,7 @@ nav_order: 4
 parent: Getting Started
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Installing .Net 9 Runtime to Virtual Machine (aka Droplet)
 

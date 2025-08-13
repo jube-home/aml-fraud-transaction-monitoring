@@ -33,7 +33,7 @@ $.getScript('/js/ace/ace.js', function () {
             function (data) {
                 const editor = ace.edit("coder");
                 editor.setValue(data.html);
-                
+
                 ReadyExisting(data);
             });
     }

@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -15,204 +15,242 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Jube.Data.Context;
-using Jube.Data.Validation;
 using Jube.Data.Poco;
 using Jube.Data.Reporting;
+using Jube.Data.Validation;
 using LinqToDB;
 using LinqToDB.Data;
 
-namespace Jube.Data.Repository
+namespace Jube.Data.Repository;
+
+public class VisualisationRegistryDatasourceRepository
 {
-    public class VisualisationRegistryDatasourceRepository
+    private readonly DbContext _dbContext;
+    private readonly int _tenantRegistryId;
+    private readonly string _userName;
+
+    public VisualisationRegistryDatasourceRepository(DbContext dbContext, string userName)
     {
-        private readonly DbContext dbContext;
-        private readonly int tenantRegistryId;
-        private readonly string userName;
+        _dbContext = dbContext;
+        _userName = userName;
+        _tenantRegistryId = _dbContext.UserInTenant.Where(w => w.User == _userName)
+            .Select(s => s.TenantRegistryId).FirstOrDefault();
+    }
 
-        public VisualisationRegistryDatasourceRepository(DbContext dbContext, string userName)
+    public VisualisationRegistryDatasourceRepository(DbContext dbContext, int tenantRegistryId)
+    {
+        _dbContext = dbContext;
+        _tenantRegistryId = tenantRegistryId;
+    }
+
+    public IEnumerable<VisualisationRegistryDatasource> Get()
+    {
+        return _dbContext.VisualisationRegistryDatasource
+            .Where(w => w.VisualisationRegistry.TenantRegistryId == _tenantRegistryId
+                        && (w.Deleted == 0 || w.Deleted == null));
+    }
+
+    public IEnumerable<VisualisationRegistryDatasource> GetByVisualisationRegistryIdOrderById(
+        int visualisationRegistryId)
+    {
+        return _dbContext.VisualisationRegistryDatasource
+            .Where(w => w.VisualisationRegistry.TenantRegistryId == _tenantRegistryId
+                        && w.VisualisationRegistryId == visualisationRegistryId &&
+                        (w.Deleted == 0 || w.Deleted == null))
+            .OrderBy(o => o.Id);
+    }
+
+    public IEnumerable<VisualisationRegistryDatasource> GetByVisualisationRegistryIdActiveOnly(
+        int visualisationRegistryId)
+    {
+        return _dbContext.VisualisationRegistryDatasource
+            .Where(w => w.VisualisationRegistry.TenantRegistryId == _tenantRegistryId
+                        && w.VisualisationRegistryId == visualisationRegistryId
+                        && w.Active == 1 &&
+                        (w.Deleted == 0 || w.Deleted == null));
+    }
+
+    public VisualisationRegistryDatasource GetById(int id)
+    {
+        return _dbContext.VisualisationRegistryDatasource.FirstOrDefault(w
+            => w.VisualisationRegistry.TenantRegistryId == _tenantRegistryId
+               && w.Id == id
+               && (w.Deleted == 0 || w.Deleted == null));
+    }
+
+    public VisualisationRegistryDatasource Insert(VisualisationRegistryDatasource model)
+    {
+        model.CreatedUser = _userName ?? model.CreatedUser;
+        model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
+        model.CreatedDate = DateTime.Now;
+        model.Version = 1;
+        model.Id = _dbContext.InsertWithInt32Identity(model);
+        return model;
+    }
+
+    public async Task<VisualisationRegistryDatasource> InsertWithValidationAsync(VisualisationRegistryDatasource model)
+    {
+        if (model.VisualisationRegistryId == null) return model;
+        Dictionary<string, string> columns;
+        try
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
+            columns = await ValidateSeriesAsync(_dbContext, model.VisualisationRegistryId.Value, model.Command);
+        }
+        catch (Exception e)
+        {
+            var sqlValidationFailed = new SqlValidationFailed(e.Message);
+            throw sqlValidationFailed;
         }
 
-        public IEnumerable<VisualisationRegistryDatasource> Get()
+        model.CreatedUser = _userName;
+        model.CreatedDate = DateTime.Now;
+        model.Version = 1;
+        model.Guid = Guid.NewGuid();
+        model.Id = await _dbContext.InsertWithInt32IdentityAsync(model);
+
+        FillSeries(model.Id, columns);
+
+        return model;
+    }
+
+    public async Task<VisualisationRegistryDatasource> UpdateWithValidationAsync(VisualisationRegistryDatasource model)
+    {
+        if (model.VisualisationRegistryId == null) return model;
+
+        Dictionary<string, string> columns;
+        try
         {
-            return dbContext.VisualisationRegistryDatasource
-                .Where(w => w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
-                            && (w.Deleted == 0 || w.Deleted == null));
+            columns = await ValidateSeriesAsync(_dbContext, model.VisualisationRegistryId.Value, model.Command);
+        }
+        catch (Exception e)
+        {
+            var sqlValidationFailed = new SqlValidationFailed(e.Message);
+            throw sqlValidationFailed;
         }
 
-        public IEnumerable<VisualisationRegistryDatasource> GetByVisualisationRegistryId(int visualisationRegistryId)
-        {
-            return dbContext.VisualisationRegistryDatasource
-                .Where(w => w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
-                            && w.VisualisationRegistryId == visualisationRegistryId &&
-                            (w.Deleted == 0 || w.Deleted == null));
-        }
+        var existing = _dbContext.VisualisationRegistryDatasource
+            .FirstOrDefault(w => w.Id
+                                 == model.Id
+                                 && (w.Deleted == 0 || w.Deleted == null)
+                                 && (w.Locked == 0 || w.Locked == null));
 
-        public IEnumerable<VisualisationRegistryDatasource> GetByVisualisationRegistryIdActiveOnly(int visualisationRegistryId)
-        {
-            return dbContext.VisualisationRegistryDatasource
-                .Where(w => w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
-                            && w.VisualisationRegistryId == visualisationRegistryId
-                            && w.Active == 1 &&
-                            (w.Deleted == 0 || w.Deleted == null));
-        }
-        
-        public VisualisationRegistryDatasource GetById(int id)
-        {
-            return dbContext.VisualisationRegistryDatasource.FirstOrDefault(w
-                => w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
-                   && w.Id == id
-                   && (w.Deleted == 0 || w.Deleted == null));
-        }
+        if (existing == null) throw new KeyNotFoundException();
 
-        public async Task<VisualisationRegistryDatasource> InsertAsync(VisualisationRegistryDatasource model)
+        model.Version = existing.Version + 1;
+        model.Guid = existing.Guid;
+        model.CreatedUser = _userName;
+        model.CreatedDate = DateTime.Now;
+
+        await _dbContext.UpdateAsync(model);
+
+        var config = new MapperConfiguration(cfg =>
         {
-            if (model.VisualisationRegistryId != null)
+            cfg.CreateMap<VisualisationRegistryDatasource, VisualisationRegistryDatasourceVersion>();
+        });
+        var mapper = new Mapper(config);
+
+        var audit = mapper.Map<EntityAnalysisModelDictionaryKvpVersion>(existing);
+        audit.EntityAnalysisModelDictionaryKvpId = existing.Id;
+
+        await _dbContext.InsertAsync(audit);
+
+        FillSeries(model.Id, columns);
+
+        return model;
+    }
+
+    private void FillSeries(int id, Dictionary<string, string> columns)
+    {
+        foreach (var (key, value) in columns)
+        {
+            var visualisationRegistryDatasourceSeries = new VisualisationRegistryDatasourceSeries
             {
-                Dictionary<string, string> columns;
-                try
-                {
-                    columns = await ValidateSeriesAsync(dbContext, model.VisualisationRegistryId.Value, model.Command);
-                }
-                catch (Exception e)
-                {
-                    var sqlValidationFailed = new SqlValidationFailed(e.Message);
-                    throw sqlValidationFailed;
-                }
+                VisualisationRegistryDatasourceId = id,
+                Name = key
+            };
 
-                model.CreatedUser = userName;
-                model.CreatedDate = DateTime.Now;
-                model.Version = 1;
-                model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
+            switch (value)
+            {
+                case "integer":
+                case "bigint":
+                    visualisationRegistryDatasourceSeries.DataTypeId = 2;
+                    break;
+                case "double precision":
+                    visualisationRegistryDatasourceSeries.DataTypeId = 3;
+                    break;
+                default:
+                {
+                    if (value.Contains("timestamp"))
+                        visualisationRegistryDatasourceSeries.DataTypeId = 4;
+                    else
+                        visualisationRegistryDatasourceSeries.DataTypeId = value switch
+                        {
+                            "smallint" => 5,
+                            "double precision[]" => 6,
+                            _ => value.EndsWith("[]") ? 7 : 1
+                        };
 
-                FillSeries(model.Id, columns);
+                    break;
+                }
             }
 
-            return model;
+            _dbContext.Insert(visualisationRegistryDatasourceSeries);
         }
+    }
 
-        public async Task<VisualisationRegistryDatasource> UpdateAsync(VisualisationRegistryDatasource model)
+    private async Task<Dictionary<string, string>> ValidateSeriesAsync(DataConnection dataConnection,
+        int visualisationRegistryId, string sql)
+    {
+        var visualisationRegistryParameterRepository = new VisualisationRegistryParameterRepository(_dbContext);
+        var parameters =
+            visualisationRegistryParameterRepository.GetByVisualisationRegistryIdOrderById(visualisationRegistryId);
+
+        var parametersDefaultValues = new Dictionary<string, object>();
+        foreach (var parameter in parameters)
         {
-            if (model.VisualisationRegistryId != null)
+            object defaultValue = parameter.DataTypeId switch
             {
-                Dictionary<string, string> columns;
-                try
-                {
-                    columns = await ValidateSeriesAsync(dbContext, model.VisualisationRegistryId.Value, model.Command);
-                }
-                catch (Exception e)
-                {
-                    var sqlValidationFailed = new SqlValidationFailed(e.Message);
-                    throw sqlValidationFailed;
-                }
-                
-                var existing = dbContext.VisualisationRegistryDatasource
-                    .FirstOrDefault(w => w.Id
-                                         == model.Id
-                                         && (w.Deleted == 0 || w.Deleted == null)
-                                         && (w.Locked == 0 || w.Locked == null));
+                1 => "",
+                2 => 0,
+                3 => 0d,
+                4 => new DateTime(),
+                5 => true,
+                _ => ""
+            };
 
-                if (existing == null) throw new KeyNotFoundException();
-
-                model.Version = existing.Version + 1;
-                model.CreatedUser = userName;
-                model.CreatedDate = DateTime.Now;
-                model.InheritedId = existing.Id;
-
-                Delete(existing.Id);
-
-                var id = await dbContext.InsertWithInt32IdentityAsync(model);
-                model.Id = id;
-                
-                FillSeries(model.Id, columns);
-            }
-
-            return model;
+            parametersDefaultValues.Add(parameter.Name.Replace(" ", "_"), defaultValue);
         }
 
-        private void FillSeries(int id, Dictionary<string, string> columns)
-        {
-            foreach (var (key, value) in columns)
-            {
-                var visualisationRegistryDatasourceSeries = new VisualisationRegistryDatasourceSeries
-                    {
-                        VisualisationRegistryDatasourceId = id,
-                        Name = key
-                    };
+        var postgres = new Postgres(dataConnection.ConnectionString);
+        return await postgres.IntrospectAsync(sql, parametersDefaultValues);
+    }
 
-                switch (value)
-                {
-                    case "integer":
-                    case "bigint":
-                        visualisationRegistryDatasourceSeries.DataTypeId = 2;
-                        break;
-                    case "double precision":
-                        visualisationRegistryDatasourceSeries.DataTypeId = 3;
-                        break;
-                    default:
-                    {
-                        if (value.Contains("timestamp"))
-                            visualisationRegistryDatasourceSeries.DataTypeId = 4;
-                        else
-                            visualisationRegistryDatasourceSeries.DataTypeId = value switch
-                            {
-                                "smallint" => 5,
-                                "double precision[]" => 6,
-                                _ => value.EndsWith("[]") ? 7 : 1
-                            };
+    public void Delete(int id)
+    {
+        var records = _dbContext.VisualisationRegistryDatasource
+            .Where(d => d.VisualisationRegistry.TenantRegistryId == _tenantRegistryId
+                        && d.Id == id
+                        && (d.Locked == 0 || d.Locked == null)
+                        && (d.Deleted == 0 || d.Deleted == null))
+            .Set(s => s.Deleted, Convert.ToByte(1))
+            .Set(s => s.DeletedDate, DateTime.Now)
+            .Set(s => s.DeletedUser, _userName)
+            .Update();
 
-                        break;
-                    }
-                }
+        if (records == 0) throw new KeyNotFoundException();
+    }
 
-                dbContext.Insert(visualisationRegistryDatasourceSeries);
-            }
-        }
-
-        private async Task<Dictionary<string, string>> ValidateSeriesAsync(DataConnection dataConnection, int visualisationRegistryId, string sql)
-        {
-            var visualisationRegistryParameterRepository = new VisualisationRegistryParameterRepository(this.dbContext);
-            var parameters =
-                visualisationRegistryParameterRepository.GetByVisualisationRegistryId(visualisationRegistryId);
-
-            var parametersDefaultValues = new Dictionary<string, object>();
-            foreach (var parameter in parameters)
-            {
-                object defaultValue = parameter.DataTypeId switch
-                {
-                    1 => "",
-                    2 => 0,
-                    3 => 0d,
-                    4 => new DateTime(),
-                    5 => true,
-                    _ => ""
-                };
-
-                parametersDefaultValues.Add(parameter.Name.Replace(" ", "_"), defaultValue);
-            }
-
-            var postgres = new Postgres(dataConnection.ConnectionString);
-            return await postgres.IntrospectAsync(sql, parametersDefaultValues);
-        }
-        
-        public void Delete(int id)
-        {
-            var records = dbContext.VisualisationRegistryDatasource
-                .Where(d => d.VisualisationRegistry.TenantRegistryId == tenantRegistryId
-                            && d.Id == id
-                            && (d.Locked == 0 || d.Locked == null)
-                            && (d.Deleted == 0 || d.Deleted == null))
-                .Set(s => s.Deleted, Convert.ToByte(1))
-                .Set(s => s.DeletedDate, DateTime.Now)
-                .Set(s => s.DeletedUser, userName)
-                .Update();
-
-            if (records == 0) throw new KeyNotFoundException();
-        }
+    public void DeleteByTenantRegistryId(int tenantRegistryId, int importId)
+    {
+        _dbContext.VisualisationRegistryDatasource
+            .Where(d => d.VisualisationRegistry.TenantRegistryId == _tenantRegistryId
+                        && d.VisualisationRegistry.TenantRegistryId == tenantRegistryId
+                        && (d.Deleted == 0 || d.Deleted == null))
+            .Set(s => s.ImportId, importId)
+            .Set(s => s.Deleted, Convert.ToByte(1))
+            .Set(s => s.DeletedDate, DateTime.Now)
+            .Update();
     }
 }

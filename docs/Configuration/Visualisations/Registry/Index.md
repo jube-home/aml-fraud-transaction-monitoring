@@ -6,7 +6,7 @@ parent: Visualisations
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Visualisation Registry
 Think of a Visualisation Registry as a report. The Visualisation Registry can have many Datasource's which share a common set of parameters.  The Visualisation Registry is the wrapper and specifies the the size of the canvass for the datasource's to be arranged.  The registry entry also controls the availability of navigation to the Visualisation through the Visualisation Directory.

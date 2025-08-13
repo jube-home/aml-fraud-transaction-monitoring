@@ -6,7 +6,7 @@ parent: Reprocessing
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Reprocessing Instance
 To create a reprocessing request,  ensure that the Reprocessing Filter created beforehand is available:

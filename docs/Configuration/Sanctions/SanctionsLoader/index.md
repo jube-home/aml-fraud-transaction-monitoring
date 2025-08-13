@@ -6,7 +6,7 @@ parent: Sanctions
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Sanctions Loader
 Sanctions are published by various bodies and provide a list of names for which business is prohibited.  The functionality offered by Jube allows the loading of Sanctions lists into the engine for matching using fuzzy logic (Levenshtein Distance) to create matches.  Jube also allows this matching to be embedded into the Entity Analysis Model recall in real time.  Sanctions data is stored in the engine, in memory, so to assure that the recall is extremely fast.

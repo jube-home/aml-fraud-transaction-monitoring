@@ -13,6 +13,7 @@
 
 let where;
 let select;
+let initialFilterBuilder;
 
 function getCasesFilter() {
     let value;
@@ -28,7 +29,21 @@ function getCasesFilter() {
 }
 
 function validateBuilder() {
-    return where.queryBuilder('validate');
+    try {
+        return where.queryBuilder('validate');
+    } catch (error) {
+        return false;
+    }
+}
+
+function SetInitialFilterBuilder() {
+    let builderResult = getCasesFilter();
+
+    initialFilterBuilder = {
+        filterJson: builderResult.filterJson,
+        selectJson: builderResult.selectJson,
+        filterTokens: builderResult.filterTokens
+    };
 }
 
 function FilterExists(name, filters) {
@@ -40,7 +55,18 @@ function FilterExists(name, filters) {
     return false;
 }
 
-function initCaseFilterBuilder(caseWorkflowId, data) {
+function initCaseFilterBuilder(isGuid, id, data) {
+    let GetCaseWorkflow;
+    let GetCaseWorkflowStatus;
+
+    if (isGuid) {
+        GetCaseWorkflow = "../api/Completions/ByCaseWorkflowGuidIncludingDeleted?CaseWorkflowGuid=" + id;
+        GetCaseWorkflowStatus = "../api/CaseWorkflowStatus/ByCaseWorkflowGuid/" + id;
+    } else {
+        GetCaseWorkflow = "../api/Completions/ByCaseWorkflowIdIncludingDeleted?CaseWorkflowId=" + id;
+        GetCaseWorkflowStatus = "../api/CaseWorkflowStatus/ByCaseWorkflowId/" + id;
+    }
+
     if ($('#Select').length === 0) {
         $("#Builder").append("<div id='Select'/>");
     }
@@ -57,522 +83,519 @@ function initCaseFilterBuilder(caseWorkflowId, data) {
         where.queryBuilder('destroy');
     }
 
-    $.getJSON("../api/Completions/ByCaseWorkflowIdIncludingDeleted",
-        {
-            caseWorkflowId: caseWorkflowId
-        }
-        , function (completionsData) {
-            completions = completionsData;
+    $.getJSON(GetCaseWorkflow, function (completionsData) {
+        completions = completionsData;
 
-            $.getScript('../js/builder/query-builder.standalone.min.js', function () {
-                $('<link/>', {
-                    rel: 'stylesheet',
-                    type: 'text/css',
-                    href: '/styles/query-builder.default.min.css'
-                }).appendTo('head');
+        $.getScript('../js/builder/query-builder.standalone.min.js', function () {
+            $('<link/>', {
+                rel: 'stylesheet',
+                type: 'text/css',
+                href: '/styles/query-builder.default.min.css'
+            }).appendTo('head');
 
-                $.getJSON("../api/CaseWorkflowStatus/ByCaseWorkflowId/" + caseWorkflowId, function (statusData) {
-                    let statusValues = {};
+            $.getJSON(GetCaseWorkflowStatus, function (statusData) {
+                let statusValues = {};
 
-                    if (typeof statusData !== "undefined") {
-                        for (let i = 0; i < statusData.length; i++) {
-                            statusValues[statusData[i].id] = statusData[i].name;
-                        }
+                if (typeof statusData !== "undefined") {
+                    for (let i = 0; i < statusData.length; i++) {
+                        statusValues[statusData[i].guid] = statusData[i].name;
                     }
+                }
 
-                    let rulesFilter;
-                    if (data) {
-                        rulesFilter = data.filterJson;
+                let rulesFilter;
+                if (data) {
+                    rulesFilter = data.filterJson;
+                }
+
+                let rulesSelect;
+                if (data) {
+                    rulesSelect = data.selectJson;
+                }
+
+                let filters = [];
+                let selects = [];
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "CaseKey",
+                    name: "CaseKey",
+                    field: "\"Case\".\"CaseKey\"",
+                    label: 'CaseKey',
+                    type: 'string'
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "CaseKey",
+                    field: "\"CaseKey\"",
+                    label: 'CaseKey',
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "CaseKeyValue",
+                    field: "\"CaseKeyValue\"",
+                    label: "CaseKeyValue",
+                    type: 'string'
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "CaseKeyValue",
+                    field: "\"CaseKeyValue\"",
+                    label: "CaseKeyValue",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "Id",
+                    field: "\"Case\".\"Id\"",
+                    label: "Id",
+                    type: 'integer'
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "Id",
+                    field: "\"Case\".\"Id\"",
+                    label: "Id",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "Locked",
+                    field: "\"Case\".\"Locked\"",
+                    label: "Locked",
+                    type: 'integer',
+                    input: "radio",
+                    default_value: 0,
+                    values: {
+                        1: 'Yes',
+                        0: 'No'
+                    },
+                    operators: ['equal']
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "Locked",
+                    field: "\"Case\".\"Locked\"",
+                    label: "Locked",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "LockedUser",
+                    field: "\"Case\".\"LockedUser\"",
+                    label: "LockedUser",
+                    type: 'string',
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "LockedUser",
+                    field: "\"Case\".\"LockedUser\"",
+                    label: "LockedUser",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "LockedDate",
+                    field: "\"Case\".\"LockedDate\"",
+                    label: "LockedDate",
+                    type: 'datetime',
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "LockedDate",
+                    field: "\"Case\".\"LockedDate\"",
+                    label: "LockedDate",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "ClosedStatusId",
+                    field: "\"Case\".\"ClosedStatusId\"",
+                    label: "ClosedStatus",
+                    type: 'integer',
+                    input: 'select',
+                    values: {
+                        0: 'Open',
+                        1: 'Suspend Open',
+                        2: 'Suspend Closed',
+                        3: 'Closed',
+                        4: 'Suspend Bypass'
                     }
+                });
 
-                    let rulesSelect;
-                    if (data) {
-                        rulesSelect = data.selectJson;
+                selects.push({
+                    optgroup: "Case",
+                    id: "ClosedStatusId",
+                    field: "\"Case\".\"ClosedStatusId\"",
+                    label: "ClosedStatus",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "ClosedDate",
+                    field: "\"Case\".\"ClosedDate\"",
+                    label: "ClosedDate",
+                    type: 'datetime'
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "ClosedDate",
+                    field: "\"Case\".\"ClosedDate\"",
+                    label: "ClosedDate",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "ClosedUser",
+                    field: "\"Case\".\"ClosedUser\"",
+                    label: "ClosedUser",
+                    type: 'string'
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "ClosedUser",
+                    field: "\"Case\".\"ClosedUser\"",
+                    label: "ClosedUser",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "CreatedDate",
+                    field: "\"Case\".\"CreatedDate\"",
+                    label: "Created Date",
+                    type: 'datetime'
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "CreatedDate",
+                    field: "\"Case\".\"CreatedDate\"",
+                    label: "CreatedDate",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "Diary",
+                    field: "\"Case\".\"Diary\"",
+                    label: "Diary",
+                    type: 'integer',
+                    input: 'radio',
+                    default_value: "True",
+                    values: {
+                        1: 'Yes',
+                        0: 'No'
+                    },
+                    operators: ['equal']
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "Diary",
+                    field: "\"Case\".\"Diary\"",
+                    label: "Diary",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "DiaryDate",
+                    field: "\"Case\".\"DiaryDate\"",
+                    label: "DiaryDate",
+                    type: 'datetime'
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "DiaryDate",
+                    field: "\"Case\".\"DiaryDate\"",
+                    label: "DiaryDate",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "CaseWorkflowStatusGuid",
+                    field: "\"CaseWorkflowStatus\".\"Guid\"",
+                    label: "CaseWorkflowStatus",
+                    type: 'string',
+                    input: 'select',
+                    values: statusValues
+                });
+
+                selects.push({
+                    optgroup: "Case",
+                    id: "CaseWorkflowStatus",
+                    field: "\"CaseWorkflowStatus\".\"Name\"",
+                    label: "CaseWorkflowStatus",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
+
+                filters.push({
+                    optgroup: "Case",
+                    id: "Priority",
+                    field: "\"CaseWorkflowStatus\".\"Priority\"",
+                    label: "Priority",
+                    type: 'integer',
+                    input: 'radio',
+                    values: {
+                        1: 'Ultra High',
+                        2: 'High',
+                        3: 'Normal',
+                        4: 'Low',
+                        5: 'Ultra Low'
                     }
+                });
 
-                    let filters = [];
-                    let selects = [];
+                selects.push({
+                    optgroup: "Case",
+                    id: "Priority",
+                    field: "\"CaseWorkflowStatus\".\"Priority\"",
+                    label: "Priority",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
 
-                    filters.push({
-                        optgroup: "Case",
-                        id: "CaseKey",
-                        name: "CaseKey",
-                        field: "\"Case\".\"CaseKey\"",
-                        label: 'CaseKey',
-                        type: 'string'
-                    });
+                filters.push({
+                    optgroup: "Case",
+                    id: "Rating",
+                    field: "\"Case\".\"Rating\"",
+                    label: "Rating",
+                    name: "Rating",
+                    type: 'integer'
+                });
 
-                    selects.push({
-                        optgroup: "Case",
-                        id: "CaseKey",
-                        field: "\"CaseKey\"",
-                        label: 'CaseKey',
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
+                selects.push({
+                    optgroup: "Case",
+                    id: "Rating",
+                    field: "\"Case\".\"Rating\"",
+                    label: "Rating",
+                    type: 'string',
+                    input: 'radio',
+                    default_value: "ASC",
+                    values: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    },
+                    operators: ['order']
+                });
 
-                    filters.push({
-                        optgroup: "Case",
-                        id: "CaseKeyValue",
-                        field: "\"CaseKeyValue\"",
-                        label: "CaseKeyValue",
-                        type: 'string'
-                    });
+                for (const completion of completions) {
+                    if (!FilterExists(completion.name, filters)) {
 
-                    selects.push({
-                        optgroup: "Case",
-                        id: "CaseKeyValue",
-                        field: "\"CaseKeyValue\"",
-                        label: "CaseKeyValue",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
+                        selects.push({
+                            optgroup: completion.group,
+                            id: completion.name,
+                            field: completion.field,
+                            label: completion.name,
+                            type: 'string',
+                            input: 'radio',
+                            default_value: "ASC",
+                            values: {
+                                'ASC': 'Ascending',
+                                'DESC': 'Descending'
+                            },
+                            operators: ['order']
+                        });
 
-                    filters.push({
-                        optgroup: "Case",
-                        id: "Id",
-                        field: "\"Case\".\"Id\"",
-                        label: "Id",
-                        type: 'integer'
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "Id",
-                        field: "\"Case\".\"Id\"",
-                        label: "Id",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "Locked",
-                        field: "\"Case\".\"Locked\"",
-                        label: "Locked",
-                        type: 'integer',
-                        input: "radio",
-                        default_value: 0,
-                        values: {
-                            1: 'Yes',
-                            0: 'No'
-                        },
-                        operators: ['equal']
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "Locked",
-                        field: "\"Case\".\"Locked\"",
-                        label: "Locked",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "LockedUser",
-                        field: "\"Case\".\"LockedUser\"",
-                        label: "LockedUser",
-                        type: 'string',
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "LockedUser",
-                        field: "\"Case\".\"LockedUser\"",
-                        label: "LockedUser",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "LockedDate",
-                        field: "\"Case\".\"LockedDate\"",
-                        label: "LockedDate",
-                        type: 'datetime',
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "LockedDate",
-                        field: "\"Case\".\"LockedDate\"",
-                        label: "LockedDate",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "ClosedStatusId",
-                        field: "\"Case\".\"ClosedStatusId\"",
-                        label: "ClosedStatus",
-                        type: 'integer',
-                        input: 'select',
-                        values: {
-                            0: 'Open',
-                            1: 'Suspend Open',
-                            2: 'Suspend Closed',
-                            3: 'Closed',
-                            4: 'Suspend Bypass'
-                        }
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "ClosedStatusId",
-                        field: "\"Case\".\"ClosedStatusId\"",
-                        label: "ClosedStatus",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "ClosedDate",
-                        field: "\"Case\".\"ClosedDate\"",
-                        label: "ClosedDate",
-                        type: 'datetime'
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "ClosedDate",
-                        field: "\"Case\".\"ClosedDate\"",
-                        label: "ClosedDate",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "ClosedUser",
-                        field: "\"Case\".\"ClosedUser\"",
-                        label: "ClosedUser",
-                        type: 'string'
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "ClosedUser",
-                        field: "\"Case\".\"ClosedUser\"",
-                        label: "ClosedUser",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "CreatedDate",
-                        field: "\"Case\".\"CreatedDate\"",
-                        label: "Created Date",
-                        type: 'datetime'
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "CreatedDate",
-                        field: "\"Case\".\"CreatedDate\"",
-                        label: "CreatedDate",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "Diary",
-                        field: "\"Case\".\"Diary\"",
-                        label: "Diary",
-                        type: 'integer',
-                        input: 'radio',
-                        default_value: "True",
-                        values: {
-                            1: 'Yes',
-                            0: 'No'
-                        },
-                        operators: ['equal']
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "Diary",
-                        field: "\"Case\".\"Diary\"",
-                        label: "Diary",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "DiaryDate",
-                        field: "\"Case\".\"DiaryDate\"",
-                        label: "DiaryDate",
-                        type: 'datetime'
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "DiaryDate",
-                        field: "\"Case\".\"DiaryDate\"",
-                        label: "DiaryDate",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "CaseWorkflowStatusId",
-                        field: "\"CaseWorkflowStatus\".\"Id\"",
-                        label: "Status",
-                        type: 'integer',
-                        input: 'select',
-                        values: statusValues
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "CaseWorkflowStatusId",
-                        field: "\"CaseWorkflowStatus\".\"Id\"",
-                        label: "Status",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "Priority",
-                        field: "\"CaseWorkflowStatus\".\"Priority\"",
-                        label: "Priority",
-                        type: 'integer',
-                        input: 'radio',
-                        values: {
-                            1: 'Ultra High',
-                            2: 'High',
-                            3: 'Normal',
-                            4: 'Low',
-                            5: 'Ultra Low'
-                        }
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "Priority",
-                        field: "\"CaseWorkflowStatus\".\"Priority\"",
-                        label: "Priority",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    filters.push({
-                        optgroup: "Case",
-                        id: "Rating",
-                        field: "\"Case\".\"Rating\"",
-                        label: "Rating",
-                        name: "Rating",
-                        type: 'integer'
-                    });
-
-                    selects.push({
-                        optgroup: "Case",
-                        id: "Rating",
-                        field: "\"Case\".\"Rating\"",
-                        label: "Rating",
-                        type: 'string',
-                        input: 'radio',
-                        default_value: "ASC",
-                        values: {
-                            'ASC': 'Ascending',
-                            'DESC': 'Descending'
-                        },
-                        operators: ['order']
-                    });
-
-                    for (const completion of completions) {
-                        if (!FilterExists(completion.name, filters)) {
-                            
-                            selects.push({
+                        if (completion.dataType === "string") {
+                            let filter = {
                                 optgroup: completion.group,
                                 id: completion.name,
                                 field: completion.field,
                                 label: completion.name,
+                                type: completion.dataType
+                            };
+                            filters.push(filter);
+                        } else if (completion.dataType === "integer") {
+                            let filter = {
+                                optgroup: completion.group,
+                                id: completion.name,
+                                field: completion.field,
+                                label: completion.name,
+                                type: 'integer'
+                            };
+                            filters.push(filter);
+                        } else if (completion.dataType === "double") {
+                            let filter = {
+                                optgroup: completion.group,
+                                id: completion.name,
+                                field: completion.field,
+                                label: completion.name,
+                                type: 'integer'
+                            };
+                            filters.push(filter);
+                        } else if (completion.dataType === "boolean") {
+                            let filter = {
+                                optgroup: completion.group,
+                                id: completion.name,
+                                field: "\"Json\" ->> '" + completion.name + "' as \"" + completion.name + "\"",
+                                label: completion.name,
                                 type: 'string',
-                                input: 'radio',
-                                default_value: "ASC",
+                                input: "radio",
+                                default_value: "True",
                                 values: {
-                                    'ASC': 'Ascending',
-                                    'DESC': 'Descending'
+                                    'True': 'Yes',
+                                    'False': 'No'
                                 },
-                                operators: ['order']
-                            });
-
-                            if (completion.dataType === "string") {
-                                let filter = {
-                                    optgroup: completion.group,
-                                    id: completion.name,
-                                    field: completion.field,
-                                    label: completion.name,
-                                    type: completion.dataType
-                                };
-                                filters.push(filter);
-                            } else if (completion.dataType === "integer") {
-                                let filter = {
-                                    optgroup: completion.group,
-                                    id: completion.name,
-                                    field: completion.field,
-                                    label: completion.name,
-                                    type: 'integer'
-                                };
-                                filters.push(filter);
-                            } else if (completion.dataType === "double") {
-                                let filter = {
-                                    optgroup: completion.group,
-                                    id: completion.name,
-                                    field: completion.field,
-                                    label: completion.name,
-                                    type: 'integer'
-                                };
-                                filters.push(filter);
-                            } else if (completion.dataType === "boolean") {
-                                let filter = {
-                                    optgroup: completion.group,
-                                    id: completion.name,
-                                    field: "\"Json\" ->> '" + completion.name + "' as \"" + completion.name + "\"",
-                                    label: completion.name,
-                                    type: 'string',
-                                    input: "radio",
-                                    default_value: "True",
-                                    values: {
-                                        'True': 'Yes',
-                                        'False': 'No'
-                                    },
-                                    operators: ['equal']
-                                };
-                                filters.push(filter);
-                            }
+                                operators: ['equal']
+                            };
+                            filters.push(filter);
                         }
                     }
+                }
 
-                    select = $('#Select').queryBuilder({
-                        filters: selects,
-                        operators: [
-                            {type: 'order', optgroup: 'basic', nb_inputs: 1, apply_to: ['string']}
-                        ],
-                        rules: rulesSelect
-                    });
-                    select.find("[data-add='group']").hide();
-                    select.find("[data-add='rule']").html("Add column");
-                    select.find(".group-conditions").children('label').each(
-                        function () {
-                            this.style.visibility = "hidden";
-                        }
-                    );
-                    select.find(".rules-group-header").prepend('Select')
-
-                    where = $('#Where').queryBuilder({
-                        filters: filters,
-                        operators: [
-                            {type: 'equal', optgroup: 'basic'},
-                            {type: 'not_equal', optgroup: 'basic'},
-                            {type: 'less', optgroup: 'basic'},
-                            {type: 'less_or_equal', optgroup: 'basic'},
-                            {type: 'greater', optgroup: 'basic'},
-                            {type: 'greater_or_equal', optgroup: 'basic'},
-                            {type: 'like', optgroup: 'basic', nb_inputs: 1,apply_to: ['string']},
-                            {type: 'not_like', optgroup: 'basic', nb_inputs: 1,apply_to: ['string']}
-                        ],
-                        rules: rulesFilter
-                    });
-
-                    validateBuilder()
-                    builderValidationInterval = setInterval(validateBuilder, 1300);
+                select = $('#Select').queryBuilder({
+                    filters: selects,
+                    operators: [
+                        {type: 'order', optgroup: 'basic', nb_inputs: 1, apply_to: ['string']}
+                    ],
+                    rules: rulesSelect
                 });
+                select.find("[data-add='group']").hide();
+                select.find("[data-add='rule']").html("Add column");
+                select.find(".group-conditions").children('label').each(
+                    function () {
+                        this.style.visibility = "hidden";
+                    }
+                );
+                select.find(".rules-group-header").prepend('Select')
+
+                where = $('#Where').queryBuilder({
+                    filters: filters,
+                    operators: [
+                        {type: 'equal', optgroup: 'basic'},
+                        {type: 'not_equal', optgroup: 'basic'},
+                        {type: 'less', optgroup: 'basic'},
+                        {type: 'less_or_equal', optgroup: 'basic'},
+                        {type: 'greater', optgroup: 'basic'},
+                        {type: 'greater_or_equal', optgroup: 'basic'},
+                        {type: 'like', optgroup: 'basic', nb_inputs: 1, apply_to: ['string']},
+                        {type: 'not_like', optgroup: 'basic', nb_inputs: 1, apply_to: ['string']}
+                    ],
+                    rules: rulesFilter
+                });
+
+                SetInitialFilterBuilder();
+                validateBuilder()
+                builderValidationInterval = setInterval(validateBuilder, 1300);
             });
         });
+    });
 }
 
 //# sourceURL=CaseFilterBuilder.js

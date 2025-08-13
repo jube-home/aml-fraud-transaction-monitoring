@@ -6,7 +6,7 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Creating Case Entry With Activation Rule
 Revisit Activation Models Activation and Reprocessing in this documentation before proceeding.

@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  *@
 @page
-@model Jube.App.Pages.Model.Frame.CasesWorkflows
+@model CasesWorkflows
 
 @{
     Layout = null;
@@ -29,7 +29,8 @@
                     <label for="Name">Name</label>
                 </td>
                 <td>
-                    <input type="text" id="Name" class="k-textbox large" name="Name" required validationMessage="Please enter a valid Name.">
+                    <input type="text" id="Name" class="k-textbox large" name="Name" required
+                           validationMessage="Please enter a valid Name.">
                     <span class="k-invalid-msg" data-for="Name"></span>
                 </td>
             </tr>
@@ -54,19 +55,19 @@
                     <label for="EnableVisualisation">Enable Visualisation</label>
                 </td>
                 <td>
-                    <input id="EnableVisualisation" type="checkbox" />
+                    <input id="EnableVisualisation" type="checkbox"/>
                     <table id="EnableVisualisationTable" class="sTStyle">
                         <tr>
                             <td class="sTBorderStyle">
-                                <label for="VisualisationRegistryId">Visualisation</label>
+                                <label for="VisualisationRegistryGuid">Visualisation</label>
                             </td>
                             <td>
-                                <select id="VisualisationRegistryId"></select>
+                                <select id="VisualisationRegistryGuid"></select>
                             </td>
                         </tr>
                     </table>
                 </td>
-            </tr>            
+            </tr>
             <tr>
                 <td>
                     <label for="Version">Version</label>
@@ -94,8 +95,8 @@
         </table>
         <div class="footerStyle">
             <div id="ErrorMessage" class="errorMessage"></div>
-            <button type="button" id="Add" class="ButtonDefault">Add</button> 
-            <button type="button" id="Update" class="ButtonDefault">Update</button> 
+            <button type="button" id="Add" class="ButtonDefault">Add</button>
+            <button type="button" id="Update" class="ButtonDefault">Update</button>
             <button type="button" id="Delete" class="ButtonDefault">Delete</button>
         </div>
     </div>

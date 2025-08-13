@@ -15,12 +15,12 @@ var dataSourceEntity = new kendo.data.DataSource({
     transport: {
         read: {
             url: "/api/HttpProcessingCounter",
-            type:"GET",
+            type: "GET",
             dataType: "json"
         },
-        parameterMap: function(options, operation) {
+        parameterMap: function (options, operation) {
             if (operation !== "read" && options.models) {
-                return { models: kendo.stringify(options.models) };
+                return {models: kendo.stringify(options.models)};
             }
         }
     },
@@ -28,21 +28,21 @@ var dataSourceEntity = new kendo.data.DataSource({
         model: {
             id: "id",
             fields: {
-                instance: { type: "string" },
-                createdDate: { type: "date" },
-                model: { type: "number" },
-                asynchronousModel: { type: "number" },
-                tag: { type: "number" },
-                error: { type: "number" },
-                sanction: { type: "number" },
-                exhaustive: { type: "number" },
-                all: { type: "number" }
+                instance: {type: "string"},
+                createdDate: {type: "date"},
+                model: {type: "number"},
+                asynchronousModel: {type: "number"},
+                tag: {type: "number"},
+                error: {type: "number"},
+                sanction: {type: "number"},
+                exhaustive: {type: "number"},
+                all: {type: "number"}
             }
         }
     }
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
     $("#grid").kendoGrid({
         groupable: true,
         dataSource: dataSourceEntity,
@@ -50,21 +50,21 @@ $(document).ready(function() {
         height: $(window).height() - 210,
         scrollable: true,
         filterable: true,
-        dataBound: function() {
+        dataBound: function () {
             for (let i = 0; i < this.columns.length; i++) {
                 this.autoFitColumn(i);
             }
         },
         columns: [
-            { field: "instance", title: "Instance" },
-            { field: "createdDate", title: "Created Date" },
-            { field: "model", title: "Model" },
-            { field: "asynchronousModel", title: "Asynchronous Model" },
-            { field: "tag", title: "Tag" },
-            { field: "error", title: "Error" },
-            { field: "sanction", title: "Error" },
-            { field: "exhaustive", title: "Exhaustive" },
-            { field: "all", title: "All" }
+            {field: "instance", title: "Instance"},
+            {field: "createdDate", title: "Created Date"},
+            {field: "model", title: "Model"},
+            {field: "asynchronousModel", title: "Asynchronous Model"},
+            {field: "tag", title: "Tag"},
+            {field: "error", title: "Error"},
+            {field: "sanction", title: "Error"},
+            {field: "exhaustive", title: "Exhaustive"},
+            {field: "all", title: "All"}
         ]
     });
 });

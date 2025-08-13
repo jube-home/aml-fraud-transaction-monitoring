@@ -20,5 +20,5 @@ namespace Jube.Data.Cache.Redis.MessagePack;
 public class Sanction
 {
     [Key(0)] public DateTime CreatedDate { get; set; }
-    [Key(1)] public Double? Value { get; set; }
+    [Key(1)] public double? Value { get; set; }
 }

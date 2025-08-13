@@ -1,0 +1,84 @@
+@page
+@model Preservation
+@{
+    Layout = "Shared/_Layout";
+}
+
+@section Scripts
+{
+    <script src="/js/Administration/Preservation.js"></script>
+}
+
+<div class="fCStyle">
+    <div id="Template">
+        <form id="Form" class="k-form">
+            <table id="TemplateTable" class="tTStyle">
+                <tr>
+                    <td>
+                        <label for="Password">Encryption Password</label>
+                    </td>
+                    <td>
+                        <input type="password" id="Password" class="k-textbox large" name="Password">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Exhaustive" class="k-checkbox-label">Include Exhaustive</label>
+                    </td>
+                    <td>
+                        <input id="Exhaustive" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Suppressions" class="k-checkbox-label">Include Suppressions</label>
+                    </td>
+                    <td>
+                        <input id="Suppressions" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Lists" class="k-checkbox-label">Include Lists</label>
+                    </td>
+                    <td>
+                        <input id="Lists" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Dictionaries" class="k-checkbox-label">Include Dictionaries</label>
+                    </td>
+                    <td>
+                        <input id="Dictionaries" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Visualisations" class="k-checkbox-label">Include Visualisations</label>
+                    </td>
+                    <td>
+                        <input id="Visualisations" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Download" class="k-checkbox-label">Export</label>
+                    </td>
+                    <td>
+                        <div id="Download">Download</div>
+                        <a class="cellLinkMiddle" id="Peek" href="#">Peek</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Files" class="k-checkbox-label">Import</label>
+                    </td>
+                    <td>
+                        <input name="Files" id="Files" type="file" aria-label="Files"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>

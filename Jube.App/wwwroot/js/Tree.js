@@ -26,8 +26,7 @@ const Page = getUrlVars()["Page"];
 
 function GetColor(e) {
     const items = e.sender.items();
-    for (let j=0; j< items.length; j++)
-    {
+    for (let j = 0; j < items.length; j++) {
         const item = $(items[j]);
         const dataItem = e.sender.dataItem(item);
         const color = dataItem.get("color");
@@ -36,7 +35,7 @@ function GetColor(e) {
     }
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     switch (Page) {
         case 'AbstractionRule':
             serviceRoot = serviceRoot + Page;
@@ -95,7 +94,7 @@ $(document).ready(function() {
         case 'List':
             serviceRoot = serviceRoot + Page;
             topLevel = "/api/EntityAnalysisModel";
-            topLevelId = "id";
+            topLevelId = "guid";
             ChildDescription = 'Lists';
             ChildURLAdd = "/Model/Frame/EntityAnalysisModelList";
             ChildURLUpdate = "/Model/Frame/EntityAnalysisModelList";
@@ -104,7 +103,7 @@ $(document).ready(function() {
         case 'Dictionary':
             serviceRoot = serviceRoot + Page;
             topLevel = "/api/EntityAnalysisModel";
-            topLevelId = "id";
+            topLevelId = "guid";
             ChildDescription = 'Dictionary';
             ChildURLAdd = "/Model/Frame/EntityAnalysisModelDictionary";
             ChildURLUpdate = "/Model/Frame/EntityAnalysisModelDictionary";
@@ -219,7 +218,7 @@ $(document).ready(function() {
             QueryString = 0;
             break;
         case 'CaseWorkflowForm':
-            HasThirdLevel=true;
+            HasThirdLevel = true;
 
             ThirdLevelDatasource = {
                 transport: {
@@ -245,7 +244,7 @@ $(document).ready(function() {
             QueryString = 0;
             break;
         case 'CaseWorkflowAction':
-            HasThirdLevel=true;
+            HasThirdLevel = true;
 
             ThirdLevelDatasource = {
                 transport: {
@@ -271,7 +270,7 @@ $(document).ready(function() {
             QueryString = 0;
             break;
         case 'CaseWorkflowDisplay':
-            HasThirdLevel=true;
+            HasThirdLevel = true;
 
             ThirdLevelDatasource = {
                 transport: {
@@ -296,7 +295,7 @@ $(document).ready(function() {
             QueryString = 0;
             break;
         case 'CaseWorkflowMacro':
-            HasThirdLevel=true;
+            HasThirdLevel = true;
 
             ThirdLevelDatasource = {
                 transport: {
@@ -322,7 +321,7 @@ $(document).ready(function() {
             QueryString = 0;
             break;
         case 'CaseWorkflowFilter':
-            HasThirdLevel=true;
+            HasThirdLevel = true;
 
             ThirdLevelDatasource = {
                 transport: {
@@ -348,7 +347,7 @@ $(document).ready(function() {
             QueryString = 0;
             break;
         case 'CaseWorkflowXPath':
-            HasThirdLevel=true;
+            HasThirdLevel = true;
 
             ThirdLevelDatasource = {
                 transport: {
@@ -374,8 +373,8 @@ $(document).ready(function() {
             QueryString = 0;
             break;
         case 'CaseWorkflowStatus':
-            HasThirdLevel=true;
-            
+            HasThirdLevel = true;
+
             ThirdLevelDatasource = {
                 transport: {
                     read: {
@@ -440,9 +439,9 @@ $(document).ready(function() {
         collapse: onCollapse,
         dataBound: GetColor
     });
-    
+
     $("#TitleDiv").html(ChildDescription);
-    
+
     function onCollapse(e) {
         const dataItemCollapsed = this.dataItem(e.node);
         dataItemCollapsed.loaded(false);
@@ -495,7 +494,7 @@ $(document).ready(function() {
             return false;
         }
     }
-    
+
     function resizeSplitter() {
         const outerSplitter = splitter.data("kendoSplitter");
         let headerOffset;
@@ -641,7 +640,7 @@ function AddNode(parent, child, name) {
                 for (j = 0; j < childParentNodes.length; j++) {
                     if (childParentNodes[j].expanded) {
                         if (childParentNodes[j].key === parent) {
-                            childParentNodes[j].append({ name: name, key: child });
+                            childParentNodes[j].append({name: name, key: child});
 
                             const childChildParentNodes = childParentNodes[j].children.data();
                             for (let k = 0; k < childChildParentNodes.length; k++) {
@@ -657,7 +656,7 @@ function AddNode(parent, child, name) {
         } else {
             if (parentNode[topLevelId] === parent) {
                 if (parentNode.expanded) {
-                    parentNode.append({ name: name, key: child });
+                    parentNode.append({name: name, key: child});
                     const childNodes = parentNode.children.data();
                     for (j = 0; j < childNodes.length; j++) {
                         if (childNodes[j].id === child) {

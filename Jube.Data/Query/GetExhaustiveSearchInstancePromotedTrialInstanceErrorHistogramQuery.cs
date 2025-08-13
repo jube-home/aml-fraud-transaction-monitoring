@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -17,55 +17,54 @@ using System.Linq;
 using Accord.Statistics.Visualizations;
 using Jube.Data.Context;
 
-namespace Jube.Data.Query
+namespace Jube.Data.Query;
+
+public class GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery
 {
-    public class GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery
+    private readonly DbContext _dbContext;
+    private readonly int _tenantRegistryId;
+
+    public GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery(DbContext dbContext, string userName)
     {
-        private readonly DbContext _dbContext;
-        private readonly int _tenantRegistryId;
+        _dbContext = dbContext;
+        _tenantRegistryId = _dbContext.UserInTenant.Where(w => w.User == userName)
+            .Select(s => s.TenantRegistryId).FirstOrDefault();
+    }
 
-        public GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery(DbContext dbContext, string userName)
-        {
-            _dbContext = dbContext;
-            _tenantRegistryId = _dbContext.UserInTenant.Where(w => w.User == userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
-        }
+    public IEnumerable<Dto> Execute(
+        int exhaustiveSearchInstanceId)
+    {
+        var promotedExhaustiveSearchInstanceTrialInstanceId = _dbContext
+            .ExhaustiveSearchInstancePromotedTrialInstance
+            .Where(w =>
+                w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
+                && w.Active == 1
+                && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
+                    .EntityAnalysisModel.TenantRegistryId == _tenantRegistryId)
+            .OrderByDescending(o => o.Id)
+            .Select(s => s.ExhaustiveSearchInstanceTrialInstanceId)
+            .FirstOrDefault();
 
-        public IEnumerable<Dto> Execute(
-            int exhaustiveSearchInstanceId)
-        {
-            var promotedExhaustiveSearchInstanceTrialInstanceId = _dbContext
-                .ExhaustiveSearchInstancePromotedTrialInstance
-                .Where(w =>
-                    w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
-                    && w.Active == 1
-                    && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
-                        .EntityAnalysisModel.TenantRegistryId == _tenantRegistryId)
-                .OrderByDescending(o => o.Id)
-                .Select(s => s.ExhaustiveSearchInstanceTrialInstanceId)
-                .FirstOrDefault();
+        var errors = _dbContext.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
+            .Where(w =>
+                w.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId)
+            .OrderBy(o => o.Id)
+            .Select(s => s.Actual.Value - s.Predicted.Value).ToArray();
 
-            var errors = _dbContext.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
-                .Where(w =>
-                    w.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId)
-                .OrderBy(o => o.Id)
-                .Select(s => s.Actual.Value - s.Predicted.Value).ToArray();
+        var histogram = new Histogram();
+        histogram.Compute(errors, 10);
 
-            var histogram = new Histogram();
-            histogram.Compute(errors, 10);
+        return histogram.Bins
+            .Select(s => new Dto
+            {
+                Bin = Math.Round(s.Range.Min, 2),
+                Frequency = s.Value
+            }).ToList();
+    }
 
-            return histogram.Bins
-                .Select(s => new Dto
-                {
-                    Bin = Math.Round(s.Range.Min, 2),
-                    Frequency = s.Value
-                }).ToList();
-        }
-
-        public class Dto
-        {
-            public double Bin { get; set; }
-            public int Frequency { get; set; }
-        }
+    public class Dto
+    {
+        public double Bin { get; set; }
+        public int Frequency { get; set; }
     }
 }

@@ -78,7 +78,7 @@ $.get("../api/EntityAnalysisModelRequestXPath/ByEntityAnalysisModelId/" + parent
                     } else {
                         liveForever.data("kendoSwitch").check(false);
                     }
-                    
+
                     SetLiveForever();
                     ReadyExisting(data);
                 });

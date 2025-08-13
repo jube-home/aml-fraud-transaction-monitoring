@@ -18,14 +18,14 @@ namespace Jube.Data.Cache.Interfaces;
 
 public interface ICacheTtlCounterRepository
 {
-    Task DecrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
-        int entityAnalysisModelTtlCounterId,
+    Task DecrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        Guid entityAnalysisModelTtlCounterGuid,
         string dataName, string dataValue, int decrement);
 
-    Task<int> GetByNameDataNameDataValueAsync(int tenantRegistryId, int entityAnalysisModelId,
-        int entityAnalysisModelTtlCounterId, string dataName, string dataValue);
+    Task<int> GetByNameDataNameDataValueAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        Guid entityAnalysisModelTtlCounterGuid, string dataName, string dataValue);
 
-    Task IncrementTtlCounterCacheAsync(int tenantRegistryId, int entityAnalysisModelId,
-        string dataName, string dataValue, int entityAnalysisModelTtlCounterId, int increment,
+    Task IncrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        string dataName, string dataValue, Guid entityAnalysisModelTtlCounterGuid, int increment,
         DateTime referenceDate);
 }

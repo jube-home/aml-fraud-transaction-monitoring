@@ -6,7 +6,7 @@ parent: API
 grand_parent: Concepts
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # HTTP API Asynchronous Model Invocation
 Most of the procedures in this documentation makes use of synchronous HTTP requests in which the request is blocked for the client unitil absolute conclusion of the processing, notwithstanding a significant amount of asynchronous processing taking place in the processing to ensure reasonable response time by eliminating blocking waits on IO.

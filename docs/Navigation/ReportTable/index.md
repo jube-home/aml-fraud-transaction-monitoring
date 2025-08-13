@@ -5,7 +5,7 @@ nav_order: 7
 parent: Navigation
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Report Table
 When request payload data has concluded processing, a comprehensive payload comes to rest as JSONB in a table of name Archive in the database.  The format of the data is largely the same as the response payload returned via HTTP response or AMQP,  except the Response Payload configuration will be ignored, and it will contain all elements processed:

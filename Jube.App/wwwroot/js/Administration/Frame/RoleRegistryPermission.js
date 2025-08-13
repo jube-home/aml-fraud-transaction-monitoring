@@ -65,7 +65,7 @@ $(function () {
 
 function GetData() {
     Name = permissionSpecificationId.data("kendoDropDownList").text();
-    
+
     return {
         permissionSpecificationId: permissionSpecificationId.data("kendoDropDownList").value()
     };

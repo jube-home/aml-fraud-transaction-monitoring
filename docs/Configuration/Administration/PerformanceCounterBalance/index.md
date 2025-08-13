@@ -6,7 +6,7 @@ parent: Administration
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Performance Counter Balance
 The nature of the Jube Platform is that immeasurable harm can be caused by the misconfiguration of a rule.  Consider a scenario where all bank transactions are declined or all bidding is taking place on all impression opportunities as a consequence of a bad Activation Rule.  Furthermore,  the nature of real-time,  ultra-high throughput systems,  is that it is not especially feasible to measure performance on a transaction by transaction basis, instead relying on near time aggregate counters and statistics to measure the performance of the platform.

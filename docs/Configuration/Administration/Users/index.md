@@ -6,7 +6,7 @@ parent: Administration
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Users
 All user interactions in the user interface are subject to authentication and authorisation.  Authentication rooted in a user account, which is more often than not accompanied by a password (keeping in mind the software also supports JSON Web Tokens for authentication).

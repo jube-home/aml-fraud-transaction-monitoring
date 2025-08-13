@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  *@
 @page
-@model Jube.App.Pages.Model.Frame.EntityAnalysisModelRequestXPath
+@model EntityAnalysisModelRequestXPath
 @{
     Layout = null;
 }
@@ -20,137 +20,91 @@
 <script src="/js/Model/Frame/EntityAnalysisModelRequestXPath.js"></script>
 
 <form id="form" class="k-form">
-<body>
-<div class="fCStyle">
-<table id="TemplateTable" class="tTStyle">
-<tr>
-    <td>
-        <label for="Name">Name</label>
-    </td>
-    <td>
-        <input type="text" id="Name" class="k-textbox large" name="Name" required validationMessage="Please enter a valid Name.">
-        <span class="k-invalid-msg" data-for="Name"></span>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="Active" class="k-checkbox-label">Active</label>
-    </td>
-    <td>
-        <input id="Active" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="Locked" class="k-checkbox-label">Locked</label>
-    </td>
-    <td>
-        <input id="Locked" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="EnableSuppression" class="k-checkbox-label">Enable Suppression</label>
-    </td>
-    <td>
-        <input id="EnableSuppression" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="XPath">XPath</label>
-    </td>
-    <td>
-        <input type="text" id="XPath" class="k-textbox large" name="XPath" required validationMessage="Please enter a valid JSONPath.">
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="SearchKey" class="k-checkbox-label">Search Key</label>
-    </td>
-    <td>
-        <table class="sTStyle">
+    <body>
+    <div class="fCStyle">
+        <table id="TemplateTable" class="tTStyle">
             <tr>
                 <td>
-                    <input id="SearchKey" type="checkbox" onchange="ExpandCollapseSearchKey();"/>
+                    <label for="Name">Name</label>
+                </td>
+                <td>
+                    <input type="text" id="Name" class="k-textbox large" name="Name" required
+                           validationMessage="Please enter a valid Name.">
+                    <span class="k-invalid-msg" data-for="Name"></span>
                 </td>
             </tr>
-            <tr id="SearchKeySubTable">
-                <td class="sTBorderStyle">
+            <tr>
+                <td>
+                    <label for="Active" class="k-checkbox-label">Active</label>
+                </td>
+                <td>
+                    <input id="Active" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Locked" class="k-checkbox-label">Locked</label>
+                </td>
+                <td>
+                    <input id="Locked" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="EnableSuppression" class="k-checkbox-label">Enable Suppression</label>
+                </td>
+                <td>
+                    <input id="EnableSuppression" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="XPath">XPath</label>
+                </td>
+                <td>
+                    <input type="text" id="XPath" class="k-textbox large" name="XPath" required
+                           validationMessage="Please enter a valid JSONPath.">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="SearchKey" class="k-checkbox-label">Search Key</label>
+                </td>
+                <td>
                     <table class="sTStyle">
                         <tr>
                             <td>
-                                <label for="SearchKeyTtlInterval" class="k-checkbox-label">TTL Interval Type</label>
-                            </td>
-                            <td>
-                                <ul id="SearchKeyTtlInterval" class="fieldlist">
-                                    <li>
-                                        <input type="radio" class="k-radio" name="SearchKeyTtlInterval" id="TtlIntervalValueSecond" value="s"/>
-                                        <label class="k-radio-label" for="SearchKeyCacheIntervalTypeSecond">Seconds</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" class="k-radio" name="SearchKeyTtlInterval" id="TtlIntervalValueMin" value="n"/>
-                                        <label class="k-radio-label" for="SearchKeyCacheIntervalTypeMin">Minutes</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" class="k-radio" name="SearchKeyTtlInterval" id="TtlIntervalValueHour" checked="checked" value="h"/>
-                                        <label class="k-radio-label" for="SearchKeyCacheIntervalTypeHour">Hours</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" class="k-radio" name="SearchKeyTtlInterval" id="TtlIntervalValueDay" value="d"/>
-                                        <label class="k-radio-label" for="SearchKeyCacheIntervalTypeDay">Days</label>
-                                    </li>
-                                </ul>
+                                <input id="SearchKey" type="checkbox" onchange="ExpandCollapseSearchKey();"/>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <label for="SearchKeyTtlIntervalValue" class="k-checkbox-label">TTL Interval Value</label>
-                            </td>
-                            <td>
-                                <input type="number" id="SearchKeyTtlIntervalValue" value="1"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="SearchKeyFetchLimit" class="k-checkbox-label">Fetch Limit</label>
-                            </td>
-                            <td>
-                                <input type="number" id="SearchKeyFetchLimit" value="100"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="SearchKeyCache" class="k-checkbox-label">Cache</label>
-                            </td>
-                            <td>
-                                <input id="SearchKeyCache" type="checkbox" onchange="SetSearchKeyCache();"/>
-                            </td>
-                        </tr>
-                        <tr id="SearchKeyCacheSubTable">
-                            <td>
+                        <tr id="SearchKeySubTable">
                             <td class="sTBorderStyle">
                                 <table class="sTStyle">
                                     <tr>
                                         <td>
-                                            <label for="SearchKeyCacheIntervalType">Selection Interval Type</label>
+                                            <label for="SearchKeyTtlInterval" class="k-checkbox-label">TTL Interval
+                                                Type</label>
                                         </td>
                                         <td>
-                                            <ul id="SearchKeyCacheIntervalType" class="fieldlist">
+                                            <ul id="SearchKeyTtlInterval" class="fieldlist">
                                                 <li>
-                                                    <input type="radio" class="k-radio" name="SearchKeyCacheInterval" id="SearchKeyCacheIntervalTypeSecond" value="s"/>
+                                                    <input type="radio" class="k-radio" name="SearchKeyTtlInterval"
+                                                           id="TtlIntervalValueSecond" value="s"/>
                                                     <label class="k-radio-label" for="SearchKeyCacheIntervalTypeSecond">Seconds</label>
                                                 </li>
                                                 <li>
-                                                    <input type="radio" class="k-radio" name="SearchKeyCacheInterval" id="SearchKeyCacheIntervalTypeMin" value="n"/>
+                                                    <input type="radio" class="k-radio" name="SearchKeyTtlInterval"
+                                                           id="TtlIntervalValueMin" value="n"/>
                                                     <label class="k-radio-label" for="SearchKeyCacheIntervalTypeMin">Minutes</label>
                                                 </li>
                                                 <li>
-                                                    <input type="radio" class="k-radio" name="SearchKeyCacheInterval" id="SearchKeyCacheIntervalTypeHour" checked="checked" value="h"/>
+                                                    <input type="radio" class="k-radio" name="SearchKeyTtlInterval"
+                                                           id="TtlIntervalValueHour" checked="checked" value="h"/>
                                                     <label class="k-radio-label" for="SearchKeyCacheIntervalTypeHour">Hours</label>
                                                 </li>
                                                 <li>
-                                                    <input type="radio" class="k-radio" id="SearchKeyCacheIntervalTypeDay" name="SearchKeyCacheIntervalDay" value="d"/>
+                                                    <input type="radio" class="k-radio" name="SearchKeyTtlInterval"
+                                                           id="TtlIntervalValueDay" value="d"/>
                                                     <label class="k-radio-label" for="SearchKeyCacheIntervalTypeDay">Days</label>
                                                 </li>
                                             </ul>
@@ -158,59 +112,147 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label for="SearchKeyCacheValue">Selection Interval Value</label>
+                                            <label for="SearchKeyTtlIntervalValue" class="k-checkbox-label">TTL Interval
+                                                Value</label>
                                         </td>
                                         <td>
-                                            <input type="number" id="SearchKeyCacheValue" value="1"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="SearchKeyCacheSample" class="k-checkbox-label">Selection Sample</label>
-                                        </td>
-                                        <td>
-                                            <input id="SearchKeyCacheSample" type="checkbox"/>
+                                            <input type="number" id="SearchKeyTtlIntervalValue" value="1"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label for="SearchKeyCacheFetchLimit">Selection Limit</label>
+                                            <label for="SearchKeyFetchLimit" class="k-checkbox-label">Fetch
+                                                Limit</label>
                                         </td>
                                         <td>
-                                            <input type="number" id="SearchKeyCacheFetchLimit" value="100000"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="SearchKeyCacheValue">TTL Interval Type</label>
-                                        </td>
-                                        <td>
-                                            <ul class="fieldlist">
-                                                <li>
-                                                    <input type="radio" class="k-radio" id="SearchKeyCacheTtlIntervalSecond" name="SearchKeyCacheTtlInterval" value="s"/>
-                                                    <label class="k-radio-label" for="SearchKeyCacheTtlIntervalSecond">Seconds</label>
-                                                </li>
-                                                <li>
-                                                    <input type="radio" class="k-radio" id="SearchKeyCacheTtlIntervalMin" name="SearchKeyCacheTtlInterval" value="n"/>
-                                                    <label class="k-radio-label" for="SearchKeyCacheTtlIntervalMin">Minutes</label>
-                                                </li>
-                                                <li>
-                                                    <input type="radio" class="k-radio" id="SearchKeyCacheTtlIntervalHour" name="SearchKeyCacheTtlInterval" checked="checked" value="h"/>
-                                                    <label class="k-radio-label" for="SearchKeyCacheTtlIntervalHour">Hours</label>
-                                                </li>
-                                                <li>
-                                                    <input type="radio" class="k-radio" id="SearchKeyCacheTtlIntervalDay" name="SearchKeyCacheTtlInterval" value="d"/>
-                                                    <label class="k-radio-label" for="SearchKeyCacheTtlIntervalDay">Days</label>
-                                                </li>
-                                            </ul>
+                                            <input type="number" id="SearchKeyFetchLimit" value="100"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label for="SearchKeyCacheTtlValue">TTL Interval Value</label>
+                                            <label for="SearchKeyCache" class="k-checkbox-label">Cache</label>
                                         </td>
                                         <td>
-                                            <input type="number" id="SearchKeyCacheTtlValue" value="1"/>
+                                            <input id="SearchKeyCache" type="checkbox" onchange="SetSearchKeyCache();"/>
+                                        </td>
+                                    </tr>
+                                    <tr id="SearchKeyCacheSubTable">
+                                        <td>
+                                        <td class="sTBorderStyle">
+                                            <table class="sTStyle">
+                                                <tr>
+                                                    <td>
+                                                        <label for="SearchKeyCacheIntervalType">Selection Interval
+                                                            Type</label>
+                                                    </td>
+                                                    <td>
+                                                        <ul id="SearchKeyCacheIntervalType" class="fieldlist">
+                                                            <li>
+                                                                <input type="radio" class="k-radio"
+                                                                       name="SearchKeyCacheInterval"
+                                                                       id="SearchKeyCacheIntervalTypeSecond" value="s"/>
+                                                                <label class="k-radio-label"
+                                                                       for="SearchKeyCacheIntervalTypeSecond">Seconds</label>
+                                                            </li>
+                                                            <li>
+                                                                <input type="radio" class="k-radio"
+                                                                       name="SearchKeyCacheInterval"
+                                                                       id="SearchKeyCacheIntervalTypeMin" value="n"/>
+                                                                <label class="k-radio-label"
+                                                                       for="SearchKeyCacheIntervalTypeMin">Minutes</label>
+                                                            </li>
+                                                            <li>
+                                                                <input type="radio" class="k-radio"
+                                                                       name="SearchKeyCacheInterval"
+                                                                       id="SearchKeyCacheIntervalTypeHour"
+                                                                       checked="checked" value="h"/>
+                                                                <label class="k-radio-label"
+                                                                       for="SearchKeyCacheIntervalTypeHour">Hours</label>
+                                                            </li>
+                                                            <li>
+                                                                <input type="radio" class="k-radio"
+                                                                       name="SearchKeyCacheInterval"
+                                                                       id="SearchKeyCacheIntervalTypeDay" value="d"/>
+                                                                <label class="k-radio-label"
+                                                                       for="SearchKeyCacheIntervalTypeDay">Days</label>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <label for="SearchKeyCacheValue">Selection Interval
+                                                            Value</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" id="SearchKeyCacheValue" value="1"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <label for="SearchKeyCacheSample" class="k-checkbox-label">Selection
+                                                            Sample</label>
+                                                    </td>
+                                                    <td>
+                                                        <input id="SearchKeyCacheSample" type="checkbox"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <label for="SearchKeyCacheFetchLimit">Selection Limit</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" id="SearchKeyCacheFetchLimit"
+                                                               value="100000"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <label for="SearchKeyCacheValue">TTL Interval Type</label>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="fieldlist">
+                                                            <li>
+                                                                <input type="radio" class="k-radio"
+                                                                       id="SearchKeyCacheTtlIntervalSecond"
+                                                                       name="SearchKeyCacheTtlInterval" value="s"/>
+                                                                <label class="k-radio-label"
+                                                                       for="SearchKeyCacheTtlIntervalSecond">Seconds</label>
+                                                            </li>
+                                                            <li>
+                                                                <input type="radio" class="k-radio"
+                                                                       id="SearchKeyCacheTtlIntervalMin"
+                                                                       name="SearchKeyCacheTtlInterval" value="n"/>
+                                                                <label class="k-radio-label"
+                                                                       for="SearchKeyCacheTtlIntervalMin">Minutes</label>
+                                                            </li>
+                                                            <li>
+                                                                <input type="radio" class="k-radio"
+                                                                       id="SearchKeyCacheTtlIntervalHour"
+                                                                       name="SearchKeyCacheTtlInterval"
+                                                                       checked="checked" value="h"/>
+                                                                <label class="k-radio-label"
+                                                                       for="SearchKeyCacheTtlIntervalHour">Hours</label>
+                                                            </li>
+                                                            <li>
+                                                                <input type="radio" class="k-radio"
+                                                                       id="SearchKeyCacheTtlIntervalDay"
+                                                                       name="SearchKeyCacheTtlInterval" value="d"/>
+                                                                <label class="k-radio-label"
+                                                                       for="SearchKeyCacheTtlIntervalDay">Days</label>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <label for="SearchKeyCacheTtlValue">TTL Interval Value</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" id="SearchKeyCacheTtlValue" value="1"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
                                         </td>
                                     </tr>
                                 </table>
@@ -219,83 +261,80 @@
                     </table>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <label for="DataTypeId">Data Type</label>
+                </td>
+                <td>
+                    <select id="DataTypeId">
+                        <option value="1">String</option>
+                        <option value="2">Integer</option>
+                        <option value="3">Float</option>
+                        <option value="4">Date</option>
+                        <option value="5">Boolean</option>
+                        <option value="6">Latitude</option>
+                        <option value="7">Longitude</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Default</label>
+                </td>
+                <td>
+                    <input type="text" id="DefaultValueString" class="k-textbox" name="DefaultValue"/>
+                    <input type="text" id="DefaultValueNumeric" name="DefaultValue" value="0"/>
+                    <div id="DivDefaultValueCheckbox">
+                        <input id="DefaultValueCheckbox" name="DefaultValue" type="checkbox"/>
+                    </div>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ReportTable">Report Table</label>
+                </td>
+                <td>
+                    <input id="ReportTable" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ResponsePayload">Response Payload</label>
+                </td>
+                <td>
+                    <input id="ResponsePayload" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Version">Version</label>
+                </td>
+                <td>
+                    <div id="Version"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="CreatedUser">User Created</label>
+                </td>
+                <td>
+                    <div id="CreatedUser"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="CreatedDate">Created Date</label>
+                </td>
+                <td>
+                    <div id="CreatedDate"></div>
+                </td>
+            </tr>
         </table>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="DataTypeId">Data Type</label>
-    </td>
-    <td>
-        <select id="DataTypeId">
-            <option value="1">String</option>
-            <option value="2">Integer</option>
-            <option value="3">Float</option>
-            <option value="4">Date</option>
-            <option value="5">Boolean</option>
-            <option value="6">Latitude</option>
-            <option value="7">Longitude</option>
-        </select>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label>Default</label>
-    </td>
-    <td>
-    <input type="text" id="DefaultValueString" class="k-textbox" name="DefaultValue"/>
-    <input type="text" id="DefaultValueNumeric" name="DefaultValue" value="0"/>
-    <div id="DivDefaultValueCheckbox">
-        <input id="DefaultValueCheckbox" name="DefaultValue" type="checkbox"/>
+        <div class="footerStyle">
+            <div id="ErrorMessage" class="errorMessage"></div>
+            <button type="button" id="Add" class="ButtonDefault">Add</button>
+            <button type="button" id="Update" class="ButtonDefault">Update</button>
+            <button type="button" id="Delete" class="ButtonDefault">Delete</button>
+        </div>
     </div>
-</tr>
-<tr>
-    <td>
-        <label for="ReportTable">Report Table</label>
-    </td>
-    <td>
-        <input id="ReportTable" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="ResponsePayload">Response Payload</label>
-    </td>
-    <td>
-        <input id="ResponsePayload" type="checkbox"/>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="Version">Version</label>
-    </td>
-    <td>
-        <div id="Version"></div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="CreatedUser">User Created</label>
-    </td>
-    <td>
-        <div id="CreatedUser"></div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <label for="CreatedDate">Created Date</label>
-    </td>
-    <td>
-        <div id="CreatedDate"></div>
-    </td>
-</tr>
-</table>
-<div class="footerStyle">
-    <div id="ErrorMessage" class="errorMessage"></div>
-    <button type="button" id="Add" class="ButtonDefault">Add</button>
-    <button type="button" id="Update" class="ButtonDefault">Update</button>
-    <button type="button" id="Delete" class="ButtonDefault">Delete</button>
-</div>
-</div>
-</body>
+    </body>
 </form>

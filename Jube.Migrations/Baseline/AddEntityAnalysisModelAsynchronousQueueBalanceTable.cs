@@ -2,36 +2,35 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
 using FluentMigrator;
 
-namespace Jube.Migrations.Baseline
-{
-    [Migration(20220426071427)]
-    public class AddEntityAnalysisModelAsynchronousQueueBalanceTable : Migration
-    {
-        public override void Up()
-        {
-            Create.Table("EntityAnalysisModelAsynchronousQueueBalance")
-                .WithColumn("Id").AsInt32().PrimaryKey().Identity()
-                .WithColumn("EntityAnalysisModelId").AsInt32().Nullable()
-                .WithColumn("Instance").AsString().Nullable()
-                .WithColumn("CreatedDate").AsDateTime2().Nullable()
-                .WithColumn("Archive").AsInt32().Nullable()
-                .WithColumn("ActivationWatcher").AsInt32().Nullable();
-        }
+namespace Jube.Migrations.Baseline;
 
-        public override void Down()
-        {
-            Delete.Table("EntityAnalysisModelAsynchronousQueueBalance");
-        }
+[Migration(20220426071427)]
+public class AddEntityAnalysisModelAsynchronousQueueBalanceTable : Migration
+{
+    public override void Up()
+    {
+        Create.Table("EntityAnalysisModelAsynchronousQueueBalance")
+            .WithColumn("Id").AsInt32().PrimaryKey().Identity()
+            .WithColumn("EntityAnalysisModelId").AsInt32().Nullable()
+            .WithColumn("Instance").AsString().Nullable()
+            .WithColumn("CreatedDate").AsDateTime2().Nullable()
+            .WithColumn("Archive").AsInt32().Nullable()
+            .WithColumn("ActivationWatcher").AsInt32().Nullable();
+    }
+
+    public override void Down()
+    {
+        Delete.Table("EntityAnalysisModelAsynchronousQueueBalance");
     }
 }

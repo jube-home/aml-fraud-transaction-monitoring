@@ -37,29 +37,29 @@ namespace Jube.App.Controllers.Helper
     [Authorize]
     public class ParserController : Controller
     {
-        private readonly DbContext dbContext;
-        private readonly ILog log;
-        private readonly PermissionValidation permissionValidation;
-        private readonly string userName;
+        private readonly DbContext _dbContext;
+        private readonly ILog _log;
+        private readonly PermissionValidation _permissionValidation;
+        private readonly string _userName;
 
         public ParserController(ILog log, IHttpContextAccessor httpContextAccessor,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
-                userName = httpContextAccessor.HttpContext.User.Identity.Name;
-            this.log = log;
+                _userName = httpContextAccessor.HttpContext.User.Identity.Name;
+            _log = log;
 
-            dbContext =
+            _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
-            permissionValidation = new PermissionValidation(dbContext, userName);
+            _permissionValidation = new PermissionValidation(_dbContext, _userName);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                dbContext.Close();
-                dbContext.Dispose();
+                _dbContext.Close();
+                _dbContext.Dispose();
             }
 
             base.Dispose(disposing);
@@ -70,17 +70,12 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!permissionValidation.Validate(new[] {8, 10, 13, 14, 16, 17, 25, 26})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 8, 10, 13, 14, 16, 17, 25, 26 })) return Forbid();
 
-                var tokens = dbContext.RuleScriptToken.Select(s => s.Token).ToList();
+                var tokens = _dbContext.RuleScriptToken.Select(s => s.Token).ToList();
 
                 var entityAnalysisModelRequestXPaths = parseRuleRequestDto.RuleParseType switch
                 {
-                    1 => EntityAnalysisModelRequestXPaths(parseRuleRequestDto.EntityAnalysisModelId),
-                    2 => EntityAnalysisModelRequestXPaths(parseRuleRequestDto.EntityAnalysisModelId),
-                    3 => EntityAnalysisModelRequestXPaths(parseRuleRequestDto.EntityAnalysisModelId),
-                    4 => EntityAnalysisModelRequestXPaths(parseRuleRequestDto.EntityAnalysisModelId),
-                    5 => EntityAnalysisModelRequestXPaths(parseRuleRequestDto.EntityAnalysisModelId),
                     _ => EntityAnalysisModelRequestXPaths(parseRuleRequestDto.EntityAnalysisModelId)
                 };
 
@@ -116,7 +111,7 @@ namespace Jube.App.Controllers.Helper
                         = EntityAnalysisModelsAdaptations(parseRuleRequestDto.EntityAnalysisModelId);
                 }
 
-                var parser = new Parser.Parser(log,
+                var parser = new Parser.Parser(_log,
                     tokens
                 )
                 {
@@ -175,7 +170,7 @@ namespace Jube.App.Controllers.Helper
                         };
 
                         var compile = new Compile();
-                        compile.CompileCode(parsedRule.ParsedRuleText, log, refs);
+                        compile.CompileCode(parsedRule.ParsedRuleText, _log, refs);
 
                         if (!compile.Success)
                         {
@@ -218,7 +213,7 @@ namespace Jube.App.Controllers.Helper
             }
             catch (Exception ex)
             {
-                log.Error(ex.ToString());
+                _log.Error(ex.ToString());
 
                 return new ParseRuleResultDto
                 {
@@ -230,70 +225,70 @@ namespace Jube.App.Controllers.Helper
         private List<string> EntityAnalysisModelsAdaptations(int entityAnalysisModelId)
         {
             var entityAnalysisModelHttpAdaptationRepository =
-                new EntityAnalysisModelHttpAdaptationRepository(dbContext, userName);
+                new EntityAnalysisModelHttpAdaptationRepository(_dbContext, _userName);
 
             return entityAnalysisModelHttpAdaptationRepository
-                .GetByEntityAnalysisModelId(entityAnalysisModelId)
+                .GetByEntityAnalysisModelIdOrderById(entityAnalysisModelId)
                 .Select(s => s.Name).ToList();
         }
 
         private List<string> EntityAnalysisModelsDictionaries(int entityAnalysisModelId)
         {
             var entityAnalysisModelDictionaryRepository =
-                new EntityAnalysisModelDictionaryRepository(dbContext, userName);
+                new EntityAnalysisModelDictionaryRepository(_dbContext, _userName);
 
             return entityAnalysisModelDictionaryRepository
-                .GetByEntityAnalysisModelId(entityAnalysisModelId)
+                .GetByEntityAnalysisModelIdOrderById(entityAnalysisModelId)
                 .Select(s => s.Name).ToList();
         }
 
         private List<string> EntityAnalysisModelsLists(int entityAnalysisModelId)
         {
             var entityAnalysisModelListRepository =
-                new EntityAnalysisModelListRepository(dbContext, userName);
+                new EntityAnalysisModelListRepository(_dbContext, _userName);
 
             return entityAnalysisModelListRepository
-                .GetByEntityAnalysisModelId(entityAnalysisModelId)
+                .GetByEntityAnalysisModelIdOrderById(entityAnalysisModelId)
                 .Select(s => s.Name).ToList();
         }
 
         private List<string> EntityAnalysisModelsSanctions(int entityAnalysisModelId)
         {
             var entityAnalysisModelSanctionRepository =
-                new EntityAnalysisModelSanctionRepository(dbContext, userName);
+                new EntityAnalysisModelSanctionRepository(_dbContext, _userName);
 
             return entityAnalysisModelSanctionRepository
-                .GetByEntityAnalysisModelId(entityAnalysisModelId)
+                .GetByEntityAnalysisModelIdOrderById(entityAnalysisModelId)
                 .Select(s => s.Name).ToList();
         }
 
         private List<string> EntityAnalysisModelsTtlCounters(int entityAnalysisModelId)
         {
             var entityAnalysisModelTtlCounterRepository =
-                new EntityAnalysisModelTtlCounterRepository(dbContext, userName);
+                new EntityAnalysisModelTtlCounterRepository(_dbContext, _userName);
 
             return entityAnalysisModelTtlCounterRepository
-                .GetByEntityAnalysisModelId(entityAnalysisModelId)
+                .GetByEntityAnalysisModelIdOrderById(entityAnalysisModelId)
                 .Select(s => s.Name).ToList();
         }
 
         private List<string> EntityAnalysisModelAbstractionCalculations(int entityAnalysisModelId)
         {
             var entityAnalysisModelAbstractionCalculationRepository =
-                new EntityAnalysisModelAbstractionCalculationRepository(dbContext, userName);
+                new EntityAnalysisModelAbstractionCalculationRepository(_dbContext, _userName);
 
             return entityAnalysisModelAbstractionCalculationRepository
-                .GetByEntityAnalysisModelId(entityAnalysisModelId)
+                .GetByEntityAnalysisModelIdOrderByIdDesc(entityAnalysisModelId)
                 .Select(s => s.Name).ToList();
         }
 
         private List<string> EntityAnalysisModelsAbstractionRules(int entityAnalysisModelId)
         {
             var entityAnalysisModelAbstractionRuleRepository =
-                new EntityAnalysisModelAbstractionRuleRepository(dbContext, userName);
+                new EntityAnalysisModelAbstractionRuleRepository(_dbContext, _userName);
 
             return entityAnalysisModelAbstractionRuleRepository
-                .GetByEntityAnalysisModelId(entityAnalysisModelId)
+                .GetByEntityAnalysisModelIdOrderByIdDesc(entityAnalysisModelId)
                 .Select(s => s.Name).ToList();
         }
 
@@ -301,23 +296,19 @@ namespace Jube.App.Controllers.Helper
             int entityAnalysisModelId)
         {
             var entityAnalysisModelRequestXPathRepository =
-                new EntityAnalysisModelRequestXPathRepository(dbContext, userName);
+                new EntityAnalysisModelRequestXPathRepository(_dbContext, _userName);
 
             var values = new Dictionary<string, EntityAnalysisModelRequestXPath>();
             foreach (var entityAnalysisModelRequestXPath in entityAnalysisModelRequestXPathRepository
-                         .GetByEntityAnalysisModelId(entityAnalysisModelId))
-            {
+                         .GetByEntityAnalysisModelIdOrderById(entityAnalysisModelId))
                 if (!values.ContainsKey(entityAnalysisModelRequestXPath.Name))
-                {
                     values.Add(entityAnalysisModelRequestXPath.Name,
-                        new EntityAnalysisModelRequestXPath()
+                        new EntityAnalysisModelRequestXPath
                         {
                             DataTypeId = entityAnalysisModelRequestXPath.DataTypeId ?? 1,
                             DefaultValue = entityAnalysisModelRequestXPath.DefaultValue
                         }
                     );
-                }
-            }
 
             return values;
         }

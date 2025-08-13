@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  *@
 @page
-@model Jube.App.Pages.Model.Frame.Exhaustive
+@model Exhaustive
 
 @{
     Layout = null;
@@ -22,338 +22,343 @@
 <script src="/js/Model/Frame/Exhaustive.js"></script>
 
 <form id="Form" class="k-form">
-<body>
-<div class="fCStyle">
-    <form>
-        <table id="TemplateTable" class="tTStyle">
+    <body>
+    <div class="fCStyle">
+        <form>
+            <table id="TemplateTable" class="tTStyle">
+                <tr>
+                    <td>
+                        <label for="Name">Name</label>
+                    </td>
+                    <td>
+                        <input type="text" id="Name" class="k-textbox large" name="Name" required
+                               validationMessage="Please enter a valid Name.">
+                        <span class="k-invalid-msg" data-for="Name"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Active" class="k-checkbox-label">Active</label>
+                    </td>
+                    <td>
+                        <input id="Active" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Locked" class="k-checkbox-label">Locked</label>
+                    </td>
+                    <td>
+                        <input id="Locked" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Anomaly" class="k-checkbox-label">Class Anomaly Threshold</label>
+                    </td>
+                    <td>
+                        <input id="Anomaly" type="checkbox"/>
+                        <table id="AnomalyTable" class="sTStyle">
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label>Anomaly Probability</label>
+                                </td>
+                                <td>
+                                    <input id="AnomalyProbability"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Filter" class="k-checkbox-label">Class Definition</label>
+                    </td>
+                    <td>
+                        <input id="Filter" type="checkbox"/>
+                        <table id="FilterTable" class="sTStyle">
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label>Archive Filter</label>
+                                </td>
+                                <td>
+                                    <div id="Builder"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="ReportTable">Report Table</label>
+                    </td>
+                    <td>
+                        <input id="ReportTable" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="ResponsePayload">Response Payload</label>
+                    </td>
+                    <td>
+                        <input id="ResponsePayload" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Version">Version</label>
+                    </td>
+                    <td>
+                        <div id="Version"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="Guid">GUID</label></td>
+                    <td>
+                        <div id="Guid"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="CreatedUser">User Created</label>
+                    </td>
+                    <td>
+                        <div id="CreatedUser"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="CreatedDate">Created Date</label>
+                    </td>
+                    <td>
+                        <div id="CreatedDate"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="footerStyle">
+                <div id="ErrorMessage" class="errorMessage"></div>
+                <button type="button" id="Add" class="ButtonDefault">Add</button>
+                <button type="button" id="Update" class="ButtonDefault">Update</button>
+                <button type="button" id="Delete" class="ButtonDefault">Delete</button>
+                <button type="button" id="Stop" class="ButtonDefault">Stop</button>
+                <button type="button" id="Refresh" class="ButtonDefault">Refresh</button>
+            </div>
+        </form>
+    </div>
+    <div id="Status" class="hiddenParams">
+        <table id="TrainingTable" class="tTStyle">
             <tr>
+                <td><label for="CurrentStatus">Status</label></td>
                 <td>
-                    <label for="Name">Name</label>
-                </td>
-                <td>
-                    <input type="text" id="Name" class="k-textbox large" name="Name" required validationMessage="Please enter a valid Name.">
-                    <span class="k-invalid-msg" data-for="Name"></span>
+                    <div id="CurrentStatus"></div>
                 </td>
             </tr>
             <tr>
+                <td><label for="Score">Best Score</label></td>
                 <td>
-                    <label for="Active" class="k-checkbox-label">Active</label>
-                </td>
-                <td>
-                    <input id="Active" type="checkbox"/>
+                    <div id="Score"></div>
                 </td>
             </tr>
             <tr>
+                <td><label for="Models">Neural Networks</label></td>
                 <td>
-                    <label for="Locked" class="k-checkbox-label">Locked</label>
-                </td>
-                <td>
-                    <input id="Locked" type="checkbox"/>
+                    <div id="Models"></div>
                 </td>
             </tr>
             <tr>
+                <td><label for="ModelsSinceBest">Neural Networks Since Best</label></td>
                 <td>
-                    <label for="Anomaly" class="k-checkbox-label">Class Anomaly Threshold</label>
-                </td>
-                <td>
-                    <input id="Anomaly" type="checkbox"/>
-                    <table id="AnomalyTable" class="sTStyle">
-                        <tr>
-                            <td class="sTBorderStyle">
-                                <label>Anomaly Probability</label>
-                            </td>
-                            <td>
-                                <input id="AnomalyProbability"/>
-                            </td>
-                        </tr>
-                    </table>
+                    <div id="ModelsSinceBest"></div>
                 </td>
             </tr>
             <tr>
+                <td><label for="UpdatedDate">Updated Date</label></td>
                 <td>
-                    <label for="Filter" class="k-checkbox-label">Class Definition</label>
-                </td>
-                <td>
-                    <input id="Filter" type="checkbox"/>
-                    <table id="FilterTable" class="sTStyle">
-                        <tr>
-                            <td class="sTBorderStyle">
-                                <label>Archive Filter</label>
-                            </td>
-                            <td>
-                                <div id="Builder"></div>
-                            </td>
-                        </tr>
-                    </table>
+                    <div id="UpdatedDate"></div>
                 </td>
             </tr>
             <tr>
+                <td><label for="CompletedDate">Completed Date</label></td>
                 <td>
-                    <label for="ReportTable">Report Table</label>
-                </td>
-                <td>
-                    <input id="ReportTable" type="checkbox"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="ResponsePayload">Response Payload</label>
-                </td>
-                <td>
-                    <input id="ResponsePayload" type="checkbox"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Version">Version</label>
-                </td>
-                <td>
-                    <div id="Version"></div>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="Guid">GUID</label></td>
-                <td>
-                    <div id="Guid"></div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="CreatedUser">User Created</label>
-                </td>
-                <td>
-                    <div id="CreatedUser"></div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="CreatedDate">Created Date</label>
-                </td>
-                <td>
-                    <div id="CreatedDate"></div>
+                    <div id="CompletedDate"></div>
                 </td>
             </tr>
         </table>
-        <div class="footerStyle">
-            <div id="ErrorMessage" class="errorMessage"></div>
-            <button type="button" id="Add" class="ButtonDefault">Add</button>
-            <button type="button" id="Update" class="ButtonDefault">Update</button>
-            <button type="button" id="Delete" class="ButtonDefault">Delete</button>
-            <button type="button" id="Refresh" class="ButtonDefault">Refresh</button>
-        </div>
-    </form>
-</div>
-<div id="Status" class="hiddenParams">
-<table id="TrainingTable" class="tTStyle">
-    <tr>
-        <td><label for="CurrentStatus">Status</label></td>
-        <td>
-            <div id="CurrentStatus"></div>
-        </td>
-    </tr>
-    <tr>
-        <td><label for="Score">Best Score</label></td>
-        <td>
-            <div id="Score"></div>
-        </td>
-    </tr>
-    <tr>
-        <td><label for="Models">Neural Networks</label></td>
-        <td>
-            <div id="Models"></div>
-        </td>
-    </tr>
-    <tr>
-        <td><label for="ModelsSinceBest">Neural Networks Since Best</label></td>
-        <td>
-            <div id="ModelsSinceBest"></div>
-        </td>
-    </tr>
-    <tr>
-        <td><label for="UpdatedDate">Updated Date</label></td>
-        <td>
-            <div id="UpdatedDate"></div>
-        </td>
-    </tr>
-    <tr>
-        <td><label for="CompletedDate">Completed Date</label></td>
-        <td>
-            <div id="CompletedDate"></div>
-        </td>
-    </tr>
-</table>
-<div id="tabstrip">
-    <ul>
-        <li>
-            Statistics
-        </li>
-        <li class="k-state-active">
-            Learning Curve
-        </li>
-        <li>
-            Promoted Models
-        </li>
-        <li>
-            Promoted Model Testing
-        </li>
-        <li>
-        Promoted Model Performance
-        <li/>
-    </ul>
-    <div>
-        <div id="statistics"></div>
-    </div>
-    <div>
-        <div id="chart"></div>
-    </div>
-    <div>
-        <div id="grid"></div>
-    </div>
-    <div>
-        <div id="sliders">
-            <div style="font-size: 33px; text-align:center; color:blue;">
-                <div id="Simulation">0</div>
+        <div id="tabstrip">
+            <ul>
+                <li>
+                    Statistics
+                </li>
+                <li class="k-state-active">
+                    Learning Curve
+                </li>
+                <li>
+                    Promoted Models
+                </li>
+                <li>
+                    Promoted Model Testing
+                </li>
+                <li>
+                    Promoted Model Performance
+                <li/>
+            </ul>
+            <div>
+                <div id="statistics"></div>
             </div>
-            <br/>
-            <table id="SlidersPlaceholder"></table>
-        </div>
-    </div>
-    <div>
-        <div id="KPI" style="background: #FFF; display: none;">
-            <div id="LeftChart" style="float: left; width: 50%;">
+            <div>
+                <div id="chart"></div>
             </div>
-            <div id="RightChart" style="float: right; width: 50%;"></div>
-            <div style="clear: both;"></div>
-            <div id="Confusion" style="display: none; float: left; width: 50%;">
-                <div style="color: #8e8e8e; font: 16px Arial, Helvetica, sans-serif; padding-bottom: 15px; padding-top: 15px; text-align: center;">Confusion Matrix</div>
-                <table style="table-border-color-light: #8e8e8e; width: 100%;">
-                    <tr>
-                        <td rowspan="2" style="padding: 10px; text-align: center;">
-                            Actual
-                        </td>
-                        <td colspan="3" style="padding: 10px; vertical-align: top;">
-                            <div style="text-align: center;">Predicted</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; vertical-align: top;">
-                            Positive
-                        </td>
-                        <td style="padding: 10px; vertical-align: top;">
-                            Negative
-                        </td>
-                        <td style="padding: 10px; vertical-align: top;">
-                            Row Total
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; vertical-align: top;">
-                            Positive
-                        </td>
-                        <td style="background-color: lightgreen; padding: 10px; vertical-align: top;">
-                            <div style="float: left;">Frequency:</div>
-                            <div id="TP" style="float: right;">TP</div>
-                            <br/>
-                            <div style="float: left;">Row Total %:</div>
-                            <div id="TPRowTotal" style="float: right;">TPRowTotal</div>
-                            <br/>
-                            <div style="float: left;">Column Total %:</div>
-                            <div id="TPColumnTotal" style="float: right;">TPColumnTotal</div>
-                            <br/>
-                            <div style="float: left;">Table Total %:</div>
-                            <div id="TPTableTotal" style="float: right;">TPTableTotal</div>
-                        </td>
-                        <td style="background-color: salmon; padding: 10px; vertical-align: top;">
-                            <div style="float: left;">Frequency:</div>
-                            <div id="FN" style="float: right;">FN</div>
-                            <br/>
-                            <div style="float: left;">Row Total %:</div>
-                            <div id="FNRowTotal" style="float: right;">FNRowTotal</div>
-                            <br/>
-                            <div style="float: left;">Column Total %:</div>
-                            <div id="FNColumnTotal" style="float: right;">FNColumnTotal</div>
-                            <br/>
-                            <div style="float: left;">Table Total %:</div>
-                            <div id="FNTableTotal" style="float: right;">FNTableTotal</div>
-                        </td>
-                        <td style="padding: 10px; vertical-align: top;">
-                            <div style="float: left;">Frequency:</div>
-                            <div id="PositiveRow" style="float: right;">P</div>
-                            <br/>
-                            <div style="float: left;">Row Total %:</div>
-                            <div id="PositiveRowTableTotal" style="float: right;">PRowTotal</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; vertical-align: top;">
-                            Negative
-                        </td>
-                        <td style="background-color: salmon; padding: 10px; vertical-align: top;">
-                            <div style="float: left;">Frequency:</div>
-                            <div id="FP" style="float: right;">FP</div>
-                            <br/>
-                            <div style="float: left;">Row Total %:</div>
-                            <div id="FPRowTotal" style="float: right;">FPRowTotal</div>
-                            <br/>
-                            <div style="float: left;">Column Total %:</div>
-                            <div id="FPColumnTotal" style="float: right;">FPColumnTotal</div>
-                            <br/>
-                            <div style="float: left;">Table Total %:</div>
-                            <div id="FPTableTotal" style="float: right;">FPTableTotal</div>
-                        </td>
-                        <td style="background-color: lightgreen; padding: 10px; vertical-align: top;">
-                            <div style="float: left;">Frequency:</div>
-                            <div id="TN" style="float: right;">TN</div>
-                            <br/>
-                            <div style="float: left;">Row Total %:</div>
-                            <div id="TNRowTotal" style="float: right;">TNRowTotal</div>
-                            <br/>
-                            <div style="float: left;">Column Total %:</div>
-                            <div id="TNColumnTotal" style="float: right;">TNColumnTotal</div>
-                            <br/>
-                            <div style="float: left;">Table Total %:</div>
-                            <div id="TNTableTotal" style="float: right;">TNTableTotal</div>
-                        </td>
-                        <td style="padding: 10px; vertical-align: top;">
-                            <div style="float: left;">Frequency:</div>
-                            <div id="NegativeRow" style="float: right;">N</div>
-                            <br/>
-                            <div style="float: left;">Row Total %:</div>
-                            <div id="NegativeRowTableTotal" style="float: right;">NegativeRowTotal</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; vertical-align: top;">
-                            Column Total
-                        </td>
-                        <td style="padding: 10px; vertical-align: top;">
-                            <div style="float: left;">Frequency:</div>
-                            <div id="PositiveColumn" style="float: right;">PColumn</div>
-                            <br/>
-                            <br/>
-                            <div style="float: left;">Column Total %:</div>
-                            <div id="PositiveColumnTableTotal" style="float: right;">PColumnTotal</div>
-                        </td>
-                        <td style="padding: 10px; vertical-align: top;">
-                            <div style="float: left;">Frequency:</div>
-                            <div id="NegativeColumn" style="float: right;">NColumn</div>
-                            <br/>
-                            <br/>
-                            <div style="float: left;">Column Total %:</div>
-                            <div id="NegativeColumnTableTotal" style="float: right;">NColumnTotal</div>
-                        </td>
-                        <td style="padding: 10px; vertical-align: top;">
-                            <div style="float: left;">Frequency:</div>
-                            <div id="TableTotal" style="float: right;">TableTotal</div>
-                        </td>
-                    </tr>
-                </table>
+            <div>
+                <div id="grid"></div>
             </div>
-            <div id="ROCChart" style="float: Right; width: 50%;"></div>
-            <div style="clear: both;"></div>
+            <div>
+                <div id="sliders">
+                    <div style="font-size: 33px; text-align:center; color:blue;">
+                        <div id="Simulation">0</div>
+                    </div>
+                    <br/>
+                    <table id="SlidersPlaceholder"></table>
+                </div>
+            </div>
+            <div>
+                <div id="KPI" style="background: #FFF; display: none;">
+                    <div id="LeftChart" style="float: left; width: 50%;">
+                    </div>
+                    <div id="RightChart" style="float: right; width: 50%;"></div>
+                    <div style="clear: both;"></div>
+                    <div id="Confusion" style="display: none; float: left; width: 50%;">
+                        <div
+                            style="color: #8e8e8e; font: 16px Arial, Helvetica, sans-serif; padding-bottom: 15px; padding-top: 15px; text-align: center;">
+                            Confusion Matrix
+                        </div>
+                        <table style="table-border-color-light: #8e8e8e; width: 100%;">
+                            <tr>
+                                <td rowspan="2" style="padding: 10px; text-align: center;">
+                                    Actual
+                                </td>
+                                <td colspan="3" style="padding: 10px; vertical-align: top;">
+                                    <div style="text-align: center;">Predicted</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    Positive
+                                </td>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    Negative
+                                </td>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    Row Total
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    Positive
+                                </td>
+                                <td style="background-color: lightgreen; padding: 10px; vertical-align: top;">
+                                    <div style="float: left;">Frequency:</div>
+                                    <div id="TP" style="float: right;">TP</div>
+                                    <br/>
+                                    <div style="float: left;">Row Total %:</div>
+                                    <div id="TPRowTotal" style="float: right;">TPRowTotal</div>
+                                    <br/>
+                                    <div style="float: left;">Column Total %:</div>
+                                    <div id="TPColumnTotal" style="float: right;">TPColumnTotal</div>
+                                    <br/>
+                                    <div style="float: left;">Table Total %:</div>
+                                    <div id="TPTableTotal" style="float: right;">TPTableTotal</div>
+                                </td>
+                                <td style="background-color: salmon; padding: 10px; vertical-align: top;">
+                                    <div style="float: left;">Frequency:</div>
+                                    <div id="FN" style="float: right;">FN</div>
+                                    <br/>
+                                    <div style="float: left;">Row Total %:</div>
+                                    <div id="FNRowTotal" style="float: right;">FNRowTotal</div>
+                                    <br/>
+                                    <div style="float: left;">Column Total %:</div>
+                                    <div id="FNColumnTotal" style="float: right;">FNColumnTotal</div>
+                                    <br/>
+                                    <div style="float: left;">Table Total %:</div>
+                                    <div id="FNTableTotal" style="float: right;">FNTableTotal</div>
+                                </td>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    <div style="float: left;">Frequency:</div>
+                                    <div id="PositiveRow" style="float: right;">P</div>
+                                    <br/>
+                                    <div style="float: left;">Row Total %:</div>
+                                    <div id="PositiveRowTableTotal" style="float: right;">PRowTotal</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    Negative
+                                </td>
+                                <td style="background-color: salmon; padding: 10px; vertical-align: top;">
+                                    <div style="float: left;">Frequency:</div>
+                                    <div id="FP" style="float: right;">FP</div>
+                                    <br/>
+                                    <div style="float: left;">Row Total %:</div>
+                                    <div id="FPRowTotal" style="float: right;">FPRowTotal</div>
+                                    <br/>
+                                    <div style="float: left;">Column Total %:</div>
+                                    <div id="FPColumnTotal" style="float: right;">FPColumnTotal</div>
+                                    <br/>
+                                    <div style="float: left;">Table Total %:</div>
+                                    <div id="FPTableTotal" style="float: right;">FPTableTotal</div>
+                                </td>
+                                <td style="background-color: lightgreen; padding: 10px; vertical-align: top;">
+                                    <div style="float: left;">Frequency:</div>
+                                    <div id="TN" style="float: right;">TN</div>
+                                    <br/>
+                                    <div style="float: left;">Row Total %:</div>
+                                    <div id="TNRowTotal" style="float: right;">TNRowTotal</div>
+                                    <br/>
+                                    <div style="float: left;">Column Total %:</div>
+                                    <div id="TNColumnTotal" style="float: right;">TNColumnTotal</div>
+                                    <br/>
+                                    <div style="float: left;">Table Total %:</div>
+                                    <div id="TNTableTotal" style="float: right;">TNTableTotal</div>
+                                </td>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    <div style="float: left;">Frequency:</div>
+                                    <div id="NegativeRow" style="float: right;">N</div>
+                                    <br/>
+                                    <div style="float: left;">Row Total %:</div>
+                                    <div id="NegativeRowTableTotal" style="float: right;">NegativeRowTotal</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    Column Total
+                                </td>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    <div style="float: left;">Frequency:</div>
+                                    <div id="PositiveColumn" style="float: right;">PColumn</div>
+                                    <br/>
+                                    <br/>
+                                    <div style="float: left;">Column Total %:</div>
+                                    <div id="PositiveColumnTableTotal" style="float: right;">PColumnTotal</div>
+                                </td>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    <div style="float: left;">Frequency:</div>
+                                    <div id="NegativeColumn" style="float: right;">NColumn</div>
+                                    <br/>
+                                    <br/>
+                                    <div style="float: left;">Column Total %:</div>
+                                    <div id="NegativeColumnTableTotal" style="float: right;">NColumnTotal</div>
+                                </td>
+                                <td style="padding: 10px; vertical-align: top;">
+                                    <div style="float: left;">Frequency:</div>
+                                    <div id="TableTotal" style="float: right;">TableTotal</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="ROCChart" style="float: Right; width: 50%;"></div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
-</body>
+    </body>
 </form>

@@ -13,7 +13,4 @@
 
 namespace Jube.Service.Exceptions.Authentication;
 
-public class PasswordNewMustChangeException : Exception
-{
-    
-}
+public class PasswordNewMustChangeException : Exception;

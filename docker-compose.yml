@@ -56,18 +56,18 @@
       - JWTKey=$DockerComposeJWTKey
       - RedisConnectionString=redis
       - EnableExhaustiveTraining=False
-      - EnableCacheIndex=False
+      - Landlord=True
       - EnableReprocessing=False
       - EnableSanctionLoader=False
       - CachePruneServer=False
       - EnableTtlCounter=False
       - EnableSearchKeyCache=False
       - EnableCasesAutomation=False
-      - EnableSandpit=True
       - AMQP=True
       - AMQPUri=amqp://admin:$DockerComposeRabbitMQPassword@rabbitmq:5672/
       - PasswordHashingKey=$DockerComposePasswordHashingKey
       - EnableMigration=True
+      - Log4NetLogLevel=ERROR
     ports:
       - "5001:5001"
     networks:
@@ -93,7 +93,6 @@
       - RedisConnectionString=redis
       - JWTKey=$DockerComposeJWTKey
       - EnableExhaustiveTraining=True
-      - EnableCacheIndex=True
       - EnableReprocessing=True
       - EnableSanctionLoader=True
       - CachePruneServer=True
@@ -106,7 +105,8 @@
       - AMQP=True
       - AMQPUri=amqp://admin:$DockerComposeRabbitMQPassword@rabbitmq:5672/
       - PasswordHashingKey=$DockerComposePasswordHashingKey
-      - EnableMigration=False
+      - EnableMigration=False    
+      - Log4NetLogLevel=ERROR
     networks:
       - default
     build:

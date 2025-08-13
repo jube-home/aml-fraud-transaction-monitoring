@@ -13,13 +13,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-var caseWorkflowId;
+var currentCaseWorkflowGuid;
+var currentCaseWorkflowFilterGuid;
+var currentCaseSessionGuid;
 var dateFields = [];
 var caseId;
-var guid;
-var firstBind = true;
+var jsonChangedFromFilterDefault;
 
-function onChange(e) {
+function OnChange(e) {
     var grid = e.sender;
     var currentDataItem = grid.dataItem(this.select());
     if (currentDataItem["Id"] > 0) {
@@ -29,9 +30,9 @@ function onChange(e) {
     }
 }
 
-function generateGrid(gridData) {
-    var model = generateModel(gridData[0]);
-    var columns = generateColumns(gridData[0]);
+function GenerateGrid(gridData) {
+    var model = GenerateModel(gridData[0]);
+    var columns = GenerateColumns(gridData[0]);
 
     if (dateFields.length > 0) {
         var parseFunction = function (response) {
@@ -44,7 +45,7 @@ function generateGrid(gridData) {
             return response;
         };
     }
-    
+
     $("#grid").kendoGrid({
         dataSource: {
             data: gridData,
@@ -62,26 +63,24 @@ function generateGrid(gridData) {
             allPages: true
         },
         selectable: true,
-        change: onChange,
+        change: OnChange,
         dataBound: SetColor,
         height: 500
     });
 }
 
-function formatColumnName(data) {
-/*    var result = data.replace(/([A-Z])/g, " $1");
-    return result.charAt(0).toUpperCase() + result.slice(1);*/
+function FormatColumnName(data) {
     return data;
 }
 
-function generateColumns(gridData) {
+function GenerateColumns(gridData) {
     var columns = [];
     for (var property in gridData) {
         if (Object.prototype.hasOwnProperty.call(gridData, property)) {
             var column = {};
             column["width"] = "400px;";
             column["field"] = property;
-            column["title"] = formatColumnName(property);
+            column["title"] = FormatColumnName(property);
             if (property === 'ForeColor' || property === 'BackColor') {
                 column["hidden"] = true;
             }
@@ -91,7 +90,7 @@ function generateColumns(gridData) {
     return columns;
 }
 
-function generateModel(gridData) {
+function GenerateModel(gridData) {
     var model = {};
     model.id = "Id";
     var fields = {};
@@ -145,16 +144,19 @@ function generateModel(gridData) {
     return model;
 }
 
-function ExecuteCasesInSession() {
+function DestroyGrid() {
     var grid = $('#grid').data('kendoGrid');
     if (typeof grid !== "undefined") {
         grid.destroy();
         $("#grid").empty();
     }
+}
 
-    $.get("../api/SessionCaseSearchCompiledSql/ByGuid/" + guid,
+function ExecuteCasesInSession() {
+    DestroyGrid();
+    $.get("../api/SessionCaseSearchCompiledSql/ByGuid/" + currentCaseSessionGuid,
         function (data) {
-            generateGrid(data);
+            GenerateGrid(data);
         });
 }
 
@@ -172,7 +174,7 @@ function SetColor() {
     }
 }
 
-function onSelect(e) {
+function OnSelect(e) {
     var kitems = $(e.node).add($(e.node).parentsUntil('.k-treeview', '.k-item'));
 
     var texts = $.map(kitems,
@@ -183,54 +185,104 @@ function onSelect(e) {
     var treeview = $("#Tree").getKendoTreeView();
     var item = treeview.dataItem(e.node);
 
-    if (item.caseWorkflowId) {
-        caseWorkflowId = item.caseWorkflowId;
+    if (typeof item.parentNode() !== "undefined") {
+        if (typeof item.caseWorkflowId !== "undefined") {
+            $.get("../api/CaseWorkflowFilter/ByGuid/" + item.guid,
+                function (data) {
+                    if (!data.notFound) {
+                        if (typeof data !== "undefined") {
+                            const currentBuildJson = {
+                                filterJson: JSON.parse(data.filterJson),
+                                selectJson: JSON.parse(data.selectJson)
+                            };
 
-        $.get("../api/CaseWorkflowFilter/" + item.id,
-            function (data) {
-                const casesFilterBuilderParsed = {
-                    filterJson: JSON.parse(data.filterJson),
-                    selectJson: JSON.parse(data.selectJson)
-                };
+                            CompileSqlOnServer(data.filterJson, data.selectJson, data.filterJson, item.parentNode().guid, item.guid, item.guid, true, true);
+                            initCaseFilterBuilder(true, currentCaseWorkflowGuid, currentBuildJson);
+                            jsonChangedFromFilterDefault = false;
+                        }
+                    }
+                });
+        } else {
+            $.get("../api/SessionCaseSearchCompiledSql/ByLast/",
+                function (data) {
+                    if (!data.notFound) {
+                        if (typeof data !== "undefined") {
+                            const currentBuildJson = {
+                                filterJson: JSON.parse(data.filterJson),
+                                selectJson: JSON.parse(data.selectJson)
+                            };
 
-                initCaseFilterBuilder(item.caseWorkflowId, casesFilterBuilderParsed);
+                            CompileSqlOnServer(data.filterJson, data.selectJson, data.filterJson, data.caseWorkflowGuid, data.caseWorkflowFilterGuid, true, true);
+                            initCaseFilterBuilder(true, currentCaseWorkflowGuid, currentBuildJson);
+                            jsonChangedFromFilterDefault = true;
 
-                const casesFilterBuilder = {
-                    filterJson: data.filterJson,
-                    selectJson: data.selectJson,
-                    filterSql: data.filterSql,
-                    filterTokens: data.filterTokens,
-                    caseWorkflowId: caseWorkflowId
-                };
-
-                compileSqlOnServer(casesFilterBuilder, true);
-            });
+                            ShowButtons();
+                        }
+                    }
+                });
+        }
     } else {
         return false;
     }
 }
 
-function compileSqlOnServer(data, refreshGrid) {
+function ShowButtons() {
+    $("#Peek").show();
+    $("#Skim").show();
+}
+
+function SetParentNodeInTree() {
+    var tree = $('#Tree').data('kendoTreeView');
+    let selected = tree.select();
+    let item = tree.dataItem(selected);
+
+    tree.findByUid(item.parentNode().uid);
+    let selectItem = tree.findByUid((item.parentNode().uid));
+    tree.select(selectItem);
+}
+
+function CompileSqlOnServer(filterJson, selectJson, filterTokens, caseWorkflowGuid, caseWorkflowFilterGuid, refreshGrid, ignoreChanges) {
+    const newFilterBuilder = {
+        filterJson: filterJson,
+        selectJson: selectJson,
+        filterTokens: filterTokens,
+        caseWorkflowGuid: caseWorkflowGuid,
+        caseWorkflowFilterGuid: caseWorkflowFilterGuid
+    };
+
+    currentCaseWorkflowGuid = caseWorkflowGuid;
+    currentCaseWorkflowFilterGuid = caseWorkflowFilterGuid;
+
+    if (!ignoreChanges) {
+        if (!jsonChangedFromFilterDefault) {
+            if (typeof initialFilterBuilder !== "undefined") {
+                let filterBuilderChanged;
+                if (initialFilterBuilder.filterJson !== newFilterBuilder.filterJson
+                    || initialFilterBuilder.selectJson !== newFilterBuilder.selectJson) {
+                    newFilterBuilder.caseWorkflowFilterGuid = null;
+                    SetParentNodeInTree();
+                    jsonChangedFromFilterDefault = true;
+                }
+            }
+        }
+    }
+
     $.ajax({
         url: "../api/SessionCaseSearchCompiledSql/",
         type: "POST",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
-        data: JSON.stringify(data),
+        data: JSON.stringify(newFilterBuilder),
         success: function (data) {
-            guid = data.guid;
-            if (refreshGrid) {
-                $("#Peek").show();
-                $("#Skim").show();
-                ExecuteCasesInSession();
+            if (typeof data !== "undefined") {
+                currentCaseSessionGuid = data.guid;
+                if (refreshGrid) {
+                    ExecuteCasesInSession();
+                    ShowButtons();
+                }
             }
         }
     });
-}
-
-function onCollapse(e) {
-    const dataItemCollapsed = this.dataItem(e.node);
-    dataItemCollapsed.loaded(false);
 }
 
 $(document).ready(function () {
@@ -242,36 +294,29 @@ $(document).ready(function () {
 
     $("#Skim").kendoButton({
         click: function (e) {
-            window.location.href = '/Case/Case?SessionCaseSearchCompiledSqlControllerGuid=  ' + guid;
+            var builderResult = getCasesFilter();
+            CompileSqlOnServer(builderResult.filterJson, builderResult.selectJson, builderResult.filterTokens, currentCaseWorkflowGuid, currentCaseWorkflowFilterGuid, false, false);
+            window.location.href = '/Case/Case?SessionCaseSearchCompiledSqlControllerGuid=' + currentCaseSessionGuid;
         }
     }).hide();
 
     $("#Peek").kendoButton({
         click: function (e) {
             var builderResult = getCasesFilter();
-
-            const casesFilterBuilder = {
-                filterJson: builderResult.filterJson,
-                selectJson: builderResult.selectJson,
-                filterSql: builderResult.filterSql,
-                filterTokens: builderResult.filterTokens,
-                caseWorkflowId: caseWorkflowId
-            };
-
-            compileSqlOnServer(casesFilterBuilder, true);
+            CompileSqlOnServer(builderResult.filterJson, builderResult.selectJson, builderResult.filterTokens, currentCaseWorkflowGuid, currentCaseWorkflowFilterGuid, true, false);
         }
     }).hide();
 
     const filter = {
         transport: {
             read: {
-                url: '../api/CaseWorkflowFilter/ByCasesWorkflowIdActiveOnly',
+                url: '../api/CaseWorkflowFilter/ByCasesWorkflowGuidActiveOnly',
                 dataType: "json"
             }
         },
         schema: {
             model: {
-                id: "id",
+                id: "guid",
                 hasChildren: false
             }
         }
@@ -280,13 +325,13 @@ $(document).ready(function () {
     const workflow = {
         transport: {
             read: {
-                url: '../api/CaseWorkflow/ByEntityAnalysisModelIdActiveOnly',
+                url: '../api/CaseWorkflow/ByEntityAnalysisModelGuidActiveOnly',
                 dataType: "json"
             }
         },
         schema: {
             model: {
-                id: "id",
+                id: "guid",
                 hasChildren: true,
                 children: filter
             }
@@ -302,7 +347,7 @@ $(document).ready(function () {
         },
         schema: {
             model: {
-                id: 'id',
+                id: 'guid',
                 hasChildren: true,
                 children: workflow
             }
@@ -311,40 +356,54 @@ $(document).ready(function () {
 
     $.get("../api/SessionCaseSearchCompiledSql/ByLast/",
         function (data) {
-            if (typeof data !== "undefined") {
-                guid = data.guid;
-                caseWorkflowId = data.caseWorkflowId;
+            if (!data.notFound) {
+                if (typeof data !== "undefined") {
+                    currentCaseWorkflowGuid = data.caseWorkflowGuid;
+                    currentCaseWorkflowFilterGuid = data.caseWorkflowFilterGuid;
+                    currentCaseSessionGuid = data.guid;
 
-                const casesFilterBuilderParsed = {
-                    filterJson: JSON.parse(data.filterJson),
-                    selectJson: JSON.parse(data.selectJson)
-                };
+                    const currentBuildJson = {
+                        filterJson: JSON.parse(data.filterJson),
+                        selectJson: JSON.parse(data.selectJson)
+                    };
 
-                initCaseFilterBuilder(data.caseWorkflowId, casesFilterBuilderParsed);
-
-                $("#Peek").show();
-                $("#Skim").show();
-
-                ExecuteCasesInSession();
+                    initCaseFilterBuilder(true, currentCaseWorkflowGuid, currentBuildJson);
+                    ExecuteCasesInSession();
+                    ShowButtons();
+                }
             }
-            
-            $("#Tree").kendoTreeView({
+
+            var tree = $("#Tree").kendoTreeView({
                 dataSource: model,
                 dataTextField: "name",
-                select: onSelect,
-                collapse: onCollapse,
+                select: OnSelect,
                 dataBound: function (e) {
-                    var treeview = $("#Tree").getKendoTreeView();
-                    treeview.expand(".k-item");
+                    var tree = $("#Tree").getKendoTreeView();
+                    tree.expand(".k-item");
 
                     if (typeof e.node !== "undefined") {
-                        var item = treeview.dataItem(e.node);
-                        if (typeof item !== "undefined") {
-                            if (typeof item.entityAnalysisModelId !== "undefined") {
-                                if (typeof caseWorkflowId !== "undefined") {
-                                    if (item.id === caseWorkflowId) {
-                                        treeview.select(e.node);
-                                    }   
+                        var caseWorkflowItem = tree.dataItem(e.node);
+                        if (caseWorkflowItem.guid === currentCaseWorkflowGuid
+                            && (typeof currentCaseWorkflowFilterGuid === "undefined"
+                                || currentCaseWorkflowFilterGuid === "00000000-0000-0000-0000-000000000000")) {
+                            tree.findByUid(caseWorkflowItem.uid);
+                            let selectItem = tree.findByUid(caseWorkflowItem.uid);
+                            tree.select(selectItem);
+
+                            jsonChangedFromFilterDefault = true;
+                        } else {
+                            if (caseWorkflowItem.hasChildren && (typeof currentCaseWorkflowFilterGuid !== "undefined"
+                                && currentCaseWorkflowFilterGuid !== "00000000-0000-0000-0000-000000000000")) {
+                                var caseWorkflowFilterItems = caseWorkflowItem.children.data();
+                                for (var i = 0; i < caseWorkflowFilterItems.length; i++) {
+                                    let caseWorkflowFilterItem = caseWorkflowFilterItems[i];
+                                    if (caseWorkflowFilterItem.guid === currentCaseWorkflowFilterGuid) {
+                                        tree.findByUid(caseWorkflowFilterItem.uid);
+                                        let selectItem = tree.findByUid(caseWorkflowFilterItem.uid);
+                                        tree.select(selectItem);
+
+                                        jsonChangedFromFilterDefault = false;
+                                    }
                                 }
                             }
                         }

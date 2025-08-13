@@ -6,7 +6,7 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Working Case Status
 Several cases workflow statuses may be created and allocated at case creation or via upward reclassification.  It is more common to set a case status manually,  in performing an escalation.

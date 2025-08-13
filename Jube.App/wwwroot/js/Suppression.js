@@ -43,7 +43,7 @@ function detailInit(e) {
                     data: {
                         suppressionKey: key,
                         suppressionKeyValue: keyValue,
-                        entityAnalysisModelId: e.data.entityAnalysisModelId
+                        entityAnalysisModelGuid: e.data.entityAnalysisModelGuid
                     },
                     dataType: "json"
                 }
@@ -63,8 +63,8 @@ function detailInit(e) {
                 const toggleSwitch = $(this);
                 toggleSwitch.kendoSwitch({
                     change: function (e) {
-                        UpdateSuppressionActivationRule(e.sender.element.attr("EntityAnalysisModelId"),
-                            e.sender.element.attr("Name"),e.checked);
+                        UpdateSuppressionActivationRule(e.sender.element.attr("EntityAnalysisModelGuid"),
+                            e.sender.element.attr("Name"), e.checked);
                     }
                 });
             });
@@ -73,7 +73,7 @@ function detailInit(e) {
             {
                 field: "suppression",
                 template:
-                    '<input Name="#=name#" EntityAnalysisModelId="#=entityAnalysisModelId#" type="checkbox" class="toggleSuppressionActivationRule" #= (suppression==true) ? checked="checked" : "" # />',
+                    '<input Name="#=name#" EntityAnalysisModelGuid="#=entityAnalysisModelGuid#" type="checkbox" class="toggleSuppressionActivationRule" #= (suppression==true) ? checked="checked" : "" # />',
                 width: 97,
                 title: "Suppression"
             },
@@ -85,7 +85,7 @@ function detailInit(e) {
     });
 }
 
-function UpdateSuppressionModel(EntityAnalysisModelId, checked) {
+function UpdateSuppressionModel(EntityAnalysisModelGuid, checked) {
     $('#Updating').show();
     $.ajax({
         url: "/api/EntityAnalysisModelSuppression",
@@ -93,7 +93,7 @@ function UpdateSuppressionModel(EntityAnalysisModelId, checked) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: JSON.stringify({
-            entityAnalysisModelId: EntityAnalysisModelId,
+            entityAnalysisModelGuid: EntityAnalysisModelGuid,
             suppressionKeyValue: keyValue,
             suppressionKey: key,
             active: checked
@@ -107,7 +107,7 @@ function UpdateSuppressionModel(EntityAnalysisModelId, checked) {
     });
 }
 
-function UpdateSuppressionActivationRule(EntityAnalysisModelId, name, checked) {
+function UpdateSuppressionActivationRule(EntityAnalysisModelGuid, name, checked) {
     $('#Updating').show();
     $.ajax({
         url: "/api/EntityAnalysisModelActivationRuleSuppression",
@@ -115,7 +115,7 @@ function UpdateSuppressionActivationRule(EntityAnalysisModelId, name, checked) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: JSON.stringify({
-            entityAnalysisModelId: EntityAnalysisModelId,
+            entityAnalysisModelGuid: EntityAnalysisModelGuid,
             suppressionKeyValue: keyValue,
             suppressionKey: key,
             active: checked,
@@ -193,7 +193,7 @@ $(document).ready(function () {
                 const toggleSwitch = $(this);
                 toggleSwitch.kendoSwitch({
                     change: function (e) {
-                        UpdateSuppressionModel(e.sender.element.attr("EntityAnalysisModelId"),e.checked);
+                        UpdateSuppressionModel(e.sender.element.attr("EntityAnalysisModelGuid"), e.checked);
                     }
                 });
             });
@@ -202,7 +202,7 @@ $(document).ready(function () {
             {
                 field: "suppression",
                 template:
-                    '<input EntityAnalysisModelId="#=entityAnalysisModelId#" type="checkbox" class="toggleSuppression" #= (suppression==true) ? checked="checked" : "" # />',
+                    '<input EntityAnalysisModelGuid="#=entityAnalysisModelGuid#" type="checkbox" class="toggleSuppression" #= (suppression==true) ? checked="checked" : "" # />',
                 width: 120,
                 title: "Suppression"
             },

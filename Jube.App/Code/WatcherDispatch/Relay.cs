@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -31,41 +31,42 @@ namespace Jube.App.Code.WatcherDispatch
 {
     public class Relay
     {
+        private DefaultContractResolver _contractResolver;
         private DynamicEnvironment.DynamicEnvironment _environment;
         private ILog _log;
         private IModel _rabbitMqChannel;
         private IHubContext<WatcherHub> _watcherHub;
         private bool Stopping { get; set; }
-        private DefaultContractResolver _contractResolver;
 
         public void Start(IHubContext<WatcherHub> watcherHub,
-            DynamicEnvironment.DynamicEnvironment environment, ILog log, IModel rabbitMqChannel,DefaultContractResolver contractResolver)
+            DynamicEnvironment.DynamicEnvironment environment, ILog log, IModel rabbitMqChannel,
+            DefaultContractResolver contractResolver)
         {
             _watcherHub = watcherHub;
             _log = log;
             _environment = environment;
             _contractResolver = contractResolver;
 
-            if (environment.AppSettings("AMQP").Equals("True",StringComparison.OrdinalIgnoreCase))
+            if (environment.AppSettings("AMQP").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 _rabbitMqChannel = rabbitMqChannel;
                 ConnectToAmqp();
             }
             else
             {
-                if (environment.AppSettings("StreamingActivationWatcher").Equals("True", StringComparison.OrdinalIgnoreCase))
+                if (environment.AppSettings("StreamingActivationWatcher")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
                 {
-                    var fromDatabaseNotifications= new Thread(ConnectToDatabaseNotifications);
+                    var fromDatabaseNotifications = new Thread(ConnectToDatabaseNotifications);
                     fromDatabaseNotifications.Start();
                 }
                 else
                 {
-                    if (environment.AppSettings("ActivationWatcherAllowPersist")
-                        .Equals("True", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var fromDbContext = new Thread(FromDbContext);
-                        fromDbContext.Start();   
-                    }
+                    if (!environment.AppSettings("ActivationWatcherAllowPersist")
+                            .Equals("True", StringComparison.OrdinalIgnoreCase)) return;
+
+                    var fromDbContext = new Thread(FromDbContext);
+                    fromDbContext.Start();
                 }
             }
         }
@@ -87,7 +88,7 @@ namespace Jube.App.Code.WatcherDispatch
                 _log.Error(ex.ToString());
             }
         }
-        
+
         private void EventHandlerSignalR(object sender, BasicDeliverEventArgs e)
         {
             try
@@ -127,10 +128,7 @@ namespace Jube.App.Code.WatcherDispatch
                         cmd.ExecuteNonQuery();
                     }
 
-                    while (true)
-                    {
-                        connection.Wait();
-                    }
+                    while (true) connection.Wait();
                 }
                 catch (Exception ex)
                 {
@@ -147,7 +145,7 @@ namespace Jube.App.Code.WatcherDispatch
                            ".");
             }
         }
-        
+
         private void ConnectToAmqp()
         {
             try
@@ -192,7 +190,7 @@ namespace Jube.App.Code.WatcherDispatch
             while (!Stopping)
             {
                 foreach (var activationWatcher in activationWatcherRepository.GetAllSinceId(lastActivationWatcherId,
-                    100))
+                             100))
                 {
                     lastActivationWatcherId = activationWatcher.Id;
 

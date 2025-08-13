@@ -14,24 +14,28 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Jube.Data.Cache.Dto;
 using Jube.Data.Cache.Interfaces;
-using Jube.Data.Cache.Postgres;
 using log4net;
 using StackExchange.Redis;
 
 namespace Jube.Data.Cache.Redis;
 
-public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) : ICacheAbstractionRepository
+public class CacheAbstractionRepository(
+    IDatabaseAsync redisDatabase,
+    ILog log,
+    CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheAbstractionRepository
 {
-    public async Task DeleteAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue,
+    public async Task DeleteAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string searchKey,
+        string searchValue,
         string name)
     {
         try
         {
-            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
+            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
-            await redisDatabase.HashDeleteAsync(redisKey, redisHSetKey);
+            await redisDatabase.HashDeleteAsync(redisKey, redisHSetKey, commandFlag);
         }
         catch (Exception ex)
         {
@@ -39,16 +43,18 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
         }
     }
 
-    public async Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue,
+    public async Task UpsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string searchKey,
+        string searchValue,
         string name,
         double value)
     {
         try
         {
-            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
+            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
 
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue);
+            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, value,
+                When.Always, commandFlag);
         }
         catch (Exception ex)
         {
@@ -56,35 +62,18 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
         }
     }
 
-    public async Task UpdateAsync(int tenantRegistryId, int entityAnalysisModelId, string searchKey, string searchValue,
-        string name,
-        double value)
-    {
-        try
-        {
-            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
-            var redisHSetKey = $"{name}";
-
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, searchValue);
-        }
-        catch (Exception ex)
-        {
-            log.Error($"Cache Redis: Has created an exception as {ex}.");
-        }
-    }
-
-    public async Task<double?> GetByNameSearchNameSearchValueAsync(int tenantRegistryId, int entityAnalysisModelId,
+    public async Task<double?> Get(int tenantRegistryId, Guid entityAnalysisModelGuid,
         string name, string searchKey,
         string searchValue)
     {
         try
         {
-            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:{searchKey}:{searchValue}";
+            var redisKey = $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{searchKey}:{searchValue}";
             var redisHSetKey = $"{name}";
             var redisValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
 
             if (!redisValue.HasValue) return null;
-            return (double) redisValue;
+            return (double)redisValue;
         }
         catch (Exception ex)
         {
@@ -95,8 +84,8 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
     }
 
     public async Task<Dictionary<string, double>>
-        GetByNameSearchNameSearchValueReturnValueOnlyTreatingMissingAsNullByReturnZeroRecordAsync(int tenantRegistryId,
-            int entityAnalysisModelId,
+        Get(int tenantRegistryId,
+            Guid entityAnalysisModelGuid,
             List<EntityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueDto>
                 entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests)
     {
@@ -107,7 +96,7 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
                      in entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequests)
             {
                 var redisKey =
-                    $"Abstraction:{tenantRegistryId}:{entityAnalysisModelId}:" +
+                    $"Abstraction:{tenantRegistryId}:{entityAnalysisModelGuid:N}:" +
                     $"{entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest.SearchKey}:" +
                     $"{entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest.SearchValue}";
                 var redisHSetKey =
@@ -115,8 +104,8 @@ public class CacheAbstractionRepository(IDatabaseAsync redisDatabase, ILog log) 
 
                 var redisValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
 
-                value.Add(entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest.AbstractionRuleName,
-                    redisValue.HasValue ? (double) redisValue : 0);
+                value.TryAdd(entityAnalysisModelIdAbstractionRuleNameSearchKeySearchValueRequest.AbstractionRuleName,
+                    redisValue.HasValue ? (double)redisValue : 0);
             }
         }
         catch (Exception ex)

@@ -29,33 +29,33 @@ namespace Jube.App.Controllers.Helper
     [Authorize]
     public class RegisterSignalrConnectionController : Controller
     {
-        private readonly DbContext dbContext;
-        private readonly PermissionValidation permissionValidation;
-        private readonly int tenantRegistryId;
-        private readonly string userName;
-        private readonly IHubContext<WatcherHub> watcherHub;
+        private readonly DbContext _dbContext;
+        private readonly PermissionValidation _permissionValidation;
+        private readonly int _tenantRegistryId;
+        private readonly string _userName;
+        private readonly IHubContext<WatcherHub> _watcherHub;
 
         public RegisterSignalrConnectionController(IHubContext<WatcherHub> watcherHub,
             IHttpContextAccessor httpContextAccessor, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
-                userName = httpContextAccessor.HttpContext.User.Identity.Name;
+                _userName = httpContextAccessor.HttpContext.User.Identity.Name;
 
-            dbContext =
+            _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
-            permissionValidation = new PermissionValidation(dbContext, userName);
+            _permissionValidation = new PermissionValidation(_dbContext, _userName);
 
-            tenantRegistryId = dbContext.UserInTenant.Where(w => w.User == userName)
+            _tenantRegistryId = _dbContext.UserInTenant.Where(w => w.User == _userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
-            this.watcherHub = watcherHub;
+            _watcherHub = watcherHub;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                dbContext.Close();
-                dbContext.Dispose();
+                _dbContext.Close();
+                _dbContext.Dispose();
             }
 
             base.Dispose(disposing);
@@ -64,9 +64,9 @@ namespace Jube.App.Controllers.Helper
         [HttpGet("{id}")]
         public async Task<IActionResult> RegisterSignalrConnectionByConnectionIdAsync(string id)
         {
-            if (!permissionValidation.Validate(new[] {30})) return Forbid();
+            if (!_permissionValidation.Validate(new[] { 30 })) return Forbid();
 
-            await watcherHub.Groups.AddToGroupAsync(id, "Tenant_" + tenantRegistryId);
+            await _watcherHub.Groups.AddToGroupAsync(id, "Tenant_" + _tenantRegistryId);
 
             return Ok();
         }

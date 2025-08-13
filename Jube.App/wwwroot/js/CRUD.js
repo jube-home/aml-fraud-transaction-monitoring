@@ -65,23 +65,23 @@ function AddTemplateElements(data, keyName, parentKeyName) {
 
     if (typeof parentKeyName !== "undefined") {
         if (typeof data[parentKeyName] === "undefined") {
-            data[parentKeyName] = parentKey;   
+            data[parentKeyName] = parentKey;
         }
     }
 
     return data;
 }
 
-    function DisplayServerValidationErrors(responseObject) {
-        let errorMessage = $("#ErrorMessage");
-        errorMessage.html("Server validation errors occured:").append('<br/>')
-        let list = errorMessage.append("<ul>");
-        for(let key in responseObject.errors){
-            list.append('<li>' + responseObject.errors[key].propertyName + ": " +  responseObject.errors[key].errorMessage + '.</li>')
-        }
+function DisplayServerValidationErrors(responseObject) {
+    let errorMessage = $("#ErrorMessage");
+    errorMessage.html("Server validation errors occured:").append('<br/>')
+    let list = errorMessage.append("<ul>");
+    for (let key in responseObject.errors) {
+        list.append('<li>' + responseObject.errors[key].propertyName + ": " + responseObject.errors[key].errorMessage + '.</li>')
     }
+}
 
-    function Create(endpoint, data, keyName, parentKeyName, callback) {
+function Create(endpoint, data, keyName, parentKeyName, callback) {
     $("#ErrorMessage").html('');
     $.ajax({
         url: endpoint,
@@ -96,8 +96,7 @@ function AddTemplateElements(data, keyName, parentKeyName) {
             }
             if (jqXHR.status === 204) {
                 $("#ErrorMessage").html(keyNotFound);
-            }
-            else {
+            } else {
                 $("#ErrorMessage").html(processingFailed);
             }
         },
@@ -115,9 +114,9 @@ function AddTemplateElements(data, keyName, parentKeyName) {
                     } else {
                         AddNode(data[parentKeyName], id, Name);
                     }
-                }    
+                }
             }
-            
+
             addButton.hide();
             updateButton.show();
             deleteButton.show();
@@ -158,25 +157,12 @@ function Update(endpoint, data, keyName, parentKeyName) {
             if (jqXHR.status === 400) {
                 let responseObject = jQuery.parseJSON(jqXHR.responseText);
                 DisplayServerValidationErrors(responseObject);
-            }
-            else {
-                $("#ErrorMessage").html(processingFailed);   
+            } else {
+                $("#ErrorMessage").html(processingFailed);
             }
         },
         success: function (data) {
-            if (typeof DeleteNode !== "undefined") {
-                DeleteNode(id, 0);
-            }
-
             id = data["id"];
-
-            if (typeof AddNode !== "undefined") {
-                if ($("#Name").length > 0) {
-                    AddNode(data[parentKeyName], id, data.name);
-                } else {
-                    AddNode(data[parentKeyName], id, Name);
-                }
-            }
 
             $("#Version").html(data.version);
             $("#CreatedUser").html(data.createdUser);
@@ -261,6 +247,7 @@ function ReadyNew() {
 
     if (locked.length > 0) {
         locked.data("kendoSwitch").check(false);
+        locked.data("kendoSwitch").enable(false);
     }
 
     SetTable();
@@ -315,6 +302,7 @@ function ReadyExisting(data) {
             locked.data("kendoSwitch").check(false);
             Lock(false);
         }
+        locked.data("kendoSwitch").enable(false);
     }
 }
 
