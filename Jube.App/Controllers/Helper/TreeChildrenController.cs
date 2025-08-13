@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -38,17 +38,17 @@ namespace Jube.App.Controllers.Helper
         private readonly string _userName;
 
         public EntityAnalysisModelTreeChildrenController(ILog log,
-            IHttpContextAccessor httpContextAccessor,DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+            IHttpContextAccessor httpContextAccessor, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
                 _userName = httpContextAccessor.HttpContext.User.Identity.Name;
             _log = log;
-            
+
             _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
             _permissionValidation = new PermissionValidation(_dbContext, _userName);
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -56,6 +56,7 @@ namespace Jube.App.Controllers.Helper
                 _dbContext.Close();
                 _dbContext.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -65,10 +66,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {7})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 7 })) return Forbid();
 
                 var repository = new EntityAnalysisModelRequestXPathRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -88,10 +89,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {33})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 33 })) return Forbid();
 
                 var repository = new VisualisationRegistryDatasourceRepository(_dbContext, _userName);
-                return Ok(repository.GetByVisualisationRegistryId(id)
+                return Ok(repository.GetByVisualisationRegistryIdOrderById(id)
                     .Select(entry => new VisualisationRegistryTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -111,7 +112,7 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {35})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 35 })) return Forbid();
 
                 var repository = new UserRegistryRepository(_dbContext, _userName);
                 return Ok(repository.GetByRoleRegistryId(id)
@@ -134,7 +135,7 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {36})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 36 })) return Forbid();
 
                 var getRoleRegistryPermissionByRoleRegistryId =
                     new GetRoleRegistryPermissionByRoleRegistryIdQuery(_dbContext, _userName);
@@ -161,14 +162,14 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {32})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 32 })) return Forbid();
 
                 var repository = new VisualisationRegistryParameterRepository(_dbContext, _userName);
-                return Ok(repository.GetByVisualisationRegistryId(id)
+                return Ok(repository.GetByVisualisationRegistryIdOrderById(id)
                     .Select(entry => new VisualisationRegistryTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
-                        Name = entry.Name, VisualisationRegistryId = entry.VisualisationRegistryId?? 0
+                        Name = entry.Name, VisualisationRegistryId = entry.VisualisationRegistryId ?? 0
                     }).ToList());
             }
             catch (Exception e)
@@ -184,10 +185,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {8})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 8 })) return Forbid();
 
                 var repository = new EntityAnalysisModelInlineFunctionRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -207,10 +208,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {37})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 37 })) return Forbid();
 
                 var repository = new EntityAnalysisModelTagRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -230,10 +231,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {10})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 10 })) return Forbid();
 
                 var repository = new EntityAnalysisModelGatewayRuleRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -253,10 +254,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {16})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 16 })) return Forbid();
 
                 var repository = new ExhaustiveSearchInstanceRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -276,7 +277,7 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {26})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 26 })) return Forbid();
 
                 var repository = new EntityAnalysisModelReprocessingRuleRepository(_dbContext, _userName);
                 return Ok(repository.GetByEntityAnalysisModelId(id)
@@ -299,10 +300,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {15})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 15 })) return Forbid();
 
                 var repository = new EntityAnalysisModelHttpAdaptationRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -322,10 +323,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {18,19,20,21,22,23,24,25})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 18, 19, 20, 21, 22, 23, 24, 25 })) return Forbid();
 
                 var repository = new CaseWorkflowRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -345,10 +346,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {14})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 14 })) return Forbid();
 
                 var repository = new EntityAnalysisModelAbstractionCalculationRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderByIdDesc(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -368,10 +369,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {13,14})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 13, 14 })) return Forbid();
 
                 var repository = new EntityAnalysisModelAbstractionRuleRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderByIdDesc(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -391,10 +392,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {17})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 17 })) return Forbid();
 
                 var repository = new EntityAnalysisModelActivationRuleRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderByIdDesc(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -415,10 +416,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {12})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 12 })) return Forbid();
 
                 var repository = new EntityAnalysisModelTtlCounterRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -438,10 +439,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {9})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 9 })) return Forbid();
 
                 var repository = new EntityAnalysisModelInlineScriptRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -461,10 +462,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {11})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 11 })) return Forbid();
 
                 var repository = new EntityAnalysisModelSanctionRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelIdOrderById(id)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -480,18 +481,18 @@ namespace Jube.App.Controllers.Helper
 
         [HttpGet]
         [Route("List")]
-        public ActionResult<List<EntityAnalysisModelTreeChildDto>> GetList(int id)
+        public ActionResult<List<EntityAnalysisModelTreeChildDto>> GetList(Guid guid)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {3})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 3 })) return Forbid();
 
                 var repository = new EntityAnalysisModelListRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelGuid(guid)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
-                        Name = entry.Name, EntityAnalysisModelId = entry.EntityAnalysisModelId
+                        Name = entry.Name, EntityAnalysisModelGuid = entry.EntityAnalysisModelGuid
                     }).ToList());
             }
             catch (Exception e)
@@ -503,18 +504,18 @@ namespace Jube.App.Controllers.Helper
 
         [HttpGet]
         [Route("Dictionary")]
-        public ActionResult<List<EntityAnalysisModelTreeChildDto>> GetDictionary(int id)
+        public ActionResult<List<EntityAnalysisModelTreeChildDto>> GetDictionary(Guid guid)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {4})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 4 })) return Forbid();
 
                 var repository = new EntityAnalysisModelDictionaryRepository(_dbContext, _userName);
-                return Ok(repository.GetByEntityAnalysisModelId(id)
+                return Ok(repository.GetByEntityAnalysisModelGuid(guid)
                     .Select(entry => new EntityAnalysisModelTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
-                        Name = entry.Name, EntityAnalysisModelId = entry.EntityAnalysisModelId
+                        Name = entry.Name, EntityAnalysisModelGuid = entry.EntityAnalysisModelGuid
                     }).ToList());
             }
             catch (Exception e)
@@ -530,10 +531,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {20})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 20 })) return Forbid();
 
                 var repository = new CaseWorkflowXPathRepository(_dbContext, _userName);
-                return Ok(repository.GetByCasesWorkflowId(key)
+                return Ok(repository.GetByCasesWorkflowIdOrderByIdDesc(key)
                     .Select(entry => new CasesWorkflowTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -553,10 +554,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {21})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 21 })) return Forbid();
 
                 var repository = new CaseWorkflowFormRepository(_dbContext, _userName);
-                return Ok(repository.GetByCasesWorkflowId(key)
+                return Ok(repository.GetByCasesWorkflowIdOrderById(key)
                     .Select(entry => new CasesWorkflowTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -576,10 +577,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {22})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 22 })) return Forbid();
 
                 var repository = new CaseWorkflowActionRepository(_dbContext, _userName);
-                return Ok(repository.GetByCasesWorkflowId(key)
+                return Ok(repository.GetByCasesWorkflowIdOrderById(key)
                     .Select(entry => new CasesWorkflowTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -599,10 +600,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {24})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 24 })) return Forbid();
 
                 var repository = new CaseWorkflowMacroRepository(_dbContext, _userName);
-                return Ok(repository.GetByCasesWorkflowId(key)
+                return Ok(repository.GetByCasesWorkflowIdOrderById(key)
                     .Select(entry => new CasesWorkflowTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -622,10 +623,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {25})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 25 })) return Forbid();
 
                 var repository = new CaseWorkflowFilterRepository(_dbContext, _userName);
-                return Ok(repository.GetByCasesWorkflowId(key)
+                return Ok(repository.GetByCasesWorkflowIdOrderById(key)
                     .Select(entry => new CasesWorkflowTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -645,10 +646,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {23})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 23 })) return Forbid();
 
                 var repository = new CaseWorkflowDisplayRepository(_dbContext, _userName);
-                return Ok(repository.GetByCasesWorkflowId(key)
+                return Ok(repository.GetByCasesWorkflowIdOrderById(key)
                     .Select(entry => new CasesWorkflowTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,
@@ -668,10 +669,10 @@ namespace Jube.App.Controllers.Helper
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {19})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 19 })) return Forbid();
 
                 var repository = new CaseWorkflowStatusRepository(_dbContext, _userName);
-                return Ok(repository.GetByCasesWorkflowId(key)
+                return Ok(repository.GetByCasesWorkflowIdOrderById(key)
                     .Select(entry => new CasesWorkflowTreeChildDto
                     {
                         Color = entry.Active == 1 ? "green" : "red", Key = entry.Id,

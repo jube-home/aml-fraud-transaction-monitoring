@@ -34,116 +34,113 @@ namespace Jube.App.Controllers.Query
     [Authorize]
     public class GetByVisualisationRegistryDatasourceCommandExecutionQueryController : Controller
     {
-        private readonly DbContext dbContext;
-        private readonly ILog log;
-        private readonly PermissionValidation permissionValidation;
-        private readonly GetByVisualisationRegistryDatasourceCommandExecutionQuery query;
-        private readonly string userName;
+        private readonly DbContext _dbContext;
+        private readonly ILog _log;
+        private readonly PermissionValidation _permissionValidation;
+        private readonly GetByVisualisationRegistryDatasourceCommandExecutionQuery _query;
+        private readonly string _userName;
 
         public GetByVisualisationRegistryDatasourceCommandExecutionQueryController(ILog log,
             IHttpContextAccessor httpContextAccessor, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
-                userName = httpContextAccessor.HttpContext.User.Identity.Name;
-            this.log = log;
+                _userName = httpContextAccessor.HttpContext.User.Identity.Name;
+            _log = log;
 
-            dbContext =
+            _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
-            permissionValidation = new PermissionValidation(dbContext, userName);
+            _permissionValidation = new PermissionValidation(_dbContext, _userName);
 
             if (dynamicEnvironment.AppSettings("ReportConnectionString") != null)
-            {
-                query = new GetByVisualisationRegistryDatasourceCommandExecutionQuery(dbContext, 
-                    dynamicEnvironment.AppSettings("ReportConnectionString"),userName);
-            }
+                _query = new GetByVisualisationRegistryDatasourceCommandExecutionQuery(_dbContext,
+                    dynamicEnvironment.AppSettings("ReportConnectionString"), _userName);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                dbContext.Close();
-                dbContext.Dispose();
+                _dbContext.Close();
+                _dbContext.Dispose();
             }
 
             base.Dispose(disposing);
         }
 
+        // ReSharper disable once RouteTemplates.RouteParameterIsNotPassedToMethod
         [HttpPost("{id}")]
         public async Task<ActionResult<dynamic>> ExecuteAsync()
         {
             try
             {
-                if (!permissionValidation.Validate(new[] { 28, 1 })) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 28, 1 })) return Forbid();
 
                 var idFromRoute = Request.RouteValues["id"]?.ToString();
-                if (idFromRoute != null)
+
+                if (idFromRoute == null) return StatusCode(500);
+
+                var idParsedToInt = int.Parse(idFromRoute);
+
+                var ms = new MemoryStream();
+                await Request.Body.CopyToAsync(ms);
+
+                var payloadString = Encoding.UTF8.GetString(ms.ToArray());
+                var jArray = JsonConvert.DeserializeObject<JArray>(payloadString);
+
+                var parameters = new Dictionary<int, object>();
+
+                if (jArray == null) return Ok(await _query.ExecuteAsync(idParsedToInt, parameters));
+
+                foreach (var param in jArray)
                 {
-                    var idParsedToInt = int.Parse(idFromRoute);
+                    var value = param.SelectToken("value");
+                    var id = param.SelectToken("id");
 
-                    var ms = new MemoryStream();
-                    await Request.Body.CopyToAsync(ms);
-
-                    var payloadString = Encoding.UTF8.GetString(ms.ToArray());
-                    var jArray = JsonConvert.DeserializeObject<JArray>(payloadString);
-
-                    var parameters = new Dictionary<int, object>();
-                    if (jArray != null)
-                        foreach (var param in jArray)
+                    if (value != null && id != null)
+                        switch (value.Type)
                         {
-                            var value = param.SelectToken("value");
-                            var id = param.SelectToken("id");
-
-                            if (value != null && id != null)
+                            case JTokenType.String:
+                                parameters.Add(int.Parse(id.ToString()),
+                                    value.ToString());
+                                break;
+                            case JTokenType.Integer:
+                                parameters.Add(int.Parse(id.ToString()),
+                                    int.Parse(value.ToString()));
+                                break;
+                            case JTokenType.None:
+                            case JTokenType.Object:
+                            case JTokenType.Array:
+                            case JTokenType.Constructor:
+                            case JTokenType.Property:
+                            case JTokenType.Comment:
+                            case JTokenType.Float:
+                            case JTokenType.Boolean:
+                            case JTokenType.Null:
+                            case JTokenType.Undefined:
+                            case JTokenType.Date:
+                            case JTokenType.Raw:
+                            case JTokenType.Bytes:
+                            case JTokenType.Guid:
+                            case JTokenType.Uri:
+                            case JTokenType.TimeSpan:
+                            default:
                             {
-                                switch (value.Type)
-                                {
-                                    case JTokenType.String:
-                                        parameters.Add(int.Parse(id.ToString()),
-                                            value.ToString());
-                                        break;
-                                    case JTokenType.Integer:
-                                        parameters.Add(int.Parse(id.ToString()),
-                                            int.Parse(value.ToString()));
-                                        break;
-                                    case JTokenType.None:
-                                    case JTokenType.Object:
-                                    case JTokenType.Array:
-                                    case JTokenType.Constructor:
-                                    case JTokenType.Property:
-                                    case JTokenType.Comment:
-                                    case JTokenType.Float:
-                                    case JTokenType.Boolean:
-                                    case JTokenType.Null:
-                                    case JTokenType.Undefined:
-                                    case JTokenType.Date:
-                                    case JTokenType.Raw:
-                                    case JTokenType.Bytes:
-                                    case JTokenType.Guid:
-                                    case JTokenType.Uri:
-                                    case JTokenType.TimeSpan:
-                                    default:
-                                    {
-                                        if (id.Type == JTokenType.Float)
-                                            parameters.Add(int.Parse(id.ToString()),
-                                                double.Parse(value.ToString()));
-                                        else
-                                            parameters.Add(int.Parse(id.ToString()),
-                                                value.ToString());
-                                        break;
-                                    }
-                                }
+                                if (id.Type == JTokenType.Float)
+                                    parameters.Add(int.Parse(id.ToString()),
+                                        double.Parse(value.ToString()));
+                                else
+                                    parameters.Add(int.Parse(id.ToString()),
+                                        value.ToString());
+                                break;
                             }
                         }
-
-                    return Ok(await query.ExecuteAsync(idParsedToInt, parameters));
                 }
 
-                return StatusCode(500);
+                return Ok(await _query.ExecuteAsync(idParsedToInt, parameters));
             }
             catch (Exception e)
             {
-                log.Error(e);
+                _log.Error(e);
                 return StatusCode(500);
             }
         }

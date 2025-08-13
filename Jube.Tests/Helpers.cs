@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -16,7 +16,7 @@ using System.Reflection;
 
 namespace Jube.Test;
 
-public class Helpers
+public static class Helpers
 {
     public static string ReadFileContents(string filePath)
     {
@@ -27,15 +27,15 @@ public class Helpers
 
     private static string? GetParentDirectory(string? path, int parentCount)
     {
-        if (string.IsNullOrEmpty(path) || parentCount < 1)
-            return path;
+        while (true)
+        {
+            if (string.IsNullOrEmpty(path) || parentCount < 1) return path;
 
-        var parent = Path.GetDirectoryName(path);
+            var parent = Path.GetDirectoryName(path);
 
-        if (--parentCount > 0)
-            if (parent != null)
-                return GetParentDirectory(parent, parentCount);
+            if (--parentCount <= 0 || parent == null) return parent;
 
-        return parent;
+            path = parent;
+        }
     }
 }

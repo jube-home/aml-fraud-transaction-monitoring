@@ -19,32 +19,14 @@ namespace Jube.Data.Cache.Interfaces;
 
 public interface ICachePayloadRepository
 {
-    Task CreateIndexAsync(int tenantRegistryId, int entityAnalysisModelId,
-        string name, string date, string expression);
-
-    Task<List<string>> GetIndexesAsync(int tenantRegistryId, int entityAnalysisModelId);
-
     Task InsertAsync(int tenantRegistryId,
-        int entityAnalysisModelId, Dictionary<string, object> payload,
-        DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid);
-
-    Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string key,
-        string value,
-        Dictionary<string, object> payload,
+        Guid entityAnalysisModelGuid, Dictionary<string, object> payload,
         DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid);
 
     Task UpsertAsync(int tenantRegistryId,
-        int entityAnalysisModelId, Dictionary<string, object> payload,
+        Guid entityAnalysisModelGuid, Dictionary<string, object> payload,
         DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid);
 
-    public Task<List<Dictionary<string, object>>> GetExcludeCurrent(int tenantRegistryId,
-        int entityAnalysisModelId,
-        string key, string value, int limit,
-        Guid entityInconsistentAnalysisModelInstanceEntryGuid);
-
-    Task<List<Dictionary<string, object>>> GetInitialCountsAsync(int tenantRegistryId,
-        int entityAnalysisModelId);
-
-    Task DeleteByReferenceDate(int tenantRegistryId, int entityAnalysisModelId,
+    Task DeleteByReferenceDate(int tenantRegistryId, Guid entityAnalysisModelGuid,
         DateTime referenceDate, int limit);
 }

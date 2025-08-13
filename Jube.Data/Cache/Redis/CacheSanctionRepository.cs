@@ -14,24 +14,27 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Jube.Data.Cache.Interfaces;
-using log4net;
-using StackExchange.Redis;
 using Jube.Data.Cache.Dto;
+using Jube.Data.Cache.Interfaces;
 using Jube.Data.Cache.Redis.MessagePack;
+using log4net;
 using MessagePack;
+using StackExchange.Redis;
 
 namespace Jube.Data.Cache.Redis;
 
-public class CacheSanctionRepository(IDatabaseAsync redisDatabase, ILog log) : ICacheSanctionRepository
+public class CacheSanctionRepository(
+    IDatabaseAsync redisDatabase,
+    ILog log,
+    CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheSanctionRepository
 {
     public async Task<CacheSanctionDto> GetByMultiPartStringDistanceThresholdAsync(int tenantRegistryId,
-        int entityAnalysisModelId, string multiPartString,
+        Guid entityAnalysisModelGuid, string multiPartString,
         int distanceThreshold)
     {
         try
         {
-            var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelId}";
+            var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
             var redisHSetKey = $"{multiPartString}:{distanceThreshold}";
 
             var hashValue = await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
@@ -56,13 +59,13 @@ public class CacheSanctionRepository(IDatabaseAsync redisDatabase, ILog log) : I
         return null;
     }
 
-    public async Task InsertAsync(int tenantRegistryId, int entityAnalysisModelId, string multiPartString,
+    public async Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string multiPartString,
         int distanceThreshold,
         double? value)
     {
         try
         {
-            var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelId}";
+            var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
             var redisHSetKey = $"{multiPartString}:{distanceThreshold}";
 
             var sanction = new Sanction
@@ -74,7 +77,8 @@ public class CacheSanctionRepository(IDatabaseAsync redisDatabase, ILog log) : I
             var ms = new MemoryStream();
             await MessagePackSerializer.SerializeAsync(ms, sanction,
                 MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(false));
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, ms.ToArray());
+            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, ms.ToArray(),
+                When.Always, commandFlag);
         }
         catch (Exception ex)
         {
@@ -82,13 +86,13 @@ public class CacheSanctionRepository(IDatabaseAsync redisDatabase, ILog log) : I
         }
     }
 
-    public async Task UpdateAsync(int tenantRegistryId, int entityAnalysisModelId, string multiPartString,
+    public async Task UpdateAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string multiPartString,
         int distanceThreshold,
         double? value)
     {
         try
         {
-            await InsertAsync(tenantRegistryId, entityAnalysisModelId, multiPartString, distanceThreshold, value);
+            await InsertAsync(tenantRegistryId, entityAnalysisModelGuid, multiPartString, distanceThreshold, value);
         }
         catch (Exception ex)
         {

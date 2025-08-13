@@ -16,7 +16,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
-        <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj" />
+        <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj"/>
+        <ProjectReference Include="..\Jube.Engine\Jube.Engine.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -5,12 +5,12 @@ nav_order: 1
 parent: Concepts
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Architecture
 
 Jube is open source transaction and event monitoring software. Jube is software for real-time data wrangling, artificial
-intelligence, decision making and case management.
+intelligence, decision-making and case management.
 
 Jube has wider utility; Abstraction values are returned in the real-time response payload, hence Jube can facilitate
 data wrangling in a Function as a Service (FaaS) pattern. Response payload data is also stored in an addressable
@@ -29,7 +29,7 @@ stateless nature of Jube allows for scaling to massive extremes.
 
 Jube has a highly scalable architecture. Jube performs as much processing as possible in memory in predictably sized
 thread capacity. Where database interactions are required, it is at a minimum against entities which are optimised to
-return datasets quickly based on indexed key value pairs using a dedicated Postgres or Redis instance (anything RESP
+return datasets quickly based on indexed key value pairs using a Redis instance (anything RESP
 wire compatible in practice, and increasingly Jube would suggest alternatives given improved performance and fallback
 persistence, such as in KeyDB). Configuration and rule compilation (this is .Net reflection) is done perpetually in
 background threads so that real-time request processing is not interrupted with computationally expensive language
@@ -38,7 +38,8 @@ sometime after the response payload has been dispatched (and usually in bulk). T
 When exploited via Postgres binary JSON functions and the functionality inside Jube to promote keys, analytical
 reporting capability is enhanced to a great extent.
 
-The software is written in C# and is presented as a single binary application, although can be taken to be stateless for
+The software is written in C# and is presented as a single binary application, although it can be taken to be stateless
+for
 the purposes of clustering. While a single binary, Environment Variables are used to enable or disable threads,
 allocating threads based on desired architecture and work allocation.
 
@@ -47,7 +48,7 @@ Jube is intended to run on a commodity Linux open source infrastructure and has 
 * .Net 9 Runtime.
 * Postgres database version 13 onwards (tested on 15.4 but no significant database development to cause a breaking
   change).
-* Optional: Redis version 6 or above (it probably works fine on earlier versions, as the command used are basic. RESP
+* Redis version 6 or above (it probably works fine on earlier versions, as the command used are basic. RESP
   wire compatible implies that it is possible to use KeyDB, DragonflyDB, Garnet or any RESP compliant wire protocol
   database).
 
@@ -55,7 +56,7 @@ Jube will of course run on Windows, or indeed any platform that is supported by 
 platforms are not recommended for production use. Windows is not tested. Furthermore, Redis, KeyDB and DragonflyDB,
 does not support Windows, so Cache options are limited to Postgres Database of Garnet (although there may well be other
 RESP wire compatible databases that have been overlooked that work on Windows). Unclear why Windows would be a first
-choice however.
+choice, however.
 
 ## Migration
 
@@ -68,9 +69,9 @@ select *
 from "VersionInfo"
 ```
 
-![Image](VersionInfo.png)
+![VersionInfo.png](VersionInfo.png)
 
-The list of required database changes, determined by cross referencing the table VersionInfo with the available
+The list of required database changes, determined by cross-referencing the table VersionInfo with the available
 Migrations compiled to the Jube instance, are subsequently executed in the specified order.
 
 Migration requires the following DDL permissions:
@@ -79,7 +80,7 @@ Migration requires the following DDL permissions:
 * CREATE INDEX.
 * INSERT.
 
-DDL permissions cannot always assured in production configurations, especially as the implementation becomes more
+DDL permissions cannot always assure in production configurations, especially as the implementation becomes more
 distributed.
 
 Migration can be overridden by Environment Variable:
@@ -107,7 +108,7 @@ requests can be made.
 All HTTP requests will be targeted at the Kestrel webserver, and include:
 
 * Static content such as javascript files and images not subject to authentication.
-* Page HTML content which is subject to authentication, with the exception of the authentication page itself. HTML
+* Page HTML content which is subject to authentication, except the authentication page itself. HTML
   content and static content is entirely dependent on API controllers.
 * The API controllers which are subject to authentication, except for the authentication controller itself and a public
   facing invocation endpoint. The API is a variety of endpoints that are parametrized as either JSON post bodies, and
@@ -116,7 +117,7 @@ All HTTP requests will be targeted at the Kestrel webserver, and include:
   to HTTP requests. It follows that any interaction that can be achieved in the user interface, can also be achieved via
   API directly, subject to authentication.
 
-Authentication relies on a standard implementation of JSON web tokens stored in a HTTP header called authenticate, or a
+Authentication relies on a standard implementation of JSON web tokens stored in an HTTP header called authenticate, or an
 http cookie called authentication, which must always be present except for unauthenticated resources.
 
 The JSON web token encrypts using Environment Variables:
@@ -137,53 +138,19 @@ Notwithstanding a stateless architecture, the token contains a single claim type
 Name (http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name), which will contain only the username (e.g.
 Administrator).
 
-## HTTP Undistributed Installation
-
-An Undistributed installation with either Postgres Database or Redis Cache is the quick start:
-
-![Image](UndistributedServers.png)
-
-It is not suggested that the cache be on the same server (Containers or Virtual Machines in likelihood) as the Jube
-instance, hence alternatively:
-
-![Image](UndistributedServersWithSeperateDatabase.png)
-
 To the extent that it is thought by the technical end user that Containerisation differs from lightweight Linux Virtual
 Machines, it is fully supported.
 
 Environment Variables required by a Jube instance are passed aa an operating system Environment Variable (the default
 way to pass invocation values to a container image).
 
-In an undistributed installation there is only a single Postgres Database for housing the cache, which is far from
-recommended, instead at a minimum Cache should be offloaded as follows.
+# Cache
 
-## HTTP Undistributed Installation with Cache Offload
-
-Quick start is a single Environment Variable being updated for the connection to a Postgres database:
-
-```text
-ConnectionString=Host=?; Database=?;Username=postgres; Password=?;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
-```
-
-Quick start assumes a single database containing all objects required by the Jube instance. Tables that are prefixed
-Cache in the database are intended for very fast moving data, specifically high throughput transactional writes and
-indexed cached reads.
-
-![Image](CacheTables.png)
-
-Redis is default in place of Postgres as the cache, simply set Environment Variable to true and pass the Redis
-connection
-string (simply the IP
-of the remote Redis Cluster):
+Redis is the cache in the Jube software architecture and assures consistent and real-time responses. Ensure the
+RedisConnectionString environment variable string (simply the IP of the remote Redis Cluster) as follows:
 
 ```text
 RedisConnectionString=?
-```
-
-Else disable as:
-
-```text
-Redis=False
 ```
 
 Cache has extreme performance demands and should be entirely uncontested when real-time tolerances are demanded.
@@ -194,58 +161,23 @@ makes
 alternatives such as DragonflyDB, KeyDB and Garnet increasingly attractive, offering better performance and greater
 consolidation).
 
-In the case of Postgres, Cache tables can be offloaded to a separate database by adding another connection as
-Environment Variable:
-
-```text
-CacheConnectionString=Host=?; Database=?; Username=postgres; Password=?;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
-```
-
-Be sure to set Redis to false to enable the Postgres cache:
-
-```text
-Redis=False
-```
-
-In the case of Redis, given default, simply identifying the server already set out above, and as follows:
-
-```text
-RedisConnectionString=?
-```
-
-![Image](UndistributedServersWithCacheOffload.png)
-
-In the case of Redis being used as a cache the installation by its nature will be entirely in memory and writing to
+Given Redis being used as a cache the installation by its nature will be entirely in memory and writing to
 disk, which is asynchronous in the form of an Append Only Log (AOL), exists for recovery only. In memory databases like
-Redis need meticulous capacity planning and monitoring, so not to allow for a situation where memory runs and and keys
+Redis need meticulous capacity planning and monitoring, so not to allow for a situation where memory runs and keys
 are evicted (a disastrous situation for Cache integrity). Key eviction is so problematic, it is suggested to consider
-KeyDB and its flash capability allowing for fall back to flash, not to mention the benefits of multi threaded
+KeyDB and its flash capability allowing for fall back to flash, not to mention the benefits of multithreaded
 performance which Redis has fallen far behind on.
-
-In the case of Postgres being used as cache, the server responsible for hosting the Postgres database containing Cache
-tables should be memory optimised, such that Postgres and the file system can optimise much of the data into memory,
-falling back to very high performance disks, thus having the effect of achieving consistent real-time response times. It
-is possible to disable the WAL (Write Ahead Log) at the table level which has the effect of a non-durable and in-memory
-solution, given the table being 'warmed' into memory (pg_prewarm). No such issues exist in Redis, but in memory
-databases bring
-about their own set of considerations which are outside he scope of this document. In the absence of CacheConnectionString Environment
-Variable, the incumbent ConnectionString Environment Variable is used, henceforth the default is cache tables to reside
-alongside the other tables. Migrations will be executed independently and comprehensively for both databases.
-
-## HTTPS Load Balanced Distributed Installation with Cache Offload
 
 A Jube instance is designed in an entirely stateless manner such to sit behind a standard HTTP load balancer. In HTTP
 load balancing, requests to the load balancer are sent to different backend servers in rotation, allowing for horizontal
 scalability. There is no session state within the Jube instance for any HTTP interaction, hence server affinity is not
-required (state is offloaded to the Postgres databases where required):
-
-![Image](DistributedServersWithCacheOffload.png)
+required (state is offloaded to the Postgres databases where required).
 
 There is no specific configuration required of a Jube instance to achieve load balancing, with the configuration being
 offloaded to the load balancer itself.
 
-A Jube instance exposes a self hosted and embedded HTTP web server called Kestrel which supports SSL \ HTTPS schemes,
-however by default the certificate is self signed and intended to secure internal transport only. In the event a Jube
+A Jube instance exposes a self-hosted and embedded HTTP web server called Kestrel which supports SSL \ HTTPS schemes,
+however by default the certificate is self-signed and intended to secure internal transport only. In the event a Jube
 instance is made available over a public or corporate network, it is advisable to implement a reverse proxy or load
 balancer for the purposes of offloading the SSL \ HTTPS schemes, even if there exists only a single backend server.
 While the Kestrel embedded HTTP web server can support SSL with own certificates, it is not commonly used to support own
@@ -269,10 +201,6 @@ invocation. The purpose of the RabbitMQ is to provide the following additional c
   Notification functionality by polling the Notifications table in the database.(notifications sent via the case
   management system are synchronous).
 
-RabbitMQ is not enabled by default:
-
-![Image](DistributedServersWithCacheOffloadAndRabbitMQ.png)
-
 To enable RabbitMQ, the following Environment Variable needs to be updated:
 
 ```text
@@ -285,17 +213,15 @@ AMQPUri=amqps://hostname:secret@cow.moo.cloudamqp.com/hostname
 | AMQP    | True or False to signify that connections should be established via the AMQPUri connection string to the RabbitMQ server or cluster. |
 | AMQPUri | The connection string to the RabbitMQ server.                                                                                        |
 
-## HTTPS Highly Available Load Balanced Distributed Installation with Cache Offload and Component Isolation
+## HTTPS Highly Available Load Balanced Distributed 
 
 Jube in a single process, but given the stateless nature it can be clustered and arranged in a highly available
 manner. Given the comprehensive nature of the Jube instance, it is foreseeable that certain services, which would be
 background threads consuming resources, may not be used despite being instantiated by the default Environment Variable
-configuration (although they will be wait sleeping if not not in use, so the effect is minimal).
+configuration (although they will be wait sleeping if not in use, so the effect is minimal).
 
 The following diagram shows how the Jube instance can be arranged in a highly available fashion as backend servers to a
-load balancer, yet also the extent to which services can be allocated to individual servers:
-
-![Image](DistributedServersWithCacheOffloadAndHighAvailability.png)
+load balancer, yet also the extent to which services can be allocated to individual servers.
 
 The above example would be overly distributed for most use cases, but serves to explain concepts.
 
@@ -310,7 +236,7 @@ for the following:
 * User Interface HTML, js and Static Content.
 
 Although presented in more detail in subsequent sections of this documentation the real-time model data is processed via
-either a HTTP endpoint or an AMQP queue called jubeInbound.
+either an HTTP endpoint or an AMQP queue called jubeInbound.
 
 In the case of the invocation HTTP API endpoint, there is no formal JSON Web Token authentication, and is instead
 intended for integration, being restricted by IP filtering or network security more generally. The default is that
@@ -321,7 +247,7 @@ default. Public invocation of the Invocation HTTP API endpoint can be restricted
 EnablePublicInvocationController=False
 ```
 
-Model processing relies on a complex set of background threads collectively referred to as an the engine.
+Model processing relies on a complex set of background threads collectively referred to as the engine.
 
 While the embedded Kestrel HTTP web service is responsible for processing requests, it is transposed to the engine.
 
@@ -355,7 +281,6 @@ EnableNotification=False
 | EnableReprocessing       | Responsible for reprocessing data from the archive though the models in a similar manner as real-time.  Useful when new model configuration has been put in place and data needs to be modified.  It is extremely intensive. Has provision for concurrency between instances and multiple ReprocessingThreads. |
 | ReprocessingThreads      | The number of threads allocated to reprocessing.                                                                                                                                                                                                                                                               |
 | EnableExhaustiveTraining | Responsible for training anomaly detection and neural network models.  A computationally expensive process and care should be taken to isolate from real-time processes for risk of degradation of real-time model invocation response time.                                                                   |
-| EnableCacheIndex         | Responsible for creating indexes in the cache tables.  The process is computationally immaterial and there are some checks made for index existence, henceforth, some concurrency and high availability is allowed for (but it is inelegant).                                                                  |
 | EnableCasesAutomation    | Responsible for case scheduling,  specifically the reopening and closing of cases on lapse of expiry date.  This routine has poor concurrency and it is suggested that there be only a single instance at this time.                                                                                           |
 | EnableSearchKeyCache     | Responsible for the background processing of Abstraction Rules designated as being cached (this is aggregations having been precomputed rather than being online in the real-time model invocation).  There may only be a single instance as there is no concurrency available.                                |
 | EnableTTLCounter         | Responsible for the background maintenance of TTLCounters. There may only be a single instance.                                                                                                                                                                                                                |
@@ -367,34 +292,17 @@ Such is the reliance of Jube upon the Kestrel HTTP web server, there is no means
 to JSON web token header authentication in many cases - User Interface HTML, js and Static Content and other CRUD type
 API functions. will always be available.
 
-## Database High Availability Considerations
+## Database and Cache High Availability Considerations
 
 A Jube instance is stateless however the platform application itself would be stateful given a dependence on the
-database.
+database and cache.
 
-The database contains tables that provide for state in several areas:
-
-* Cache tables intended to provide state in the transactions or events, which is doubtless the most critical stateful
-  aspect, given that Jube is most likely integrated in support of realtime decision making.
-* Permission tables to secure access to resources given the username available in the JSON Web Token Name
-  Claim (http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name).
-* Session variables specific to the user experience in Case Management.
-
-High availability of the Postgres database is outside the scope of this documentation, as the manner in which high
-availability is achieved is standard and generic. Postgres has become a commodity database provided by major cloud
-providers (AWS, GCP, [DigitalOcean](https://m.do.co/c/8be72e86abb2) and Linode) and in all instances have the
-aforementioned high availability natively configured.
-
-The suggested approach to high availability of the database is to use a standby server alongside streaming replication
-functionality native to Postgres. One or more standby database when sat behind middleware such as PgPool2 is commonly
-known as a database cluster.
+High availability of the Postgres database nor Redis is outside the scope of this documentation, as the manner in which
+high
+availability is achieved is standard and generic.
 
 It is suggested that storage be offloaded to highly durable external storage in the case of archive and highly
 performance local storage in the case of Cache. WAL should be written to separate high performance disks and
 asynchronous write usage maximised. In the context of resilient failover with disks offloaded, the failure of the
 Postgres instance is quite implausible, the implementation can be scaled up, rather than out which is both easier and
 cheaper.
-
-There are technologies available to achieve Active \ Active, or Multi Master databases, but they tend to be brittle and
-latent. Unless entities within transaction or event data are very slow moving, Active \ Active nodes is not a suggested
-approach.

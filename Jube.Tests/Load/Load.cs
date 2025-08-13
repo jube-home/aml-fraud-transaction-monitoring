@@ -27,12 +27,12 @@ namespace Jube.Test.Load;
 
 public class Load
 {
-    private readonly Stopwatch swTotal = new();
-    private Thread? writerThreadRequests;
-    private Thread? writerThreadTps;
-    private readonly ConcurrentQueue<(double, long)> responseTimes = new();
-    private int requests;
-    private bool stop;
+    private readonly ConcurrentQueue<(double, long)> _responseTimes = new();
+    private readonly Stopwatch _swTotal = new();
+    private int _requests;
+    private bool _stop;
+    private Thread? _writerThreadRequests;
+    private Thread? _writerThreadTps;
 
     [Theory]
     [InlineData("https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc",
@@ -56,13 +56,13 @@ public class Load
         var iterationCount = 0;
         var tasks = new List<Task>();
 
-        writerThreadRequests = new Thread(WriterThreadWorker);
-        writerThreadRequests.Start();
+        _writerThreadRequests = new Thread(WriterThreadWorker);
+        _writerThreadRequests.Start();
 
-        writerThreadTps = new Thread(WriteTpsEstimates);
-        writerThreadTps.Start();
+        _writerThreadTps = new Thread(WriteTpsEstimates);
+        _writerThreadTps.Start();
 
-        swTotal.Start();
+        _swTotal.Start();
 
         while (iterationCount <= iteration)
         {
@@ -79,9 +79,9 @@ public class Load
                 referenceDate = referenceDate.AddSeconds(timeDriftSeconds);
                 stringReplaced = stringReplaced.Replace("[@TxnDateTime@]", referenceDate.ToString("o"));
 
-                tasks.Add(SendToJubeAndAwaitResponse(stringReplaced, uri, client, responseTimes, swTotal));
+                tasks.Add(SendToJubeAndAwaitResponse(stringReplaced, uri, client, _responseTimes, _swTotal));
 
-                requests += 1;
+                _requests += 1;
                 iterationCount += 1;
             }
 
@@ -89,8 +89,8 @@ public class Load
             tasks.RemoveAll(r => r.IsCompleted);
         }
 
-        stop = true;
-        
+        _stop = true;
+
         return Task.CompletedTask;
     }
 
@@ -118,45 +118,59 @@ public class Load
 
     private async void WriteTpsEstimates()
     {
-        var docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var outputFileTpsSnapshot = new StreamWriter(Path.Combine(docPath, "WriteLinesTpsSnapshot.txt"));
-        outputFileTpsSnapshot.AutoFlush = true;
-        
-        while (!stop)
+        try
         {
-            Thread.Sleep(1000);
-            await outputFileTpsSnapshot.WriteLineAsync(
-                $"{Math.Round(swTotal.Elapsed.TotalSeconds)},{requests}");
-            requests = 0;
+            var docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var outputFileTpsSnapshot = new StreamWriter(Path.Combine(docPath, "WriteLinesTpsSnapshot.txt"));
+            outputFileTpsSnapshot.AutoFlush = true;
+
+            while (!_stop)
+            {
+                Thread.Sleep(1000);
+                await outputFileTpsSnapshot.WriteLineAsync(
+                    $"{Math.Round(_swTotal.Elapsed.TotalSeconds)},{_requests}");
+                _requests = 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            //Not implemented
         }
     }
 
     private async void WriterThreadWorker(object? o)
     {
-        var docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var outputFileRequests = new StreamWriter(Path.Combine(docPath, "WriteLinesRequests.txt"));
-
-        var flushInterval = 0;
-        while (!stop)
+        try
         {
-            while (responseTimes.TryDequeue(out var response))
-            {
-                await outputFileRequests.WriteLineAsync($"{response.Item1},{response.Item2}");
+            var docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var outputFileRequests = new StreamWriter(Path.Combine(docPath, "WriteLinesRequests.txt"));
 
-                if (flushInterval > 100)
+            var flushInterval = 0;
+            while (!_stop)
+            {
+                while (_responseTimes.TryDequeue(out var response))
                 {
-                    await outputFileRequests.FlushAsync();
-                    flushInterval = 0;
+                    await outputFileRequests.WriteLineAsync($"{response.Item1},{response.Item2}");
+
+                    if (flushInterval > 100)
+                    {
+                        await outputFileRequests.FlushAsync();
+                        flushInterval = 0;
+                    }
+                    else
+                    {
+                        flushInterval += 1;
+                    }
                 }
-                else
-                {
-                    flushInterval += 1;
-                }
+
+                Thread.Sleep(100);
             }
 
-            Thread.Sleep(100);
+            await outputFileRequests.FlushAsync();
         }
-
-        await outputFileRequests.FlushAsync();
+        catch (Exception ex)
+        {
+            //Not implemented
+        }
     }
 }

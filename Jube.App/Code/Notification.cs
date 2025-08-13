@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -39,12 +39,12 @@ namespace Jube.App.Code
                 var notificationDestinationTokens =
                     notificationTokenization.ReturnTokens(replacedNotificationDestination);
                 foreach (var notificationToken in notificationDestinationTokens)
-                    if (values.ContainsKey(notificationToken))
+                    if (values.TryGetValue(notificationToken, out var value))
                     {
                         var notificationReplaceToken = $"[@{notificationToken}@]";
                         replacedNotificationDestination =
                             replacedNotificationDestination.Replace(notificationReplaceToken,
-                                values[notificationToken]);
+                                value);
                     }
             }
 
@@ -53,11 +53,11 @@ namespace Jube.App.Code
             {
                 var notificationSubjectTokens = notificationTokenization.ReturnTokens(replacedNotificationSubject);
                 foreach (var notificationToken in notificationSubjectTokens)
-                    if (values.ContainsKey(notificationToken))
+                    if (values.TryGetValue(notificationToken, out var value))
                     {
                         var notificationReplaceToken = $"[@{notificationToken}@]";
                         replacedNotificationSubject =
-                            replacedNotificationSubject.Replace(notificationReplaceToken, values[notificationToken]);
+                            replacedNotificationSubject.Replace(notificationReplaceToken, value);
                     }
             }
 
@@ -66,11 +66,11 @@ namespace Jube.App.Code
             {
                 var notificationBodyTokens = notificationTokenization.ReturnTokens(replacedNotificationBody);
                 foreach (var notificationToken in notificationBodyTokens)
-                    if (values.ContainsKey(notificationToken))
+                    if (values.TryGetValue(notificationToken, out var value))
                     {
                         var notificationReplaceToken = $"[@{notificationToken}@]";
                         replacedNotificationBody =
-                            replacedNotificationBody.Replace(notificationReplaceToken, values[notificationToken]);
+                            replacedNotificationBody.Replace(notificationReplaceToken, value);
                     }
             }
 

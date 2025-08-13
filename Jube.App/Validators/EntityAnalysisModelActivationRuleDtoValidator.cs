@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -26,7 +26,7 @@ namespace Jube.App.Validators
             RuleFor(p => p.Active).NotNull();
             RuleFor(p => p.Locked).NotNull();
 
-            var reviewStatusTypes = new List<int> {0, 1, 2, 3, 4};
+            var reviewStatusTypes = new List<int> { 0, 1, 2, 3, 4 };
             RuleFor(p => p.ReviewStatusId)
                 .Must(m => reviewStatusTypes.Contains(m));
 
@@ -36,15 +36,15 @@ namespace Jube.App.Validators
             RuleFor(p => p.Json).NotEmpty();
             RuleFor(p => p.CoderRuleScript).NotNull();
 
-            var ruleTypes = new List<int> {1, 2};
+            var ruleTypes = new List<int> { 1, 2 };
             RuleFor(p => p.RuleScriptTypeId).Must(m => ruleTypes.Contains(m));
 
             RuleFor(p => p.EnableCaseWorkflow).NotNull();
 
-            RuleFor(p => p.CaseWorkflowId).GreaterThan(0)
+            RuleFor(p => p.CaseWorkflowGuid).NotEmpty()
                 .When(w => w.EnableCaseWorkflow);
 
-            RuleFor(p => p.CaseWorkflowStatusId).NotEmpty()
+            RuleFor(p => p.CaseWorkflowStatusGuid).NotEmpty()
                 .When(w => w.EnableCaseWorkflow);
 
             RuleFor(p => p.CaseKey).NotEmpty()
@@ -56,7 +56,7 @@ namespace Jube.App.Validators
             RuleFor(p => p.BypassSuspendSample).GreaterThanOrEqualTo(0)
                 .When(w => w.EnableCaseWorkflow && w.EnableBypass);
 
-            var bypassSuspendIntervalTypes = new List<char> {'n', 'h', 'd', 'm'};
+            var bypassSuspendIntervalTypes = new List<char> { 'n', 'h', 'd', 'm' };
             RuleFor(p => p.BypassSuspendInterval)
                 .Must(m => bypassSuspendIntervalTypes.Contains(m))
                 .When(w => w.EnableCaseWorkflow && w.EnableBypass);
@@ -80,19 +80,19 @@ namespace Jube.App.Validators
 
             RuleFor(p => p.EnableNotification).NotNull();
 
-            var notificationTypes = new List<int> {1, 2};
+            var notificationTypes = new List<int> { 1, 2 };
             RuleFor(p => p.NotificationTypeId)
                 .Must(m => notificationTypes.Contains(m))
                 .When(w => w.EnableNotification);
 
             RuleFor(p => p.EnableTtlCounter).NotNull();
 
-            RuleFor(p => p.EntityAnalysisModelIdTtlCounter)
-                .GreaterThan(0)
+            RuleFor(p => p.EntityAnalysisModelGuidTtlCounter)
+                .NotEmpty()
                 .When(w => w.EnableTtlCounter);
 
-            RuleFor(p => p.EntityAnalysisModelTtlCounterId)
-                .GreaterThan(0)
+            RuleFor(p => p.EntityAnalysisModelTtlCounterGuid)
+                .NotEmpty()
                 .When(w => w.EnableTtlCounter);
 
             RuleFor(p => p.ActivationSample).GreaterThanOrEqualTo(0);

@@ -18,6 +18,6 @@ namespace Jube.Data.Cache.Interfaces;
 
 public interface ICacheReferenceDate
 {
-    Task UpsertReferenceDate(int tenantRegistryId, int entityAnalysisModelId, DateTime referenceDate);
-    Task<DateTime?> GetReferenceDate(int tenantRegistryId, int entityAnalysisModelId);
+    Task UpsertReferenceDate(int tenantRegistryId, Guid entityAnalysisModelGuid, DateTime referenceDate);
+    Task<DateTime?> GetReferenceDate(int tenantRegistryId, Guid entityAnalysisModelGuid);
 }

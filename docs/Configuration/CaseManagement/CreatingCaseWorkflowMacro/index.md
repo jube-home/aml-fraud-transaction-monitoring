@@ -6,7 +6,7 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Case Workflow Macro
 There are a multitude of functions in the case page for the purposes of updating and annotating a case. Each of these update functions have their own user interface controls.  For example,  to update the closed status,  it is a simple matter of just changing the value in the status bar drop down:

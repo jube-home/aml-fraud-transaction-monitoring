@@ -20,22 +20,22 @@ namespace Jube.Data.Cache.Interfaces;
 public interface ICachePayloadLatestRepository
 
 {
-    Task UpsertAsync(int tenantRegistryId, int entityAnalysisModelId,
+    Task UpsertAsync(int tenantRegistryId, Guid entityAnalysisModelId,
         DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid, string entryKey, string entryKeyValue);
 
-    Task UpsertAsync(int tenantRegistryId, int entityAnalysisModelId, Dictionary<string, object> payload,
+    Task UpsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, Dictionary<string, object> payload,
         DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid, string entryKey, string entryKeyValue);
 
-    Task<List<string>> GetDistinctKeysAsync(int tenantRegistryId, int entityAnalysisModelId, string key,
+    Task<List<string>> GetDistinctKeysAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string key,
         DateTime dateFrom,
         DateTime dateTo);
 
-    Task<List<string>> GetDistinctKeysAsync(int tenantRegistryId, int entityAnalysisModelId, string key,
+    Task<List<string>> GetDistinctKeysAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string key,
         DateTime dateBefore);
 
-    Task<List<string>> GetDistinctKeysAsync(int tenantRegistryId, int entityAnalysisModelId, string key);
+    Task<List<string>> GetDistinctKeysAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string key);
 
-    Task DeleteByReferenceDate(int tenantRegistryId, int entityAnalysisModelId,
+    Task DeleteByReferenceDate(int tenantRegistryId, Guid entityAnalysisModelGuid,
         DateTime referenceDate, DateTime thresholdReferenceDate, int limit,
         List<(string name, string interval, int intervalValue)> searchKeys);
 }

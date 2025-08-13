@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -45,7 +45,7 @@ namespace Jube.App.Controllers.Repository
         private readonly IValidator<VisualisationRegistryDto> _validator;
 
         public VisualisationRegistryController(ILog log, IHttpContextAccessor httpContextAccessor
-            ,DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+            , DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
                 _userName = httpContextAccessor.HttpContext.User.Identity.Name;
@@ -54,7 +54,7 @@ namespace Jube.App.Controllers.Repository
             _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
             _permissionValidation = new PermissionValidation(_dbContext, _userName);
-            
+
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<VisualisationRegistry, VisualisationRegistryDto>();
@@ -66,7 +66,7 @@ namespace Jube.App.Controllers.Repository
             _repository = new VisualisationRegistryRepository(_dbContext, _userName);
             _validator = new VisualisationRegistryDtoValidator();
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -74,6 +74,7 @@ namespace Jube.App.Controllers.Repository
                 _dbContext.Close();
                 _dbContext.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -82,9 +83,9 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {18,31,32,33})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 18, 31, 32, 33 })) return Forbid();
 
-                return Ok(_mapper.Map<List<VisualisationRegistryDto>>(_repository.Get()));
+                return Ok(_mapper.Map<List<VisualisationRegistryDto>>(_repository.GetOrderById()));
             }
             catch (Exception e)
             {
@@ -92,15 +93,31 @@ namespace Jube.App.Controllers.Repository
                 return StatusCode(500);
             }
         }
-        
+
         [HttpGet("{id:int}")]
-        public ActionResult<VisualisationRegistryDto> GetById(int id)
+        public ActionResult<VisualisationRegistryDto> GetByGuid(int id)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {31,28,1})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 31, 28, 1 })) return Forbid();
 
                 return Ok(_mapper.Map<VisualisationRegistryDto>(_repository.GetById(id)));
+            }
+            catch (Exception e)
+            {
+                _log.Error(e);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("{guid:guid}")]
+        public ActionResult<VisualisationRegistryDto> GetByGuid(Guid guid)
+        {
+            try
+            {
+                if (!_permissionValidation.Validate(new[] { 31, 28, 1 })) return Forbid();
+
+                return Ok(_mapper.Map<VisualisationRegistryDto>(_repository.GetByGuid(guid)));
             }
             catch (Exception e)
             {
@@ -114,9 +131,9 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {28})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 28 })) return Forbid();
 
-                return Ok(_mapper.Map<List<VisualisationRegistryDto>>(_repository.Get()));
+                return Ok(_mapper.Map<List<VisualisationRegistryDto>>(_repository.GetOrderById()));
             }
             catch (Exception e)
             {
@@ -126,13 +143,13 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(VisualisationRegistryDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(VisualisationRegistryDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<VisualisationRegistryDto> Create([FromBody] VisualisationRegistryDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {31}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 31 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid) return Ok(_repository.Insert(_mapper.Map<VisualisationRegistry>(model)));
@@ -147,13 +164,13 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(VisualisationRegistryDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(VisualisationRegistryDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<VisualisationRegistryDto> Update([FromBody] VisualisationRegistryDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {31}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 31 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid) return Ok(_repository.Update(_mapper.Map<VisualisationRegistry>(model)));
@@ -177,7 +194,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {31}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 31 }, true)) return Forbid();
 
                 _repository.Delete(id);
                 return Ok();

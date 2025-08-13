@@ -117,7 +117,7 @@ $(function () {
     updateButton
         .click(function () {
             if (validator.validate()) {
-                    Update(endpoint, GetData(), "id", parentKeyName);
+                Update(endpoint, GetData(), "id", parentKeyName);
             } else {
                 $("#ErrorMessage").html(validationFail);
             }

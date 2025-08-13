@@ -6,7 +6,7 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Creating Automation
 The case management module supports basic automation and integration using Notifications and HTTP Endpoint hooks in the following cases workflow configuration items:

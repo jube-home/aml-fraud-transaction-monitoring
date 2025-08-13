@@ -28,7 +28,7 @@ const dataSourceEntity = new kendo.data.DataSource({
         model: {
             id: "id",
             fields: {
-                entityAnalysisModelId: {type: "number", editable: false},
+                name: {type: "string", editable: false},
                 instance: {type: "string", editable: false},
                 createdDate: {type: "date", editable: false},
                 modelInvoke: {type: "number", editable: false},
@@ -46,41 +46,31 @@ const dataSourceEntity = new kendo.data.DataSource({
 $(document).ready(function () {
     const values = [];
 
-    $.get("/api/EntityAnalysisModel",
-        function (data) {
-            for (const value of data) {
-                values.push({
-                    "value": value.id,
-                    "text": value.name
-                });
+    $("#grid").kendoGrid({
+        groupable: true,
+        dataSource: dataSourceEntity,
+        pageable: false,
+        height: $(window).height() - 210,
+        scrollable: true,
+        filterable: true,
+        dataBound: function () {
+            for (let i = 0; i < this.columns.length; i++) {
+                this.autoFitColumn(i);
             }
-
-            $("#grid").kendoGrid({
-                groupable: true,
-                dataSource: dataSourceEntity,
-                pageable: false,
-                height: $(window).height() - 210,
-                scrollable: true,
-                filterable: true,
-                dataBound: function () {
-                    for (let i = 0; i < this.columns.length; i++) {
-                        this.autoFitColumn(i);
-                    }
-                },
-                columns: [
-                    {field: "entityAnalysisModelId", values: values, title: "Name"},
-                    {field: "instance", title: "Instance"},
-                    {field: "createdDate", title: "Created Date"},
-                    {field: "modelInvoke", title: "Model Invocation"},
-                    {field: "gatewayMatch", title: "Gateway Rule Match"},
-                    {field: "responseElevation", title: "Response Elevation"},
-                    {field: "activationWatcher", title: "Activation Watcher"},
-                    {field: "responseElevationLimit", title: "Response Elevation Limit"},
-                    {field: "responseElevationValueLimit", title: "Response Elevation Value Limit"},
-                    {field: "responseElevationValueGatewayLimit", title: "Response Elevation Value Gateway Limit"}
-                ]
-            });
-        });
+        },
+        columns: [
+            {field: "name", title: "Entity Analysis Model"},
+            {field: "instance", title: "Instance"},
+            {field: "createdDate", title: "Created Date"},
+            {field: "modelInvoke", title: "Model Invocation"},
+            {field: "gatewayMatch", title: "Gateway Rule Match"},
+            {field: "responseElevation", title: "Response Elevation"},
+            {field: "activationWatcher", title: "Activation Watcher"},
+            {field: "responseElevationLimit", title: "Response Elevation Limit"},
+            {field: "responseElevationValueLimit", title: "Response Elevation Value Limit"},
+            {field: "responseElevationValueGatewayLimit", title: "Response Elevation Value Gateway Limit"}
+        ]
+    });
 });
 
 //# sourceURL=EntityAnalysisModelProcessingCounter.js

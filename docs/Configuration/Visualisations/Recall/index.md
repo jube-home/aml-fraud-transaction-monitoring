@@ -6,7 +6,7 @@ parent: Visualisations
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Visualisation Recall
 Jube provides a rudimentary reporting tool that exists to execute SQL against the database and presenting as either a grid or visualisation.  The philosophy is to make the creation of reports quick given a rudimentary understanding of SQL and the Kendo JQuery charting library (passed as JSON like Javascript fragments).

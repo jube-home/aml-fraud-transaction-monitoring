@@ -7,30 +7,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentValidation" Version="10.3.6" />
+        <PackageReference Include="FluentValidation" Version="10.3.6"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Jube.Service\Jube.Service.csproj" />
+        <ProjectReference Include="..\Jube.Service\Jube.Service.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.Extensions.Localization.Abstractions">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.1\Microsoft.Extensions.Localization.Abstractions.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Resources\Resources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Resources.resx</DependentUpon>
-      </Compile>
-      <Compile Update="Resources\Resources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Resources.resx</DependentUpon>
-      </Compile>
+        <Compile Update="Resources\Resources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Resources\Resources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

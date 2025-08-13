@@ -6,7 +6,7 @@ parent: Exhaustive Adaptation
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Exhaustive Adaptation Training Variable Statistics
 One of the first tasks in training a model in Exhaustive is the process of establishing statistics.  Statistics are important for each variable as they are used in Z Score normalisation of variables,  which is an important concept in Machine Learning generally. The statistics are however comprehensively recorded, which provides rich insight about the dataset and problem domain more generally.
@@ -15,21 +15,21 @@ Keep in mind that statistics are calculated after the initial sample, but before
 
 Notice in the model performance tabs, Statistics:
 
-![Image](LocationOfTab.png)
+![LocationOfTab](LocationOfTab.png)
 
 Click on the Statistics tab to expose for each variable summary statistics and histograms:
 
-![Image](ExposedStatistics.png)
+![ExposedStatistics.png](ExposedStatistics.png)
 
 The variables are presented in the order of their correlation between the class and variable descending (strongest first).
 
 Note that the grid is hierarchical and each row may be expanded upon:
 
-![Image](LocationOfRowExpansion.png)
+![LocationOfRowExpansion.png](LocationOfRowExpansion.png)
 
 The expansion of the row is intended to present an analysis on the extent to which variables related to one another,  so called multi-colinearity.  Click to expand the row:
 
-![Image](ExpandedRow.png)
+![ExpandedRow](ExpandedRow.png)
 
 For each variable, the correlation to that variable is returned.  The variables are ordered by absolute correlation, with strongest correlations first.  Colour formatting exists on the following basis:
 

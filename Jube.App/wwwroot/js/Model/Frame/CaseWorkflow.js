@@ -21,7 +21,7 @@ var enableVisualisation = $("#EnableVisualisation").kendoSwitch({
     }
 });
 
-var visualisationRegistryId = $("#VisualisationRegistryId").kendoDropDownList({
+var visualisationRegistryGuid = $("#VisualisationRegistryGuid").kendoDropDownList({
     dataTextField: "text",
     dataValueField: "value"
 });
@@ -32,19 +32,19 @@ $.get("/api/VisualisationRegistry",
     },
     function (data) {
         for (const value of data) {
-            visualisationRegistryId.getKendoDropDownList().dataSource.add({
-                "value": value.id,
+            visualisationRegistryGuid.getKendoDropDownList().dataSource.add({
+                "value": value.guid,
                 "text": value.name
             });
         }
-    
+
         if (typeof id === "undefined") {
             ReadyNew();
             SetEnableVisualisation();
         } else {
             $.get(endpoint + "/" + id,
                 function (data) {
-                    visualisationRegistryId.data("kendoDropDownList").value(data.visualisationRegistryId);
+                    visualisationRegistryGuid.data("kendoDropDownList").value(data.visualisationRegistryGuid);
 
                     if (data.enableVisualisation) {
                         enableVisualisation.data("kendoSwitch").check(true);
@@ -71,10 +71,9 @@ function GetData() {
     if (enableVisualisation.data("kendoSwitch").check()) {
         return {
             enableVisualisation: enableVisualisation.data("kendoSwitch").check(),
-            visualisationRegistryId: visualisationRegistryId.data("kendoDropDownList").value()
-        };        
-    }
-    else {
+            visualisationRegistryGuid: visualisationRegistryGuid.data("kendoDropDownList").value()
+        };
+    } else {
         return {};
     }
 }

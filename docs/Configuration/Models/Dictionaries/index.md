@@ -6,7 +6,7 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Dictionary
 Dictionary is similar to List functionality,  except,  rather than allow only exist matching on a string value,  they pair a key from the payload in model invocation, and return a value.  Dictionary is a good way to enrich payload data with small amounts of external data without relying on Inline scripts or complex integrations.

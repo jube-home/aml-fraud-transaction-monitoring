@@ -11,14 +11,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-$(document).ready(function() {
+$(document).ready(function () {
     $.get("../api/VisualisationRegistry/GetByShowInDirectory",
-        function(data) {
+        function (data) {
             const directory = $('#Directory');
             for (let i = 0; i < data.length; i++) {
                 if (data[i].showInDirectory) {
-                    directory.append('<a href="../Visualisation/Visualisation?VisualisationRegistryId=' +
-                        data[i].id +
+                    directory.append('<a href="../Visualisation/Visualisation?Guid=' +
+                        data[i].guid +
                         '">' +
                         data[i].name +
                         '</a>');

@@ -15,7 +15,7 @@
 
 var DrillName;
 var DrillValue;
-var CaseWorkflowId;
+var CaseWorkflowGuid;
 var CaseId;
 var SessionCaseSearchCompiledSqlControllerGuid;
 var CaseKey;
@@ -40,7 +40,7 @@ var Displays;
 var Forms;
 var ResponsePayload;
 
-function formatNote(id,rawNote,createdUser,createdDate,actionId,priorityId) {
+function formatNote(id, rawNote, createdUser, createdDate, actionId, priorityId) {
     let actionName;
     for (let i = 0; i < Actions.length; i++) {
         if (Actions[i].id === actionId) {
@@ -91,13 +91,12 @@ function BuildNotes() {
 $(document).ready(function () {
     tabstrip = $("#tabstrip").kendoTabStrip({animation: false});
     MainTab = $("#MainTab").kendoTabStrip({animation: false});
-    
+
     $("#editor").kendoEditor({
-        keydown: function() {
+        keydown: function () {
             if ($("#editor").data("kendoEditor").value().length > 0) {
                 $("#AddNote").data("kendoButton").enable(true);
-            }
-            else {
+            } else {
                 $("#AddNote").data("kendoButton").enable(false);
             }
         },
@@ -133,21 +132,21 @@ $(document).ready(function () {
             {
                 name: "fontName",
                 items: [
-                    { text: "Andale Mono", value: "\"Andale Mono\"" }, // Font-family names composed of several words should be wrapped in \" \"
-                    { text: "Arial", value: "Arial" },
-                    { text: "Arial Black", value: "\"Arial Black\"" },
-                    { text: "Book Antiqua", value: "\"Book Antiqua\"" },
-                    { text: "Comic Sans MS", value: "\"Comic Sans MS\"" },
-                    { text: "Courier New", value: "\"Courier New\"" },
-                    { text: "Georgia", value: "Georgia" },
-                    { text: "Helvetica", value: "Helvetica" },
-                    { text: "Impact", value: "Impact" },
-                    { text: "Symbol", value: "Symbol" },
-                    { text: "Tahoma", value: "Tahoma" },
-                    { text: "Terminal", value: "Terminal" },
-                    { text: "Times New Roman", value: "\"Times New Roman\"" },
-                    { text: "Trebuchet MS", value: "\"Trebuchet MS\"" },
-                    { text: "Verdana", value: "Verdana" },
+                    {text: "Andale Mono", value: "\"Andale Mono\""}, // Font-family names composed of several words should be wrapped in \" \"
+                    {text: "Arial", value: "Arial"},
+                    {text: "Arial Black", value: "\"Arial Black\""},
+                    {text: "Book Antiqua", value: "\"Book Antiqua\""},
+                    {text: "Comic Sans MS", value: "\"Comic Sans MS\""},
+                    {text: "Courier New", value: "\"Courier New\""},
+                    {text: "Georgia", value: "Georgia"},
+                    {text: "Helvetica", value: "Helvetica"},
+                    {text: "Impact", value: "Impact"},
+                    {text: "Symbol", value: "Symbol"},
+                    {text: "Tahoma", value: "Tahoma"},
+                    {text: "Terminal", value: "Terminal"},
+                    {text: "Times New Roman", value: "\"Times New Roman\""},
+                    {text: "Trebuchet MS", value: "\"Trebuchet MS\""},
+                    {text: "Verdana", value: "Verdana"},
                 ]
             },
             "fontSize",
@@ -155,14 +154,14 @@ $(document).ready(function () {
             "backColor",
         ]
     });
-    
+
     $("#AddNote").kendoButton();
-    
+
     $("#AddNote").click(function () {
         $("#AddNote").data("kendoButton").enable(false);
-        
+
         let rawNote = $("#editor").data("kendoEditor").value();
-        
+
         let note = {
             note: rawNote,
             actionId: $("#Action").data("kendoDropDownList").value(),
@@ -172,7 +171,7 @@ $(document).ready(function () {
             caseKeyValue: CaseKeyValue,
             payload: JSON.stringify(values)
         };
-        
+
         $.ajax({
             url: "../api/CaseNote",
             type: "POST",
@@ -193,7 +192,7 @@ $(document).ready(function () {
             }
         });
     });
-    
+
     $("#Priority").kendoDropDownList({
         dataTextField: "text",
         dataValueField: "value"
@@ -203,11 +202,11 @@ $(document).ready(function () {
         dataTextField: "text",
         dataValueField: "value"
     });
-    
+
     $("#Status").change(function () {
         UpdateCase(2);
     });
-    
+
     $("#Peek").kendoButton();
 
     $("#Peek").click(function () {
@@ -223,7 +222,7 @@ $(document).ready(function () {
         if (CaseId) {
             CaseId = null;
         }
-        
+
         $('#journal').kendoGrid('destroy').empty();
         $('#notes').empty();
         $('#audit').kendoGrid('destroy').empty();
@@ -241,12 +240,12 @@ $(document).ready(function () {
         $('#journal').kendoGrid('destroy').empty();
         DrillName = CaseKey;
         DrillValue = CaseKeyValue;
-        
+
         $.get("/api/GetCaseJournalQuery",
             {
                 drillName: CaseKey,
                 drillValue: CaseKeyValue,
-                caseWorkflowId: CaseWorkflowId,
+                caseWorkflowGuid: CaseWorkflowGuid,
                 limit: $("#Top").val(),
                 activationsOnly: $("#ActivationsOnly").prop("checked"),
                 responseElevation: $("#ResponseElevation").val()
@@ -262,12 +261,12 @@ $(document).ready(function () {
         $("#Drilling").text('Fetching ' + DrillName + ' = ' + DrillValue);
         $("#Drilling").show();
         $('#journal').kendoGrid('destroy').empty();
-        
+
         $.get("/api/GetCaseJournalQuery",
             {
                 drillName: DrillName,
                 drillValue: DrillValue,
-                caseWorkflowId: CaseWorkflowId,
+                caseWorkflowGuid: CaseWorkflowGuid,
                 limit: $("#Top").val(),
                 activationsOnly: $("#ActivationsOnly").prop("checked"),
                 responseElevation: $("#ResponseElevation").val()
@@ -290,7 +289,7 @@ $(document).ready(function () {
             UpdateCase(0);
         }
     });
-    
+
     $("#CaseFormSubmitButton").click(function (e) {
         e.preventDefault();
         const clonedArray = JSON.parse(JSON.stringify(values));
@@ -319,10 +318,10 @@ $(document).ready(function () {
                 $("#CaseFormResponse").show();
                 $("#CaseFormSubmitDiv").hide();
                 $("#CaseFormHTML").hide();
-                
+
                 $("#CaseFormResponse").css('color', 'green');
                 $("#CaseFormResponse").html("Done.");
-                
+
                 $('#forms').data("kendoGrid").dataSource.read();
             }
         });
@@ -336,7 +335,7 @@ $(document).ready(function () {
     $("#Drill").width(70);
 
     $("#ActivationsOnly").kendoSwitch();
-    
+
     $("#Locked").kendoSwitch({
         change: function () {
             UpdateCase(0);
@@ -421,7 +420,7 @@ $(document).ready(function () {
     } else {
         $('#Skim').show();
     }
-    
+
     GetCase();
     tabstrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
 });
@@ -461,7 +460,7 @@ function UpdateCaseTimeout() {
         $('#Updating').text("Updating");
         $('#Updating').show();
         $('#Updating').show();
-        
+
         LockCaseBar(true);
 
         const autocomplete = $("#LockedUser").data("kendoDropDownList");
@@ -471,7 +470,7 @@ function UpdateCaseTimeout() {
             closedStatusId: $("#ClosedStatus").data("kendoDropDownList").value(),
             locked: $("#Locked").prop("checked"),
             lockedUser: autocomplete.value(),
-            CaseWorkflowStatusId: $("#Status").data("kendoDropDownList").value(),
+            CaseWorkflowStatusGuid: $("#Status").data("kendoDropDownList").value(),
             diary: $("#Diary").prop("checked"),
             diaryDate: $("#datetimepicker").data("kendoDateTimePicker").value(),
             id: CaseId,
@@ -491,8 +490,7 @@ function UpdateCaseTimeout() {
                     let responseObject = jQuery.parseJSON(jqXHR.responseText);
                     DisplayServerValidationErrors(responseObject);
                     FadeInAfterUpdate();
-                }
-                else {
+                } else {
                     $("#ErrorMessage").html(processingFailed);
                 }
             },
@@ -527,13 +525,13 @@ function FadeInAfterUpdate() {
 
 function UpdateCase(refreshDisplay) {
     $("#ErrorMessage").hide();
-    
+
     const next = $("#Skim").data("kendoButton");
     next.enable(false);
 
     const back = $("#Peek").data("kendoButton");
     back.enable(false);
-    
+
     PendingUpdateCaseInstructionRefreshDisplay = refreshDisplay;
     if (typeof PendingUpdateCaseTimer !== "undefined") {
         clearTimeout(PendingUpdateCaseTimer);
@@ -562,7 +560,7 @@ function CallMacro(e) {
                         alert("Done.");
                     }
                 });
-                
+
                 eval(Macros[i].javascript);
 
             } catch (error) {
@@ -595,32 +593,44 @@ function GetCase() {
         function (data) {
             $.each(data,
                 function (i, value) {
-                    $("#LockedUser").getKendoDropDownList().dataSource.add({
-                        "value": value.user,
-                        "text": value.user
-                    })
+                    let lockUserDropDown = $("#LockedUser");
+
+                    let exists = false;
+                    for (let i = 0; i < lockUserDropDown.getKendoDropDownList().dataSource.data().length; i++) {
+                        let dataItem = lockUserDropDown.getKendoDropDownList().dataSource.data()[i];
+                        if (dataItem.value === value.user) {
+                            exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!exists) {
+                        lockUserDropDown.getKendoDropDownList().dataSource.add({
+                            "value": value.user,
+                            "text": value.user
+                        })
+                    }
                 });
-            
+
             if (CaseId) {
                 $.ajax({
                     url: "../api/GetCaseByIdQuery/" + CaseId,
                     type: 'GET',
-                    success: function(data){
+                    success: function (data) {
                         SetOutCase(data);
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         //Not implemented.
                     }
                 });
-            }
-            else {
+            } else {
                 $.ajax({
                     url: "../api/GetCaseBySessionCaseSearchCompileQuery/" + SessionCaseSearchCompiledSqlControllerGuid,
                     type: 'GET',
-                    success: function(data){
+                    success: function (data) {
                         SetOutCase(data);
                     },
-                    error: function() {
+                    error: function () {
                         id = setInterval(function () {
                                 counter--;
                                 if (counter < 0) {
@@ -653,7 +663,7 @@ function SetOutCase(data) {
         DrillName = CaseKey;
         DrillValue = CaseKeyValue;
         CaseId = data.id;
-        CaseWorkflowId = data.caseWorkflowId;
+        CaseWorkflowGuid = data.caseWorkflowGuid;
 
         switch (data.lastClosedStatus) {
             case 0:
@@ -720,14 +730,14 @@ function SetOutCase(data) {
         ddl.text("");
         ddl.value("");
 
-        Status = data.caseWorkflowStatusId;
+        Status = data.caseWorkflowStatusGuid;
 
-        $.get("../api/CaseWorkflowStatus/ByCasesWorkflowIdActiveOnly/" + CaseWorkflowId,
+        $.get("../api/CaseWorkflowStatus/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
             function (data) {
                 $.each(data,
                     function (i, value) {
                         $("#Status").getKendoDropDownList().dataSource.add({
-                            "value": value.id,
+                            "value": value.guid,
                             "text": value.name
                         });
                     });
@@ -743,7 +753,7 @@ function SetOutCase(data) {
 
 
         if (Actions === undefined) {
-            $.get("../api/CaseWorkflowPriority/ByCasesWorkflowIdActiveOnly/" + CaseWorkflowId,
+            $.get("../api/CaseWorkflowPriority/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                 function (data) {
                     Priorities = data;
 
@@ -755,7 +765,7 @@ function SetOutCase(data) {
                             })
                         });
 
-                    $.get("../api/CaseWorkflowAction/ByCasesWorkflowIdActiveOnly/" + CaseWorkflowId,
+                    $.get("../api/CaseWorkflowAction/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                         function (data) {
                             Actions = data;
 
@@ -775,7 +785,7 @@ function SetOutCase(data) {
         }
 
         if (Macros === undefined) {
-            $.get("../api/CaseWorkflowMacro/ByCasesWorkflowIdActiveOnly/" + CaseWorkflowId,
+            $.get("../api/CaseWorkflowMacro/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                 function (data) {
                     Macros = data;
                     for (let i = 0; i < data.length; i++) {
@@ -784,7 +794,7 @@ function SetOutCase(data) {
                         const onClickJavaScript = 'CallMacro(' + data[i].id + ');';
                         $("#Icons").append($('<img>',
                             {
-                                id:  data[i].id,
+                                id: data[i].id,
                                 src: imageLocation,
                                 alt: data[i].name,
                                 class: 'icon',
@@ -795,7 +805,7 @@ function SetOutCase(data) {
                 });
         }
 
-        $.get("../api/CaseWorkflowXPath/ByCasesWorkflowIdActiveOnlyDrill/" + CaseWorkflowId,
+        $.get("../api/CaseWorkflowXPath/ByCasesWorkflowGuidActiveOnlyDrill/" + CaseWorkflowGuid,
             function (data) {
                 Drills = data;
             });
@@ -1013,7 +1023,7 @@ function SetOutCase(data) {
             {
                 drillName: CaseKey,
                 drillValue: CaseKeyValue,
-                caseWorkflowId: CaseWorkflowId,
+                caseWorkflowGuid: CaseWorkflowGuid,
                 limit: $("#Top").val(),
                 activationsOnly: $("#ActivationsOnly").prop("checked"),
                 responseElevation: $("#ResponseElevation").val()
@@ -1027,7 +1037,7 @@ function SetOutCase(data) {
 
                 const menuForms = $("#CaseFormsMenu").data("kendoMenu");
                 if (Forms === undefined) {
-                    $.get("../api/CaseWorkflowForm/ByCasesWorkflowIdActiveOnly/" + CaseWorkflowId,
+                    $.get("../api/CaseWorkflowForm/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                         function (data) {
                             Forms = data;
 
@@ -1067,7 +1077,7 @@ function SetOutCase(data) {
 
                 const menuDisplays = $("#CaseDisplaysMenu").data("kendoMenu");
                 if (Displays === undefined) {
-                    $.get("../api/CaseWorkflowDisplay/ByCasesWorkflowIdActiveOnly/" + CaseWorkflowId,
+                    $.get("../api/CaseWorkflowDisplay/ByCasesWorkflowGuidActiveOnly/" + CaseWorkflowGuid,
                         function (data) {
                             Displays = data;
                             $("#CaseDisplaysMenu>li").each(function () {
@@ -1124,11 +1134,11 @@ function SetOutCase(data) {
                 DisplayMenu('Default');
             });
 
-            if (data.enableVisualisation) {
-                ShowParams = false;
-                VisualisationRegistryId = data.visualisationRegistryId;
-                InitVisualisation();   
-            }
+        if (data.enableVisualisation) {
+            ShowParams = false;
+            VisualisationRegistryGuid = data.visualisationRegistryGuid;
+            InitVisualisation();
+        }
     }
 }
 
@@ -1330,10 +1340,10 @@ function generateGridCase(gridData) {
     });
 }
 
-function GetCellPosition(columns,name) {
+function GetCellPosition(columns, name) {
     for (let i = 0; i < columns.length; i++) {
         if (columns[i].field === name) {
-            return i;    
+            return i;
         }
     }
 }
@@ -1392,7 +1402,7 @@ function SetPlacementColor() {
                         td.bgColor = cell.cellFormatBackColor;
                         td.style.color = cell.cellFormatForeColor;
                     }
-                }   
+                }
             }
         }
     } catch (err) {
@@ -1403,8 +1413,8 @@ function SetPlacementColor() {
 function onSuccess(e) {
     const file0Uid = e.files[0].uid;
     $(".k-file[data-uid='" + file0Uid + "']").find(".k-file-name")
-        .html("<a target=\"_blank\" href='../api/CaseFile?id=" + e.response.id + "'>" + e.files[0].name  + "</a>");
- }
+        .html("<a target=\"_blank\" href='../api/CaseFile?id=" + e.response.id + "'>" + e.files[0].name + "</a>");
+}
 
 function onUpload(e) {
     e.data = {
@@ -1422,7 +1432,7 @@ function onRemove(e) {
 
 function createFilesUpload() {
     $('<input type="file" name="files" id="files">').insertBefore("#PlaceholderFiles");
-    
+
     $.get("/api/CaseFile/ByCaseKeyValue",
         {
             key: CaseKey,
@@ -1490,7 +1500,7 @@ function SaveCaseKeyJournalSession(columns) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: JSON.stringify({
-            caseWorkflowId: 1,
+            caseWorkflowGuid: caseWorkflowGuid,
             json: JSON.stringify(columns)
         }),
         success: function (data) {
@@ -1535,7 +1545,7 @@ function generateColumns(gridData) {
     const columns = [];
 
     $.ajax({
-        url: "../api/SessionCaseJournal/" + CaseWorkflowId,
+        url: "../api/SessionCaseJournal/ByCasesWorkflowGuid/" + CaseWorkflowGuid,
         type: 'GET',
         async: false,
         cache: false,
@@ -1555,7 +1565,7 @@ function generateColumns(gridData) {
                             column["width"] = savedColumns[property].width;
                             column["field"] = savedColumns[property].field;
                             column["title"] = savedColumns[property].title;
-                            
+
                             if (isHidden(savedColumns[property].field)) {
                                 column["hidden"] = true;
                             }
@@ -1585,7 +1595,7 @@ function generateColumns(gridData) {
                         column["width"] = "400px;";
                         column["field"] = property;
                         column["title"] = property;
-                        
+
                         if (isHidden(property)) {
                             column["hidden"] = true;
                         }
@@ -1661,7 +1671,7 @@ function DisplayServerValidationErrors(responseObject) {
     let errorMessage = $("#ErrorMessage");
     errorMessage.html("Server validation errors occured:").append('<br/>')
     let list = errorMessage.append("<ul>");
-    for(let key in responseObject.errors){
+    for (let key in responseObject.errors) {
         list.append('<li>' + responseObject.errors[key].errorMessage + '</li>')
     }
 }

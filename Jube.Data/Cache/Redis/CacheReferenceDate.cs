@@ -20,16 +20,21 @@ using StackExchange.Redis;
 
 namespace Jube.Data.Cache.Redis;
 
-public class CacheReferenceDate(IDatabaseAsync redisDatabase, ILog log) : ICacheReferenceDate
+public class CacheReferenceDate(
+    IDatabaseAsync redisDatabase,
+    ILog log,
+    CommandFlags commandFlag = CommandFlags.FireAndForget) : ICacheReferenceDate
 {
-    public async Task UpsertReferenceDate(int tenantRegistryId, int entityAnalysisModelId, DateTime referenceDate)
+    public async Task UpsertReferenceDate(int tenantRegistryId, Guid entityAnalysisModelGuid, DateTime referenceDate)
     {
         try
         {
             var redisKey = $"ReferenceDate:{tenantRegistryId}";
-            var redisHSetKey = $"{entityAnalysisModelId}";
+            var redisHSetKey = $"{entityAnalysisModelGuid:N}";
 
-            await redisDatabase.HashSetAsync(redisKey, redisHSetKey, referenceDate.ToUnixTimeMilliSeconds());
+            await redisDatabase.HashSetAsync(redisKey, redisHSetKey,
+                referenceDate.ToUnixTimeMilliSeconds(),
+                When.Always, commandFlag);
         }
         catch (Exception ex)
         {
@@ -37,13 +42,13 @@ public class CacheReferenceDate(IDatabaseAsync redisDatabase, ILog log) : ICache
         }
     }
 
-    public async Task<DateTime?> GetReferenceDate(int tenantRegistryId, int entityAnalysisModelId)
+    public async Task<DateTime?> GetReferenceDate(int tenantRegistryId, Guid entityAnalysisModelGuid)
     {
         try
         {
             var redisKey = $"ReferenceDate:{tenantRegistryId}";
-            var redisHSetKey = $"{entityAnalysisModelId}";
-            var referenceDateTimestamp = (long) await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
+            var redisHSetKey = $"{entityAnalysisModelGuid:N}";
+            var referenceDateTimestamp = (long)await redisDatabase.HashGetAsync(redisKey, redisHSetKey);
             return referenceDateTimestamp.FromUnixTimeMilliSeconds();
         }
         catch (Exception ex)

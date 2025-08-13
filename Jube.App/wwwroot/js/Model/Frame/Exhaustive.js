@@ -115,7 +115,7 @@ function generateModel(gridData) {
             }
         }
     }
-    
+
     model.fields = fields;
     return model;
 }
@@ -582,12 +582,11 @@ function RefreshModelSummary(force) {
 
 function LoadModelSummery(data, force) {
     $('#Refresh').show();
+    let stop = $('#Stop').show();
     let currentStatus = $('#CurrentStatus');
-    let hideUpdateButton = true;
     switch (data.statusId) {
         case 0:
             currentStatus.text('Awaiting Server');
-            hideUpdateButton = false;
             break;
         case 1:
             currentStatus.text('Query for base case data');
@@ -623,26 +622,33 @@ function LoadModelSummery(data, force) {
             currentStatus.text('Over Sampling \ Symmetric Sampling');
             break;
         case 12:
-            currentStatus.text('Correlation analysis');
+            currentStatus.text('Storing final data.');
             break;
         case 13:
-            currentStatus.text('Multicolinarity analysis');
+            currentStatus.text('Correlation analysis');
             break;
         case 14:
-            currentStatus.text('Supervised Learning');
+            currentStatus.text('Multicollinearity analysis');
             break;
         case 15:
-            currentStatus.text('Finished');
+            currentStatus.text('Supervised Learning');
             break;
         case 16:
+            currentStatus.text('Finished');
+            break;
+        case 17:
             currentStatus.text('Finished no class available');
+            break;
+        case 18:
+            currentStatus.text('Stopping');
+            stop.data("kendoButton").enable(false);
+            break;
+        case 19:
+            currentStatus.text('Stopped');
+            stop.data("kendoButton").enable(false);
             break;
         default:
             currentStatus.text('Stopped for reasons unexpected');
-    }
-    
-    if (hideUpdateButton) {
-        updateButton.hide();
     }
 
     Guid = data.guid;
@@ -856,13 +862,13 @@ function LoadModelSummery(data, force) {
         }
 
         $("#grid").data("kendoGrid").dataSource.read();
-        
+
         let statistics = $("#statistics");
         let records = statistics.data("kendoGrid").dataSource.view().length;
         if (records === 0) {
             statistics.data("kendoGrid").dataSource.read();
         }
-        
+
         $("#chart").data("kendoChart").dataSource.read();
     }
 }
@@ -907,7 +913,7 @@ function sliderOnSlide(e) {
 function BuildSliders() {
     Params = {};
     $("#SlidersPlaceholder tr").remove();
-    
+
     $.get('api/GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery/' + id,
         function (data) {
             if (data.length > 0) {
@@ -951,6 +957,7 @@ function BuildSliders() {
 if (typeof id === "undefined") {
     //clearInterval(interval);
     $('#Refresh').hide();
+    $('#Stop').hide();
     ReadyNew();
 
     initExhaustiveFilterBuilder(parentKey);
@@ -1050,7 +1057,7 @@ function GetData() {
         data["anomaly"] = true;
         data["AnomalyProbability"] = anomalyProbability.data("kendoSlider").value();
     }
-    
+
     return data;
 }
 
@@ -1058,6 +1065,24 @@ $(function () {
     $("#Refresh").kendoButton()
         .click(function () {
             RefreshModelSummary(true);
+        });
+});
+
+function SetCurrentStatusStopping(data) {
+    $("#Stop").data("kendoButton").enable(false);
+    let currentStatus = $('#CurrentStatus');
+    currentStatus.text("Stopping");
+}
+
+$(function () {
+    $("#Stop").kendoButton()
+        .click(function () {
+            jQuery.ajax({
+                type: 'PUT',
+                contentType: "application/json; charset=utf-8",
+                url: "../api/ExhaustiveSearchInstance/stop/" + Guid,
+                success: SetCurrentStatusStopping
+            });
         });
 });
 

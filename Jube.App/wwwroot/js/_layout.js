@@ -1,6 +1,6 @@
 function onSelect(e) {
     const dataItem = this.dataItem(e.item.index());
-    
+
     $.ajax({
         url: 'api/UserInTenant',
         type: 'PUT',

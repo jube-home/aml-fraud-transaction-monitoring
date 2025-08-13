@@ -5,29 +5,57 @@ nav_order: 3
 parent: Concepts
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Logging
+
 Logging is provided by Log4Net which is a .Net port of the populate Log4J package.
 
-The functionality of Log4Net is outside the scope of this document, yet it is sufficient to state that the overwhelming majority of steps taken by the engine will write to a log buffer, which in turn will be streamed to persistence media such as:
+The functionality of Log4Net is outside the scope of this document, yet it is sufficient to state that the overwhelming
+majority of steps taken by the engine will write to a log buffer, which in turn will be streamed to persistence media
+such as:
 
 * Rotating Log Files in the local file system.
 * Dispatch to Syslog Server (this works great and does not reduce response times too much).
 * Storage in a Database (slowest and highest risk option).
 * No storage (Errors should at least be logged, so this is inadvisable).
 
-It seems atypical to configure a production system to not persist logging at INFO level,  however in ultra high volume and load balanced environments this can be advisable, instead logging by sampling from just a single node in load balancer rotation or by setting the trace querystring value in a transaction post (reserved for future use).  In all cases it is advisable to log at ERROR level.
+It seems atypical to configure a production system to not persist logging at INFO level, however in ultra-high volume
+and load balanced environments this can be advisable, instead logging by sampling from just a single node in load
+balancer rotation or by setting the trace querystring value in a transaction post (reserved for future use). In all
+cases it is advisable to log at ERROR level.
 
-The logging is controlled via updating the contents of a file called Log4Net.config in the same directory as the Jube binary executable:
+Traditionally the logging is controlled via updating the contents of a file called Log4Net.config, which typically sits
+in the same directory as the Jube binary executable. For Jube, as most modern containerised software, it is not
+ideal to ship logging configurations as part of the binary executable, as it is brought together in a container build
+process and limits the user in their configuration choices.
 
-![Image](ExampleOfBinaryDirectoryAndLog4NetConfig.png)
+Jube supports approaches to Log4Net instantiation:
 
-The file may be updated in a text editor (such as VI if in terminal):
+* Jube instantiation of ConsoleAppender and RollingFileAppender only based on the core appender values being passed in
+  Environment
+  Variables.
+* Specification of a remote file location and log4net.config file, which is to say external the container and its
+  volumes (i.e. a file system mount).
 
-![Image](VILog4Net.png)
+The following Environment Variables dictate the behaviour of Log4Net instantiation:
 
-There are a variety of options available to Log4Net and it is advisable to read the documentation associated with that project,  but in this instance,  only the logging levels will be explored.  The logging levels can be set by updating the value attribute of the level node of the logging configuration file.  The logging levels have the following meaning in Jube:
+| Variable                      | Example                | Default Value                                                                                                      | Description                                                                                                                                                                                                                                                                                                                             | 
+|-------------------------------|------------------------|--------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Log4NetConfigFileLocationName | /remote/log4net.config | Will fall back to programmatic instantiation if unavailable.                                                       | The XML configuration file allowing for advanced configuration and instantiation of the log4net logging library.  This is helpful in the case of configuration of remote logging such as syslog.  In the case of the RollingFileAppender all necessary settings are otherwise available via dedicated Environment Variables as follows. |
+| Log4NetLogPath                | /remote/logs           | Will fall back to the binary directory as target for logs, which is far from ideal and may not work in containers. | The file path to write and rotate log files to,  given the absence of the Log4NetConfigFileLocationName environment variable                                                                                                                                                                                                            |
+| Log4NetLogMaximumFileSize     | 500MB                  | 100MB                                                                                                              | The maximum file size before the logs get rotated to new files, given the absence of the Log4NetConfigFileLocationName environment variable                                                                                                                                                                                             |
+| Log4NetLogMaxSizeRollBackups  | 10                     | 100                                                                                                                | The maximum number of files to write before they are purged, given the absence of the Log4NetConfigFileLocationName environment variable                                                                                                                                                                                                |
+| Log4NetLogLevel               | INFO                   | ERROR                                                                                                              | The logging level to write log events out, given the absence of the Log4NetConfigFileLocationName environment variable                                                                                                                                                                                                                  |
+
+# Logging Levels
+
+Logging levels can be overwhelming in extremely high throughput environments, in which case it is
+advisable to sample by tapping just a single node available to the load balancer. In all instance it is strongly
+recommended to use a Syslog server rather than a store the logs locally so not to overwhelm the disk, while also
+providing for improved security and centralised monitoring.
+
+The logging levels have the following meaning in Jube:
 
 | Level | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 |-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -37,14 +65,62 @@ There are a variety of options available to Log4Net and it is advisable to read 
 | ERROR | This logging level is the trapping and logging of any .Net runtime environment error.  Runtime errors are especially severe and will require immediate intervention, yet typically they should not lead to the termination of the Engine. This is the typical logging threshold for a production implementation,  with one load balanced node perhaps being set to INFO, as detailed above.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | FATAL | This logging level is the identification of a condition that leads to the termination of the application.  In general the Jube Engine is robust and there are no circumstances in code that would lead to the termination of the engine.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
-As aforementioned,  the logging levels can be overwhelming in extremely high throughput environments,  in which case it is advisable to sample by tapping just a single node available to the load balancer. In all instance it is strongly recommended to use a Syslog server rather than a store the logs locally so not to overwhelm the disk, while also providing for improved security and centralised monitoring.
+# Programmatic Instantiation
 
-In the example as follows, Log4Net is configured to write logs to a file named Server.log in the same directory as the executable, at Info level:
+When running a .NET Docker image, the recommended approach for writing log files is to output logs to the standard
+output (stdout) and standard error (stderr) streams, as Docker containers are designed to emit logs through these
+streams by default.
+This allows Docker's default logging driver, json-file, to capture and store the logs in JSON format on the host
+machine. Henceforth, the ConsoleAppender is instantiated in all instances.
 
-![Image](VIToDebugLevel.png)
+Given the absence of the Log4NetConfigFileLocationName environment variable, or failure to deserialize and instantiate
+the logger with that configuration XML serialisation file data, the software will programmatically create a
+RollingFileAppender taking its configuration parameters from the environment variables defaults above, or otherwise
+specified.
 
-Upon restart of the Jube.WebApp binary,  Debug log level will be observed in the Server.log file:
+Programmatic Instantiation can be taken to be the default.
 
-![Image](Cat.png)
+# Log4Net XML Serialisation File
 
-In the above example,  the log is set to DEBUG with each line representing a log entry.
+Jube can instantiate Log4Net in the traditional fashion via a file containing the Log4Net configuration
+XML Serialisation:
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- This section contains the log4net configuration settings -->
+<log4net>
+    <appender name="Console" type="log4net.Appender.ConsoleAppender">
+        <layout type="log4net.Layout.PatternLayout">
+            <param name="ConversionPattern" value="%d %m %n"/>
+        </layout>
+    </appender>
+
+    <appender name="RollingFileAppender" type="log4net.Appender.RollingFileAppender">
+        <param name="File" value="Server.log"/>
+        <param name="AppendToFile" value="true"/>
+        <param name="RollingStyle" value="Size"/>
+        <param name="MaxSizeRollBackups" value="10"/>
+        <param name="MaximumFileSize" value="500MB"/>
+        <param name="StaticLogFileName" value="true"/>
+        <layout type="log4net.Layout.PatternLayout">
+            <param name="Header" value="[Startup]&#13;&#10;"/>
+            <param name="Footer" value="[Shutdown]&#13;&#10;"/>
+            <param name="ConversionPattern" value="%d %m %n"/>
+        </layout>
+    </appender>
+
+    <root>
+        <level value="ERROR"/>
+        <appender-ref ref="Console"/>
+        <appender-ref ref="RollingFileAppender"/>
+    </root>
+</log4net>
+```
+
+Configure and place the above XML into a file in a remote location and proceed to specify the
+Log4NetConfigFileLocationName environment variable. On application startup the file will be opened, parsed to XML and
+then used to instantiate the logger. Should Log4Net XML Serialisation instantiation fail, it will fall back to software
+instantiation.
+
+There are a variety of options available to Log4Net, and it is advisable to read the documentation associated with that
+project, yet most of the functionality is available should instantiation be via XML Serialisation file.

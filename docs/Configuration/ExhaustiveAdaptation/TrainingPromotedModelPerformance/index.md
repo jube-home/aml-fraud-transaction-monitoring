@@ -6,16 +6,16 @@ parent: Exhaustive Adaptation
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Exhaustive Adaptation Training Promoted Model Performance
 Model performance is expressed as a score.  The score is the mean of percentage classification accuracy and the Spearman Rank Correlation.  There are other means to assess overall model performance however.  Model promotion statistics are computed to make available more comprehensive performance statistics via the Promoted Model Performance tab:
 
-![Image](LocationOfPerformanceTab.png)
+![LocationOfPerformanceTab](LocationOfPerformanceTab.png)
 
 Clicking on the Promoted Performance Model tab will expose several performance measures:
 
-![Image](ExposedPerformanceTab.png)
+![ExposedPerformanceTab](ExposedPerformanceTab.png)
 
 The performance measures are as follows:
 
@@ -39,7 +39,7 @@ The table is ordered from the best performing model to the weakest, then on topo
 
 It can be noted that the grid is hierarchical and can be expanded upon:
 
-![Image](NoteExpandGrid.png)
+![NoteExpandGrid.png](NoteExpandGrid.png)
 
 Expanding upon the grid exposes the selected input variables variables that have been included in the model:
 
@@ -49,18 +49,20 @@ The variables are presented in the order of most sensitive to least sensitive.  
 
 The variable statistics are included and contrast to prescription statistics.  The prescription statistics are summary statistics having been performed as a consequence of Monte Carlo Model Simulation yielding a positive classification:
 
-![Image](Contrast.png)
+![Contrast](Contrast.png)
 
 In the above example, it can be observed that the sampled data suggests 0.8 Abstraction.CountTransactionsDecline (this is of course 1 in practice), whereas positive classified by the model suggests a Abstraction.CountTransactionsDecline of closer to 6,  where the inference is that given positive, Abstraction.CountTransactionsDecline tends to be higher.  Prescriptions are to provide some explanatory value to models,  given that Neural Networks are often felt to be less explainable.
 
 It is possible to reject or deactivate a model via the switch in each row of the grid:
 
-![Image](LocationOfActiveSwitch.png)
+![LocationOfActiveSwitch.png](LocationOfActiveSwitch.png)
 
 Selecting the switch to false will mean that this model is no longer considered as promoted:
 
-![Image](Deactivated.png)
+![Deactivated.png](Deactivated.png)
 
-Upon deactivation, and upon clicking the refresh button,  the model performance will not longer be available in the Promoted Model Performance tab nor Promoted Model Testing tab,  instead, the next highest performing model will be presented:
+Upon deactivation, and upon clicking the refresh button,  the model performance will no longer be available in the Promoted Model Performance tab nor Promoted Model Testing tab,  instead, the next highest performing model will be presented:
+
+![ManyDeselected.png](ManyDeselected.png)
 
 ![Image](NextModelPerformance.png)

@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -45,16 +45,16 @@ namespace Jube.App.Controllers.Repository
         private readonly IValidator<CaseWorkflowStatusDto> _validator;
 
         public CaseWorkflowStatusController(ILog log,
-            IHttpContextAccessor httpContextAccessor,DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+            IHttpContextAccessor httpContextAccessor, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
                 _userName = httpContextAccessor.HttpContext.User.Identity.Name;
             _log = log;
-            
+
             _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
             _permissionValidation = new PermissionValidation(_dbContext, _userName);
-            
+
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<CaseWorkflowStatus, CaseWorkflowStatusDto>();
@@ -66,7 +66,7 @@ namespace Jube.App.Controllers.Repository
             _repository = new CaseWorkflowStatusRepository(_dbContext, _userName);
             _validator = new CaseWorkflowStatusDtoValidator();
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -74,6 +74,7 @@ namespace Jube.App.Controllers.Repository
                 _dbContext.Close();
                 _dbContext.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -82,9 +83,25 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {19,1})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 19, 1 })) return Forbid();
 
                 return Ok(_mapper.Map<List<CaseWorkflowStatusDto>>(_repository.GetByCasesWorkflowIdActiveOnly(id)));
+            }
+            catch (Exception e)
+            {
+                _log.Error(e);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("ByCasesWorkflowGuidActiveOnly/{guid:guid}")]
+        public ActionResult<List<CaseWorkflowStatusDto>> ByCasesWorkflowGuidActiveOnly(Guid guid)
+        {
+            try
+            {
+                if (!_permissionValidation.Validate(new[] { 19, 1 })) return Forbid();
+
+                return Ok(_mapper.Map<List<CaseWorkflowStatusDto>>(_repository.GetByCasesWorkflowGuidActiveOnly(guid)));
             }
             catch (Exception e)
             {
@@ -98,7 +115,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {19})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 19 })) return Forbid();
 
                 return Ok(_mapper.Map<List<CaseWorkflowStatusDto>>(_repository.Get()));
             }
@@ -114,9 +131,25 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {17,19,25,1})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 17, 19, 25, 1 })) return Forbid();
 
-                return Ok(_mapper.Map<List<CaseWorkflowStatusDto>>(_repository.GetByCasesWorkflowId(id)));
+                return Ok(_mapper.Map<List<CaseWorkflowStatusDto>>(_repository.GetByCasesWorkflowIdOrderById(id)));
+            }
+            catch (Exception e)
+            {
+                _log.Error(e);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("ByCaseWorkflowGuid/{guid:guid}")]
+        public ActionResult<List<CaseWorkflowStatusDto>> GetByEntityAnalysisModelGuid(Guid guid)
+        {
+            try
+            {
+                if (!_permissionValidation.Validate(new[] { 17, 19, 25, 1 })) return Forbid();
+
+                return Ok(_mapper.Map<List<CaseWorkflowStatusDto>>(_repository.GetByCasesWorkflowGuid(guid)));
             }
             catch (Exception e)
             {
@@ -130,7 +163,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {19})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 19 })) return Forbid();
 
                 return Ok(_mapper.Map<CaseWorkflowStatusDto>(_repository.GetById(id)));
             }
@@ -142,13 +175,13 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(CaseWorkflowStatusDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(CaseWorkflowStatusDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<CaseWorkflowStatusDto> Create([FromBody] CaseWorkflowStatusDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {19}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 19 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid) return Ok(_repository.Insert(_mapper.Map<CaseWorkflowStatus>(model)));
@@ -163,13 +196,13 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(CaseWorkflowStatusDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(CaseWorkflowStatusDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<CaseWorkflowStatusDto> Update([FromBody] CaseWorkflowStatusDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {19}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 19 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid) return Ok(_repository.Update(_mapper.Map<CaseWorkflowStatus>(model)));
@@ -193,7 +226,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {19}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 19 }, true)) return Forbid();
 
                 _repository.Delete(id);
                 return Ok();

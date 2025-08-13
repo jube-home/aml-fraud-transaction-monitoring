@@ -2,12 +2,12 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
@@ -45,16 +45,16 @@ namespace Jube.App.Controllers.Repository
         private readonly IValidator<EntityAnalysisModelTtlCounterDto> _validator;
 
         public EntityAnalysisModelTtlCounterController(ILog log,
-            IHttpContextAccessor httpContextAccessor,DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+            IHttpContextAccessor httpContextAccessor, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             if (httpContextAccessor.HttpContext?.User.Identity != null)
                 _userName = httpContextAccessor.HttpContext.User.Identity.Name;
             _log = log;
-            
+
             _dbContext =
                 DataConnectionDbContext.GetDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"));
             _permissionValidation = new PermissionValidation(_dbContext, _userName);
-            
+
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<EntityAnalysisModelTtlCounterDto, EntityAnalysisModelTtlCounter>();
@@ -66,7 +66,7 @@ namespace Jube.App.Controllers.Repository
             _repository = new EntityAnalysisModelTtlCounterRepository(_dbContext, _userName);
             _validator = new EntityAnalysisModelTtlCounterDtoValidator();
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -74,6 +74,7 @@ namespace Jube.App.Controllers.Repository
                 _dbContext.Close();
                 _dbContext.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -82,7 +83,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {12})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 12 })) return Forbid();
 
                 return Ok(_mapper.Map<List<EntityAnalysisModelTtlCounterDto>>(_repository.Get()));
             }
@@ -98,10 +99,27 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {12,17})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 12, 17 })) return Forbid();
 
                 return Ok(_mapper.Map<List<EntityAnalysisModelTtlCounterDto>>(
-                    _repository.GetByEntityAnalysisModelId(id)));
+                    _repository.GetByEntityAnalysisModelIdOrderById(id)));
+            }
+            catch (Exception e)
+            {
+                _log.Error(e);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("ByEntityAnalysisModelGuid/{guid:guid}")]
+        public ActionResult<List<EntityAnalysisModelTtlCounterDto>> GetByEntityAnalysisModelGuid(Guid guid)
+        {
+            try
+            {
+                if (!_permissionValidation.Validate(new[] { 12, 17 })) return Forbid();
+
+                return Ok(_mapper.Map<List<EntityAnalysisModelTtlCounterDto>>(
+                    _repository.GetByEntityAnalysisModelGuid(guid)));
             }
             catch (Exception e)
             {
@@ -115,7 +133,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {12})) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 12 })) return Forbid();
 
                 return Ok(_mapper.Map<EntityAnalysisModelTtlCounterDto>(_repository.GetById(id)));
             }
@@ -127,13 +145,13 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(EntityAnalysisModelTtlCounterDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(EntityAnalysisModelTtlCounterDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<EntityAnalysisModelTtlCounterDto> Create([FromBody] EntityAnalysisModelTtlCounterDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {12}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 12 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid) return Ok(_repository.Insert(_mapper.Map<EntityAnalysisModelTtlCounter>(model)));
@@ -148,14 +166,14 @@ namespace Jube.App.Controllers.Repository
         }
 
         [HttpPut]
-        [ProducesResponseType(typeof(EntityAnalysisModelTtlCounterDto), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ValidationResult), (int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(EntityAnalysisModelTtlCounterDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
         public ActionResult<EntityAnalysisModelRequestXPathDto> Update(
             [FromBody] EntityAnalysisModelTtlCounterDto model)
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {12}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 12 }, true)) return Forbid();
 
                 var results = _validator.Validate(model);
                 if (results.IsValid) return Ok(_repository.Update(_mapper.Map<EntityAnalysisModelTtlCounter>(model)));
@@ -179,7 +197,7 @@ namespace Jube.App.Controllers.Repository
         {
             try
             {
-                if (!_permissionValidation.Validate(new[] {12}, true)) return Forbid();
+                if (!_permissionValidation.Validate(new[] { 12 }, true)) return Forbid();
 
                 _repository.Delete(id);
                 return Ok();

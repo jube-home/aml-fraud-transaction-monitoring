@@ -6,7 +6,7 @@ parent: API
 grand_parent: Concepts
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # HTTP API Concepts
 There exists an embedded Swagger \ OpenAPI documentation available at the following location:

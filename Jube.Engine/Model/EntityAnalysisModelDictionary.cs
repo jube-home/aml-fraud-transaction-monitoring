@@ -2,24 +2,23 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
 using System.Collections.Generic;
 
-namespace Jube.Engine.Model
+namespace Jube.Engine.Model;
+
+public class EntityAnalysisModelDictionary
 {
-    public class EntityAnalysisModelDictionary
-    {
-        public string Name { get; set; }
-        public string DataName { get; set; }
-        public bool ResponsePayload { get; set; }
-        public Dictionary<string, double> KvPs { get; } = new();
-    }
+    public string Name { get; set; }
+    public string DataName { get; set; }
+    public bool ResponsePayload { get; set; }
+    public Dictionary<string, double> KvPs { get; } = new();
 }

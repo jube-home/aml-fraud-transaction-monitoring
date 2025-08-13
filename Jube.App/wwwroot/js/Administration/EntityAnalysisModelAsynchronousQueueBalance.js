@@ -28,7 +28,7 @@ const dataSourceEntity = new kendo.data.DataSource({
         model: {
             id: "id",
             fields: {
-                entityAnalysisModelId: {type: "number", editable: false},
+                name: {type: "string", editable: false},
                 instance: {type: "string", editable: false},
                 createdDate: {type: "date", editable: false},
                 archive: {type: "number", editable: false},
@@ -39,38 +39,26 @@ const dataSourceEntity = new kendo.data.DataSource({
 });
 
 $(document).ready(function () {
-    const values = [];
-
-    $.get("/api/EntityAnalysisModel",
-        function (data) {
-            for (const value of data) {
-                values.push({
-                    "value": value.id,
-                    "text": value.name
-                });
+    $("#grid").kendoGrid({
+        groupable: true,
+        dataSource: dataSourceEntity,
+        pageable: false,
+        height: $(window).height() - 210,
+        scrollable: true,
+        filterable: true,
+        dataBound: function () {
+            for (let i = 0; i < this.columns.length; i++) {
+                this.autoFitColumn(i);
             }
-
-            $("#grid").kendoGrid({
-                groupable: true,
-                dataSource: dataSourceEntity,
-                pageable: false,
-                height: $(window).height() - 210,
-                scrollable: true,
-                filterable: true,
-                dataBound: function () {
-                    for (let i = 0; i < this.columns.length; i++) {
-                        this.autoFitColumn(i);
-                    }
-                },
-                columns: [
-                    {field: "entityAnalysisModelId", values: values, title: "Name"},
-                    {field: "instance", title: "Instance"},
-                    {field: "createdDate", title: "Created Date"},
-                    {field: "archive", title: "Archive"},
-                    {field: "activationWatcher", title: "Activation Watcher"}
-                ]
-            });
-        });
+        },
+        columns: [
+            {field: "name", title: "Entity Analysis Model"},
+            {field: "instance", title: "Instance"},
+            {field: "createdDate", title: "Created Date"},
+            {field: "archive", title: "Archive"},
+            {field: "activationWatcher", title: "Activation Watcher"}
+        ]
+    });
 });
 
 //# sourceURL=EntityAnalysisModelAsynchronousQueueBalance.js

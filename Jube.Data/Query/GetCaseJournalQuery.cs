@@ -2,15 +2,16 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -19,141 +20,138 @@ using Jube.Data.Context;
 using Jube.Data.Reporting;
 using Newtonsoft.Json.Linq;
 
-namespace Jube.Data.Query
+namespace Jube.Data.Query;
+
+public class GetCaseJournalQuery(DbContext dbContext, string user)
 {
-    public class GetCaseJournalQuery(DbContext dbContext, string user)
+    private readonly string _connectionString = dbContext.ConnectionString;
+
+    public async Task<List<Dictionary<string, object>>> ExecuteAsync(string key, string keyValue, Guid caseWorkflowGuid,
+        int limit,
+        int activationRuleCount, double responseElevation)
     {
-        private readonly string connectionString = dbContext.ConnectionString;
+        var values = new List<Dictionary<string, object>>();
 
-        public async Task<List<Dictionary<string, object>>> ExecuteAsync(string key, string keyValue, int caseWorkflowId, int limit,
-            int activationRuleCount, double responseElevation)
+        var caseWorkflowXPathByCaseWorkflowIdQuery =
+            new GetCaseWorkflowXPathByCaseWorkflowIdQuery(dbContext, user);
+
+        var xPaths = caseWorkflowXPathByCaseWorkflowIdQuery
+            .Execute(caseWorkflowGuid).ToList();
+
+        var sql = "select '(' || \"ActivationRuleCount\" || ') ' || r.\"Name\" as \"Activation\", a.* " +
+                  "from \"Archive\" a " +
+                  "inner join \"EntityAnalysisModel\" m on m.\"Id\" = a.\"EntityAnalysisModelId\" " +
+                  "inner join \"TenantRegistry\" t on t.\"Id\" = m.\"TenantRegistryId\" " +
+                  "inner join \"UserInTenant\" u on u.\"TenantRegistryId\" = t.\"Id\" " +
+                  "left join (select \"Id\", \"Name\" from \"EntityAnalysisModelActivationRule\") r on r.\"Id\" = a.\"EntityAnalysisModelActivationRuleId\" " +
+                  "where u.\"User\" = (@1) " +
+                  "and a.\"Json\" -> 'payload' ->> (@2) = (@3) " +
+                  "and a.\"ResponseElevation\" >= (@4)" +
+                  "and a.\"ActivationRuleCount\" >= (@5) " +
+                  "order by a.\"Id\" desc " +
+                  "limit (@6)";
+
+        var tokens = new List<object>
         {
-            var values = new List<Dictionary<string, object>>();
+            user,
+            key,
+            keyValue,
+            responseElevation,
+            activationRuleCount,
+            limit
+        };
 
-            var caseWorkflowXPathByCaseWorkflowIdQuery =
-                new GetCaseWorkflowXPathByCaseWorkflowIdQuery(dbContext, user);
+        var postgres = new Postgres(_connectionString);
 
-            var xPaths = caseWorkflowXPathByCaseWorkflowIdQuery
-                .Execute(caseWorkflowId).ToList();
+        await postgres.PrepareAsync(sql, tokens);
 
-            var sql = "select '(' || \"ActivationRuleCount\" || ') ' || r.\"Name\" as \"Activation\", a.* " +
-                      "from \"Archive\" a " +
-                      "inner join \"EntityAnalysisModel\" m on m.\"Id\" = a.\"EntityAnalysisModelId\" " +
-                      "inner join \"TenantRegistry\" t on t.\"Id\" = m.\"TenantRegistryId\" " +
-                      "inner join \"UserInTenant\" u on u.\"TenantRegistryId\" = t.\"Id\" " +
-                      "left join (select \"Id\", \"Name\" from \"EntityAnalysisModelActivationRule\") r on r.\"Id\" = a.\"EntityAnalysisModelActivationRuleId\" " +
-                      "where u.\"User\" = (@1) " +
-                      "and a.\"Json\" -> 'payload' ->> (@2) = (@3) " +
-                      "and a.\"ResponseElevation\" >= (@4)" +
-                      "and a.\"ActivationRuleCount\" >= (@5) " +
-                      "order by a.\"Id\" desc " +
-                      "limit (@6)";
-            
-                var tokens = new List<object>
+        foreach (var record in await postgres.ExecuteByOrderedParametersAsync(sql, tokens))
+        {
+            var json = JObject.Parse(record["Json"].ToString());
+
+            var cellFormats = new List<GetCaseJournalQueryCellFormatDto>();
+
+            var value = new Dictionary<string, object>
             {
-                user,
-                key,
-                keyValue,
-                responseElevation,
-                activationRuleCount,
-                limit
+                { "Id", record["Id"] },
+                { "Activation", record["Activation"] },
+                { "EntityAnalysisModelInstanceEntryGuid", record["EntityAnalysisModelInstanceEntryGuid"] },
+                { "ReferenceDate", record["ReferenceDate"] },
+                { "CreatedDate", record["CreatedDate"] },
+                { "ResponseElevation", record["ResponseElevation"] },
+                { "EntryKeyValue", record["EntryKeyValue"] }
             };
 
-            var postgres = new Postgres(connectionString);
+            if (json == null) continue;
 
-            await postgres.PrepareAsync(sql, tokens);
-
-            foreach (var record in await postgres.ExecuteByOrderedParametersAsync(sql, tokens))
+            foreach (var xPath in xPaths)
             {
-                var json = JObject.Parse(record["Json"].ToString());
-
-                var cellFormats = new List<GetCaseJournalQueryCellFormatDto>();
-
-                var value = new Dictionary<string, object>
+                try
                 {
-                    {"Id", record["Id"]},
-                    {"Activation", record["Activation"]},
-                    {"EntityAnalysisModelInstanceEntryGuid", record["EntityAnalysisModelInstanceEntryGuid"]},
-                    {"ReferenceDate", record["ReferenceDate"]},
-                    {"CreatedDate", record["CreatedDate"]},
-                    {"ResponseElevation", record["ResponseElevation"]},
-                    {"EntryKeyValue", record["EntryKeyValue"]}
-                };
-
-                if (json != null)
-                {
-                    foreach (var xPath in xPaths)
+                    var jToken = json.SelectToken(xPath.XPath);
+                    if (jToken != null)
                     {
-                        try
-                        {
-                            var jToken = json.SelectToken(xPath.XPath);
-                            if (jToken != null)
-                            {
-                                var valueToken = jToken.Value<string>();
+                        var valueToken = jToken.Value<string>();
 
-                                if (value.TryAdd(xPath.Name, valueToken))
+                        if (value.TryAdd(xPath.Name, valueToken))
+                            if (xPath.ConditionalRegularExpressionFormatting)
+                                try
                                 {
-                                    if (xPath.ConditionalRegularExpressionFormatting)
-                                        try
-                                        {
-                                            var regex = new Regex(xPath.RegularExpression);
+                                    var regex = new Regex(xPath.RegularExpression);
 
-                                            var match = regex.Match(valueToken);
+                                    var match = regex.Match(valueToken);
 
-                                            if (match.Success)
-                                                cellFormats.Add(new GetCaseJournalQueryCellFormatDto
-                                                {
-                                                    CellFormatKey = xPath.Name,
-                                                    CellFormatBackColor = xPath.ConditionalFormatBackColor,
-                                                    CellFormatForeColor = xPath.ConditionalFormatForeColor,
-                                                    CellFormatForeRow = xPath.ForeRowColorScope,
-                                                    CellFormatBackRow = xPath.BackRowColorScope
-                                                });
-                                        }
-                                        catch
+                                    if (match.Success)
+                                        cellFormats.Add(new GetCaseJournalQueryCellFormatDto
                                         {
-                                            //ignored
-                                        }
+                                            CellFormatKey = xPath.Name,
+                                            CellFormatBackColor = xPath.ConditionalFormatBackColor,
+                                            CellFormatForeColor = xPath.ConditionalFormatForeColor,
+                                            CellFormatForeRow = xPath.ForeRowColorScope,
+                                            CellFormatBackRow = xPath.BackRowColorScope
+                                        });
                                 }
-                            }
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-
-                        if (xPath.BoldLineMatched)
-                            value.Add("BoldLine", new GetCaseJournalQueryBoldLineDto
-                            {
-                                BoldLineKey = xPath.Name,
-                                BoldLineFormatBackColor = xPath.BoldLineFormatBackColor,
-                                BoldLineFormatForeColor = xPath.BoldLineFormatForeColor
-                            });
+                                catch
+                                {
+                                    //ignored
+                                }
                     }
-
-                    if (cellFormats.Count > 0) value.Add("CellFormat", cellFormats);
-
-                    values.Add(value);
                 }
+                catch
+                {
+                    // ignored
+                }
+
+                if (xPath.BoldLineMatched)
+                    value.TryAdd("BoldLine", new GetCaseJournalQueryBoldLineDto
+                    {
+                        BoldLineKey = xPath.Name,
+                        BoldLineFormatBackColor = xPath.BoldLineFormatBackColor,
+                        BoldLineFormatForeColor = xPath.BoldLineFormatForeColor
+                    });
             }
 
-            return values;
+            if (cellFormats.Count > 0) value.Add("CellFormat", cellFormats);
+
+            values.Add(value);
         }
 
-        public class GetCaseJournalQueryBoldLineDto
-        {
-            public string BoldLineKey { get; set; }
-            public string BoldLineFormatForeColor { get; set; }
-            public string BoldLineFormatBackColor { get; set; }
-        }
+        return values;
+    }
 
-        public class GetCaseJournalQueryCellFormatDto
-        {
-            public string CellFormatKey { get; set; }
-            public string CellFormatBackColor { get; set; }
-            public string CellFormatForeColor { get; set; }
-            public bool CellFormatForeRow { get; set; }
-            public bool CellFormatBackRow { get; set; }
-        }
+    public class GetCaseJournalQueryBoldLineDto
+    {
+        public string BoldLineKey { get; set; }
+        public string BoldLineFormatForeColor { get; set; }
+        public string BoldLineFormatBackColor { get; set; }
+    }
+
+    public class GetCaseJournalQueryCellFormatDto
+    {
+        public string CellFormatKey { get; set; }
+        public string CellFormatBackColor { get; set; }
+        public string CellFormatForeColor { get; set; }
+        public bool CellFormatForeRow { get; set; }
+        public bool CellFormatBackRow { get; set; }
     }
 }

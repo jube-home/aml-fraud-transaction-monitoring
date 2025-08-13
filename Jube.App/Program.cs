@@ -34,7 +34,6 @@ namespace Jube.App
                     logging =>
                     {
                         logging.SetMinimumLevel(LogLevel.Trace);
-                        logging.AddLog4Net("log4net.config");
                         logging.ClearProviders();
                         logging.SetMinimumLevel(LogLevel.Trace);
                     });

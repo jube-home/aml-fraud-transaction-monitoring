@@ -6,7 +6,7 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/training) from the developer.
+🚀Speed up implementation with hands-on, face-to-face [training](https://www.jube.io/jube-training) from the developer.
 
 # Working Case Journal
 Only a single case record may exist for a Case Key Value combination,  for a given case workflow.  Only upon a case being non existent or in Closed status, for that Case Key Value, for a cases workflow, may a new case be created.

@@ -2,61 +2,60 @@
  *
  * This file is part of Jube™ software.
  *
- * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
  * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
- * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
 
 using System;
 using FluentMigrator;
 
-namespace Jube.Migrations.Baseline
+namespace Jube.Migrations.Baseline;
+
+[Migration(20220429124950)]
+public class AddEntityAnalysisModelDictionaryTableIndex : Migration
 {
-    [Migration(20220429124950)]
-    public class AddEntityAnalysisModelDictionaryTableIndex : Migration
+    public override void Up()
     {
-        public override void Up()
-        {
-            Create.Table("EntityAnalysisModelDictionary")
-                .WithColumn("Id").AsInt32().PrimaryKey().Identity()
-                .WithColumn("EntityAnalysisModelId").AsInt32().Nullable()
-                .WithColumn("Name").AsString().Nullable()
-                .WithColumn("Locked").AsByte().Nullable()
-                .WithColumn("Active").AsByte().Nullable()
-                .WithColumn("CreatedDate").AsDateTime2().Nullable()
-                .WithColumn("CreatedUser").AsString().Nullable()
-                .WithColumn("Deleted").AsByte().Nullable()
-                .WithColumn("DeletedDate").AsDateTime2().Nullable()
-                .WithColumn("DeletedUser").AsString().Nullable()
-                .WithColumn("Version").AsInt32().Nullable()
-                .WithColumn("InheritedId").AsInt32().Nullable()
-                .WithColumn("DataName").AsString().Nullable()
-                .WithColumn("ResponsePayload").AsByte().Nullable();
-            
-            Create.Index().OnTable("EntityAnalysisModelDictionary")
-                .OnColumn("EntityAnalysisModelId").Ascending()
-                .OnColumn("Deleted").Ascending();
+        Create.Table("EntityAnalysisModelDictionary")
+            .WithColumn("Id").AsInt32().PrimaryKey().Identity()
+            .WithColumn("EntityAnalysisModelId").AsInt32().Nullable()
+            .WithColumn("Name").AsString().Nullable()
+            .WithColumn("Locked").AsByte().Nullable()
+            .WithColumn("Active").AsByte().Nullable()
+            .WithColumn("CreatedDate").AsDateTime2().Nullable()
+            .WithColumn("CreatedUser").AsString().Nullable()
+            .WithColumn("Deleted").AsByte().Nullable()
+            .WithColumn("DeletedDate").AsDateTime2().Nullable()
+            .WithColumn("DeletedUser").AsString().Nullable()
+            .WithColumn("Version").AsInt32().Nullable()
+            .WithColumn("InheritedId").AsInt32().Nullable()
+            .WithColumn("DataName").AsString().Nullable()
+            .WithColumn("ResponsePayload").AsByte().Nullable();
 
-            Insert.IntoTable("EntityAnalysisModelDictionary").Row(new
-            {
-                EntityAnalysisModelId = 1,
-                Name = "VolumeThresholdByAccountId",
-                Active = 1,
-                CreatedDate = DateTime.Now,
-                CreatedUser = "Administrator",
-                ResponsePayload = 1,
-                DataName = "AccountId",
-                Version = 1
-            });
-        }
+        Create.Index().OnTable("EntityAnalysisModelDictionary")
+            .OnColumn("EntityAnalysisModelId").Ascending()
+            .OnColumn("Deleted").Ascending();
 
-        public override void Down()
+        Insert.IntoTable("EntityAnalysisModelDictionary").Row(new
         {
-            Delete.Table("EntityAnalysisModelDictionary");
-        }
+            EntityAnalysisModelId = 1,
+            Name = "VolumeThresholdByAccountId",
+            Active = 1,
+            CreatedDate = DateTime.Now,
+            CreatedUser = "Administrator",
+            ResponsePayload = 1,
+            DataName = "AccountId",
+            Version = 1
+        });
+    }
+
+    public override void Down()
+    {
+        Delete.Table("EntityAnalysisModelDictionary");
     }
 }
