@@ -71,7 +71,8 @@ When running a .NET Docker image, the recommended approach for writing log files
 output (stdout) and standard error (stderr) streams, as Docker containers are designed to emit logs through these
 streams by default.
 This allows Docker's default logging driver, json-file, to capture and store the logs in JSON format on the host
-machine. Henceforth, the ConsoleAppender is instantiated in all instances.
+machine. Henceforth, the ConsoleAppender is instantiated in all instances. It is also highly unlikely that a container
+will have write permissions without convoluted and unsupported changes to either the Dockerfile or Docker Compose.
 
 Given the absence of the Log4NetConfigFileLocationName environment variable, or failure to deserialize and instantiate
 the logger with that configuration XML serialisation file data, the software will programmatically create a
