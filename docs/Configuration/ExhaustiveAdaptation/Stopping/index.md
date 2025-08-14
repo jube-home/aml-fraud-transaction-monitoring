@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Exhaustive Adaptation Training Configuration
+title: Stopping Training
 nav_order: 6
 parent: Exhaustive Adaptation
 grand_parent: Configuration
