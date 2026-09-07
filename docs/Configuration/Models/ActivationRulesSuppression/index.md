@@ -47,7 +47,7 @@ It can be seen in the Suppression Key drop down that the distinct list of all Re
 
 ![Image](DropDownOfSuppressionKeys.png)
 
-It follows that the suppression value must be for the IP for which suppression is required. To add a suppression for the IP,  simply type in the IP in the Suppression Key Value:
+It follows that the suppression value must be for the IP for which suppression is required. To add a suppression for the IP,  simply type in the IP in the Suppression Key Value. The Suppression Key Value,  and the Suppression Key itself,  are each limited to 256 characters:
 
 ![Image](SearchForIPInSuppression.png)
 

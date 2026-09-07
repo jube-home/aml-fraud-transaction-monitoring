@@ -11,23 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using FluentValidation;
-using Jube.App.Dto;
+using FluentValidation.Results;
 
-namespace Jube.App.Validators
+namespace Jube.Service.Exceptions.EntityAnalysisModelSuppression
 {
-    public class EntityAnalysisModelSuppressionDtoValidator : AbstractValidator<EntityAnalysisModelSuppressionDto>
+    public sealed class DtoValidationException(ValidationResult result)
+        : ServiceException(BuildMessage(result))
     {
-        public EntityAnalysisModelSuppressionDtoValidator()
+        public override string Code => "ValidationFailed";
+
+        public ValidationResult Result { get; } = result;
+
+        private static string BuildMessage(ValidationResult result)
         {
-            RuleFor(p => p.SuppressionKey).NotEmpty();
-            RuleFor(p => p.SuppressionKeyValue).NotEmpty();
-            RuleFor(p => p.EntityAnalysisModelGuid).NotEmpty();
-            RuleFor(p => p.DeleteExpiryDate)
-                .GreaterThan(_ => DateTimeOffset.UtcNow)
-                .When(p => p.DeleteExpiryDate.HasValue)
-                .WithMessage("Delete Expiry Date must be greater than the current date and time.");
+            var first = result.Errors.FirstOrDefault();
+
+            return first != null
+                ? $"{first.PropertyName}: {first.ErrorMessage}"
+                : "Validation failed.";
         }
     }
 }
