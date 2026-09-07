@@ -83,3 +83,14 @@ Abstraction Rules.
 
 Where the background thread is relied upon to decrement TTL counters, the eligibility for TTL lapse is based on the
 system date and time that the counter was created (and not the reference date extracted from the transaction).
+
+## Validation
+
+The following constraints are enforced when a TTL Counter is created or updated:
+
+* Name is required, must be 256 characters or fewer, and must be unique within the Model (case-insensitive).
+* TTL Counter Data Name is required, regardless of whether Live Forever is enabled.
+* TTL Counter Interval Type must be one of Seconds, Minutes, Hours, Days, Months or Years.
+* TTL Counter Interval Value cannot be negative.
+* Resolution Interval must be one of Minutes, Hours or Days.
+* TTL Counter Data Value is required when Sum is enabled.

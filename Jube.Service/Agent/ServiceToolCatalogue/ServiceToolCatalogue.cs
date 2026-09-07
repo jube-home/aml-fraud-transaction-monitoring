@@ -38,6 +38,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddExhaustiveSearchInstance(tools);
                 AddEntityAnalysisModelActivationRule(tools);
                 AddEntityAnalysisInlineScript(tools);
+                AddEntityAnalysisModelTtlCounter(tools);
                 all = tools;
 
                 return all;
@@ -57,5 +58,6 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddExhaustiveSearchInstance(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelActivationRule(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisInlineScript(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelTtlCounter(List<ServiceToolDescriptor> tools);
     }
 }
