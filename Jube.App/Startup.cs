@@ -891,6 +891,7 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelDictionaryKvpEndpoints();
                     endpoints.MapEntityAnalysisModelSuppressionEndpoints();
                     endpoints.MapEntityAnalysisModelActivationRuleSuppressionEndpoints();
+                    endpoints.MapEntityAnalysisModelReprocessingRuleEndpoints();
                 });
 
                 await app.StartRelayAsync().ConfigureAwait(false);

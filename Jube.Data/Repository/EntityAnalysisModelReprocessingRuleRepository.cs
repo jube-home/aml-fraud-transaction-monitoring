@@ -11,17 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using LinqToDB;
-    using Poco;
-
     public class EntityAnalysisModelReprocessingRuleRepository
     {
         private readonly DbContext dbContext;
@@ -36,7 +36,8 @@ namespace Jube.Data.Repository
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public Task<EntityAnalysisModelReprocessingRule> GetByNameEntityAnalysisModelIdAsync(string name, int entityAnalysisModelId, CancellationToken token = default)
+        public Task<EntityAnalysisModelReprocessingRule> GetByNameEntityAnalysisModelIdAsync(string name,
+            int entityAnalysisModelId, CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelReprocessingRule
                 .FirstOrDefaultAsync(f =>
@@ -52,7 +53,8 @@ namespace Jube.Data.Repository
                 .Where(w => w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId).ToListAsync(token);
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelReprocessingRule>> GetByEntityAnalysisModelIdAsync(int entityAnalysisModelId, CancellationToken token = default)
+        public async Task<IEnumerable<EntityAnalysisModelReprocessingRule>> GetByEntityAnalysisModelIdAsync(
+            int entityAnalysisModelId, CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelReprocessingRule
                 .Where(w => w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
@@ -67,7 +69,8 @@ namespace Jube.Data.Repository
                 && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
-        public async Task<EntityAnalysisModelReprocessingRule> InsertAsync(EntityAnalysisModelReprocessingRule model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelReprocessingRule> InsertAsync(EntityAnalysisModelReprocessingRule model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
@@ -76,18 +79,17 @@ namespace Jube.Data.Repository
             return model;
         }
 
-        public async Task<EntityAnalysisModelReprocessingRule> UpdateAsync(EntityAnalysisModelReprocessingRule model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelReprocessingRule> UpdateAsync(EntityAnalysisModelReprocessingRule model,
+            CancellationToken token = default)
         {
             var existing = await dbContext.EntityAnalysisModelReprocessingRule
                 .FirstOrDefaultAsync(w => w.Id
                                           == model.Id
+                                          && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
                                           && (w.Deleted == 0 || w.Deleted == null)
                                           && (w.Locked == 0 || w.Locked == null), token);
 
-            if (existing == null)
-            {
-                throw new KeyNotFoundException();
-            }
+            if (existing == null) throw new KeyNotFoundException();
 
             model.Version = existing.Version + 1;
             model.CreatedUser = userName;
@@ -116,10 +118,7 @@ namespace Jube.Data.Repository
                 .Set(s => s.DeletedUser, userName)
                 .UpdateAsync(token);
 
-            if (records == 0)
-            {
-                throw new KeyNotFoundException();
-            }
+            if (records == 0) throw new KeyNotFoundException();
         }
     }
 }

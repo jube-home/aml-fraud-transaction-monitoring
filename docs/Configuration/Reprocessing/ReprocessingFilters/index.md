@@ -33,6 +33,9 @@ The reprocessing filter is comprised of the following parameters:
 | Reprocessing Interval Type  | The date interval to subtract the current date by to arrive at a threshold to process data from.                | d       |
 | Reprocessing Interval Value | The date interval value interval to subtract the current date by to arrive at a threshold to process data from. | 1       |
 
+The Reprocessing Rule name is required and limited to 256 characters, and must be unique within the Model. The
+Builder or Coder rule script (whichever surface is selected) is required and limited to 65,536 characters.
+
 Complete the page as above parameters or as below:
 
 ![Image](AllApprovedOneDayFullSample.png)

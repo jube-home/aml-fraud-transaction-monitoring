@@ -45,6 +45,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddEntityAnalysisModelDictionaryKvp(tools);
                 AddEntityAnalysisModelSuppression(tools);
                 AddEntityAnalysisModelActivationRuleSuppression(tools);
+                AddEntityAnalysisModelReprocessingRule(tools);
                 all = tools;
 
                 return all;
@@ -71,5 +72,6 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddEntityAnalysisModelDictionaryKvp(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelSuppression(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelActivationRuleSuppression(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelReprocessingRule(List<ServiceToolDescriptor> tools);
     }
 }
