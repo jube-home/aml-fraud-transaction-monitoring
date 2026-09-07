@@ -888,6 +888,7 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelListEndpoints();
                     endpoints.MapEntityAnalysisModelListValueEndpoints();
                     endpoints.MapEntityAnalysisModelDictionaryEndpoints();
+                    endpoints.MapEntityAnalysisModelDictionaryKvpEndpoints();
                 });
 
                 await app.StartRelayAsync().ConfigureAwait(false);

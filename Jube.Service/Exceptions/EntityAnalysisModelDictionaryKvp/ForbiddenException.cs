@@ -11,24 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-namespace Jube.App.Dto
+namespace Jube.Service.Exceptions.EntityAnalysisModelDictionaryKvp
 {
-    using System;
-    using Interfaces;
-
-    public class EntityAnalysisModelDictionaryKvpDto : IUpdated
+    public sealed class ForbiddenException(string message, int[] requiredSpecifications)
+        : ServiceException(message)
     {
-        public int EntityAnalysisModelDictionaryId { get; set; }
-        public string KvpKey { get; set; }
-        public double? KvpValue { get; set; }
-        public int Id { get; set; }
-        public DateTimeOffset? CreatedDate { get; set; }
-        public string UpdatedUser { get; set; }
-        public DateTimeOffset? UpdatedDate { get; set; }
-        public string CreatedUser { get; set; }
-        public int Version { get; set; }
-        public string DeletedUser { get; set; }
-        public DateTimeOffset? DeletedDate { get; set; }
-        public DateTimeOffset? DeleteExpiryDate { get; set; }
+        public override string Code => "PermissionDenied";
+        public int[] RequiredSpecifications { get; } = requiredSpecifications;
     }
 }
