@@ -887,6 +887,7 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelTtlCounterEndpoints();
                     endpoints.MapEntityAnalysisModelListEndpoints();
                     endpoints.MapEntityAnalysisModelListValueEndpoints();
+                    endpoints.MapEntityAnalysisModelDictionaryEndpoints();
                 });
 
                 await app.StartRelayAsync().ConfigureAwait(false);

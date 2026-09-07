@@ -42,6 +42,8 @@ The Dictionary has the following properties:
 |------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Lookup                 | The field from the data payload to pair to Dictionary during model invocation, for the purpose of looking for a value from the key.                                               |
 
+The Dictionary name is required and limited to 256 characters, and must be unique within the Model. The Lookup field name is likewise required and limited to 256 characters.
+
 Complete the page with the details as above or as below:
 
 ![Image](TemplateValuesForDictionaryDefinition.png)

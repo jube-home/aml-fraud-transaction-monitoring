@@ -11,19 +11,19 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Context;
-    using LinqToDB;
-    using Microsoft.Extensions.Logging.Abstractions;
-    using Poco;
-
     public class EntityAnalysisModelDictionaryRepository
     {
         private readonly DbContext dbContext;
@@ -49,7 +49,8 @@ namespace Jube.Data.Repository
             this.dbContext = dbContext;
         }
 
-        public Task<EntityAnalysisModelDictionary> GetByNameEntityAnalysisModelGuidAsync(string name, Guid entityAnalysisModelGuid, CancellationToken token = default)
+        public Task<EntityAnalysisModelDictionary> GetByNameEntityAnalysisModelGuidAsync(string name,
+            Guid entityAnalysisModelGuid, CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelDictionary
                 .FirstOrDefaultAsync(f =>
@@ -67,7 +68,8 @@ namespace Jube.Data.Repository
                 .ToListAsync(token);
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelDictionary>> GetByEntityAnalysisModelIdOrderByIdAsync(int entityAnalysisModelId, CancellationToken token = default)
+        public async Task<IEnumerable<EntityAnalysisModelDictionary>> GetByEntityAnalysisModelIdOrderByIdAsync(
+            int entityAnalysisModelId, CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelDictionary
                 .Where(w =>
@@ -78,7 +80,8 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelDictionary>> GetByEntityAnalysisModelIdOrderByNameAsync(int entityAnalysisModelId, CancellationToken token = default)
+        public async Task<IEnumerable<EntityAnalysisModelDictionary>> GetByEntityAnalysisModelIdOrderByNameAsync(
+            int entityAnalysisModelId, CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelDictionary
                 .Where(w =>
@@ -89,7 +92,8 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Name).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelDictionary>> GetByEntityAnalysisModelGuidAsync(Guid entityAnalysisModelGuid, CancellationToken token = default)
+        public async Task<IEnumerable<EntityAnalysisModelDictionary>> GetByEntityAnalysisModelGuidAsync(
+            Guid entityAnalysisModelGuid, CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelDictionary
                 .Where(w =>
@@ -108,7 +112,8 @@ namespace Jube.Data.Repository
                 && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
-        public async Task<EntityAnalysisModelDictionary> InsertAsync(EntityAnalysisModelDictionary model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelDictionary> InsertAsync(EntityAnalysisModelDictionary model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName ?? model.CreatedUser;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
@@ -118,18 +123,17 @@ namespace Jube.Data.Repository
             return model;
         }
 
-        public async Task<EntityAnalysisModelDictionary> UpdateAsync(EntityAnalysisModelDictionary model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelDictionary> UpdateAsync(EntityAnalysisModelDictionary model,
+            CancellationToken token = default)
         {
             var existing = await dbContext.EntityAnalysisModelDictionary
                 .FirstOrDefaultAsync(w => w.Id
                                           == model.Id
+                                          && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
                                           && (w.Deleted == 0 || w.Deleted == null)
                                           && (w.Locked == 0 || w.Locked == null), token);
 
-            if (existing == null)
-            {
-                throw new KeyNotFoundException();
-            }
+            if (existing == null) throw new KeyNotFoundException();
 
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
@@ -138,10 +142,9 @@ namespace Jube.Data.Repository
 
             await dbContext.UpdateAsync(model, token: token);
 
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<EntityAnalysisModelDictionary, EntityAnalysisModelDictionaryVersion>();
-            }, NullLoggerFactory.Instance));
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<EntityAnalysisModelDictionary, EntityAnalysisModelDictionaryVersion>(); },
+                NullLoggerFactory.Instance));
 
             var audit = mapper.Map<EntityAnalysisModelDictionaryVersion>(existing);
             audit.EntityAnalysisModelDictionaryId = existing.Id;
@@ -164,13 +167,11 @@ namespace Jube.Data.Repository
                 .Set(s => s.DeletedUser, userName)
                 .UpdateAsync(token);
 
-            if (records == 0)
-            {
-                throw new KeyNotFoundException();
-            }
+            if (records == 0) throw new KeyNotFoundException();
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelDictionary
                 .Where(d =>
