@@ -113,3 +113,5 @@ Click on the arrow to expand Activation Rules:
 The suppression process works in the same manner as at the model level with a simple toggle switch to be immediately synchronised,  but suppression will be targeted to a rule name and not encompass the whole model processing of the transaction or event.
 
 As at the model level,  a Delete Expiry Date can optionally be set once the switch is toggled on for the Activation Rule,  behaving identically: an automatic,  unattended un-suppression at the date and time specified,  requiring no further synchronisation.
+
+As with the Suppression Key and Suppression Key Value,  the Activation Rule name is limited to 256 characters,  and must reference an Activation Rule that currently exists on the Model being suppressed.
