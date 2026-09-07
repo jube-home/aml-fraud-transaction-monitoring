@@ -78,7 +78,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             }
 
             foreach (var inlineScriptId in createdInlineScriptIds)
-                await dbContext.GetTable<EntityAnalysisInlineScript>().Where(w => w.Id == inlineScriptId)
+                await dbContext.GetTable<Data.Poco.EntityAnalysisInlineScript>().Where(w => w.Id == inlineScriptId)
                     .DeleteAsync();
         }
 
@@ -110,7 +110,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
         private async Task<int> CreateInlineScriptAsync(DbContext dbContext)
         {
             var repository = new EntityAnalysisInlineScriptRepository(dbContext);
-            var saved = await repository.InsertAsync(new EntityAnalysisInlineScript
+            var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisInlineScript
             {
                 Name = $"{DatabaseFixture.Prefix}Script{Guid.NewGuid():N}"[..40],
                 Code = "public class Example {}",

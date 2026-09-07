@@ -11,23 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using log4net;
+using log4net.Appender;
+using log4net.Config;
+using log4net.Core;
+using log4net.Layout;
+using log4net.Repository.Hierarchy;
+
 namespace Jube.DynamicEnvironment
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Text;
-    using log4net;
-    using log4net.Appender;
-    using log4net.Config;
-    using log4net.Core;
-    using log4net.Layout;
-    using log4net.Repository.Hierarchy;
-    using Tokenisation;
-
     public class DynamicEnvironment
     {
         private readonly Dictionary<string, string> appSettings;
@@ -244,6 +243,24 @@ namespace Jube.DynamicEnvironment
                     "RedisConnectionString", "localhost"
                 },
                 {
+                    "RedisSentinelConnectTimeout", "2000"
+                },
+                {
+                    "RedisSentinelSyncTimeout", "2000"
+                },
+                {
+                    "RedisSentinelConnectRetry", "1"
+                },
+                {
+                    "RedisReconnectRetryBaseDelay", "100"
+                },
+                {
+                    "RedisReconnectRetryMaxDelay", "3000"
+                },
+                {
+                    "RedisBacklogFailFast", "False"
+                },
+                {
                     "RedisCommandFlag", "0"
                 },
                 {
@@ -434,37 +451,35 @@ namespace Jube.DynamicEnvironment
                 }
             };
 
-            var secretsPath = Environment.GetEnvironmentVariable("SecretsPath") ?? String.Empty;
-            if (String.IsNullOrEmpty(secretsPath))
+            var secretsPath = Environment.GetEnvironmentVariable("SecretsPath") ?? string.Empty;
+            if (string.IsNullOrEmpty(secretsPath))
             {
-                secretsPath = appSettings["SecretsPath"] ?? String.Empty;
+                secretsPath = appSettings["SecretsPath"] ?? string.Empty;
 
-                Console.WriteLine(String.IsNullOrEmpty(secretsPath) ?
-                    "Environment Variable SecretsPath not available.  Will resolve to working directory." :
-                    $"Environment Variable SecretsPath not available.  Set to default prefix of {secretsPath}.");
+                Console.WriteLine(string.IsNullOrEmpty(secretsPath)
+                    ? "Environment Variable SecretsPath not available.  Will resolve to working directory."
+                    : $"Environment Variable SecretsPath not available.  Set to default prefix of {secretsPath}.");
             }
 
             foreach (var environmentVariable in from DictionaryEntry environmentVariable in
                          Environment.GetEnvironmentVariables()
-                     where appSettings.ContainsKey(Convert.ToString(environmentVariable.Key) ?? String.Empty)
+                     where appSettings.ContainsKey(Convert.ToString(environmentVariable.Key) ?? string.Empty)
                      where Convert.ToString(environmentVariable.Value) !=
-                           appSettings[environmentVariable.Key.ToString() ?? String.Empty]
+                           appSettings[environmentVariable.Key.ToString() ?? string.Empty]
                      select environmentVariable)
             {
-                if (environmentVariable.Value == null)
-                {
-                    continue;
-                }
+                if (environmentVariable.Value == null) continue;
 
                 var replaced = Convert.ToString(environmentVariable.Value);
                 if (replaced != null)
                 {
-                    foreach (var token in Tokenisation.ReturnTokens(replaced))
+                    foreach (var token in Tokenisation.Tokenisation.ReturnTokens(replaced))
                     {
                         var path = Path.Combine(secretsPath, token);
                         if (!File.Exists(path))
                         {
-                            Console.WriteLine($@"For environment variable {environmentVariable.Key} could not find {path} in container.");
+                            Console.WriteLine(
+                                $@"For environment variable {environmentVariable.Key} could not find {path} in container.");
                             continue;
                         }
 
@@ -475,20 +490,22 @@ namespace Jube.DynamicEnvironment
                         }
                         catch (IOException ex)
                         {
-                            Console.WriteLine($@"For environment variable {environmentVariable.Key} could not read {path}: {ex.Message}");
+                            Console.WriteLine(
+                                $@"For environment variable {environmentVariable.Key} could not read {path}: {ex.Message}");
                             continue;
                         }
 
-                        if (String.IsNullOrEmpty(secret))
+                        if (string.IsNullOrEmpty(secret))
                         {
-                            Console.WriteLine($@"For environment variable {environmentVariable.Key} path {path} in container but it is empty.");
+                            Console.WriteLine(
+                                $@"For environment variable {environmentVariable.Key} path {path} in container but it is empty.");
                             continue;
                         }
 
                         replaced = replaced.Replace($"[@{token}@]", secret);
                     }
 
-                    appSettings[environmentVariable.Key.ToString() ?? String.Empty] = replaced;
+                    appSettings[environmentVariable.Key.ToString() ?? string.Empty] = replaced;
                 }
             }
 
@@ -505,10 +522,13 @@ namespace Jube.DynamicEnvironment
         {
             Console.WriteLine(@"Console logging for instantiation of logging library:");
             Console.WriteLine();
-            Console.WriteLine($@"Log4NetConfigFileLocationName:{Environment.GetEnvironmentVariable("Log4NetConfigFileLocationName")}");
+            Console.WriteLine(
+                $@"Log4NetConfigFileLocationName:{Environment.GetEnvironmentVariable("Log4NetConfigFileLocationName")}");
             Console.WriteLine($@"Log4NetLogPath:{Environment.GetEnvironmentVariable("Log4NetLogPath")}");
-            Console.WriteLine($@"Log4NetLogMaximumFileSize:{Environment.GetEnvironmentVariable("Log4NetLogMaximumFileSize")}");
-            Console.WriteLine($@"Log4NetLogMaxSizeRollBackups:{Environment.GetEnvironmentVariable("Log4NetLogMaxSizeRollBackups")}");
+            Console.WriteLine(
+                $@"Log4NetLogMaximumFileSize:{Environment.GetEnvironmentVariable("Log4NetLogMaximumFileSize")}");
+            Console.WriteLine(
+                $@"Log4NetLogMaxSizeRollBackups:{Environment.GetEnvironmentVariable("Log4NetLogMaxSizeRollBackups")}");
             Console.WriteLine($@"Log4NetLogLevel:{Environment.GetEnvironmentVariable("Log4NetLogLevel")}");
 
             try
@@ -561,6 +581,7 @@ namespace Jube.DynamicEnvironment
                 Console.WriteLine(
                     $@"Failed to instantiate the logger with error {ex}.  No logging exists for the instance.");
             }
+
             Console.WriteLine(@"Logging instantiated.  Swapping to log4net instantiation for further logs.");
             Console.WriteLine();
         }
@@ -649,10 +670,8 @@ namespace Jube.DynamicEnvironment
         private int Log4NetMaxSizeRollBackupsInt()
         {
             appSettings.TryGetValue("Log4NetMaxSizeRollBackups", out var log4NetMaxSizeRollBackups);
-            if (!Int32.TryParse(log4NetMaxSizeRollBackups, out var log4NetMaxSizeRollBackupsInt))
-            {
+            if (!int.TryParse(log4NetMaxSizeRollBackups, out var log4NetMaxSizeRollBackupsInt))
                 log4NetMaxSizeRollBackupsInt = 100;
-            }
 
             return log4NetMaxSizeRollBackupsInt;
         }
@@ -666,44 +685,33 @@ namespace Jube.DynamicEnvironment
 
         private void ValidateConnectionString()
         {
-            if (String.IsNullOrEmpty(appSettings["ConnectionString"]))
-            {
+            if (string.IsNullOrEmpty(appSettings["ConnectionString"]))
                 throw new Exception("Missing ConnectionString in Environment Variables.");
-            }
         }
 
         private void ValidatePasswordHashingKey()
         {
-            if (String.IsNullOrEmpty(appSettings["PasswordHashingKey"]))
-            {
+            if (string.IsNullOrEmpty(appSettings["PasswordHashingKey"]))
                 throw new Exception("Missing PasswordHashingKey in Environment Variables.");
-            }
         }
 
         private void ValidateJwtKey()
         {
-            if (String.IsNullOrEmpty(appSettings["JWTKey"]))
-            {
+            if (string.IsNullOrEmpty(appSettings["JWTKey"]))
                 throw new Exception("Missing JWTKey in Environment Variables.");
-            }
         }
 
         private void ValidatePasswordAsymmetricEncryptionKeys()
         {
-            if (!appSettings["PasswordAsymmetricEncryption"].Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
+            if (!appSettings["PasswordAsymmetricEncryption"].Equals("True", StringComparison.OrdinalIgnoreCase)) return;
 
-            if (String.IsNullOrEmpty(appSettings["PasswordAsymmetricEncryptionPrivateKey"]) ||
-                String.IsNullOrEmpty(appSettings["PasswordAsymmetricEncryptionPublicKey"]))
-            {
+            if (string.IsNullOrEmpty(appSettings["PasswordAsymmetricEncryptionPrivateKey"]) ||
+                string.IsNullOrEmpty(appSettings["PasswordAsymmetricEncryptionPublicKey"]))
                 throw new Exception(
                     "PasswordAsymmetricEncryption is True but PasswordAsymmetricEncryptionPrivateKey and/or " +
                     "PasswordAsymmetricEncryptionPublicKey are not set in Environment Variables. Generate a " +
                     "fresh RSA keypair for this environment and set both - do not reuse a keypair from " +
                     "documentation or another environment.");
-            }
         }
 
         public string AppSettings(string[] keys)
@@ -714,10 +722,7 @@ namespace Jube.DynamicEnvironment
         public string AppSettings(string key)
         {
             string value = null;
-            if (appSettings.TryGetValue(key, out var setting))
-            {
-                value = setting;
-            }
+            if (appSettings.TryGetValue(key, out var setting)) value = setting;
 
             return value;
         }

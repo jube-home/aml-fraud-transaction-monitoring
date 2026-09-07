@@ -576,7 +576,14 @@ namespace Jube.App
                         .Equals("True", StringComparison.OrdinalIgnoreCase),
                     lruJournalMaxAgeTimeSpan,
                     activationRuleIdempotency,
-                    log);
+                    log,
+                    int.Parse(dynamicEnvironment.AppSettings("RedisSentinelConnectTimeout")),
+                    int.Parse(dynamicEnvironment.AppSettings("RedisSentinelSyncTimeout")),
+                    int.Parse(dynamicEnvironment.AppSettings("RedisSentinelConnectRetry")),
+                    int.Parse(dynamicEnvironment.AppSettings("RedisReconnectRetryBaseDelay")),
+                    int.Parse(dynamicEnvironment.AppSettings("RedisReconnectRetryMaxDelay")),
+                    dynamicEnvironment.AppSettings("RedisBacklogFailFast")
+                        .Equals("True", StringComparison.OrdinalIgnoreCase));
 
             if (dynamicEnvironment.AppSettings("EnableMigration").Equals("True", StringComparison.OrdinalIgnoreCase))
                 RunFluentMigrator(dynamicEnvironment, cacheService, log);
@@ -690,7 +697,13 @@ namespace Jube.App
             bool publishSubscribe, bool hsetOffload,
             TimeSpan maxLruAge,
             bool activationRuleIdempotency,
-            ILog log)
+            ILog log,
+            int sentinelConnectTimeoutMilliseconds,
+            int sentinelSyncTimeoutMilliseconds,
+            int sentinelConnectRetry,
+            int reconnectRetryBaseDelayMilliseconds,
+            int reconnectRetryMaxDelayMilliseconds,
+            bool backlogFailFast)
         {
             const int retryRedisConnectionRetry = 10;
             for (var i = 0; i < retryRedisConnectionRetry; i++)
@@ -707,7 +720,9 @@ namespace Jube.App
                         callbackTimeout,
                         localCache, localCacheFill,
                         localCacheBytes, messagePackCompression, storePayloadCountsAndBytes,
-                        publishSubscribe, hsetOffload, maxLruAge, activationRuleIdempotency, log);
+                        publishSubscribe, hsetOffload, maxLruAge, activationRuleIdempotency, log,
+                        sentinelConnectTimeoutMilliseconds, sentinelSyncTimeoutMilliseconds, sentinelConnectRetry,
+                        reconnectRetryBaseDelayMilliseconds, reconnectRetryMaxDelayMilliseconds, backlogFailFast);
 
                     if (log.IsInfoEnabled) log.Info("Connected to Redis.  Returning connection for startup.");
 
@@ -868,6 +883,7 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelHttpAdaptationEndpoints();
                     endpoints.MapExhaustiveSearchInstanceEndpoints();
                     endpoints.MapEntityAnalysisModelActivationRuleEndpoints();
+                    endpoints.MapEntityAnalysisInlineScriptEndpoints();
                 });
 
                 await app.StartRelayAsync().ConfigureAwait(false);

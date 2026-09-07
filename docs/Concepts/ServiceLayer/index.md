@@ -116,8 +116,9 @@ speculatively.
 of `ITreeChild`, since each row is a child of a Model (`EntityAnalysisModelId`, declared via
 `[FormKeys(Parent = nameof(EntityAnalysisModelId))]` rather than the interface itself).
 `EntityAnalysisModelInlineScriptDto` is a second `ITreeChild` adopter, and the first real use of `[Lookup]`: its
-`EntityAnalysisInlineScriptId` field is a reference picker against the (still unmigrated) `EntityAnalysisInlineScript`
-area, an id-keyed lookup rather than the attribute's guid-keyed default —
+`EntityAnalysisInlineScriptId` field is a reference picker against the `EntityAnalysisInlineScript` area (a read-only,
+non-tenant-scoped catalogue -- rows are created and compiled outside the API, by direct database entry picked up by
+the engine), an id-keyed lookup rather than the attribute's guid-keyed default —
 `[Lookup("/api/EntityAnalysisInlineScript", TextField = "name", ValueField = "id")]`.
 `EntityAnalysisModelGatewayRuleDto` is a third `ITreeChild` adopter and the first real adopter of `IRuleBuilderJson`:
 its `BuilderRuleScript`/`Json` pair backs the same jQuery QueryBuilder widget the Abstraction and Activation Rule pages

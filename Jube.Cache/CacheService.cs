@@ -11,22 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
+using System.Collections.Concurrent;
+using Jube.Cache.Redis;
+using Jube.Cache.Redis.CacheUserRegistryApiKey;
+using Jube.Cache.Redis.Callback;
+using Jube.ResilientRedisConnection;
+using Jube.TaskCancellation;
+using log4net;
+using StackExchange.Redis;
+
 namespace Jube.Cache
 {
-    using System.Collections.Concurrent;
-    using log4net;
-    using Redis;
-    using Redis.CacheUserRegistryApiKey;
-    using Redis.Callback;
-    using ResilientRedisConnection;
-    using StackExchange.Redis;
-    using TaskCancellation;
-
     public class CacheService
     {
         private readonly bool activationRuleIdempotency;
-        private readonly ConcurrentDictionary<Guid, TaskCompletionSource<Callback>> callbacks;
         private readonly int callbackTimeout;
+        private readonly ConcurrentDictionary<Guid, TaskCompletionSource<Callback>> callbacks;
         private readonly bool localCache;
         private readonly long localCacheBytes;
         private readonly bool localCacheFill;
@@ -43,7 +45,13 @@ namespace Jube.Cache
             bool messagePackCompression, bool storePayloadCountsAndBytes, bool publishSubscribe,
             bool hsetOffload,
             TimeSpan maxLruAge,
-            bool activationRuleIdempotency, ILog log)
+            bool activationRuleIdempotency, ILog log,
+            int sentinelConnectTimeoutMilliseconds = 2000,
+            int sentinelSyncTimeoutMilliseconds = 2000,
+            int sentinelConnectRetry = 1,
+            int reconnectRetryBaseDelayMilliseconds = 100,
+            int reconnectRetryMaxDelayMilliseconds = 3000,
+            bool backlogFailFast = false)
         {
             Log = log;
             this.localCache = localCache;
@@ -60,23 +68,38 @@ namespace Jube.Cache
 
             var options = ConfigurationOptions.Parse(redisConnectionString);
             options.ReconnectRetryPolicy = new ExponentialRetry(
-                100,
-                3000);
+                reconnectRetryBaseDelayMilliseconds,
+                reconnectRetryMaxDelayMilliseconds);
 
-            ConnectionMultiplexer = ConnectionMultiplexer.Connect(options);
-            ResilientRedisResilientRedisDatabase = new ResilientRedisConnection(ConnectionMultiplexer, postgresConnectionString, hsetOffload, log).GetDatabase();
+            if (backlogFailFast) options.BacklogPolicy = BacklogPolicy.FailFast;
+
+            ConnectionMultiplexer = string.IsNullOrEmpty(options.ServiceName)
+                ? ConnectionMultiplexer.Connect(options)
+                : ConnectViaSentinelWithSplitTimeouts(options, sentinelConnectTimeoutMilliseconds,
+                    sentinelSyncTimeoutMilliseconds, sentinelConnectRetry);
+            SubscribeToConnectionDiagnostics(ConnectionMultiplexer, log);
+            ResilientRedisResilientRedisDatabase =
+                new ResilientRedisConnection.ResilientRedisConnection(ConnectionMultiplexer, postgresConnectionString,
+                        hsetOffload, log)
+                    .GetDatabase();
 
             CacheAbstractionRepository = new CacheAbstractionRepository(ResilientRedisResilientRedisDatabase, Log);
-            CachePayloadLatestRepository = new CachePayloadLatestRepository(postgresConnectionString, ResilientRedisResilientRedisDatabase, Log);
+            CachePayloadLatestRepository =
+                new CachePayloadLatestRepository(postgresConnectionString, ResilientRedisResilientRedisDatabase, Log);
             CacheReferenceDateRepository = new CacheReferenceDateRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheSanctionRepository = new CacheSanctionRepository(ResilientRedisResilientRedisDatabase, Log);
-            CacheTtlCounterEntryRepository = new CacheTtlCounterEntryRepository(ResilientRedisResilientRedisDatabase, Log);
+            CacheTtlCounterEntryRepository =
+                new CacheTtlCounterEntryRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheTtlCounterRepository = new CacheTtlCounterRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheWalRepository = new CacheWalRepository(ResilientRedisResilientRedisDatabase, Log);
-            CacheUserRegistryApiKeyRepository = new CacheUserRegistryApiKeyRepository(ConnectionMultiplexer, ResilientRedisResilientRedisDatabase, Log);
-            CacheTtlCounterIdempotencyRepository = new CacheTtlCounterIdempotencyRepository(ResilientRedisResilientRedisDatabase, log);
-            CacheActivationCaseIdempotencyRepository = new CacheActivationCaseIdempotencyRepository(ResilientRedisResilientRedisDatabase, log);
-            CacheActivationNotificationIdempotencyRepository = new CacheActivationNotificationIdempotencyRepository(ResilientRedisResilientRedisDatabase, log);
+            CacheUserRegistryApiKeyRepository = new CacheUserRegistryApiKeyRepository(ConnectionMultiplexer,
+                ResilientRedisResilientRedisDatabase, Log);
+            CacheTtlCounterIdempotencyRepository =
+                new CacheTtlCounterIdempotencyRepository(ResilientRedisResilientRedisDatabase, log);
+            CacheActivationCaseIdempotencyRepository =
+                new CacheActivationCaseIdempotencyRepository(ResilientRedisResilientRedisDatabase, log);
+            CacheActivationNotificationIdempotencyRepository =
+                new CacheActivationNotificationIdempotencyRepository(ResilientRedisResilientRedisDatabase, log);
         }
 
         public Task InstantiateRepositoriesTask { get; set; }
@@ -94,26 +117,67 @@ namespace Jube.Cache
         public CacheUserRegistryApiKeyRepository CacheUserRegistryApiKeyRepository { get; set; }
         public CacheTtlCounterIdempotencyRepository CacheTtlCounterIdempotencyRepository { get; set; }
         public CacheActivationCaseIdempotencyRepository CacheActivationCaseIdempotencyRepository { get; set; }
-        public CacheActivationNotificationIdempotencyRepository CacheActivationNotificationIdempotencyRepository { get; set; }
+
+        public CacheActivationNotificationIdempotencyRepository CacheActivationNotificationIdempotencyRepository
+        {
+            get;
+            set;
+        }
 
         public bool Ready { get; private set; }
 
-        private ILog Log
-        {
-            get;
-        }
+        private ILog Log { get; }
 
         public async Task StartAsync(TaskCoordinator taskCoordinator)
         {
-            CachePayloadRepository = await CachePayloadRepository.CreateAsync(ConnectionMultiplexer, ResilientRedisResilientRedisDatabase,
+            CachePayloadRepository = await CachePayloadRepository.CreateAsync(ConnectionMultiplexer,
+                ResilientRedisResilientRedisDatabase,
                 postgresConnectionString, Log,
                 localCache, localCacheFill, localCacheBytes, messagePackCompression,
                 storePayloadCountsAndBytes, publishSubscribe, maxLruAge, activationRuleIdempotency,
                 taskCoordinator.CancellationToken).ConfigureAwait(false);
 
-            CacheCallbackPublishSubscribe = new CacheCallbackPublishSubscribe(ConnectionMultiplexer, ResilientRedisResilientRedisDatabase, callbacks, callbackTimeout, Log, taskCoordinator);
+            CacheCallbackPublishSubscribe = new CacheCallbackPublishSubscribe(ConnectionMultiplexer,
+                ResilientRedisResilientRedisDatabase, callbacks, callbackTimeout, Log, taskCoordinator);
 
             Ready = true;
+        }
+
+        private static ConnectionMultiplexer ConnectViaSentinelWithSplitTimeouts(ConfigurationOptions dataOptions,
+            int sentinelConnectTimeoutMilliseconds, int sentinelSyncTimeoutMilliseconds, int sentinelConnectRetry)
+        {
+            var sentinelOptions = dataOptions.Clone();
+            sentinelOptions.ConnectTimeout = sentinelConnectTimeoutMilliseconds;
+            sentinelOptions.SyncTimeout = sentinelSyncTimeoutMilliseconds;
+            sentinelOptions.ConnectRetry = sentinelConnectRetry;
+            sentinelOptions.AbortOnConnectFail = false;
+
+            var sentinelMultiplexer = ConnectionMultiplexer.SentinelConnect(sentinelOptions);
+            return sentinelMultiplexer.GetSentinelMasterConnection(dataOptions);
+        }
+
+        private static void SubscribeToConnectionDiagnostics(ConnectionMultiplexer connectionMultiplexer, ILog log)
+        {
+            connectionMultiplexer.ConnectionFailed += (_, args) =>
+                log.Error($"Cache Redis: connection failed for endpoint {args.EndPoint} " +
+                          $"({args.ConnectionType}), failure type {args.FailureType}.", args.Exception);
+
+            connectionMultiplexer.ConnectionRestored += (_, args) =>
+                log.Warn($"Cache Redis: connection restored for endpoint {args.EndPoint} " +
+                         $"({args.ConnectionType}) after failure type {args.FailureType}.");
+
+            connectionMultiplexer.ErrorMessage += (_, args) =>
+                log.Error($"Cache Redis: server {args.EndPoint} returned error message {args.Message}.");
+
+            connectionMultiplexer.InternalError += (_, args) =>
+                log.Error($"Cache Redis: internal error on endpoint {args.EndPoint} " +
+                          $"during {args.Origin}.", args.Exception);
+
+            connectionMultiplexer.ConfigurationChanged += (_, args) =>
+                log.Warn($"Cache Redis: configuration changed for endpoint {args.EndPoint}.");
+
+            connectionMultiplexer.ConfigurationChangedBroadcast += (_, args) =>
+                log.Warn($"Cache Redis: configuration change broadcast received from endpoint {args.EndPoint}.");
         }
     }
 }

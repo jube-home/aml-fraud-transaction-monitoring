@@ -730,6 +730,22 @@ services:
       # to start with RSA password encryption enabled and either key missing.
       - PasswordAsymmetricEncryptionPublicKey=CHANGE-ME-paste-public-key-printed-by-secrets-init.sh
       - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,responseTimeout=8000,connectTimeout=10000,keepAlive=60
+      # Only used because RedisConnectionString sets serviceName= above (Sentinel mode). Independent of that
+      # string's own connectTimeout/syncTimeout - this bounds the Sentinel-discovery hop specifically, so a
+      # slow/unreachable Sentinel quorum fails fast and hands back to the reconnect backoff quickly, without
+      # borrowing the WAN-tolerant timeout the data connection to the resolved primary needs. See
+      # CacheService.ConnectViaSentinelWithSplitTimeouts.
+      - RedisSentinelConnectTimeout=2000
+      - RedisSentinelSyncTimeout=2000
+      - RedisSentinelConnectRetry=1
+      # ExponentialRetry(base, max) for SE.Redis's background reconnect attempts after the physical connection
+      # drops - how fast it retries, not how long an in-flight command waits.
+      - RedisReconnectRetryBaseDelay=100
+      - RedisReconnectRetryMaxDelay=3000
+      # False (default) queues commands issued while disconnected until they hit their own syncTimeout above -
+      # the mechanism behind transactions being held for a long period during a genuine network break. Set True
+      # to fail them immediately instead once the connection is known unhealthy.
+      - RedisBacklogFailFast=False
       - EnableExhaustiveTraining=False
       - Landlord=False
       - EnableReprocessing=False
@@ -828,6 +844,22 @@ services:
       # to start with RSA password encryption enabled and either key missing.
       - PasswordAsymmetricEncryptionPublicKey=CHANGE-ME-paste-public-key-printed-by-secrets-init.sh
       - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,responseTimeout=8000,connectTimeout=10000,keepAlive=60
+      # Only used because RedisConnectionString sets serviceName= above (Sentinel mode). Independent of that
+      # string's own connectTimeout/syncTimeout - this bounds the Sentinel-discovery hop specifically, so a
+      # slow/unreachable Sentinel quorum fails fast and hands back to the reconnect backoff quickly, without
+      # borrowing the WAN-tolerant timeout the data connection to the resolved primary needs. See
+      # CacheService.ConnectViaSentinelWithSplitTimeouts.
+      - RedisSentinelConnectTimeout=2000
+      - RedisSentinelSyncTimeout=2000
+      - RedisSentinelConnectRetry=1
+      # ExponentialRetry(base, max) for SE.Redis's background reconnect attempts after the physical connection
+      # drops - how fast it retries, not how long an in-flight command waits.
+      - RedisReconnectRetryBaseDelay=100
+      - RedisReconnectRetryMaxDelay=3000
+      # False (default) queues commands issued while disconnected until they hit their own syncTimeout above -
+      # the mechanism behind transactions being held for a long period during a genuine network break. Set True
+      # to fail them immediately instead once the connection is known unhealthy.
+      - RedisBacklogFailFast=False
       - EnableExhaustiveTraining=False
       - Landlord=True
       - EnableReprocessing=False
@@ -909,6 +941,22 @@ services:
       - ReportConnectionString=Host=haproxy;Port=5433;Database=postgres;Username=jube_reporting;Password=[@JUBE_REPORTING_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
       - MigrationConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_migration;Password=[@JUBE_MIGRATION_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
       - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,responseTimeout=8000,connectTimeout=10000,keepAlive=60
+      # Only used because RedisConnectionString sets serviceName= above (Sentinel mode). Independent of that
+      # string's own connectTimeout/syncTimeout - this bounds the Sentinel-discovery hop specifically, so a
+      # slow/unreachable Sentinel quorum fails fast and hands back to the reconnect backoff quickly, without
+      # borrowing the WAN-tolerant timeout the data connection to the resolved primary needs. See
+      # CacheService.ConnectViaSentinelWithSplitTimeouts.
+      - RedisSentinelConnectTimeout=2000
+      - RedisSentinelSyncTimeout=2000
+      - RedisSentinelConnectRetry=1
+      # ExponentialRetry(base, max) for SE.Redis's background reconnect attempts after the physical connection
+      # drops - how fast it retries, not how long an in-flight command waits.
+      - RedisReconnectRetryBaseDelay=100
+      - RedisReconnectRetryMaxDelay=3000
+      # False (default) queues commands issued while disconnected until they hit their own syncTimeout above -
+      # the mechanism behind transactions being held for a long period during a genuine network break. Set True
+      # to fail them immediately instead once the connection is known unhealthy.
+      - RedisBacklogFailFast=False
       - JWTKey=[@JWT_KEY@]
       - ElementSymmetricEncryptionKey=[@ENCRYPTION_KEY@]
       # jube-jobs is the only service with these background-processing flags (plus EnableMigration below) set
