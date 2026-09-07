@@ -11,23 +11,10 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-namespace Jube.App.Dto
+namespace Jube.Service.Exceptions.EntityAnalysisModelListValue
 {
-    using System;
-    using Interfaces;
-
-    public class EntityAnalysisModelListValueDto : IUpdated
+    public sealed class NotFoundException(string message, Exception? inner = null) : ServiceException(message, inner)
     {
-        public int EntityAnalysisModelListId { get; set; }
-        public string ListValue { get; set; }
-        public int Id { get; set; }
-        public DateTimeOffset? CreatedDate { get; set; }
-        public string UpdatedUser { get; set; }
-        public DateTimeOffset? UpdatedDate { get; set; }
-        public string CreatedUser { get; set; }
-        public int Version { get; set; }
-        public string DeletedUser { get; set; }
-        public DateTimeOffset? DeletedDate { get; set; }
-        public DateTimeOffset? DeleteExpiryDate { get; set; }
+        public override string Code => "NotFound";
     }
 }

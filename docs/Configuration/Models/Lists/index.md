@@ -80,8 +80,9 @@ is to stop being available. The date and time entered must be in the future; an 
 rejected by the server, with the reason displayed above the grid.
 
 This applies to any field on the List Value entry, not only Delete Expiry Date: an empty List Value is likewise rejected
-server-side. On rejection the entry is automatically re-opened for editing and highlighted in red, in addition to the
-message shown above the grid, making it clear exactly which entry needs correcting.
+server-side, as is a List Value longer than 512 characters. On rejection the entry is automatically re-opened for
+editing and highlighted in red, in addition to the message shown above the grid, making it clear exactly which entry
+needs correcting.
 
 To update a List Value, click on the pen icon for the list value to be updated. Upon clicking the Pen icon:
 
