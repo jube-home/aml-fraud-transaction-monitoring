@@ -39,6 +39,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddEntityAnalysisModelActivationRule(tools);
                 AddEntityAnalysisInlineScript(tools);
                 AddEntityAnalysisModelTtlCounter(tools);
+                AddEntityAnalysisModelList(tools);
                 all = tools;
 
                 return all;
@@ -59,5 +60,6 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddEntityAnalysisModelActivationRule(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisInlineScript(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelTtlCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelList(List<ServiceToolDescriptor> tools);
     }
 }

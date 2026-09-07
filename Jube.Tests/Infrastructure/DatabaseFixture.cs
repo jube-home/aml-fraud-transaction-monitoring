@@ -100,7 +100,7 @@ namespace Jube.Test.Infrastructure
 
         private static async Task<SeedData> SeedAsync(DbContext dbContext)
         {
-            int[] readWriteSpecs = [2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 37, 41];
+            int[] readWriteSpecs = [2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 37, 41];
             var readWriteSpecsNoApproveByReview = readWriteSpecs.Where(s => s != 41).ToArray();
 
             var suffix = Guid.NewGuid().ToString("N")[..8];

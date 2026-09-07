@@ -11,24 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-namespace Jube.App.Dto
+namespace Jube.Service.Exceptions.EntityAnalysisModelList
 {
-    using System;
-    using Interfaces;
-
-    public class EntityAnalysisModelsListDto : IUpdated
+    public sealed class ForbiddenException(string message, int[] requiredSpecifications)
+        : ServiceException(message)
     {
-        public Guid EntityAnalysisModelGuid { get; set; }
-        public string Name { get; set; }
-        public bool Locked { get; set; }
-        public bool Active { get; set; }
-        public int Id { get; set; }
-        public DateTimeOffset? CreatedDate { get; set; }
-        public string UpdatedUser { get; set; }
-        public DateTimeOffset? UpdatedDate { get; set; }
-        public string CreatedUser { get; set; }
-        public int Version { get; set; }
-        public string DeletedUser { get; set; }
-        public DateTimeOffset? DeletedDate { get; set; }
+        public override string Code => "PermissionDenied";
+        public int[] RequiredSpecifications { get; } = requiredSpecifications;
     }
 }
