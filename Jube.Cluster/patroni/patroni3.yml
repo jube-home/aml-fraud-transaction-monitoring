@@ -34,6 +34,15 @@ bootstrap:
       # *permanently* dead standby's slot can hold before Postgres reclaims the space anyway.
       use_slots: true
       parameters:
+        # pg_stat_statements needs shared_preload_libraries + a restart to enable, and this section is
+        # DCS-managed (bootstrap.dcs.postgresql.parameters) specifically so Patroni keeps the setting
+        # identical across every cluster member rather than it drifting node-by-node. On an already-bootstrapped
+        # cluster, editing this file alone does nothing -- push it live with `patronictl edit-config`, then
+        # roll the restart one node at a time (`patronictl restart postgres-cluster <member>`) so a standby is
+        # never down at the same time as the primary.
+        shared_preload_libraries: pg_stat_statements
+        pg_stat_statements.track: all
+        pg_stat_statements.max: 10000
         wal_level: replica
         max_wal_senders: 10
         wal_sender_timeout: 60s

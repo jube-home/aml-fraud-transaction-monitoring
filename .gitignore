@@ -13,6 +13,9 @@
 # Local dev test settings (DB-backed Jube.Tests connection string) -- machine-specific, never committed
 .runsettings
 
+# Local docker-compose secrets -- machine-specific, never committed
+.env
+
 # User-specific files
 *.rsuser
 *.suo

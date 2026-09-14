@@ -11,13 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Jube.Engine.Sanctions.Models;
+
 namespace Jube.Engine.Sanctions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Models;
-
     public static class SanctionAggregationCalculator
     {
         private const byte Sum = 1;
@@ -148,6 +148,11 @@ namespace Jube.Engine.Sanctions
         private static double CalculateSkewWeight(
             List<double> distances, double mean, int n, int reliabilityFloor, int reliabilityCeiling)
         {
+            if (n < reliabilityFloor)
+            {
+                return 1.0;
+            }
+
             var m2 = distances.Sum(d => (d - mean) * (d - mean)) / n;
 
             if (m2 == 0)

@@ -11,14 +11,15 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Net;
+using Jube.Cache.Observability;
+using Jube.Cache.Redis.CacheUserRegistryApiKey.Events;
+using Jube.ResilientRedisConnection;
+using log4net;
+using StackExchange.Redis;
+
 namespace Jube.Cache.Redis.CacheUserRegistryApiKey
 {
-    using System.Net;
-    using Events;
-    using log4net;
-    using ResilientRedisConnection;
-    using StackExchange.Redis;
-
     public class CacheUserRegistryApiKeyRepository
     {
         private readonly ConnectionMultiplexer connectionMultiplexer;
@@ -26,43 +27,60 @@ namespace Jube.Cache.Redis.CacheUserRegistryApiKey
 
         private readonly IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase;
 
-        public CacheUserRegistryApiKeyRepository(ConnectionMultiplexer connectionMultiplexer, IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
+        public CacheUserRegistryApiKeyRepository(ConnectionMultiplexer connectionMultiplexer,
+            IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
             ILog log)
         {
-            this.connectionMultiplexer = connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
+            this.connectionMultiplexer =
+                connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
             this.resilientRedisResilientRedisDatabase = resilientRedisResilientRedisDatabase;
             this.log = log;
 
             SubscribeToRedisHashEvents();
         }
-        public event EventHandler<CaseUserRegistryKeyEventArguments> OnCaseUserRegistryApiKeySetEvent;
-        public event EventHandler<CaseUserRegistryKeyEventArguments> OnCaseUserRegistryApiKeyRemoveEvent;
-        public async Task PublishSetAsync(string apiKeyHash)
+
+        internal CacheUserRegistryApiKeyRepository(IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
+            ILog log)
         {
-            try
-            {
-                await resilientRedisResilientRedisDatabase.PublishAsync(
-                    RedisChannel.Pattern($"UserRegistryApiKeySet:{Dns.GetHostName()}")
-                    , new RedisValue(apiKeyHash));
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+            this.resilientRedisResilientRedisDatabase = resilientRedisResilientRedisDatabase;
+            this.log = log;
         }
 
-        public async Task PublishRemoveAsync(string apiKeyHash)
+        public event EventHandler<CaseUserRegistryKeyEventArguments> OnCaseUserRegistryApiKeySetEvent;
+        public event EventHandler<CaseUserRegistryKeyEventArguments> OnCaseUserRegistryApiKeyRemoveEvent;
+
+        public Task PublishSetAsync(string apiKeyHash)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheUserRegistryApiKeyRepository.PublishSetAsync", async () =>
             {
-                await resilientRedisResilientRedisDatabase.PublishAsync(
-                    RedisChannel.Pattern($"UserRegistryApiKeyRemove:{Dns.GetHostName()}")
-                    , new RedisValue(apiKeyHash));
-            }
-            catch (Exception ex)
+                try
+                {
+                    await resilientRedisResilientRedisDatabase.PublishAsync(
+                        RedisChannel.Pattern($"UserRegistryApiKeySet:{Dns.GetHostName()}")
+                        , new RedisValue(apiKeyHash));
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
+            });
+        }
+
+        public Task PublishRemoveAsync(string apiKeyHash)
+        {
+            return CacheDiagnostics.RecordAsync("CacheUserRegistryApiKeyRepository.PublishRemoveAsync", async () =>
             {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                try
+                {
+                    await resilientRedisResilientRedisDatabase.PublishAsync(
+                        RedisChannel.Pattern($"UserRegistryApiKeyRemove:{Dns.GetHostName()}")
+                        , new RedisValue(apiKeyHash));
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
+            });
         }
 
         private void SubscribeToRedisHashEvents()
@@ -76,26 +94,32 @@ namespace Jube.Cache.Redis.CacheUserRegistryApiKey
             void SubscribeToSet()
             {
                 var subscriber = connectionMultiplexer.GetSubscriber();
-                subscriber.Subscribe(RedisChannel.Pattern("UserRegistryApiKeySet:*"), (_, value) =>
-                {
-                    OnCaseUserRegistryApiKeySetEvent?.Invoke(this, new CaseUserRegistryKeyEventArguments
-                    {
-                        ApiKeyHash = value
-                    });
-                });
+                subscriber.Subscribe(RedisChannel.Pattern("UserRegistryApiKeySet:*"),
+                    (_, value) => HandleSetMessage(value));
             }
 
             void SubscribeToRemove()
             {
                 var subscriber = connectionMultiplexer.GetSubscriber();
-                subscriber.Subscribe(RedisChannel.Pattern("UserRegistryApiKeyRemove:*"), (_, value) =>
-                {
-                    OnCaseUserRegistryApiKeyRemoveEvent?.Invoke(this, new CaseUserRegistryKeyEventArguments
-                    {
-                        ApiKeyHash = value
-                    });
-                });
+                subscriber.Subscribe(RedisChannel.Pattern("UserRegistryApiKeyRemove:*"),
+                    (_, value) => HandleRemoveMessage(value));
             }
+        }
+
+        internal void HandleSetMessage(RedisValue value)
+        {
+            OnCaseUserRegistryApiKeySetEvent?.Invoke(this, new CaseUserRegistryKeyEventArguments
+            {
+                ApiKeyHash = value
+            });
+        }
+
+        internal void HandleRemoveMessage(RedisValue value)
+        {
+            OnCaseUserRegistryApiKeyRemoveEvent?.Invoke(this, new CaseUserRegistryKeyEventArguments
+            {
+                ApiKeyHash = value
+            });
         }
     }
 }

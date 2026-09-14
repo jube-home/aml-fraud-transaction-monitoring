@@ -1,23 +1,19 @@
-// Description: C# Extension Methods | Enhance the .NET Framework and .NET Core with over 1000 extension methods.
-// Website & Documentation: https://csharp-extension.com/
-// Issues: https://github.com/zzzprojects/Z.ExtensionMethods/issues
-// License (MIT): https://github.com/zzzprojects/Z.ExtensionMethods/blob/master/LICENSE
-// More projects: https://zzzprojects.com/
-// Copyright � ZZZ Projects Inc. All rights reserved.
+// Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
+// See NOTICE.md for full attribution.
 namespace Jube.Dictionary.Extensions
 {
-    using Int32=int;
+    using Int32 = int;
 
     public static partial class Extensions
     {
-        /// <summary>
-        ///     An Int32 extension method that query if '@this' is prime.
-        /// </summary>
-        /// <param name="this">The @this to act on.</param>
-        /// <returns>true if prime, false if not.</returns>
         public static bool IsPrime(this Int32 @this)
         {
-            if (@this == 1 || @this == 2)
+            if (@this < 2)
+            {
+                return false;
+            }
+
+            if (@this == 2)
             {
                 return true;
             }
@@ -28,7 +24,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var sqrt = (Int32)Math.Sqrt(@this);
-            for (long t = 3; t <= sqrt; t = t + 2)
+            for (var t = 3; t <= sqrt; t += 2)
             {
                 if (@this % t == 0)
                 {

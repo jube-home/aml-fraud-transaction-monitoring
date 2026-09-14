@@ -1,115 +1,112 @@
-﻿// Description: C# Extension Methods | Enhance the .NET Framework and .NET Core with over 1000 extension methods.
-// Website & Documentation: https://csharp-extension.com/
-// Issues: https://github.com/zzzprojects/Z.ExtensionMethods/issues
-// License (MIT): https://github.com/zzzprojects/Z.ExtensionMethods/blob/master/LICENSE
-// More projects: https://zzzprojects.com/
-// Copyright © ZZZ Projects Inc. All rights reserved.
+// Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
+// See NOTICE.md for full attribution.
+using System.Data;
+
 namespace Jube.Dictionary.Extensions
 {
-    using System.Data;
-    using String=global::System.String;
-
     public static partial class Extensions
     {
         public static SqlDbType SqlSystemTypeToSqlDbType(this int @this)
         {
             switch (@this)
             {
-                case 34:// 34 | "image" | SqlDbType.Image
+                case 34:
                     return SqlDbType.Image;
 
-                case 35:// 35 | "text" | SqlDbType.Text
+                case 35:
                     return SqlDbType.Text;
 
-                case 36:// 36 | "uniqueidentifier" | SqlDbType.UniqueIdentifier
+                case 36:
                     return SqlDbType.UniqueIdentifier;
 
-                case 40:// 40 | "date" | SqlDbType.Date
+                case 40:
                     return SqlDbType.Date;
 
-                case 41:// 41 | "time" | SqlDbType.Time
+                case 41:
                     return SqlDbType.Time;
 
-                case 42:// 42 | "datetime2" | SqlDbType.DateTime2
+                case 42:
                     return SqlDbType.DateTime2;
 
-                case 43:// 43 | "datetimeoffset" | SqlDbType.DateTimeOffset
+                case 43:
                     return SqlDbType.DateTimeOffset;
 
-                case 48:// 48 | "tinyint" | SqlDbType.TinyInt
+                case 48:
                     return SqlDbType.TinyInt;
 
-                case 52:// 52 | "smallint" | SqlDbType.SmallInt
+                case 52:
                     return SqlDbType.SmallInt;
 
-                case 56:// 56 | "int" | SqlDbType.Int
+                case 56:
                     return SqlDbType.Int;
 
-                case 58:// 58 | "smalldatetime" | SqlDbType.SmallDateTime
+                case 58:
                     return SqlDbType.SmallDateTime;
 
-                case 59:// 59 | "real" | SqlDbType.Real
+                case 59:
                     return SqlDbType.Real;
 
-                case 60:// 60 | "money" | SqlDbType.Money
+                case 60:
                     return SqlDbType.Money;
 
-                case 61:// 61 | "datetime" | SqlDbType.DateTime
+                case 61:
                     return SqlDbType.DateTime;
 
-                case 62:// 62 | "float" | SqlDbType.Float
+                case 62:
                     return SqlDbType.Float;
 
-                case 98:// 98 | "sql_variant" | SqlDbType.Variant
+                case 98:
                     return SqlDbType.Variant;
 
-                case 99:// 99 | "ntext" | SqlDbType.NText
+                case 99:
                     return SqlDbType.NText;
 
-                case 104:// 104 | "bit" | SqlDbType.Bit
+                case 104:
                     return SqlDbType.Bit;
 
-                case 106:// 106 | "decimal" | SqlDbType.Decimal
+                case 106:
                     return SqlDbType.Decimal;
 
-                case 108:// 108 | "numeric" | SqlDbType.Decimal
+                case 108:
                     return SqlDbType.Decimal;
 
-                case 122:// 122 | "smallmoney" | SqlDbType.SmallMoney
+                case 122:
                     return SqlDbType.SmallMoney;
 
-                case 127:// 127 | "bigint" | SqlDbType.BigInt
+                case 127:
                     return SqlDbType.BigInt;
 
-                case 165:// 165 | "varbinary" | SqlDbType.VarBinary
+                case 165:
                     return SqlDbType.VarBinary;
 
-                case 167:// 167 | "varchar" | SqlDbType.VarChar
+                case 167:
                     return SqlDbType.VarChar;
 
-                case 173:// 173 | "binary" | SqlDbType.Binary
+                case 173:
                     return SqlDbType.Binary;
 
-                case 175:// 175 | "char" | SqlDbType.Char
+                case 175:
                     return SqlDbType.Char;
 
-                case 189:// 189 | "timestamp" | SqlDbType.Timestamp
+                case 189:
                     return SqlDbType.Timestamp;
 
-                case 231:// 231 | "nvarchar", "sysname" | SqlDbType.NVarChar
+                case 231:
                     return SqlDbType.NVarChar;
 
-                case 239:// 239 | "nchar" | SqlDbType.NChar
+                case 239:
                     return SqlDbType.NChar;
 
-                case 240:// 240 | "hierarchyid", "geometry", "geography" | SqlDbType.Udt
+                case 240:
                     return SqlDbType.Udt;
 
-                case 241:// 241 | "xml" | SqlDbType.Xml
+                case 241:
                     return SqlDbType.Xml;
 
                 default:
-                    throw new Exception(String.Format("Unsupported Type: {0}. Please let us know about this type and we will support it: sales@zzzprojects.com", @this));
+                    throw new Exception(string.Format(
+                        "Unsupported Type: {0}. Please let us know about this type and we will support it: sales@zzzprojects.com",
+                        @this));
             }
         }
     }

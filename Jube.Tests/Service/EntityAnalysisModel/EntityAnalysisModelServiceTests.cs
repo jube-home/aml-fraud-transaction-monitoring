@@ -11,46 +11,51 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Dto.EntityAnalysisModel;
 using Jube.Service.Agent.ServiceToolCatalogue;
+using Jube.Service.EntityAnalysisModel;
+using Jube.Service.Exceptions.EntityAnalysisModel;
+using Jube.Service.Observability;
+using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Test.Infrastructure;
+using Jube.Test.Infrastructure.DatabaseFixture;
+using LinqToDB;
+using log4net;
+using Microsoft.Extensions.Diagnostics.Metrics.Testing;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
+using Xunit;
 
 namespace Jube.Test.Service.EntityAnalysisModel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using FluentAssertions;
-    using Jube.Data.Context;
-    using Jube.Data.Poco;
-    using Jube.Dto.EntityAnalysisModel;
-    using Jube.Service.Exceptions.EntityAnalysisModel;
-    using Jube.Service.Observability;
-    using Jube.Service.Reactivity;
-    using Infrastructure;
-    using LinqToDB;
-    using log4net;
-    using Microsoft.Extensions.Diagnostics.Metrics.Testing;
-    using Microsoft.Extensions.Localization;
-    using Microsoft.Extensions.Logging.Abstractions;
-    using Microsoft.Extensions.Options;
-    using Xunit;
-    using EntityAnalysisModelService = Jube.Service.EntityAnalysisModel.EntityAnalysisModelService;
+    using EntityAnalysisModelService = EntityAnalysisModelService;
 
     [Trait("Category", "Service")]
     [Collection("Database")]
     public sealed class EntityAnalysisModelServiceTests(DatabaseFixture fx) : IAsyncLifetime
     {
-        private readonly List<int> createdIds = [];
-
         private static readonly IStringLocalizerFactory localizers =
             new ResourceManagerStringLocalizerFactory(Options.Create(new LocalizationOptions()),
                 NullLoggerFactory.Instance);
 
-        public Task InitializeAsync() => Task.CompletedTask;
+        private readonly List<int> createdIds = [];
+
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
 
         public async Task DisposeAsync()
         {
@@ -70,29 +75,37 @@ namespace Jube.Test.Service.EntityAnalysisModel
 
         private static Task<EntityAnalysisModelService> BuildServiceAsync(
             DbContext dbContext, string? userName, ILog? log = null, ILog? auditLog = null,
-            IServiceChangeBus? serviceChangeBus = null) =>
-            EntityAnalysisModelService.CreateAsync(
+            IServiceChangeBus? serviceChangeBus = null)
+        {
+            return EntityAnalysisModelService.CreateAsync(
                 dbContext, userName, log ?? TestLog.NoOp, localizers, serviceChangeBus ?? new NullServiceChangeBus(),
                 auditLog ?? TestLog.NoOp);
+        }
 
-        private static EntityAnalysisModelDto NewDto(string name) => new()
+        private static EntityAnalysisModelDto NewDto(string name)
         {
-            Name = name,
-            EntryName = "TxnId",
-            EntryXPath = "$.TxnId",
-            ReferenceDateName = "TxnDateTime",
-            ReferenceDateXPath = "$.TxnDateTime",
-            ReferenceDatePayloadLocationTypeId = 1,
-            CacheTtlInterval = 'h',
-            CacheFetchLimit = 100,
-            CacheTtlIntervalValue = 1,
-            MaxResponseElevation = 10,
-            MaxResponseElevationInterval = 'd',
-            MaxActivationWatcherInterval = 'd',
-            ActivationWatcherSample = 1
-        };
+            return new EntityAnalysisModelDto
+            {
+                Name = name,
+                EntryName = "TxnId",
+                EntryXPath = "$.TxnId",
+                ReferenceDateName = "TxnDateTime",
+                ReferenceDateXPath = "$.TxnDateTime",
+                ReferenceDatePayloadLocationTypeId = 1,
+                CacheTtlInterval = 'h',
+                CacheFetchLimit = 100,
+                CacheTtlIntervalValue = 1,
+                MaxResponseElevation = 10,
+                MaxResponseElevationInterval = 'd',
+                MaxActivationWatcherInterval = 'd',
+                ActivationWatcherSample = 1
+            };
+        }
 
-        private static string UniqueName(string label) => $"{DatabaseFixture.Prefix}{label}{Guid.NewGuid():N}"[..40];
+        private static string UniqueName(string label)
+        {
+            return $"{DatabaseFixture.Prefix}{label}{Guid.NewGuid():N}"[..40];
+        }
 
         [Fact]
         public async Task InsertPersistsAndReturnsVersionOneAsync()
@@ -414,8 +427,8 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var first = await service.InsertAsync(NewDto(name));
             createdIds.Add(first.Id);
 
-            var ex = await Assert.ThrowsAsync<DtoValidationException>(
-                () => service.InsertAsync(NewDto(name.ToUpperInvariant())));
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
+                service.InsertAsync(NewDto(name.ToUpperInvariant())));
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
         }
 
@@ -509,6 +522,151 @@ namespace Jube.Test.Service.EntityAnalysisModel
         }
 
         [Fact]
+        public async Task ImplicitAsyncTimeoutOutOfRangeOnlyRejectedWhenEnabledAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var disabled = NewDto(UniqueName("ImplicitAsyncOff"));
+            disabled.EnableImplicitAsync = false;
+            disabled.ImplicitAsyncTimeoutMilliseconds = 0;
+            var savedDisabled = await service.InsertAsync(disabled);
+            createdIds.Add(savedDisabled.Id);
+
+            var enabled = NewDto(UniqueName("ImplicitAsyncOn"));
+            enabled.EnableImplicitAsync = true;
+            enabled.ImplicitAsyncTimeoutMilliseconds = 0;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(enabled));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "ImplicitAsyncTimeoutMillisecondsRange");
+        }
+
+        [Fact]
+        public async Task ImplicitAsyncTimeoutMessageResolvesPerCultureAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(UniqueName("ImplicitAsyncFr"));
+            dto.EnableImplicitAsync = true;
+            dto.ImplicitAsyncTimeoutMilliseconds = 0;
+
+            var originalCulture = CultureInfo.CurrentUICulture;
+            try
+            {
+                CultureInfo.CurrentUICulture = new CultureInfo("fr");
+                var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+                ex.Result.Errors.Should().Contain(e =>
+                    e.ErrorCode == "ImplicitAsyncTimeoutMillisecondsRange" &&
+                    e.ErrorMessage ==
+                    "Le délai d'expiration de l'async implicite doit être supérieur à zéro milliseconde.");
+            }
+            finally
+            {
+                CultureInfo.CurrentUICulture = originalCulture;
+            }
+        }
+
+        [Fact]
+        public async Task ImplicitAsyncSwitchAndTimeoutRoundTripAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(UniqueName("ImplicitAsyncRoundTrip"));
+            dto.EnableImplicitAsync = true;
+            dto.ImplicitAsyncTimeoutMilliseconds = 2500;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            var fetched = await service.GetByIdAsync(saved.Id);
+            fetched!.EnableImplicitAsync.Should().BeTrue();
+            fetched.ImplicitAsyncTimeoutMilliseconds.Should().Be(2500);
+        }
+
+        [Fact]
+        public async Task EnableTraceRoundTripAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(UniqueName("EnableTraceRoundTrip"));
+            dto.EnableTrace = true;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            var fetched = await service.GetByIdAsync(saved.Id);
+            fetched!.EnableTrace.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task LogsWarnThresholdSwitchAndThresholdRoundTripAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(UniqueName("LogsRoundTrip"));
+            dto.EnableLogsWarnThreshold = true;
+            dto.LogsWarnThresholdMilliseconds = 500;
+            dto.EnableLogsInResponse = true;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            var fetched = await service.GetByIdAsync(saved.Id);
+            fetched!.EnableLogsInfo.Should().BeFalse();
+            fetched.EnableLogsWarnThreshold.Should().BeTrue();
+            fetched.LogsWarnThresholdMilliseconds.Should().Be(500);
+            fetched.EnableLogsInResponse.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task LogsInfoAndWarnThresholdAreIndependentNotMutuallyExclusiveAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(UniqueName("LogsBoth"));
+            dto.EnableLogsInfo = true;
+            dto.EnableSampling = true;
+            dto.SamplePercentage = 42;
+            dto.EnableLogsWarnThreshold = true;
+            dto.LogsWarnThresholdMilliseconds = 500;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            var fetched = await service.GetByIdAsync(saved.Id);
+            fetched!.EnableLogsInfo.Should().BeTrue();
+            fetched.EnableSampling.Should().BeTrue();
+            fetched.SamplePercentage.Should().Be(42);
+            fetched.EnableLogsWarnThreshold.Should().BeTrue();
+            fetched.LogsWarnThresholdMilliseconds.Should().Be(500);
+        }
+
+        [Fact]
+        public async Task LogsWarnThresholdOutOfRangeOnlyRejectedWhenEnabledAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var off = NewDto(UniqueName("LogsThresholdOff"));
+            off.EnableLogsWarnThreshold = false;
+            off.LogsWarnThresholdMilliseconds = 0;
+            var savedOff = await service.InsertAsync(off);
+            createdIds.Add(savedOff.Id);
+
+            var warn = NewDto(UniqueName("LogsThresholdWarn"));
+            warn.EnableLogsWarnThreshold = true;
+            warn.LogsWarnThresholdMilliseconds = 0;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(warn));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "LogsWarnThresholdMillisecondsRange");
+        }
+
+        [Fact]
         public async Task TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -588,7 +746,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var dto = NewDto(UniqueName("Missing"));
-            dto.Id = Int32.MaxValue - 1;
+            dto.Id = int.MaxValue - 1;
 
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
         }
@@ -599,7 +757,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
-            await Assert.ThrowsAsync<NotFoundException>(() => service.DeleteAsync(Int32.MaxValue - 1));
+            await Assert.ThrowsAsync<NotFoundException>(() => service.DeleteAsync(int.MaxValue - 1));
 
             var saved = await service.InsertAsync(NewDto(UniqueName("DoubleDelete")));
             createdIds.Add(saved.Id);
@@ -647,7 +805,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
-            var result = await service.GetByIdAsync(Int32.MaxValue - 1);
+            var result = await service.GetByIdAsync(int.MaxValue - 1);
             result.Should().BeNull();
         }
 
@@ -697,7 +855,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
         public async Task WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var log = new TestLog(enabled: false);
+            var log = new TestLog(false);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, log);
 
             var saved = await service.InsertAsync(NewDto(UniqueName("Gated")));
@@ -768,32 +926,10 @@ namespace Jube.Test.Service.EntityAnalysisModel
             auditLog.Entries[0].Message.Should().Contain("op=List");
         }
 
-        private sealed class CapturingBus : IServiceChangeBus
-        {
-            public readonly List<ServiceChangeEvent> Published = [];
-
-            public Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default)
-            {
-                Published.Add(change);
-                return Task.CompletedTask;
-            }
-
-            public IDisposable Subscribe(Func<ServiceChangeEvent, Task> handler) => NoopSubscription.Instance;
-
-            private sealed class NoopSubscription : IDisposable
-            {
-                public static readonly NoopSubscription Instance = new();
-
-                public void Dispose()
-                {
-                }
-            }
-        }
-
         [Fact]
         public async Task InsertPublishesExactlyOneCreatedEventAsync()
         {
-            var serviceChangeBus = new CapturingBus();
+            var serviceChangeBus = new CapturingBus.CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
@@ -809,7 +945,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
         [Fact]
         public async Task ReadsAndFailuresPublishNothingAsync()
         {
-            var serviceChangeBus = new CapturingBus();
+            var serviceChangeBus = new CapturingBus.CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
@@ -845,10 +981,10 @@ namespace Jube.Test.Service.EntityAnalysisModel
                 createdIds.Add(saved.Id);
             }
 
-            var page = await service.ListAsync(take: 2);
+            var page = await service.ListAsync(2);
             page.Items.Count.Should().BeLessThanOrEqualTo(2);
 
-            var oversized = await service.ListAsync(take: 10_000);
+            var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
         }
     }

@@ -11,22 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
+using Jube.TaskCancellation.TaskHelper;
+using log4net;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Threading.Tasks;
-    using DynamicEnvironment;
-    using log4net;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using TaskCancellation.TaskHelper;
-    using EntityAnalysisModel=EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
+    using EntityAnalysisModel = EntityAnalysisModel;
 
     public class Context
     {
         public readonly List<Task<TimedTaskResult>> PendingReadTasks = [];
         public readonly List<Task<TimedTaskResult>> PendingWriteTasks = [];
+        public long LastLogEntryElapsedMicroseconds;
         public long? StartBytesUsed { get; init; }
         public EntityAnalysisModel EntityAnalysisModel { get; init; }
         public Dictionary<int, EntityAnalysisModel> AvailableEntityAnalysisModels { get; init; }
@@ -34,7 +36,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context
         public Stopwatch Stopwatch { get; init; }
         public ILog Log { get; init; }
         public Random Random { get; init; }
-        public DynamicEnvironment Environment { get; init; }
+        public DynamicEnvironment.DynamicEnvironment Environment { get; init; }
         public bool Async { get; set; }
+        public bool ImplicitAsyncTimedOut { get; set; }
+        public byte[] ImplicitAsyncTimeoutResponseJson { get; set; }
+        public long LastResponseTimeElapsedMicroseconds { get; set; }
+        public long? LastResponseTimeAllocatedBytes { get; set; }
+        public bool LogSampled { get; set; } = true;
     }
 }

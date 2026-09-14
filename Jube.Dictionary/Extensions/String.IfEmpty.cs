@@ -1,19 +1,9 @@
-// Description: C# Extension Methods | Enhance the .NET Framework and .NET Core with over 1000 extension methods.
-// Website & Documentation: https://csharp-extension.com/
-// Issues: https://github.com/zzzprojects/Z.ExtensionMethods/issues
-// License (MIT): https://github.com/zzzprojects/Z.ExtensionMethods/blob/master/LICENSE
-// More projects: https://zzzprojects.com/
-// Copyright � ZZZ Projects Inc. All rights reserved.
+// Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
+// See NOTICE.md for full attribution.
 namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        /// <summary>
-        ///     A string extension method that if empty.
-        /// </summary>
-        /// <param name="value">The value to act on.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns>A string.</returns>
         public static string IfEmpty(this string value, string defaultValue)
         {
             return value.IsNotEmpty() ? value : defaultValue;

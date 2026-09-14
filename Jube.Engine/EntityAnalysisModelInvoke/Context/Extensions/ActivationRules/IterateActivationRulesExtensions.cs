@@ -11,102 +11,96 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Cache;
+using Jube.Data.Poco;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
+using RabbitMQ.Client;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Cache;
-    using Data.Poco;
-    using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
-    using Models.CaseManagement;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using RabbitMQ.Client;
-    using ReflectionHelpers;
-    using EntityAnalysisModel=EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
-    using EntityAnalysisModelActivationRule=EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelActivationRule;
+    using EntityAnalysisModel = EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
+    using EntityAnalysisModelActivationRule =
+        EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelActivationRule;
 
     public static class IterateActivationRulesExtensions
     {
-        public static async Task<(int activationRuleCount, CreateCase createCase, int? prevailingActivationRuleId)> IterateAndProcessAsync(this Context context,
-            CacheService cacheService, Dictionary<int, EntityAnalysisModel> availableModels,
-            IModel rabbitMqChannel)
+        public static async
+            Task<(int activationRuleCount, CreateCase createCase, int? prevailingActivationRuleId,
+                Dictionary<string, ActivationRuleTiming> items)> IterateAndProcessAsync(this Context context,
+                CacheService cacheService, Dictionary<int, EntityAnalysisModel> availableModels,
+                IModel rabbitMqChannel)
         {
             var rulesCount = context.EntityAnalysisModel.Collections.ModelActivationRules.Count;
-            var prevailingActivationRuleName = String.Empty;
+            var prevailingActivationRuleName = string.Empty;
             var responseElevationHighWaterMark = 0d;
             var suppressedActivationRules = new List<string>(rulesCount);
             var activationRuleCount = 0;
             CreateCase createCase = null;
             int? prevailingActivationRuleId = null;
+            var items = new Dictionary<string, ActivationRuleTiming>();
 
             foreach (var evaluateActivationRule in context.EntityAnalysisModel.Collections.ModelActivationRules)
             {
+                var itemStopwatch = Stopwatch.StartNew();
+                var itemStartBytes = GC.GetAllocatedBytesForCurrentThread();
+                var timing = new ActivationRuleTiming();
+
                 try
                 {
                     var suppressed = false;
-                    if (context.ActivationRuleGetSuppressedModel(ref suppressedActivationRules) || context.CheckSuppressedResponseElevation())
+                    if (context.ActivationRuleGetSuppressedModel(ref suppressedActivationRules) ||
+                        context.CheckSuppressedResponseElevation())
                     {
                         suppressed = true;
 
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info($"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} activation rule {evaluateActivationRule.Id} is suppressed at the model level or has exceeded response elevation counter at {context.EntityAnalysisModel.ConcurrentQueues.ResponseElevationEntries.Count}.");
-                        }
+                        context.TraceLog(
+                            $"activation rule {evaluateActivationRule.Id} is suppressed at the model level or has exceeded response elevation counter at {context.EntityAnalysisModel.ConcurrentQueues.ResponseElevationEntries.Count}.");
                     }
                     else
                     {
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} activation rule {evaluateActivationRule.Id} is not suppressed at the model level, will test at rule level.");
-                        }
+                        context.TraceLog(
+                            $"activation rule {evaluateActivationRule.Id} is not suppressed at the model level, will test at rule level.");
 
-                        if (!evaluateActivationRule.EnableReprocessing && context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
+                        if (!evaluateActivationRule.EnableReprocessing && context
+                                .EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId
+                                .HasValue)
                         {
                             suppressed = true;
 
-                            if (context.Log.IsInfoEnabled)
-                            {
-                                context.Log.Info(
-                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} activation rule {evaluateActivationRule.Id} is suppressed at the activation rule level because of reprocessing.");
-                            }
+                            context.TraceLog(
+                                $"activation rule {evaluateActivationRule.Id} is suppressed at the activation rule level because of reprocessing.");
                         }
                         else if (suppressedActivationRules is { Count: > 0 })
                         {
                             suppressed = suppressedActivationRules.Contains(evaluateActivationRule.Name);
 
-                            if (context.Log.IsInfoEnabled)
-                            {
-                                context.Log.Info(
-                                    suppressed
-                                        ? $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} activation rule {evaluateActivationRule.Id} is suppressed at the activation rule level."
-                                        : $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} activation rule {evaluateActivationRule.Id} is not suppressed at the activation rule level.");
-                            }
+                            context.TraceLog(
+                                $"activation rule {evaluateActivationRule.Id} is {(suppressed ? "suppressed" : "not suppressed")} at the activation rule level.");
                         }
                     }
 
                     var activationSample = evaluateActivationRule.ActivationSample >= context.Random.NextDouble();
                     if (!activationSample)
                     {
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id}  has failed in sampling so certain activations will not take place even if there is a match on the activation rule.");
-                        }
+                        context.TraceLog(
+                            $"has failed in sampling so certain activations will not take place even if there is a match on the activation rule.");
 
                         continue;
                     }
 
                     UpdateEvaluationCount(evaluateActivationRule);
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id}  has passed sampling and is eligible for activation.");
-                    }
+                    context.TraceLog($"has passed sampling and is eligible for activation.");
 
                     var matched = ReflectRuleHelper.Execute(
                         evaluateActivationRule,
@@ -115,49 +109,44 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                         context.EntityAnalysisModelInstanceEntryPayload.Dictionary,
                         context.Log);
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id}  has finished testing the activation rule and it has a matched status of {matched}.");
-                    }
+                    var matchedForLog = matched;
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is checking for Activation Rule Evaluation InlineScripts looking for context Guid:{evaluateActivationRule.Guid} and or Name:{evaluateActivationRule.Name}.");
-                    }
+                    context.TraceLog(
+                        $"has finished testing the activation rule and it has a matched status of {matchedForLog}.");
 
-                    foreach (var inlineScript in context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Where(s => s.EntityAnalysisModelInlineScriptEvents
-                                 .Any(e => e.EntityAnalysisModelInlineScriptEventType == EntityAnalysisModelInlineScriptEventTypeEnum.AbstractionRuleOverride
-                                           && (e.Guid == evaluateActivationRule.Guid || e.Guid == Guid.Empty)
-                                           && (e.Name == evaluateActivationRule.Name || String.IsNullOrEmpty(e.Name))
-                                 )))
+                    context.TraceLog(
+                        $"is checking for Activation Rule Evaluation InlineScripts looking for context Guid:{evaluateActivationRule.Guid} and or Name:{evaluateActivationRule.Name}.");
+
+                    var overrideScriptTimings = new Dictionary<string, TaskPerformance>();
+                    foreach (var inlineScript in context.EntityAnalysisModel.Collections
+                                 .EntityAnalysisModelInlineScripts.Where(s => s.EntityAnalysisModelInlineScriptEvents
+                                     .Any(e => e.EntityAnalysisModelInlineScriptEventType ==
+                                               EntityAnalysisModelInlineScriptEventTypeEnum.AbstractionRuleOverride
+                                               && (e.Guid == evaluateActivationRule.Guid || e.Guid == Guid.Empty)
+                                               && (e.Name == evaluateActivationRule.Name ||
+                                                   string.IsNullOrEmpty(e.Name))
+                                     )))
                     {
-                        if (context.Log.IsInfoEnabled)
+                        context.TraceLog($"is about to execute Inline Script Id: {inlineScript.Id}.");
+
+                        var (scriptMatched, scriptTiming) =
+                            await TimeAsync(() => ReflectInlineScriptHelper.ExecuteAsync(inlineScript, context))
+                                .ConfigureAwait(false);
+                        overrideScriptTimings[inlineScript.InlineScriptCode] = scriptTiming;
+
+                        if (scriptMatched)
                         {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is about to execute Inline Script Id: {inlineScript.Id}.");
-                        }
-
-                        if (await ReflectInlineScriptHelper.ExecuteAsync(inlineScript, context).ConfigureAwait(false))
-                        {
-                            if (context.Log.IsInfoEnabled)
-                            {
-                                context.Log.Info(
-                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} matched Inline Script Id: {inlineScript.Id}.");
-                            }
+                            context.TraceLog($"matched Inline Script Id: {inlineScript.Id}.");
 
                             matched = true;
                         }
                         else
                         {
-                            if (context.Log.IsInfoEnabled)
-                            {
-                                context.Log.Info(
-                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} did not match Inline Script Id: {inlineScript.Id}.");
-                            }
+                            context.TraceLog($"did not match Inline Script Id: {inlineScript.Id}.");
                         }
                     }
+
+                    timing.AbstractionRuleOverrideInlineScripts = overrideScriptTimings;
 
                     if (!matched)
                     {
@@ -166,13 +155,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
                     UpdateActivationCounter(evaluateActivationRule);
 
-                    if (context.EntityAnalysisModelInstanceEntryPayload.Activation.ContainsKey(evaluateActivationRule.Name))
+                    if (context.EntityAnalysisModelInstanceEntryPayload.Activation.ContainsKey(evaluateActivationRule
+                            .Name))
                     {
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} and has already added the activation rule {evaluateActivationRule.Id} on {evaluateActivationRule.Name} for processing.");
-                        }
+                        context.TraceLog(
+                            $"and has already added the activation rule {evaluateActivationRule.Id} on {evaluateActivationRule.Name} for processing.");
 
                         continue;
                     }
@@ -184,11 +171,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                             Visible = evaluateActivationRule.Visible
                         });
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} and has added the activation rule {evaluateActivationRule.Id} flag on {evaluateActivationRule.Name} to the activation buffer for processing.");
-                    }
+                    context.TraceLog(
+                        $"and has added the activation rule {evaluateActivationRule.Id} flag on {evaluateActivationRule.Name} to the activation buffer for processing.");
 
                     if (evaluateActivationRule.ReportTable)
                     {
@@ -201,22 +185,35 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                                 context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
                         });
 
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} and has added the activation rule {evaluateActivationRule.Id} flag to the response payload also.");
-                        }
+                        context.TraceLog(
+                            $"and has added the activation rule {evaluateActivationRule.Id} flag to the response payload also.");
                     }
 
-                    context.ProcessResponseElevation(evaluateActivationRule, ref responseElevationHighWaterMark, suppressed);
-                    await context.ActivationRuleNotificationAsync(evaluateActivationRule, suppressed, rabbitMqChannel, cacheService);
+                    timing.ResponseElevation = Time(() =>
+                        context.ProcessResponseElevation(evaluateActivationRule, ref responseElevationHighWaterMark,
+                            suppressed));
 
-                    context.ActivationRuleCountsAndArchiveHighWatermark(evaluateActivationRule, suppressed, ref activationRuleCount,
+                    timing.Notification = await TimeAsync(() =>
+                        context.ActivationRuleNotificationAsync(evaluateActivationRule, suppressed, rabbitMqChannel,
+                            cacheService)).ConfigureAwait(false);
+
+                    context.ActivationRuleCountsAndArchiveHighWatermark(evaluateActivationRule, suppressed,
+                        ref activationRuleCount,
                         ref prevailingActivationRuleId, ref prevailingActivationRuleName);
 
-                    await context.ActivationRuleActivationWatcherAsync(evaluateActivationRule, suppressed, rabbitMqChannel);
+                    timing.ActivationWatcher = await TimeAsync(() =>
+                            context.ActivationRuleActivationWatcherAsync(evaluateActivationRule, suppressed,
+                                rabbitMqChannel, cacheService.ResilientRedisResilientRedisDatabase))
+                        .ConfigureAwait(false);
 
-                    createCase ??= await context.ActivationRuleCreateCaseObjectAsync(evaluateActivationRule, suppressed, cacheService);
+                    if (createCase == null)
+                    {
+                        var (caseResult, caseTiming) = await TimeAsync(() =>
+                            context.ActivationRuleCreateCaseObjectAsync(evaluateActivationRule, suppressed,
+                                cacheService)).ConfigureAwait(false);
+                        createCase = caseResult;
+                        timing.CaseCreation = caseTiming;
+                    }
 
                     await context.ActivationRuleTtlCounterAsync(evaluateActivationRule, availableModels, cacheService);
                 }
@@ -225,21 +222,58 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                     context.Log.Error(
                         $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} error in TTL Counter processing as {ex} .");
                 }
+                finally
+                {
+                    itemStopwatch.Stop();
+                    var allocated = GC.GetAllocatedBytesForCurrentThread() - itemStartBytes;
+                    timing.Rule = new TaskPerformance(
+                        (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                        Math.Max(allocated, 0));
+                    items[evaluateActivationRule.Name] = timing;
+                }
             }
 
-            return (activationRuleCount, createCase, prevailingActivationRuleId);
+            return (activationRuleCount, createCase, prevailingActivationRuleId, items);
+        }
+
+        private static TaskPerformance Time(Action action)
+        {
+            var sw = Stopwatch.StartNew();
+            var startBytes = GC.GetAllocatedBytesForCurrentThread();
+            action();
+            sw.Stop();
+            return new TaskPerformance((long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                Math.Max(GC.GetAllocatedBytesForCurrentThread() - startBytes, 0));
+        }
+
+        private static async Task<TaskPerformance> TimeAsync(Func<Task> action)
+        {
+            var sw = Stopwatch.StartNew();
+            var startBytes = GC.GetAllocatedBytesForCurrentThread();
+            await action().ConfigureAwait(false);
+            sw.Stop();
+            return new TaskPerformance((long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                Math.Max(GC.GetAllocatedBytesForCurrentThread() - startBytes, 0));
+        }
+
+        private static async Task<(T Result, TaskPerformance Timing)> TimeAsync<T>(Func<Task<T>> action)
+        {
+            var sw = Stopwatch.StartNew();
+            var startBytes = GC.GetAllocatedBytesForCurrentThread();
+            var result = await action().ConfigureAwait(false);
+            sw.Stop();
+            return (result, new TaskPerformance((long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                Math.Max(GC.GetAllocatedBytesForCurrentThread() - startBytes, 0)));
         }
 
         private static void UpdateActivationCounter(EntityAnalysisModelActivationRule evaluateActivationRule)
         {
-
             Interlocked.Increment(ref evaluateActivationRule.ActivationCounter);
             evaluateActivationRule.ActivationCounterDate = DateTime.UtcNow;
         }
 
         private static void UpdateEvaluationCount(EntityAnalysisModelActivationRule evaluateActivationRule)
         {
-
             Interlocked.Increment(ref evaluateActivationRule.EvaluationCounter);
         }
     }

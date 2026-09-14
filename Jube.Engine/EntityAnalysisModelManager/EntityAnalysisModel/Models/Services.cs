@@ -11,20 +11,21 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Cache;
+using Jube.Cryptography;
+using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
+using log4net;
+using RabbitMQ.Client;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
 {
-    using Cryptography;
-    using DynamicEnvironment;
-    using Jube.Cache;
-    using log4net;
-    using RabbitMQ.Client;
-
     public class Services
     {
         public CacheService CacheService;
         public ILog Log { get; set; }
-        public DynamicEnvironment JubeEnvironment { get; set; }
+        public DynamicEnvironment.DynamicEnvironment JubeEnvironment { get; set; }
         public IModel RabbitMqChannel { get; set; }
         public AesEncryption AesEncryption { get; set; }
+        public IImplicitAsyncInvocationTracker ImplicitAsyncInvocationTracker { get; set; }
     }
 }

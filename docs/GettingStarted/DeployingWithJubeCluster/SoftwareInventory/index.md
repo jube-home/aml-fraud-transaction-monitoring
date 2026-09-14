@@ -30,7 +30,7 @@ and is worth locking down deliberately before a production build.
 | etcd       | v3.5.3   |
 | Redis      | 7-alpine |
 | HAProxy    | 2.8      |
-| .NET       | 9.0      |
+| .NET       | 10.0     |
 | Alpine     | 3.21     |
 
 ## Consensus & coordination
@@ -82,34 +82,56 @@ same off-the-shelf image.
 Built from `Jube.App/Dockerfile`, tagged as `${JUBE_IMAGE}` and shared by `jube-ui`, `jube-api` and `jube-jobs` - same
 image, three different Environment Variable profiles.
 
-| Component                            | Version  | Notes                             |
-|--------------------------------------|----------|-----------------------------------|
-| `mcr.microsoft.com/dotnet/sdk`       | 9.0      | Build stage.                      |
-| `mcr.microsoft.com/dotnet/aspnet`    | 9.0      | Runtime base for the final image. |
-| Target framework (`Jube.App.csproj`) | `net9.0` |                                   |
+| Component                            | Version   | Notes                             |
+|--------------------------------------|-----------|-----------------------------------|
+| `mcr.microsoft.com/dotnet/sdk`       | 10.0      | Build stage.                      |
+| `mcr.microsoft.com/dotnet/aspnet`    | 10.0      | Runtime base for the final image. |
+| Target framework (`Jube.App.csproj`) | `net10.0` |                                   |
 
 > **Not part of the Swarm stack** - `Jube.LoadTest/Dockerfile` also targets `dotnet/sdk:9.0` and
 > `dotnet/runtime:9.0`, but it's a standalone load-testing tool, not a service in `Jube.Cluster/docker-compose.yml`.
 
 ## Observability
 
-| Service     | Image                  | Version               | Notes                                                     |
-|-------------|------------------------|-----------------------|-----------------------------------------------------------|
-| Dozzle      | `amir20/dozzle`        | *unpinned* (`latest`) | Swarm-wide log viewer, one instance per manager node.     |
-| Uptime Kuma | `louislam/uptime-kuma` | 1.x                   | Major version pinned only; single replica (SQLite state). |
+Built from `Jube.Monitoring/Dockerfile`, tagged as `${JUBE_MONITORING_IMAGE}` - the one component in this section
+that is Jube's own code, not a third-party image. Deployed `mode: global` (one instance per physical node, manager or
+worker), since it polls the Docker Engine API local to whichever host
+it runs on - see [Docker Monitoring Sidecar](../../../Concepts/API/InfrastructureHealthMetrics/index.html#docker-monitoring-sidecar-jubemonitoring)
+for what it captures.
+
+| Component                                   | Version   | Notes                                                                                                    |
+|----------------------------------------------|-----------|-----------------------------------------------------------------------------------------------------------|
+| `mcr.microsoft.com/dotnet/sdk`               | 10.0      | Build stage.                                                                                               |
+| `mcr.microsoft.com/dotnet/runtime`           | 10.0      | Runtime base for the final image - a console process, not a web app, so `runtime` rather than `aspnet`.   |
+| Target framework (`Jube.Monitoring.csproj`)  | `net10.0` |                                                                                                             |
+
+Built from `Jube.OpenTelemetryListener/Dockerfile`, tagged as `${JUBE_OTEL_LISTENER_IMAGE}` - a throwaway local
+OTLP/HTTP receiver for manually confirming OpenTelemetry data actually leaves the cluster during testing (prints a
+best-effort summary of every request to console; not a spec-compliant collector). Single replica - see
+[Log-Derived OpenTelemetry Counters](../../../Concepts/API/OpenTelemetryLogCounter/index.html).
+
+| Component                                              | Version   | Notes                                                                                                    |
+|---------------------------------------------------------|-----------|-----------------------------------------------------------------------------------------------------------|
+| `mcr.microsoft.com/dotnet/sdk`                         | 10.0      | Build stage.                                                                                               |
+| `mcr.microsoft.com/dotnet/aspnet`                      | 10.0      | Runtime base for the final image.                                                                          |
+| Target framework (`Jube.OpenTelemetryListener.csproj`) | `net10.0` |                                                                                                             |
 
 ## Image tags resolved outside the repo
 
-`${PATRONI_IMAGE}` and `${JUBE_IMAGE}` aren't hardcoded anywhere in `docker-compose.yml` - they come from a `.env`
-file created at deploy time (not committed), following the build-tag-load workflow in the
+`${PATRONI_IMAGE}`, `${JUBE_IMAGE}`, `${JUBE_MONITORING_IMAGE}` and `${JUBE_OTEL_LISTENER_IMAGE}` aren't hardcoded
+anywhere in `docker-compose.yml` - they come from a `.env` file created at deploy time (not committed), following the
+build-tag-load workflow in the
 [Deployment Runbook](../DeploymentRunbook/index.html#building-and-distributing-images):
 
 ```bash
 docker build --no-cache -t jube.patroni:<date> .
 docker build --no-cache -f Jube.App/Dockerfile -t jube.app:<date> .
+docker build --no-cache -f Jube.Monitoring/Dockerfile -t jube.monitoring:<date> .
+docker build --no-cache -f Jube.OpenTelemetryListener/Dockerfile -t jube.opentelemetrylistener:<date> .
 ```
 
-`.env` then sets `PATRONI_IMAGE=jube.patroni:<date>` and `JUBE_IMAGE=jube.app:<date>`.
+`.env` then sets `PATRONI_IMAGE=jube.patroni:<date>`, `JUBE_IMAGE=jube.app:<date>`,
+`JUBE_MONITORING_IMAGE=jube.monitoring:<date>` and `JUBE_OTEL_LISTENER_IMAGE=jube.opentelemetrylistener:<date>`.
 
 Images are distributed as tar files (`docker save` / `docker load`) rather than pulled from a registry - the standard
 pattern for an air-gapped or tightly firewalled on-premises deployment, which this cluster is designed for. Whatever
@@ -119,6 +141,6 @@ date/tag was actually loaded on the running nodes is the ground truth, not this 
 ## Sources
 
 `Jube.Cluster/docker-compose.yml`, `Jube.Cluster/patroni/Dockerfile`, `Jube.App/Dockerfile`,
-`Jube.LoadTest/Dockerfile`, and the repo-root `docker-compose.yml`. Package versions inside Alpine-based images (marked
+`Jube.Monitoring/Dockerfile`, `Jube.LoadTest/Dockerfile`, and the repo-root `docker-compose.yml`. Package versions inside Alpine-based images (marked
 *unpinned*) reflect whatever the Alpine 3.21 package repositories carried at build time, not a version fixed in source -
 re-check after any rebuild.

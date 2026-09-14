@@ -11,24 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Threading;
+using Jube.Cache;
+using Jube.Data.Context;
+using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
+using log4net;
+using RabbitMQ.Client;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Models
 {
-    using System.Threading;
-    using Cache;
-    using Data.Context;
-    using DynamicEnvironment;
-    using log4net;
-    using Parser;
-    using RabbitMQ.Client;
-
     public class Services
     {
         public ILog Log { get; set; }
-        public DynamicEnvironment DynamicEnvironment { get; set; }
+        public DynamicEnvironment.DynamicEnvironment DynamicEnvironment { get; set; }
         public CacheService CacheService { get; set; }
+        public IImplicitAsyncInvocationTracker ImplicitAsyncInvocationTracker { get; set; }
         public IModel RabbitMqChannel { get; set; }
         public DbContext DbContext { get; set; }
-        public Parser Parser { get; set; }
+        public Parser.Parser Parser { get; set; }
         public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
     }
 }

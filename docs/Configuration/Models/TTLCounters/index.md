@@ -82,7 +82,17 @@ Activation Rule, returned as 0 for IP. Values are available for Activation Rules
 Abstraction Rules.
 
 Where the background thread is relied upon to decrement TTL counters, the eligibility for TTL lapse is based on the
-system date and time that the counter was created (and not the reference date extracted from the transaction).
+model's own Reference Date tracking (the most recent transaction Reference Date seen for that model, advanced on
+every invocation) - not wall-clock system time, and not the date the counter entry was created. A model that stops
+receiving transactions stops advancing this Reference Date, so its TTL Counters stop ageing out too, however much
+real time passes; the background thread only ever compares against the last Reference Date it has on record for
+that model.
+
+If TTL Counter Interval Type is ever something other than the six values in Validation below - a malformed or
+legacy row - the background decrement thread falls back to treating it as Days, rather than leaving the counter's
+threshold unchanged. This differs from the read-time online-aggregation window, which leaves the Reference Date
+unchanged for an unrecognised interval. In practice this divergence should not be reachable: the value is
+validated to one of the six units below at save time.
 
 ## Validation
 

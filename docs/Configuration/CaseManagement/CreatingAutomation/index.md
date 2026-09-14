@@ -365,62 +365,72 @@ Case Workflow Action:
         "suspendBypassDate": "2026-02-20T09:19:46.3793539+02:00"
       },
       "tag": {},
+      "logs": {
+        "anchorDate": "2026-02-20T09:19:46.3793539+02:00",
+        "entries": [
+          { "elapsedMicroseconds": 612, "sinceLastEntryMicroseconds": 612, "capturedByInfoSampling": true, "capturedByWarnThreshold": false, "threadId": 1, "message": "Entity Invoke: GUID 90c425fd-101a-420b-91d1-cb7a24a969cc and model 1 has started the invocation timer and will now update the reference date." },
+          { "elapsedMicroseconds": 117393, "sinceLastEntryMicroseconds": 116781, "capturedByInfoSampling": true, "capturedByWarnThreshold": false, "threadId": 1, "message": "Entity Invoke: GUID 90c425fd-101a-420b-91d1-cb7a24a969cc and model 1 has completed Sanction Check Name with a matched score." }
+        ]
+      },
+      "responseTimePipeline": {
+        "entries": [
+          { "stage": "Parse", "elapsedMicroseconds": 1200, "durationMicroseconds": 40, "allocatedBytes": 512, "threadId": 1 },
+          { "stage": "CheckIntegrityAndUpsert", "elapsedMicroseconds": 1245, "durationMicroseconds": 40, "allocatedBytes": 576, "threadId": 1 },
+          { "stage": "InlineFunctions", "elapsedMicroseconds": 1290, "durationMicroseconds": 40, "allocatedBytes": 640, "threadId": 1 },
+          { "stage": "InlineScripts", "elapsedMicroseconds": 1335, "durationMicroseconds": 40, "allocatedBytes": 704, "threadId": 1 },
+          { "stage": "Gateway", "elapsedMicroseconds": 1380, "durationMicroseconds": 40, "allocatedBytes": 768, "threadId": 1 },
+          { "stage": "CacheDbStorage", "elapsedMicroseconds": 1425, "durationMicroseconds": 40, "allocatedBytes": 832, "threadId": 1 },
+          { "stage": "JoinReadTasks", "elapsedMicroseconds": 1470, "durationMicroseconds": 40, "allocatedBytes": 896, "threadId": 1 },
+          { "stage": "AbstractionRulesWithoutSearchKeys", "elapsedMicroseconds": 1515, "durationMicroseconds": 40, "allocatedBytes": 960, "threadId": 1 },
+          { "stage": "AbstractionCalculations", "elapsedMicroseconds": 1560, "durationMicroseconds": 40, "allocatedBytes": 1024, "threadId": 1 },
+          { "stage": "ExhaustiveAdaptation", "elapsedMicroseconds": 1605, "durationMicroseconds": 40, "allocatedBytes": 1088, "threadId": 1 },
+          { "stage": "HttpAdaptation", "elapsedMicroseconds": 1650, "durationMicroseconds": 40, "allocatedBytes": 1152, "threadId": 1 },
+          { "stage": "Activation", "elapsedMicroseconds": 1695, "durationMicroseconds": 40, "allocatedBytes": 1216, "threadId": 1 },
+          { "stage": "JoinWriteTasks", "elapsedMicroseconds": 1740, "durationMicroseconds": 40, "allocatedBytes": 1280, "threadId": 1 },
+          { "stage": "WriteResponse", "elapsedMicroseconds": 1785, "durationMicroseconds": 40, "allocatedBytes": 1344, "threadId": 1 },
+          { "stage": "BuildArchivePayload", "elapsedMicroseconds": 1830, "durationMicroseconds": 40, "allocatedBytes": 1408, "threadId": 1 }
+        ]
+      },
       "invokeTaskPerformance": {
-        "computeTimes": {
-          "parse": 48677,
-          "inlineFunction": 79002,
-          "inlineScript": 86319,
-          "gateway": 88247,
-          "sanctionsAsync": 117393,
-          "dictionaryKvPsAsync": 100138,
-          "ttlCountersAsync": 117850,
-          "abstractionRulesWithSearchKeysAsync": 186838,
-          "readTasksPerformance": {
-            "sanctionsAsync": {
-              "computeTime": 11839960,
-              "memory": 27349
-            },
-            "dictionaryKvPsAsync": {
-              "computeTime": 1624,
-              "memory": 10131
-            },
-            "ttlCountersAsync": {
-              "computeTime": 2603136,
-              "memory": 29327
-            },
-            "abstractionRulesWithSearchKeysAsync": {
-              "computeTime": 83912,
-              "memory": 96653
-            }
+        "totalDurationMicroseconds": 1298477,
+        "memory": 8860472,
+        "taskWrapperStats": {
+          "read": {
+            "sanctionsAsync": { "computeTimeMicroseconds": 11839960, "memory": 27349 },
+            "ttlCountersAsync": { "computeTimeMicroseconds": 2603136, "memory": 29327 },
+            "abstractionRulesWithSearchKeysAsync": { "computeTimeMicroseconds": 83912, "memory": 96653 }
           },
-          "joinReadTasks": 188121,
-          "executeAbstractionRulesWithoutSearchKey": 189938,
-          "executeAbstractionCalculation": 192925,
-          "executeExhaustiveAdaptation": 194053,
-          "executeHttpAdaptation": 196472,
-          "executeActivation": 325799,
-          "joinWriteTasks": 327992,
-          "writeTasksPerformance": {
-            "cachePayloadLatestUpsertAsync": {
-              "computeTime": 20680,
-              "memory": 34383
-            },
-            "cachePayloadInsertAsync": {
-              "computeTime": 9480,
-              "memory": 11739
-            },
-            "cacheTtlCounterEntryUpsertAsync": {
-              "computeTime": 688,
-              "memory": 2816
-            },
-            "cacheTtlCounterEntryIncrementAsync": {
-              "computeTime": 656,
-              "memory": 2800
-            }
+          "write": {
+            "cachePayloadLatestUpsertAsync": { "computeTimeMicroseconds": 20680, "memory": 34383 },
+            "cachePayloadInsertAsync": { "computeTimeMicroseconds": 9480, "memory": 11739 },
+            "cacheTtlCounterEntryUpsertAsync": { "computeTimeMicroseconds": 688, "memory": 2816 },
+            "cacheTtlCounterEntryIncrementAsync": { "computeTimeMicroseconds": 656, "memory": 2800 },
+            "upsertReferenceDateAsync": { "computeTimeMicroseconds": 412, "memory": 960 }
           }
         },
-        "memory": 8860472
-      }
+        "stages": {
+          "parse": { "durationMicroseconds": 48 },
+          "checkIntegrityAndUpsert": { "durationMicroseconds": 1 },
+          "inlineFunctions": { "durationMicroseconds": 30, "items": { "SetRiskScore": { "computeTimeMicroseconds": 2140, "memory": 512 } } },
+          "inlineScripts": { "durationMicroseconds": 7, "items": { "EnrichPayload": { "computeTimeMicroseconds": 7102, "memory": 2048 } } },
+          "gateway": { "durationMicroseconds": 1, "items": { "AllTransactions": { "computeTimeMicroseconds": 1840, "memory": 64 } } },
+          "cacheDbStorage": { "durationMicroseconds": 1 },
+          "sanctions": { "durationMicroseconds": 117, "items": { "SanctionCheckName": { "computeTimeMicroseconds": 117200, "memory": 4096 } } },
+          "ttlCounters": { "durationMicroseconds": 117, "items": { "TxnCountLast24Hours": { "computeTimeMicroseconds": 2603136, "memory": 29327 } } },
+          "abstractionRulesWithSearchKeys": { "durationMicroseconds": 186, "items": { "AverageSpend": { "computeTimeMicroseconds": 83912, "memory": 96653 } } },
+          "joinReadTasks": { "durationMicroseconds": 1 },
+          "abstractionRulesWithoutSearchKeys": { "durationMicroseconds": 1, "items": { "IsFirstTransaction": { "computeTimeMicroseconds": 1650, "memory": 128 } } },
+          "abstractionCalculations": { "durationMicroseconds": 2, "items": { "RiskWeightedSpend": { "computeTimeMicroseconds": 2800, "memory": 96 } } },
+          "exhaustiveAdaptation": { "durationMicroseconds": 1, "items": { "FraudScoreModel": { "computeTimeMicroseconds": 1050, "memory": 512 } } },
+          "httpAdaptation": { "durationMicroseconds": 2, "items": { "BayesianNetworkBootstrapStrength": { "computeTimeMicroseconds": 2419, "memory": 256 } } },
+          "activation": { "durationMicroseconds": 129, "items": { "HighRiskTransaction": { "rule": { "computeTimeMicroseconds": 1240, "memory": 192 }, "abstractionRuleOverrideInlineScripts": {}, "notification": { "computeTimeMicroseconds": 890, "memory": 64 }, "caseCreation": { "computeTimeMicroseconds": 126800, "memory": 8192 }, "activationWatcher": { "computeTimeMicroseconds": 142, "memory": 32 }, "responseElevation": { "computeTimeMicroseconds": 55, "memory": 0 } } } },
+          "joinWriteTasks": { "durationMicroseconds": 2 },
+          "writeResponse": { "durationMicroseconds": 1 },
+          "buildArchivePayload": { "durationMicroseconds": 1 }
+        }
+      },
+      "isSampled": true,
+      "implicitAsyncTimedOut": false
     }
   }
 }
@@ -576,62 +586,72 @@ Case Workflow Macro:
         "suspendBypassDate": "2026-02-20T09:19:46.3793539+02:00"
       },
       "tag": {},
+      "logs": {
+        "anchorDate": "2026-02-20T09:19:46.3793539+02:00",
+        "entries": [
+          { "elapsedMicroseconds": 612, "sinceLastEntryMicroseconds": 612, "capturedByInfoSampling": true, "capturedByWarnThreshold": false, "threadId": 1, "message": "Entity Invoke: GUID 90c425fd-101a-420b-91d1-cb7a24a969cc and model 1 has started the invocation timer and will now update the reference date." },
+          { "elapsedMicroseconds": 117393, "sinceLastEntryMicroseconds": 116781, "capturedByInfoSampling": true, "capturedByWarnThreshold": false, "threadId": 1, "message": "Entity Invoke: GUID 90c425fd-101a-420b-91d1-cb7a24a969cc and model 1 has completed Sanction Check Name with a matched score." }
+        ]
+      },
+      "responseTimePipeline": {
+        "entries": [
+          { "stage": "Parse", "elapsedMicroseconds": 1200, "durationMicroseconds": 40, "allocatedBytes": 512, "threadId": 1 },
+          { "stage": "CheckIntegrityAndUpsert", "elapsedMicroseconds": 1245, "durationMicroseconds": 40, "allocatedBytes": 576, "threadId": 1 },
+          { "stage": "InlineFunctions", "elapsedMicroseconds": 1290, "durationMicroseconds": 40, "allocatedBytes": 640, "threadId": 1 },
+          { "stage": "InlineScripts", "elapsedMicroseconds": 1335, "durationMicroseconds": 40, "allocatedBytes": 704, "threadId": 1 },
+          { "stage": "Gateway", "elapsedMicroseconds": 1380, "durationMicroseconds": 40, "allocatedBytes": 768, "threadId": 1 },
+          { "stage": "CacheDbStorage", "elapsedMicroseconds": 1425, "durationMicroseconds": 40, "allocatedBytes": 832, "threadId": 1 },
+          { "stage": "JoinReadTasks", "elapsedMicroseconds": 1470, "durationMicroseconds": 40, "allocatedBytes": 896, "threadId": 1 },
+          { "stage": "AbstractionRulesWithoutSearchKeys", "elapsedMicroseconds": 1515, "durationMicroseconds": 40, "allocatedBytes": 960, "threadId": 1 },
+          { "stage": "AbstractionCalculations", "elapsedMicroseconds": 1560, "durationMicroseconds": 40, "allocatedBytes": 1024, "threadId": 1 },
+          { "stage": "ExhaustiveAdaptation", "elapsedMicroseconds": 1605, "durationMicroseconds": 40, "allocatedBytes": 1088, "threadId": 1 },
+          { "stage": "HttpAdaptation", "elapsedMicroseconds": 1650, "durationMicroseconds": 40, "allocatedBytes": 1152, "threadId": 1 },
+          { "stage": "Activation", "elapsedMicroseconds": 1695, "durationMicroseconds": 40, "allocatedBytes": 1216, "threadId": 1 },
+          { "stage": "JoinWriteTasks", "elapsedMicroseconds": 1740, "durationMicroseconds": 40, "allocatedBytes": 1280, "threadId": 1 },
+          { "stage": "WriteResponse", "elapsedMicroseconds": 1785, "durationMicroseconds": 40, "allocatedBytes": 1344, "threadId": 1 },
+          { "stage": "BuildArchivePayload", "elapsedMicroseconds": 1830, "durationMicroseconds": 40, "allocatedBytes": 1408, "threadId": 1 }
+        ]
+      },
       "invokeTaskPerformance": {
-        "computeTimes": {
-          "parse": 48677,
-          "inlineFunction": 79002,
-          "inlineScript": 86319,
-          "gateway": 88247,
-          "sanctionsAsync": 117393,
-          "dictionaryKvPsAsync": 100138,
-          "ttlCountersAsync": 117850,
-          "abstractionRulesWithSearchKeysAsync": 186838,
-          "readTasksPerformance": {
-            "sanctionsAsync": {
-              "computeTime": 11839960,
-              "memory": 27349
-            },
-            "dictionaryKvPsAsync": {
-              "computeTime": 1624,
-              "memory": 10131
-            },
-            "ttlCountersAsync": {
-              "computeTime": 2603136,
-              "memory": 29327
-            },
-            "abstractionRulesWithSearchKeysAsync": {
-              "computeTime": 83912,
-              "memory": 96653
-            }
+        "totalDurationMicroseconds": 1298477,
+        "memory": 8860472,
+        "taskWrapperStats": {
+          "read": {
+            "sanctionsAsync": { "computeTimeMicroseconds": 11839960, "memory": 27349 },
+            "ttlCountersAsync": { "computeTimeMicroseconds": 2603136, "memory": 29327 },
+            "abstractionRulesWithSearchKeysAsync": { "computeTimeMicroseconds": 83912, "memory": 96653 }
           },
-          "joinReadTasks": 188121,
-          "executeAbstractionRulesWithoutSearchKey": 189938,
-          "executeAbstractionCalculation": 192925,
-          "executeExhaustiveAdaptation": 194053,
-          "executeHttpAdaptation": 196472,
-          "executeActivation": 325799,
-          "joinWriteTasks": 327992,
-          "writeTasksPerformance": {
-            "cachePayloadLatestUpsertAsync": {
-              "computeTime": 20680,
-              "memory": 34383
-            },
-            "cachePayloadInsertAsync": {
-              "computeTime": 9480,
-              "memory": 11739
-            },
-            "cacheTtlCounterEntryUpsertAsync": {
-              "computeTime": 688,
-              "memory": 2816
-            },
-            "cacheTtlCounterEntryIncrementAsync": {
-              "computeTime": 656,
-              "memory": 2800
-            }
+          "write": {
+            "cachePayloadLatestUpsertAsync": { "computeTimeMicroseconds": 20680, "memory": 34383 },
+            "cachePayloadInsertAsync": { "computeTimeMicroseconds": 9480, "memory": 11739 },
+            "cacheTtlCounterEntryUpsertAsync": { "computeTimeMicroseconds": 688, "memory": 2816 },
+            "cacheTtlCounterEntryIncrementAsync": { "computeTimeMicroseconds": 656, "memory": 2800 },
+            "upsertReferenceDateAsync": { "computeTimeMicroseconds": 412, "memory": 960 }
           }
         },
-        "memory": 8860472
-      }
+        "stages": {
+          "parse": { "durationMicroseconds": 48 },
+          "checkIntegrityAndUpsert": { "durationMicroseconds": 1 },
+          "inlineFunctions": { "durationMicroseconds": 30, "items": { "SetRiskScore": { "computeTimeMicroseconds": 2140, "memory": 512 } } },
+          "inlineScripts": { "durationMicroseconds": 7, "items": { "EnrichPayload": { "computeTimeMicroseconds": 7102, "memory": 2048 } } },
+          "gateway": { "durationMicroseconds": 1, "items": { "AllTransactions": { "computeTimeMicroseconds": 1840, "memory": 64 } } },
+          "cacheDbStorage": { "durationMicroseconds": 1 },
+          "sanctions": { "durationMicroseconds": 117, "items": { "SanctionCheckName": { "computeTimeMicroseconds": 117200, "memory": 4096 } } },
+          "ttlCounters": { "durationMicroseconds": 117, "items": { "TxnCountLast24Hours": { "computeTimeMicroseconds": 2603136, "memory": 29327 } } },
+          "abstractionRulesWithSearchKeys": { "durationMicroseconds": 186, "items": { "AverageSpend": { "computeTimeMicroseconds": 83912, "memory": 96653 } } },
+          "joinReadTasks": { "durationMicroseconds": 1 },
+          "abstractionRulesWithoutSearchKeys": { "durationMicroseconds": 1, "items": { "IsFirstTransaction": { "computeTimeMicroseconds": 1650, "memory": 128 } } },
+          "abstractionCalculations": { "durationMicroseconds": 2, "items": { "RiskWeightedSpend": { "computeTimeMicroseconds": 2800, "memory": 96 } } },
+          "exhaustiveAdaptation": { "durationMicroseconds": 1, "items": { "FraudScoreModel": { "computeTimeMicroseconds": 1050, "memory": 512 } } },
+          "httpAdaptation": { "durationMicroseconds": 2, "items": { "BayesianNetworkBootstrapStrength": { "computeTimeMicroseconds": 2419, "memory": 256 } } },
+          "activation": { "durationMicroseconds": 129, "items": { "HighRiskTransaction": { "rule": { "computeTimeMicroseconds": 1240, "memory": 192 }, "abstractionRuleOverrideInlineScripts": {}, "notification": { "computeTimeMicroseconds": 890, "memory": 64 }, "caseCreation": { "computeTimeMicroseconds": 126800, "memory": 8192 }, "activationWatcher": { "computeTimeMicroseconds": 142, "memory": 32 }, "responseElevation": { "computeTimeMicroseconds": 55, "memory": 0 } } } },
+          "joinWriteTasks": { "durationMicroseconds": 2 },
+          "writeResponse": { "durationMicroseconds": 1 },
+          "buildArchivePayload": { "durationMicroseconds": 1 }
+        }
+      },
+      "isSampled": true,
+      "implicitAsyncTimedOut": false
     }
   }
 }
@@ -784,62 +804,72 @@ Case Workflow Status:
       "suspendBypassDate": "2026-02-20T09:19:46.3793539+02:00"
     },
     "tag": {},
+    "logs": {
+      "anchorDate": "2026-02-20T09:19:46.3793539+02:00",
+      "entries": [
+        { "elapsedMicroseconds": 612, "sinceLastEntryMicroseconds": 612, "capturedByInfoSampling": true, "capturedByWarnThreshold": false, "threadId": 1, "message": "Entity Invoke: GUID 90c425fd-101a-420b-91d1-cb7a24a969cc and model 1 has started the invocation timer and will now update the reference date." },
+        { "elapsedMicroseconds": 117393, "sinceLastEntryMicroseconds": 116781, "capturedByInfoSampling": true, "capturedByWarnThreshold": false, "threadId": 1, "message": "Entity Invoke: GUID 90c425fd-101a-420b-91d1-cb7a24a969cc and model 1 has completed Sanction Check Name with a matched score." }
+      ]
+    },
+    "responseTimePipeline": {
+      "entries": [
+        { "stage": "Parse", "elapsedMicroseconds": 1200, "durationMicroseconds": 40, "allocatedBytes": 512, "threadId": 1 },
+        { "stage": "CheckIntegrityAndUpsert", "elapsedMicroseconds": 1245, "durationMicroseconds": 40, "allocatedBytes": 576, "threadId": 1 },
+        { "stage": "InlineFunctions", "elapsedMicroseconds": 1290, "durationMicroseconds": 40, "allocatedBytes": 640, "threadId": 1 },
+        { "stage": "InlineScripts", "elapsedMicroseconds": 1335, "durationMicroseconds": 40, "allocatedBytes": 704, "threadId": 1 },
+        { "stage": "Gateway", "elapsedMicroseconds": 1380, "durationMicroseconds": 40, "allocatedBytes": 768, "threadId": 1 },
+        { "stage": "CacheDbStorage", "elapsedMicroseconds": 1425, "durationMicroseconds": 40, "allocatedBytes": 832, "threadId": 1 },
+        { "stage": "JoinReadTasks", "elapsedMicroseconds": 1470, "durationMicroseconds": 40, "allocatedBytes": 896, "threadId": 1 },
+        { "stage": "AbstractionRulesWithoutSearchKeys", "elapsedMicroseconds": 1515, "durationMicroseconds": 40, "allocatedBytes": 960, "threadId": 1 },
+        { "stage": "AbstractionCalculations", "elapsedMicroseconds": 1560, "durationMicroseconds": 40, "allocatedBytes": 1024, "threadId": 1 },
+        { "stage": "ExhaustiveAdaptation", "elapsedMicroseconds": 1605, "durationMicroseconds": 40, "allocatedBytes": 1088, "threadId": 1 },
+        { "stage": "HttpAdaptation", "elapsedMicroseconds": 1650, "durationMicroseconds": 40, "allocatedBytes": 1152, "threadId": 1 },
+        { "stage": "Activation", "elapsedMicroseconds": 1695, "durationMicroseconds": 40, "allocatedBytes": 1216, "threadId": 1 },
+        { "stage": "JoinWriteTasks", "elapsedMicroseconds": 1740, "durationMicroseconds": 40, "allocatedBytes": 1280, "threadId": 1 },
+        { "stage": "WriteResponse", "elapsedMicroseconds": 1785, "durationMicroseconds": 40, "allocatedBytes": 1344, "threadId": 1 },
+        { "stage": "BuildArchivePayload", "elapsedMicroseconds": 1830, "durationMicroseconds": 40, "allocatedBytes": 1408, "threadId": 1 }
+      ]
+    },
     "invokeTaskPerformance": {
-      "computeTimes": {
-        "parse": 48677,
-        "inlineFunction": 79002,
-        "inlineScript": 86319,
-        "gateway": 88247,
-        "sanctionsAsync": 117393,
-        "dictionaryKvPsAsync": 100138,
-        "ttlCountersAsync": 117850,
-        "abstractionRulesWithSearchKeysAsync": 186838,
-        "readTasksPerformance": {
-          "sanctionsAsync": {
-            "computeTime": 11839960,
-            "memory": 27349
-          },
-          "dictionaryKvPsAsync": {
-            "computeTime": 1624,
-            "memory": 10131
-          },
-          "ttlCountersAsync": {
-            "computeTime": 2603136,
-            "memory": 29327
-          },
-          "abstractionRulesWithSearchKeysAsync": {
-            "computeTime": 83912,
-            "memory": 96653
-          }
+      "totalDurationMicroseconds": 1298477,
+      "memory": 8860472,
+      "taskWrapperStats": {
+        "read": {
+          "sanctionsAsync": { "computeTimeMicroseconds": 11839960, "memory": 27349 },
+          "ttlCountersAsync": { "computeTimeMicroseconds": 2603136, "memory": 29327 },
+          "abstractionRulesWithSearchKeysAsync": { "computeTimeMicroseconds": 83912, "memory": 96653 }
         },
-        "joinReadTasks": 188121,
-        "executeAbstractionRulesWithoutSearchKey": 189938,
-        "executeAbstractionCalculation": 192925,
-        "executeExhaustiveAdaptation": 194053,
-        "executeHttpAdaptation": 196472,
-        "executeActivation": 325799,
-        "joinWriteTasks": 327992,
-        "writeTasksPerformance": {
-          "cachePayloadLatestUpsertAsync": {
-            "computeTime": 20680,
-            "memory": 34383
-          },
-          "cachePayloadInsertAsync": {
-            "computeTime": 9480,
-            "memory": 11739
-          },
-          "cacheTtlCounterEntryUpsertAsync": {
-            "computeTime": 688,
-            "memory": 2816
-          },
-          "cacheTtlCounterEntryIncrementAsync": {
-            "computeTime": 656,
-            "memory": 2800
-          }
+        "write": {
+          "cachePayloadLatestUpsertAsync": { "computeTimeMicroseconds": 20680, "memory": 34383 },
+          "cachePayloadInsertAsync": { "computeTimeMicroseconds": 9480, "memory": 11739 },
+          "cacheTtlCounterEntryUpsertAsync": { "computeTimeMicroseconds": 688, "memory": 2816 },
+          "cacheTtlCounterEntryIncrementAsync": { "computeTimeMicroseconds": 656, "memory": 2800 },
+          "upsertReferenceDateAsync": { "computeTimeMicroseconds": 412, "memory": 960 }
         }
       },
-      "memory": 8860472
-    }
+      "stages": {
+        "parse": { "durationMicroseconds": 48 },
+        "checkIntegrityAndUpsert": { "durationMicroseconds": 1 },
+        "inlineFunctions": { "durationMicroseconds": 30, "items": { "SetRiskScore": { "computeTimeMicroseconds": 2140, "memory": 512 } } },
+        "inlineScripts": { "durationMicroseconds": 7, "items": { "EnrichPayload": { "computeTimeMicroseconds": 7102, "memory": 2048 } } },
+        "gateway": { "durationMicroseconds": 1, "items": { "AllTransactions": { "computeTimeMicroseconds": 1840, "memory": 64 } } },
+        "cacheDbStorage": { "durationMicroseconds": 1 },
+        "sanctions": { "durationMicroseconds": 117, "items": { "SanctionCheckName": { "computeTimeMicroseconds": 117200, "memory": 4096 } } },
+        "ttlCounters": { "durationMicroseconds": 117, "items": { "TxnCountLast24Hours": { "computeTimeMicroseconds": 2603136, "memory": 29327 } } },
+        "abstractionRulesWithSearchKeys": { "durationMicroseconds": 186, "items": { "AverageSpend": { "computeTimeMicroseconds": 83912, "memory": 96653 } } },
+        "joinReadTasks": { "durationMicroseconds": 1 },
+        "abstractionRulesWithoutSearchKeys": { "durationMicroseconds": 1, "items": { "IsFirstTransaction": { "computeTimeMicroseconds": 1650, "memory": 128 } } },
+        "abstractionCalculations": { "durationMicroseconds": 2, "items": { "RiskWeightedSpend": { "computeTimeMicroseconds": 2800, "memory": 96 } } },
+        "exhaustiveAdaptation": { "durationMicroseconds": 1, "items": { "FraudScoreModel": { "computeTimeMicroseconds": 1050, "memory": 512 } } },
+        "httpAdaptation": { "durationMicroseconds": 2, "items": { "BayesianNetworkBootstrapStrength": { "computeTimeMicroseconds": 2419, "memory": 256 } } },
+        "activation": { "durationMicroseconds": 129, "items": { "HighRiskTransaction": { "rule": { "computeTimeMicroseconds": 1240, "memory": 192 }, "abstractionRuleOverrideInlineScripts": {}, "notification": { "computeTimeMicroseconds": 890, "memory": 64 }, "caseCreation": { "computeTimeMicroseconds": 126800, "memory": 8192 }, "activationWatcher": { "computeTimeMicroseconds": 142, "memory": 32 }, "responseElevation": { "computeTimeMicroseconds": 55, "memory": 0 } } } },
+        "joinWriteTasks": { "durationMicroseconds": 2 },
+        "writeResponse": { "durationMicroseconds": 1 },
+        "buildArchivePayload": { "durationMicroseconds": 1 }
+      }
+    },
+    "isSampled": true,
+    "implicitAsyncTimedOut": false
   }
 }
 ```
@@ -1003,62 +1033,72 @@ Case Workflow Form:
         "suspendBypassDate" : "2026-02-20T09:19:46.3793539+02:00"
       },
       "tag" : { },
+      "logs" : {
+        "anchorDate" : "2026-02-20T09:19:46.3793539+02:00",
+        "entries" : [
+          { "elapsedMicroseconds" : 612, "sinceLastEntryMicroseconds" : 612, "capturedByInfoSampling" : true, "capturedByWarnThreshold" : false, "threadId" : 1, "message" : "Entity Invoke: GUID 90c425fd-101a-420b-91d1-cb7a24a969cc and model 1 has started the invocation timer and will now update the reference date." },
+          { "elapsedMicroseconds" : 117393, "sinceLastEntryMicroseconds" : 116781, "capturedByInfoSampling" : true, "capturedByWarnThreshold" : false, "threadId" : 1, "message" : "Entity Invoke: GUID 90c425fd-101a-420b-91d1-cb7a24a969cc and model 1 has completed Sanction Check Name with a matched score." }
+        ]
+      },
+      "responseTimePipeline" : {
+        "entries" : [
+          { "stage" : "Parse", "elapsedMicroseconds" : 1200, "durationMicroseconds" : 40, "allocatedBytes" : 512, "threadId" : 1 },
+          { "stage" : "CheckIntegrityAndUpsert", "elapsedMicroseconds" : 1245, "durationMicroseconds" : 40, "allocatedBytes" : 576, "threadId" : 1 },
+          { "stage" : "InlineFunctions", "elapsedMicroseconds" : 1290, "durationMicroseconds" : 40, "allocatedBytes" : 640, "threadId" : 1 },
+          { "stage" : "InlineScripts", "elapsedMicroseconds" : 1335, "durationMicroseconds" : 40, "allocatedBytes" : 704, "threadId" : 1 },
+          { "stage" : "Gateway", "elapsedMicroseconds" : 1380, "durationMicroseconds" : 40, "allocatedBytes" : 768, "threadId" : 1 },
+          { "stage" : "CacheDbStorage", "elapsedMicroseconds" : 1425, "durationMicroseconds" : 40, "allocatedBytes" : 832, "threadId" : 1 },
+          { "stage" : "JoinReadTasks", "elapsedMicroseconds" : 1470, "durationMicroseconds" : 40, "allocatedBytes" : 896, "threadId" : 1 },
+          { "stage" : "AbstractionRulesWithoutSearchKeys", "elapsedMicroseconds" : 1515, "durationMicroseconds" : 40, "allocatedBytes" : 960, "threadId" : 1 },
+          { "stage" : "AbstractionCalculations", "elapsedMicroseconds" : 1560, "durationMicroseconds" : 40, "allocatedBytes" : 1024, "threadId" : 1 },
+          { "stage" : "ExhaustiveAdaptation", "elapsedMicroseconds" : 1605, "durationMicroseconds" : 40, "allocatedBytes" : 1088, "threadId" : 1 },
+          { "stage" : "HttpAdaptation", "elapsedMicroseconds" : 1650, "durationMicroseconds" : 40, "allocatedBytes" : 1152, "threadId" : 1 },
+          { "stage" : "Activation", "elapsedMicroseconds" : 1695, "durationMicroseconds" : 40, "allocatedBytes" : 1216, "threadId" : 1 },
+          { "stage" : "JoinWriteTasks", "elapsedMicroseconds" : 1740, "durationMicroseconds" : 40, "allocatedBytes" : 1280, "threadId" : 1 },
+          { "stage" : "WriteResponse", "elapsedMicroseconds" : 1785, "durationMicroseconds" : 40, "allocatedBytes" : 1344, "threadId" : 1 },
+          { "stage" : "BuildArchivePayload", "elapsedMicroseconds" : 1830, "durationMicroseconds" : 40, "allocatedBytes" : 1408, "threadId" : 1 }
+        ]
+      },
       "invokeTaskPerformance" : {
-        "computeTimes" : {
-          "parse" : 48677,
-          "inlineFunction" : 79002,
-          "inlineScript" : 86319,
-          "gateway" : 88247,
-          "sanctionsAsync" : 117393,
-          "dictionaryKvPsAsync" : 100138,
-          "ttlCountersAsync" : 117850,
-          "abstractionRulesWithSearchKeysAsync" : 186838,
-          "readTasksPerformance" : {
-            "sanctionsAsync" : {
-              "computeTime" : 11839960,
-              "memory" : 27349
-            },
-            "dictionaryKvPsAsync" : {
-              "computeTime" : 1624,
-              "memory" : 10131
-            },
-            "ttlCountersAsync" : {
-              "computeTime" : 2603136,
-              "memory" : 29327
-            },
-            "abstractionRulesWithSearchKeysAsync" : {
-              "computeTime" : 83912,
-              "memory" : 96653
-            }
+        "totalDurationMicroseconds" : 1298477,
+        "memory" : 8860472,
+        "taskWrapperStats" : {
+          "read" : {
+            "sanctionsAsync" : { "computeTimeMicroseconds" : 11839960, "memory" : 27349 },
+            "ttlCountersAsync" : { "computeTimeMicroseconds" : 2603136, "memory" : 29327 },
+            "abstractionRulesWithSearchKeysAsync" : { "computeTimeMicroseconds" : 83912, "memory" : 96653 }
           },
-          "joinReadTasks" : 188121,
-          "executeAbstractionRulesWithoutSearchKey" : 189938,
-          "executeAbstractionCalculation" : 192925,
-          "executeExhaustiveAdaptation" : 194053,
-          "executeHttpAdaptation" : 196472,
-          "executeActivation" : 325799,
-          "joinWriteTasks" : 327992,
-          "writeTasksPerformance" : {
-            "cachePayloadLatestUpsertAsync" : {
-              "computeTime" : 20680,
-              "memory" : 34383
-            },
-            "cachePayloadInsertAsync" : {
-              "computeTime" : 9480,
-              "memory" : 11739
-            },
-            "cacheTtlCounterEntryUpsertAsync" : {
-              "computeTime" : 688,
-              "memory" : 2816
-            },
-            "cacheTtlCounterEntryIncrementAsync" : {
-              "computeTime" : 656,
-              "memory" : 2800
-            }
+          "write" : {
+            "cachePayloadLatestUpsertAsync" : { "computeTimeMicroseconds" : 20680, "memory" : 34383 },
+            "cachePayloadInsertAsync" : { "computeTimeMicroseconds" : 9480, "memory" : 11739 },
+            "cacheTtlCounterEntryUpsertAsync" : { "computeTimeMicroseconds" : 688, "memory" : 2816 },
+            "cacheTtlCounterEntryIncrementAsync" : { "computeTimeMicroseconds" : 656, "memory" : 2800 },
+            "upsertReferenceDateAsync" : { "computeTimeMicroseconds" : 412, "memory" : 960 }
           }
         },
-        "memory" : 8860472
-      }
+        "stages" : {
+          "parse" : { "durationMicroseconds" : 48 },
+          "checkIntegrityAndUpsert" : { "durationMicroseconds" : 1 },
+          "inlineFunctions" : { "durationMicroseconds" : 30, "items" : { "SetRiskScore" : { "computeTimeMicroseconds" : 2140, "memory" : 512 } } },
+          "inlineScripts" : { "durationMicroseconds" : 7, "items" : { "EnrichPayload" : { "computeTimeMicroseconds" : 7102, "memory" : 2048 } } },
+          "gateway" : { "durationMicroseconds" : 1, "items" : { "AllTransactions" : { "computeTimeMicroseconds" : 1840, "memory" : 64 } } },
+          "cacheDbStorage" : { "durationMicroseconds" : 1 },
+          "sanctions" : { "durationMicroseconds" : 117, "items" : { "SanctionCheckName" : { "computeTimeMicroseconds" : 117200, "memory" : 4096 } } },
+          "ttlCounters" : { "durationMicroseconds" : 117, "items" : { "TxnCountLast24Hours" : { "computeTimeMicroseconds" : 2603136, "memory" : 29327 } } },
+          "abstractionRulesWithSearchKeys" : { "durationMicroseconds" : 186, "items" : { "AverageSpend" : { "computeTimeMicroseconds" : 83912, "memory" : 96653 } } },
+          "joinReadTasks" : { "durationMicroseconds" : 1 },
+          "abstractionRulesWithoutSearchKeys" : { "durationMicroseconds" : 1, "items" : { "IsFirstTransaction" : { "computeTimeMicroseconds" : 1650, "memory" : 128 } } },
+          "abstractionCalculations" : { "durationMicroseconds" : 2, "items" : { "RiskWeightedSpend" : { "computeTimeMicroseconds" : 2800, "memory" : 96 } } },
+          "exhaustiveAdaptation" : { "durationMicroseconds" : 1, "items" : { "FraudScoreModel" : { "computeTimeMicroseconds" : 1050, "memory" : 512 } } },
+          "httpAdaptation" : { "durationMicroseconds" : 2, "items" : { "BayesianNetworkBootstrapStrength" : { "computeTimeMicroseconds" : 2419, "memory" : 256 } } },
+          "activation" : { "durationMicroseconds" : 129, "items" : { "HighRiskTransaction" : { "rule" : { "computeTimeMicroseconds" : 1240, "memory" : 192 }, "abstractionRuleOverrideInlineScripts" : {}, "notification" : { "computeTimeMicroseconds" : 890, "memory" : 64 }, "caseCreation" : { "computeTimeMicroseconds" : 126800, "memory" : 8192 }, "activationWatcher" : { "computeTimeMicroseconds" : 142, "memory" : 32 }, "responseElevation" : { "computeTimeMicroseconds" : 55, "memory" : 0 } } } },
+          "joinWriteTasks" : { "durationMicroseconds" : 2 },
+          "writeResponse" : { "durationMicroseconds" : 1 },
+          "buildArchivePayload" : { "durationMicroseconds" : 1 }
+        }
+      },
+      "isSampled": true,
+      "implicitAsyncTimedOut": false
     }
   }
 }

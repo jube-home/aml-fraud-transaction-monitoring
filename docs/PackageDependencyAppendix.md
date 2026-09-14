@@ -6,7 +6,7 @@ nav_order: 6
 
 # Appendix: Package Dependency Inventory
 
-**Solution:** Jube (33 .csproj projects, all targeting `net9.0`)
+**Solution:** Jube (38 .csproj projects, all targeting `net10.0`)
 **Scope:** All NuGet package references across the solution, plus all vendored/static third-party client-side assets under `Jube.App/wwwroot` (outside NuGet).
 
 ## A. NuGet Packages (server-side, .NET)
@@ -15,6 +15,7 @@ nav_order: 6
 - AutoMapper — 15.1.3 — NuGet
 - coverlet.collector — 3.1.0 — NuGet (test)
 - DnsClient — 1.2.0 — NuGet
+- DynamicExpresso.Core — 2.19.5 — NuGet
 - Fastenshtein — 1.0.0.5 — NuGet
 - FluentAssertions — 6.12.0 — NuGet (test)
 - FluentMigrator — 3.3.2 — NuGet
@@ -30,9 +31,9 @@ nav_order: 6
 - Microsoft.AspNetCore.Authentication.JwtBearer — 9.0.14 — NuGet
 - Microsoft.AspNetCore.Authentication.Negotiate — 6.0.8 — NuGet
 - Microsoft.AspNetCore.Authentication.OpenIdConnect — 9.0.18 — NuGet
+- Microsoft.AspNetCore.DataProtection.StackExchangeRedis — 9.0.13 — NuGet
 - Microsoft.AspNetCore.Mvc.NewtonsoftJson — 9.0.11 — NuGet
 - Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation — 3.1.10 — NuGet
-- Microsoft.AspNetCore.SignalR.Common — 6.0.6 — NuGet
 - Microsoft.AspNetCore.SignalR.StackExchangeRedis — 9.0.13 — NuGet
 - Microsoft.CodeAnalysis — 4.10.0 — NuGet
 - Microsoft.CodeAnalysis.Common — 4.10.0 — NuGet
@@ -40,17 +41,28 @@ nav_order: 6
 - Microsoft.CodeAnalysis.CSharp.Workspaces — 4.10.0 — NuGet
 - Microsoft.CodeAnalysis.VisualBasic — 4.10.0 — NuGet
 - Microsoft.CodeAnalysis.Workspaces.Common — 4.10.0 — NuGet
+- Microsoft.Data.SqlClient — 5.2.3 — NuGet
 - Microsoft.Extensions.Caching.Memory — 9.0.0 — NuGet
+- Microsoft.Extensions.Diagnostics.Testing — 10.9.0 — NuGet (test)
+- Microsoft.Extensions.Localization — 10.0.0 — NuGet
+- Microsoft.Extensions.Localization.Abstractions — 10.0.0 — NuGet
 - Microsoft.Extensions.Logging.Log4Net.AspNetCore — 6.0.0 — NuGet
 - Microsoft.Extensions.Primitives — 9.0.10 — NuGet
-- Microsoft.NET.Test.Sdk — 16.11.0 — NuGet (test)
-- Microsoft.VisualBasic — 10.3.0 — NuGet
+- Microsoft.NET.Test.Sdk — 17.14.1 — NuGet (test)
 - Microsoft.VisualStudio.Azure.Containers.Tools.Targets — 1.10.9 — NuGet (tooling)
 - Microsoft.VisualStudio.Threading.Analyzers — 17.14.15 — NuGet (Roslyn analyzer)
 - Microsoft.VisualStudio.Web.CodeGeneration.Design — 3.1.5 — NuGet (tooling)
 - Newtonsoft.Json — 13.0.4 — NuGet
 - Npgsql — 5.0.18 — NuGet
 - Npgsql.Json.NET — 5.0.13 — NuGet
+- OpenTelemetry — 1.18.0 — NuGet
+- OpenTelemetry.Exporter.OpenTelemetryProtocol — 1.18.0 — NuGet
+- OpenTelemetry.Extensions.Hosting — 1.18.0 — NuGet
+- OpenTelemetry.Instrumentation.AspNetCore — 1.18.0 — NuGet
+- OpenTelemetry.Instrumentation.Http — 1.18.0 — NuGet
+- OpenTelemetry.Instrumentation.Process — 1.18.0-rc.1 — NuGet
+- OpenTelemetry.Instrumentation.Runtime — 1.18.0 — NuGet
+- OpenTelemetry.Instrumentation.StackExchangeRedis — 1.18.0-beta.1 — NuGet
 - pgsqlparser — 1.0.0 — NuGet
 - Polly — 8.6.6 — NuGet
 - RabbitMQ.Client — 6.2.1 — NuGet
@@ -58,17 +70,10 @@ nav_order: 6
 - Swashbuckle.AspNetCore.Swagger — 6.2.3 — NuGet
 - Swashbuckle.AspNetCore.SwaggerGen — 6.2.3 — NuGet
 - Swashbuckle.AspNetCore.SwaggerUI — 10.1.7 — NuGet
-- System.Buffers — 4.5.1 — NuGet
 - System.ComponentModel.Annotations — 4.4.1 — NuGet
 - System.ComponentModel.Composition — 5.0.0 — NuGet
 - System.Data.DataSetExtensions — 4.5.0 — NuGet
-- System.Diagnostics.DiagnosticSource — 4.7.1 — NuGet
 - System.Diagnostics.PerformanceCounter — 9.0.10 — NuGet
-- System.Numerics.Vectors — 4.5.0 — NuGet
-- System.Reflection.Emit.Lightweight — 4.3.0 — NuGet
-- System.Runtime — 4.3.0 — NuGet
-- System.Runtime.CompilerServices.Unsafe — 6.0.0 — NuGet
-- System.Runtime.InteropServices.RuntimeInformation — 4.3.0 — NuGet
 - xunit — 2.4.1 — NuGet (test)
 - xunit.runner.visualstudio — 2.4.3 — NuGet (test)
 - YamlDotNet — 16.3.0 — NuGet

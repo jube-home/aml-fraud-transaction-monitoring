@@ -11,87 +11,68 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     public static class ActivationRuleGetSuppressedModelExtensions
     {
-        public static bool ActivationRuleGetSuppressedModel(this Context context, ref List<string> suppressedActivationRules)
+        public static bool ActivationRuleGetSuppressedModel(this Context context,
+            ref List<string> suppressedActivationRules)
         {
             var suppressedModelValue = false;
-            foreach (var xpath in context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Where(w => w.EnableSuppression)
+            foreach (var xpath in context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths
+                         .Where(w => w.EnableSuppression)
                          .ToList())
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Suppression key is {xpath.Name}.  Will now check to see if has a suppressed value.");
-                }
+                context.TraceLog(
+                    $"Suppression key is {xpath.Name}. Will now check to see if has a suppressed value.");
 
                 if (context.EntityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(xpath.Name))
                 {
-                    if (context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels.TryGetValue(xpath.Name, out var value))
+                    if (context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels.TryGetValue(
+                            xpath.Name, out var value))
                     {
                         suppressedModelValue = value.Contains(
                             context.EntityAnalysisModelInstanceEntryPayload.Payload[xpath.Name].AsString());
                     }
                     else
                     {
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Suppression key is {xpath.Name} but it has no keys.");
-                        }
+                        context.TraceLog($"Suppression key is {xpath.Name} but it has no keys.");
                     }
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Suppression status is {suppressedModelValue}.");
-                    }
+                    var suppressedModelValueForLog = suppressedModelValue;
+                    context.TraceLog($"Suppression status is {suppressedModelValueForLog}.");
 
-                    if (context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionRules.ContainsKey(xpath.Name))
+                    if (context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionRules.ContainsKey(
+                            xpath.Name))
                     {
-                        if (context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionRules[xpath.Name].ContainsKey(
+                        if (context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionRules[xpath.Name]
+                            .ContainsKey(
                                 context.EntityAnalysisModelInstanceEntryPayload.Payload[xpath.Name].AsString()))
                         {
                             suppressedActivationRules =
-                                context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionRules[xpath.Name][
-                                    context.EntityAnalysisModelInstanceEntryPayload.Payload[xpath.Name].AsString()];
+                                context.EntityAnalysisModel.Dependencies
+                                    .EntityAnalysisModelSuppressionRules[xpath.Name][
+                                        context.EntityAnalysisModelInstanceEntryPayload.Payload[xpath.Name].AsString()];
 
-                            if (context.Log.IsInfoEnabled)
-                            {
-                                context.Log.Info(
-                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Suppression status is {suppressedModelValue}.");
-                            }
+                            context.TraceLog($"Suppression status is {suppressedModelValueForLog}.");
                         }
                         else
                         {
-                            if (context.Log.IsInfoEnabled)
-                            {
-                                context.Log.Info(
-                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Suppression status is {suppressedModelValue}.");
-                            }
+                            context.TraceLog($"Suppression status is {suppressedModelValueForLog}.");
                         }
                     }
                     else
                     {
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Suppression key is {xpath.Name} but it has no keys.");
-                        }
+                        context.TraceLog($"Suppression key is {xpath.Name} but it has no keys.");
                     }
                 }
                 else
                 {
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Suppression key is {xpath.Name} but could not locate the value in the data payload.");
-                    }
+                    context.TraceLog(
+                        $"Suppression key is {xpath.Name} but could not locate the value in the data payload.");
                 }
             }
 

@@ -1,18 +1,18 @@
 root = true
 
 [*.cs]
-dotnet_naming_style.camel_case.capitalization  = camel_case
+dotnet_naming_style.camel_case.capitalization = camel_case
 dotnet_naming_style.pascal_case.capitalization = pascal_case
-dotnet_naming_symbols.constant_fields.applicable_kinds       = field
-dotnet_naming_symbols.constant_fields.required_modifiers     = const
-dotnet_naming_rule.constants_are_pascal_case.symbols         = constant_fields
-dotnet_naming_rule.constants_are_pascal_case.style           = pascal_case
-dotnet_naming_rule.constants_are_pascal_case.severity        = suggestion
-dotnet_naming_symbols.non_public_fields.applicable_kinds            = field
-dotnet_naming_symbols.non_public_fields.applicable_accessibilities  = private, internal, private_protected
-dotnet_naming_rule.non_public_fields_are_camel_case.symbols         = non_public_fields
-dotnet_naming_rule.non_public_fields_are_camel_case.style           = camel_case
-dotnet_naming_rule.non_public_fields_are_camel_case.severity        = suggestion
+dotnet_naming_symbols.constant_fields.applicable_kinds = field
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+dotnet_naming_rule.constants_are_pascal_case.symbols = constant_fields
+dotnet_naming_rule.constants_are_pascal_case.style = pascal_case
+dotnet_naming_rule.constants_are_pascal_case.severity = suggestion
+dotnet_naming_symbols.non_public_fields.applicable_kinds = field
+dotnet_naming_symbols.non_public_fields.applicable_accessibilities = private, internal, private_protected
+dotnet_naming_rule.non_public_fields_are_camel_case.symbols = non_public_fields
+dotnet_naming_rule.non_public_fields_are_camel_case.style = camel_case
+dotnet_naming_rule.non_public_fields_are_camel_case.severity = suggestion
 
 # House style: block-scoped namespaces everywhere (IDE0160/IDE0161) -- declared silently so
 # Rider/dotnet format won't nag either direction, they just won't offer to convert to file-scoped.
@@ -29,15 +29,33 @@ csharp_style_namespace_declarations = block_scoped:silent
 # namespace), alias it instead (`using ModelPoco = Jube.Data.Poco.EntityAnalysisModel;`).
 # Tell Rider/ReSharper 'global::' is unnecessary here so it doesn't suggest adding it back, and
 # that fully-qualified names are preferred at nested scope so it doesn't shorten them either.
-resharper_csharp_can_use_global_alias            = false
+resharper_csharp_can_use_global_alias = false
 resharper_csharp_qualified_using_at_nested_scope = true
 
+# House style: always brace if/else/while/for/foreach, even a single-statement body -- no bare
+# one-liners. Two mechanisms, both pointed at the same rule, so it's enforced whichever way a given
+# Rider/dotnet-format version actually reads it:
+#  - csharp_prefer_braces is the standard Roslyn/dotnet-format option (IDE0011) -- drives the
+#    inspection/quick-fix in any editor and is what `dotnet format` checks in CI.
+#  - The resharper_csharp_braces_for_* keys are ReSharper/Rider's own formatter settings for the
+#    same thing, read directly out of .editorconfig (the modern alternative to a checked-in
+#    Jube.sln.DotSettings file) -- these are what Rider's Reformat Code/Code Cleanup actually acts
+#    on when inserting or removing braces, which csharp_prefer_braces alone does not guarantee.
+csharp_prefer_braces = true:warning
+resharper_csharp_braces_for_ifelse = required
+resharper_csharp_braces_for_while = required
+resharper_csharp_braces_for_for = required
+resharper_csharp_braces_for_foreach = required
+resharper_csharp_braces_for_using = required
+resharper_csharp_braces_for_lock = required
+resharper_csharp_braces_for_fixed = required
+
 [Accord.*/**.cs]
-dotnet_naming_rule.constants_are_pascal_case.severity        = none
+dotnet_naming_rule.constants_are_pascal_case.severity = none
 dotnet_naming_rule.non_public_fields_are_camel_case.severity = none
 # Vendored code -- not ours to impose a namespace/global:: house style on.
-csharp_style_namespace_declarations              = unset
-resharper_csharp_can_use_global_alias            = unset
+csharp_style_namespace_declarations = unset
+resharper_csharp_can_use_global_alias = unset
 resharper_csharp_qualified_using_at_nested_scope = unset
 
 [{Jube.Dictionary,Jube.Cache}/**.cs]

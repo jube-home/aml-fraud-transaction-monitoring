@@ -11,82 +11,71 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.Observability;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
-    using TaskCancellation.TaskHelper;
-
     public static class WaitReadTasksExtensions
     {
         public static async Task<Context> WaitReadTasksAsync(this Context context)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" is waiting for {context.PendingReadTasks.Count} read tasks of which {context.PendingReadTasks.Count(c => c.IsCompleted)} are completed.");
-            }
+            context.TraceLog(
+                $"is waiting for {context.PendingReadTasks.Count} read tasks of which {context.PendingReadTasks.Count(c => c.IsCompleted)} are completed.");
 
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.ReadTasksPerformance = new ReadTasksPerformance();
+            var invokeTaskPerformance = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance;
+            invokeTaskPerformance.TaskWrapperStats ??= new TaskWrapperStats();
+            invokeTaskPerformance.TaskWrapperStats.Read = new ReadTasksPerformance();
+
+            var joinStopwatch = Stopwatch.StartNew();
             var pendingReadTasksResults = await Task.WhenAll(context.PendingReadTasks).ConfigureAwait(false);
+            joinStopwatch.Stop();
+
             foreach (var pendingReadTasksResult in pendingReadTasksResults)
             {
+                if (pendingReadTasksResult.Faulted)
+                {
+                    EngineDiagnostics.InvokeTaskFaultedCount.Add(1,
+                        new KeyValuePair<string, object>("task.type", pendingReadTasksResult.TaskType.ToString()),
+                        new KeyValuePair<string, object>("task.direction", "read"));
+                    continue;
+                }
+
                 switch (pendingReadTasksResult.TaskType)
                 {
                     case TaskType.SanctionsAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.ReadTasksPerformance.SanctionsAsync = new TaskPerformance(pendingReadTasksResult.ThreadMemory, pendingReadTasksResult.ComputeTime);
+                        invokeTaskPerformance.TaskWrapperStats.Read.SanctionsAsync =
+                            new TaskPerformance(pendingReadTasksResult.ComputeTime,
+                                pendingReadTasksResult.ThreadMemory);
                         break;
                     case TaskType.TtlCountersAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.ReadTasksPerformance.TtlCountersAsync = new TaskPerformance(pendingReadTasksResult.ThreadMemory, pendingReadTasksResult.ComputeTime);
+                        invokeTaskPerformance.TaskWrapperStats.Read.TtlCountersAsync =
+                            new TaskPerformance(pendingReadTasksResult.ComputeTime,
+                                pendingReadTasksResult.ThreadMemory);
                         break;
                     case TaskType.AbstractionRulesWithSearchKeysAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.ReadTasksPerformance.AbstractionRulesWithSearchKeysAsync = new TaskPerformance(pendingReadTasksResult.ThreadMemory, pendingReadTasksResult.ComputeTime);
-                        break;
-                    case TaskType.CachePayloadLatestUpsertAsync:
-                    case TaskType.CachePayloadUpsertAsync:
-                    case TaskType.CachePayloadInsertAsync:
-                    case TaskType.CacheTtlCounterEntryUpsertAsync:
-                    case TaskType.CacheTtlCounterEntryIncrementAsync:
-                    case TaskType.CacheSanctionUpdateAsync:
-                    case TaskType.OnlineAggregationOfTtlCountersAsync:
-                    case TaskType.ExecuteOutOfProcessAggregationOfTtlCountersAsync:
-                    case TaskType.ExecuteTimeToLiveCounterIterationAsync:
-                    case TaskType.CachePayloadLatestInsertAsync:
-                    case TaskType.CacheSanctionInsertAsync:
-                    case TaskType.ExecuteAbstractionRulesWithSearchKeyAsync:
-                    case TaskType.BulkInsertCachePayloadRemovalBatchEntry:
-                    case TaskType.SortedSetRemoveReferenceDate:
-                    case TaskType.SetRemoveAsync:
-                    case TaskType.PublishAsync:
-                    case TaskType.HashDecrementBytes:
-                    case TaskType.HashDecrementCount:
-                    case TaskType.HashDeletePayload:
-                    case TaskType.HashDeletePayloadBulk:
-                    case TaskType.AppendBulkCleanupOfPayloadGuids:
-                    case TaskType.SortedSetRemoveReferenceDateLatest:
-                    case TaskType.HashDecrementLatestCount:
-                    case TaskType.HashDeletePayloadLatest:
-                    case TaskType.CachePayloadLatestRemovalBatchEntry:
-                    case TaskType.ProcessTtlCounterDeprecation:
-                    case TaskType.BulkInsertTtlCounterEntryRemovalBatchResponseTime:
-                    case TaskType.BulkInsertCachePayloadLatestRemovalBatchEntry:
-                    default:
+                        invokeTaskPerformance.TaskWrapperStats.Read.AbstractionRulesWithSearchKeysAsync =
+                            new TaskPerformance(pendingReadTasksResult.ComputeTime,
+                                pendingReadTasksResult.ThreadMemory);
                         break;
                 }
             }
 
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.JoinReadTasks =
-                (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
-
-            if (context.Log.IsInfoEnabled)
+            if (context.LogSampled)
             {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" completed {context.PendingReadTasks.Count}.");
+                invokeTaskPerformance.Stages ??= new InvokeStagePerformance();
+                invokeTaskPerformance.Stages.JoinReadTasks = new StageDuration
+                {
+                    DurationMicroseconds = (long)(joinStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency))
+                };
             }
+
+            context.TraceLog($"completed {context.PendingReadTasks.Count} read tasks.");
 
             return context;
         }

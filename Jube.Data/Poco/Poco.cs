@@ -11,14 +11,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using LinqToDB;
+using LinqToDB.Mapping;
+using MessagePack;
+
 namespace Jube.Data.Poco
 {
-    using System;
-    using System.Collections.Generic;
-    using LinqToDB;
-    using LinqToDB.Mapping;
-    using MessagePack;
-
     [Table]
     [MessagePackObject]
     public class ActivationWatcher
@@ -269,7 +269,12 @@ namespace Jube.Data.Poco
     [MessagePackObject]
     public class ArchiveKey
     {
-        [Column] [Identity] [Key(0)] [PrimaryKey] public long Id { get; set; }
+        [Column]
+        [Identity]
+        [Key(0)]
+        [PrimaryKey]
+        public long Id { get; set; }
+
         [Column] [Nullable] [Key(1)] public byte? ProcessingTypeId { get; set; }
         [Column] [Nullable] [Key(2)] public string Key { get; set; }
         [Column] [Nullable] [Key(3)] public string KeyValueString { get; set; }
@@ -289,7 +294,12 @@ namespace Jube.Data.Poco
     [MessagePackObject]
     public class ArchiveKeyVersion
     {
-        [Column] [Identity] [Key(0)] [PrimaryKey] public long Id { get; set; }
+        [Column]
+        [Identity]
+        [Key(0)]
+        [PrimaryKey]
+        public long Id { get; set; }
+
         [Column] [Nullable] [Key(1)] public long ArchiveKeyId { get; set; }
         [Column] [Nullable] [Key(2)] public byte? ProcessingTypeId { get; set; }
         [Column] [Nullable] [Key(3)] public string Key { get; set; }
@@ -308,7 +318,12 @@ namespace Jube.Data.Poco
     [MessagePackObject]
     public class HttpResponseHeader
     {
-        [Column] [Identity] [Key(0)] [PrimaryKey] public long Id { get; set; }
+        [Column]
+        [Identity]
+        [Key(0)]
+        [PrimaryKey]
+        public long Id { get; set; }
+
         [Column] [Nullable] [Key(1)] public string Header { get; set; }
         [Column] [Nullable] [Key(2)] public string Value { get; set; }
     }
@@ -317,7 +332,12 @@ namespace Jube.Data.Poco
     [MessagePackObject]
     public class ArchiveTag
     {
-        [Column] [Identity] [Key(0)] [PrimaryKey] public long Id { get; set; }
+        [Column]
+        [Identity]
+        [Key(0)]
+        [PrimaryKey]
+        public long Id { get; set; }
+
         [Column] [Nullable] [Key(1)] public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
         [Column] [Nullable] [Key(2)] public string Name { get; set; }
         [Column] [Key(3)] public int? Version { get; set; }
@@ -332,7 +352,12 @@ namespace Jube.Data.Poco
     [MessagePackObject]
     public class ArchiveTagVersion
     {
-        [Column] [Identity] [Key(0)] [PrimaryKey] public long Id { get; set; }
+        [Column]
+        [Identity]
+        [Key(0)]
+        [PrimaryKey]
+        public long Id { get; set; }
+
         [Column] [Nullable] [Key(1)] public long? ArchiveTagId { get; set; }
         [Column] [Nullable] [Key(2)] public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
         [Column] [Nullable] [Key(3)] public string Name { get; set; }
@@ -1870,6 +1895,16 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(30)] public byte? EnableSanctionCache { get; set; }
         [Column] [Nullable] [Key(31)] public byte? EnableRdbmsArchive { get; set; }
         [Column] [Nullable] [Key(32)] public int? Version { get; set; }
+        [Column] [Nullable] [Key(33)] public byte? EnableImplicitAsync { get; set; }
+        [Column] [Nullable] [Key(34)] public int? ImplicitAsyncTimeoutMilliseconds { get; set; }
+        [Column] [Nullable] [Key(35)] public byte? EnableTrace { get; set; }
+        [Column] [Nullable] [Key(36)] public byte? EnableLogsInfo { get; set; }
+        [Column] [Nullable] [Key(37)] public int? LogsWarnThresholdMilliseconds { get; set; }
+        [Column] [Nullable] [Key(38)] public byte? EnableLogsInResponse { get; set; }
+        [Column] [Nullable] [Key(39)] public byte? EnableSampling { get; set; }
+        [Column] [Nullable] [Key(40)] public double? SamplePercentage { get; set; }
+        [Column] [Nullable] [Key(41)] public byte? EnableLogsWarnThreshold { get; set; }
+        [Column] [Nullable] [Key(42)] public byte? EnableLogs { get; set; }
     }
 
     [Table]
@@ -2020,6 +2055,16 @@ namespace Jube.Data.Poco
         }
 
         [Column] [Nullable] [Key(56)] public int? ImportId { get; set; }
+        [Column] [Nullable] [Key(57)] public byte? EnableImplicitAsync { get; set; }
+        [Column] [Nullable] [Key(58)] public int? ImplicitAsyncTimeoutMilliseconds { get; set; }
+        [Column] [Nullable] [Key(59)] public byte? EnableTrace { get; set; }
+        [Column] [Nullable] [Key(60)] public byte? EnableLogsInfo { get; set; }
+        [Column] [Nullable] [Key(61)] public int? LogsWarnThresholdMilliseconds { get; set; }
+        [Column] [Nullable] [Key(62)] public byte? EnableLogsInResponse { get; set; }
+        [Column] [Nullable] [Key(63)] public byte? EnableSampling { get; set; }
+        [Column] [Nullable] [Key(64)] public double? SamplePercentage { get; set; }
+        [Column] [Nullable] [Key(65)] public byte? EnableLogsWarnThreshold { get; set; }
+        [Column] [Nullable] [Key(66)] public byte? EnableLogs { get; set; }
     }
 
     [Table]
@@ -2531,7 +2576,10 @@ namespace Jube.Data.Poco
 
         [Association(ThisKey = "UserRegistryId", OtherKey = "Id", CanBeNull = true,
             Relationship = Relationship.ManyToOne)]
-        [Column] [Nullable] [Key(13)] public UserRegistry UserRegistry { get; set; }
+        [Column]
+        [Nullable]
+        [Key(13)]
+        public UserRegistry UserRegistry { get; set; }
     }
 
     [Table]
@@ -2621,6 +2669,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(6)] public int? Tagging { get; set; }
         [Column] [Nullable] [Key(7)] public int? Notification { get; set; }
         [Column] [Nullable] [Key(8)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(9)] public int? AsynchronousImplicitAsyncOverdue { get; set; }
     }
 
     [Table]
@@ -2638,6 +2687,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(3)] public int? Archive { get; set; }
         [Column] [Nullable] [Key(4)] public int? ActivationWatcher { get; set; }
         [Column] [Nullable] [Key(5)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(7)] public int? ImplicitAsyncOverdue { get; set; }
 
         [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true,
             Relationship = Relationship.ManyToOne)]
@@ -3232,8 +3282,143 @@ namespace Jube.Data.Poco
             Relationship = Relationship.ManyToOne)]
         [Key(12)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
+
+        [Key(13)] [Column] [Nullable] public long ModelTotalResponseTime { get; set; }
+
+        [Column] [Nullable] [Key(14)] public int? ImplicitAsyncInvoke { get; set; }
+        [Column] [Nullable] [Key(15)] public int? ImplicitAsyncTimeout { get; set; }
+        [Column] [Nullable] [Key(16)] public int? ImplicitAsyncCompletedAfterTimeout { get; set; }
+        [Column] [Nullable] [Key(17)] public int? ImplicitAsyncFaultedAfterTimeout { get; set; }
+        [Column] [Nullable] [Key(18)] public long? MinResponseTimeMicroseconds { get; set; }
+        [Column] [Nullable] [Key(19)] public long? MaxResponseTimeMicroseconds { get; set; }
+        [Column] [Nullable] [Key(20)] public int? ArchiveWalPendingCount { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class EntityAnalysisModelStagePerformanceCounter
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public Guid EntityAnalysisModelGuid { get; set; }
+        [Column] [Nullable] [Key(2)] public int? StageId { get; set; }
+        [Column] [Nullable] [Key(3)] public long? TotalMicroseconds { get; set; }
+        [Column] [Nullable] [Key(4)] public long? MinMicroseconds { get; set; }
+        [Column] [Nullable] [Key(5)] public long? MaxMicroseconds { get; set; }
+        [Column] [Nullable] [Key(6)] public int? InvokeCount { get; set; }
+        [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(8)] public string Instance { get; set; }
+
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true,
+            Relationship = Relationship.ManyToOne)]
+        [Key(9)]
+        public EntityAnalysisModel EntityAnalysisModel { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class ArchiverStagePerformanceCounter
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public Guid EntityAnalysisModelGuid { get; set; }
+        [Column] [Nullable] [Key(2)] public int? StageId { get; set; }
+        [Column] [Nullable] [Key(3)] public long? TotalMicroseconds { get; set; }
+        [Column] [Nullable] [Key(4)] public long? MinMicroseconds { get; set; }
+        [Column] [Nullable] [Key(5)] public long? MaxMicroseconds { get; set; }
+        [Column] [Nullable] [Key(6)] public int? InvokeCount { get; set; }
+        [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(8)] public string Instance { get; set; }
+
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true,
+            Relationship = Relationship.ManyToOne)]
+        [Key(9)]
+        public EntityAnalysisModel EntityAnalysisModel { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class CaseCreationStagePerformanceCounter
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public int? StageId { get; set; }
+        [Column] [Nullable] [Key(2)] public long? TotalMicroseconds { get; set; }
+        [Column] [Nullable] [Key(3)] public long? MinMicroseconds { get; set; }
+        [Column] [Nullable] [Key(4)] public long? MaxMicroseconds { get; set; }
+        [Column] [Nullable] [Key(5)] public int? InvokeCount { get; set; }
+        [Column] [Nullable] [Key(6)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(7)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class EntityAnalysisModelResponseTimePipelineCounter
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public Guid EntityAnalysisModelGuid { get; set; }
+        [Column] [Nullable] [Key(2)] public int? StageId { get; set; }
+        [Column] [Nullable] [Key(3)] public int? SequenceNumber { get; set; }
+        [Column] [Nullable] [Key(4)] public long? TotalMicroseconds { get; set; }
+        [Column] [Nullable] [Key(5)] public long? MinMicroseconds { get; set; }
+        [Column] [Nullable] [Key(6)] public long? MaxMicroseconds { get; set; }
+        [Column] [Nullable] [Key(7)] public long? TotalAllocatedBytes { get; set; }
+        [Column] [Nullable] [Key(8)] public long? MinAllocatedBytes { get; set; }
+        [Column] [Nullable] [Key(9)] public long? MaxAllocatedBytes { get; set; }
+        [Column] [Nullable] [Key(10)] public int? InvokeCount { get; set; }
+        [Column] [Nullable] [Key(11)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(12)] public string Instance { get; set; }
+
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true,
+            Relationship = Relationship.ManyToOne)]
         [Key(13)]
-        [Column] [Nullable] public long ModelTotalResponseTime { get; set; }
+        public EntityAnalysisModel EntityAnalysisModel { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class EntityAnalysisModelTaskPerformanceCounter
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public Guid EntityAnalysisModelGuid { get; set; }
+        [Column] [Nullable] [Key(2)] public int? DirectionId { get; set; }
+        [Column] [Nullable] [Key(3)] public int? TaskTypeId { get; set; }
+        [Column] [Nullable] [Key(4)] public long? TotalMicroseconds { get; set; }
+        [Column] [Nullable] [Key(5)] public long? MinMicroseconds { get; set; }
+        [Column] [Nullable] [Key(6)] public long? MaxMicroseconds { get; set; }
+        [Column] [Nullable] [Key(7)] public long? TotalAllocatedBytes { get; set; }
+        [Column] [Nullable] [Key(8)] public long? MinAllocatedBytes { get; set; }
+        [Column] [Nullable] [Key(9)] public long? MaxAllocatedBytes { get; set; }
+        [Column] [Nullable] [Key(10)] public int? InvokeCount { get; set; }
+        [Column] [Nullable] [Key(11)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(12)] public string Instance { get; set; }
+
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true,
+            Relationship = Relationship.ManyToOne)]
+        [Key(13)]
+        public EntityAnalysisModel EntityAnalysisModel { get; set; }
     }
 
     [Table]
@@ -4310,16 +4495,17 @@ namespace Jube.Data.Poco
         [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
             Relationship = Relationship.OneToMany)]
         [Key(20)]
-        public IEnumerable<ExhaustiveSearchInstanceVariableAnomaly> ExhaustiveSearchInstanceVariableAnomaly { get; set; }
-
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
-        [Key(21)]
-        public IEnumerable<ExhaustiveSearchInstanceVariableClassification> ExhaustiveSearchInstanceVariableClassification
+        public IEnumerable<ExhaustiveSearchInstanceVariableAnomaly> ExhaustiveSearchInstanceVariableAnomaly
         {
             get;
             set;
         }
+
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
+            Relationship = Relationship.OneToMany)]
+        [Key(21)]
+        public IEnumerable<ExhaustiveSearchInstanceVariableClassification>
+            ExhaustiveSearchInstanceVariableClassification { get; set; }
 
         [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
             Relationship = Relationship.OneToMany)]
@@ -4467,7 +4653,11 @@ namespace Jube.Data.Poco
         [Association(ThisKey = "ExhaustiveSearchInstanceVariableClassificationId", OtherKey = "Id", CanBeNull = true,
             Relationship = Relationship.ManyToOne)]
         [Key(8)]
-        public ExhaustiveSearchInstanceVariableClassification ExhaustiveSearchInstanceVariableClassification { get; set; }
+        public ExhaustiveSearchInstanceVariableClassification ExhaustiveSearchInstanceVariableClassification
+        {
+            get;
+            set;
+        }
 
         [Column] [Nullable] [Key(9)] public int? ImportId { get; set; }
     }
@@ -4548,6 +4738,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(8)] public int? Exhaustive { get; set; }
         [Column] [Nullable] [Key(9)] public int? Sanction { get; set; }
         [Column] [Nullable] [Key(10)] public int? Callback { get; set; }
+        [Column] [Nullable] [Key(11)] public int? CallbackTimeout { get; set; }
     }
 
     [Table]
@@ -4579,6 +4770,7 @@ namespace Jube.Data.Poco
             Relationship = Relationship.ManyToOne)]
         [Key(10)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
+
         [Key(11)] public int? Version { get; set; }
         [Key(12)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
     }
@@ -4613,6 +4805,7 @@ namespace Jube.Data.Poco
             Relationship = Relationship.ManyToOne)]
         [Key(11)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
+
         [Key(12)] public int? Version { get; set; }
         [Key(13)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
     }
@@ -4684,10 +4877,10 @@ namespace Jube.Data.Poco
             Relationship = Relationship.OneToMany)]
         [Key(14)]
         public UserRegistry UserRegistry { get; set; }
-        [Key(15)]
-        public IEnumerable<RoleRegistryPermission> RoleRegistryPermission { get; set; }
-        [Key(16)]
-        [Column] public int? ImportId { get; set; }
+
+        [Key(15)] public IEnumerable<RoleRegistryPermission> RoleRegistryPermission { get; set; }
+
+        [Key(16)] [Column] public int? ImportId { get; set; }
     }
 
     [Table]
@@ -4749,8 +4942,8 @@ namespace Jube.Data.Poco
             Relationship = Relationship.ManyToOne)]
         [Key(16)]
         public RoleRegistry RoleRegistry { get; set; }
-        [Key(17)]
-        [Column] public int? ImportId { get; set; }
+
+        [Key(17)] [Column] public int? ImportId { get; set; }
     }
 
     [Table]
@@ -4790,6 +4983,23 @@ namespace Jube.Data.Poco
         public int Id { get; set; }
 
         [Column] [Nullable] [Key(1)] public string Token { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class DictionaryEvalExpression
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public string Name { get; set; }
+        [Column] [Nullable] [Key(2)] public string Expression { get; set; }
+        [Column] [Nullable] [Key(3)] public int? ResultTypeId { get; set; }
+        [Column] [Nullable] [Key(4)] public byte? Compiled { get; set; }
+        [Column] [Nullable] [Key(5)] public string CompileError { get; set; }
     }
 
     [Table]
@@ -4960,6 +5170,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(6)] public DateTime? CreatedDate { get; set; }
         [Column] [Nullable] [Key(7)] public byte Failed { get; set; }
         [Column] [Nullable] [Key(9)] public int? AuthenticationTypeId { get; set; }
+        [Column] [Nullable] [Key(10)] public string FailureMessage { get; set; }
     }
 
     [Table]
@@ -5303,5 +5514,827 @@ namespace Jube.Data.Poco
             Relationship = Relationship.OneToMany)]
         [Key(25)]
         public VisualisationRegistryParameterRole VisualisationRegistryParameterRole { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class DotNetRuntimeMetric
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(3)] public int? ProcessorCount { get; set; }
+        [Column] [Nullable] [Key(4)] public int? Gen0CollectionCount { get; set; }
+        [Column] [Nullable] [Key(5)] public int? Gen1CollectionCount { get; set; }
+        [Column] [Nullable] [Key(6)] public int? Gen2CollectionCount { get; set; }
+        [Column] [Nullable] [Key(7)] public long? TotalAllocatedBytes { get; set; }
+        [Column] [Nullable] [Key(8)] public long? HeapSizeBytes { get; set; }
+        [Column] [Nullable] [Key(9)] public long? FragmentedBytes { get; set; }
+        [Column] [Nullable] [Key(10)] public long? MemoryLoadBytes { get; set; }
+        [Column] [Nullable] [Key(11)] public long? HighMemoryLoadThresholdBytes { get; set; }
+        [Column] [Nullable] [Key(12)] public long? WorkingSetBytes { get; set; }
+        [Column] [Nullable] [Key(13)] public long? PrivateMemoryBytes { get; set; }
+        [Column] [Nullable] [Key(14)] public int? ThreadCount { get; set; }
+        [Column] [Nullable] [Key(15)] public int? ThreadPoolWorkerThreadsAvailable { get; set; }
+        [Column] [Nullable] [Key(16)] public int? ThreadPoolWorkerThreadsMax { get; set; }
+        [Column] [Nullable] [Key(17)] public int? ThreadPoolCompletionPortThreadsAvailable { get; set; }
+        [Column] [Nullable] [Key(18)] public int? ThreadPoolCompletionPortThreadsMax { get; set; }
+        [Column] [Nullable] [Key(19)] public long? ThreadPoolQueueLength { get; set; }
+        [Column] [Nullable] [Key(20)] public long? CpuTimeMicroseconds { get; set; }
+        [Column] [Nullable] [Key(21)] public long? RuntimeAvailableMemoryBytes { get; set; }
+        [Column] [Nullable] [Key(22)] public long? RuntimeCommittedMemoryBytes { get; set; }
+        [Column] [Nullable] [Key(23)] public double? ContainerCpuLimitCores { get; set; }
+        [Column] [Nullable] [Key(24)] public long? ContainerCpuUsageMicroseconds { get; set; }
+        [Column] [Nullable] [Key(25)] public long? ContainerCpuThrottledPeriods { get; set; }
+        [Column] [Nullable] [Key(26)] public long? ContainerCpuThrottledMicroseconds { get; set; }
+        [Column] [Nullable] [Key(27)] public long? ContainerMemoryLimitBytes { get; set; }
+        [Column] [Nullable] [Key(28)] public long? ContainerMemoryUsageBytes { get; set; }
+        [Column] [Nullable] [Key(29)] public long? GcPauseTimeMicroseconds { get; set; }
+        [Column] [Nullable] [Key(30)] public long? LockContentionCount { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class PostgresMetric
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(3)] public int? ActiveConnections { get; set; }
+        [Column] [Nullable] [Key(4)] public long? TransactionsCommitted { get; set; }
+        [Column] [Nullable] [Key(5)] public long? TransactionsRolledBack { get; set; }
+        [Column] [Nullable] [Key(6)] public long? BlocksRead { get; set; }
+        [Column] [Nullable] [Key(7)] public long? BlocksHit { get; set; }
+        [Column] [Nullable] [Key(8)] public double? CacheHitRatioPercent { get; set; }
+        [Column] [Nullable] [Key(9)] public long? RowsReturned { get; set; }
+        [Column] [Nullable] [Key(10)] public long? RowsFetched { get; set; }
+        [Column] [Nullable] [Key(11)] public long? RowsInserted { get; set; }
+        [Column] [Nullable] [Key(12)] public long? RowsUpdated { get; set; }
+        [Column] [Nullable] [Key(13)] public long? RowsDeleted { get; set; }
+        [Column] [Nullable] [Key(14)] public long? Deadlocks { get; set; }
+        [Column] [Nullable] [Key(15)] public long? TempFilesCreated { get; set; }
+        [Column] [Nullable] [Key(16)] public long? TempBytesWritten { get; set; }
+        [Column] [Nullable] [Key(17)] public long? Conflicts { get; set; }
+        [Column] [Nullable] [Key(18)] public bool? IsInRecovery { get; set; }
+        [Column] [Nullable] [Key(19)] public double? ReplicationLagSeconds { get; set; }
+        [Column] [Nullable] [Key(20)] public int? ReplicaCount { get; set; }
+        [Column] [Nullable] [Key(21)] public long? DatabaseSizeBytes { get; set; }
+        [Column] [Nullable] [Key(22)] public double? LongestRunningQuerySeconds { get; set; }
+        [Column] [Nullable] [Key(23)] public int? WaitingBackends { get; set; }
+        [Column] [Nullable] [Key(24)] public long? WalBytesGenerated { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class RedisMetric
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(3)] public int? ConnectedClients { get; set; }
+        [Column] [Nullable] [Key(4)] public int? BlockedClients { get; set; }
+        [Column] [Nullable] [Key(5)] public long? UsedMemoryBytes { get; set; }
+        [Column] [Nullable] [Key(6)] public long? UsedMemoryRssBytes { get; set; }
+        [Column] [Nullable] [Key(7)] public long? MaxMemoryBytes { get; set; }
+        [Column] [Nullable] [Key(8)] public int? InstantaneousOpsPerSecond { get; set; }
+        [Column] [Nullable] [Key(9)] public long? TotalCommandsProcessed { get; set; }
+        [Column] [Nullable] [Key(10)] public long? TotalConnectionsReceived { get; set; }
+        [Column] [Nullable] [Key(11)] public long? KeyspaceHits { get; set; }
+        [Column] [Nullable] [Key(12)] public long? KeyspaceMisses { get; set; }
+        [Column] [Nullable] [Key(13)] public double? HitRatePercent { get; set; }
+        [Column] [Nullable] [Key(14)] public long? EvictedKeys { get; set; }
+        [Column] [Nullable] [Key(15)] public long? ExpiredKeys { get; set; }
+        [Column] [Nullable] [Key(16)] public int? ConnectedReplicas { get; set; }
+        [Column] [Nullable] [Key(17)] public long? MasterReplicationOffset { get; set; }
+        [Column] [Nullable] [Key(18)] public long? UptimeSeconds { get; set; }
+        [Column] [Nullable] [Key(19)] public long? TotalKeys { get; set; }
+        [Column] [Nullable] [Key(20)] public double? MemoryFragmentationRatio { get; set; }
+        [Column] [Nullable] [Key(21)] public long? RdbLastSaveAgeSeconds { get; set; }
+        [Column] [Nullable] [Key(22)] public bool? AofEnabled { get; set; }
+        [Column] [Nullable] [Key(23)] public DateTime? LastAofRewriteDate { get; set; }
+        [Column] [Nullable] [Key(24)] public DateTime? LastBgSaveDate { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class RedisSlowOperation
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public long? RedisSlowLogId { get; set; }
+        [Column] [Nullable] [Key(2)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(3)] public long? DurationMicroseconds { get; set; }
+        [Column] [Nullable] [Key(4)] public string Command { get; set; }
+        [Column] [Nullable] [Key(5)] public string ClientAddress { get; set; }
+        [Column] [Nullable] [Key(6)] public string ClientName { get; set; }
+        [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(8)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(9)] public string CommandName { get; set; }
+        [Column] [Nullable] [Key(10)] public string KeyName { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class PostgresReplicationStatus
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public int? Pid { get; set; }
+        [Column] [Nullable] [Key(3)] public string UserName { get; set; }
+        [Column] [Nullable] [Key(4)] public string ApplicationName { get; set; }
+        [Column] [Nullable] [Key(5)] public string ClientAddress { get; set; }
+        [Column] [Nullable] [Key(6)] public string State { get; set; }
+        [Column] [Nullable] [Key(7)] public string SentLsn { get; set; }
+        [Column] [Nullable] [Key(8)] public string WriteLsn { get; set; }
+        [Column] [Nullable] [Key(9)] public string FlushLsn { get; set; }
+        [Column] [Nullable] [Key(10)] public string ReplayLsn { get; set; }
+        [Column] [Nullable] [Key(11)] public double? WriteLagSeconds { get; set; }
+        [Column] [Nullable] [Key(12)] public double? FlushLagSeconds { get; set; }
+        [Column] [Nullable] [Key(13)] public double? ReplayLagSeconds { get; set; }
+        [Column] [Nullable] [Key(14)] public string SyncState { get; set; }
+        [Column] [Nullable] [Key(15)] public int? SyncPriority { get; set; }
+        [Column] [Nullable] [Key(16)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(17)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class RedisSentinelStatus
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public int? EntityTypeId { get; set; }
+        [Column] [Nullable] [Key(3)] public string Name { get; set; }
+        [Column] [Nullable] [Key(4)] public string Ip { get; set; }
+        [Column] [Nullable] [Key(5)] public int? Port { get; set; }
+        [Column] [Nullable] [Key(6)] public string Flags { get; set; }
+        [Column] [Nullable] [Key(7)] public string MasterLinkStatus { get; set; }
+        [Column] [Nullable] [Key(8)] public string MasterHost { get; set; }
+        [Column] [Nullable] [Key(9)] public int? MasterPort { get; set; }
+        [Column] [Nullable] [Key(10)] public long? SlaveReplOffset { get; set; }
+        [Column] [Nullable] [Key(11)] public int? NumSlaves { get; set; }
+        [Column] [Nullable] [Key(12)] public int? NumOtherSentinels { get; set; }
+        [Column] [Nullable] [Key(13)] public int? Quorum { get; set; }
+        [Column] [Nullable] [Key(14)] public long? DownAfterMilliseconds { get; set; }
+        [Column] [Nullable] [Key(15)] public string RunId { get; set; }
+        [Column] [Nullable] [Key(16)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(17)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(18)] public double? ReplicationLagSeconds { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class RedisSentinelEvent
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Channel { get; set; }
+        [Column] [Nullable] [Key(3)] public string Message { get; set; }
+        [Column] [Nullable] [Key(4)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(5)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class ModelInvokeWarning
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public Guid EntityAnalysisModelGuid { get; set; }
+        [Column] [Nullable] [Key(3)] public string EntityAnalysisModelName { get; set; }
+        [Column] [Nullable] [Key(4)] public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
+        [Column] [Nullable] [Key(5)] public string Message { get; set; }
+        [Column] [Nullable] [Key(6)] public long? ElapsedMicroseconds { get; set; }
+        [Column] [Nullable] [Key(7)] public long? SinceLastEntryMicroseconds { get; set; }
+        [Column] [Nullable] [Key(8)] public int? ThreadId { get; set; }
+        [Column] [Nullable] [Key(9)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(10)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class CaseCreationWarning
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public int? TenantRegistryId { get; set; }
+        [Column] [Nullable] [Key(3)] public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
+        [Column] [Nullable] [Key(4)] public Guid CaseWorkflowGuid { get; set; }
+        [Column] [Nullable] [Key(5)] public string CaseKey { get; set; }
+        [Column] [Nullable] [Key(6)] public string CaseKeyValue { get; set; }
+        [Column] [Nullable] [Key(7)] public int? StageId { get; set; }
+        [Column] [Nullable] [Key(8)] public string Destination { get; set; }
+        [Column] [Nullable] [Key(9)] public long? DurationMicroseconds { get; set; }
+        [Column] [Nullable] [Key(10)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(11)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class ArchiverWarning
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public Guid EntityAnalysisModelGuid { get; set; }
+        [Column] [Nullable] [Key(3)] public string EntityAnalysisModelName { get; set; }
+        [Column] [Nullable] [Key(4)] public Guid? EntityAnalysisModelInstanceEntryGuid { get; set; }
+        [Column] [Nullable] [Key(5)] public int? StageId { get; set; }
+        [Column] [Nullable] [Key(6)] public long? DurationMicroseconds { get; set; }
+        [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(8)] public string Instance { get; set; }
+
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true,
+            Relationship = Relationship.ManyToOne)]
+        [Key(9)]
+        public EntityAnalysisModel EntityAnalysisModel { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class CaptureQueueHealth
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public int? QueueId { get; set; }
+        [Column] [Nullable] [Key(2)] public int? QueueDepth { get; set; }
+        [Column] [Nullable] [Key(3)] public long? DroppedCount { get; set; }
+        [Column] [Nullable] [Key(4)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(5)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class RedisConnectionEvent
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public int? EventTypeId { get; set; }
+        [Column] [Nullable] [Key(3)] public string EndPoint { get; set; }
+        [Column] [Nullable] [Key(4)] public int? ConnectionTypeId { get; set; }
+        [Column] [Nullable] [Key(5)] public int? FailureTypeId { get; set; }
+        [Column] [Nullable] [Key(6)] public string Origin { get; set; }
+        [Column] [Nullable] [Key(7)] public string Message { get; set; }
+        [Column] [Nullable] [Key(8)] public string Exception { get; set; }
+        [Column] [Nullable] [Key(9)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(10)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(11)] public int? RetryCount { get; set; }
+        [Column] [Nullable] [Key(12)] public int? BackoffMilliseconds { get; set; }
+        [Column] [Nullable] [Key(13)] public int? TransactionsImpacted { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class RedisCallCounter
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public string Call { get; set; }
+        [Column] [Nullable] [Key(2)] public long? Count { get; set; }
+        [Column] [Nullable] [Key(3)] public long? TotalMicroseconds { get; set; }
+        [Column] [Nullable] [Key(4)] public long? MinMicroseconds { get; set; }
+        [Column] [Nullable] [Key(5)] public long? MaxMicroseconds { get; set; }
+        [Column] [Nullable] [Key(6)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(7)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class EtcdMemberStatus
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Endpoint { get; set; }
+        [Column] [Nullable] [Key(3)] public string MemberId { get; set; }
+        [Column] [Nullable] [Key(4)] public string Name { get; set; }
+        [Column] [Nullable] [Key(5)] public string PeerUrls { get; set; }
+        [Column] [Nullable] [Key(6)] public string ClientUrls { get; set; }
+        [Column] [Nullable] [Key(7)] public bool? IsLearner { get; set; }
+        [Column] [Nullable] [Key(8)] public string Version { get; set; }
+        [Column] [Nullable] [Key(9)] public string ClusterVersion { get; set; }
+        [Column] [Nullable] [Key(10)] public bool? HealthOk { get; set; }
+        [Column] [Nullable] [Key(11)] public string HealthReason { get; set; }
+        [Column] [Nullable] [Key(12)] public string LeaderId { get; set; }
+        [Column] [Nullable] [Key(13)] public bool? IsLeader { get; set; }
+        [Column] [Nullable] [Key(14)] public bool? HasLeader { get; set; }
+        [Column] [Nullable] [Key(15)] public long? LeaderChangesTotal { get; set; }
+        [Column] [Nullable] [Key(16)] public long? DbSizeBytes { get; set; }
+        [Column] [Nullable] [Key(17)] public long? DbSizeInUseBytes { get; set; }
+        [Column] [Nullable] [Key(18)] public long? RaftIndex { get; set; }
+        [Column] [Nullable] [Key(19)] public long? RaftTerm { get; set; }
+        [Column] [Nullable] [Key(20)] public long? RaftAppliedIndex { get; set; }
+        [Column] [Nullable] [Key(21)] public long? ProposalsCommittedTotal { get; set; }
+        [Column] [Nullable] [Key(22)] public long? ProposalsAppliedTotal { get; set; }
+        [Column] [Nullable] [Key(23)] public long? ProposalsPendingCount { get; set; }
+        [Column] [Nullable] [Key(24)] public long? ProposalsFailedTotal { get; set; }
+        [Column] [Nullable] [Key(25)] public double? WalFsyncAvgMicroseconds { get; set; }
+        [Column] [Nullable] [Key(26)] public double? BackendCommitAvgMicroseconds { get; set; }
+        [Column] [Nullable] [Key(27)] public long? SlowApplyTotal { get; set; }
+        [Column] [Nullable] [Key(28)] public long? SlowReadIndexesTotal { get; set; }
+        [Column] [Nullable] [Key(29)] public int? AlarmCount { get; set; }
+        [Column] [Nullable] [Key(30)] public string Alarms { get; set; }
+        [Column] [Nullable] [Key(31)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(32)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class PatroniMemberStatus
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Name { get; set; }
+        [Column] [Nullable] [Key(3)] public string Host { get; set; }
+        [Column] [Nullable] [Key(4)] public int? Port { get; set; }
+        [Column] [Nullable] [Key(5)] public string ApiUrl { get; set; }
+        [Column] [Nullable] [Key(6)] public string Role { get; set; }
+        [Column] [Nullable] [Key(7)] public string State { get; set; }
+        [Column] [Nullable] [Key(8)] public int? TimelineId { get; set; }
+        [Column] [Nullable] [Key(9)] public long? LagBytes { get; set; }
+        [Column] [Nullable] [Key(10)] public bool? PendingRestart { get; set; }
+        [Column] [Nullable] [Key(11)] public string PatroniVersion { get; set; }
+        [Column] [Nullable] [Key(12)] public string Scope { get; set; }
+        [Column] [Nullable] [Key(13)] public int? PostgresServerVersion { get; set; }
+        [Column] [Nullable] [Key(14)] public string DatabaseSystemIdentifier { get; set; }
+        [Column] [Nullable] [Key(15)] public long? XlogLocationBytes { get; set; }
+        [Column] [Nullable] [Key(16)] public long? ReceivedLocationBytes { get; set; }
+        [Column] [Nullable] [Key(17)] public bool? ReplayPaused { get; set; }
+        [Column] [Nullable] [Key(18)] public bool? ClusterUnlocked { get; set; }
+        [Column] [Nullable] [Key(19)] public bool? SyncStandby { get; set; }
+        [Column] [Nullable] [Key(20)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(21)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class EtcdClusterEvent
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Endpoint { get; set; }
+        [Column] [Nullable] [Key(3)] public string MemberId { get; set; }
+        [Column] [Nullable] [Key(4)] public string Name { get; set; }
+        [Column] [Nullable] [Key(5)] public int? EventTypeId { get; set; }
+        [Column] [Nullable] [Key(6)] public string PreviousValue { get; set; }
+        [Column] [Nullable] [Key(7)] public string NewValue { get; set; }
+        [Column] [Nullable] [Key(8)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(9)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class PatroniClusterEvent
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Scope { get; set; }
+        [Column] [Nullable] [Key(3)] public string Name { get; set; }
+        [Column] [Nullable] [Key(4)] public int? EventTypeId { get; set; }
+        [Column] [Nullable] [Key(5)] public string PreviousValue { get; set; }
+        [Column] [Nullable] [Key(6)] public string NewValue { get; set; }
+        [Column] [Nullable] [Key(7)] public string Reason { get; set; }
+        [Column] [Nullable] [Key(8)] public int? TimelineId { get; set; }
+        [Column] [Nullable] [Key(9)] public long? LsnBytes { get; set; }
+        [Column] [Nullable] [Key(10)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(11)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class DockerContainerMetric
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string ContainerId { get; set; }
+        [Column] [Nullable] [Key(3)] public string Name { get; set; }
+        [Column] [Nullable] [Key(4)] public string Image { get; set; }
+        [Column] [Nullable] [Key(5)] public string State { get; set; }
+        [Column] [Nullable] [Key(6)] public string Status { get; set; }
+        [Column] [Nullable] [Key(7)] public int? RestartCount { get; set; }
+        [Column] [Nullable] [Key(8)] public bool? OomKilled { get; set; }
+        [Column] [Nullable] [Key(9)] public int? ExitCode { get; set; }
+        [Column] [Nullable] [Key(10)] public DateTime? StartedAt { get; set; }
+        [Column] [Nullable] [Key(11)] public string HealthStatus { get; set; }
+        [Column] [Nullable] [Key(12)] public double? CpuUsagePercent { get; set; }
+        [Column] [Nullable] [Key(13)] public int? OnlineCpus { get; set; }
+        [Column] [Nullable] [Key(14)] public long? MemoryUsageBytes { get; set; }
+        [Column] [Nullable] [Key(15)] public long? MemoryLimitBytes { get; set; }
+        [Column] [Nullable] [Key(16)] public double? MemoryPercent { get; set; }
+        [Column] [Nullable] [Key(17)] public long? NetworkRxBytes { get; set; }
+        [Column] [Nullable] [Key(18)] public long? NetworkTxBytes { get; set; }
+        [Column] [Nullable] [Key(19)] public long? BlockReadBytes { get; set; }
+        [Column] [Nullable] [Key(20)] public long? BlockWriteBytes { get; set; }
+        [Column] [Nullable] [Key(21)] public int? PidsCurrent { get; set; }
+        [Column] [Nullable] [Key(22)] public int? PidsLimit { get; set; }
+        [Column] [Nullable] [Key(23)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(24)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class DockerHostMetric
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public int? ContainersTotal { get; set; }
+        [Column] [Nullable] [Key(2)] public int? ContainersRunning { get; set; }
+        [Column] [Nullable] [Key(3)] public int? ContainersPaused { get; set; }
+        [Column] [Nullable] [Key(4)] public int? ContainersStopped { get; set; }
+        [Column] [Nullable] [Key(5)] public int? ImagesCount { get; set; }
+        [Column] [Nullable] [Key(6)] public int? NCpu { get; set; }
+        [Column] [Nullable] [Key(7)] public long? MemTotalBytes { get; set; }
+        [Column] [Nullable] [Key(8)] public string DockerVersion { get; set; }
+        [Column] [Nullable] [Key(9)] public string ApiVersion { get; set; }
+        [Column] [Nullable] [Key(10)] public string KernelVersion { get; set; }
+        [Column] [Nullable] [Key(11)] public string OperatingSystem { get; set; }
+        [Column] [Nullable] [Key(12)] public string OsType { get; set; }
+        [Column] [Nullable] [Key(13)] public string Architecture { get; set; }
+        [Column] [Nullable] [Key(14)] public long? LayersSizeBytes { get; set; }
+        [Column] [Nullable] [Key(15)] public long? ImagesSizeBytes { get; set; }
+        [Column] [Nullable] [Key(16)] public long? ReclaimableImagesBytes { get; set; }
+        [Column] [Nullable] [Key(17)] public long? ContainersDiskBytes { get; set; }
+        [Column] [Nullable] [Key(18)] public long? VolumesSizeBytes { get; set; }
+        [Column] [Nullable] [Key(19)] public long? BuildCacheSizeBytes { get; set; }
+        [Column] [Nullable] [Key(20)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(21)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class HAProxyServerStatus
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string PxName { get; set; }
+        [Column] [Nullable] [Key(3)] public string SvName { get; set; }
+        [Column] [Nullable] [Key(4)] public string Status { get; set; }
+        [Column] [Nullable] [Key(5)] public string Addr { get; set; }
+        [Column] [Nullable] [Key(6)] public string CheckStatus { get; set; }
+        [Column] [Nullable] [Key(7)] public int? CheckCode { get; set; }
+        [Column] [Nullable] [Key(8)] public int? ChkFail { get; set; }
+        [Column] [Nullable] [Key(9)] public int? ChkDown { get; set; }
+        [Column] [Nullable] [Key(10)] public int? LastChg { get; set; }
+        [Column] [Nullable] [Key(11)] public int? Scur { get; set; }
+        [Column] [Nullable] [Key(12)] public int? Qcur { get; set; }
+        [Column] [Nullable] [Key(13)] public int? Weight { get; set; }
+        [Column] [Nullable] [Key(14)] public int? Act { get; set; }
+        [Column] [Nullable] [Key(15)] public int? Bck { get; set; }
+        [Column] [Nullable] [Key(16)] public long? Hrsp2Xx { get; set; }
+        [Column] [Nullable] [Key(17)] public long? Hrsp5Xx { get; set; }
+        [Column] [Nullable] [Key(18)] public string Mode { get; set; }
+        [Column] [Nullable] [Key(19)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(20)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class HAProxyReachabilityProbe
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Target { get; set; }
+        [Column] [Nullable] [Key(3)] public string HAProxyAddress { get; set; }
+        [Column] [Nullable] [Key(4)] public bool? Success { get; set; }
+        [Column] [Nullable] [Key(5)] public long? ConnectMicroseconds { get; set; }
+        [Column] [Nullable] [Key(6)] public int? HttpStatusCode { get; set; }
+        [Column] [Nullable] [Key(7)] public string ErrorMessage { get; set; }
+        [Column] [Nullable] [Key(8)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(9)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class OverlayNetworkTaskDrift
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string ServiceName { get; set; }
+        [Column] [Nullable] [Key(3)] public string DnsResolvedAddresses { get; set; }
+        [Column] [Nullable] [Key(4)] public string SwarmTaskAddresses { get; set; }
+        [Column] [Nullable] [Key(5)] public string AddressesOnlyInDns { get; set; }
+        [Column] [Nullable] [Key(6)] public string AddressesOnlyInSwarm { get; set; }
+        [Column] [Nullable] [Key(7)] public bool? IsConsistent { get; set; }
+        [Column] [Nullable] [Key(8)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(9)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class OpenTelemetryMetric
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string MetricName { get; set; }
+        [Column] [Nullable] [Key(3)] public string InstrumentType { get; set; }
+        [Column] [Nullable] [Key(4)] public string Tags { get; set; }
+        [Column] [Nullable] [Key(5)] public long? Count { get; set; }
+        [Column] [Nullable] [Key(6)] public double? Sum { get; set; }
+        [Column] [Nullable] [Key(7)] public double? Min { get; set; }
+        [Column] [Nullable] [Key(8)] public double? Max { get; set; }
+        [Column] [Nullable] [Key(9)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(10)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class ApplicationLogEntry
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Level { get; set; }
+        [Column] [Nullable] [Key(3)] public string LoggerName { get; set; }
+        [Column] [Nullable] [Key(4)] public string ThreadContext { get; set; }
+        [Column] [Nullable] [Key(5)] public string Message { get; set; }
+        [Column] [Nullable] [Key(6)] public string Exception { get; set; }
+        [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(8)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class RedisConnectionMultiplexerMetric
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(3)] public string ClientName { get; set; }
+        [Column] [Nullable] [Key(4)] public int? TimeoutMilliseconds { get; set; }
+        [Column] [Nullable] [Key(5)] public bool? IsConnected { get; set; }
+        [Column] [Nullable] [Key(6)] public bool? IsConnecting { get; set; }
+        [Column] [Nullable] [Key(7)] public int? EndPointCount { get; set; }
+        [Column] [Nullable] [Key(8)] public int? ConnectedEndPointCount { get; set; }
+        [Column] [Nullable] [Key(9)] public long? TotalOperationCount { get; set; }
+        [Column] [Nullable] [Key(10)] public int? TotalOutstanding { get; set; }
+        [Column] [Nullable] [Key(11)] public int? InteractivePendingUnsentItems { get; set; }
+        [Column] [Nullable] [Key(12)] public int? InteractiveSentItemsAwaitingResponse { get; set; }
+        [Column] [Nullable] [Key(13)] public int? InteractiveResponsesAwaitingAsyncCompletion { get; set; }
+        [Column] [Nullable] [Key(14)] public int? InteractiveTotalOutstanding { get; set; }
+        [Column] [Nullable] [Key(15)] public long? InteractiveCompletedAsynchronously { get; set; }
+        [Column] [Nullable] [Key(16)] public long? InteractiveCompletedSynchronously { get; set; }
+        [Column] [Nullable] [Key(17)] public long? InteractiveFailedAsynchronously { get; set; }
+        [Column] [Nullable] [Key(18)] public long? InteractiveNonPreferredEndpointCount { get; set; }
+        [Column] [Nullable] [Key(19)] public long? InteractiveSocketCount { get; set; }
+        [Column] [Nullable] [Key(20)] public int? InteractiveWriterCount { get; set; }
+        [Column] [Nullable] [Key(21)] public int? SubscriptionPendingUnsentItems { get; set; }
+        [Column] [Nullable] [Key(22)] public int? SubscriptionSentItemsAwaitingResponse { get; set; }
+        [Column] [Nullable] [Key(23)] public int? SubscriptionResponsesAwaitingAsyncCompletion { get; set; }
+        [Column] [Nullable] [Key(24)] public int? SubscriptionTotalOutstanding { get; set; }
+        [Column] [Nullable] [Key(25)] public long? SubscriptionCompletedAsynchronously { get; set; }
+        [Column] [Nullable] [Key(26)] public long? SubscriptionCompletedSynchronously { get; set; }
+        [Column] [Nullable] [Key(27)] public long? SubscriptionFailedAsynchronously { get; set; }
+        [Column] [Nullable] [Key(28)] public long? SubscriptionSocketCount { get; set; }
+        [Column] [Nullable] [Key(29)] public long? SubscriptionCount { get; set; }
+        [Column] [Nullable] [Key(30)] public long? ConnectionFailedCount { get; set; }
+        [Column] [Nullable] [Key(31)] public long? ConnectionRestoredCount { get; set; }
+        [Column] [Nullable] [Key(32)] public long? ErrorMessageCount { get; set; }
+        [Column] [Nullable] [Key(33)] public long? InternalErrorCount { get; set; }
+        [Column] [Nullable] [Key(34)] public long? ConfigurationChangedCount { get; set; }
+        [Column] [Nullable] [Key(35)] public long? ConfigurationChangedBroadcastCount { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class PostgresLogEntry
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Level { get; set; }
+        [Column] [Nullable] [Key(3)] public int? Pid { get; set; }
+        [Column] [Nullable] [Key(4)] public string Message { get; set; }
+        [Column] [Nullable] [Key(5)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(6)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class ContainerLogEntry
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string ContainerName { get; set; }
+        [Column] [Nullable] [Key(3)] public int? StreamTypeId { get; set; }
+        [Column] [Nullable] [Key(4)] public string Message { get; set; }
+        [Column] [Nullable] [Key(5)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(6)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class DockerEvent
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string EventType { get; set; }
+        [Column] [Nullable] [Key(3)] public string Action { get; set; }
+        [Column] [Nullable] [Key(4)] public string ActorId { get; set; }
+        [Column] [Nullable] [Key(5)] public string ActorName { get; set; }
+        [Column] [Nullable] [Key(6)] public string Scope { get; set; }
+        [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(8)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class OpenTelemetryLogCounter
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public string Name { get; set; }
+        [Column] [Nullable] [Key(2)] public string Regex { get; set; }
+        [Column] [Nullable] [Key(3)] public byte? Active { get; set; }
+        [Column] [Nullable] [Key(4)] public byte? Locked { get; set; }
+        [Column] [Nullable] [Key(5)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(6)] public string CreatedUser { get; set; }
+        [Column] [Nullable] [Key(7)] public DateTime? UpdatedDate { get; set; }
+        [Column] [Nullable] [Key(8)] public string UpdatedUser { get; set; }
+        [Column] [Nullable] [Key(9)] public byte? Deleted { get; set; }
+        [Column] [Nullable] [Key(10)] public DateTime? DeletedDate { get; set; }
+        [Column] [Nullable] [Key(11)] public string DeletedUser { get; set; }
+        [Column] [Nullable] [Key(12)] public int? Version { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class OpenTelemetryExclude
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public string Name { get; set; }
+        [Column] [Nullable] [Key(2)] public byte? Active { get; set; }
+        [Column] [Nullable] [Key(3)] public byte? Locked { get; set; }
+        [Column] [Nullable] [Key(4)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(5)] public string CreatedUser { get; set; }
+        [Column] [Nullable] [Key(6)] public DateTime? UpdatedDate { get; set; }
+        [Column] [Nullable] [Key(7)] public string UpdatedUser { get; set; }
+        [Column] [Nullable] [Key(8)] public byte? Deleted { get; set; }
+        [Column] [Nullable] [Key(9)] public DateTime? DeletedDate { get; set; }
+        [Column] [Nullable] [Key(10)] public string DeletedUser { get; set; }
+        [Column] [Nullable] [Key(11)] public int? Version { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class OtlpDispatchCounter
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public int? SignalId { get; set; }
+        [Column] [Nullable] [Key(2)] public long? Count { get; set; }
+        [Column] [Nullable] [Key(3)] public long? SuccessCount { get; set; }
+        [Column] [Nullable] [Key(4)] public long? FailureCount { get; set; }
+        [Column] [Nullable] [Key(5)] public long? ItemCount { get; set; }
+        [Column] [Nullable] [Key(6)] public long? DroppedCount { get; set; }
+        [Column] [Nullable] [Key(7)] public long? TotalMicroseconds { get; set; }
+        [Column] [Nullable] [Key(8)] public long? MinMicroseconds { get; set; }
+        [Column] [Nullable] [Key(9)] public long? MaxMicroseconds { get; set; }
+        [Column] [Nullable] [Key(10)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(11)] public string Instance { get; set; }
     }
 }

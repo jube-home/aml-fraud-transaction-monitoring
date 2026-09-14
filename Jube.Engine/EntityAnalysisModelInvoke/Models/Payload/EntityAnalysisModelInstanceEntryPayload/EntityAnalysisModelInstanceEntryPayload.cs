@@ -11,22 +11,26 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using Jube.Data.Poco;
+using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Logs;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.ResponseTime;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.HttpAdaptationProtocol;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
 {
-    using System;
-    using System.Collections.Generic;
-    using CaseManagement;
-    using Data.Poco;
-    using Dictionary;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using TasksPerformance;
-    using Adaptation=HttpAdaptationProtocol.Adaptation;
+    using Adaptation = Adaptation;
 
     public class EntityAnalysisModelInstanceEntryPayload
     {
         [JsonProperty(Order = 1)] public DictionaryNoBoxing<string> Payload { get; set; }
-        [JsonProperty(Order = 2)] public ResponseElevation ResponseElevation { get; set; } = new ResponseElevation();
+        [JsonProperty(Order = 2)] public ResponseElevation ResponseElevation { get; set; } = new();
         [JsonProperty(Order = 3)] public string EntityAnalysisModelInstanceName { get; set; }
         [JsonProperty(Order = 4)] public double R { get; set; }
         [JsonProperty(Order = 5)] public DateTime CreatedDate { get; set; }
@@ -50,10 +54,17 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
         [JsonProperty(Order = 23)] public PooledDictionary<string, double> AbstractionCalculation { get; set; }
         [JsonProperty(Order = 24)] public PooledDictionary<string, Adaptation> HttpAdaptation { get; set; }
         [JsonProperty(Order = 25)] public PooledDictionary<string, double> ExhaustiveAdaptation { get; set; }
-        [JsonProperty(Order = 26)] public PooledDictionary<string, EntityModelActivationRulePayload> Activation { get; set; }
+
+        [JsonProperty(Order = 26)]
+        public PooledDictionary<string, EntityModelActivationRulePayload> Activation { get; set; }
+
         [JsonProperty(Order = 27)] public CreateCase CreateCase { get; set; }
         [JsonProperty(Order = 28)] public string[] Tag { get; set; }
+        [JsonProperty(Order = 29)] public InvocationLog Logs { get; set; }
         [JsonProperty(Order = 30)] public InvokeTaskPerformance InvokeTaskPerformance { get; set; }
+        [JsonProperty(Order = 31)] public ResponseTimePipeline ResponseTimePipeline { get; set; }
+        [JsonProperty(Order = 32)] public bool IsSampled { get; set; }
+        [JsonProperty(Order = 33)] public bool ImplicitAsyncTimedOut { get; set; }
         [JsonIgnore] public byte[] ArchiveJson { get; set; }
         [JsonIgnore] public byte[] ResponseJson { get; set; }
         [JsonIgnore] public List<ArchiveKey> ArchiveKeys { get; set; }

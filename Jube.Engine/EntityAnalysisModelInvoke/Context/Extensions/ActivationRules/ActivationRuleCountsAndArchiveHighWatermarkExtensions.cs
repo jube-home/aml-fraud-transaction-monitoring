@@ -11,14 +11,16 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules
 {
-    using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
-
     public static class ActivationRuleCountsAndArchiveHighWatermarkExtensions
     {
-        public static void ActivationRuleCountsAndArchiveHighWatermark(this Context context, EntityAnalysisModelActivationRule evaluateActivationRule,
-            bool suppressed, ref int activationRuleCount, ref int? prevailingActivationRuleId, ref string prevailingActivationRuleName)
+        public static void ActivationRuleCountsAndArchiveHighWatermark(this Context context,
+            EntityAnalysisModelActivationRule evaluateActivationRule,
+            bool suppressed, ref int activationRuleCount, ref int? prevailingActivationRuleId,
+            ref string prevailingActivationRuleName)
         {
             if (suppressed)
             {
@@ -34,18 +36,16 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             }
             else
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} response elevation for activation rule {evaluateActivationRule.Id} has not been included in the local count as the rule is not set to visible{prevailingActivationRuleId}.  This activation rule count is {activationRuleCount}.");
-                }
+                var currentPrevailingActivationRuleId = prevailingActivationRuleId;
+                var currentActivationRuleCount = activationRuleCount;
+                context.TraceLog(
+                    $"response elevation for activation rule {evaluateActivationRule.Id} has not been included in the local count as the rule is not set to visible. The prevailing activation rule id is {currentPrevailingActivationRuleId} and this activation rule count is {currentActivationRuleCount}.");
             }
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} response elevation for activation rule {evaluateActivationRule.Id} activation counter has been incremented and the prevailing activation rule has been set to {prevailingActivationRuleId}.  This activation rule count is {activationRuleCount}.");
-            }
+            var finalPrevailingActivationRuleId = prevailingActivationRuleId;
+            var finalActivationRuleCount = activationRuleCount;
+            context.TraceLog(
+                $"response elevation for activation rule {evaluateActivationRule.Id} activation counter has been incremented and the prevailing activation rule has been set to {finalPrevailingActivationRuleId}. This activation rule count is {finalActivationRuleCount}.");
         }
     }
 }

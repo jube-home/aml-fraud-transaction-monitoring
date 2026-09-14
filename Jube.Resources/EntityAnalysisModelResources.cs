@@ -28,7 +28,10 @@ namespace Jube.Resources
         public const string EntryNameMaxLength = nameof(EntryNameMaxLength);
         public const string ReferenceDateNameRequired = nameof(ReferenceDateNameRequired);
         public const string ReferenceDateNameMaxLength = nameof(ReferenceDateNameMaxLength);
-        public const string ReferenceDatePayloadLocationTypeIdInvalid = nameof(ReferenceDatePayloadLocationTypeIdInvalid);
+
+        public const string ReferenceDatePayloadLocationTypeIdInvalid =
+            nameof(ReferenceDatePayloadLocationTypeIdInvalid);
+
         public const string CacheFetchLimitRange = nameof(CacheFetchLimitRange);
         public const string CacheTtlIntervalInvalid = nameof(CacheTtlIntervalInvalid);
         public const string CacheTtlIntervalValueRange = nameof(CacheTtlIntervalValueRange);
@@ -40,5 +43,8 @@ namespace Jube.Resources
         public const string MaxActivationWatcherValueRange = nameof(MaxActivationWatcherValueRange);
         public const string MaxActivationWatcherThresholdRange = nameof(MaxActivationWatcherThresholdRange);
         public const string ActivationWatcherSampleRange = nameof(ActivationWatcherSampleRange);
+        public const string ImplicitAsyncTimeoutMillisecondsRange = nameof(ImplicitAsyncTimeoutMillisecondsRange);
+        public const string LogsWarnThresholdMillisecondsRange = nameof(LogsWarnThresholdMillisecondsRange);
+        public const string SamplePercentageRange = nameof(SamplePercentageRange);
     }
 }

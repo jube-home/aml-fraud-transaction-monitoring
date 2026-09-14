@@ -11,77 +11,104 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Jube.Cache;
+using Jube.Data.Poco;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Cache;
-    using Data.Poco;
-    using TaskCancellation.TaskHelper;
-    using EntityAnalysisModelTtlCounter=EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelTtlCounter;
+    using EntityAnalysisModelTtlCounter =
+        EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelTtlCounter;
 
     public static class TtlCounterExtensions
     {
+        internal static DateTime ApplyTtlCounterInterval(DateTime referenceDate, string interval, int intervalValue)
+        {
+            return interval switch
+            {
+                "d" => referenceDate.AddDays(intervalValue * -1),
+                "h" => referenceDate.AddHours(intervalValue * -1),
+                "n" => referenceDate.AddMinutes(intervalValue * -1),
+                "s" => referenceDate.AddSeconds(intervalValue * -1),
+                "m" => referenceDate.AddMonths(intervalValue * -1),
+                "y" => referenceDate.AddYears(intervalValue * -1),
+                _ => referenceDate
+            };
+        }
+
         public static async Task<Context> ExecuteTtlCountersAsync(this Context context)
         {
+            var stopwatch = Stopwatch.StartNew();
+            var items = new ConcurrentDictionary<string, TaskPerformance>();
+
             try
             {
-                await StartAndWaitOnTasksIfTtlCounterEnabledAtModelLevelAsync(context, context.EntityAnalysisModel.Services.CacheService).ConfigureAwait(false);
-                StorePerformanceFromStopwatch(context);
+                await StartAndWaitOnTasksIfTtlCounterEnabledAtModelLevelAsync(context,
+                    context.EntityAnalysisModel.Services.CacheService, items).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 context.Log.Error(
                     $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has caused an error in TTL Counters as {ex}.");
             }
+            finally
+            {
+                stopwatch.Stop();
+
+                if (context.LogSampled)
+                {
+                    var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                        new InvokeStagePerformance();
+
+                    stages.TtlCounters = new StageTiming<TaskPerformance>
+                    {
+                        DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                        Items = new Dictionary<string, TaskPerformance>(items)
+                    };
+                }
+            }
 
             return context;
         }
 
-        private static async Task StartAndWaitOnTasksIfTtlCounterEnabledAtModelLevelAsync(Context context, CacheService cacheService)
+        private static async Task StartAndWaitOnTasksIfTtlCounterEnabledAtModelLevelAsync(Context context,
+            CacheService cacheService, ConcurrentDictionary<string, TaskPerformance> items)
         {
             if (context.EntityAnalysisModel.Flags.EnableTtlCounter)
             {
                 var tasks = new List<Task>
                 {
-                    TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.OnlineAggregationOfTtlCountersAsync, async () => await OnlineAggregationOfTtlCountersAsync(context, cacheService).ConfigureAwait(false)),
-                    TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.ExecuteOutOfProcessAggregationOfTtlCountersAsync, async () => await OutOfProcessAggregationOfTtlCountersAsync(context, cacheService).ConfigureAwait(false))
+                    OnlineAggregationOfTtlCountersAsync(context, cacheService, items),
+                    OutOfProcessAggregationOfTtlCountersAsync(context, cacheService, items)
                 };
 
-                await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
+                await Task.WhenAll(tasks).ConfigureAwait(false);
             }
             else
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} TTL Counter cache storage is not enabled so it cannot fetch TTL Counter Aggregation.");
-                }
+                context.TraceLog(
+                    $"TTL Counter cache storage is not enabled so it cannot fetch TTL Counter Aggregation.");
             }
         }
 
-        private static void StorePerformanceFromStopwatch(Context context)
+        private static Task OnlineAggregationOfTtlCountersAsync(Context context, CacheService cacheService,
+            ConcurrentDictionary<string, TaskPerformance> items)
         {
+            context.TraceLog(
+                $"TTL Counter cache storage is enabled so it will now proceed to return the TTL Counters with online aggregation.");
 
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.TtlCountersAsync =
-                (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
+            return IterateAndProcessAsync(context, cacheService, items);
         }
 
-        private static Task OnlineAggregationOfTtlCountersAsync(Context context, CacheService cacheService)
-        {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} TTL Counter cache storage is enabled so it will now proceed to return the TTL Counters with online aggregation.");
-            }
-
-            return IterateAndProcessAsync(context, cacheService);
-        }
-
-        private static async Task IterateAndProcessAsync(Context context, CacheService cacheService)
+        private static async Task IterateAndProcessAsync(Context context, CacheService cacheService,
+            ConcurrentDictionary<string, TaskPerformance> items)
         {
             var onlineTtlCounters = context.EntityAnalysisModel.Collections.ModelTtlCounters
                 .Where(x => x.OnlineAggregation)
@@ -91,28 +118,41 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             {
                 var tasks = onlineTtlCounters.Select(async ttlCounter =>
                 {
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} creating predication for TTL Counter {ttlCounter.Id} is online aggregation.");
-                    }
+                    var itemStopwatch = Stopwatch.StartNew();
+                    var startBytes = GC.GetAllocatedBytesForCurrentThread();
 
-                    if (context.EntityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(ttlCounter.TtlCounterDataName))
+                    try
                     {
-                        AddToResponse(context, ttlCounter, await PerformOnlineAggregationFromCacheAsync(context, cacheService, ttlCounter).ConfigureAwait(false));
+                        context.TraceLog(
+                            $"creating prediction for TTL Counter {ttlCounter.Id} is online aggregation.");
 
-                        if (context.Log.IsInfoEnabled)
+                        if (context.EntityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(ttlCounter
+                                .TtlCounterDataName))
                         {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} creating predication for TTL Counter {ttlCounter.Id} to {context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate}, the TTL Counter Name is {ttlCounter.Name}, the TTL Counter Data Name is {ttlCounter.TtlCounterDataName} and the TTL Counter Data Name Value is {context.EntityAnalysisModelInstanceEntryPayload.Payload[ttlCounter.TtlCounterDataName]}.");
+                            AddToResponse(context, ttlCounter,
+                                await PerformOnlineAggregationFromCacheAsync(context, cacheService, ttlCounter)
+                                    .ConfigureAwait(false));
+
+                            context.TraceLog(
+                                $"creating prediction for TTL Counter {ttlCounter.Id} to {context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate}, the TTL Counter Name is {ttlCounter.Name}, the TTL Counter Data Name is {ttlCounter.TtlCounterDataName} and the TTL Counter Data Name Value is {context.EntityAnalysisModelInstanceEntryPayload.Payload[ttlCounter.TtlCounterDataName]}.");
+                        }
+                        else
+                        {
+                            context.TraceLog(
+                                $"was unable to find a value for TTL Counter Data Name {ttlCounter.TtlCounterDataName} and TTL Counter Name {ttlCounter.Name}.");
                         }
                     }
-                    else
+                    finally
                     {
-                        if (context.Log.IsInfoEnabled)
+                        itemStopwatch.Stop();
+
+                        if (context.LogSampled)
                         {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} was unable to fine a value for TTL Counter Data Name {ttlCounter.TtlCounterDataName} and TTL Counter Name {ttlCounter.Name}.");
+                            var allocated = GC.GetAllocatedBytesForCurrentThread() - startBytes;
+
+                            items[ttlCounter.Name] = new TaskPerformance(
+                                (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                                Math.Max(allocated, 0));
                         }
                     }
                 }).ToList();
@@ -121,39 +161,20 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             }
             else
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Does not have any online TTL Counters.");
-                }
+                context.TraceLog($"Does not have any online TTL Counters.");
             }
         }
 
-        private static async Task<double> PerformOnlineAggregationFromCacheAsync(Context context, CacheService cacheService,
+        private static async Task<double> PerformOnlineAggregationFromCacheAsync(Context context,
+            CacheService cacheService,
             EntityAnalysisModelTtlCounter ttlCounter)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} creating predication for TTL Counter {ttlCounter.Id} which has an interval type of {ttlCounter.TtlCounterInterval} and interval value of {ttlCounter.TtlCounterValue}.");
-            }
+            context.TraceLog(
+                $"creating prediction for TTL Counter {ttlCounter.Id} which has an interval type of {ttlCounter.TtlCounterInterval} and interval value of {ttlCounter.TtlCounterValue}.");
 
-            var adjustedTtlCounterDate = ttlCounter.TtlCounterInterval switch
-            {
-                "d" => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.AddDays(
-                    ttlCounter.TtlCounterValue * -1),
-                "h" => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.AddHours(
-                    ttlCounter.TtlCounterValue * -1),
-                "n" => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.AddMinutes(
-                    ttlCounter.TtlCounterValue * -1),
-                "s" => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.AddSeconds(
-                    ttlCounter.TtlCounterValue * -1),
-                "m" => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.AddMonths(
-                    ttlCounter.TtlCounterValue * -1),
-                "y" => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.AddYears(
-                    ttlCounter.TtlCounterValue * -1),
-                _ => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate
-            };
+            var adjustedTtlCounterDate = ApplyTtlCounterInterval(
+                context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate, ttlCounter.TtlCounterInterval,
+                ttlCounter.TtlCounterValue);
 
             var count = await cacheService.CacheTtlCounterEntryRepository.GetAggregationPreferReplicaAsync(
                 context.EntityAnalysisModel.Instance.TenantRegistryId,
@@ -165,29 +186,23 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate
             ).ConfigureAwait(false);
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has performed online aggregation for adjusted reference date {adjustedTtlCounterDate} and returned {count}.");
-            }
+            context.TraceLog(
+                $"has performed online aggregation for adjusted reference date {adjustedTtlCounterDate} and returned {count}.");
 
             return count;
         }
 
         private static void AddToResponse(Context context, EntityAnalysisModelTtlCounter ttlCounter, double count)
         {
-
             lock (context.EntityAnalysisModelInstanceEntryPayload.TtlCounter)
             {
                 if (context.EntityAnalysisModelInstanceEntryPayload.TtlCounter.TryAdd(ttlCounter.Name, count))
                 {
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} TTL Counter {ttlCounter.Id} is missing, so will add this as name {ttlCounter.Name} with value of zero.");
-                    }
+                    context.TraceLog(
+                        $"TTL Counter {ttlCounter.Id} is missing, so will add this as name {ttlCounter.Name} with value of zero.");
 
-                    if (!ttlCounter.ReportTable || context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
+                    if (!ttlCounter.ReportTable || context.EntityAnalysisModelInstanceEntryPayload
+                            .EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
                     {
                         return;
                     }
@@ -202,68 +217,59 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                                 .EntityAnalysisModelInstanceEntryGuid
                     });
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} TTL Counters have concluded in {context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency} ns.");
-                    }
-
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} TTL Counter {ttlCounter.Id} is missing, added this as name {ttlCounter.Name} with value of zero to the report payload also.");
-                    }
+                    context.TraceLog(
+                        $"TTL Counter {ttlCounter.Id} is missing, added this as name {ttlCounter.Name} with value of zero to the report payload also.");
                 }
                 else
                 {
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} TTL Counter {ttlCounter.Id} exists already, so nothing more added.");
-                    }
+                    context.TraceLog($"TTL Counter {ttlCounter.Id} exists already, so nothing more added.");
                 }
             }
         }
 
-        private static Task<TimedTaskResult[]> OutOfProcessAggregationOfTtlCountersAsync(Context context, CacheService cacheService)
+        private static Task OutOfProcessAggregationOfTtlCountersAsync(Context context, CacheService cacheService,
+            ConcurrentDictionary<string, TaskPerformance> items)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} will now look for TTL Counters from the cache.");
-            }
+            context.TraceLog($"will now look for TTL Counters from the cache.");
 
-            var ttlCounters = context.EntityAnalysisModel.Collections.ModelTtlCounters.FindAll(x => !x.OnlineAggregation);
-            var tasks = ttlCounters.Select(ttlCounter =>
+            var ttlCounters =
+                context.EntityAnalysisModel.Collections.ModelTtlCounters.FindAll(x => !x.OnlineAggregation);
+            var tasks = ttlCounters.Select(async ttlCounter =>
             {
-                return TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.ExecuteTimeToLiveCounterIterationAsync, async () =>
-                {
-                    try
+                var timed = await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                    TaskType.ExecuteTimeToLiveCounterIterationAsync, async () =>
                     {
-                        AddToResponse(context, ttlCounter, await GetCachedTtlCounterValueAsync(context, cacheService, ttlCounter).ConfigureAwait(false));
-                    }
-                    catch (Exception ex) when (ex is not OperationCanceledException)
-                    {
-                        if (context.Log.IsInfoEnabled)
+                        try
                         {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} TTL Counter {ttlCounter.Id} has thrown an error as {ex}.");
+                            AddToResponse(context, ttlCounter,
+                                await GetCachedTtlCounterValueAsync(context, cacheService, ttlCounter)
+                                    .ConfigureAwait(false));
                         }
-                    }
-                });
+                        catch (Exception ex) when (ex is not OperationCanceledException)
+                        {
+                            context.TraceLog($"TTL Counter {ttlCounter.Id} has thrown an error as {ex}.");
+                        }
+                    }).ConfigureAwait(false);
+
+                if (context.LogSampled)
+                {
+                    items[ttlCounter.Name] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
+                }
             }).ToList();
 
             return Task.WhenAll(tasks);
         }
 
-        private static async Task<double> GetCachedTtlCounterValueAsync(Context context, CacheService cacheService, EntityAnalysisModelTtlCounter ttlCounter)
+        private static async Task<double> GetCachedTtlCounterValueAsync(Context context, CacheService cacheService,
+            EntityAnalysisModelTtlCounter ttlCounter)
         {
             var ttlCounterValue = await cacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(context.EntityAnalysisModel.Instance.TenantRegistryId,
                     context.EntityAnalysisModel.Instance.Guid,
                     ttlCounter.Guid,
                     ttlCounter.TtlCounterDataName,
-                    context.EntityAnalysisModelInstanceEntryPayload.Payload[ttlCounter.TtlCounterDataName].AsString()).ConfigureAwait(false);
+                    context.EntityAnalysisModelInstanceEntryPayload.Payload[ttlCounter.TtlCounterDataName].AsString())
+                .ConfigureAwait(false);
 
             return ttlCounterValue;
         }

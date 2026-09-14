@@ -11,17 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using Jube.Dictionary;
+using log4net;
+
 namespace Jube.Parser
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using Dictionary.Extensions;
-    using log4net;
-
     public class Parser
     {
         private readonly ILog log;
@@ -216,7 +216,7 @@ namespace Jube.Parser
                 this.ruleScriptTokens.Add("GetValueOrThrow");
             }
 
-            var type = typeof(Extensions);
+            var type = typeof(Dictionary.Extensions.Extensions);
             var methods = type.GetMethods(
                 BindingFlags.Public |
                 BindingFlags.NonPublic |
@@ -225,9 +225,27 @@ namespace Jube.Parser
 
             foreach (var method in methods)
             {
+                if (method.Name == "Eval")
+                {
+                    continue;
+                }
+
                 if (!this.ruleScriptTokens.Contains(method.Name))
                 {
                     this.ruleScriptTokens.Add(method.Name);
+                }
+            }
+
+            if (!EvalExpressionRegistry.Enabled)
+            {
+                return;
+            }
+
+            foreach (var name in EvalExpressionRegistry.Entries.Keys)
+            {
+                if (!this.ruleScriptTokens.Contains(name))
+                {
+                    this.ruleScriptTokens.Add(name);
                 }
             }
         }
@@ -241,7 +259,7 @@ namespace Jube.Parser
                 var i = 0;
                 foreach (var line in lines)
                 {
-                    if (!String.IsNullOrEmpty(line))
+                    if (!string.IsNullOrEmpty(line))
                     {
                         //Remove strings as they are allowed to have special characters
                         var matches = Regex.Matches(line, "\"(?:[^\"\\\\]|\\\\.)*\"");
@@ -277,7 +295,7 @@ namespace Jube.Parser
                                             testToken += " ";
                                         }
 
-                                        var extend = j + f;//We are adding the tokens that come after.
+                                        var extend = j + f; //We are adding the tokens that come after.
                                         if (extend < tokens.Length)
                                         {
                                             testToken += tokens[extend];
@@ -285,7 +303,7 @@ namespace Jube.Parser
                                         //A new test token has been constructed, for example, End If
                                     }
 
-                                    if (String.Equals(ruleScriptToken, testToken,
+                                    if (string.Equals(ruleScriptToken, testToken,
                                             StringComparison.CurrentCultureIgnoreCase))
                                         //Check fof the test token (perhaps derived) matches.
                                     {
@@ -296,7 +314,7 @@ namespace Jube.Parser
 
                             if (valid)
                             {
-                                continue;//This would be enough to kill the routine, return false.
+                                continue; //This would be enough to kill the routine, return false.
                             }
 
                             softParseFailed = true;
@@ -313,11 +331,21 @@ namespace Jube.Parser
                     i += 1;
                 }
 
-                if (softParseFailed)//Any error causes this, although all issues are in the logs.x
+                if (softParseFailed) //Any error causes this, although all issues are in the logs.x
                 {
                     if (log.IsInfoEnabled)
                     {
                         log.Info($"Soft Parser: User code has failed a soft parse: {parsedRule.OriginalRuleText}");
+                    }
+                }
+                else if (EvalExpressionRegistry.Enabled)
+                {
+                    foreach (var (name, resultTypeId) in EvalExpressionRegistry.Entries)
+                    {
+                        var vbKeyword = EvalExpressionRegistry.ResultTypes[resultTypeId].VbKeyword;
+                        var pattern = $@"\.{Regex.Escape(name)}\b(?:\(\s*\))?";
+                        parsedRule.ParsedRuleText =
+                            Regex.Replace(parsedRule.ParsedRuleText, pattern, $".Eval(Of {vbKeyword})(\"{name}\")");
                     }
                 }
             }
@@ -667,8 +695,8 @@ namespace Jube.Parser
                 var tokens = lines[i].Split(separators, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var t in tokens)
                 {
-                    var replaceString = String.Empty;
-                    var findString = String.Empty;
+                    var replaceString = string.Empty;
+                    var findString = string.Empty;
 
                     if (specialTokens.Contains(t, StringComparer.OrdinalIgnoreCase))
                     {
@@ -688,18 +716,20 @@ namespace Jube.Parser
                     {
                         if (k == 1)
                         {
-                            if (String.Equals("payload", firstString, StringComparison.OrdinalIgnoreCase))
+                            if (string.Equals("payload", firstString, StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
 
                                 var asFunction = "AsString()";
                                 var databaseCast = "";
                                 var defaultValue = "";
-                                if (EntityAnalysisModelRequestXPaths != null || EntityAnalysisModelInlineScriptProperties != null)
+                                if (EntityAnalysisModelRequestXPaths != null ||
+                                    EntityAnalysisModelInlineScriptProperties != null)
                                 {
                                     if (EntityAnalysisModelRequestXPaths.TryGetValue(elements[k], out var value))
                                     {
-                                        if (!EntityAnalysisModelRequestXPaths[elements[k]].Cache && showOnlyCacheForPayload)
+                                        if (!EntityAnalysisModelRequestXPaths[elements[k]].Cache &&
+                                            showOnlyCacheForPayload)
                                         {
                                             var errorSpan = new ErrorSpan
                                             {
@@ -731,7 +761,7 @@ namespace Jube.Parser
                                                     databaseCast = "::int";
                                                     defaultValue = value.DefaultValue;
 
-                                                    if (!Int32.TryParse(defaultValue, out _))
+                                                    if (!int.TryParse(defaultValue, out _))
                                                     {
                                                         defaultValue = "0";
                                                     }
@@ -741,7 +771,7 @@ namespace Jube.Parser
                                                     databaseCast = "::float8";
                                                     defaultValue = value.DefaultValue;
 
-                                                    if (!Double.TryParse(defaultValue, out _))
+                                                    if (!double.TryParse(defaultValue, out _))
                                                     {
                                                         defaultValue = "0";
                                                     }
@@ -761,7 +791,7 @@ namespace Jube.Parser
                                                     databaseCast = "::boolean";
                                                     defaultValue = value.DefaultValue;
 
-                                                    if (!Boolean.TryParse(defaultValue, out _))
+                                                    if (!bool.TryParse(defaultValue, out _))
                                                     {
                                                         defaultValue = "false";
                                                     }
@@ -770,7 +800,7 @@ namespace Jube.Parser
                                                 case 6:
                                                     databaseCast = "::float8";
 
-                                                    if (!Double.TryParse(defaultValue, out _))
+                                                    if (!double.TryParse(defaultValue, out _))
 
                                                     {
                                                         defaultValue = EntityAnalysisModelRequestXPaths[elements[k]]
@@ -782,7 +812,7 @@ namespace Jube.Parser
                                                     databaseCast = "::float8";
                                                     defaultValue = value.DefaultValue;
 
-                                                    if (!Double.TryParse(defaultValue, out _))
+                                                    if (!double.TryParse(defaultValue, out _))
                                                     {
                                                         defaultValue = "0";
                                                     }
@@ -869,7 +899,7 @@ namespace Jube.Parser
 
                                 replaceString = replaceString + "Data(\"" + elements[k] + "\")." + asFunction;
                             }
-                            else if (String.Equals("TTLCounter", firstString,
+                            else if (string.Equals("TTLCounter", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
@@ -890,7 +920,7 @@ namespace Jube.Parser
 
                                 replaceString = replaceString + "TTLCounter(\"" + elements[k] + "\")";
                             }
-                            else if (String.Equals("abstraction", firstString,
+                            else if (string.Equals("abstraction", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
@@ -912,7 +942,7 @@ namespace Jube.Parser
                                 replaceString = replaceString + "Abstraction(\"" + elements[k] +
                                                 "\")";
                             }
-                            else if (String.Equals("dictionary", firstString,
+                            else if (string.Equals("dictionary", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
@@ -933,7 +963,7 @@ namespace Jube.Parser
 
                                 replaceString = replaceString + "KVP(\"" + elements[k] + "\")";
                             }
-                            else if (String.Equals("Sanction", firstString,
+                            else if (string.Equals("Sanction", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
@@ -954,7 +984,7 @@ namespace Jube.Parser
 
                                 replaceString = replaceString + "Sanctions.GetValueOrThrow(\"" + elements[k] + "\")";
                             }
-                            else if (String.Equals("abstractionCalculation", firstString,
+                            else if (string.Equals("abstractionCalculation", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
@@ -975,7 +1005,7 @@ namespace Jube.Parser
 
                                 replaceString = replaceString + "Calculation(\"" + elements[k] + "\")";
                             }
-                            else if (String.Equals("exhaustiveAdaptation", firstString,
+                            else if (string.Equals("exhaustiveAdaptation", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
@@ -996,7 +1026,7 @@ namespace Jube.Parser
 
                                 replaceString = replaceString + "ExhaustiveAdaptation(\"" + elements[k] + "\")";
                             }
-                            else if (String.Equals("HTTPAdaptation", firstString,
+                            else if (string.Equals("HTTPAdaptation", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
@@ -1018,7 +1048,7 @@ namespace Jube.Parser
                                 replaceString = replaceString + "HTTPAdaptation(\"" + elements[k] + "\")";
                             }
 
-                            else if (String.Equals("list", firstString,
+                            else if (string.Equals("list", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
@@ -1040,7 +1070,7 @@ namespace Jube.Parser
                                 replaceString = replaceString + "List(\"" + elements[k] + "\")";
                             }
 
-                            else if (String.Equals("Activation", firstString,
+                            else if (string.Equals("Activation", firstString,
                                          StringComparison.OrdinalIgnoreCase))
                             {
                                 findString = firstString + "." + elements[k];
@@ -1074,7 +1104,7 @@ namespace Jube.Parser
                         }
                     }
 
-                    if (String.IsNullOrEmpty(findString))
+                    if (string.IsNullOrEmpty(findString))
                     {
                         continue;
                     }

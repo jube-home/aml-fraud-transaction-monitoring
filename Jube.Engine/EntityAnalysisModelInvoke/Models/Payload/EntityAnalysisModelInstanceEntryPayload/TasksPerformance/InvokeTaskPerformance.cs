@@ -13,10 +13,11 @@
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance
 {
-
     public class InvokeTaskPerformance
     {
-        public InvokeTasksPerformance ComputeTimes { get; init; }
+        public long TotalDurationMicroseconds { get; set; }
         public long? Memory { get; set; }
+        public TaskWrapperStats TaskWrapperStats { get; set; }
+        public InvokeStagePerformance Stages { get; set; }
     }
 }

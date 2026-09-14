@@ -11,14 +11,19 @@
  * see <https://www.gnu.org/licenses/>.
  *@
 @page
-@model Jube.App.Pages.Administration.EntityAnalysisAsynchronousQueueBalance
+@model EntityAnalysisAsynchronousQueueBalance
 @{
     Layout = "Shared/_Layout";
 }
+
 @section Scripts
 {
+    <script src="/js/GridCsvExport.js"></script>
+    <script src="/js/GridStatisticsTable.js"></script>
     <script src="/js/Administration/EntityAnalysisAsynchronousQueueBalance.js"></script>
 }
+
 <div>
     <div id="grid"></div>
+    <div id="statistics"></div>
 </div>

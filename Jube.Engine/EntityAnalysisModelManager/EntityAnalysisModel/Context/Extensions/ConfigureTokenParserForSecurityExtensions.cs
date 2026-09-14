@@ -11,29 +11,36 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Jube.Data.Repository;
+using Jube.Dictionary;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Data.Repository;
-    using Parser;
-
     public static class ConfigureTokenParserForSecurityExtensions
     {
         public static async Task<Context> ConfigureTokenParserForSecurityAsync(this Context context)
         {
             try
             {
+                if (EvalExpressionRegistry.Enabled)
+                {
+                    await context.RegisterDictionaryEvalExpressionsAsync().ConfigureAwait(false);
+                }
+
                 var repository = new RuleScriptTokenRepository(context.Services.DbContext);
-                var tokens = (await repository.GetAsync(context.Services.CancellationToken).ConfigureAwait(false)).Select(s => s.Token).ToList();
+                var tokens = (await repository.GetAsync(context.Services.CancellationToken).ConfigureAwait(false))
+                    .Select(s => s.Token).ToList();
 
                 if (context.Services.Log.IsInfoEnabled)
                 {
-                    context.Services.Log.Info($"Entity Start: Has fetched {tokens.Count} tokens.  Will construct and return the parser.");
+                    context.Services.Log.Info(
+                        $"Entity Start: Has fetched {tokens.Count} tokens.  Will construct and return the parser.");
                 }
 
-                context.Services.Parser = new Parser(context.Services.Log, tokens);
+                context.Services.Parser = new Parser.Parser(context.Services.Log, tokens);
 
                 if (context.Services.Log.IsInfoEnabled)
                 {
@@ -46,6 +53,32 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             }
 
             return context;
+        }
+
+        private static async Task RegisterDictionaryEvalExpressionsAsync(this Context context)
+        {
+            var repository = new DictionaryEvalExpressionRepository(context.Services.DbContext);
+            var records = await repository.GetAsync(context.Services.CancellationToken).ConfigureAwait(false);
+
+            foreach (var record in records)
+            {
+                try
+                {
+                    EvalExpressionRegistry.Register(record.Name, record.Expression,
+                        record.ResultTypeId.GetValueOrDefault());
+
+                    await repository.UpdateCompileStatusAsync(record.Id, true, null,
+                        context.Services.CancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    context.Services.Log.Error(
+                        $"ConfigureTokenParserForSecurityAsync: DictionaryEvalExpression '{record.Name}' failed to compile: {ex}");
+
+                    await repository.UpdateCompileStatusAsync(record.Id, false, ex.Message,
+                        context.Services.CancellationToken).ConfigureAwait(false);
+                }
+            }
         }
     }
 }

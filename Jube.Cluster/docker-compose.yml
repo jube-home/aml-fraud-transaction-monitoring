@@ -729,7 +729,7 @@ services:
       # of provisioning a secret for it. Required whenever PasswordAsymmetricEncryption=True: Jube refuses
       # to start with RSA password encryption enabled and either key missing.
       - PasswordAsymmetricEncryptionPublicKey=CHANGE-ME-paste-public-key-printed-by-secrets-init.sh
-      - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,responseTimeout=8000,connectTimeout=10000,keepAlive=60
+      - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,connectTimeout=10000,keepAlive=60
       # Only used because RedisConnectionString sets serviceName= above (Sentinel mode). Independent of that
       # string's own connectTimeout/syncTimeout - this bounds the Sentinel-discovery hop specifically, so a
       # slow/unreachable Sentinel quorum fails fast and hands back to the reconnect backoff quickly, without
@@ -739,13 +739,18 @@ services:
       - RedisSentinelSyncTimeout=2000
       - RedisSentinelConnectRetry=1
       # ExponentialRetry(base, max) for SE.Redis's background reconnect attempts after the physical connection
-      # drops - how fast it retries, not how long an in-flight command waits.
-      - RedisReconnectRetryBaseDelay=100
-      - RedisReconnectRetryMaxDelay=3000
-      # False (default) queues commands issued while disconnected until they hit their own syncTimeout above -
-      # the mechanism behind transactions being held for a long period during a genuine network break. Set True
-      # to fail them immediately instead once the connection is known unhealthy.
-      - RedisBacklogFailFast=False
+      # drops - how fast it retries, not how long an in-flight command waits. SE.Redis doesn't expose the growth
+      # rate itself (it's a fixed ~2x-per-attempt curve internally) - the only levers are the floor and the
+      # ceiling, so lowered from 100/3000 to keep retries frequent on a brittle WAN link instead of settling into
+      # a multi-second gap between attempts once the curve saturates.
+      - RedisReconnectRetryBaseDelay=50
+      - RedisReconnectRetryMaxDelay=500
+      # True: commands issued while disconnected fail immediately once the connection is known unhealthy, instead
+      # of queuing until they hit their own syncTimeout above - the mechanism that used to hold transactions for a
+      # long period during a genuine network break. Chosen over the (default False) queue-and-wait behaviour for
+      # the same brittle-WAN reasoning as the retry cadence above - fail fast and let the caller's own retry/
+      # fallback handle it, rather than blocking on a connection that may not come back soon.
+      - RedisBacklogFailFast=True
       - EnableExhaustiveTraining=False
       - Landlord=False
       - EnableReprocessing=False
@@ -781,6 +786,11 @@ services:
       # - KRB5_TRACE=/dev/stderr
       - JWTValidIssuer=https://CHANGE-ME.yourcorp.com
       - JWTValidAudience=https://CHANGE-ME.yourcorp.com
+      # Off by default here - uncomment both to push this service's OpenTelemetry data at the
+      # jube-otel-listener sidecar below (a throwaway local receiver for manual testing, not a real
+      # collector - see Jube.OpenTelemetryListener/Program.cs). Also requires EnableOpenTelemetry=True.
+      - EnableOpenTelemetry=True
+      - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
     networks:
       jube-cluster:
         aliases:
@@ -843,7 +853,7 @@ services:
       # of provisioning a secret for it. Required whenever PasswordAsymmetricEncryption=True: Jube refuses
       # to start with RSA password encryption enabled and either key missing.
       - PasswordAsymmetricEncryptionPublicKey=CHANGE-ME-paste-public-key-printed-by-secrets-init.sh
-      - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,responseTimeout=8000,connectTimeout=10000,keepAlive=60
+      - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,connectTimeout=10000,keepAlive=60
       # Only used because RedisConnectionString sets serviceName= above (Sentinel mode). Independent of that
       # string's own connectTimeout/syncTimeout - this bounds the Sentinel-discovery hop specifically, so a
       # slow/unreachable Sentinel quorum fails fast and hands back to the reconnect backoff quickly, without
@@ -853,13 +863,18 @@ services:
       - RedisSentinelSyncTimeout=2000
       - RedisSentinelConnectRetry=1
       # ExponentialRetry(base, max) for SE.Redis's background reconnect attempts after the physical connection
-      # drops - how fast it retries, not how long an in-flight command waits.
-      - RedisReconnectRetryBaseDelay=100
-      - RedisReconnectRetryMaxDelay=3000
-      # False (default) queues commands issued while disconnected until they hit their own syncTimeout above -
-      # the mechanism behind transactions being held for a long period during a genuine network break. Set True
-      # to fail them immediately instead once the connection is known unhealthy.
-      - RedisBacklogFailFast=False
+      # drops - how fast it retries, not how long an in-flight command waits. SE.Redis doesn't expose the growth
+      # rate itself (it's a fixed ~2x-per-attempt curve internally) - the only levers are the floor and the
+      # ceiling, so lowered from 100/3000 to keep retries frequent on a brittle WAN link instead of settling into
+      # a multi-second gap between attempts once the curve saturates.
+      - RedisReconnectRetryBaseDelay=50
+      - RedisReconnectRetryMaxDelay=500
+      # True: commands issued while disconnected fail immediately once the connection is known unhealthy, instead
+      # of queuing until they hit their own syncTimeout above - the mechanism that used to hold transactions for a
+      # long period during a genuine network break. Chosen over the (default False) queue-and-wait behaviour for
+      # the same brittle-WAN reasoning as the retry cadence above - fail fast and let the caller's own retry/
+      # fallback handle it, rather than blocking on a connection that may not come back soon.
+      - RedisBacklogFailFast=True
       - EnableExhaustiveTraining=False
       - Landlord=True
       - EnableReprocessing=False
@@ -893,6 +908,11 @@ services:
       # - KRB5_TRACE=/dev/stderr
       - JWTValidIssuer=https://CHANGE-ME.yourcorp.com
       - JWTValidAudience=https://CHANGE-ME.yourcorp.com
+      # Off by default here - uncomment both to push this service's OpenTelemetry data at the
+      # jube-otel-listener sidecar below (a throwaway local receiver for manual testing, not a real
+      # collector - see Jube.OpenTelemetryListener/Program.cs). Also requires EnableOpenTelemetry=True.
+      - EnableOpenTelemetry=False
+      - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
     networks:
       jube-cluster:
         aliases:
@@ -940,7 +960,7 @@ services:
       - ConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_app;Password=[@JUBE_APP_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
       - ReportConnectionString=Host=haproxy;Port=5433;Database=postgres;Username=jube_reporting;Password=[@JUBE_REPORTING_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
       - MigrationConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_migration;Password=[@JUBE_MIGRATION_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
-      - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,responseTimeout=8000,connectTimeout=10000,keepAlive=60
+      - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,connectTimeout=10000,keepAlive=60
       # Only used because RedisConnectionString sets serviceName= above (Sentinel mode). Independent of that
       # string's own connectTimeout/syncTimeout - this bounds the Sentinel-discovery hop specifically, so a
       # slow/unreachable Sentinel quorum fails fast and hands back to the reconnect backoff quickly, without
@@ -950,13 +970,18 @@ services:
       - RedisSentinelSyncTimeout=2000
       - RedisSentinelConnectRetry=1
       # ExponentialRetry(base, max) for SE.Redis's background reconnect attempts after the physical connection
-      # drops - how fast it retries, not how long an in-flight command waits.
-      - RedisReconnectRetryBaseDelay=100
-      - RedisReconnectRetryMaxDelay=3000
-      # False (default) queues commands issued while disconnected until they hit their own syncTimeout above -
-      # the mechanism behind transactions being held for a long period during a genuine network break. Set True
-      # to fail them immediately instead once the connection is known unhealthy.
-      - RedisBacklogFailFast=False
+      # drops - how fast it retries, not how long an in-flight command waits. SE.Redis doesn't expose the growth
+      # rate itself (it's a fixed ~2x-per-attempt curve internally) - the only levers are the floor and the
+      # ceiling, so lowered from 100/3000 to keep retries frequent on a brittle WAN link instead of settling into
+      # a multi-second gap between attempts once the curve saturates.
+      - RedisReconnectRetryBaseDelay=50
+      - RedisReconnectRetryMaxDelay=500
+      # True: commands issued while disconnected fail immediately once the connection is known unhealthy, instead
+      # of queuing until they hit their own syncTimeout above - the mechanism that used to hold transactions for a
+      # long period during a genuine network break. Chosen over the (default False) queue-and-wait behaviour for
+      # the same brittle-WAN reasoning as the retry cadence above - fail fast and let the caller's own retry/
+      # fallback handle it, rather than blocking on a connection that may not come back soon.
+      - RedisBacklogFailFast=True
       - JWTKey=[@JWT_KEY@]
       - ElementSymmetricEncryptionKey=[@ENCRYPTION_KEY@]
       # jube-jobs is the only service with these background-processing flags (plus EnableMigration below) set
@@ -986,6 +1011,11 @@ services:
       - Log4NetLogLevel=INFO
       - DOTNET_GC_SERVER=1
       - SecretsPath=/run/secrets/
+      # Off by default here - uncomment both to push this service's OpenTelemetry data at the
+      # jube-otel-listener sidecar below (a throwaway local receiver for manual testing, not a real
+      # collector - see Jube.OpenTelemetryListener/Program.cs). Also requires EnableOpenTelemetry=True.
+      - EnableOpenTelemetry=False
+      - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
     networks:
       jube-cluster:
         aliases:
@@ -1011,69 +1041,66 @@ services:
         order: stop-first
         failure_action: continue
 
-  dozzle:
-    image: amir20/dozzle:latest
-    # Dozzle's own login, on top of the network-layer restriction on this port (see the deployment doc's Port
-    # Map) - defense in depth, since its log viewer can surface anything an application logs. Generate real
-    # credentials before deploying (`docker run --rm amir20/dozzle generate <user> --password <pass> --name
-    # "<name>"`) and replace ./dozzle/users.yml with the output - the committed template is intentionally not
-    # a working credential file.
-    command:
-      - --auth-provider
-      - simple
+  jube-monitoring:
+    image: ${JUBE_MONITORING_IMAGE}
+    # A standalone process/image, never a module inside jube-ui/jube-api/jube-jobs above - those must never be
+    # given the docker.sock mount below, so Docker host/container monitoring is its own small sidecar instead.
+    # It only ever inserts into DockerContainerMetric/DockerHostMetric/HAProxyServerStatus, so it reuses the
+    # jube_app credential rather than provisioning a new one.
+    secrets:
+      - JUBE_APP_PASSWORD
     environment:
-      - DOZZLE_MODE=swarm
+      - SecretsPath=/run/secrets/
+      - ConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_app;Password=[@JUBE_APP_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=5;
+      - DockerSocketPath=/var/run/docker.sock
+      - SampleIntervalSeconds=60
+      # Scraped once per sample cycle into HAProxyServerStatus (see Jube.Monitoring/HAProxyServerStatusSampler.cs).
+      # Defaults to this same value when omitted - only needed here to make the dependency visible/overridable.
+      # ";csv" appends to the real haproxy.cfg's "stats uri /", not "/stats" as in some HAProxy doc examples.
+      - HAProxyStatsUrl=http://haproxy:7000/;csv
+      # Resolved once per sample cycle into HAProxyReachabilityProbe (see
+      # Jube.Monitoring/HAProxyReachabilityProbeSampler.cs) - Swarm's per-task DNS convention, returning every
+      # individual HAProxy replica's IP directly rather than the "haproxy" hostname's own VIP/IPVS-balanced
+      # address, so each replica (and the node it runs on) gets probed on its own. Defaults to this same value.
+      - HAProxyTasksHostname=tasks.haproxy
+      # Off by default here - uncomment both to push this sidecar's own dynamic log-counter metrics (see
+      # Jube.Monitoring/LogCounterMatcher.cs) at the jube-otel-listener sidecar below.
+      # - EnableOpenTelemetry=True
+      # - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
     volumes:
       # Docker socket access is powerful regardless of the read-only bind-mount flag - a process with socket
-      # access can still start/stop/inspect containers via the Docker API. This is what Dozzle needs to
-      # introspect the cluster, and the standard mechanism for this class of tool, but it's a real trust
-      # decision, not a fully contained one.
+      # access can still start/stop/inspect containers via the Docker API. This is a real trust decision, not
+      # a fully contained one, but it's what this sidecar needs to introspect the cluster.
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./dozzle/users.yml:/data/users.yml:ro
-    ports:
-      - "8080:8080"
     networks:
       jube-cluster:
         aliases:
-          - dozzle
+          - jube-monitoring
     deploy:
-      # One Dozzle instance per manager node (not a fixed replica count) - paired with DOZZLE_MODE=swarm,
-      # each instance discovers and aggregates logs from every task across the whole Swarm, not just
-      # containers local to its own node. This is what the internal-only agent port 7007 is for
-      # (agent-to-UI communication between instances) - Dozzle's documented pattern for Swarm log
-      # aggregation, rather than something specific to this cluster.
+      # One instance per physical node, manager or worker - every node in the Swarm is running real workload
+      # (Postgres/Patroni/etcd/Redis/HAProxy tasks), and the whole point of this sidecar is host/container
+      # monitoring local to wherever Docker itself is running, not just the managers.
       mode: global
       restart_policy:
         condition: on-failure
         delay: 30s
-      placement:
-        constraints:
-          - node.role == manager
 
-  uptime-kuma:
-    image: louislam/uptime-kuma:1
-    volumes:
-      - kuma_data:/app/data
-      # Same docker.sock trust note as dozzle above.
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    ports:
-      - "3001:3001"
+  # A throwaway local OTLP/HTTP receiver for manually confirming OpenTelemetry data actually leaves the
+  # cluster during testing -- prints a best-effort summary of every request to console (see
+  # Jube.OpenTelemetryListener/Program.cs and ProtobufStringScanner.cs). Not a real collector: no storage, no
+  # query API, single replica. Point OpenTelemetryBackendEndpoint at it (see the commented-out lines on
+  # jube-ui/jube-api/jube-jobs/jube-monitoring above) and view its output via `docker service logs`.
+  jube-otel-listener:
+    image: ${JUBE_OTEL_LISTENER_IMAGE}
     networks:
       jube-cluster:
         aliases:
-          - uptime-kuma
+          - jube-otel-listener
     deploy:
+      replicas: 1
       restart_policy:
         condition: on-failure
-        delay: 30s
-      # Pinned to exactly one replica (not scaled or global) because Uptime Kuma keeps its state in a local
-      # SQLite database, which can't be shared across replicas - more than one would mean two independent,
-      # diverging monitors. Paired with the manager-only placement constraint below so an unpinned single
-      # replica can't get rescheduled onto a node without its data volume.
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
+        delay: 10s
 
 volumes:
   etcd1_data:
@@ -1115,8 +1142,6 @@ volumes:
   redis-replica2-data:
     external: true
   redis-replica3-data:
-    external: true
-  kuma_data:
     external: true
 
 secrets:

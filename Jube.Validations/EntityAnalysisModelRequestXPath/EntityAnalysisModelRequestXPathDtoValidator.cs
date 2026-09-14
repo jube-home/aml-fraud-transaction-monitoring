@@ -70,20 +70,18 @@ namespace Jube.Validations.EntityAnalysisModelRequestXPath
                 .WithErrorCode("XPathMaximumLength");
 
             RuleFor(p => p.DefaultValue)
-                .NotEmpty()
-                .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.DefaultValueRequired])
-                .WithErrorCode("DefaultValueNotEmpty")
                 .MaximumLength(MaxDefaultValueLength)
                 .WithMessage(_ =>
                     string.Format(localiser[EntityAnalysisModelRequestXPathResources.DefaultValueMaxLength],
                         MaxDefaultValueLength))
-                .WithErrorCode("DefaultValueMaximumLength");
+                .WithErrorCode("DefaultValueMaximumLength")
+                .When(p => !string.IsNullOrEmpty(p.DefaultValue));
 
             RuleFor(p => p.DefaultValue)
                 .Must(m => int.TryParse(m, out _))
                 .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.DefaultValueDateOffsetInvalid])
                 .WithErrorCode("DefaultValueDateOffsetInvalid")
-                .When(p => p.DataTypeId == 4);
+                .When(p => p.DataTypeId == 4 && !string.IsNullOrEmpty(p.DefaultValue));
 
             RuleFor(p => p.EncryptionId)
                 .Must(m => allowedEncryptionIds.Contains(m))

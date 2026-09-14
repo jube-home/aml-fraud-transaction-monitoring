@@ -11,1275 +11,506 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Poco;
+using LinqToDB;
+using LinqToDB.Configuration;
+using LinqToDB.Data;
+
 namespace Jube.Data.Context
 {
-    using LinqToDB;
-    using LinqToDB.Configuration;
-    using LinqToDB.Data;
-    using Poco;
-
     public class DbContext(LinqToDbConnectionOptions<DbContext> options) : DataConnection(options)
     {
-        public ITable<ActivationWatcher> ActivationWatcher
-        {
-            get
-            {
-                return GetTable<ActivationWatcher>();
-            }
-        }
+        public ITable<ActivationWatcher> ActivationWatcher => GetTable<ActivationWatcher>();
 
-        public ITable<EntityAnalysisModelTag> EntityAnalysisModelTag
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelTag>();
-            }
-        }
+        public ITable<EntityAnalysisModelTag> EntityAnalysisModelTag => GetTable<EntityAnalysisModelTag>();
 
-        public ITable<CaseWorkflowFormEntryValue> CaseWorkflowFormEntryValue
-        {
-            get
-            {
-                return GetTable<CaseWorkflowFormEntryValue>();
-            }
-        }
+        public ITable<EntityAnalysisModelStagePerformanceCounter> EntityAnalysisModelStagePerformanceCounter =>
+            GetTable<EntityAnalysisModelStagePerformanceCounter>();
 
-        public ITable<CaseWorkflowFormEntry> CaseWorkflowFormEntry
-        {
-            get
-            {
-                return GetTable<CaseWorkflowFormEntry>();
-            }
-        }
+        public ITable<ArchiverStagePerformanceCounter> ArchiverStagePerformanceCounter =>
+            GetTable<ArchiverStagePerformanceCounter>();
 
-        public ITable<CaseFile> CaseFile
-        {
-            get
-            {
-                return GetTable<CaseFile>();
-            }
-        }
+        public ITable<CaseCreationStagePerformanceCounter> CaseCreationStagePerformanceCounter =>
+            GetTable<CaseCreationStagePerformanceCounter>();
 
-        public ITable<UserLogin> UserLogin
-        {
-            get
-            {
-                return GetTable<UserLogin>();
-            }
-        }
+        public ITable<CaseCreationWarning> CaseCreationWarning => GetTable<CaseCreationWarning>();
 
-        public ITable<CaseNote> CaseNote
-        {
-            get
-            {
-                return GetTable<CaseNote>();
-            }
-        }
+        public ITable<ArchiverWarning> ArchiverWarning => GetTable<ArchiverWarning>();
 
-        public ITable<SessionCaseJournal> SessionCaseJournal
-        {
-            get
-            {
-                return GetTable<SessionCaseJournal>();
-            }
-        }
+        public ITable<CaptureQueueHealth> CaptureQueueHealth => GetTable<CaptureQueueHealth>();
 
-        public ITable<SessionCaseSearchCompiledSql> SessionCaseSearchCompiledSql
-        {
-            get
-            {
-                return GetTable<SessionCaseSearchCompiledSql>();
-            }
-        }
+        public ITable<HAProxyServerStatus> HaProxyServerStatus => GetTable<HAProxyServerStatus>();
 
-        public ITable<ArchiveEntityAnalysisModelAbstractionEntry> ArchiveEntityAnalysisModelAbstractionEntry
-        {
-            get
-            {
-                return GetTable<ArchiveEntityAnalysisModelAbstractionEntry>();
-            }
-        }
+        public ITable<HAProxyReachabilityProbe> HaProxyReachabilityProbe => GetTable<HAProxyReachabilityProbe>();
+
+        public ITable<OverlayNetworkTaskDrift> OverlayNetworkTaskDrift => GetTable<OverlayNetworkTaskDrift>();
+
+        public ITable<EntityAnalysisModelTaskPerformanceCounter> EntityAnalysisModelTaskPerformanceCounter =>
+            GetTable<EntityAnalysisModelTaskPerformanceCounter>();
+
+        public ITable<ApplicationLogEntry> ApplicationLogEntry => GetTable<ApplicationLogEntry>();
+
+        public ITable<DotNetRuntimeMetric> DotNetRuntimeMetric => GetTable<DotNetRuntimeMetric>();
+
+        public ITable<PostgresMetric> PostgresMetric => GetTable<PostgresMetric>();
+
+        public ITable<PostgresLogEntry> PostgresLogEntry => GetTable<PostgresLogEntry>();
+
+        public ITable<ContainerLogEntry> ContainerLogEntry => GetTable<ContainerLogEntry>();
+
+        public ITable<DockerEvent> DockerEvent => GetTable<DockerEvent>();
+
+        public ITable<OpenTelemetryLogCounter> OpenTelemetryLogCounter => GetTable<OpenTelemetryLogCounter>();
+
+        public ITable<OpenTelemetryExclude> OpenTelemetryExclude => GetTable<OpenTelemetryExclude>();
+
+        public ITable<OtlpDispatchCounter> OtlpDispatchCounter => GetTable<OtlpDispatchCounter>();
+
+        public ITable<RedisMetric> RedisMetric => GetTable<RedisMetric>();
+
+        public ITable<RedisSlowOperation> RedisSlowOperation => GetTable<RedisSlowOperation>();
+
+        public ITable<RedisConnectionMultiplexerMetric> RedisConnectionMultiplexerMetric =>
+            GetTable<RedisConnectionMultiplexerMetric>();
+
+        public ITable<PostgresReplicationStatus> PostgresReplicationStatus => GetTable<PostgresReplicationStatus>();
+
+        public ITable<RedisSentinelStatus> RedisSentinelStatus => GetTable<RedisSentinelStatus>();
+
+        public ITable<EtcdMemberStatus> EtcdMemberStatus => GetTable<EtcdMemberStatus>();
+
+        public ITable<PatroniMemberStatus> PatroniMemberStatus => GetTable<PatroniMemberStatus>();
+
+        public ITable<DockerContainerMetric> DockerContainerMetric => GetTable<DockerContainerMetric>();
+
+        public ITable<DockerHostMetric> DockerHostMetric => GetTable<DockerHostMetric>();
+        public ITable<OpenTelemetryMetric> OpenTelemetryMetric => GetTable<OpenTelemetryMetric>();
+
+        public ITable<EtcdClusterEvent> EtcdClusterEvent => GetTable<EtcdClusterEvent>();
+
+        public ITable<PatroniClusterEvent> PatroniClusterEvent => GetTable<PatroniClusterEvent>();
+
+        public ITable<RedisSentinelEvent> RedisSentinelEvent => GetTable<RedisSentinelEvent>();
+
+        public ITable<ModelInvokeWarning> ModelInvokeWarning => GetTable<ModelInvokeWarning>();
+
+        public ITable<RedisConnectionEvent> RedisConnectionEvent => GetTable<RedisConnectionEvent>();
+
+        public ITable<RedisCallCounter> RedisCallCounter => GetTable<RedisCallCounter>();
+
+        public ITable<EntityAnalysisModelResponseTimePipelineCounter> EntityAnalysisModelResponseTimePipelineCounter =>
+            GetTable<EntityAnalysisModelResponseTimePipelineCounter>();
+
+        public ITable<CaseWorkflowFormEntryValue> CaseWorkflowFormEntryValue => GetTable<CaseWorkflowFormEntryValue>();
+
+        public ITable<CaseWorkflowFormEntry> CaseWorkflowFormEntry => GetTable<CaseWorkflowFormEntry>();
+
+        public ITable<CaseFile> CaseFile => GetTable<CaseFile>();
+
+        public ITable<UserLogin> UserLogin => GetTable<UserLogin>();
+
+        public ITable<CaseNote> CaseNote => GetTable<CaseNote>();
+
+        public ITable<SessionCaseJournal> SessionCaseJournal => GetTable<SessionCaseJournal>();
+
+        public ITable<SessionCaseSearchCompiledSql> SessionCaseSearchCompiledSql =>
+            GetTable<SessionCaseSearchCompiledSql>();
+
+        public ITable<ArchiveEntityAnalysisModelAbstractionEntry> ArchiveEntityAnalysisModelAbstractionEntry =>
+            GetTable<ArchiveEntityAnalysisModelAbstractionEntry>();
 
         public ITable<EntityAnalysisModelSearchKeyDistinctValueCalculationInstance>
-            EntityAnalysisModelSearchKeyDistinctValueCalculationInstance
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelSearchKeyDistinctValueCalculationInstance>();
-            }
-        }
+            EntityAnalysisModelSearchKeyDistinctValueCalculationInstance =>
+            GetTable<EntityAnalysisModelSearchKeyDistinctValueCalculationInstance>();
 
         public ITable<EntityAnalysisModelSearchKeyCalculationInstance>
-            EntityAnalysisModelSearchKeyCalculationInstance
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelSearchKeyCalculationInstance>();
-            }
-        }
+            EntityAnalysisModelSearchKeyCalculationInstance =>
+            GetTable<EntityAnalysisModelSearchKeyCalculationInstance>();
 
-        public ITable<EntityAnalysisInstance> EntityAnalysisInstance
-        {
-            get
-            {
-                return GetTable<EntityAnalysisInstance>();
-            }
-        }
+        public ITable<EntityAnalysisInstance> EntityAnalysisInstance => GetTable<EntityAnalysisInstance>();
 
-        public ITable<EntityAnalysisModelInstance> EntityAnalysisModelInstance
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelInstance>();
-            }
-        }
+        public ITable<EntityAnalysisModelInstance> EntityAnalysisModelInstance =>
+            GetTable<EntityAnalysisModelInstance>();
 
         public ITable<EntityAnalysisModelSynchronisationNodeStatusEntry>
-            EntityAnalysisModelSynchronisationNodeStatusEntry
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelSynchronisationNodeStatusEntry>();
-            }
-        }
+            EntityAnalysisModelSynchronisationNodeStatusEntry =>
+            GetTable<EntityAnalysisModelSynchronisationNodeStatusEntry>();
 
-        public ITable<EntityAnalysisModelSynchronisationSchedule> EntityAnalysisModelSynchronisationSchedule
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelSynchronisationSchedule>();
-            }
-        }
+        public ITable<EntityAnalysisModelSynchronisationSchedule> EntityAnalysisModelSynchronisationSchedule =>
+            GetTable<EntityAnalysisModelSynchronisationSchedule>();
 
-        public ITable<ArchiveKey> ArchiveKey
-        {
-            get
-            {
-                return GetTable<ArchiveKey>();
-            }
-        }
+        public ITable<ArchiveKey> ArchiveKey => GetTable<ArchiveKey>();
 
-        public ITable<ArchiveKeyVersion> ArchiveKeyVersion
-        {
-            get
-            {
-                return GetTable<ArchiveKeyVersion>();
-            }
-        }
+        public ITable<ArchiveKeyVersion> ArchiveKeyVersion => GetTable<ArchiveKeyVersion>();
 
-        public ITable<ExhaustiveSearchInstance> ExhaustiveSearchInstance
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstance>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstance> ExhaustiveSearchInstance => GetTable<ExhaustiveSearchInstance>();
 
-        public ITable<UserRegistry> UserRegistry
-        {
-            get
-            {
-                return GetTable<UserRegistry>();
-            }
-        }
+        public ITable<UserRegistry> UserRegistry => GetTable<UserRegistry>();
 
-        public ITable<Currency> Currency
-        {
-            get
-            {
-                return GetTable<Currency>();
-            }
-        }
+        public ITable<Currency> Currency => GetTable<Currency>();
 
-        public ITable<ExhaustiveSearchInstanceVariable> ExhaustiveSearchInstanceVariable
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceVariable>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstanceVariable> ExhaustiveSearchInstanceVariable =>
+            GetTable<ExhaustiveSearchInstanceVariable>();
 
-        public ITable<ExhaustiveSearchInstanceVariableClassification> ExhaustiveSearchInstanceVariableClassification
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceVariableClassification>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstanceVariableClassification> ExhaustiveSearchInstanceVariableClassification =>
+            GetTable<ExhaustiveSearchInstanceVariableClassification>();
 
-        public ITable<ExhaustiveSearchInstanceTrialInstanceVariable> ExhaustiveSearchInstanceTrialInstanceVariable
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceTrialInstanceVariable>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstanceTrialInstanceVariable> ExhaustiveSearchInstanceTrialInstanceVariable =>
+            GetTable<ExhaustiveSearchInstanceTrialInstanceVariable>();
 
-        public ITable<ExhaustiveSearchInstanceTrialInstance> ExhaustiveSearchInstanceTrialInstance
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceTrialInstance>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstanceTrialInstance> ExhaustiveSearchInstanceTrialInstance =>
+            GetTable<ExhaustiveSearchInstanceTrialInstance>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>
-            ExhaustiveSearchInstanceTrialInstanceVariablePrescription
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
-            }
-        }
+            ExhaustiveSearchInstanceTrialInstanceVariablePrescription =>
+            GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
 
         public ITable<ExhaustiveSearchInstanceTrialInstanceVariablePrescriptionHistogram>
-            ExhaustiveSearchInstanceTrialInstanceVariablePrescriptionHistogram
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceTrialInstanceVariablePrescriptionHistogram>();
-            }
-        }
+            ExhaustiveSearchInstanceTrialInstanceVariablePrescriptionHistogram =>
+            GetTable<ExhaustiveSearchInstanceTrialInstanceVariablePrescriptionHistogram>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceSensitivity>
-            ExhaustiveSearchInstancePromotedTrialInstanceSensitivity
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstancePromotedTrialInstanceSensitivity>();
-            }
-        }
+            ExhaustiveSearchInstancePromotedTrialInstanceSensitivity =>
+            GetTable<ExhaustiveSearchInstancePromotedTrialInstanceSensitivity>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceRoc>
-            ExhaustiveSearchInstancePromotedTrialInstanceRoc
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstancePromotedTrialInstanceRoc>();
-            }
-        }
+            ExhaustiveSearchInstancePromotedTrialInstanceRoc =>
+            GetTable<ExhaustiveSearchInstancePromotedTrialInstanceRoc>();
 
-        public ITable<ExhaustiveSearchInstanceVariableHistogram> ExhaustiveSearchInstanceVariableHistogram
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceVariableHistogram>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstanceVariableHistogram> ExhaustiveSearchInstanceVariableHistogram =>
+            GetTable<ExhaustiveSearchInstanceVariableHistogram>();
 
-        public ITable<ExhaustiveSearchInstancePromotedTrialInstance> ExhaustiveSearchInstancePromotedTrialInstance
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstancePromotedTrialInstance>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstancePromotedTrialInstance> ExhaustiveSearchInstancePromotedTrialInstance =>
+            GetTable<ExhaustiveSearchInstancePromotedTrialInstance>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActual>
-            ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActual>();
-            }
-        }
+            ExhaustiveSearchInstancePromotedTrialInstancePredictedActual =>
+            GetTable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActual>();
 
         public ITable<ExhaustiveSearchInstanceTrialInstanceTopologyTrial>
-            ExhaustiveSearchInstanceTrialInstanceTopologyTrial
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceTrialInstanceTopologyTrial>();
-            }
-        }
+            ExhaustiveSearchInstanceTrialInstanceTopologyTrial =>
+            GetTable<ExhaustiveSearchInstanceTrialInstanceTopologyTrial>();
 
         public ITable<ExhaustiveSearchInstanceTrialInstanceSensitivity>
-            ExhaustiveSearchInstanceTrialInstanceSensitivity
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceTrialInstanceSensitivity>();
-            }
-        }
+            ExhaustiveSearchInstanceTrialInstanceSensitivity =>
+            GetTable<ExhaustiveSearchInstanceTrialInstanceSensitivity>();
 
         public ITable<ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial>
-            ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial>();
-            }
-        }
+            ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial =>
+            GetTable<ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial>();
 
         public ITable<ExhaustiveSearchInstanceVariableMultiCollinearity>
-            ExhaustiveSearchInstanceVariableMultiCollinearity
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceVariableMultiCollinearity>();
-            }
-        }
-
-        public ITable<HttpProcessingCounter> HttpProcessingCounter
-        {
-            get
-            {
-                return GetTable<HttpProcessingCounter>();
-            }
-        }
-
-        public ITable<Archive> Archive
-        {
-            get
-            {
-                return GetTable<Archive>();
-            }
-        }
-
-        public ITable<ArchiveTag> ArchiveTag
-        {
-            get
-            {
-                return GetTable<ArchiveTag>();
-            }
-        }
-
-        public ITable<HttpResponseHeader> HttpHeader
-        {
-            get
-            {
-                return GetTable<HttpResponseHeader>();
-            }
-        }
-
-        public ITable<ArchiveTagVersion> ArchiveTagVersion
-        {
-            get
-            {
-                return GetTable<ArchiveTagVersion>();
-            }
-        }
-
-        public ITable<ArchiveVersion> ArchiveVersion
-        {
-            get
-            {
-                return GetTable<ArchiveVersion>();
-            }
-        }
-
-        public ITable<MockArchive> MockArchive
-        {
-            get
-            {
-                return GetTable<MockArchive>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelProcessingCounter> EntityAnalysisModelProcessingCounter
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelProcessingCounter>();
-            }
-        }
-
-        public ITable<SanctionEntry> SanctionEntry
-        {
-            get
-            {
-                return GetTable<SanctionEntry>();
-            }
-        }
-
-        public ITable<SanctionEntrySource> SanctionEntrySource
-        {
-            get
-            {
-                return GetTable<SanctionEntrySource>();
-            }
-        }
-
-        public ITable<SanctionEntryImport> SanctionEntryImport
-        {
-            get
-            {
-                return GetTable<SanctionEntryImport>();
-            }
-        }
-
-        public ITable<SanctionEntryRejection> SanctionEntryRejection
-        {
-            get
-            {
-                return GetTable<SanctionEntryRejection>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelSynchronisationError> EntityAnalysisModelSynchronisationError
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelSynchronisationError>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelActivationRuleCounterHistory> EntityAnalysisModelActivationRuleCounterHistory
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelActivationRuleCounterHistory>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelGatewayRuleCounterHistory> EntityAnalysisModelGatewayRuleCounterHistory
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelGatewayRuleCounterHistory>();
-            }
-        }
-
-        public ITable<CaseWorkflow> CaseWorkflow
-        {
-            get
-            {
-                return GetTable<CaseWorkflow>();
-            }
-        }
-
-        public ITable<CaseEvent> CaseEvent
-        {
-            get
-            {
-                return GetTable<CaseEvent>();
-            }
-        }
-
-        public ITable<Case> Case
-        {
-            get
-            {
-                return GetTable<Case>();
-            }
-        }
-
-        public ITable<CaseWorkflowStatus> CaseWorkflowStatus
-        {
-            get
-            {
-                return GetTable<CaseWorkflowStatus>();
-            }
-        }
-
-        public ITable<CaseWorkflowXPath> CaseWorkflowXPath
-        {
-            get
-            {
-                return GetTable<CaseWorkflowXPath>();
-            }
-        }
-
-        public ITable<CaseWorkflowForm> CaseWorkflowForm
-        {
-            get
-            {
-                return GetTable<CaseWorkflowForm>();
-            }
-        }
-
-        public ITable<CaseWorkflowAction> CaseWorkflowAction
-        {
-            get
-            {
-                return GetTable<CaseWorkflowAction>();
-            }
-        }
-
-        public ITable<CaseWorkflowDisplay> CaseWorkflowDisplay
-        {
-            get
-            {
-                return GetTable<CaseWorkflowDisplay>();
-            }
-        }
-
-        public ITable<CaseWorkflowFilter> CaseWorkflowFilter
-        {
-            get
-            {
-                return GetTable<CaseWorkflowFilter>();
-            }
-        }
-
-        public ITable<CaseWorkflowMacro> CaseWorkflowMacro
-        {
-            get
-            {
-                return GetTable<CaseWorkflowMacro>();
-            }
-        }
-
-        public ITable<PermissionSpecification> PermissionSpecification
-        {
-            get
-            {
-                return GetTable<PermissionSpecification>();
-            }
-        }
-
-        public ITable<RoleRegistry> RoleRegistry
-        {
-            get
-            {
-                return GetTable<RoleRegistry>();
-            }
-        }
-
-        public ITable<RoleRegistryPermission> RoleRegistryPermission
-        {
-            get
-            {
-                return GetTable<RoleRegistryPermission>();
-            }
-        }
-
-        public ITable<UserInTenant> UserInTenant
-        {
-            get
-            {
-                return GetTable<UserInTenant>();
-            }
-        }
-
-        public ITable<UserInTenantSwitchLog> UserInTenantSwitchLog
-        {
-            get
-            {
-                return GetTable<UserInTenantSwitchLog>();
-            }
-        }
-
-        public ITable<EntityAnalysisModel> EntityAnalysisModel
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModel>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelGatewayRule> EntityAnalysisModelGatewayRule
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelGatewayRule>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelActivationRule> EntityAnalysisModelActivationRule
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelActivationRule>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelSanction> EntityAnalysisModelSanction
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelSanction>();
-            }
-        }
-
-        public ITable<EntityAnalysisInlineScript> EntityAnalysisInlineScript
-        {
-            get
-            {
-                return GetTable<EntityAnalysisInlineScript>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelListCsvFileUpload> EntityAnalysisModelListCsvFileUpload
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelListCsvFileUpload>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelDictionaryCsvFileUpload> EntityAnalysisModelDictionaryCsvFileUpload
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelDictionaryCsvFileUpload>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelInlineFunction> EntityAnalysisModelInlineFunction
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelInlineFunction>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelRequestXpath> EntityAnalysisModelRequestXpath
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelRequestXpath>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelTtlCounter> EntityAnalysisModelTtlCounter
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelTtlCounter>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelAbstractionCalculation> EntityAnalysisModelAbstractionCalculation
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelAbstractionCalculation>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelHttpAdaptation> EntityAnalysisModelHttpAdaptation
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelHttpAdaptation>();
-            }
-        }
-
-        public ITable<TenantRegistry> TenantRegistry
-        {
-            get
-            {
-                return GetTable<TenantRegistry>();
-            }
-        }
-        public ITable<VisualisationRegistry> VisualisationRegistry
-        {
-            get
-            {
-                return GetTable<VisualisationRegistry>();
-            }
-        }
-
-        public ITable<VisualisationRegistryParameter> VisualisationRegistryParameter
-        {
-            get
-            {
-                return GetTable<VisualisationRegistryParameter>();
-            }
-        }
-
-        public ITable<VisualisationRegistryDatasource> VisualisationRegistryDatasource
-        {
-            get
-            {
-                return GetTable<VisualisationRegistryDatasource>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelDictionary> EntityAnalysisModelDictionary
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelDictionary>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelReprocessingRule> EntityAnalysisModelReprocessingRule
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelReprocessingRule>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelReprocessingRuleInstance> EntityAnalysisModelReprocessingRuleInstance
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelReprocessingRuleInstance>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelList> EntityAnalysisModelList
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelList>();
-            }
-        }
-
-        public ITable<EntityAnalysisAsynchronousQueueBalance> EntityAnalysisAsynchronousQueueBalance
-        {
-            get
-            {
-                return GetTable<EntityAnalysisAsynchronousQueueBalance>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelListValue> EntityAnalysisModelListValue
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelListValue>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelSuppression> EntityAnalysisModelSuppression
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelSuppression>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelSuppressionVersion> EntityAnalysisModelSuppressionVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelSuppressionVersion>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelActivationRuleSuppression> EntityAnalysisModelActivationRuleSuppression
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelActivationRuleSuppression>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelActivationRuleSuppressionVersion> EntityAnalysisModelActivationRuleSuppressionVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelActivationRuleSuppressionVersion>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelDictionaryKvp> EntityAnalysisModelDictionaryKvp
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelDictionaryKvp>();
-            }
-        }
-
-        public ITable<RuleScriptToken> RuleScriptToken
-        {
-            get
-            {
-                return GetTable<RuleScriptToken>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelAbstractionRule> EntityAnalysisModelAbstractionRule
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelAbstractionRule>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScript
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelInlineScript>();
-            }
-        }
-
-        public ITable<VisualisationRegistryDatasourceSeries> VisualisationRegistryDatasourceSeries
-        {
-            get
-            {
-                return GetTable<VisualisationRegistryDatasourceSeries>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelAsynchronousQueueBalance> EntityAnalysisModelAsynchronousQueueBalance
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelAsynchronousQueueBalance>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelRequestXpathVersion> EntityAnalysisModelRequestXpathVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelRequestXpathVersion>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelInlineFunctionVersion> EntityAnalysisModelInlineFunctionVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelInlineFunctionVersion>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelInlineScriptVersion> EntityAnalysisModelInlineScriptVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelInlineScriptVersion>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelGatewayRuleVersion> EntityAnalysisModelGatewayRuleVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelGatewayRuleVersion>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelTagVersion> EntityAnalysisModelTagVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelTagVersion>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelSanctionVersion> EntityAnalysisModelSanctionVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelSanctionVersion>();
-            }
-        }
-
-        public ITable<EntityAnalysisModelAbstractionRuleVersion> EntityAnalysisModelAbstractionRuleVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelAbstractionRuleVersion>();
-            }
-        }
+            ExhaustiveSearchInstanceVariableMultiCollinearity =>
+            GetTable<ExhaustiveSearchInstanceVariableMultiCollinearity>();
+
+        public ITable<HttpProcessingCounter> HttpProcessingCounter => GetTable<HttpProcessingCounter>();
+
+        public ITable<Archive> Archive => GetTable<Archive>();
+
+        public ITable<ArchiveTag> ArchiveTag => GetTable<ArchiveTag>();
+
+        public ITable<HttpResponseHeader> HttpHeader => GetTable<HttpResponseHeader>();
+
+        public ITable<ArchiveTagVersion> ArchiveTagVersion => GetTable<ArchiveTagVersion>();
+
+        public ITable<ArchiveVersion> ArchiveVersion => GetTable<ArchiveVersion>();
+
+        public ITable<MockArchive> MockArchive => GetTable<MockArchive>();
+
+        public ITable<EntityAnalysisModelProcessingCounter> EntityAnalysisModelProcessingCounter =>
+            GetTable<EntityAnalysisModelProcessingCounter>();
+
+        public ITable<SanctionEntry> SanctionEntry => GetTable<SanctionEntry>();
+
+        public ITable<SanctionEntrySource> SanctionEntrySource => GetTable<SanctionEntrySource>();
+
+        public ITable<SanctionEntryImport> SanctionEntryImport => GetTable<SanctionEntryImport>();
+
+        public ITable<SanctionEntryRejection> SanctionEntryRejection => GetTable<SanctionEntryRejection>();
+
+        public ITable<EntityAnalysisModelSynchronisationError> EntityAnalysisModelSynchronisationError =>
+            GetTable<EntityAnalysisModelSynchronisationError>();
+
+        public ITable<EntityAnalysisModelActivationRuleCounterHistory>
+            EntityAnalysisModelActivationRuleCounterHistory =>
+            GetTable<EntityAnalysisModelActivationRuleCounterHistory>();
+
+        public ITable<EntityAnalysisModelGatewayRuleCounterHistory> EntityAnalysisModelGatewayRuleCounterHistory =>
+            GetTable<EntityAnalysisModelGatewayRuleCounterHistory>();
+
+        public ITable<CaseWorkflow> CaseWorkflow => GetTable<CaseWorkflow>();
+
+        public ITable<CaseEvent> CaseEvent => GetTable<CaseEvent>();
+
+        public ITable<Case> Case => GetTable<Case>();
+
+        public ITable<CaseWorkflowStatus> CaseWorkflowStatus => GetTable<CaseWorkflowStatus>();
+
+        public ITable<CaseWorkflowXPath> CaseWorkflowXPath => GetTable<CaseWorkflowXPath>();
+
+        public ITable<CaseWorkflowForm> CaseWorkflowForm => GetTable<CaseWorkflowForm>();
+
+        public ITable<CaseWorkflowAction> CaseWorkflowAction => GetTable<CaseWorkflowAction>();
+
+        public ITable<CaseWorkflowDisplay> CaseWorkflowDisplay => GetTable<CaseWorkflowDisplay>();
+
+        public ITable<CaseWorkflowFilter> CaseWorkflowFilter => GetTable<CaseWorkflowFilter>();
+
+        public ITable<CaseWorkflowMacro> CaseWorkflowMacro => GetTable<CaseWorkflowMacro>();
+
+        public ITable<PermissionSpecification> PermissionSpecification => GetTable<PermissionSpecification>();
+
+        public ITable<RoleRegistry> RoleRegistry => GetTable<RoleRegistry>();
+
+        public ITable<RoleRegistryPermission> RoleRegistryPermission => GetTable<RoleRegistryPermission>();
+
+        public ITable<UserInTenant> UserInTenant => GetTable<UserInTenant>();
+
+        public ITable<UserInTenantSwitchLog> UserInTenantSwitchLog => GetTable<UserInTenantSwitchLog>();
+
+        public ITable<EntityAnalysisModel> EntityAnalysisModel => GetTable<EntityAnalysisModel>();
+
+        public ITable<EntityAnalysisModelGatewayRule> EntityAnalysisModelGatewayRule =>
+            GetTable<EntityAnalysisModelGatewayRule>();
+
+        public ITable<EntityAnalysisModelActivationRule> EntityAnalysisModelActivationRule =>
+            GetTable<EntityAnalysisModelActivationRule>();
+
+        public ITable<EntityAnalysisModelSanction> EntityAnalysisModelSanction =>
+            GetTable<EntityAnalysisModelSanction>();
+
+        public ITable<EntityAnalysisInlineScript> EntityAnalysisInlineScript => GetTable<EntityAnalysisInlineScript>();
+
+        public ITable<EntityAnalysisModelListCsvFileUpload> EntityAnalysisModelListCsvFileUpload =>
+            GetTable<EntityAnalysisModelListCsvFileUpload>();
+
+        public ITable<EntityAnalysisModelDictionaryCsvFileUpload> EntityAnalysisModelDictionaryCsvFileUpload =>
+            GetTable<EntityAnalysisModelDictionaryCsvFileUpload>();
+
+        public ITable<EntityAnalysisModelInlineFunction> EntityAnalysisModelInlineFunction =>
+            GetTable<EntityAnalysisModelInlineFunction>();
+
+        public ITable<EntityAnalysisModelRequestXpath> EntityAnalysisModelRequestXpath =>
+            GetTable<EntityAnalysisModelRequestXpath>();
+
+        public ITable<EntityAnalysisModelTtlCounter> EntityAnalysisModelTtlCounter =>
+            GetTable<EntityAnalysisModelTtlCounter>();
+
+        public ITable<EntityAnalysisModelAbstractionCalculation> EntityAnalysisModelAbstractionCalculation =>
+            GetTable<EntityAnalysisModelAbstractionCalculation>();
+
+        public ITable<EntityAnalysisModelHttpAdaptation> EntityAnalysisModelHttpAdaptation =>
+            GetTable<EntityAnalysisModelHttpAdaptation>();
+
+        public ITable<TenantRegistry> TenantRegistry => GetTable<TenantRegistry>();
+
+        public ITable<VisualisationRegistry> VisualisationRegistry => GetTable<VisualisationRegistry>();
+
+        public ITable<VisualisationRegistryParameter> VisualisationRegistryParameter =>
+            GetTable<VisualisationRegistryParameter>();
+
+        public ITable<VisualisationRegistryDatasource> VisualisationRegistryDatasource =>
+            GetTable<VisualisationRegistryDatasource>();
+
+        public ITable<EntityAnalysisModelDictionary> EntityAnalysisModelDictionary =>
+            GetTable<EntityAnalysisModelDictionary>();
+
+        public ITable<EntityAnalysisModelReprocessingRule> EntityAnalysisModelReprocessingRule =>
+            GetTable<EntityAnalysisModelReprocessingRule>();
+
+        public ITable<EntityAnalysisModelReprocessingRuleInstance> EntityAnalysisModelReprocessingRuleInstance =>
+            GetTable<EntityAnalysisModelReprocessingRuleInstance>();
+
+        public ITable<EntityAnalysisModelList> EntityAnalysisModelList => GetTable<EntityAnalysisModelList>();
+
+        public ITable<EntityAnalysisAsynchronousQueueBalance> EntityAnalysisAsynchronousQueueBalance =>
+            GetTable<EntityAnalysisAsynchronousQueueBalance>();
+
+        public ITable<EntityAnalysisModelListValue> EntityAnalysisModelListValue =>
+            GetTable<EntityAnalysisModelListValue>();
+
+        public ITable<EntityAnalysisModelSuppression> EntityAnalysisModelSuppression =>
+            GetTable<EntityAnalysisModelSuppression>();
+
+        public ITable<EntityAnalysisModelSuppressionVersion> EntityAnalysisModelSuppressionVersion =>
+            GetTable<EntityAnalysisModelSuppressionVersion>();
+
+        public ITable<EntityAnalysisModelActivationRuleSuppression> EntityAnalysisModelActivationRuleSuppression =>
+            GetTable<EntityAnalysisModelActivationRuleSuppression>();
+
+        public ITable<EntityAnalysisModelActivationRuleSuppressionVersion>
+            EntityAnalysisModelActivationRuleSuppressionVersion =>
+            GetTable<EntityAnalysisModelActivationRuleSuppressionVersion>();
+
+        public ITable<EntityAnalysisModelDictionaryKvp> EntityAnalysisModelDictionaryKvp =>
+            GetTable<EntityAnalysisModelDictionaryKvp>();
+
+        public ITable<RuleScriptToken> RuleScriptToken => GetTable<RuleScriptToken>();
+
+        public ITable<DictionaryEvalExpression> DictionaryEvalExpression => GetTable<DictionaryEvalExpression>();
+
+        public ITable<EntityAnalysisModelAbstractionRule> EntityAnalysisModelAbstractionRule =>
+            GetTable<EntityAnalysisModelAbstractionRule>();
+
+        public ITable<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScript =>
+            GetTable<EntityAnalysisModelInlineScript>();
+
+        public ITable<VisualisationRegistryDatasourceSeries> VisualisationRegistryDatasourceSeries =>
+            GetTable<VisualisationRegistryDatasourceSeries>();
+
+        public ITable<EntityAnalysisModelAsynchronousQueueBalance> EntityAnalysisModelAsynchronousQueueBalance =>
+            GetTable<EntityAnalysisModelAsynchronousQueueBalance>();
+
+        public ITable<EntityAnalysisModelRequestXpathVersion> EntityAnalysisModelRequestXpathVersion =>
+            GetTable<EntityAnalysisModelRequestXpathVersion>();
+
+        public ITable<EntityAnalysisModelInlineFunctionVersion> EntityAnalysisModelInlineFunctionVersion =>
+            GetTable<EntityAnalysisModelInlineFunctionVersion>();
+
+        public ITable<EntityAnalysisModelInlineScriptVersion> EntityAnalysisModelInlineScriptVersion =>
+            GetTable<EntityAnalysisModelInlineScriptVersion>();
+
+        public ITable<EntityAnalysisModelGatewayRuleVersion> EntityAnalysisModelGatewayRuleVersion =>
+            GetTable<EntityAnalysisModelGatewayRuleVersion>();
+
+        public ITable<EntityAnalysisModelTagVersion> EntityAnalysisModelTagVersion =>
+            GetTable<EntityAnalysisModelTagVersion>();
+
+        public ITable<EntityAnalysisModelSanctionVersion> EntityAnalysisModelSanctionVersion =>
+            GetTable<EntityAnalysisModelSanctionVersion>();
+
+        public ITable<EntityAnalysisModelAbstractionRuleVersion> EntityAnalysisModelAbstractionRuleVersion =>
+            GetTable<EntityAnalysisModelAbstractionRuleVersion>();
 
         public ITable<EntityAnalysisModelAbstractionCalculationVersion>
-            EntityAnalysisModelAbstractionCalculationVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelAbstractionCalculationVersion>();
-            }
-        }
+            EntityAnalysisModelAbstractionCalculationVersion =>
+            GetTable<EntityAnalysisModelAbstractionCalculationVersion>();
 
-        public ITable<EntityAnalysisModelHttpAdaptationVersion> EntityAnalysisModelHttpAdaptationVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelHttpAdaptationVersion>();
-            }
-        }
+        public ITable<EntityAnalysisModelHttpAdaptationVersion> EntityAnalysisModelHttpAdaptationVersion =>
+            GetTable<EntityAnalysisModelHttpAdaptationVersion>();
 
-        public ITable<EntityAnalysisModelActivationRuleVersion> EntityAnalysisModelActivationRuleVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelActivationRuleVersion>();
-            }
-        }
+        public ITable<EntityAnalysisModelActivationRuleVersion> EntityAnalysisModelActivationRuleVersion =>
+            GetTable<EntityAnalysisModelActivationRuleVersion>();
 
-        public ITable<EntityAnalysisModelListVersion> EntityAnalysisModelListVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelListVersion>();
-            }
-        }
+        public ITable<EntityAnalysisModelListVersion> EntityAnalysisModelListVersion =>
+            GetTable<EntityAnalysisModelListVersion>();
 
-        public ITable<EntityAnalysisModelDictionaryVersion> EntityAnalysisModelDictionaryVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelDictionaryVersion>();
-            }
-        }
+        public ITable<EntityAnalysisModelDictionaryVersion> EntityAnalysisModelDictionaryVersion =>
+            GetTable<EntityAnalysisModelDictionaryVersion>();
 
-        public ITable<CaseWorkflowXPathVersion> CaseWorkflowXPathVersion
-        {
-            get
-            {
-                return GetTable<CaseWorkflowXPathVersion>();
-            }
-        }
+        public ITable<CaseWorkflowXPathVersion> CaseWorkflowXPathVersion => GetTable<CaseWorkflowXPathVersion>();
 
-        public ITable<CaseWorkflowFormVersion> CaseWorkflowFormVersion
-        {
-            get
-            {
-                return GetTable<CaseWorkflowFormVersion>();
-            }
-        }
+        public ITable<CaseWorkflowFormVersion> CaseWorkflowFormVersion => GetTable<CaseWorkflowFormVersion>();
 
-        public ITable<CaseWorkflowActionVersion> CaseWorkflowActionVersion
-        {
-            get
-            {
-                return GetTable<CaseWorkflowActionVersion>();
-            }
-        }
+        public ITable<CaseWorkflowActionVersion> CaseWorkflowActionVersion => GetTable<CaseWorkflowActionVersion>();
 
-        public ITable<CaseWorkflowDisplayVersion> CaseWorkflowDisplayVersion
-        {
-            get
-            {
-                return GetTable<CaseWorkflowDisplayVersion>();
-            }
-        }
+        public ITable<CaseWorkflowDisplayVersion> CaseWorkflowDisplayVersion => GetTable<CaseWorkflowDisplayVersion>();
 
-        public ITable<CaseWorkflowMacroVersion> CaseWorkflowMacroVersion
-        {
-            get
-            {
-                return GetTable<CaseWorkflowMacroVersion>();
-            }
-        }
+        public ITable<CaseWorkflowMacroVersion> CaseWorkflowMacroVersion => GetTable<CaseWorkflowMacroVersion>();
 
-        public ITable<CaseWorkflowFilterVersion> CaseWorkflowFilterVersion
-        {
-            get
-            {
-                return GetTable<CaseWorkflowFilterVersion>();
-            }
-        }
+        public ITable<CaseWorkflowFilterVersion> CaseWorkflowFilterVersion => GetTable<CaseWorkflowFilterVersion>();
 
-        public ITable<EntityAnalysisModelListValueVersion> EntityAnalysisModelListValueVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelListValueVersion>();
-            }
-        }
+        public ITable<EntityAnalysisModelListValueVersion> EntityAnalysisModelListValueVersion =>
+            GetTable<EntityAnalysisModelListValueVersion>();
 
-        public ITable<EntityAnalysisModelDictionaryKvpVersion> EntityAnalysisModelDictionaryKvpVersion
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelDictionaryKvpVersion>();
-            }
-        }
+        public ITable<EntityAnalysisModelDictionaryKvpVersion> EntityAnalysisModelDictionaryKvpVersion =>
+            GetTable<EntityAnalysisModelDictionaryKvpVersion>();
 
-        public ITable<VisualisationRegistryDatasourceVersion> VisualisationRegistryDatasourceVersion
-        {
-            get
-            {
-                return GetTable<VisualisationRegistryDatasourceVersion>();
-            }
-        }
+        public ITable<VisualisationRegistryDatasourceVersion> VisualisationRegistryDatasourceVersion =>
+            GetTable<VisualisationRegistryDatasourceVersion>();
 
-        public ITable<VisualisationRegistryParameterVersion> VisualisationRegistryParameterVersion
-        {
-            get
-            {
-                return GetTable<VisualisationRegistryParameterVersion>();
-            }
-        }
+        public ITable<VisualisationRegistryParameterVersion> VisualisationRegistryParameterVersion =>
+            GetTable<VisualisationRegistryParameterVersion>();
 
-        public ITable<ExhaustiveSearchInstanceVariableAnomaly> ExhaustiveSearchInstanceVariableAnomaly
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceVariableAnomaly>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstanceVariableAnomaly> ExhaustiveSearchInstanceVariableAnomaly =>
+            GetTable<ExhaustiveSearchInstanceVariableAnomaly>();
 
         public ITable<ExhaustiveSearchInstanceVariableHistogramClassification>
-            ExhaustiveSearchInstanceVariableHistogramClassification
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceVariableHistogramClassification>();
-            }
-        }
+            ExhaustiveSearchInstanceVariableHistogramClassification =>
+            GetTable<ExhaustiveSearchInstanceVariableHistogramClassification>();
 
-        public ITable<ExhaustiveSearchInstanceVariableHistogramAnomaly> ExhaustiveSearchInstanceVariableHistogramAnomaly
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceVariableHistogramAnomaly>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstanceVariableHistogramAnomaly>
+            ExhaustiveSearchInstanceVariableHistogramAnomaly =>
+            GetTable<ExhaustiveSearchInstanceVariableHistogramAnomaly>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>
-            ExhaustiveSearchInstancePromotedTrialInstanceVariable
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
-            }
-        }
+            ExhaustiveSearchInstancePromotedTrialInstanceVariable =>
+            GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
 
-        public ITable<ExhaustiveSearchInstanceData> ExhaustiveSearchInstanceData
-        {
-            get
-            {
-                return GetTable<ExhaustiveSearchInstanceData>();
-            }
-        }
+        public ITable<ExhaustiveSearchInstanceData> ExhaustiveSearchInstanceData =>
+            GetTable<ExhaustiveSearchInstanceData>();
 
-        public ITable<Import> Import
-        {
-            get
-            {
-                return GetTable<Import>();
-            }
-        }
+        public ITable<Import> Import => GetTable<Import>();
 
-        public ITable<Export> Export
-        {
-            get
-            {
-                return GetTable<Export>();
-            }
-        }
+        public ITable<Export> Export => GetTable<Export>();
 
-        public ITable<ExportPeek> ExportPeek
-        {
-            get
-            {
-                return GetTable<ExportPeek>();
-            }
-        }
+        public ITable<ExportPeek> ExportPeek => GetTable<ExportPeek>();
 
-        public ITable<LocalCacheInstance> LocalCacheInstance
-        {
-            get
-            {
-                return GetTable<LocalCacheInstance>();
-            }
-        }
+        public ITable<LocalCacheInstance> LocalCacheInstance => GetTable<LocalCacheInstance>();
 
-        public ITable<LocalCacheInstanceKey> LocalCacheInstanceKey
-        {
-            get
-            {
-                return GetTable<LocalCacheInstanceKey>();
-            }
-        }
+        public ITable<LocalCacheInstanceKey> LocalCacheInstanceKey => GetTable<LocalCacheInstanceKey>();
 
-        public ITable<LocalCacheInstanceLru> LocalCacheInstanceLru
-        {
-            get
-            {
-                return GetTable<LocalCacheInstanceLru>();
-            }
-        }
+        public ITable<LocalCacheInstanceLru> LocalCacheInstanceLru => GetTable<LocalCacheInstanceLru>();
 
-        public ITable<HashCacheAssemblyInstance> HashCacheAssemblyInstance
-        {
-            get
-            {
-                return GetTable<HashCacheAssemblyInstance>();
-            }
-        }
+        public ITable<HashCacheAssemblyInstance> HashCacheAssemblyInstance => GetTable<HashCacheAssemblyInstance>();
 
-        public ITable<HashCacheAssemblyInstanceEntry> HashCacheAssemblyInstanceEntry
-        {
-            get
-            {
-                return GetTable<HashCacheAssemblyInstanceEntry>();
-            }
-        }
+        public ITable<HashCacheAssemblyInstanceEntry> HashCacheAssemblyInstanceEntry =>
+            GetTable<HashCacheAssemblyInstanceEntry>();
 
-        public ITable<HashCacheAssemblyInstanceJournal> HashCacheAssemblyInstanceJournal
-        {
-            get
-            {
-                return GetTable<HashCacheAssemblyInstanceJournal>();
-            }
-        }
+        public ITable<HashCacheAssemblyInstanceJournal> HashCacheAssemblyInstanceJournal =>
+            GetTable<HashCacheAssemblyInstanceJournal>();
 
-        public ITable<CachePayloadRemovalBatch> CachePayloadRemovalBatch
-        {
-            get
-            {
-                return GetTable<CachePayloadRemovalBatch>();
-            }
-        }
+        public ITable<CachePayloadRemovalBatch> CachePayloadRemovalBatch => GetTable<CachePayloadRemovalBatch>();
 
-        public ITable<CachePayloadRemovalBatchEntry> CachePayloadRemovalBatchEntry
-        {
-            get
-            {
-                return GetTable<CachePayloadRemovalBatchEntry>();
-            }
-        }
+        public ITable<CachePayloadRemovalBatchEntry> CachePayloadRemovalBatchEntry =>
+            GetTable<CachePayloadRemovalBatchEntry>();
 
-        public ITable<CachePayloadLatestRemovalBatchEntry> CachePayloadLatestRemovalBatchEntry
-        {
-            get
-            {
-                return GetTable<CachePayloadLatestRemovalBatchEntry>();
-            }
-        }
+        public ITable<CachePayloadLatestRemovalBatchEntry> CachePayloadLatestRemovalBatchEntry =>
+            GetTable<CachePayloadLatestRemovalBatchEntry>();
 
-        public ITable<CachePayloadRemovalBatchResponseTime> CachePayloadRemovalBatchResponseTime
-        {
-            get
-            {
-                return GetTable<CachePayloadRemovalBatchResponseTime>();
-            }
-        }
+        public ITable<CachePayloadRemovalBatchResponseTime> CachePayloadRemovalBatchResponseTime =>
+            GetTable<CachePayloadRemovalBatchResponseTime>();
 
-        public ITable<CachePayloadLatestRemovalBatch> CachePayloadLatestRemovalBatch
-        {
-            get
-            {
-                return GetTable<CachePayloadLatestRemovalBatch>();
-            }
-        }
+        public ITable<CachePayloadLatestRemovalBatch> CachePayloadLatestRemovalBatch =>
+            GetTable<CachePayloadLatestRemovalBatch>();
 
-        public ITable<CachePayloadLatestRemovalBatchResponseTime> CachePayloadLatestRemovalBatchResponseTime
-        {
-            get
-            {
-                return GetTable<CachePayloadLatestRemovalBatchResponseTime>();
-            }
-        }
+        public ITable<CachePayloadLatestRemovalBatchResponseTime> CachePayloadLatestRemovalBatchResponseTime =>
+            GetTable<CachePayloadLatestRemovalBatchResponseTime>();
 
-        public ITable<CacheTtlCounterEntryRemovalBatch> CacheTtlCounterEntryRemovalBatch
-        {
-            get
-            {
-                return GetTable<CacheTtlCounterEntryRemovalBatch>();
-            }
-        }
+        public ITable<CacheTtlCounterEntryRemovalBatch> CacheTtlCounterEntryRemovalBatch =>
+            GetTable<CacheTtlCounterEntryRemovalBatch>();
 
-        public ITable<CacheTtlCounterEntryRemovalBatchEntry> CacheTtlCounterEntryRemovalBatchEntry
-        {
-            get
-            {
-                return GetTable<CacheTtlCounterEntryRemovalBatchEntry>();
-            }
-        }
+        public ITable<CacheTtlCounterEntryRemovalBatchEntry> CacheTtlCounterEntryRemovalBatchEntry =>
+            GetTable<CacheTtlCounterEntryRemovalBatchEntry>();
 
-        public ITable<CaseWorkflowStatusRole> CaseWorkflowStatusRole
-        {
-            get
-            {
-                return GetTable<CaseWorkflowStatusRole>();
-            }
-        }
+        public ITable<CaseWorkflowStatusRole> CaseWorkflowStatusRole => GetTable<CaseWorkflowStatusRole>();
 
-        public ITable<CaseWorkflowRole> CaseWorkflowRole
-        {
-            get
-            {
-                return GetTable<CaseWorkflowRole>();
-            }
-        }
+        public ITable<CaseWorkflowRole> CaseWorkflowRole => GetTable<CaseWorkflowRole>();
 
-        public ITable<CaseWorkflowMacroRole> CaseWorkflowMacroRole
-        {
-            get
-            {
-                return GetTable<CaseWorkflowMacroRole>();
-            }
-        }
+        public ITable<CaseWorkflowMacroRole> CaseWorkflowMacroRole => GetTable<CaseWorkflowMacroRole>();
 
-        public ITable<CaseWorkflowFormRole> CaseWorkflowFormRole
-        {
-            get
-            {
-                return GetTable<CaseWorkflowFormRole>();
-            }
-        }
+        public ITable<CaseWorkflowFormRole> CaseWorkflowFormRole => GetTable<CaseWorkflowFormRole>();
 
-        public ITable<CaseWorkflowActionRole> CaseWorkflowActionRole
-        {
-            get
-            {
-                return GetTable<CaseWorkflowActionRole>();
-            }
-        }
+        public ITable<CaseWorkflowActionRole> CaseWorkflowActionRole => GetTable<CaseWorkflowActionRole>();
 
-        public ITable<CaseWorkflowDisplayRole> CaseWorkflowDisplayRole
-        {
-            get
-            {
-                return GetTable<CaseWorkflowDisplayRole>();
-            }
-        }
+        public ITable<CaseWorkflowDisplayRole> CaseWorkflowDisplayRole => GetTable<CaseWorkflowDisplayRole>();
 
-        public ITable<CaseWorkflowXPathRole> CaseWorkflowXPathRole
-        {
-            get
-            {
-                return GetTable<CaseWorkflowXPathRole>();
-            }
-        }
+        public ITable<CaseWorkflowXPathRole> CaseWorkflowXPathRole => GetTable<CaseWorkflowXPathRole>();
 
-        public ITable<EntityAnalysisModelRole> EntityAnalysisModelRole
-        {
-            get
-            {
-                return GetTable<EntityAnalysisModelRole>();
-            }
-        }
+        public ITable<EntityAnalysisModelRole> EntityAnalysisModelRole => GetTable<EntityAnalysisModelRole>();
 
-        public ITable<VisualisationRegistryRole> VisualisationRegistryRole
-        {
-            get
-            {
-                return GetTable<VisualisationRegistryRole>();
-            }
-        }
+        public ITable<VisualisationRegistryRole> VisualisationRegistryRole => GetTable<VisualisationRegistryRole>();
 
-        public ITable<VisualisationRegistryDatasourceRole> VisualisationRegistryDatasourceRole
-        {
-            get
-            {
-                return GetTable<VisualisationRegistryDatasourceRole>();
-            }
-        }
+        public ITable<VisualisationRegistryDatasourceRole> VisualisationRegistryDatasourceRole =>
+            GetTable<VisualisationRegistryDatasourceRole>();
 
-        public ITable<VisualisationRegistryParameterRole> VisualisationRegistryParameterRole
-        {
-            get
-            {
-                return GetTable<VisualisationRegistryParameterRole>();
-            }
-        }
+        public ITable<VisualisationRegistryParameterRole> VisualisationRegistryParameterRole =>
+            GetTable<VisualisationRegistryParameterRole>();
 
-        public ITable<CaseWorkflowFilterRole> CaseWorkflowFilterRole
-        {
-            get
-            {
-                return GetTable<CaseWorkflowFilterRole>();
-            }
-        }
+        public ITable<CaseWorkflowFilterRole> CaseWorkflowFilterRole => GetTable<CaseWorkflowFilterRole>();
 
-        public ITable<UserRegistryApiKey> UserRegistryApiKey
-        {
-            get
-            {
-                return GetTable<UserRegistryApiKey>();
-            }
-        }
+        public ITable<UserRegistryApiKey> UserRegistryApiKey => GetTable<UserRegistryApiKey>();
 
-        public ITable<SanctionStopToken> SanctionStopToken
-        {
-            get
-            {
-                return GetTable<SanctionStopToken>();
-            }
-        }
+        public ITable<SanctionStopToken> SanctionStopToken => GetTable<SanctionStopToken>();
     }
 }

@@ -319,6 +319,99 @@
                 </tr>
                 <tr>
                     <td>
+                        <label for="EnableImplicitAsync" class="k-checkbox-label">Enable Implicit Async</label>
+                    </td>
+                    <td>
+                        <input id="EnableImplicitAsync" type="checkbox"/>
+                        <table id="ImplicitAsyncTable" class="sTStyle">
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    Timeout Milliseconds
+                                </td>
+                                <td>
+                                    <input id="ImplicitAsyncTimeoutMilliseconds"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="EnableTrace" class="k-checkbox-label">Enable Response Trace</label>
+                    </td>
+                    <td>
+                        <input id="EnableTrace" type="checkbox"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="EnableLogs" class="k-checkbox-label">Enable Logs</label>
+                    </td>
+                    <td>
+                        <input id="EnableLogs" type="checkbox"/>
+                        <table id="LogsTable" class="sTStyle">
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label for="EnableLogsInfo" class="k-checkbox-label">Enable Logs: Info</label>
+                                </td>
+                                <td>
+                                    <input id="EnableLogsInfo" type="checkbox"/>
+                                    <table id="LogsInfoOptionsTable" class="sTStyle">
+                                        <tr>
+                                            <td class="sTBorderStyle">
+                                                <label for="EnableSampling" class="k-checkbox-label">Enable
+                                                    Sampling</label>
+                                            </td>
+                                            <td>
+                                                <input id="EnableSampling" type="checkbox"/>
+                                                <table id="SamplePercentageTable" class="sTStyle">
+                                                    <tr>
+                                                        <td class="sTBorderStyle">
+                                                            Sample Percentage
+                                                        </td>
+                                                        <td>
+                                                            <input id="SamplePercentage" value="100"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label for="EnableLogsWarnThreshold" class="k-checkbox-label">Enable Logs: Warn
+                                        Threshold</label>
+                                </td>
+                                <td>
+                                    <input id="EnableLogsWarnThreshold" type="checkbox"/>
+                                    <table id="LogsWarnThresholdTable" class="sTStyle">
+                                        <tr>
+                                            <td class="sTBorderStyle">
+                                                Warn Threshold Milliseconds
+                                            </td>
+                                            <td>
+                                                <input id="LogsWarnThresholdMilliseconds" value="250"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sTBorderStyle">
+                                    <label for="EnableLogsInResponse" class="k-checkbox-label">Enable Logs In
+                                        Response</label>
+                                </td>
+                                <td>
+                                    <input id="EnableLogsInResponse" type="checkbox"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <label for="Guid">Guid</label>
                     </td>
                     <td>

@@ -11,43 +11,51 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System.Diagnostics;
-    using System.Threading.Tasks;
-    using ActivationRules;
-
     public static class ActivationRulesExtensions
     {
         public static async Task<Context> ExecuteActivationsAsync(this Context context)
         {
-            if (context.Log.IsInfoEnabled)
+            context.TraceLog(
+                $"will now process {context.EntityAnalysisModel.Collections.ModelActivationRules.Count} Activation Rules.");
+
+            var stopwatch = Stopwatch.StartNew();
+
+            var (activationRuleCount, createCase, prevailingActivationRuleId, items)
+                = await context.IterateAndProcessAsync(context.EntityAnalysisModel.Services.CacheService,
+                        context.AvailableEntityAnalysisModels, context.EntityAnalysisModel.Services.RabbitMqChannel)
+                    .ConfigureAwait(false);
+
+            context.ActivationRuleFinishResponseElevation(context.EntityAnalysisModelInstanceEntryPayload
+                .ResponseElevation.Value);
+            context.ActivationRuleResponseElevationAddToCounters();
+            context.UpdateContextStateWithActivationRulesOutcome(activationRuleCount, prevailingActivationRuleId,
+                createCase);
+
+            stopwatch.Stop();
+
+            if (context.LogSampled)
             {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} will now process {context.EntityAnalysisModel.Collections.ModelActivationRules.Count} Activation Rules.");
+                var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                    new InvokeStagePerformance();
+
+                stages.Activation = new StageTiming<ActivationRuleTiming>
+                {
+                    DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                    Items = items
+                };
             }
 
-            var (activationRuleCount, createCase, prevailingActivationRuleId)
-                = await context.IterateAndProcessAsync(context.EntityAnalysisModel.Services.CacheService, context.AvailableEntityAnalysisModels, context.EntityAnalysisModel.Services.RabbitMqChannel).ConfigureAwait(false);
-
-            context.ActivationRuleFinishResponseElevation(context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation.Value);
-            context.ActivationRuleResponseElevationAddToCounters();
-            context.UpdateContextStateWithActivationRulesOutcome(activationRuleCount, prevailingActivationRuleId, createCase);
-
-            StorePerformanceFromStopwatch(context);
+            context.TraceLog(
+                $"has added the response elevation for use in bidding against other models if called by model inheritance.");
 
             return context;
-        }
-
-        private static void StorePerformanceFromStopwatch(Context context)
-        {
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.ExecuteActivation = (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
-
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has added the response elevation for use in bidding against other models if called by model inheritance.");
-            }
         }
     }
 }

@@ -11,39 +11,40 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.App.Code.signalr;
+using Jube.Cache;
+using Jube.TaskCancellation;
+using Jube.TaskCancellation.Interfaces;
+using log4net;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Linq;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using StackExchange.Redis;
+
 namespace Jube.App.Code.WatcherDispatch
 {
-    using System;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Cache;
-    using DynamicEnvironment;
-    using log4net;
-    using Microsoft.AspNetCore.SignalR;
-    using Newtonsoft.Json.Linq;
-    using RabbitMQ.Client;
-    using RabbitMQ.Client.Events;
-    using signalr;
-    using StackExchange.Redis;
-    using TaskCancellation;
-
     public class Relay
     {
-        private IModel channel;
-        private ConnectionMultiplexer connectionMultiplexer;
         public Task ConnectToAmqpForActivationWatcherStreamingTask;
         public Task ConnectToSignalRForActivationWatcherStreamingTask;
+        public bool Ready;
+        private IModel channel;
+        private ConnectionMultiplexer connectionMultiplexer;
         private EventingBasicConsumer consumer;
-        private DynamicEnvironment dynamicEnvironment;
+        private DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
         private ILog log;
         private IConnection rabbitMqConnection;
-        public bool Ready;
         private ITaskCoordinator taskCoordinator;
         private IHubContext<WatcherHub> watcherHub;
 
         public Task StartAsync(IHubContext<WatcherHub> watcherHubContext,
-            DynamicEnvironment dynamicEnvironmentContext, ILog logContext, IConnection rabbitMqConnectionContext,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironmentContext, ILog logContext,
+            IConnection rabbitMqConnectionContext,
             TaskCoordinator taskCoordinatorContext, CacheService cacheService)
         {
             watcherHub = watcherHubContext;
@@ -62,14 +63,17 @@ namespace Jube.App.Code.WatcherDispatch
 
                 rabbitMqConnection = rabbitMqConnectionContext;
 
-                ConnectToAmqpForActivationWatcherStreamingTask = taskCoordinator.RunAsync("ConnectToAmqpForActivationWatcherStreamingTask", ConnectToAmqpForActivationWatcherStreamingAsync);
+                ConnectToAmqpForActivationWatcherStreamingTask = taskCoordinator.RunAsync(
+                    "ConnectToAmqpForActivationWatcherStreamingTask", ConnectToAmqpForActivationWatcherStreamingAsync);
             }
             else
             {
                 if (dynamicEnvironment.AppSettings("StreamingActivationWatcher")
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
                 {
-                    ConnectToSignalRForActivationWatcherStreamingTask = taskCoordinator.RunAsync("ConnectToRedisForActivationWatcherStreamingTask", ConnectToRedisForActivationWatcherStreamingAsync);
+                    ConnectToSignalRForActivationWatcherStreamingTask = taskCoordinator.RunAsync(
+                        "ConnectToRedisForActivationWatcherStreamingTask",
+                        ConnectToRedisForActivationWatcherStreamingAsync);
                 }
             }
 
@@ -78,7 +82,8 @@ namespace Jube.App.Code.WatcherDispatch
             return Task.CompletedTask;
         }
 
-        private async Task EventHandlerRedisAsync(string tenantRegistryId, string payload, CancellationToken cancellationToken = default)
+        private async Task EventHandlerRedisAsync(string tenantRegistryId, string payload,
+            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -96,7 +101,8 @@ namespace Jube.App.Code.WatcherDispatch
             }
         }
 
-        private async Task EventHandlerSignalRAsync(BasicDeliverEventArgs e, CancellationToken cancellationToken = default)
+        private async Task EventHandlerSignalRAsync(BasicDeliverEventArgs e,
+            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -130,14 +136,18 @@ namespace Jube.App.Code.WatcherDispatch
             var redisChannel = RedisChannel.Pattern("ActivationWatcher*");
             token.Register(() => subscriber.Unsubscribe(redisChannel));
 
- #pragma warning disable VSTHRD101
- #pragma warning disable AsyncFixer03
-            return subscriber.SubscribeAsync(redisChannel, async (channel, value) =>
-            {
-                await EventHandlerRedisAsync(channel.ToString().Split(':')[1], value, token);
-            });
- #pragma warning restore AsyncFixer03
- #pragma warning restore VSTHRD101
+#pragma warning disable VSTHRD100
+#pragma warning disable VSTHRD101
+#pragma warning disable AsyncFixer03
+            // ReSharper disable once AsyncVoidLambda
+            return subscriber.SubscribeAsync(redisChannel,
+                async (messageChannel, value) =>
+                {
+                    await EventHandlerRedisAsync(messageChannel.ToString().Split(':')[1], value, token);
+                });
+#pragma warning restore AsyncFixer03
+#pragma warning restore VSTHRD101
+#pragma warning restore VSTHRD100
         }
 
         private Task ConnectToAmqpForActivationWatcherStreamingAsync(CancellationToken token = default)
@@ -190,7 +200,8 @@ namespace Jube.App.Code.WatcherDispatch
             }
             catch (OperationCanceledException ex)
             {
-                log.Info($"Graceful Cancellation ConnectToAmqpForActivationWatcherStreaming: has produced an error {ex}");
+                log.Info(
+                    $"Graceful Cancellation ConnectToAmqpForActivationWatcherStreaming: has produced an error {ex}");
             }
             catch (Exception ex)
             {

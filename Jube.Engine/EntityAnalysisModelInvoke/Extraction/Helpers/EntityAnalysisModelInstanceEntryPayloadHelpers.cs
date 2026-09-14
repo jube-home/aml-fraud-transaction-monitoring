@@ -11,18 +11,21 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
+using Jube.HttpAdaptationProtocol;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers
 {
-    using System;
-    using Dictionary;
-    using HttpAdaptationProtocol;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
-    using EntityAnalysisModel=EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
+    using EntityAnalysisModel = EntityAnalysisModel;
 
     public static class EntityAnalysisModelInstanceEntryPayloadHelpers
     {
-        public static EntityAnalysisModelInstanceEntryPayload Create(EntityAnalysisModel model, Guid entityAnalysisModelInstanceEntryGuid = default)
+        public static EntityAnalysisModelInstanceEntryPayload Create(EntityAnalysisModel model,
+            Guid entityAnalysisModelInstanceEntryGuid = default)
         {
             return new EntityAnalysisModelInstanceEntryPayload
             {
@@ -30,7 +33,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers
                 EnableRdbmsArchive = model.Flags.EnableRdbmsArchive,
                 TenantRegistryId = model.Instance.TenantRegistryId,
                 EntityAnalysisModelId = model.Instance.Id,
-                EntityAnalysisModelInstanceEntryGuid = entityAnalysisModelInstanceEntryGuid == Guid.Empty ? Guid.NewGuid() : entityAnalysisModelInstanceEntryGuid,
+                EntityAnalysisModelInstanceEntryGuid = entityAnalysisModelInstanceEntryGuid == Guid.Empty
+                    ? Guid.NewGuid()
+                    : entityAnalysisModelInstanceEntryGuid,
                 EntityAnalysisModelGuid = model.Instance.Guid,
                 Abstraction = new PooledDictionary<string, double>(model.Collections.ModelAbstractionRules.Count),
                 Activation = new PooledDictionary<string, EntityModelActivationRulePayload>(),
@@ -39,13 +44,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers
                 TtlCounter = new PooledDictionary<string, double>(model.Collections.ModelTtlCounters.Count),
                 Sanction = new PooledDictionary<string, double>(model.Collections.EntityAnalysisModelSanctions.Count),
                 AbstractionCalculation =
-                    new PooledDictionary<string, double>(model.Collections.EntityAnalysisModelAbstractionCalculations.Count),
-                HttpAdaptation = new PooledDictionary<string, Adaptation>(model.Collections.EntityAnalysisModelAdaptations.Count),
+                    new PooledDictionary<string, double>(model.Collections.EntityAnalysisModelAbstractionCalculations
+                        .Count),
+                HttpAdaptation =
+                    new PooledDictionary<string, Adaptation>(model.Collections.EntityAnalysisModelAdaptations.Count),
                 ExhaustiveAdaptation = new PooledDictionary<string, double>(model.Collections.ExhaustiveModels.Count),
-                InvokeTaskPerformance = new InvokeTaskPerformance
-                {
-                    ComputeTimes = new InvokeTasksPerformance()
-                },
+                InvokeTaskPerformance = new InvokeTaskPerformance(),
                 CreatedDate = DateTime.UtcNow,
                 ArchiveKeys = []
             };

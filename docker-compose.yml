@@ -1,6 +1,6 @@
 ﻿services:
   postgres:
-    image: "postgres:17"
+    image: "pgvector/pgvector:pg17"
     container_name: "postgres"
     environment:
       POSTGRES_PASSWORD: $DockerComposePostgresPassword
@@ -15,6 +15,9 @@
       -c max_wal_size=256MB
       -c min_wal_size=64MB
       -c temp_file_limit=512MB
+      -c shared_preload_libraries=pg_stat_statements
+      -c pg_stat_statements.track=all
+      -c pg_stat_statements.max=10000
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
@@ -33,7 +36,7 @@
     networks:
       - default
     environment:
-      REDIS_ARGS: --appendonly yes --io-threads 4 --io-threads-do-reads yes --maxmemory 18gb --maxmemory-policy noeviction
+      REDIS_ARGS: --appendonly yes --save "" --auto-aof-rewrite-percentage 200 --auto-aof-rewrite-min-size 256mb --io-threads 4 --io-threads-do-reads yes --maxmemory 18gb --maxmemory-policy noeviction
 
   jube:
     image: jube.app
@@ -75,6 +78,8 @@
       - DOTNET_gcConcurrent=1
       - DOTNET_GCConserveMemory=4
       - DOTNET_GCDynamicAdaptationMode=1
+      - EnableOpenTelemetry=False
+      - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
     ports:
       - "5001:5001"
     networks:
@@ -82,6 +87,35 @@
     build:
       context: .
       dockerfile: Jube.App/Dockerfile
+
+  jube-monitoring:
+    image: jube.monitoring
+    container_name: "jube-monitoring"
+    depends_on:
+      postgres:
+        condition: service_started
+    environment:
+      - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=5;
+      - DockerSocketPath=/var/run/docker.sock
+      - SampleIntervalSeconds=60
+      - EnableOpenTelemetry=False
+      - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - default
+    build:
+      context: .
+      dockerfile: Jube.Monitoring/Dockerfile
+
+  jube-otel-listener:
+    image: jube.opentelemetrylistener
+    container_name: "jube-otel-listener"
+    networks:
+      - default
+    build:
+      context: .
+      dockerfile: Jube.OpenTelemetryListener/Dockerfile
 
 networks:
   default:

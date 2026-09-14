@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Jube.DynamicEnvironment.Logging;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
@@ -73,6 +74,12 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "BulkCopyThreshold", "1000"
+                },
+                {
+                    "CaseCreationWarnThresholdMilliseconds", "10000"
+                },
+                {
+                    "ArchiverWarnThresholdMilliseconds", "10000"
                 },
                 {
                     "ActivationWatcherBulkCopyThreshold", "100"
@@ -145,6 +152,9 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "EnableSanctionLoader", "False"
+                },
+                {
+                    "EnableDynamicEval", "False"
                 },
                 {
                     "ActivationWatcherAllowPersist", "True"
@@ -375,7 +385,10 @@ namespace Jube.DynamicEnvironment
                     "CacheTtlDeleteLimit", "1000"
                 },
                 {
-                    "TtlCounterEntryDeleteLimit", "1000"
+                    "TtlCounterEntryDeleteLimit", "200"
+                },
+                {
+                    "TtlCounterAdministrationMaxConcurrency", "25"
                 },
                 {
                     "PasswordAsymmetricEncryption", "False"
@@ -447,7 +460,49 @@ namespace Jube.DynamicEnvironment
                     "EnableOpenTelemetry", "False"
                 },
                 {
+                    "OpenTelemetryBackendEndpoint", null
+                },
+                {
                     "EnableServiceChangeStream", "False"
+                },
+                {
+                    "EtcdEndpoints", null
+                },
+                {
+                    "PatroniEndpoints", null
+                },
+                {
+                    "EtcdDiscoveryPrefix", "etcd"
+                },
+                {
+                    "PatroniDiscoveryPrefix", "patroni"
+                },
+                {
+                    "EtcdPatroniDiscoveryMaxNodes", "5"
+                },
+                {
+                    "EtcdClientPort", "2379"
+                },
+                {
+                    "PatroniApiPort", "8008"
+                },
+                {
+                    "PatroniDcsNamespace", "/service/"
+                },
+                {
+                    "WaitInfrastructureHealthMetricsPurge", "60000"
+                },
+                {
+                    "InfrastructureHealthMetricsPurgeIntervalType", "d"
+                },
+                {
+                    "InfrastructureHealthMetricsPurgeIntervalValue", "7"
+                },
+                {
+                    "InfrastructureHealthMetricsPurgeDeleteLimit", "1000"
+                },
+                {
+                    "OpenTelemetryMetricCaptureSamplePercentage", "100"
                 }
             };
 
@@ -468,7 +523,10 @@ namespace Jube.DynamicEnvironment
                            appSettings[environmentVariable.Key.ToString() ?? string.Empty]
                      select environmentVariable)
             {
-                if (environmentVariable.Value == null) continue;
+                if (environmentVariable.Value == null)
+                {
+                    continue;
+                }
 
                 var replaced = Convert.ToString(environmentVariable.Value);
                 if (replaced != null)
@@ -573,6 +631,8 @@ namespace Jube.DynamicEnvironment
                     ConfigureLoggerFromEnvironmentVariables();
                 }
 
+                AttachApplicationLogCaptureAppender();
+
                 Log = LogManager.GetLogger(typeof(ILog));
             }
             catch (Exception ex)
@@ -584,6 +644,17 @@ namespace Jube.DynamicEnvironment
 
             Console.WriteLine(@"Logging instantiated.  Swapping to log4net instantiation for further logs.");
             Console.WriteLine();
+        }
+
+        private static void AttachApplicationLogCaptureAppender()
+        {
+            var applicationLogCaptureAppender = new ApplicationLogCaptureAppender
+            {
+                Threshold = Level.Warn
+            };
+            applicationLogCaptureAppender.ActivateOptions();
+
+            ((Hierarchy)LogManager.GetRepository()).Root.AddAppender(applicationLogCaptureAppender);
         }
 
         private void ConfigureLoggerFromEnvironmentVariables()
@@ -671,7 +742,9 @@ namespace Jube.DynamicEnvironment
         {
             appSettings.TryGetValue("Log4NetMaxSizeRollBackups", out var log4NetMaxSizeRollBackups);
             if (!int.TryParse(log4NetMaxSizeRollBackups, out var log4NetMaxSizeRollBackupsInt))
+            {
                 log4NetMaxSizeRollBackupsInt = 100;
+            }
 
             return log4NetMaxSizeRollBackupsInt;
         }
@@ -686,32 +759,43 @@ namespace Jube.DynamicEnvironment
         private void ValidateConnectionString()
         {
             if (string.IsNullOrEmpty(appSettings["ConnectionString"]))
+            {
                 throw new Exception("Missing ConnectionString in Environment Variables.");
+            }
         }
 
         private void ValidatePasswordHashingKey()
         {
             if (string.IsNullOrEmpty(appSettings["PasswordHashingKey"]))
+            {
                 throw new Exception("Missing PasswordHashingKey in Environment Variables.");
+            }
         }
 
         private void ValidateJwtKey()
         {
             if (string.IsNullOrEmpty(appSettings["JWTKey"]))
+            {
                 throw new Exception("Missing JWTKey in Environment Variables.");
+            }
         }
 
         private void ValidatePasswordAsymmetricEncryptionKeys()
         {
-            if (!appSettings["PasswordAsymmetricEncryption"].Equals("True", StringComparison.OrdinalIgnoreCase)) return;
+            if (!appSettings["PasswordAsymmetricEncryption"].Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
 
             if (string.IsNullOrEmpty(appSettings["PasswordAsymmetricEncryptionPrivateKey"]) ||
                 string.IsNullOrEmpty(appSettings["PasswordAsymmetricEncryptionPublicKey"]))
+            {
                 throw new Exception(
                     "PasswordAsymmetricEncryption is True but PasswordAsymmetricEncryptionPrivateKey and/or " +
                     "PasswordAsymmetricEncryptionPublicKey are not set in Environment Variables. Generate a " +
                     "fresh RSA keypair for this environment and set both - do not reuse a keypair from " +
                     "documentation or another environment.");
+            }
         }
 
         public string AppSettings(string[] keys)
@@ -722,7 +806,10 @@ namespace Jube.DynamicEnvironment
         public string AppSettings(string key)
         {
             string value = null;
-            if (appSettings.TryGetValue(key, out var setting)) value = setting;
+            if (appSettings.TryGetValue(key, out var setting))
+            {
+                value = setting;
+            }
 
             return value;
         }

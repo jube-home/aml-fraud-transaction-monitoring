@@ -1,35 +1,42 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Case;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Data.Query;
+using Jube.Data.Repository;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
+using Jube.Engine.Helpers;
+using Jube.Engine.Observability;
+using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Data.Context;
-    using Data.Poco;
-    using Data.Query;
-    using Data.Repository;
-    using DynamicEnvironment;
-    using EntityAnalysisModelInvoke.Models.CaseManagement;
-    using EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
-    using Helpers;
-    using Jube.Case;
-    using log4net;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-
     public static class CaseProcessing
     {
-        public static async Task CreateAsync(DynamicEnvironment dynamicEnvironment,
+        public static async Task CreateAsync(DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             CreateCase createCase,
             ILog log,
             JsonSerializationHelper jsonSerializationHelper,
             EntityAnalysisModelInstanceEntryPayload payload = null,
             CancellationToken token = default)
         {
-            var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"), log);
+            var dbContext =
+                DataConnectionDbContext.GetResilientDbContextDataConnection(
+                    dynamicEnvironment.AppSettings("ConnectionString"), log);
 
             try
             {
+                var warnThresholdMicroseconds =
+                    int.Parse(dynamicEnvironment.AppSettings("CaseCreationWarnThresholdMilliseconds")) * 1000L;
+
                 if (log.IsInfoEnabled)
                 {
                     log.Info(
@@ -45,7 +52,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                         $"Case Creation: connection to the database established for case entry GUID of {createCase.EntityAnalysisModelInstanceEntryGuid}.");
                 }
 
-                var model = new Case
+                var model = new Data.Poco.Case
                 {
                     EntityAnalysisModelInstanceEntryGuid = createCase.EntityAnalysisModelInstanceEntryGuid,
                     CaseWorkflowGuid = createCase.CaseWorkflowGuid,
@@ -82,33 +89,77 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                         $"Case XML Bytes {createCase.Json.Length}");
                 }
 
-                var existing = await query.ExecuteAsync(model.CaseWorkflowGuid, model.CaseKey, model.CaseKeyValue, token).ConfigureAwait(false);
+                var existingCasePriorityLookupStopwatch = Stopwatch.StartNew();
+                var existing = await query
+                    .ExecuteAsync(model.CaseWorkflowGuid, model.CaseKey, model.CaseKeyValue, token)
+                    .ConfigureAwait(false);
+                var existingCasePriorityLookupDuration =
+                    (long)(existingCasePriorityLookupStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+                CaseCreationStagePerformanceCounters.Instance.Record(
+                    nameof(CaseCreationStage.ExistingCasePriorityLookup), existingCasePriorityLookupDuration);
+                EngineDiagnostics.CaseCreationStageDuration.Record(existingCasePriorityLookupDuration / 1000.0,
+                    new KeyValuePair<string, object>("stage", nameof(CaseCreationStage.ExistingCasePriorityLookup)));
+                if (existingCasePriorityLookupDuration >= warnThresholdMicroseconds)
+                {
+                    CaseCreationWarningCapture.Enqueue(new CaseCreationWarningCaptureRecord(
+                        DateTime.UtcNow, createCase.TenantRegistryId, createCase.EntityAnalysisModelInstanceEntryGuid,
+                        createCase.CaseWorkflowGuid, createCase.CaseKey, createCase.CaseKeyValue,
+                        CaseCreationStage.ExistingCasePriorityLookup, null, existingCasePriorityLookupDuration));
+                    EngineDiagnostics.CaseCreationWarnCount.Add(1,
+                        new KeyValuePair<string, object>("stage",
+                            nameof(CaseCreationStage.ExistingCasePriorityLookup)));
+                }
 
-                var repositoryCasesWorkflowsStatus = new CaseWorkflowStatusRepository(dbContext, createCase.TenantRegistryId);
+                var repositoryCasesWorkflowsStatus =
+                    new CaseWorkflowStatusRepository(dbContext, createCase.TenantRegistryId);
 
+                var workflowStatusLookupAndPersistStopwatch = Stopwatch.StartNew();
                 CaseWorkflowStatus finalCasesWorkflowsStatus = null;
                 if (existing == null)
                 {
                     finalCasesWorkflowsStatus =
-                        await repositoryCasesWorkflowsStatus.GetByGuidAsync(model.CaseWorkflowStatusGuid, token).ConfigureAwait(false);
+                        await repositoryCasesWorkflowsStatus.GetByGuidAsync(model.CaseWorkflowStatusGuid, token)
+                            .ConfigureAwait(false);
 
                     await repositoryCase.InsertAsync(model, token).ConfigureAwait(false);
                 }
                 else
                 {
                     var existingCasesWorkflowsStatus =
-                        await repositoryCasesWorkflowsStatus.GetByGuidAsync(model.CaseWorkflowStatusGuid, token).ConfigureAwait(false);
+                        await repositoryCasesWorkflowsStatus.GetByGuidAsync(model.CaseWorkflowStatusGuid, token)
+                            .ConfigureAwait(false);
 
                     if (existingCasesWorkflowsStatus.Priority < existing.Priority)
                     {
                         finalCasesWorkflowsStatus =
-                            await repositoryCasesWorkflowsStatus.GetByGuidAsync(model.CaseWorkflowStatusGuid, token).ConfigureAwait(false);
+                            await repositoryCasesWorkflowsStatus.GetByGuidAsync(model.CaseWorkflowStatusGuid, token)
+                                .ConfigureAwait(false);
 
                         model.Id = existing.CaseId;
                         model.Locked = 0;
                         model.CaseWorkflowStatusGuid = createCase.CaseWorkflowStatusGuid;
                         await repositoryCase.UpdateCaseAsync(model, token).ConfigureAwait(false);
                     }
+                }
+
+                var workflowStatusLookupAndPersistDuration =
+                    (long)(workflowStatusLookupAndPersistStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+                CaseCreationStagePerformanceCounters.Instance.Record(
+                    nameof(CaseCreationStage.WorkflowStatusLookupAndPersist), workflowStatusLookupAndPersistDuration);
+                EngineDiagnostics.CaseCreationStageDuration.Record(
+                    workflowStatusLookupAndPersistDuration / 1000.0,
+                    new KeyValuePair<string, object>("stage",
+                        nameof(CaseCreationStage.WorkflowStatusLookupAndPersist)));
+                if (workflowStatusLookupAndPersistDuration >= warnThresholdMicroseconds)
+                {
+                    CaseCreationWarningCapture.Enqueue(new CaseCreationWarningCaptureRecord(
+                        DateTime.UtcNow, createCase.TenantRegistryId, createCase.EntityAnalysisModelInstanceEntryGuid,
+                        createCase.CaseWorkflowGuid, createCase.CaseKey, createCase.CaseKeyValue,
+                        CaseCreationStage.WorkflowStatusLookupAndPersist, null,
+                        workflowStatusLookupAndPersistDuration));
+                    EngineDiagnostics.CaseCreationWarnCount.Add(1,
+                        new KeyValuePair<string, object>("stage",
+                            nameof(CaseCreationStage.WorkflowStatusLookupAndPersist)));
                 }
 
                 var caseBytes = 0;
@@ -121,32 +172,81 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
                         if (finalCasesWorkflowsStatus.EnableNotification == 1 ||
                             finalCasesWorkflowsStatus.EnableHttpEndpoint == 1)
                         {
-
-                            var context = payload ?? JsonConvert.DeserializeObject<EntityAnalysisModelInstanceEntryPayload>(createCase.Json, jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
+                            var context = payload ??
+                                          JsonConvert.DeserializeObject<EntityAnalysisModelInstanceEntryPayload>(
+                                              createCase.Json,
+                                              jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
 
                             if (finalCasesWorkflowsStatus.EnableNotification == 1)
                             {
-                                var notificationSubject = context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationSubject);
-                                var notificationDestination = context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationDestination);
-                                var notificationBody = context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationBody);
+                                var notificationStopwatch = Stopwatch.StartNew();
+
+                                var notificationSubject =
+                                    context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationSubject);
+                                var notificationDestination =
+                                    context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationDestination);
+                                var notificationBody =
+                                    context.ReplaceTokens(finalCasesWorkflowsStatus.NotificationBody);
 
                                 var notification = new Notification(log, dynamicEnvironment);
                                 await notification.SendAsync(finalCasesWorkflowsStatus.NotificationTypeId ?? 1,
                                     notificationDestination,
                                     notificationSubject,
                                     notificationBody, token);
+
+                                var notificationDuration =
+                                    (long)(notificationStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+                                CaseCreationStagePerformanceCounters.Instance.Record(
+                                    nameof(CaseCreationStage.Notification), notificationDuration);
+                                EngineDiagnostics.CaseCreationStageDuration.Record(notificationDuration / 1000.0,
+                                    new KeyValuePair<string, object>("stage",
+                                        nameof(CaseCreationStage.Notification)));
+                                if (notificationDuration >= warnThresholdMicroseconds)
+                                {
+                                    CaseCreationWarningCapture.Enqueue(new CaseCreationWarningCaptureRecord(
+                                        DateTime.UtcNow, createCase.TenantRegistryId,
+                                        createCase.EntityAnalysisModelInstanceEntryGuid, createCase.CaseWorkflowGuid,
+                                        createCase.CaseKey, createCase.CaseKeyValue, CaseCreationStage.Notification,
+                                        notificationDestination, notificationDuration));
+                                    EngineDiagnostics.CaseCreationWarnCount.Add(1,
+                                        new KeyValuePair<string, object>("stage",
+                                            nameof(CaseCreationStage.Notification)));
+                                }
                             }
 
                             if (finalCasesWorkflowsStatus.EnableHttpEndpoint == 1)
                             {
+                                var httpEndpointStopwatch = Stopwatch.StartNew();
+
                                 var endpoint = context.ReplaceTokens(finalCasesWorkflowsStatus.HttpEndpoint);
                                 if (finalCasesWorkflowsStatus.HttpEndpointTypeId == 1)
                                 {
-                                    await SendHttpEndpoint.PostAsync(endpoint, PreparePostBodyString(model, jsonSerializationHelper.ArchiveJsonSerializer, finalCasesWorkflowsStatus), log);
+                                    await SendHttpEndpoint.PostAsync(endpoint,
+                                        PreparePostBodyString(model, jsonSerializationHelper.ArchiveJsonSerializer,
+                                            finalCasesWorkflowsStatus), log);
                                 }
                                 else
                                 {
                                     await SendHttpEndpoint.GetAsync(endpoint, log);
+                                }
+
+                                var httpEndpointDuration =
+                                    (long)(httpEndpointStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+                                CaseCreationStagePerformanceCounters.Instance.Record(
+                                    nameof(CaseCreationStage.HttpEndpoint), httpEndpointDuration);
+                                EngineDiagnostics.CaseCreationStageDuration.Record(httpEndpointDuration / 1000.0,
+                                    new KeyValuePair<string, object>("stage",
+                                        nameof(CaseCreationStage.HttpEndpoint)));
+                                if (httpEndpointDuration >= warnThresholdMicroseconds)
+                                {
+                                    CaseCreationWarningCapture.Enqueue(new CaseCreationWarningCaptureRecord(
+                                        DateTime.UtcNow, createCase.TenantRegistryId,
+                                        createCase.EntityAnalysisModelInstanceEntryGuid, createCase.CaseWorkflowGuid,
+                                        createCase.CaseKey, createCase.CaseKeyValue, CaseCreationStage.HttpEndpoint,
+                                        endpoint, httpEndpointDuration));
+                                    EngineDiagnostics.CaseCreationWarnCount.Add(1,
+                                        new KeyValuePair<string, object>("stage",
+                                            nameof(CaseCreationStage.HttpEndpoint)));
                                 }
                             }
                         }
@@ -179,7 +279,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
             }
         }
 
-        private static string PreparePostBodyString(Case createCase, JsonSerializer jsonSerializer, CaseWorkflowStatus finalCasesWorkflowsStatus, EntityAnalysisModelInstanceEntryPayload payload = null)
+        private static string PreparePostBodyString(Data.Poco.Case createCase, JsonSerializer jsonSerializer,
+            CaseWorkflowStatus finalCasesWorkflowsStatus, EntityAnalysisModelInstanceEntryPayload payload = null)
         {
             var jObject = JObject.FromObject(createCase, jsonSerializer);
 

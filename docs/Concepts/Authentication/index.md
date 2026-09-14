@@ -203,10 +203,14 @@ cookie, cleared when the browser fully closes, rather than persisting per its ow
 ## Login Audit Trail
 
 Every sign-in attempt, successful or not, and regardless of which of the three schemes was used, is recorded to the
-`UserLogin` table. There is no administrative page for it - it is intended to be queried directly, for example:
+`UserLogin` table. It is browsable via the Administration > Security > User Login page, or directly via
+`GET /api/UserLogin` -- same conventions as every other observability grid in this codebase (`take`/`from`/`to`/
+`search`/`samplePercentage`, CSV export, permission-gated). It is not purged: unlike the ephemeral operational
+telemetry elsewhere in this codebase (Redis/Postgres metrics, etc.), the Login Audit Trail is a permanent record.
+It can equally be queried directly, for example:
 
 ```sql
-select "CreatedUser", "RemoteIp", "AuthenticationTypeId", "Failed", "FailureTypeId", "CreatedDate"
+select "CreatedUser", "RemoteIp", "AuthenticationTypeId", "Failed", "FailureTypeId", "FailureMessage", "CreatedDate"
 from "UserLogin"
 order by "CreatedDate" desc
 ```
@@ -229,6 +233,20 @@ order by "CreatedDate" desc
 | 4     | Username/Password only: the password has expired and must be changed, but no NewPassword was supplied. |
 | 5     | Username/Password only: the supplied password did not match (bad credentials). |
 | 6     | Username/Password only: no password was supplied at all.                        |
+| 7     | OAuth only: the identity provider's ticket contained no usable identity claim.  |
+| 8     | OAuth only: a remote/identity-provider failure (the IdP itself returned an error, e.g. access denied, misconfiguration). |
+| 9     | OAuth only: local authentication/token-validation failed (e.g. an expired or malformed token). |
+| 10    | OAuth only: an internal error occurred while processing the ticket (e.g. a database error validating the user). |
+
+`FailureMessage` is populated for OAuth failures only (`FailureTypeId` 7-10) -- the identity provider's own error
+message or a token-validation exception message. Username/Password and Negotiate failures already have a small
+fixed `FailureTypeId` vocabulary that needs no free text, so `FailureMessage` is left null for those.
+
+Previously, only successful OAuth sign-ins were ever recorded here -- every OAuth failure path returned without
+writing a `UserLogin` row at all, despite this page's claim otherwise. That gap is now closed: every OAuth failure
+branch (no usable claim, no matching/active User Registry, a database error, a remote/IdP failure, a local
+token-validation failure, or any other unexpected exception) now records a `UserLogin` row with `Failed = 1` and an
+appropriate `FailureTypeId`, exactly as Username/Password and Negotiate already did.
 
 ## Password Transport Hardening
 

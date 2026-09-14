@@ -25,7 +25,7 @@ namespace Jube.LoadTest
 
             string? uriString = null;
             string? apiKey = null;
-            var httpTimeout = 20;
+            var httpTimeoutMilliseconds = 500;
             var targetRequestsPerSecond = 174;
             var durationSeconds = 86400;
             var maxConnectionsPerServer = 500;
@@ -56,22 +56,22 @@ namespace Jube.LoadTest
                         apiKey = args[++i];
                         break;
                     case "-timeout":
-                        httpTimeout = Int32.Parse(args[++i]);
+                        httpTimeoutMilliseconds = int.Parse(args[++i]);
                         break;
                     case "-rps":
-                        targetRequestsPerSecond = Int32.Parse(args[++i]);
+                        targetRequestsPerSecond = int.Parse(args[++i]);
                         break;
                     case "-duration":
-                        durationSeconds = Int32.Parse(args[++i]);
+                        durationSeconds = int.Parse(args[++i]);
                         break;
                     case "-maxconn":
-                        maxConnectionsPerServer = Int32.Parse(args[++i]);
+                        maxConnectionsPerServer = int.Parse(args[++i]);
                         break;
                     case "-maxinflight":
-                        maxConcurrentInFlight = Int32.Parse(args[++i]);
+                        maxConcurrentInFlight = int.Parse(args[++i]);
                         break;
                     case "-drift":
-                        timeDriftMs = Int32.Parse(args[++i]);
+                        timeDriftMs = int.Parse(args[++i]);
                         break;
                     case "-template":
                         mockTemplatePath = args[++i];
@@ -80,16 +80,16 @@ namespace Jube.LoadTest
                         outputPath = args[++i];
                         break;
                     case "-response-sample-rate":
-                        responseSampleRate = Double.Parse(args[++i]);
+                        responseSampleRate = double.Parse(args[++i]);
                         break;
                     case "-response-sample-output":
                         responseSampleOutputPath = args[++i];
                         break;
                     case "-key-pool":
-                        keyPoolSize = Int64.Parse(args[++i]);
+                        keyPoolSize = long.Parse(args[++i]);
                         break;
                     case "-key-skew":
-                        keySkew = Double.Parse(args[++i]);
+                        keySkew = double.Parse(args[++i]);
                         break;
                     case "-uniform-keys":
                         useUniformKeyDistribution = true;
@@ -115,14 +115,14 @@ namespace Jube.LoadTest
                 }
             }
 
-            if (String.IsNullOrEmpty(uriString))
+            if (string.IsNullOrEmpty(uriString))
             {
                 await Console.Error.WriteLineAsync("Missing required argument: -uri <endpoint>");
                 PrintUsage();
                 return 1;
             }
 
-            if (String.IsNullOrEmpty(apiKey))
+            if (string.IsNullOrEmpty(apiKey))
             {
                 await Console.Error.WriteLineAsync("Missing required argument: -apikey <key>");
                 PrintUsage();
@@ -133,7 +133,7 @@ namespace Jube.LoadTest
             {
                 Uri = new Uri(uriString),
                 ApiKey = apiKey,
-                HttpTimeoutSeconds = httpTimeout,
+                HttpTimeoutMilliseconds = httpTimeoutMilliseconds,
                 TargetRequestsPerSecond = targetRequestsPerSecond,
                 DurationSeconds = durationSeconds,
                 MaxConnectionsPerServer = maxConnectionsPerServer,
@@ -164,7 +164,8 @@ namespace Jube.LoadTest
         {
             var roles = new List<ContainerRole>();
 
-            foreach (var roleSpec in spec.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            foreach (var roleSpec in spec.Split(';',
+                         StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {
                 var parts = roleSpec.Split('=', 2);
                 if (parts.Length != 2)
@@ -193,7 +194,17 @@ namespace Jube.LoadTest
                                 -apikey <key>           X-API-KEY header value
 
                               Optional:
-                                -timeout <seconds>      HTTP client timeout (default 20)
+                                -timeout <ms>           HTTP client timeout in milliseconds (default 500). Model responses
+                                                        carry an implicit-async timeout of their own (commonly ~100ms -
+                                                        see the model's ImplicitAsyncTimeoutMilliseconds and the
+                                                        response payload's ImplicitAsyncTimedOut flag, tracked in the
+                                                        ImplicitTimeouts TPS column and ResponseTimeSample.csv column),
+                                                        so the HTTP client should time out on the order of a few hundred
+                                                        ms, not seconds - a request still open at 500ms means the
+                                                        connection itself has stalled (backend saturation), not that the
+                                                        model is legitimately still working. If the TPS CSV shows
+                                                        InFlight pinned at -maxinflight alongside HttpClient.Timeout
+                                                        exceptions, see -maxinflight below.
                                 -rps <n>                Target requests per second (default 174 - sustained-load default:
                                                         a month of volume at 500,000 req/day, 15,000,000 total, replayed
                                                         over the default 24h duration). Keep -drift matched if you change

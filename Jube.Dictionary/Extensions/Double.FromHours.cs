@@ -1,22 +1,12 @@
-// Description: C# Extension Methods | Enhance the .NET Framework and .NET Core with over 1000 extension methods.
-// Website & Documentation: https://csharp-extension.com/
-// Issues: https://github.com/zzzprojects/Z.ExtensionMethods/issues
-// License (MIT): https://github.com/zzzprojects/Z.ExtensionMethods/blob/master/LICENSE
-// More projects: https://zzzprojects.com/
-// Copyright � ZZZ Projects Inc. All rights reserved.
+// Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
+// See NOTICE.md for full attribution.
 namespace Jube.Dictionary.Extensions
 {
-    using Double=double;
-    using TimeSpan=global::System.TimeSpan;
+    using Double = double;
+    using TimeSpan = TimeSpan;
 
     public static partial class Extensions
     {
-        /// <summary>
-        ///     Returns a  that represents a specified number of hours, where the specification is accurate to the nearest
-        ///     millisecond.
-        /// </summary>
-        /// <param name="value">A number of hours accurate to the nearest millisecond.</param>
-        /// <returns>An object that represents .</returns>
         public static TimeSpan FromHours(this Double value)
         {
             return TimeSpan.FromHours(value);

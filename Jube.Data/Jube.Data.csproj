@@ -54,6 +54,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Accord.Statistics\Accord.Statistics.csproj"/>
+        <ProjectReference Include="..\Jube.Dto\Jube.Dto.csproj"/>
         <ProjectReference Include="..\Jube.Extensions\Jube.Extensions.csproj"/>
         <ProjectReference Include="..\Jube.Dictionary\Jube.Dictionary.csproj"/>
         <ProjectReference Include="..\Jube.ResilientNpgsql\Jube.ResilientNpgsql.csproj"/>

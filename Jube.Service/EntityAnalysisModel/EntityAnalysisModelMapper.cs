@@ -11,95 +11,127 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.EntityAnalysisModel;
+
 namespace Jube.Service.EntityAnalysisModel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Jube.Dto.EntityAnalysisModel;
-    using ModelPoco = Jube.Data.Poco.EntityAnalysisModel;
+    using ModelPoco = Data.Poco.EntityAnalysisModel;
 
     internal static class EntityAnalysisModelMapper
     {
-        public static EntityAnalysisModelDto? ToDto(ModelPoco? entityAnalysisModel) => entityAnalysisModel is null
-            ? null
-            : new EntityAnalysisModelDto
-            {
-                Id = entityAnalysisModel.Id,
-                Name = entityAnalysisModel.Name,
-                Guid = entityAnalysisModel.Guid,
-                Active = entityAnalysisModel.Active == 1,
-                Locked = entityAnalysisModel.Locked == 1,
-                EntryXPath = entityAnalysisModel.EntryXPath,
-                EntryName = entityAnalysisModel.EntryName,
-                ReferenceDateXPath = entityAnalysisModel.ReferenceDateXPath,
-                ReferenceDateName = entityAnalysisModel.ReferenceDateName,
-                ReferenceDatePayloadLocationTypeId =
-                    entityAnalysisModel.ReferenceDatePayloadLocationTypeId.GetValueOrDefault(),
-                CacheFetchLimit = entityAnalysisModel.CacheFetchLimit.GetValueOrDefault(),
-                CacheTtlInterval = entityAnalysisModel.CacheTtlInterval.GetValueOrDefault(),
-                CacheTtlIntervalValue = entityAnalysisModel.CacheTtlIntervalValue.GetValueOrDefault(),
-                MaxResponseElevation = entityAnalysisModel.MaxResponseElevation.GetValueOrDefault(),
-                MaxResponseElevationInterval = entityAnalysisModel.MaxResponseElevationInterval.GetValueOrDefault(),
-                MaxResponseElevationValue = entityAnalysisModel.MaxResponseElevationValue.GetValueOrDefault(),
-                MaxResponseElevationThreshold = entityAnalysisModel.MaxResponseElevationThreshold.GetValueOrDefault(),
-                EnableResponseElevationLimit = entityAnalysisModel.EnableResponseElevationLimit == 1,
-                MaxActivationWatcherInterval = entityAnalysisModel.MaxActivationWatcherInterval.GetValueOrDefault(),
-                MaxActivationWatcherValue = entityAnalysisModel.MaxActivationWatcherValue.GetValueOrDefault(),
-                MaxActivationWatcherThreshold = entityAnalysisModel.MaxActivationWatcherThreshold.GetValueOrDefault(),
-                ActivationWatcherSample = entityAnalysisModel.ActivationWatcherSample.GetValueOrDefault(),
-                EnableCache = entityAnalysisModel.EnableCache == 1,
-                EnableSanctionCache = entityAnalysisModel.EnableSanctionCache == 1,
-                EnableTtlCounter = entityAnalysisModel.EnableTtlCounter == 1,
-                EnableRdbmsArchive = entityAnalysisModel.EnableRdbmsArchive == 1,
-                EnableActivationArchive = entityAnalysisModel.EnableActivationArchive == 1,
-                EnableActivationWatcher = entityAnalysisModel.EnableActivationWatcher == 1,
-                CreatedUser = entityAnalysisModel.CreatedUser,
-                CreatedDate = ToOffset(entityAnalysisModel.CreatedDate),
-                UpdatedUser = entityAnalysisModel.UpdatedUser,
-                UpdatedDate = ToOffset(entityAnalysisModel.UpdatedDate),
-                Version = entityAnalysisModel.Version.GetValueOrDefault(),
-                DeletedUser = entityAnalysisModel.DeletedUser,
-                DeletedDate = ToOffset(entityAnalysisModel.DeletedDate)
-            };
-
-        public static List<EntityAnalysisModelDto> ToDto(IEnumerable<ModelPoco>? source) =>
-            (source ?? Enumerable.Empty<ModelPoco>()).Select(p => ToDto(p)!).ToList();
-
-        public static ModelPoco ToPoco(EntityAnalysisModelDto dto) => new()
+        public static EntityAnalysisModelDto? ToDto(ModelPoco? entityAnalysisModel)
         {
-            Id = dto.Id,
-            Name = dto.Name,
-            Active = (byte)(dto.Active ? 1 : 0),
-            Locked = (byte)(dto.Locked ? 1 : 0),
-            EntryXPath = dto.EntryXPath,
-            EntryName = dto.EntryName,
-            ReferenceDateXPath = dto.ReferenceDateXPath,
-            ReferenceDateName = dto.ReferenceDateName,
-            ReferenceDatePayloadLocationTypeId = dto.ReferenceDatePayloadLocationTypeId,
-            CacheFetchLimit = dto.CacheFetchLimit,
-            CacheTtlInterval = dto.CacheTtlInterval,
-            CacheTtlIntervalValue = dto.CacheTtlIntervalValue,
-            MaxResponseElevation = dto.MaxResponseElevation,
-            MaxResponseElevationInterval = dto.MaxResponseElevationInterval,
-            MaxResponseElevationValue = dto.MaxResponseElevationValue,
-            MaxResponseElevationThreshold = dto.MaxResponseElevationThreshold,
-            EnableResponseElevationLimit = (byte)(dto.EnableResponseElevationLimit ? 1 : 0),
-            MaxActivationWatcherInterval = dto.MaxActivationWatcherInterval,
-            MaxActivationWatcherValue = dto.MaxActivationWatcherValue,
-            MaxActivationWatcherThreshold = dto.MaxActivationWatcherThreshold,
-            ActivationWatcherSample = dto.ActivationWatcherSample,
-            EnableCache = (byte)(dto.EnableCache ? 1 : 0),
-            EnableSanctionCache = (byte)(dto.EnableSanctionCache ? 1 : 0),
-            EnableTtlCounter = (byte)(dto.EnableTtlCounter ? 1 : 0),
-            EnableRdbmsArchive = (byte)(dto.EnableRdbmsArchive ? 1 : 0),
-            EnableActivationArchive = (byte)(dto.EnableActivationArchive ? 1 : 0),
-            EnableActivationWatcher = (byte)(dto.EnableActivationWatcher ? 1 : 0)
-        };
+            return entityAnalysisModel is null
+                ? null
+                : new EntityAnalysisModelDto
+                {
+                    Id = entityAnalysisModel.Id,
+                    Name = entityAnalysisModel.Name,
+                    Guid = entityAnalysisModel.Guid,
+                    Active = entityAnalysisModel.Active == 1,
+                    Locked = entityAnalysisModel.Locked == 1,
+                    EntryXPath = entityAnalysisModel.EntryXPath,
+                    EntryName = entityAnalysisModel.EntryName,
+                    ReferenceDateXPath = entityAnalysisModel.ReferenceDateXPath,
+                    ReferenceDateName = entityAnalysisModel.ReferenceDateName,
+                    ReferenceDatePayloadLocationTypeId =
+                        entityAnalysisModel.ReferenceDatePayloadLocationTypeId.GetValueOrDefault(),
+                    CacheFetchLimit = entityAnalysisModel.CacheFetchLimit.GetValueOrDefault(),
+                    CacheTtlInterval = entityAnalysisModel.CacheTtlInterval.GetValueOrDefault(),
+                    CacheTtlIntervalValue = entityAnalysisModel.CacheTtlIntervalValue.GetValueOrDefault(),
+                    MaxResponseElevation = entityAnalysisModel.MaxResponseElevation.GetValueOrDefault(),
+                    MaxResponseElevationInterval = entityAnalysisModel.MaxResponseElevationInterval.GetValueOrDefault(),
+                    MaxResponseElevationValue = entityAnalysisModel.MaxResponseElevationValue.GetValueOrDefault(),
+                    MaxResponseElevationThreshold =
+                        entityAnalysisModel.MaxResponseElevationThreshold.GetValueOrDefault(),
+                    EnableResponseElevationLimit = entityAnalysisModel.EnableResponseElevationLimit == 1,
+                    MaxActivationWatcherInterval = entityAnalysisModel.MaxActivationWatcherInterval.GetValueOrDefault(),
+                    MaxActivationWatcherValue = entityAnalysisModel.MaxActivationWatcherValue.GetValueOrDefault(),
+                    MaxActivationWatcherThreshold =
+                        entityAnalysisModel.MaxActivationWatcherThreshold.GetValueOrDefault(),
+                    ActivationWatcherSample = entityAnalysisModel.ActivationWatcherSample.GetValueOrDefault(),
+                    EnableCache = entityAnalysisModel.EnableCache == 1,
+                    EnableSanctionCache = entityAnalysisModel.EnableSanctionCache == 1,
+                    EnableTtlCounter = entityAnalysisModel.EnableTtlCounter == 1,
+                    EnableRdbmsArchive = entityAnalysisModel.EnableRdbmsArchive == 1,
+                    EnableActivationArchive = entityAnalysisModel.EnableActivationArchive == 1,
+                    EnableActivationWatcher = entityAnalysisModel.EnableActivationWatcher == 1,
+                    EnableImplicitAsync = entityAnalysisModel.EnableImplicitAsync == 1,
+                    ImplicitAsyncTimeoutMilliseconds =
+                        entityAnalysisModel.ImplicitAsyncTimeoutMilliseconds.GetValueOrDefault(),
+                    EnableTrace = entityAnalysisModel.EnableTrace == 1,
+                    EnableLogs = entityAnalysisModel.EnableLogs == 1,
+                    EnableLogsInfo = entityAnalysisModel.EnableLogsInfo == 1,
+                    EnableLogsWarnThreshold = entityAnalysisModel.EnableLogsWarnThreshold == 1,
+                    LogsWarnThresholdMilliseconds =
+                        entityAnalysisModel.LogsWarnThresholdMilliseconds.GetValueOrDefault(),
+                    EnableLogsInResponse = entityAnalysisModel.EnableLogsInResponse == 1,
+                    EnableSampling = entityAnalysisModel.EnableSampling == 1,
+                    SamplePercentage = entityAnalysisModel.SamplePercentage.GetValueOrDefault(),
+                    CreatedUser = entityAnalysisModel.CreatedUser,
+                    CreatedDate = ToOffset(entityAnalysisModel.CreatedDate),
+                    UpdatedUser = entityAnalysisModel.UpdatedUser,
+                    UpdatedDate = ToOffset(entityAnalysisModel.UpdatedDate),
+                    Version = entityAnalysisModel.Version.GetValueOrDefault(),
+                    DeletedUser = entityAnalysisModel.DeletedUser,
+                    DeletedDate = ToOffset(entityAnalysisModel.DeletedDate)
+                };
+        }
 
-        private static DateTimeOffset? ToOffset(DateTime? value) =>
-            value.HasValue
+        public static List<EntityAnalysisModelDto> ToDto(IEnumerable<ModelPoco>? source)
+        {
+            return (source ?? Enumerable.Empty<ModelPoco>()).Select(p => ToDto(p)!).ToList();
+        }
+
+        public static ModelPoco ToPoco(EntityAnalysisModelDto dto)
+        {
+            return new ModelPoco
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Active = (byte)(dto.Active ? 1 : 0),
+                Locked = (byte)(dto.Locked ? 1 : 0),
+                EntryXPath = dto.EntryXPath,
+                EntryName = dto.EntryName,
+                ReferenceDateXPath = dto.ReferenceDateXPath,
+                ReferenceDateName = dto.ReferenceDateName,
+                ReferenceDatePayloadLocationTypeId = dto.ReferenceDatePayloadLocationTypeId,
+                CacheFetchLimit = dto.CacheFetchLimit,
+                CacheTtlInterval = dto.CacheTtlInterval,
+                CacheTtlIntervalValue = dto.CacheTtlIntervalValue,
+                MaxResponseElevation = dto.MaxResponseElevation,
+                MaxResponseElevationInterval = dto.MaxResponseElevationInterval,
+                MaxResponseElevationValue = dto.MaxResponseElevationValue,
+                MaxResponseElevationThreshold = dto.MaxResponseElevationThreshold,
+                EnableResponseElevationLimit = (byte)(dto.EnableResponseElevationLimit ? 1 : 0),
+                MaxActivationWatcherInterval = dto.MaxActivationWatcherInterval,
+                MaxActivationWatcherValue = dto.MaxActivationWatcherValue,
+                MaxActivationWatcherThreshold = dto.MaxActivationWatcherThreshold,
+                ActivationWatcherSample = dto.ActivationWatcherSample,
+                EnableCache = (byte)(dto.EnableCache ? 1 : 0),
+                EnableSanctionCache = (byte)(dto.EnableSanctionCache ? 1 : 0),
+                EnableTtlCounter = (byte)(dto.EnableTtlCounter ? 1 : 0),
+                EnableRdbmsArchive = (byte)(dto.EnableRdbmsArchive ? 1 : 0),
+                EnableActivationArchive = (byte)(dto.EnableActivationArchive ? 1 : 0),
+                EnableActivationWatcher = (byte)(dto.EnableActivationWatcher ? 1 : 0),
+                EnableImplicitAsync = (byte)(dto.EnableImplicitAsync ? 1 : 0),
+                ImplicitAsyncTimeoutMilliseconds = dto.ImplicitAsyncTimeoutMilliseconds,
+                EnableTrace = (byte)(dto.EnableTrace ? 1 : 0),
+                EnableLogs = (byte)(dto.EnableLogs ? 1 : 0),
+                EnableLogsInfo = (byte)(dto.EnableLogsInfo ? 1 : 0),
+                EnableLogsWarnThreshold = (byte)(dto.EnableLogsWarnThreshold ? 1 : 0),
+                LogsWarnThresholdMilliseconds = dto.LogsWarnThresholdMilliseconds,
+                EnableLogsInResponse = (byte)(dto.EnableLogsInResponse ? 1 : 0),
+                EnableSampling = (byte)(dto.EnableSampling ? 1 : 0),
+                SamplePercentage = dto.SamplePercentage
+            };
+        }
+
+        private static DateTimeOffset? ToOffset(DateTime? value)
+        {
+            return value.HasValue
                 ? new DateTimeOffset(DateTime.SpecifyKind(value.Value, DateTimeKind.Utc))
                 : null;
+        }
     }
 }

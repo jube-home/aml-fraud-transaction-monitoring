@@ -11,11 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Buffers;
+using System.Collections;
+using System.Runtime.CompilerServices;
+
 namespace Jube.Dictionary
 {
-    using System.Buffers;
-    using System.Collections;
-
     [Serializable]
     public class PooledDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDisposable
     {
@@ -38,7 +39,7 @@ namespace Jube.Dictionary
         {
             if (initialCapacity.HasValue)
             {
-                capacity = initialCapacity.Value;
+                capacity = Math.Max(initialCapacity.Value, 1);
                 fixedInitialSize = true;
             }
             else
@@ -53,35 +54,21 @@ namespace Jube.Dictionary
         }
 
         public int Count { get; private set; }
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReadOnly => false;
 
         public ICollection<TKey> Keys
         {
-            get
-            {
-                return keys.Where((_, i) => hashes[i] != 0).ToArray();
-            }
+            get { return keys.Where((_, i) => hashes[i] != 0).ToArray(); }
         }
+
         public ICollection<TValue> Values
         {
-            get
-            {
-                return values.Where((_, i) => hashes[i] != 0).ToArray();
-            }
+            get { return values.Where((_, i) => hashes[i] != 0).ToArray(); }
         }
 
         public TValue this[TKey key]
         {
-            get
-            {
-                return TryGetValue(key, out var value) ? value : default(TValue)!;
-            }
+            get => TryGetValue(key, out var value) ? value : default!;
             set
             {
                 var index = FindIndex(key);
@@ -105,7 +92,7 @@ namespace Jube.Dictionary
 
             EnsureCapacity();
 
-            var hash = key.GetHashCode() & 0x7FFFFFFF;
+            var hash = ComputeHash(key);
             var index = hash % capacity;
 
             for (var i = 0; i < capacity; i++)
@@ -144,7 +131,7 @@ namespace Jube.Dictionary
                 return true;
             }
 
-            value = default(TValue)!;
+            value = default!;
             return false;
         }
 
@@ -157,8 +144,8 @@ namespace Jube.Dictionary
             }
 
             hashes[index] = 0;
-            keys[index] = default(TKey)!;
-            values[index] = default(TValue)!;
+            keys[index] = default!;
+            values[index] = default!;
             Count--;
             return true;
         }
@@ -168,9 +155,10 @@ namespace Jube.Dictionary
             for (var i = 0; i < capacity; i++)
             {
                 hashes[i] = 0;
-                keys[i] = default(TKey)!;
-                values[i] = default(TValue)!;
+                keys[i] = default!;
+                values[i] = default!;
             }
+
             Count = 0;
         }
 
@@ -192,9 +180,10 @@ namespace Jube.Dictionary
             {
                 return false;
             }
+
             hashes[index] = 0;
-            keys[index] = default(TKey)!;
-            values[index] = default(TValue)!;
+            keys[index] = default!;
+            values[index] = default!;
             Count--;
             return true;
         }
@@ -232,7 +221,9 @@ namespace Jube.Dictionary
         public TValue GetValueOrThrow(TKey key)
         {
             var index = FindIndex(key);
-            return index < 0 ? throw new KeyNotFoundException($"The given key '{key}' was not present in the dictionary.") : values[index];
+            return index < 0
+                ? throw new KeyNotFoundException($"The given key '{key}' was not present in the dictionary.")
+                : values[index];
         }
 
         public bool TryAdd(TKey key, TValue value)
@@ -244,7 +235,7 @@ namespace Jube.Dictionary
 
             EnsureCapacity();
 
-            var hash = key.GetHashCode() & 0x7FFFFFFF;
+            var hash = ComputeHash(key);
             var index = hash % capacity;
 
             for (var i = 0; i < capacity; i++)
@@ -281,7 +272,7 @@ namespace Jube.Dictionary
                 return -1;
             }
 
-            var hash = key.GetHashCode() & 0x7FFFFFFF;
+            var hash = ComputeHash(key);
             var index = hash % capacity;
 
             for (var i = 0; i < capacity; i++)
@@ -291,6 +282,7 @@ namespace Jube.Dictionary
                 {
                     return -1;
                 }
+
                 if (hashes[probeIndex] == hash && Equals(keys[probeIndex], key))
                 {
                     return probeIndex;
@@ -298,6 +290,13 @@ namespace Jube.Dictionary
             }
 
             return -1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int ComputeHash(TKey key)
+        {
+            var hash = key!.GetHashCode() & 0x7FFFFFFF;
+            return hash == 0 ? 1 : hash;
         }
 
         private void EnsureCapacity()

@@ -11,37 +11,38 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
+using log4net;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using Context;
-    using Dictionary;
-    using DynamicEnvironment;
-    using Helpers;
-    using log4net;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using EntityAnalysisModel=EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
+    using EntityAnalysisModel = EntityAnalysisModel;
 
     public class EntityAnalysisModelDictionaryNoBoxingExtractor(
         EntityAnalysisModel entityAnalysisModel,
         Dictionary<int, EntityAnalysisModel> availableModels,
-        DynamicEnvironment environment,
+        DynamicEnvironment.DynamicEnvironment environment,
         ILog log)
     {
-        public Context CreateContext(
+        public Context.Context CreateContext(
             DictionaryNoBoxing<string> payload, int entityAnalysisModelReprocessingRuleInstanceId)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            var entityAnalysisModelInstanceEntryPayload = ExtractModelFieldsForInvocation(payload, entityAnalysisModelReprocessingRuleInstanceId);
+            var entityAnalysisModelInstanceEntryPayload =
+                ExtractModelFieldsForInvocation(payload, entityAnalysisModelReprocessingRuleInstanceId);
 
-            ExtractRequestXPathForInvocation(payload, entityAnalysisModelInstanceEntryPayload);
+            ExtractRequestXPathForInvocation(entityAnalysisModelInstanceEntryPayload);
 
-            return new Context
+            return new Context.Context
             {
                 StartBytesUsed = GC.GetAllocatedBytesForCurrentThread(),
                 EntityAnalysisModel = entityAnalysisModel,
@@ -58,9 +59,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
         private EntityAnalysisModelInstanceEntryPayload ExtractModelFieldsForInvocation(
             DictionaryNoBoxing<string> entry, int entityAnalysisModelReprocessingRuleInstanceId)
         {
-            var entityAnalysisModelInstanceEntryPayload = EntityAnalysisModelInstanceEntryPayloadHelpers.Create(entityAnalysisModel, entry["EntityAnalysisModelInstanceEntryGuid"]);
+            var entityAnalysisModelInstanceEntryPayload =
+                EntityAnalysisModelInstanceEntryPayloadHelpers.Create(entityAnalysisModel,
+                    entry["EntityAnalysisModelInstanceEntryGuid"]);
 
-            var modelEntryValue = String.Empty;
+            var modelEntryValue = string.Empty;
             DateTime referenceDateValue = default;
 
             try
@@ -89,19 +92,20 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                log.Error($"Dictionary No Boxing to Context Extractor: EntityAnalysisModelInstanceEntryGUID is {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} ExtractModelFieldsForInvocation: has produced an error {ex}");
+                log.Error(
+                    $"Dictionary No Boxing to Context Extractor: EntityAnalysisModelInstanceEntryGUID is {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} ExtractModelFieldsForInvocation: has produced an error {ex}");
             }
 
             entityAnalysisModelInstanceEntryPayload.EntityInstanceEntryId = modelEntryValue;
             entityAnalysisModelInstanceEntryPayload.ReferenceDate = referenceDateValue;
             entityAnalysisModelInstanceEntryPayload.Payload = entry;
-            entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId = entityAnalysisModelReprocessingRuleInstanceId;
+            entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId =
+                entityAnalysisModelReprocessingRuleInstanceId;
 
             return entityAnalysisModelInstanceEntryPayload;
         }
 
         private void ExtractRequestXPathForInvocation(
-            DictionaryNoBoxing<string> entry,
             EntityAnalysisModelInstanceEntryPayload entityAnalysisModelInstanceEntryPayload)
         {
             try
@@ -111,44 +115,58 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                          where !entityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(xPathLinq.Name)
                          select xPathLinq)
                 {
-                    if (!entry.ContainsKey(xPath.Name))
+                    if (string.IsNullOrEmpty(xPath.DefaultValue))
                     {
                         if (log.IsInfoEnabled)
                         {
                             log.Info(
-                                $"Dictionary No Boxing to Context Extractor: EntityAnalysisModelInstanceEntryGUID is {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.Name} was not in the original payload.");
-                        }
-                    }
-                    else
-                    {
-                        switch (xPath.DataTypeId)
-                        {
-                            case 1:
-                                entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, entry[xPath.Name].AsString());
-                                break;
-                            case 2:
-                                entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, entry[xPath.Name].AsInt());
-                                break;
-                            case 3:
-                                entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, entry[xPath.Name].AsDouble());
-                                break;
-                            case 4:
-                                entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, entry[xPath.Name].AsDateTime());
-                                break;
-                            case 5:
-                                entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, entry[xPath.Name].AsBool());
-                                break;
-                            case 6:
-                            case 7:
-                                entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, entry[xPath.Name].AsDouble());
-                                break;
+                                $"Dictionary No Boxing to Context Extractor: EntityAnalysisModelInstanceEntryGUID is {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.Name} was not in the original payload and no Default is configured.");
                         }
 
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Dictionary No Boxing to Context Extractor: EntityAnalysisModelInstanceEntryGUID is {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} added {xPath.Name} with value {entry[xPath.Name]} as a report column.");
-                        }
+                        continue;
+                    }
+
+                    switch (xPath.DataTypeId)
+                    {
+                        case 1:
+                            entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, xPath.DefaultValue);
+                            break;
+                        case 2:
+                            if (int.TryParse(xPath.DefaultValue, out var intVal))
+                            {
+                                entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, intVal);
+                            }
+
+                            break;
+                        case 4:
+                            entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name,
+                                int.TryParse(xPath.DefaultValue, out var daysBack)
+                                    ? DateTime.UtcNow.AddDays(-daysBack)
+                                    : DateTime.UtcNow);
+                            break;
+                        case 5:
+                            entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name,
+                                xPath.DefaultValue.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+                                xPath.DefaultValue == "1");
+                            break;
+                        case 3:
+                        case 6:
+                        case 7:
+                            if (double.TryParse(xPath.DefaultValue, out var dblVal))
+                            {
+                                entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, dblVal);
+                            }
+
+                            break;
+                        default:
+                            entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, xPath.DefaultValue);
+                            break;
+                    }
+
+                    if (log.IsInfoEnabled)
+                    {
+                        log.Info(
+                            $"Dictionary No Boxing to Context Extractor: EntityAnalysisModelInstanceEntryGUID is {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} added {xPath.Name} with Default value {xPath.DefaultValue} as it was not in the original payload.");
                     }
                 }
 
@@ -160,7 +178,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                log.Error($"Dictionary No Boxing to Context Extractor: EntityAnalysisModelInstanceEntryGUID is {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} has produced an error {ex}");
+                log.Error(
+                    $"Dictionary No Boxing to Context Extractor: EntityAnalysisModelInstanceEntryGUID is {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} has produced an error {ex}");
             }
         }
     }

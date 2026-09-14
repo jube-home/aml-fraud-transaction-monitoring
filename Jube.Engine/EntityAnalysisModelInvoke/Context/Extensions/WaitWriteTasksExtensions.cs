@@ -11,94 +11,91 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.Observability;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
-    using TaskCancellation.TaskHelper;
-
     public static class WaitWriteTasksExtensions
     {
         public static async Task<Context> WaitWriteTasksAsync(this Context context)
         {
-            if (context.Log.IsInfoEnabled)
+            context.TraceLog(
+                $"is waiting for {context.PendingWriteTasks.Count} write tasks of which {context.PendingWriteTasks.Count(c => c.IsCompleted)} are completed.");
+
+            var invokeTaskPerformance = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance;
+            invokeTaskPerformance.TaskWrapperStats ??= new TaskWrapperStats();
+            invokeTaskPerformance.TaskWrapperStats.Write = new WriteTasksPerformance();
+
+            var joinStopwatch = Stopwatch.StartNew();
+            var pendingWriteTasksResults = await Task.WhenAll(context.PendingWriteTasks).ConfigureAwait(false);
+            joinStopwatch.Stop();
+
+            foreach (var pendingWriteTasksResult in pendingWriteTasksResults)
             {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" is waiting for {context.PendingWriteTasks.Count} write tasks of which {context.PendingWriteTasks.Count(c => c.IsCompleted)} are completed.");
-            }
+                if (pendingWriteTasksResult.Faulted)
+                {
+                    EngineDiagnostics.InvokeTaskFaultedCount.Add(1,
+                        new KeyValuePair<string, object>("task.type", pendingWriteTasksResult.TaskType.ToString()),
+                        new KeyValuePair<string, object>("task.direction", "write"));
+                    continue;
+                }
 
-            await Task.WhenAll(context.PendingWriteTasks.ToArray()).ConfigureAwait(false);
-
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.WriteTasksPerformance = new WriteTasksPerformance();
-            var pendingReadTasksResults = await Task.WhenAll(context.PendingWriteTasks).ConfigureAwait(false);
-
-            foreach (var pendingWriteTasksResult in pendingReadTasksResults)
-            {
                 switch (pendingWriteTasksResult.TaskType)
                 {
                     case TaskType.CachePayloadLatestUpsertAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.WriteTasksPerformance.CachePayloadLatestUpsertAsync = new TaskPerformance(pendingWriteTasksResult.ThreadMemory, pendingWriteTasksResult.ComputeTime);
+                        invokeTaskPerformance.TaskWrapperStats.Write.CachePayloadLatestUpsertAsync =
+                            new TaskPerformance(pendingWriteTasksResult.ComputeTime,
+                                pendingWriteTasksResult.ThreadMemory);
                         break;
                     case TaskType.CachePayloadUpsertAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.WriteTasksPerformance.CachePayloadUpsertAsync = new TaskPerformance(pendingWriteTasksResult.ThreadMemory, pendingWriteTasksResult.ComputeTime);
+                        invokeTaskPerformance.TaskWrapperStats.Write.CachePayloadUpsertAsync =
+                            new TaskPerformance(pendingWriteTasksResult.ComputeTime,
+                                pendingWriteTasksResult.ThreadMemory);
                         break;
                     case TaskType.CachePayloadInsertAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.WriteTasksPerformance.CachePayloadInsertAsync = new TaskPerformance(pendingWriteTasksResult.ThreadMemory, pendingWriteTasksResult.ComputeTime);
-                        break;
-                    case TaskType.CachePayloadLatestInsertAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.WriteTasksPerformance.CachePayloadLatestInsertAsync = new TaskPerformance(pendingWriteTasksResult.ThreadMemory, pendingWriteTasksResult.ComputeTime);
+                        invokeTaskPerformance.TaskWrapperStats.Write.CachePayloadInsertAsync =
+                            new TaskPerformance(pendingWriteTasksResult.ComputeTime,
+                                pendingWriteTasksResult.ThreadMemory);
                         break;
                     case TaskType.CacheTtlCounterEntryUpsertAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.WriteTasksPerformance.CacheTtlCounterEntryUpsertAsync = new TaskPerformance(pendingWriteTasksResult.ThreadMemory, pendingWriteTasksResult.ComputeTime);
+                        invokeTaskPerformance.TaskWrapperStats.Write.CacheTtlCounterEntryUpsertAsync =
+                            new TaskPerformance(pendingWriteTasksResult.ComputeTime,
+                                pendingWriteTasksResult.ThreadMemory);
                         break;
                     case TaskType.CacheTtlCounterEntryIncrementAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.WriteTasksPerformance.CacheTtlCounterEntryIncrementAsync = new TaskPerformance(pendingWriteTasksResult.ThreadMemory, pendingWriteTasksResult.ComputeTime);
+                        invokeTaskPerformance.TaskWrapperStats.Write.CacheTtlCounterEntryIncrementAsync =
+                            new TaskPerformance(pendingWriteTasksResult.ComputeTime,
+                                pendingWriteTasksResult.ThreadMemory);
                         break;
                     case TaskType.CacheSanctionInsertAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.WriteTasksPerformance.CacheSanctionInsertAsync = new TaskPerformance(pendingWriteTasksResult.ThreadMemory, pendingWriteTasksResult.ComputeTime);
+                        invokeTaskPerformance.TaskWrapperStats.Write.CacheSanctionInsertAsync =
+                            new TaskPerformance(pendingWriteTasksResult.ComputeTime,
+                                pendingWriteTasksResult.ThreadMemory);
                         break;
-                    case TaskType.CacheSanctionUpdateAsync:
-                        context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.WriteTasksPerformance.CacheSanctionUpdateAsync = new TaskPerformance(pendingWriteTasksResult.ThreadMemory, pendingWriteTasksResult.ComputeTime);
-                        break;
-                    case TaskType.SanctionsAsync:
-                    case TaskType.TtlCountersAsync:
-                    case TaskType.AbstractionRulesWithSearchKeysAsync:
-                    case TaskType.OnlineAggregationOfTtlCountersAsync:
-                    case TaskType.ExecuteOutOfProcessAggregationOfTtlCountersAsync:
-                    case TaskType.ExecuteTimeToLiveCounterIterationAsync:
-                    case TaskType.ExecuteAbstractionRulesWithSearchKeyAsync:
-                    case TaskType.BulkInsertCachePayloadRemovalBatchEntry:
-                    case TaskType.SortedSetRemoveReferenceDate:
-                    case TaskType.SetRemoveAsync:
-                    case TaskType.PublishAsync:
-                    case TaskType.HashDecrementBytes:
-                    case TaskType.HashDecrementCount:
-                    case TaskType.HashDeletePayload:
-                    case TaskType.HashDeletePayloadBulk:
-                    case TaskType.AppendBulkCleanupOfPayloadGuids:
-                    case TaskType.SortedSetRemoveReferenceDateLatest:
-                    case TaskType.HashDecrementLatestCount:
-                    case TaskType.HashDeletePayloadLatest:
-                    case TaskType.CachePayloadLatestRemovalBatchEntry:
-                    case TaskType.ProcessTtlCounterDeprecation:
-                    case TaskType.BulkInsertTtlCounterEntryRemovalBatchResponseTime:
-                    case TaskType.BulkInsertCachePayloadLatestRemovalBatchEntry:
-                    default:
+                    case TaskType.UpsertReferenceDateAsync:
+                        invokeTaskPerformance.TaskWrapperStats.Write.UpsertReferenceDateAsync =
+                            new TaskPerformance(pendingWriteTasksResult.ComputeTime,
+                                pendingWriteTasksResult.ThreadMemory);
                         break;
                 }
             }
 
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.JoinWriteTasks = (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
-
-            if (context.Log.IsInfoEnabled)
+            if (context.LogSampled)
             {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" completed {context.PendingWriteTasks.Count} write tasks.");
+                invokeTaskPerformance.Stages ??= new InvokeStagePerformance();
+                invokeTaskPerformance.Stages.JoinWriteTasks = new StageDuration
+                {
+                    DurationMicroseconds = (long)(joinStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency))
+                };
             }
+
+            context.TraceLog($"completed {context.PendingWriteTasks.Count} write tasks.");
 
             return context;
         }

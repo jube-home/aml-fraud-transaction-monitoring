@@ -29,6 +29,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
+using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -499,6 +500,38 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
             dateValid.DefaultValue = "-1";
             var savedDate = await service.InsertAsync(dateValid);
             createdIds.Add(savedDate.Id);
+        }
+
+        [Fact]
+        public async Task NullOrEmptyDefaultValueIsAcceptedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var nullDefault = NewDto(modelId, UniqueName("NullDefault"));
+            nullDefault.DefaultValue = null;
+            var savedNull = await service.InsertAsync(nullDefault);
+            createdIds.Add(savedNull.Id);
+            savedNull.DefaultValue.Should().BeNull();
+
+            var emptyDefault = NewDto(modelId, UniqueName("EmptyDefault"));
+            emptyDefault.DefaultValue = string.Empty;
+            var savedEmpty = await service.InsertAsync(emptyDefault);
+            createdIds.Add(savedEmpty.Id);
+        }
+
+        [Fact]
+        public async Task DefaultValueExceedingMaxLengthIsRejectedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("LongDefault"));
+            dto.DefaultValue = new string('d', 1025);
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "DefaultValueMaximumLength");
         }
 
         [Fact]

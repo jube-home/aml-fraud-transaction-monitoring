@@ -11,37 +11,45 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Channels;
+
 namespace Jube.LoadTest
 {
-    using System.Collections.Concurrent;
-    using System.Diagnostics;
-    using System.Net;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Threading.Channels;
-
     public sealed class LoadRunner(LoadSettings settings)
     {
         private static readonly TimeSpan SampleInterval = TimeSpan.FromMinutes(1);
-        private readonly ConcurrentBag<double> allResponseTimesMs = new ConcurrentBag<double>();
-        private readonly ContainerStatsSampler containerStatsSampler = new ContainerStatsSampler(settings.ContainerRoles, settings.ContainerNamePatternsAreRegex);
-        private readonly HostStatsSampler hostStatsSampler = new HostStatsSampler();
+        private readonly ConcurrentBag<double> allResponseTimesMs = new();
 
-        private readonly PostgresStatsSampler? postgresStatsSampler = settings.PostgresConnectionString is { Length: > 0 } pgConnectionString
-            ? new PostgresStatsSampler(pgConnectionString)
-            : null;
+        private readonly ContainerStatsSampler containerStatsSampler =
+            new(settings.ContainerRoles, settings.ContainerNamePatternsAreRegex);
 
-        private readonly RedisStatsSampler? redisStatsSampler = settings.RedisConnectionString is { Length: > 0 } redisConnectionString
-            ? new RedisStatsSampler(redisConnectionString)
-            : null;
+        private readonly HostStatsSampler hostStatsSampler = new();
+
+        private readonly PostgresStatsSampler? postgresStatsSampler =
+            settings.PostgresConnectionString is { Length: > 0 } pgConnectionString
+                ? new PostgresStatsSampler(pgConnectionString)
+                : null;
+
+        private readonly RedisStatsSampler? redisStatsSampler =
+            settings.RedisConnectionString is { Length: > 0 } redisConnectionString
+                ? new RedisStatsSampler(redisConnectionString)
+                : null;
 
         private readonly Channel<ResponseSample> responseSampleChannel = Channel.CreateUnbounded<ResponseSample>();
 
-        private readonly Lock statsLock = new Lock();
-        private readonly Stopwatch swTotal = new Stopwatch();
-        private readonly Lock windowLock = new Lock();
+        private readonly Lock statsLock = new();
+        private readonly Stopwatch swTotal = new();
+        private readonly Lock windowLock = new();
 
         private int errors;
+        private int implicitTimeouts;
+        private int implicitTimeoutsTotal;
         private int inFlightCount;
         private IReadOnlyDictionary<string, (double CpuPercent, double MemMiB)>? latestContainerStats;
         private (double CpuPercent, double MemUsedMiB)? latestHostStats;
@@ -75,13 +83,14 @@ namespace Jube.LoadTest
             clientHandler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;
 
             using var client = new HttpClient(clientHandler);
-            client.Timeout = TimeSpan.FromSeconds(settings.HttpTimeoutSeconds);
+            client.Timeout = TimeSpan.FromMilliseconds(settings.HttpTimeoutMilliseconds);
             client.DefaultRequestVersion = HttpVersion.Version11;
             client.DefaultRequestHeaders.Add("X-API-KEY", settings.ApiKey);
 
             using var durationCts = new CancellationTokenSource(TimeSpan.FromSeconds(settings.DurationSeconds));
             using var writerCts = new CancellationTokenSource();
-            using var concurrencyGate = new SemaphoreSlim(settings.MaxConcurrentInFlight, settings.MaxConcurrentInFlight);
+            using var concurrencyGate =
+                new SemaphoreSlim(settings.MaxConcurrentInFlight, settings.MaxConcurrentInFlight);
 
             swTotal.Start();
 
@@ -89,20 +98,38 @@ namespace Jube.LoadTest
 
             var writerTask = Task.Run(async () =>
             {
-                try { await WriteTpsEstimatesAsync(writerToken); }
-                catch (Exception ex) { await Console.Error.WriteLineAsync(ex.ToString()); }
+                try
+                {
+                    await WriteTpsEstimatesAsync(writerToken);
+                }
+                catch (Exception ex)
+                {
+                    await Console.Error.WriteLineAsync(ex.ToString());
+                }
             }, writerToken);
 
             var statsSamplerTask = Task.Run(async () =>
             {
-                try { await SampleStatsAsync(writerToken); }
-                catch (Exception ex) { await Console.Error.WriteLineAsync(ex.ToString()); }
+                try
+                {
+                    await SampleStatsAsync(writerToken);
+                }
+                catch (Exception ex)
+                {
+                    await Console.Error.WriteLineAsync(ex.ToString());
+                }
             }, writerToken);
 
             var responseSampleWriterTask = Task.Run(async () =>
             {
-                try { await WriteResponseSampleAsync(); }
-                catch (Exception ex) { await Console.Error.WriteLineAsync(ex.ToString()); }
+                try
+                {
+                    await WriteResponseSampleAsync();
+                }
+                catch (Exception ex)
+                {
+                    await Console.Error.WriteLineAsync(ex.ToString());
+                }
             });
 
             var inFlight = new List<Task>();
@@ -145,13 +172,13 @@ namespace Jube.LoadTest
                     }
 
                     Interlocked.Increment(ref inFlightCount);
-                    inFlight.Add(DispatchAsync(payload, settings.Uri, client, concurrencyGate, currentTxnId, accountId));
+                    inFlight.Add(DispatchAsync(payload, settings.Uri, client, concurrencyGate, currentTxnId,
+                        accountId));
                     inFlight.RemoveAll(t => t.IsCompleted);
                 }
             }
             catch (OperationCanceledException)
             {
-                // duration elapsed - fall through to drain in-flight requests
             }
 
             await Task.WhenAll(inFlight);
@@ -189,7 +216,8 @@ namespace Jube.LoadTest
             }
 
             const double topFraction = 0.01;
-            var topShare = ZipfianKeyGenerator.EstimateTopFractionShare(settings.KeyPoolSize, settings.KeySkew, topFraction);
+            var topShare =
+                ZipfianKeyGenerator.EstimateTopFractionShare(settings.KeyPoolSize, settings.KeySkew, topFraction);
             var topCount = Math.Max(1, (long)(settings.KeyPoolSize * topFraction));
 
             Console.WriteLine(
@@ -203,7 +231,7 @@ namespace Jube.LoadTest
             var sw = Stopwatch.StartNew();
             try
             {
-                await SendToJubeAndAwaitResponseAsync(payload, uri, client);
+                var implicitTimedOut = await SendToJubeAndAwaitResponseAsync(payload, uri, client);
                 sw.Stop();
 
                 var elapsedMs = sw.Elapsed.TotalMilliseconds;
@@ -214,10 +242,16 @@ namespace Jube.LoadTest
                     windowResponseTimesMs.Add(elapsedMs);
                 }
 
+                if (implicitTimedOut)
+                {
+                    Interlocked.Increment(ref implicitTimeouts);
+                    Interlocked.Increment(ref implicitTimeoutsTotal);
+                }
+
                 if (settings.ResponseSampleRate > 0 && Random.Shared.NextDouble() < settings.ResponseSampleRate)
                 {
                     responseSampleChannel.Writer.TryWrite(
-                        new ResponseSample(DateTime.Now, txnId, accountId, elapsedMs));
+                        new ResponseSample(DateTime.Now, txnId, accountId, elapsedMs, implicitTimedOut));
                 }
             }
             catch (Exception ex)
@@ -232,7 +266,7 @@ namespace Jube.LoadTest
             }
         }
 
-        private static async Task SendToJubeAndAwaitResponseAsync(string payload, Uri uri, HttpClient client)
+        private static async Task<bool> SendToJubeAndAwaitResponseAsync(string payload, Uri uri, HttpClient client)
         {
             var stringContent = new StringContent(
                 payload,
@@ -252,6 +286,22 @@ namespace Jube.LoadTest
             {
                 throw new Exception($"Request failed with status {response.StatusCode}");
             }
+
+            return TryReadImplicitAsyncTimedOut(await response.Content.ReadAsStringAsync());
+        }
+
+        private static bool TryReadImplicitAsyncTimedOut(string responseJson)
+        {
+            try
+            {
+                using var document = JsonDocument.Parse(responseJson);
+                return document.RootElement.TryGetProperty("ImplicitAsyncTimedOut", out var flag) &&
+                       flag.ValueKind == JsonValueKind.True;
+            }
+            catch (JsonException)
+            {
+                return false;
+            }
         }
 
         private async Task WriteTpsEstimatesAsync(CancellationToken token = default)
@@ -260,7 +310,7 @@ namespace Jube.LoadTest
             outputFileTpsSnapshot.AutoFlush = true;
 
             await outputFileTpsSnapshot.WriteLineAsync(
-                "Timestamp,ElapsedSeconds,RequestsCompleted,ErrorsCompleted,InFlight,ThrottledTicks,MinMs,MaxMs,MedianMs,AvgMs," +
+                "Timestamp,ElapsedSeconds,RequestsCompleted,ErrorsCompleted,ImplicitTimeouts,InFlight,ThrottledTicks,MinMs,MaxMs,MedianMs,AvgMs," +
                 BuildContainerColumnsHeader() + ",Host_CpuPct,Host_MemUsedMiB," +
                 "Postgres_Connections,Postgres_TxnPerSec,Postgres_CacheHitPct,Postgres_TempMiBPerSec," +
                 "Postgres_ReplicationLagSeconds,Postgres_ReplicaCount," +
@@ -279,6 +329,7 @@ namespace Jube.LoadTest
 
                 var snapshotRequests = Interlocked.Exchange(ref requests, 0);
                 var snapshotErrors = Interlocked.Exchange(ref errors, 0);
+                var snapshotImplicitTimeouts = Interlocked.Exchange(ref implicitTimeouts, 0);
                 var snapshotThrottled = Interlocked.Exchange(ref throttledTicks, 0);
                 var currentInFlight = Interlocked.CompareExchange(ref inFlightCount, 0, 0);
                 var stats = SwapWindowAndSummarise();
@@ -299,7 +350,7 @@ namespace Jube.LoadTest
 
                 await outputFileTpsSnapshot.WriteLineAsync(
                     $"{DateTime.Now:o},{Math.Round(swTotal.Elapsed.TotalSeconds)},{snapshotRequests},{snapshotErrors}," +
-                    $"{currentInFlight},{snapshotThrottled}," +
+                    $"{snapshotImplicitTimeouts},{currentInFlight},{snapshotThrottled}," +
                     $"{stats.min:F1},{stats.max:F1},{stats.median:F1},{stats.avg:F1}," +
                     BuildContainerColumnsRow(containerStats) + "," +
                     BuildHostColumnsRow(hostStats) + "," +
@@ -347,18 +398,19 @@ namespace Jube.LoadTest
             await using var outputFileResponseSample = new StreamWriter(settings.ResponseSampleOutputPath);
             outputFileResponseSample.AutoFlush = true;
 
-            await outputFileResponseSample.WriteLineAsync("Timestamp,TxnId,AccountId,ResponseMs");
+            await outputFileResponseSample.WriteLineAsync("Timestamp,TxnId,AccountId,ResponseMs,ImplicitAsyncTimedOut");
 
             await foreach (var sample in responseSampleChannel.Reader.ReadAllAsync())
             {
                 await outputFileResponseSample.WriteLineAsync(
-                    $"{sample.Timestamp:o},{sample.TxnId},{sample.AccountId},{sample.ResponseMs:F1}");
+                    $"{sample.Timestamp:o},{sample.TxnId},{sample.AccountId},{sample.ResponseMs:F1}," +
+                    $"{sample.ImplicitAsyncTimedOut}");
             }
         }
 
         private string BuildContainerColumnsHeader()
         {
-            return String.Join(',', settings.ContainerRoles.SelectMany(role =>
+            return string.Join(',', settings.ContainerRoles.SelectMany(role =>
                 new[]
                 {
                     $"{role.Name}_CpuPct", $"{role.Name}_MemMiB"
@@ -367,7 +419,7 @@ namespace Jube.LoadTest
 
         private string BuildContainerColumnsRow(IReadOnlyDictionary<string, (double CpuPercent, double MemMiB)>? sample)
         {
-            return String.Join(',', settings.ContainerRoles.SelectMany(role =>
+            return string.Join(',', settings.ContainerRoles.SelectMany(role =>
             {
                 if (sample == null || !sample.TryGetValue(role.Name, out var stat))
                 {
@@ -386,7 +438,7 @@ namespace Jube.LoadTest
 
         private static string BuildHostColumnsRow((double CpuPercent, double MemUsedMiB)? sample)
         {
-            return sample is {} stat
+            return sample is { } stat
                 ? $"{stat.CpuPercent:F2},{stat.MemUsedMiB:F1}"
                 : ",";
         }
@@ -395,7 +447,7 @@ namespace Jube.LoadTest
             (double Connections, double TxnPerSec, double CacheHitPct, double TempMiBPerSec,
                 double ReplicationLagSeconds, double ReplicaCount)? sample)
         {
-            return sample is {} stat
+            return sample is { } stat
                 ? $"{stat.Connections:F0},{stat.TxnPerSec:F2},{stat.CacheHitPct:F2},{stat.TempMiBPerSec:F3}," +
                   $"{stat.ReplicationLagSeconds:F3},{stat.ReplicaCount:F0}"
                 : ",,,,,";
@@ -404,7 +456,7 @@ namespace Jube.LoadTest
         private static string BuildRedisColumnsRow(
             (double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)? sample)
         {
-            return sample is {} stat
+            return sample is { } stat
                 ? $"{stat.ConnectedClients:F0},{stat.UsedMemMiB:F1},{stat.OpsPerSec:F1},{stat.HitRatePct:F2}"
                 : ",,,";
         }
@@ -448,11 +500,16 @@ namespace Jube.LoadTest
             Console.WriteLine();
             Console.WriteLine("Load test summary");
             Console.WriteLine("------------------");
-            Console.WriteLine($"Target rate:        {settings.TargetRequestsPerSecond}/s over {settings.DurationSeconds}s");
+            Console.WriteLine(
+                $"Target rate:        {settings.TargetRequestsPerSecond}/s over {settings.DurationSeconds}s");
             Console.WriteLine($"Dispatched:         {totalDispatched}");
             Console.WriteLine($"Succeeded:          {allTimes.Count}");
             Console.WriteLine($"Errors:             {totalDispatched - allTimes.Count}");
-            Console.WriteLine($"Response time (ms): min={stats.min:F1} max={stats.max:F1} median={stats.median:F1} avg={stats.avg:F1}");
+            Console.WriteLine(
+                $"Implicit timeouts:  {implicitTimeoutsTotal} " +
+                $"({(allTimes.Count == 0 ? 0 : 100.0 * implicitTimeoutsTotal / allTimes.Count):F2}% of succeeded)");
+            Console.WriteLine(
+                $"Response time (ms): min={stats.min:F1} max={stats.max:F1} median={stats.median:F1} avg={stats.avg:F1}");
             Console.WriteLine($"TPS CSV written to: {Path.GetFullPath(settings.OutputPath)}");
 
             if (settings.ResponseSampleRate > 0)
@@ -465,6 +522,11 @@ namespace Jube.LoadTest
             Console.WriteLine();
         }
 
-        private readonly record struct ResponseSample(DateTime Timestamp, long TxnId, long AccountId, double ResponseMs);
+        private readonly record struct ResponseSample(
+            DateTime Timestamp,
+            long TxnId,
+            long AccountId,
+            double ResponseMs,
+            bool ImplicitAsyncTimedOut);
     }
 }

@@ -11,55 +11,58 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
-    using ReflectionHelpers;
-
     public static class InlineScriptsExtensions
     {
         public static async Task<Context> ExecuteInlineScriptsAsync(this Context context)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id}.");
-            }
+            context.TraceLog($"is going to execute inline scripts.");
 
-            await IterateAndProcessAsync(context);
-            StorePerformanceFromStopwatch(context);
+            var stopwatch = Stopwatch.StartNew();
+            var items = new Dictionary<string, TaskPerformance>();
+
+            await IterateAndProcessAsync(context, items);
+
+            stopwatch.Stop();
+
+            if (context.LogSampled)
+            {
+                var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                    new InvokeStagePerformance();
+
+                stages.InlineScripts = new StageTiming<TaskPerformance>
+                {
+                    DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                    Items = items
+                };
+            }
 
             context.EntityAnalysisModelInstanceEntryPayload.JObject = null;
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $"Payload JObject has been set to null in context to free up for GC.  Payload JObject is no longer available as it may only be used in [ResponsePayload] attribute decoration.");
-            }
+            context.TraceLog(
+                $"Payload JObject has been set to null in context to free up for GC. Payload JObject is no longer available as it may only be used in [ResponsePayload] attribute decoration.");
 
             return context;
         }
 
-        private static void StorePerformanceFromStopwatch(Context context)
+        private static async Task IterateAndProcessAsync(Context context, Dictionary<string, TaskPerformance> items)
         {
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.InlineScript = (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
-
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} inline script invocation has concluded {context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency} ns.");
-            }
-        }
-
-        private static async Task IterateAndProcessAsync(Context context)
-        {
-            foreach (var inlineScript in context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Where(s => s.EntityAnalysisModelInlineScriptEvents
-                         .Any(e => e.EntityAnalysisModelInlineScriptEventType == EntityAnalysisModelInlineScriptEventTypeEnum.Payload)))
+            foreach (var inlineScript in
+                     context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Where(s => s
+                         .EntityAnalysisModelInlineScriptEvents
+                         .Any(e => e.EntityAnalysisModelInlineScriptEventType ==
+                                   EntityAnalysisModelInlineScriptEventTypeEnum.Payload)))
             {
                 try
                 {
@@ -69,19 +72,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                             $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is going to invoke {inlineScript.InlineScriptCode}.");
                     }
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is going to invoke.");
-                    }
+                    context.TraceLog($"is going to invoke inline script {inlineScript.InlineScriptCode}.");
 
-                    await ReflectInlineScriptHelper.ExecuteAsync(inlineScript, context);
+                    var timed = await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.InlineScript,
+                            async () => await ReflectInlineScriptHelper.ExecuteAsync(inlineScript, context))
+                        .ConfigureAwait(false);
+                    items[inlineScript.InlineScriptCode] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has invoked.");
-                    }
+                    context.TraceLog($"has invoked inline script {inlineScript.InlineScriptCode}.");
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {

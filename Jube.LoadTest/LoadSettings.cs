@@ -13,22 +13,20 @@
 
 namespace Jube.LoadTest
 {
-    public sealed record ContainerRole(string Name, IReadOnlyList<string> Patterns);
-
     public sealed record LoadSettings
     {
         public static readonly IReadOnlyList<ContainerRole> DefaultContainerRoles =
         [
-            new ContainerRole("Postgres", ["postgres", "patroni"]),
-            new ContainerRole("Redis", ["redis"]),
-            new ContainerRole("Sentinel", ["sentinel"]),
-            new ContainerRole("Etcd", ["etcd"]),
-            new ContainerRole("HAProxy", ["haproxy"]),
-            new ContainerRole("Jube", ["jube.webapi", "jube-api", "jube-ui","jube"])
+            new("Postgres", ["postgres", "patroni"]),
+            new("Redis", ["redis"]),
+            new("Sentinel", ["sentinel"]),
+            new("Etcd", ["etcd"]),
+            new("HAProxy", ["haproxy"]),
+            new("Jube", ["jube.webapi", "jube-api", "jube-ui", "jube"])
         ];
 
         public required Uri Uri { get; init; }
-        public int HttpTimeoutSeconds { get; init; } = 20;
+        public int HttpTimeoutMilliseconds { get; init; } = 500;
         public int TargetRequestsPerSecond { get; init; } = 174;
         public int DurationSeconds { get; init; } = 86400;
         public int MaxConnectionsPerServer { get; init; } = 500;

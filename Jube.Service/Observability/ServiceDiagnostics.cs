@@ -11,12 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Reflection;
+
 namespace Jube.Service.Observability
 {
-    using System.Diagnostics;
-    using System.Diagnostics.Metrics;
-    using System.Reflection;
-
     public static class ServiceDiagnostics
     {
         public const string Name = "Jube.Service";
@@ -30,9 +30,18 @@ namespace Jube.Service.Observability
         public static readonly Meter Meter = new(Name, Version);
 
         public static readonly Counter<long> OperationCount =
-            Meter.CreateCounter<long>("jube.service.operation.count", unit: "{operation}");
+            Meter.CreateCounter<long>("jube.service.operation.count", "{operation}");
 
         public static readonly Histogram<double> OperationDuration =
-            Meter.CreateHistogram<double>("jube.service.operation.duration", unit: "ms");
+            Meter.CreateHistogram<double>("jube.service.operation.duration", "ms");
+
+        public static readonly Counter<long> OtlpDispatchCount =
+            Meter.CreateCounter<long>("jube.service.otel.export.dispatch.count", "{dispatch}");
+
+        public static readonly Histogram<double> OtlpDispatchDuration =
+            Meter.CreateHistogram<double>("jube.service.otel.export.dispatch.duration", "ms");
+
+        public static readonly Counter<long> OtlpDroppedCount =
+            Meter.CreateCounter<long>("jube.service.otel.export.dropped.count", "{item}");
     }
 }

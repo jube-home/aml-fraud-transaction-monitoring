@@ -11,38 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using Jube.TaskCancellation.Interfaces;
+using Jube.TaskCancellation.Models;
+using log4net;
+
 namespace Jube.TaskCancellation
 {
-    using System.Collections;
-    using System.Collections.Concurrent;
-    using System.Diagnostics;
-    using Interfaces;
-
-    public class NamedTask(string name, Task task)
-    {
-        public string Name { get; } = name;
-        public Task Task { get; } = task;
-    }
-
-    public interface ITaskCoordinator : IEnumerable<NamedTask>
-    {
-        CancellationToken CancellationToken { get; }
-        Task RunAsync(string name, Func<CancellationToken, Task> work, CancellationToken? token = null);
-    }
-
-    public class TaskCoordinator(ICancellationTokenProvider cancellationProvider) : ITaskCoordinator
+    public class TaskCoordinator(ICancellationTokenProvider cancellationProvider, ILog? log = null) : ITaskCoordinator
     {
         private readonly ConcurrentBag<NamedTask> tasks =
         [
         ];
 
-        public CancellationToken CancellationToken
-        {
-            get
-            {
-                return cancellationProvider.Token;
-            }
-        }
+        public CancellationToken CancellationToken => cancellationProvider.Token;
 
         public Task RunAsync(string name, Func<CancellationToken, Task> work, CancellationToken? token = null)
         {
@@ -56,7 +40,15 @@ namespace Jube.TaskCancellation
                 }
                 catch (Exception ex) when (!(ex is OperationCanceledException))
                 {
-                    Console.WriteLine($"Task '{name}' threw an exception: {ex}");
+                    var message = $"Task '{name}' threw an exception and will not be restarted: {ex}";
+                    if (log != null)
+                    {
+                        log.Error(message);
+                    }
+                    else
+                    {
+                        Console.WriteLine(message);
+                    }
                 }
             }, effectiveToken);
 

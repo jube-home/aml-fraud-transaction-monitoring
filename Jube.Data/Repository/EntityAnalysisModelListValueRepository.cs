@@ -11,19 +11,19 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Context;
-    using LinqToDB;
-    using Microsoft.Extensions.Logging.Abstractions;
-    using Poco;
-
     public class EntityAnalysisModelListValueRepository
     {
         private readonly DbContext dbContext;
@@ -78,11 +78,12 @@ namespace Jube.Data.Repository
             return dbContext.EntityAnalysisModelListValue.FirstOrDefaultAsync(w =>
                 (w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
                  !tenantRegistryId.HasValue)
-                && w.EntityAnalysisModelListId == id && (w.Deleted == 0 || w.Deleted == null)
+                && w.Id == id && (w.Deleted == 0 || w.Deleted == null)
                 && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
         }
 
-        public async Task<EntityAnalysisModelListValue> InsertAsync(EntityAnalysisModelListValue model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelListValue> InsertAsync(EntityAnalysisModelListValue model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName ?? model.CreatedUser;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
@@ -92,14 +93,17 @@ namespace Jube.Data.Repository
             return model;
         }
 
-        public async Task<EntityAnalysisModelListValue> UpdateAsync(EntityAnalysisModelListValue model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelListValue> UpdateAsync(EntityAnalysisModelListValue model,
+            CancellationToken token = default)
         {
             var existing = await dbContext.EntityAnalysisModelListValue
                 .FirstOrDefaultAsync(w => w.Id
                                           == model.Id
-                                          && w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                                          && w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId ==
+                                          tenantRegistryId
                                           && (w.Deleted == 0 || w.Deleted == null)
-                                          && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
+                                          && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow),
+                    token);
 
             if (existing == null)
             {
@@ -113,10 +117,9 @@ namespace Jube.Data.Repository
 
             await dbContext.UpdateAsync(model, token: token);
 
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<EntityAnalysisModelListValue, EntityAnalysisModelListValueVersion>();
-            }, NullLoggerFactory.Instance));
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<EntityAnalysisModelListValue, EntityAnalysisModelListValueVersion>(); },
+                NullLoggerFactory.Instance));
 
             var audit = mapper.Map<EntityAnalysisModelListValueVersion>(existing);
             audit.EntityAnalysisModelListValueId = existing.Id;
@@ -146,7 +149,8 @@ namespace Jube.Data.Repository
             }
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelListValue
                 .Where(d =>

@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -23,12 +24,13 @@ using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Dto.ExhaustiveSearchInstance;
 using Jube.Service.Agent.ServiceToolCatalogue;
-using Jube.Service.ExhaustiveSearchInstance;
 using Jube.Service.Exceptions.ExhaustiveSearchInstance;
+using Jube.Service.ExhaustiveSearchInstance;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
+using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -504,8 +506,8 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
 
             var fetched = await service.GetByIdAsync(saved.Id);
             fetched!.FilterJson.Should().NotBeNullOrEmpty();
-            System.Text.Json.JsonDocument.Parse(fetched.FilterJson!).RootElement.GetRawText()
-                .Should().Be(System.Text.Json.JsonDocument.Parse(dto.FilterJson).RootElement.GetRawText());
+            JsonDocument.Parse(fetched.FilterJson!).RootElement.GetRawText()
+                .Should().Be(JsonDocument.Parse(dto.FilterJson).RootElement.GetRawText());
             fetched.FilterSql.Should().Be(dto.FilterSql);
             fetched.FilterTokens.Should().NotBeNullOrEmpty();
         }

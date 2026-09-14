@@ -11,70 +11,78 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.HttpAdaptations;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Diagnostics;
-    using System.Threading.Tasks;
-    using HttpAdaptations;
-
     public static class HttpAdaptationsExtensions
     {
         public static async Task<Context> ExecuteHttpAdaptationsAsync(this Context context)
         {
-            if (context.Log.IsInfoEnabled)
+            context.TraceLog($"will begin processing adaptations.");
+
+            var stopwatch = Stopwatch.StartNew();
+            var items = new Dictionary<string, TaskPerformance>();
+
+            await IterateAndProcessAsync(context, items).ConfigureAwait(false);
+
+            stopwatch.Stop();
+
+            if (context.LogSampled)
             {
-                context.Log.Info($"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} will begin processing adaptations.");
+                var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                    new InvokeStagePerformance();
+
+                stages.HttpAdaptation = new StageTiming<TaskPerformance>
+                {
+                    DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                    Items = items
+                };
             }
 
-            await IterateAndProcessAsync(context).ConfigureAwait(false);
-            StorePerformanceFromStopwatch(context);
-
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info($"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Adaptations have concluded.");
-            }
+            context.TraceLog($"adaptations have concluded.");
 
             return context;
         }
-        private static void StorePerformanceFromStopwatch(Context context)
-        {
 
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.ExecuteHttpAdaptation = (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
-        }
-
-        private static async Task IterateAndProcessAsync(Context context)
+        private static async Task IterateAndProcessAsync(Context context, Dictionary<string, TaskPerformance> items)
         {
             foreach (var modelAdaptation in context.EntityAnalysisModel.Collections.EntityAnalysisModelAdaptations)
             {
                 try
                 {
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is evaluating {modelAdaptation.Id} is about to serialise the Entity Analysis Model Instance Entry Payload for the HTTP Adaptation POST.");
-                    }
+                    context.TraceLog(
+                        $"is evaluating {modelAdaptation.Id} and is about to serialise the Entity Analysis Model Instance Entry Payload for the HTTP Adaptation POST.");
 
-                    var adaptation = await context.RecallHttpEndpointAsync(modelAdaptation,
-                        context.EntityAnalysisModel.JsonSerializationHelper.DefaultJsonSerializerSettingsSettings).ConfigureAwait(false);
+                    var timed = await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.HttpAdaptation,
+                        async () =>
+                        {
+                            var adaptation = await context.RecallHttpEndpointAsync(modelAdaptation,
+                                context.EntityAnalysisModel.JsonSerializationHelper
+                                    .DefaultJsonSerializerSettingsSettings).ConfigureAwait(false);
 
-                    context.EntityAnalysisModelInstanceEntryPayload.HttpAdaptation[modelAdaptation.Name] = adaptation;
+                            context.EntityAnalysisModelInstanceEntryPayload.HttpAdaptation[modelAdaptation.Name] =
+                                adaptation;
 
-                    if (adaptation.IsSuppressed && context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is evaluating {modelAdaptation.Id} and the HTTP Adaptation response for {modelAdaptation.Name} is suppressed (Error: {adaptation.Error ?? "none"}); Value will read as null to any rule evaluating it.");
-                    }
+                            if (adaptation.IsSuppressed)
+                            {
+                                context.TraceLog(
+                                    $"is evaluating {modelAdaptation.Id} and the HTTP Adaptation response for {modelAdaptation.Name} is suppressed (Error: {adaptation.Error ?? "none"}); value will read as null to any rule evaluating it.");
+                            }
 
-                    context.ArchiveHttpAdaptation(modelAdaptation);
+                            context.ArchiveHttpAdaptation(modelAdaptation);
+                        }).ConfigureAwait(false);
+                    items[modelAdaptation.Name] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is evaluating {modelAdaptation.Id} produced an error {ex}.");
-                    }
+                    context.TraceLog($"is evaluating {modelAdaptation.Id} and produced an error {ex}.");
                 }
             }
         }

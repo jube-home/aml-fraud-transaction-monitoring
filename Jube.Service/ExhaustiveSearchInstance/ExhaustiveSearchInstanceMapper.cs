@@ -77,10 +77,6 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 FilterTokens = dto.FilterTokens,
                 ReportTable = (byte)(dto.ReportTable ? 1 : 0),
                 ResponsePayload = (byte)(dto.ResponsePayload ? 1 : 0),
-                // Training-progress fields are exclusively engine-managed (see the migration report) -- never
-                // taken from client input, but explicitly zeroed here (not left null) since Create/Update return
-                // this Poco directly to the client and the legacy contract always reported these as 0, not null
-                // (a null StatusId falls through the page's status switch to "Stopped for reasons unexpected").
                 StatusId = 0,
                 Models = 0,
                 ModelsSinceBest = 0,

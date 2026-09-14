@@ -11,21 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Repository;
+using Jube.Engine.EntityAnalysisModelManager.Helpers;
+using Jube.Engine.Sanctions.Models;
+using log4net;
+using Microsoft.VisualBasic.FileIO;
+
 namespace Jube.Engine.Sanctions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Data.Repository;
-    using EntityAnalysisModelManager.Helpers;
-    using log4net;
-    using Microsoft.VisualBasic.FileIO;
-    using Models;
-    using SanctionEntry=Data.Poco.SanctionEntry;
+    using SanctionEntry = Data.Poco.SanctionEntry;
 
     public static class SanctionEntryFileImporter
     {
@@ -146,7 +147,7 @@ namespace Jube.Engine.Sanctions
                 return Task.CompletedTask;
             }
 
-            var rawData = data != null ? String.Join(',', data) : null;
+            var rawData = data != null ? string.Join(',', data) : null;
             return onRejectedAsync(new SanctionEntryFileRejection(rowNumber, rawData, reasonId), token);
         }
 
@@ -159,10 +160,10 @@ namespace Jube.Engine.Sanctions
 
             if (currentHashes.Count == 0)
             {
-                if (log.IsInfoEnabled)
+                if (log.IsWarnEnabled)
                 {
-                    log.Info(
-                        $"Sanctions Loader: Skipped removal reconciliation for source {sanctionEntrySourceId} as no records were parsed from the file this run.");
+                    log.Warn(
+                        $"Sanctions Loader: Skipped removal reconciliation for source {sanctionEntrySourceId} as no records were parsed from the file this run. This usually means the source file failed to download or parse -- investigate before assuming the list is simply empty.");
                 }
 
                 return removed;
@@ -222,14 +223,14 @@ namespace Jube.Engine.Sanctions
                     sb.Append(' ');
                 }
 
-                sb.Append(Int32.TryParse(location, out var parsedIndex) ? data[parsedIndex] : data[0]);
+                sb.Append(int.TryParse(location, out var parsedIndex) ? data[parsedIndex] : data[0]);
             }
 
             var elementValue = sb.ToString();
             var reference = data[referenceIndex.Value];
             var hash = HashHelper.GetHash(sanctionEntrySourceId + elementValue + reference);
 
-            return new SanctionEntryFileRecord(elementValue, reference, hash, String.Join(',', data));
+            return new SanctionEntryFileRecord(elementValue, reference, hash, string.Join(',', data));
         }
 
         public static string NormalizeElementValue(string raw)

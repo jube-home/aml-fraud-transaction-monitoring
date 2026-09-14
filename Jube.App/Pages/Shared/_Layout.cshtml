@@ -38,7 +38,7 @@
 <body>
 <header>
     @{
-        Debug.Assert(User.Identity != null, "User.Identity != null");
+        Debug.Assert(User.Identity != null);
     }
     @if (!User.Identity.IsAuthenticated)
     {
@@ -421,12 +421,44 @@
 
             @if (permissionValidation.Validate(new[]
                      {
-                         27, 34, 35, 36, 31, 32, 33
+                         27, 34, 35, 36, 31, 32, 33, 42, 43
                      }))
             {
                 <li>
                     Administration
                     <ul>
+                        @if (permissionValidation.Validate(new[]
+                                 {
+                                     42, 43
+                                 }))
+                        {
+                            <li>
+                                OpenTelemetry
+                                <ul>
+                                    @if (permissionValidation.Validate(new[]
+                                             {
+                                                 42
+                                             }))
+                                    {
+                                        <li>
+                                            <a href='/Administration/OpenTelemetryLogCounter'>OpenTelemetry Log
+                                                Counter</a>
+                                        </li>
+                                    }
+
+                                    @if (permissionValidation.Validate(new[]
+                                             {
+                                                 43
+                                             }))
+                                    {
+                                        <li>
+                                            <a href='/Administration/OpenTelemetryExclude'>OpenTelemetry
+                                                Exclude</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
                         @if (permissionValidation.Validate(new[]
                                  {
                                      31, 32, 33
@@ -513,6 +545,10 @@
                                         <li>
                                             <a href='/Tree?Page=UserRegistry'>Users</a>
                                         </li>
+
+                                        <li>
+                                            <a href='/Administration/UserLogin'>User Login</a>
+                                        </li>
                                     }
                                 </ul>
                             </li>
@@ -527,22 +563,245 @@
                                 Performance
                                 <ul>
                                     <li>
-                                        <a href='/Administration/HTTPProcessingCounter'>HTTP Processing Counters</a>
+                                        Engine
+                                        <ul>
+                                            <li>
+                                                <a href='/Administration/HTTPProcessingCounter'>HTTP Processing
+                                                    Counters</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/EntityAnalysisAsynchronousQueueBalance'>
+                                                    Asynchronous Queue Balances</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/CaptureQueueHealth'>Capture Queue
+                                                    Health</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/EntityAnalysisModelAsynchronousQueueBalance'>
+                                                    Model Asynchronous Queue Balances</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/EntityAnalysisModelProcessingCounter'>Model
+                                                    Asynchronous Processing Counter</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/EntityAnalysisModelStagePerformanceCounter'>
+                                                    Model Stage Performance Counter</a>
+                                            </li>
+
+                                            <li>
+                                                <a
+                                                    href='/Administration/EntityAnalysisModelResponseTimePipelineCounter'>
+                                                    Model Response Time Pipeline Counter</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/EntityAnalysisModelTaskPerformanceCounter'>
+                                                    Model Task Performance Counter</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/ArchiverStagePerformanceCounter'>Archiver
+                                                    Stage Performance Counter</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/CaseCreationStagePerformanceCounter'>Case
+                                                    Creation Stage Performance Counter</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/ArchiverWarning'>Archiver Warning</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/CaseCreationWarning'>Case Creation
+                                                    Warning</a>
+                                            </li>
+                                        </ul>
                                     </li>
 
                                     <li>
-                                        <a href='/Administration/EntityAnalysisAsynchronousQueueBalance'>Asynchronous
-                                            Queue Balances</a>
+                                        Logs
+                                        <ul>
+                                            <li>
+                                                <a href='/Administration/ApplicationLogEntry'>Application Log
+                                                    Entry</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/PostgresLogEntry'>Postgres Log</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/ContainerLogEntry'>Container Log</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/ModelInvokeWarning'>Model Invoke
+                                                    Warning</a>
+                                            </li>
+                                        </ul>
                                     </li>
 
                                     <li>
-                                        <a href='/Administration/EntityAnalysisModelAsynchronousQueueBalance'>Model
-                                            Asynchronous Queue Balances</a>
+                                        Postgres
+                                        <ul>
+                                            <li>
+                                                <a href='/Administration/PostgresMetric'>Postgres Metric</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/PostgresActivity'>Postgres Activity</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/PostgresStatementStatistics'>Postgres
+                                                    Statement Statistics</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/PostgresTableStatistics'>Postgres Table
+                                                    Statistics</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/PostgresIndexStatistics'>Postgres Index
+                                                    Statistics</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/PostgresReplicationStatus'>Postgres
+                                                    Replication Status</a>
+                                            </li>
+                                        </ul>
                                     </li>
 
                                     <li>
-                                        <a href='/Administration/EntityAnalysisModelProcessingCounter'>Model
-                                            Asynchronous Processing Counter</a>
+                                        Redis
+                                        <ul>
+                                            <li>
+                                                <a href='/Administration/RedisMetric'>Redis Metric</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/RedisSlowOperation'>Redis Slow Operation</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/RedisConnectionMultiplexerMetric'>Redis
+                                                    Connection Multiplexer Metric</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/RedisSentinelStatus'>Redis Sentinel
+                                                    Status</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/RedisSentinelEvent'>Redis Sentinel Event</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/RedisConnectionEvent'>Redis Connection
+                                                    Event</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/RedisCallCounter'>Redis Call Counter</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li>
+                                        OpenTelemetry
+                                        <ul>
+                                            <li>
+                                                <a href='/Administration/OpenTelemetryMetric'>OpenTelemetry
+                                                    Metric</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/OtlpDispatchCounter'>OTLP Dispatch
+                                                    Counter</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li>
+                                        Cluster Orchestration
+                                        <ul>
+                                            <li>
+                                                <a href='/Administration/EtcdMemberStatus'>Etcd Member Status</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/PatroniMemberStatus'>Patroni Member
+                                                    Status</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/EtcdClusterEvent'>Etcd Cluster Event</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/PatroniClusterEvent'>Patroni Cluster
+                                                    Event</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li>
+                                        Docker
+                                        <ul>
+                                            <li>
+                                                <a href='/Administration/DockerContainerMetric'>Docker Container
+                                                    Metric</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/DockerEvent'>Docker Event</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/DockerHostMetric'>Docker Host Metric</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li>
+                                        HAProxy &amp; Overlay Network
+                                        <ul>
+                                            <li>
+                                                <a href='/Administration/HaProxyServerStatus'>HAProxy Server
+                                                    Status</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/HaProxyReachabilityProbe'>HAProxy
+                                                    Reachability Probe</a>
+                                            </li>
+
+                                            <li>
+                                                <a href='/Administration/OverlayNetworkTaskDrift'>Overlay Network
+                                                    Task Drift</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li>
+                                        Runtime &amp; Telemetry
+                                        <ul>
+                                            <li>
+                                                <a href='/Administration/DotNetRuntimeMetric'>.NET Runtime Metric</a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
                             </li>

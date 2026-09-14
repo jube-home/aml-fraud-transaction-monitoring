@@ -11,16 +11,20 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Repository;
+using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Archiver;
+using Jube.Engine.Observability;
+
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Archiver;
-    using Context;
-    using EntityAnalysisModel=EntityAnalysisModel.EntityAnalysisModel;
+    using EntityAnalysisModel = EntityAnalysisModel.EntityAnalysisModel;
 
-    public class ArchiverTaskStarter(Context context, int threadSequence)
+    public class ArchiverTaskStarter(Context.Context context, int threadSequence)
     {
         public async Task StartAsync()
         {
@@ -36,7 +40,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         {
                             try
                             {
-                                if (await TryProcessSingleDequeueForCaseCreationAndArchiverDrainOnCancellationAsync(model,
+                                if (await TryProcessSingleDequeueForCaseCreationAndArchiverDrainOnCancellationAsync(
+                                        model,
                                         context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false))
                                 {
                                     processedAny = true;
@@ -44,7 +49,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             }
                             catch (Exception ex) when (ex is not OperationCanceledException)
                             {
-                                context.Services.Log.Error($"TryProcessSingleDequeueForCaseCreationAndArchiverDrainOnCancellationAsync threw an error as {ex}");
+                                context.Services.Log.Error(
+                                    $"TryProcessSingleDequeueForCaseCreationAndArchiverDrainOnCancellationAsync threw an error as {ex}");
                             }
                         }
 
@@ -67,7 +73,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 }
                 catch (OperationCanceledException ex)
                 {
-                    context.Services.Log.Info($"Graceful Cancellation PersistToActivationWatcherPollingAsync: has produced an error {ex}");
+                    context.Services.Log.Info(
+                        $"Graceful Cancellation PersistToActivationWatcherPollingAsync: has produced an error {ex}");
                     break;
                 }
                 catch (Exception ex)
@@ -110,6 +117,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     try
                     {
                         await ArchiverProcessing.CaseCreationAndArchiveStorageAsync(payload,
+                            entityAnalysisModel,
                             context.JsonSerializationHelper,
                             buffer,
                             context.ConcurrentQueues.PendingCases,
@@ -123,20 +131,43 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 }
 
                 var flushDueToTimeout = buffer.LastMessage.AddSeconds(10) <= DateTime.UtcNow;
-                var flushDueToThreshold = buffer.Archive.Count > Int32.Parse(context.Services.DynamicEnvironment.AppSettings("BulkCopyThreshold"));
+                var flushDueToThreshold = buffer.Archive.Count >
+                                          int.Parse(
+                                              context.Services.DynamicEnvironment.AppSettings("BulkCopyThreshold"));
                 var flushDueToBufferHavingValues = buffer.Archive.Count > 0 || buffer.ArchiveKeys.Count > 0;
 
                 if ((flushDueToTimeout || flushDueToThreshold) && flushDueToBufferHavingValues)
                 {
-                    await ArchiverArchiveRepository.BulkCopyArchiveBufferAsync(entityAnalysisModel.Instance.TenantRegistryId,
+                    var stopwatch = Stopwatch.StartNew();
+                    await ArchiverArchiveRepository.BulkCopyArchiveBufferAsync(
+                        entityAnalysisModel.Instance.TenantRegistryId,
                         entityAnalysisModel.Instance.Guid
-                        , buffer, context.Services.DynamicEnvironment, context.Services.CacheService, context.Services.Log, token).ConfigureAwait(false);
-                }
+                        , buffer, context.Services.DynamicEnvironment, context.Services.CacheService,
+                        context.Services.Log, token).ConfigureAwait(false);
+                    var bulkCopyDuration = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+                    entityAnalysisModel.ArchiverStagePerformanceCounters.Record(
+                        nameof(ArchiverStage.BulkCopyArchiveBuffer), bulkCopyDuration);
+                    EngineDiagnostics.ArchiverStageDuration.Record(bulkCopyDuration / 1000.0,
+                        new KeyValuePair<string, object>("stage", nameof(ArchiverStage.BulkCopyArchiveBuffer)));
 
+                    var warnThresholdMicroseconds = int.Parse(
+                                                        context.Services.DynamicEnvironment.AppSettings(
+                                                            "ArchiverWarnThresholdMilliseconds")) *
+                                                    1000L;
+                    if (bulkCopyDuration >= warnThresholdMicroseconds)
+                    {
+                        ArchiverWarningCapture.Enqueue(new ArchiverWarningCaptureRecord(
+                            DateTime.UtcNow, entityAnalysisModel.Instance.Guid, entityAnalysisModel.Instance.Name,
+                            null, ArchiverStage.BulkCopyArchiveBuffer, bulkCopyDuration));
+                        EngineDiagnostics.ArchiverWarnCount.Add(1,
+                            new KeyValuePair<string, object>("stage", nameof(ArchiverStage.BulkCopyArchiveBuffer)));
+                    }
+                }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                context.Services.Log.Error($"TryProcessSingleDequeueForCaseCreationAndArchiverDrainOnCancellationAsync: has produced an error {ex} on thread {threadSequence}.");
+                context.Services.Log.Error(
+                    $"TryProcessSingleDequeueForCaseCreationAndArchiverDrainOnCancellationAsync: has produced an error {ex} on thread {threadSequence}.");
             }
 
             return found;
