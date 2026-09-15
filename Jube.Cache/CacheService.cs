@@ -17,6 +17,7 @@ using System.Collections.Concurrent;
 using Jube.Cache.Redis;
 using Jube.Cache.Redis.CacheUserRegistryApiKey;
 using Jube.Cache.Redis.Callback;
+using Jube.Data.Repository;
 using Jube.ResilientRedisConnection;
 using Jube.TaskCancellation;
 using log4net;
@@ -67,17 +68,30 @@ namespace Jube.Cache
             this.activationRuleIdempotency = activationRuleIdempotency;
 
             var options = ConfigurationOptions.Parse(redisConnectionString);
-            options.ReconnectRetryPolicy = new ExponentialRetry(
-                reconnectRetryBaseDelayMilliseconds,
-                reconnectRetryMaxDelayMilliseconds);
+            options.ReconnectRetryPolicy = new RedisReconnectRetryPolicy(
+                new ExponentialRetry(reconnectRetryBaseDelayMilliseconds, reconnectRetryMaxDelayMilliseconds),
+                log);
 
-            if (backlogFailFast) options.BacklogPolicy = BacklogPolicy.FailFast;
+            if (backlogFailFast)
+            {
+                options.BacklogPolicy = BacklogPolicy.FailFast;
+            }
 
-            ConnectionMultiplexer = string.IsNullOrEmpty(options.ServiceName)
-                ? ConnectionMultiplexer.Connect(options)
-                : ConnectViaSentinelWithSplitTimeouts(options, sentinelConnectTimeoutMilliseconds,
-                    sentinelSyncTimeoutMilliseconds, sentinelConnectRetry);
-            SubscribeToConnectionDiagnostics(ConnectionMultiplexer, log);
+            if (string.IsNullOrEmpty(options.ServiceName))
+            {
+                ConnectionMultiplexer = ConnectionMultiplexer.Connect(options);
+            }
+            else
+            {
+                ConnectionMultiplexer = ConnectViaSentinelWithSplitTimeouts(options,
+                    sentinelConnectTimeoutMilliseconds, sentinelSyncTimeoutMilliseconds, sentinelConnectRetry,
+                    out var sentinelMultiplexer);
+                SentinelMultiplexer = sentinelMultiplexer;
+                SentinelServiceName = options.ServiceName;
+                SubscribeToSentinelEvents(sentinelMultiplexer, log);
+            }
+
+            SubscribeToConnectionDiagnostics(ConnectionMultiplexer, ConnectionDiagnostics, log);
             ResilientRedisResilientRedisDatabase =
                 new ResilientRedisConnection.ResilientRedisConnection(ConnectionMultiplexer, postgresConnectionString,
                         hsetOffload, log)
@@ -104,6 +118,9 @@ namespace Jube.Cache
 
         public Task InstantiateRepositoriesTask { get; set; }
         public ConnectionMultiplexer ConnectionMultiplexer { get; set; }
+        public ConnectionMultiplexer SentinelMultiplexer { get; private set; }
+        public string SentinelServiceName { get; private set; }
+        public RedisConnectionDiagnosticsCounters ConnectionDiagnostics { get; } = new();
         public IHybridResilientRedisDatabase ResilientRedisResilientRedisDatabase { get; set; }
         public CacheAbstractionRepository CacheAbstractionRepository { get; set; }
         public CachePayloadLatestRepository CachePayloadLatestRepository { get; set; }
@@ -144,7 +161,8 @@ namespace Jube.Cache
         }
 
         private static ConnectionMultiplexer ConnectViaSentinelWithSplitTimeouts(ConfigurationOptions dataOptions,
-            int sentinelConnectTimeoutMilliseconds, int sentinelSyncTimeoutMilliseconds, int sentinelConnectRetry)
+            int sentinelConnectTimeoutMilliseconds, int sentinelSyncTimeoutMilliseconds, int sentinelConnectRetry,
+            out ConnectionMultiplexer sentinelMultiplexer)
         {
             var sentinelOptions = dataOptions.Clone();
             sentinelOptions.ConnectTimeout = sentinelConnectTimeoutMilliseconds;
@@ -152,32 +170,97 @@ namespace Jube.Cache
             sentinelOptions.ConnectRetry = sentinelConnectRetry;
             sentinelOptions.AbortOnConnectFail = false;
 
-            var sentinelMultiplexer = ConnectionMultiplexer.SentinelConnect(sentinelOptions);
+            sentinelMultiplexer = ConnectionMultiplexer.SentinelConnect(sentinelOptions);
             return sentinelMultiplexer.GetSentinelMasterConnection(dataOptions);
         }
 
-        private static void SubscribeToConnectionDiagnostics(ConnectionMultiplexer connectionMultiplexer, ILog log)
+        private static void SubscribeToSentinelEvents(ConnectionMultiplexer sentinelMultiplexer, ILog log)
         {
-            connectionMultiplexer.ConnectionFailed += (_, args) =>
-                log.Error($"Cache Redis: connection failed for endpoint {args.EndPoint} " +
-                          $"({args.ConnectionType}), failure type {args.FailureType}.", args.Exception);
+            sentinelMultiplexer.GetSubscriber().Subscribe(RedisChannel.Pattern("*"),
+                (channel, message) => HandleSentinelEvent(log, channel, message));
+        }
 
-            connectionMultiplexer.ConnectionRestored += (_, args) =>
-                log.Warn($"Cache Redis: connection restored for endpoint {args.EndPoint} " +
-                         $"({args.ConnectionType}) after failure type {args.FailureType}.");
+        internal static void HandleSentinelEvent(ILog log, RedisChannel channel, RedisValue message)
+        {
+            RedisSentinelEventCapture.Enqueue(
+                new RedisSentinelEventCaptureRecord(DateTime.UtcNow, channel, message));
+            log.Warn($"Cache Redis Sentinel: event on channel {channel}: {message}.");
+        }
 
-            connectionMultiplexer.ErrorMessage += (_, args) =>
-                log.Error($"Cache Redis: server {args.EndPoint} returned error message {args.Message}.");
+        private static void SubscribeToConnectionDiagnostics(ConnectionMultiplexer connectionMultiplexer,
+            RedisConnectionDiagnosticsCounters diagnostics, ILog log)
+        {
+            connectionMultiplexer.ConnectionFailed += (_, args) => HandleConnectionFailed(diagnostics, log, args);
+            connectionMultiplexer.ConnectionRestored += (_, args) => HandleConnectionRestored(diagnostics, log, args);
+            connectionMultiplexer.ErrorMessage += (_, args) => HandleErrorMessage(diagnostics, log, args);
+            connectionMultiplexer.InternalError += (_, args) => HandleInternalError(diagnostics, log, args);
+            connectionMultiplexer.ConfigurationChanged +=
+                (_, args) => HandleConfigurationChanged(diagnostics, log, args);
+            connectionMultiplexer.ConfigurationChangedBroadcast +=
+                (_, args) => HandleConfigurationChangedBroadcast(diagnostics, log, args);
+        }
 
-            connectionMultiplexer.InternalError += (_, args) =>
-                log.Error($"Cache Redis: internal error on endpoint {args.EndPoint} " +
-                          $"during {args.Origin}.", args.Exception);
+        internal static void HandleConnectionFailed(RedisConnectionDiagnosticsCounters diagnostics, ILog log,
+            ConnectionFailedEventArgs args)
+        {
+            diagnostics.IncrementConnectionFailed();
+            RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
+                DateTime.UtcNow, RedisConnectionEventType.ConnectionFailed, args.EndPoint?.ToString(),
+                args.ConnectionType, args.FailureType, null, null, args.Exception?.ToString()));
+            log.Error($"Cache Redis: connection failed for endpoint {args.EndPoint} " +
+                      $"({args.ConnectionType}), failure type {args.FailureType}.", args.Exception);
+        }
 
-            connectionMultiplexer.ConfigurationChanged += (_, args) =>
-                log.Warn($"Cache Redis: configuration changed for endpoint {args.EndPoint}.");
+        internal static void HandleConnectionRestored(RedisConnectionDiagnosticsCounters diagnostics, ILog log,
+            ConnectionFailedEventArgs args)
+        {
+            diagnostics.IncrementConnectionRestored();
+            RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
+                DateTime.UtcNow, RedisConnectionEventType.ConnectionRestored, args.EndPoint?.ToString(),
+                args.ConnectionType, args.FailureType, null, null, args.Exception?.ToString()));
+            log.Warn($"Cache Redis: connection restored for endpoint {args.EndPoint} " +
+                     $"({args.ConnectionType}) after failure type {args.FailureType}.");
+        }
 
-            connectionMultiplexer.ConfigurationChangedBroadcast += (_, args) =>
-                log.Warn($"Cache Redis: configuration change broadcast received from endpoint {args.EndPoint}.");
+        internal static void HandleErrorMessage(RedisConnectionDiagnosticsCounters diagnostics, ILog log,
+            RedisErrorEventArgs args)
+        {
+            diagnostics.IncrementErrorMessage();
+            RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
+                DateTime.UtcNow, RedisConnectionEventType.ErrorMessage, args.EndPoint.ToString(), null, null,
+                null, args.Message, null));
+            log.Error($"Cache Redis: server {args.EndPoint} returned error message {args.Message}.");
+        }
+
+        internal static void HandleInternalError(RedisConnectionDiagnosticsCounters diagnostics, ILog log,
+            InternalErrorEventArgs args)
+        {
+            diagnostics.IncrementInternalError();
+            RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
+                DateTime.UtcNow, RedisConnectionEventType.InternalError, args.EndPoint?.ToString(),
+                args.ConnectionType, null, args.Origin, null, args.Exception.ToString()));
+            log.Error($"Cache Redis: internal error on endpoint {args.EndPoint} " +
+                      $"during {args.Origin}.", args.Exception);
+        }
+
+        internal static void HandleConfigurationChanged(RedisConnectionDiagnosticsCounters diagnostics, ILog log,
+            EndPointEventArgs args)
+        {
+            diagnostics.IncrementConfigurationChanged();
+            RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
+                DateTime.UtcNow, RedisConnectionEventType.ConfigurationChanged, args.EndPoint.ToString(), null,
+                null, null, null, null));
+            log.Warn($"Cache Redis: configuration changed for endpoint {args.EndPoint}.");
+        }
+
+        internal static void HandleConfigurationChangedBroadcast(RedisConnectionDiagnosticsCounters diagnostics,
+            ILog log, EndPointEventArgs args)
+        {
+            diagnostics.IncrementConfigurationChangedBroadcast();
+            RedisConnectionEventCapture.Enqueue(new RedisConnectionEventCaptureRecord(
+                DateTime.UtcNow, RedisConnectionEventType.ConfigurationChangedBroadcast,
+                args.EndPoint.ToString(), null, null, null, null, null));
+            log.Warn($"Cache Redis: configuration change broadcast received from endpoint {args.EndPoint}.");
         }
     }
 }

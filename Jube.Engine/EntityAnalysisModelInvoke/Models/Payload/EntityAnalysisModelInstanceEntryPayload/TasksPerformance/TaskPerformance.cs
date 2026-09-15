@@ -12,11 +12,12 @@
  */
 
 // ReSharper disable UnusedMember.Global
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance
 {
     public class TaskPerformance(long computeTime, long memory)
     {
-        public long ComputeTime { get; set; } = computeTime;
+        public long ComputeTimeMicroseconds { get; set; } = computeTime;
         public long Memory { get; set; } = memory;
     }
 }

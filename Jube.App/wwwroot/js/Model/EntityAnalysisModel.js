@@ -43,6 +43,7 @@ function loadTemplate(id) {
             $("#MaxResponseElevationValue").data("kendoNumericTextBox").value(data.maxResponseElevationValue);
             $("#MaxResponseElevationThreshold").data("kendoNumericTextBox").value(data.maxResponseElevationThreshold);
             $("#ActivationWatcherSample").data("kendoSlider").value(data.activationWatcherSample);
+            $("#ImplicitAsyncTimeoutMilliseconds").data("kendoNumericTextBox").value(data.implicitAsyncTimeoutMilliseconds);
             $("#ReferenceDateXPath").val(data.referenceDateXPath);
             $("#ReferenceDateName").val(data.referenceDateName);
             $("#EntryXPath").val(data.entryXPath);
@@ -92,6 +93,47 @@ function loadTemplate(id) {
             }
             ExpandCollapseActivationWatcherLimit();
 
+            const $enableImplicitAsync = $("#EnableImplicitAsync");
+            if (data.enableImplicitAsync) {
+                $enableImplicitAsync.data("kendoSwitch").check(true);
+            } else {
+                $enableImplicitAsync.data("kendoSwitch").check(false);
+            }
+            ExpandCollapseImplicitAsync();
+
+            const $enableTrace = $("#EnableTrace");
+            if (data.enableTrace) {
+                $enableTrace.data("kendoSwitch").check(true);
+            } else {
+                $enableTrace.data("kendoSwitch").check(false);
+            }
+
+            const $enableLogs = $("#EnableLogs");
+            $enableLogs.data("kendoSwitch").check(!!data.enableLogs);
+
+            const $enableLogsInfo = $("#EnableLogsInfo");
+            $enableLogsInfo.data("kendoSwitch").check(!!data.enableLogsInfo);
+
+            const $enableSampling = $("#EnableSampling");
+            $enableSampling.data("kendoSwitch").check(!!data.enableSampling);
+            $("#SamplePercentage").data("kendoSlider").value(data.samplePercentage);
+
+            const $enableLogsWarnThreshold = $("#EnableLogsWarnThreshold");
+            $enableLogsWarnThreshold.data("kendoSwitch").check(!!data.enableLogsWarnThreshold);
+            $("#LogsWarnThresholdMilliseconds").data("kendoSlider").value(data.logsWarnThresholdMilliseconds);
+
+            ExpandCollapseLogs();
+            ExpandCollapseLogsInfo();
+            ExpandCollapseSamplePercentage();
+            ExpandCollapseLogsWarnThreshold();
+
+            const $enableLogsInResponse = $("#EnableLogsInResponse");
+            if (data.enableLogsInResponse) {
+                $enableLogsInResponse.data("kendoSwitch").check(true);
+            } else {
+                $enableLogsInResponse.data("kendoSwitch").check(false);
+            }
+
             ReadyExisting(data);
             validator.validate();
 
@@ -111,6 +153,7 @@ function showTemplate() {
     $("#MaxResponseElevationValue").data("kendoNumericTextBox").value(1);
     $("#MaxResponseElevationThreshold").data("kendoNumericTextBox").value(100);
     $("#ActivationWatcherSample").data("kendoSlider").value(1);
+    $("#ImplicitAsyncTimeoutMilliseconds").data("kendoNumericTextBox").value(5000);
     $("#ReferenceDateXPath").val("");
     $("#ReferenceDateName").val("");
     $("#CacheFetchLimit").data("kendoNumericTextBox").value(100);
@@ -125,6 +168,20 @@ function showTemplate() {
     $("#EnableRdbmsArchive").data("kendoSwitch").check(false);
     $("#EnableActivationWatcher").data("kendoSwitch").check(false);
     ExpandCollapseActivationWatcherLimit();
+    $("#EnableImplicitAsync").data("kendoSwitch").check(false);
+    ExpandCollapseImplicitAsync();
+    $("#EnableTrace").data("kendoSwitch").check(false);
+    $("#EnableLogs").data("kendoSwitch").check(false);
+    $("#EnableLogsInfo").data("kendoSwitch").check(false);
+    $("#EnableSampling").data("kendoSwitch").check(false);
+    $("#SamplePercentage").data("kendoSlider").value(100);
+    $("#EnableLogsWarnThreshold").data("kendoSwitch").check(false);
+    $("#LogsWarnThresholdMilliseconds").data("kendoSlider").value(250);
+    ExpandCollapseLogs();
+    ExpandCollapseLogsInfo();
+    ExpandCollapseSamplePercentage();
+    ExpandCollapseLogsWarnThreshold();
+    $("#EnableLogsInResponse").data("kendoSwitch").check(false);
     $("#ErrorMessage").html("");
 
     ReadyNew();
@@ -156,6 +213,51 @@ function ExpandCollapseActivationWatcherLimit() {
     }
 }
 
+function ExpandCollapseImplicitAsync() {
+    const $implicitAsyncTable = $("#ImplicitAsyncTable");
+    if ($('#EnableImplicitAsync').prop('checked')) {
+        $implicitAsyncTable.show();
+    } else {
+        $implicitAsyncTable.hide();
+    }
+}
+
+function ExpandCollapseLogs() {
+    const $logsTable = $("#LogsTable");
+    if ($('#EnableLogs').prop('checked')) {
+        $logsTable.show();
+    } else {
+        $logsTable.hide();
+    }
+}
+
+function ExpandCollapseLogsInfo() {
+    const $logsInfoOptionsTable = $("#LogsInfoOptionsTable");
+    if ($('#EnableLogsInfo').prop('checked')) {
+        $logsInfoOptionsTable.show();
+    } else {
+        $logsInfoOptionsTable.hide();
+    }
+}
+
+function ExpandCollapseLogsWarnThreshold() {
+    const $logsWarnThresholdTable = $("#LogsWarnThresholdTable");
+    if ($('#EnableLogsWarnThreshold').prop('checked')) {
+        $logsWarnThresholdTable.show();
+    } else {
+        $logsWarnThresholdTable.hide();
+    }
+}
+
+function ExpandCollapseSamplePercentage() {
+    const $samplePercentageTable = $("#SamplePercentageTable");
+    if ($('#EnableSampling').prop('checked')) {
+        $samplePercentageTable.show();
+    } else {
+        $samplePercentageTable.hide();
+    }
+}
+
 function GetData() {
     return {
         entryPayloadLocationTypeId: $('input[name=EntryPayloadLocationTypeId]:checked').val(),
@@ -173,6 +275,16 @@ function GetData() {
         enableResponseElevationLimit: $("#EnableResponseElevationLimit").prop("checked"),
         enableActivationWatcher: $("#EnableActivationWatcher").prop("checked"),
         enableRdbmsArchive: $("#EnableRdbmsArchive").prop("checked"),
+        enableImplicitAsync: $("#EnableImplicitAsync").prop("checked"),
+        implicitAsyncTimeoutMilliseconds: $("#ImplicitAsyncTimeoutMilliseconds").val(),
+        enableTrace: $("#EnableTrace").prop("checked"),
+        enableLogs: $("#EnableLogs").prop("checked"),
+        enableLogsInfo: $("#EnableLogsInfo").prop("checked"),
+        enableLogsWarnThreshold: $("#EnableLogsWarnThreshold").prop("checked"),
+        logsWarnThresholdMilliseconds: $("#LogsWarnThresholdMilliseconds").data("kendoSlider").value(),
+        enableSampling: $("#EnableSampling").prop("checked"),
+        samplePercentage: $("#SamplePercentage").data("kendoSlider").value(),
+        enableLogsInResponse: $("#EnableLogsInResponse").prop("checked"),
         cacheFetchLimit: $("#CacheFetchLimit").val(),
         cacheTtlIntervalValue: $("#CacheTtlIntervalValue").val(),
         cacheTtlInterval: $('input[name=CacheTtlInterval]:checked').val(),
@@ -220,6 +332,56 @@ $(document).ready(function () {
                 ExpandCollapseActivationWatcherLimit();
             }
         });
+        $("#EnableImplicitAsync").kendoSwitch({
+            change: function () {
+                ExpandCollapseImplicitAsync();
+            }
+        });
+        $("#EnableTrace").kendoSwitch();
+
+        $("#EnableLogs").kendoSwitch({
+            change: function () {
+                ExpandCollapseLogs();
+            }
+        });
+        $("#EnableLogsInfo").kendoSwitch({
+            change: function () {
+                ExpandCollapseLogsInfo();
+            }
+        });
+        $("#EnableSampling").kendoSwitch({
+            change: function () {
+                ExpandCollapseSamplePercentage();
+            }
+        });
+        $("#EnableLogsWarnThreshold").kendoSwitch({
+            change: function () {
+                ExpandCollapseLogsWarnThreshold();
+            }
+        });
+        $("#EnableLogsInResponse").kendoSwitch();
+
+        $("#ImplicitAsyncTimeoutMilliseconds").kendoNumericTextBox({
+            format: "#"
+        });
+
+        $("#SamplePercentage").kendoSlider({
+            increaseButtonTitle: "Right",
+            decreaseButtonTitle: "Left",
+            min: 0,
+            max: 100,
+            smallStep: 0.01,
+            largeStep: 5
+        }).data("kendoSlider");
+
+        $("#LogsWarnThresholdMilliseconds").kendoSlider({
+            increaseButtonTitle: "Right",
+            decreaseButtonTitle: "Left",
+            min: 0,
+            max: 5000,
+            smallStep: 50,
+            largeStep: 250
+        }).data("kendoSlider");
 
         $("#MaxActivationWatcherValue").kendoNumericTextBox({
             format: "#"

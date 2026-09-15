@@ -11,42 +11,51 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Diagnostics;
+using System.Net;
+using System.Threading.Tasks;
+using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.Observability;
+using RabbitMQ.Client;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Net;
-    using System.Threading.Tasks;
-    using Dictionary;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using RabbitMQ.Client;
-
     public static class WriteResponseJsonAndQueueAsynchronousResponseMessageExtension
     {
         public static async Task WriteResponseJsonAndQueueAsynchronousResponseMessageAsync(this Context context)
         {
-            context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson = BuildJsonResponses.BuildFullJson(context.EntityAnalysisModelInstanceEntryPayload, context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
+            var stopwatch = Stopwatch.StartNew();
 
-            await context.EntityAnalysisModel.Services.CacheService.CacheWalRepository.InsertAsync(context.EntityAnalysisModelInstanceEntryPayload.TenantRegistryId, context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelGuid,
+            context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson = BuildJsonResponses.BuildFullJson(
+                context.EntityAnalysisModelInstanceEntryPayload,
+                context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
+
+            await context.EntityAnalysisModel.Services.CacheService.CacheWalRepository.InsertAsync(
+                context.EntityAnalysisModelInstanceEntryPayload.TenantRegistryId,
+                context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelGuid,
                 context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid, Dns.GetHostName(),
                 context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson);
 
-            if (context.Environment.AppSettings("PartialResponseMessageSerialisation").Equals("True", StringComparison.CurrentCultureIgnoreCase))
+            if (context.Environment.AppSettings("PartialResponseMessageSerialisation")
+                .Equals("True", StringComparison.CurrentCultureIgnoreCase))
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"HTTP Handler Entity: GUID payload {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} model id is {context.EntityAnalysisModel.Instance.Id} has partial serialised response environment variable.");
-                }
+                context.TraceLog(
+                    $"has partial response serialisation enabled and will serialise a partial response.");
 
-                context.EntityAnalysisModelInstanceEntryPayload.ResponseJson = BuildJsonResponses.BuildPartialResponsePayloadJson(context, context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
+                context.EntityAnalysisModelInstanceEntryPayload.ResponseJson =
+                    BuildJsonResponses.BuildPartialResponsePayloadJson(context,
+                        context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
             }
             else
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"HTTP Handler Entity: GUID payload {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} model id is {context.EntityAnalysisModel.Instance.Id} has partial serialised response environment variable false and will serialise full response.");
-                }
+                context.TraceLog(
+                    $"has partial response serialisation disabled and will serialise a full response.");
+
+                context.EntityAnalysisModelInstanceEntryPayload.ResponseJson =
+                    BuildFullResponseJsonRedactingStagesUnlessTraceEnabled(context);
             }
 
             if (context.Environment.AppSettings("AMQP").Equals("True", StringComparison.OrdinalIgnoreCase))
@@ -55,11 +64,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             }
             else
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"HTTP Handler Entity: GUID payload {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} model id is {context.EntityAnalysisModel.Instance.Id} does not have AMQP configured to dispatch messages to an exchange.");
-                }
+                context.TraceLog($"does not have AMQP configured to dispatch messages to an exchange.");
             }
 
             if (context.Async)
@@ -67,38 +72,89 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 await PublishCallbackViaPostgresAsync(context).ConfigureAwait(false);
             }
 
+            stopwatch.Stop();
+
+            if (context.LogSampled)
+            {
+                var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                    new InvokeStagePerformance();
+                stages.WriteResponse = new StageDuration
+                {
+                    DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency))
+                };
+            }
+        }
+
+        private static byte[] BuildFullResponseJsonRedactingStagesUnlessTraceEnabled(Context context)
+        {
+            var payload = context.EntityAnalysisModelInstanceEntryPayload;
+
+            if (context.EntityAnalysisModel.Flags.EnableTrace && context.EntityAnalysisModel.Flags.EnableLogsInResponse)
+            {
+                return BuildJsonResponses.BuildFullJson(payload,
+                    context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
+            }
+
+            var stagesForArchive = payload.InvokeTaskPerformance.Stages;
+            var logsForArchive = payload.Logs;
+            try
+            {
+                if (!context.EntityAnalysisModel.Flags.EnableTrace)
+                {
+                    payload.InvokeTaskPerformance.Stages = null;
+                }
+
+                if (!context.EntityAnalysisModel.Flags.EnableLogsInResponse)
+                {
+                    payload.Logs = null;
+                }
+
+                return BuildJsonResponses.BuildFullJson(payload,
+                    context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
+            }
+            finally
+            {
+                payload.InvokeTaskPerformance.Stages = stagesForArchive;
+                payload.Logs = logsForArchive;
+            }
         }
 
         private static async Task PublishCallbackViaPostgresAsync(Context context)
         {
-            await context.EntityAnalysisModel.Services.CacheService.CacheCallbackPublishSubscribe.PublishAsync(context.EntityAnalysisModelInstanceEntryPayload.ResponseJson.Length > 0 ? context.EntityAnalysisModelInstanceEntryPayload.ResponseJson : context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson,
-                context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid).ConfigureAwait(false);
+            await context.EntityAnalysisModel.Services.CacheService.CacheCallbackPublishSubscribe.PublishAsync(
+                    context.EntityAnalysisModelInstanceEntryPayload.ResponseJson.Length > 0
+                        ? context.EntityAnalysisModelInstanceEntryPayload.ResponseJson
+                        : context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson,
+                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid)
+                .ConfigureAwait(false);
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"HTTP Handler Entity: GUID payload {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} model id is {context.EntityAnalysisModel.Instance.Id} will store the callback in the database.");
-            }
+            context.TraceLog($"will store the callback in the database.");
         }
 
         private static void PublishToAmqp(Context context)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"HTTP Handler Entity: GUID payload {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} model id is {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelId} is about to publish the response to the Outbound Exchange.");
-            }
+            context.TraceLog($"is about to publish the response to the Outbound Exchange.");
+
+            using var activity = EngineDiagnostics.ActivitySource.StartActivity("PublishToAmqp",
+                ActivityKind.Producer);
+            EngineDiagnostics.TagCurrentCodeLocation(activity);
+            activity?.SetTag("messaging.system", "rabbitmq");
+            activity?.SetTag("messaging.destination.name", "jubeOutbound");
+            activity?.SetTag("messaging.operation", "publish");
+            activity?.SetTag("jube.entity_analysis_model_instance_entry_guid",
+                context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid);
 
             var props = context.EntityAnalysisModel.Services.RabbitMqChannel.CreateBasicProperties();
             props.Headers = new PooledDictionary<string, object>();
 
-            context.EntityAnalysisModel.Services.RabbitMqChannel.BasicPublish("jubeOutbound", "", props, context.EntityAnalysisModelInstanceEntryPayload.ResponseJson.Length > 0 ? context.EntityAnalysisModelInstanceEntryPayload.ResponseJson : context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson);
+            var body = context.EntityAnalysisModelInstanceEntryPayload.ResponseJson.Length > 0
+                ? context.EntityAnalysisModelInstanceEntryPayload.ResponseJson
+                : context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson;
+            activity?.SetTag("messaging.message.body.size", body.Length);
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"HTTP Handler Entity: GUID payload {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} model id is {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelId} has published the response to the Outbound Exchange.");
-            }
+            context.EntityAnalysisModel.Services.RabbitMqChannel.BasicPublish("jubeOutbound", "", props, body);
+
+            context.TraceLog($"has published the response to the Outbound Exchange.");
         }
     }
 }

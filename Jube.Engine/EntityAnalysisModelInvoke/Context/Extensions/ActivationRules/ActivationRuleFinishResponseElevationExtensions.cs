@@ -11,10 +11,10 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Threading;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules
 {
-    using System.Threading;
-
     public static class ActivationRuleFinishResponseElevationExtensions
     {
         public static void ActivationRuleFinishResponseElevation(this Context context, double responseElevation)
@@ -26,11 +26,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
             Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ModelResponseElevationCounter);
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} response elevation is greater than zero and has incremented Response Elevation Counter which has a value of {context.EntityAnalysisModel.Counters.ModelResponseElevationCounter}.");
-            }
+            context.TraceLog(
+                $"response elevation is greater than zero and has incremented Response Elevation Counter which has a value of {context.EntityAnalysisModel.Counters.ModelResponseElevationCounter}.");
         }
     }
 }

@@ -11,14 +11,28 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Threading.Tasks;
+
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 {
-    using System;
-    using System.Threading.Tasks;
-    using Context;
-
-    public class LruJournalPruneTaskStarter(Context context)
+    public class LruJournalPruneTaskStarter(Context.Context context)
     {
+        internal static TimeSpan ComputeMaxAge(string interval, string value)
+        {
+            if (!double.TryParse(value, out var parsedValue))
+            {
+                parsedValue = 1;
+            }
+
+            return interval switch
+            {
+                "n" => TimeSpan.FromMinutes(parsedValue),
+                "h" => TimeSpan.FromHours(parsedValue),
+                _ => TimeSpan.FromDays(parsedValue)
+            };
+        }
+
         public async Task StartAsync()
         {
             try
@@ -29,22 +43,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         "Lru Journal Prune: Starting task.");
                 }
 
-                var lruJournalMaxAgeInterval = context.Services.DynamicEnvironment.AppSettings("LruJournalMaxAgeInterval");
+                var lruJournalMaxAgeInterval =
+                    context.Services.DynamicEnvironment.AppSettings("LruJournalMaxAgeInterval");
                 var lruJournalMaxAgeValue = context.Services.DynamicEnvironment.AppSettings("LruJournalMaxAgeValue");
 
-                if (!Double.TryParse(lruJournalMaxAgeValue, out var value))
-                {
-                    value = 1;
-                }
-
-                var lruJournalMaxAgeTimeSpan = lruJournalMaxAgeInterval switch
-                {
-                    "n" =>
-                        TimeSpan.FromMinutes(value),
-                    "h" =>
-                        TimeSpan.FromHours(value),
-                    _ => TimeSpan.FromDays(value)
-                };
+                var lruJournalMaxAgeTimeSpan = ComputeMaxAge(lruJournalMaxAgeInterval, lruJournalMaxAgeValue);
 
                 while (!context.Services.TaskCoordinator.CancellationToken.IsCancellationRequested)
                 {
@@ -77,7 +80,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         }
                     }
 
-                    var waitCachePrune = Int32.Parse(context.Services.DynamicEnvironment.AppSettings("WaitLruJournalPrune"));
+                    var waitCachePrune =
+                        int.Parse(context.Services.DynamicEnvironment.AppSettings("WaitLruJournalPrune"));
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -85,7 +89,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             $"Lru Journal Prune: Active models processed.  Will sleep for {waitCachePrune}.");
                     }
 
-                    await Task.Delay(waitCachePrune, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                    await Task.Delay(waitCachePrune, context.Services.TaskCoordinator.CancellationToken)
+                        .ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException ex)

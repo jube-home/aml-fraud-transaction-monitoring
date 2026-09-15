@@ -11,17 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Threading.Tasks;
+using Jube.Engine.BackgroundTasks.Context;
+using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
+
 namespace Jube.Engine.EntityAnalysisModelManager
 {
-    using System;
-    using System.Threading.Tasks;
-    using BackgroundTasks.TaskStarters;
-    using EntityAnalysisModel.Context.Extensions;
-    using Jube.Engine.BackgroundTasks.Context;
-
     public class EntityAnalysisModelManager(Context context)
     {
-        public BackgroundTasks.Context.Context Context { get; } = new BackgroundTasks.Context.Context
+        public BackgroundTasks.Context.Context Context { get; } = new()
         {
             JsonSerializationHelper = context.JsonSerializationHelper,
             Services =
@@ -31,6 +31,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
                 RabbitMqConnection = context.Services.RabbitMqConnection,
                 CacheService = context.Services.CacheService,
                 TaskCoordinator = context.Services.TaskCoordinator,
+                ImplicitAsyncInvocationTracker = context.Services.ImplicitAsyncInvocationTracker,
                 ReportConnectionString = context.Services.ReportConnectionString
             },
             Caching =
@@ -76,27 +77,31 @@ namespace Jube.Engine.EntityAnalysisModelManager
 
         private void StartCachePrune()
         {
-            if (!Context.Services.DynamicEnvironment.AppSettings("CachePruneServer").Equals("True", StringComparison.OrdinalIgnoreCase))
+            if (!Context.Services.DynamicEnvironment.AppSettings("CachePruneServer")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
             var cachePruneTaskStarter = new CachePruneTaskStarter(Context);
-            Context.Tasks.CachePruneAsyncTask = Context.Services.TaskCoordinator.RunAsync("CachePruneTask", _ => cachePruneTaskStarter.StartAsync());
+            Context.Tasks.CachePruneAsyncTask =
+                Context.Services.TaskCoordinator.RunAsync("CachePruneTask", _ => cachePruneTaskStarter.StartAsync());
         }
 
         private void StartLruJournalPrune()
         {
             var lruPruneTaskStarter = new LruJournalPruneTaskStarter(Context);
-            Context.Tasks.LruJournalPruneAsyncTask = Context.Services.TaskCoordinator.RunAsync("LruJournalPruneTask", _ => lruPruneTaskStarter.StartAsync());
+            Context.Tasks.LruJournalPruneAsyncTask =
+                Context.Services.TaskCoordinator.RunAsync("LruJournalPruneTask", _ => lruPruneTaskStarter.StartAsync());
         }
 
         private void StartReprocessing()
         {
-            if (Context.Services.DynamicEnvironment.AppSettings("EnableReprocessing").Equals("True", StringComparison.OrdinalIgnoreCase))
+            if (Context.Services.DynamicEnvironment.AppSettings("EnableReprocessing")
+                .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 int i;
-                var threadCount = Int32.Parse(Context.Services.DynamicEnvironment.AppSettings("ReprocessingThreads"));
+                var threadCount = int.Parse(Context.Services.DynamicEnvironment.AppSettings("ReprocessingThreads"));
 
                 for (i = 1; i <= threadCount; i++)
                 {
@@ -106,11 +111,14 @@ namespace Jube.Engine.EntityAnalysisModelManager
                     }
 
                     var reprocessingTaskStarter = new ReprocessingTaskStarter(Context);
-                    Context.Tasks.ReprocessingAsyncTasks.Add(Context.Services.TaskCoordinator.RunAsync("EntityReprocessingTask", _ => reprocessingTaskStarter.StartAsync()));
+                    Context.Tasks.ReprocessingAsyncTasks.Add(
+                        Context.Services.TaskCoordinator.RunAsync("EntityReprocessingTask",
+                            _ => reprocessingTaskStarter.StartAsync()));
 
                     if (Context.Services.Log.IsDebugEnabled)
                     {
-                        Context.Services.Log.Debug($"Entity Start: Started Reprocessing in start routine for thread {i}.");
+                        Context.Services.Log.Debug(
+                            $"Entity Start: Started Reprocessing in start routine for thread {i}.");
                     }
                 }
             }
@@ -131,7 +139,8 @@ namespace Jube.Engine.EntityAnalysisModelManager
                     $"Entity Start: TTL Counter Administration is set to be {Context.Services.DynamicEnvironment.AppSettings("EnableTtlCounter")} on this node.");
             }
 
-            if (!Context.Services.DynamicEnvironment.AppSettings("EnableTtlCounter").Equals("True", StringComparison.OrdinalIgnoreCase))
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableTtlCounter")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -143,7 +152,9 @@ namespace Jube.Engine.EntityAnalysisModelManager
             }
 
             var ttlCounterAdministrationTaskStarter = new TtlCounterAdministrationTaskStarter(Context);
-            Context.Tasks.TtlCounterAdministrationTask = Context.Services.TaskCoordinator.RunAsync("TtlCounterAdministrationTask", _ => ttlCounterAdministrationTaskStarter.StartAsync());
+            Context.Tasks.TtlCounterAdministrationTask =
+                Context.Services.TaskCoordinator.RunAsync("TtlCounterAdministrationTask",
+                    _ => ttlCounterAdministrationTaskStarter.StartAsync());
 
             if (Context.Services.Log.IsDebugEnabled)
             {
@@ -171,7 +182,9 @@ namespace Jube.Engine.EntityAnalysisModelManager
             }
 
             var abstractionRuleCachingTaskStarter = new AbstractionRuleCachingTaskStarter(Context);
-            Context.Tasks.AbstractionRuleCachingTask = Context.Services.TaskCoordinator.RunAsync("AbstractionRuleCachingTask", _ => abstractionRuleCachingTaskStarter.StartAsync());
+            Context.Tasks.AbstractionRuleCachingTask =
+                Context.Services.TaskCoordinator.RunAsync("AbstractionRuleCachingTask",
+                    _ => abstractionRuleCachingTaskStarter.StartAsync());
 
             if (Context.Services.Log.IsDebugEnabled)
             {
@@ -188,15 +201,20 @@ namespace Jube.Engine.EntityAnalysisModelManager
             }
 
             int i;
-            var threadCount = Int32.Parse(Context.Services.DynamicEnvironment.AppSettings("ActivationWatcherPersistThreads"));
+            var threadCount =
+                int.Parse(Context.Services.DynamicEnvironment.AppSettings("ActivationWatcherPersistThreads"));
             for (i = 1; i <= threadCount; i++)
             {
-                var persistToActivationWatcherPollingTaskStarter = new PersistToActivationWatcherPollingTaskStarter(Context);
-                Context.Tasks.PersistToActivationWatcherPollingTasks.Add(Context.Services.TaskCoordinator.RunAsync("ActivationWatcherTask", _ => persistToActivationWatcherPollingTaskStarter.StartAsync()));
+                var persistToActivationWatcherPollingTaskStarter =
+                    new PersistToActivationWatcherPollingTaskStarter(Context);
+                Context.Tasks.PersistToActivationWatcherPollingTasks.Add(
+                    Context.Services.TaskCoordinator.RunAsync("ActivationWatcherTask",
+                        _ => persistToActivationWatcherPollingTaskStarter.StartAsync()));
 
                 if (Context.Services.Log.IsDebugEnabled)
                 {
-                    Context.Services.Log.Debug(String.Format("Entity Start: Started Activation Watcher Persist Thread " + i + "."));
+                    Context.Services.Log.Debug(
+                        string.Format("Entity Start: Started Activation Watcher Persist Thread " + i + "."));
                 }
             }
         }
@@ -213,7 +231,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
                         $"Entity Start: There are {Context.Services.DynamicEnvironment.AppSettings("ArchiverPersistThreads")} SQL Persist threads about to start.");
                 }
 
-                var threadCount = Int32.Parse(Context.Services.DynamicEnvironment.AppSettings("ArchiverPersistThreads"));
+                var threadCount = int.Parse(Context.Services.DynamicEnvironment.AppSettings("ArchiverPersistThreads"));
                 for (i = 1; i <= threadCount; i++)
                 {
                     var archiverTaskStarter = new ArchiverTaskStarter(Context, i);
@@ -244,7 +262,8 @@ namespace Jube.Engine.EntityAnalysisModelManager
             }
 
             var modelSyncTaskStarter = new ModelSyncTaskStarter(Context);
-            Context.Tasks.ModelSyncTask = Context.Services.TaskCoordinator.RunAsync("ModelSyncTask", _ => modelSyncTaskStarter.StartAsync());
+            Context.Tasks.ModelSyncTask =
+                Context.Services.TaskCoordinator.RunAsync("ModelSyncTask", _ => modelSyncTaskStarter.StartAsync());
 
             if (Context.Services.Log.IsDebugEnabled)
             {

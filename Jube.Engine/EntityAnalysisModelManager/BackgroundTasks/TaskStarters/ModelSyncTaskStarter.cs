@@ -11,23 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Helpers;
+using RabbitMQ.Client;
+
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 {
-    using System;
-    using System.IO;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using Context;
-    using Data.Context;
-    using EntityAnalysisModel.Context.Extensions;
-    using EntityAnalysisModel.Context.Helpers;
-    using RabbitMQ.Client;
-
     public class ModelSyncTaskStarter
     {
-        private readonly Context context;
+        private readonly Context.Context context;
         private readonly IModel rabbitMqChannel;
-        public ModelSyncTaskStarter(Context context)
+
+        public ModelSyncTaskStarter(Context.Context context)
         {
             this.context = context;
 
@@ -66,7 +66,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             context.Services.Log.Debug("Entity Model Sync: Connected to the Database database.");
                         }
 
-                        var scheduledModels = await TenantRegistryScheduleHelpers.GetScheduledAsync(context.Services.Log, dbContext, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        var scheduledModels = await TenantRegistryScheduleHelpers
+                            .GetScheduledAsync(context.Services.Log, dbContext,
+                                context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
                         foreach (var scheduledModel in scheduledModels)
                         {
@@ -82,7 +84,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     DbContext = dbContext,
                                     DynamicEnvironment = context.Services.DynamicEnvironment,
                                     RabbitMqChannel = rabbitMqChannel,
-                                    CacheService = context.Services.CacheService
+                                    CacheService = context.Services.CacheService,
+                                    ImplicitAsyncInvocationTracker = context.Services.ImplicitAsyncInvocationTracker
                                 },
                                 Paths =
                                 {
@@ -92,8 +95,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 EntityAnalysisModels =
                                 {
                                     EntityAnalysisModelInlineScripts = context.EntityAnalysisModels.InlineScripts,
-                                    ActiveEntityAnalysisModels = context.EntityAnalysisModels.ActiveEntityAnalysisModels,
-                                    EntityAnalysisInstanceGuid = context.EntityAnalysisModels.EntityAnalysisInstanceGuid,
+                                    ActiveEntityAnalysisModels =
+                                        context.EntityAnalysisModels.ActiveEntityAnalysisModels,
+                                    EntityAnalysisInstanceGuid =
+                                        context.EntityAnalysisModels.EntityAnalysisInstanceGuid,
                                     SanctionsEntries = context.Caching.SanctionsEntries,
                                     SanctionsStopTokens = context.Caching.SanctionsStopTokens
                                 },
@@ -104,55 +109,86 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 },
                                 ConcurrentQueues =
                                 {
-                                    PersistToActivationWatcherAsync = context.ConcurrentQueues.PersistToActivationWatcher,
+                                    PersistToActivationWatcherAsync =
+                                        context.ConcurrentQueues.PersistToActivationWatcher,
                                     PendingNotifications = context.ConcurrentQueues.PendingNotifications,
                                     Callbacks = context.ConcurrentQueues.Callbacks,
                                     PendingEntityInvoke = context.ConcurrentQueues.PendingEntityInvoke
                                 }
                             };
 
-                            await entityAnalysisModelContext.SyncEntityAnalysisInlineScriptAsync().ConfigureAwait(false);
-                            await entityAnalysisModelContext.ConfigureTokenParserForSecurityAsync().ConfigureAwait(false);
+                            await entityAnalysisModelContext.SyncEntityAnalysisInlineScriptAsync()
+                                .ConfigureAwait(false);
+                            await entityAnalysisModelContext.ConfigureTokenParserForSecurityAsync()
+                                .ConfigureAwait(false);
 
                             if (scheduledModel.SynchronisationPending || startupTenantRegistrySchedule)
                             {
                                 context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
 
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelsAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelRequestXPathAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelInlineScriptsAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelInlineFunctionsAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelParseIndexCacheAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelGatewayRulesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelSanctionsAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelAbstractionRulesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelAbstractionCalculationsAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelTtlCountersAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelHttpAdaptationAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncExhaustiveSearchInstancesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelActivationRulesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelTagsAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.ConfirmSyncAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync().ConfigureAwait(false);
+                                await entityAnalysisModelContext
+                                    .SyncEntityAnalysisModelsAsync(scheduledModel.TenantRegistryId)
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelRequestXPathAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelInlineScriptsAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelInlineFunctionsAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelParseIndexCacheAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelGatewayRulesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelSanctionsAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelAbstractionRulesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelAbstractionCalculationsAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelTtlCountersAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelHttpAdaptationAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncExhaustiveSearchInstancesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelActivationRulesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelTagsAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.ConfirmSyncAsync(scheduledModel.TenantRegistryId)
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync()
+                                    .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncSuppressionAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncActivationRuleSuppressionAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync().ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncActivationRuleSuppressionAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync()
+                                    .ConfigureAwait(false);
                                 await entityAnalysisModelContext.StartupModelAsync().ConfigureAwait(false);
                                 context.EntityAnalysisModels.EntityModelsHasLoadedForStartup = true;
                             }
                             else
                             {
-                                await entityAnalysisModelContext.SyncExhaustiveSearchInstancesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync().ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncExhaustiveSearchInstancesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync()
+                                    .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncSuppressionAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncActivationRuleSuppressionAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync().ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncActivationRuleSuppressionAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync()
+                                    .ConfigureAwait(false);
                                 await entityAnalysisModelContext.StoreRuleCounterValuesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.HeartbeatThisModelAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
+                                await entityAnalysisModelContext
+                                    .HeartbeatThisModelAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
                             }
                         }
 
@@ -166,28 +202,38 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             startupTenantRegistrySchedule = false;
                         }
 
-                        await Task.Delay(Int32.Parse(context.Services.DynamicEnvironment.AppSettings("ModelSynchronisationWait")), context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(
+                            int.Parse(context.Services.DynamicEnvironment.AppSettings("ModelSynchronisationWait")),
+                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
+                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
 
                         throw;
                     }
                     catch (Exception ex)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
+                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
 
                         context.Services.Log.Error($"ModelSyncAsync: Has produced an error {ex} waiting.");
 
-                        await Task.Delay(Int32.Parse(context.Services.DynamicEnvironment.AppSettings("ModelSynchronisationWait")), context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(
+                            int.Parse(context.Services.DynamicEnvironment.AppSettings("ModelSynchronisationWait")),
+                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
+                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
                     }
                 }
             }

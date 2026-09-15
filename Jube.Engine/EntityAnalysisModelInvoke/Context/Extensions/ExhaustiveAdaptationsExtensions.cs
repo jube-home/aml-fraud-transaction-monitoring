@@ -11,42 +11,54 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.Exhaustive.Models;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Diagnostics;
-    using ExhaustiveSearchInstance=Exhaustive.Models.ExhaustiveSearchInstance;
+    using ExhaustiveSearchInstance = ExhaustiveSearchInstance;
 
     public static class ExhaustiveAdaptationsExtensions
     {
         public static Context ExecuteExhaustiveAdaptation(this Context context)
         {
-            if (context.Log.IsInfoEnabled)
+            context.TraceLog($"will now perform Exhaustive and will loop through each.");
+
+            var stopwatch = Stopwatch.StartNew();
+            var items = new Dictionary<string, TaskPerformance>();
+
+            IterateAndProcess(context, items);
+
+            stopwatch.Stop();
+
+            if (!context.LogSampled)
             {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} will now perform Exhaustive and will loop through each.");
+                return context;
             }
 
-            IterateAndProcess(context);
-            StorePerformanceFromStopwatch(context);
+            var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                new InvokeStagePerformance();
+
+            stages.ExhaustiveAdaptation = new StageTiming<TaskPerformance>
+            {
+                DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                Items = items
+            };
 
             return context;
         }
-        private static void StorePerformanceFromStopwatch(Context context)
-        {
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.ExecuteExhaustiveAdaptation = (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
-        }
 
-        private static void IterateAndProcess(Context context)
+        private static void IterateAndProcess(Context context, Dictionary<string, TaskPerformance> items)
         {
             foreach (var exhaustive in context.EntityAnalysisModel.Collections.ExhaustiveModels)
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}.");
-                }
+                context.TraceLog($"evaluating Exhaustive Search Instance Id {exhaustive.Id}.");
 
+                var itemStopwatch = Stopwatch.StartNew();
+                var startBytes = GC.GetAllocatedBytesForCurrentThread();
                 try
                 {
                     var data = new double[exhaustive.NetworkVariablesInOrder.Count];
@@ -55,51 +67,42 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                         ExtractValueGivenProcessingTypeAndUpdateArray(context, exhaustive, i, data);
                     }
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} is about to recall model with {data.Length} variables.");
-                    }
+                    context.TraceLog($"is about to recall model with {data.Length} variables.");
 
                     var value = exhaustive.TopologyNetwork.Compute(data)[0];
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} has recalled a score of {value}.  Will proceed to add the value to payload collection.");
-                    }
+                    context.TraceLog(
+                        $"has recalled a score of {value}. Will proceed to add the value to payload collection.");
 
                     context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation.Add(exhaustive.Name, value);
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has exception {ex}.");
-                    }
+                    context.TraceLog($"has exception {ex}.");
+                }
+                finally
+                {
+                    itemStopwatch.Stop();
+                    var allocated = GC.GetAllocatedBytesForCurrentThread() - startBytes;
+                    items[exhaustive.Name] = new TaskPerformance(
+                        (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                        Math.Max(allocated, 0));
                 }
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} has concluded exhaustive recall.");
-                }
+                context.TraceLog($"has concluded exhaustive recall.");
             }
         }
 
-        private static void ExtractValueGivenProcessingTypeAndUpdateArray(Context context, ExhaustiveSearchInstance exhaustive, int i, double[] data)
+        private static void ExtractValueGivenProcessingTypeAndUpdateArray(Context context,
+            ExhaustiveSearchInstance exhaustive, int i, double[] data)
         {
             var cleanName = exhaustive.NetworkVariablesInOrder[i].Name.Contains('.')
                 ? exhaustive.NetworkVariablesInOrder[i].Name.Split(".")[1]
                 : exhaustive.NetworkVariablesInOrder[i].Name;
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $"  Will look up {cleanName} for processing type id {exhaustive.NetworkVariablesInOrder[i].ProcessingTypeId}.");
-            }
+            context.TraceLog(
+                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                $"  Will look up {cleanName} for processing type id {exhaustive.NetworkVariablesInOrder[i].ProcessingTypeId}.");
 
             switch (exhaustive.NetworkVariablesInOrder[i].ProcessingTypeId)
             {
@@ -127,15 +130,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             }
         }
 
-        private static void ExtractFromAbstractionCalculation(Context context, ExhaustiveSearchInstance exhaustive, int i, double[] data, string cleanName)
+        private static void ExtractFromAbstractionCalculation(Context context, ExhaustiveSearchInstance exhaustive,
+            int i, double[] data, string cleanName)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" will look up {cleanName} for Abstraction Calculation.");
-            }
+            context.TraceLog(
+                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                $" will look up {cleanName} for Abstraction Calculation.");
 
             if (context.EntityAnalysisModelInstanceEntryPayload
                 .AbstractionCalculation.TryGetValue(cleanName, out var valueAbstractionCalculation))
@@ -143,38 +143,27 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     valueAbstractionCalculation);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} found value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} found value {data[i]}.");
             }
             else
             {
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     exhaustive.NetworkVariablesInOrder[i].Mean);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} fall back value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} fall back value {data[i]}.");
             }
         }
 
-        private static void ExtractFromAbstraction(Context context, ExhaustiveSearchInstance exhaustive, int i, double[] data, string cleanName)
+        private static void ExtractFromAbstraction(Context context, ExhaustiveSearchInstance exhaustive, int i,
+            double[] data, string cleanName)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" will look up {cleanName} for Abstraction.");
-            }
+            context.TraceLog(
+                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                $" will look up {cleanName} for Abstraction.");
 
             if (context.EntityAnalysisModelInstanceEntryPayload
                 .Abstraction.TryGetValue(cleanName, out var valueAbstraction))
@@ -182,38 +171,27 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     valueAbstraction);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} found value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} found value {data[i]}.");
             }
             else
             {
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     exhaustive.NetworkVariablesInOrder[i].Mean);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} fall back value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} fall back value {data[i]}.");
             }
         }
 
-        private static void ExtractFromSanction(Context context, ExhaustiveSearchInstance exhaustive, int i, double[] data, string cleanName)
+        private static void ExtractFromSanction(Context context, ExhaustiveSearchInstance exhaustive, int i,
+            double[] data, string cleanName)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" will look up {cleanName} for Ttl Counter.");
-            }
+            context.TraceLog(
+                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                $" will look up {cleanName} for Sanction.");
 
             if (context.EntityAnalysisModelInstanceEntryPayload
                 .Sanction.TryGetValue(cleanName, out var valueSanction))
@@ -221,38 +199,27 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     valueSanction);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} found value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} found value {data[i]}.");
             }
             else
             {
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     exhaustive.NetworkVariablesInOrder[i].Mean);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} fall back value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} fall back value {data[i]}.");
             }
         }
 
-        private static void ExtractFromTtlCounter(Context context, ExhaustiveSearchInstance exhaustive, int i, double[] data, string cleanName)
+        private static void ExtractFromTtlCounter(Context context, ExhaustiveSearchInstance exhaustive, int i,
+            double[] data, string cleanName)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" will look up {cleanName} for Ttl Counter.");
-            }
+            context.TraceLog(
+                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                $" will look up {cleanName} for Ttl Counter.");
 
             if (context.EntityAnalysisModelInstanceEntryPayload
                 .TtlCounter.TryGetValue(cleanName, out var valueTtl))
@@ -260,38 +227,27 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     valueTtl);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} found value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} found value {data[i]}.");
             }
             else
             {
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     exhaustive.NetworkVariablesInOrder[i].Mean);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} fall back value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} fall back value {data[i]}.");
             }
         }
 
-        private static void ExtractFromDictionary(Context context, ExhaustiveSearchInstance exhaustive, int i, double[] data, string cleanName)
+        private static void ExtractFromDictionary(Context context, ExhaustiveSearchInstance exhaustive, int i,
+            double[] data, string cleanName)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" will look up {cleanName} for KVP.");
-            }
+            context.TraceLog(
+                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                $" will look up {cleanName} for KVP.");
 
             if (context.EntityAnalysisModelInstanceEntryPayload
                 .Dictionary.TryGetValue(cleanName, out var valueKvp))
@@ -299,38 +255,27 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     valueKvp);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} found value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} found value {data[i]}.");
             }
             else
             {
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     exhaustive.NetworkVariablesInOrder[i].Mean);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} fall back value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} fall back value {data[i]}.");
             }
         }
 
-        private static void ExtractFromPayload(Context context, ExhaustiveSearchInstance exhaustive, int i, double[] data, string cleanName)
+        private static void ExtractFromPayload(Context context, ExhaustiveSearchInstance exhaustive, int i,
+            double[] data, string cleanName)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                    $" will look up {cleanName} for payload.");
-            }
+            context.TraceLog(
+                $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                $" will look up {cleanName} for payload.");
 
             if (context.EntityAnalysisModelInstanceEntryPayload
                 .Payload.ContainsKey(cleanName))
@@ -338,26 +283,18 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     context.EntityAnalysisModelInstanceEntryPayload.Payload[cleanName].AsDouble());
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} found value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} found value {data[i]}.");
             }
             else
             {
                 data[i] = exhaustive.NetworkVariablesInOrder[i].ZScore(
                     exhaustive.NetworkVariablesInOrder[i].Mean);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $" and model {context.EntityAnalysisModel.Instance.Id} evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                        $" {cleanName} fall back value {data[i]}.");
-                }
+                context.TraceLog(
+                    $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
+                    $" {cleanName} fall back value {data[i]}.");
             }
         }
     }

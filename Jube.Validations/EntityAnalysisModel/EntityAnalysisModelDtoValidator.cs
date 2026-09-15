@@ -11,15 +11,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using FluentValidation;
+using Jube.Data.Repository;
+using Jube.Dto.EntityAnalysisModel;
+using Jube.Resources;
+using Microsoft.Extensions.Localization;
+
 namespace Jube.Validations.EntityAnalysisModel
 {
-    using System;
-    using FluentValidation;
-    using Jube.Data.Repository;
-    using Jube.Dto.EntityAnalysisModel;
-    using Jube.Resources;
-    using Microsoft.Extensions.Localization;
-    
     public sealed class EntityAnalysisModelDtoValidator : AbstractValidator<EntityAnalysisModelDto>
     {
         private const int MaxNameLength = 256;
@@ -35,7 +34,7 @@ namespace Jube.Validations.EntityAnalysisModel
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.NameRequired])
                 .WithErrorCode("NameNotEmpty")
                 .MaximumLength(MaxNameLength)
-                .WithMessage(_ => String.Format(localiser[EntityAnalysisModelResources.NameMaxLength], MaxNameLength))
+                .WithMessage(_ => string.Format(localiser[EntityAnalysisModelResources.NameMaxLength], MaxNameLength))
                 .WithErrorCode("NameMaximumLength")
                 .MustAsync(async (dto, name, cancellation) =>
                 {
@@ -51,7 +50,7 @@ namespace Jube.Validations.EntityAnalysisModel
                 .WithErrorCode("EntryNameNotEmpty")
                 .MaximumLength(MaxNameLength)
                 .WithMessage(_ =>
-                    String.Format(localiser[EntityAnalysisModelResources.EntryNameMaxLength], MaxNameLength))
+                    string.Format(localiser[EntityAnalysisModelResources.EntryNameMaxLength], MaxNameLength))
                 .WithErrorCode("EntryNameMaximumLength");
 
             RuleFor(p => p.EntryXPath)
@@ -60,7 +59,7 @@ namespace Jube.Validations.EntityAnalysisModel
                 .WithErrorCode("EntryXPathNotEmpty")
                 .MaximumLength(MaxXPathLength)
                 .WithMessage(_ =>
-                    String.Format(localiser[EntityAnalysisModelResources.EntryXPathMaxLength], MaxXPathLength))
+                    string.Format(localiser[EntityAnalysisModelResources.EntryXPathMaxLength], MaxXPathLength))
                 .WithErrorCode("EntryXPathMaximumLength");
 
             RuleFor(p => p.ReferenceDateName)
@@ -69,20 +68,20 @@ namespace Jube.Validations.EntityAnalysisModel
                 .WithErrorCode("ReferenceDateNameNotEmpty")
                 .MaximumLength(MaxNameLength)
                 .WithMessage(_ =>
-                    String.Format(localiser[EntityAnalysisModelResources.ReferenceDateNameMaxLength], MaxNameLength))
+                    string.Format(localiser[EntityAnalysisModelResources.ReferenceDateNameMaxLength], MaxNameLength))
                 .WithErrorCode("ReferenceDateNameMaximumLength");
 
             RuleFor(p => p.ReferenceDatePayloadLocationTypeId)
                 .Must(m => allowedPayloadLocationTypeIds.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.ReferenceDatePayloadLocationTypeIdInvalid])
                 .WithErrorCode("ReferenceDatePayloadLocationTypeIdInvalid");
-            
+
             RuleFor(p => p.ReferenceDateXPath)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.ReferenceDateXPathRequired])
                 .WithErrorCode("ReferenceDateXPathNotEmpty")
                 .MaximumLength(MaxXPathLength)
-                .WithMessage(_ => String.Format(localiser[EntityAnalysisModelResources.ReferenceDateXPathMaxLength],
+                .WithMessage(_ => string.Format(localiser[EntityAnalysisModelResources.ReferenceDateXPathMaxLength],
                     MaxXPathLength))
                 .WithErrorCode("ReferenceDateXPathMaximumLength")
                 .When(p => p.ReferenceDatePayloadLocationTypeId != 3);
@@ -106,7 +105,7 @@ namespace Jube.Validations.EntityAnalysisModel
                 .GreaterThanOrEqualTo(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.MaxResponseElevationRange])
                 .WithErrorCode("MaxResponseElevationRange");
-            
+
             RuleFor(p => p.MaxResponseElevationInterval)
                 .Must(m => allowedIntervals.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.MaxResponseElevationIntervalInvalid])
@@ -124,7 +123,7 @@ namespace Jube.Validations.EntityAnalysisModel
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.MaxResponseElevationThresholdRange])
                 .WithErrorCode("MaxResponseElevationThresholdRange")
                 .When(p => p.EnableResponseElevationLimit);
-            
+
             RuleFor(p => p.MaxActivationWatcherInterval)
                 .Must(m => allowedIntervals.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.MaxActivationWatcherIntervalInvalid])
@@ -148,6 +147,25 @@ namespace Jube.Validations.EntityAnalysisModel
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.ActivationWatcherSampleRange])
                 .WithErrorCode("ActivationWatcherSampleRange")
                 .When(p => p.EnableActivationWatcher);
+
+            RuleFor(p => p.ImplicitAsyncTimeoutMilliseconds)
+                .GreaterThan(0)
+                .WithMessage(_ => localiser[EntityAnalysisModelResources.ImplicitAsyncTimeoutMillisecondsRange])
+                .WithErrorCode("ImplicitAsyncTimeoutMillisecondsRange")
+                .When(p => p.EnableImplicitAsync);
+
+            RuleFor(p => p.LogsWarnThresholdMilliseconds)
+                .GreaterThan(0)
+                .WithMessage(_ => localiser[EntityAnalysisModelResources.LogsWarnThresholdMillisecondsRange])
+                .WithErrorCode("LogsWarnThresholdMillisecondsRange")
+                .When(p => p.EnableLogsWarnThreshold);
+
+            RuleFor(p => p.SamplePercentage)
+                .GreaterThan(0)
+                .LessThanOrEqualTo(100)
+                .WithMessage(_ => localiser[EntityAnalysisModelResources.SamplePercentageRange])
+                .WithErrorCode("SamplePercentageRange")
+                .When(p => p.EnableLogsInfo && p.EnableSampling);
         }
     }
 }

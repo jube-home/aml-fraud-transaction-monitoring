@@ -11,66 +11,91 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Cache.Observability;
+using Jube.Cache.Redis.Interfaces;
+using Jube.Extensions;
+using Jube.ResilientRedisConnection;
+using log4net;
+using StackExchange.Redis;
+
 namespace Jube.Cache.Redis
 {
-    using Extensions;
-    using Interfaces;
-    using log4net;
-    using ResilientRedisConnection;
-    using StackExchange.Redis;
-
     public class CacheReferenceDateRepository(
         IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
         ILog log) : ICacheReferenceDate
     {
-        public async Task UpsertReferenceDateAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, DateTime referenceDate)
+        public Task UpsertReferenceDateAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, DateTime referenceDate)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheReferenceDateRepository.UpsertReferenceDateAsync", async () =>
             {
-                var redisKey = $"ReferenceDate:{tenantRegistryId}";
-                var redisHSetKey = $"{entityAnalysisModelGuid:N}";
+                try
+                {
+                    var redisKey = $"ReferenceDate:{tenantRegistryId}";
+                    var redisHSetKey = $"{entityAnalysisModelGuid:N}";
 
-                await resilientRedisResilientRedisDatabase.HashSetAsync(redisKey, redisHSetKey,
-                    referenceDate.ToUnixTimeMilliSeconds()).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                    await resilientRedisResilientRedisDatabase.HashSetAsync(redisKey, redisHSetKey,
+                        referenceDate.ToUnixTimeMilliSeconds()).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
+            });
         }
 
-        public async Task<DateTime?> GetReferenceDateAsync(int tenantRegistryId, Guid entityAnalysisModelGuid)
+        public Task<DateTime?> GetReferenceDateAsync(int tenantRegistryId, Guid entityAnalysisModelGuid)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheReferenceDateRepository.GetReferenceDateAsync", async () =>
             {
-                var redisKey = $"ReferenceDate:{tenantRegistryId}";
-                var redisHSetKey = $"{entityAnalysisModelGuid:N}";
-                var referenceDateTimestamp = (long)await resilientRedisResilientRedisDatabase.HashGetAsync(redisKey, redisHSetKey).ConfigureAwait(false);
-                return referenceDateTimestamp.FromUnixTimeMilliSeconds();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                try
+                {
+                    var redisKey = $"ReferenceDate:{tenantRegistryId}";
+                    var redisHSetKey = $"{entityAnalysisModelGuid:N}";
+                    var redisValue = await resilientRedisResilientRedisDatabase
+                        .HashGetAsync(redisKey, redisHSetKey).ConfigureAwait(false);
 
-            return null;
+                    if (!redisValue.HasValue)
+                    {
+                        return null;
+                    }
+
+                    return ((long)redisValue).FromUnixTimeMilliSeconds();
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
+
+                return (DateTime?)null;
+            });
         }
 
-        public async Task<DateTime?> GetReferenceDatePreferReplicaAsync(int tenantRegistryId, Guid entityAnalysisModelGuid)
+        public Task<DateTime?> GetReferenceDatePreferReplicaAsync(int tenantRegistryId, Guid entityAnalysisModelGuid)
         {
-            try
-            {
-                var redisKey = $"ReferenceDate:{tenantRegistryId}";
-                var redisHSetKey = $"{entityAnalysisModelGuid:N}";
-                var referenceDateTimestamp = (long)await resilientRedisResilientRedisDatabase.HashGetAsync(redisKey, redisHSetKey, CommandFlags.PreferReplica).ConfigureAwait(false);
-                return referenceDateTimestamp.FromUnixTimeMilliSeconds();
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+            return CacheDiagnostics.RecordAsync("CacheReferenceDateRepository.GetReferenceDatePreferReplicaAsync",
+                async () =>
+                {
+                    try
+                    {
+                        var redisKey = $"ReferenceDate:{tenantRegistryId}";
+                        var redisHSetKey = $"{entityAnalysisModelGuid:N}";
+                        var redisValue = await resilientRedisResilientRedisDatabase
+                            .HashGetAsync(redisKey, redisHSetKey, CommandFlags.PreferReplica).ConfigureAwait(false);
 
-            return null;
+                        if (!redisValue.HasValue)
+                        {
+                            return null;
+                        }
+
+                        return ((long)redisValue).FromUnixTimeMilliSeconds();
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Cache Redis: Has created an exception as {ex}.");
+                    }
+
+                    return (DateTime?)null;
+                });
         }
     }
 }

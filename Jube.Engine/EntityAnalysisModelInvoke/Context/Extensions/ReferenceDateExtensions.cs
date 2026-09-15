@@ -11,36 +11,74 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Jube.Cache;
+using Jube.Engine.EntityAnalysisModelInvoke.Exceptions;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Threading.Tasks;
-    using Cache;
-    using Exceptions;
-    using TaskCancellation.TaskHelper;
-
     public static class ReferenceDateExtensions
     {
         public static async Task<Context> CheckIntegrityAndUpsertAsync(this Context context, CacheService cacheService)
         {
-            var referenceDate = await cacheService.CacheReferenceDateRepository.GetReferenceDateAsync(context.EntityAnalysisModel.Instance.Id, context.EntityAnalysisModel.Instance.Guid).ConfigureAwait(false);
-
-            if (context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate > DateTime.UtcNow)
+            var stopwatch = Stopwatch.StartNew();
+            try
             {
-                throw new ReferenceDateInFutureException();
-            }
+                var referenceDate = await cacheService.CacheReferenceDateRepository
+                    .GetReferenceDateAsync(context.EntityAnalysisModel.Instance.TenantRegistryId,
+                        context.EntityAnalysisModel.Instance.Guid).ConfigureAwait(false);
 
-            if (context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate < referenceDate)
-            {
+                context.TraceLog(
+                    $"is checking reference date integrity, latest stored reference date is {referenceDate}.");
+
+                if (context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate > DateTime.UtcNow)
+                {
+                    context.TraceLog(
+                        $"has rejected reference date {context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate} because it is in the future.");
+
+                    throw new ReferenceDateInFutureException();
+                }
+
+                if (context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate < referenceDate)
+                {
+                    context.TraceLog(
+                        $"has reference date {context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate} older than the latest stored reference date {referenceDate}, so it will not be upserted.");
+
+                    return context;
+                }
+
+                context.TraceLog(
+                    $"is upserting reference date {context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate}.");
+
+                context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                    TaskType.UpsertReferenceDateAsync,
+                    async () => await
+                        cacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(
+                            context.EntityAnalysisModel.Instance.TenantRegistryId,
+                            context.EntityAnalysisModel.Instance.Guid,
+                            context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate), context.Log));
+
                 return context;
             }
+            finally
+            {
+                stopwatch.Stop();
 
-            context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.UpsertReferenceDateAsync,
-                async () => await
-                    cacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(context.EntityAnalysisModel.Instance.TenantRegistryId,
-                        context.EntityAnalysisModel.Instance.Guid, context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate)));
+                if (context.LogSampled)
+                {
+                    var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                        new InvokeStagePerformance();
 
-            return context;
+                    stages.CheckIntegrityAndUpsert = new StageDuration
+                    {
+                        DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency))
+                    };
+                }
+            }
         }
     }
 }

@@ -11,57 +11,62 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using Jube.Cryptography;
+using Jube.Data.Poco;
+using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions;
+using Jube.Engine.EntityAnalysisModelInvoke.Extraction.Extensions.YourNamespace.Extensions;
+using Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
-    using System.Text;
-    using Context;
-    using Context.Extensions;
-    using Cryptography;
-    using Data.Poco;
-    using Dictionary;
-    using DynamicEnvironment;
-    using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
-    using Extensions.YourNamespace.Extensions;
-    using Helpers;
-    using log4net;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using EntityAnalysisModel=EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
+    using EntityAnalysisModel = EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
 
     public class EntityAnalysisModelJsonExtractor(
         EntityAnalysisModel entityAnalysisModel,
         Dictionary<int, EntityAnalysisModel> availableModels,
-        DynamicEnvironment environment,
+        DynamicEnvironment.DynamicEnvironment environment,
         ILog log)
     {
-        public Context CreateContext(
+        public Context.Context CreateContext(
             MemoryStream inputStream)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            var entityAnalysisModelInstanceEntryPayload = EntityAnalysisModelInstanceEntryPayloadHelpers.Create(entityAnalysisModel);
-            entityAnalysisModelInstanceEntryPayload.Payload = new DictionaryNoBoxing<string>(entityAnalysisModel.References.PayloadInitialSize);
+            var entityAnalysisModelInstanceEntryPayload =
+                EntityAnalysisModelInstanceEntryPayloadHelpers.Create(entityAnalysisModel);
+            entityAnalysisModelInstanceEntryPayload.Payload =
+                new DictionaryNoBoxing<string>(entityAnalysisModel.References.PayloadInitialSize);
 
             var reportDatabaseValues = new List<ArchiveKey>();
             entityAnalysisModelInstanceEntryPayload.ArchiveKeys = reportDatabaseValues;
 
-            entityAnalysisModelInstanceEntryPayload.JObject = ParseJson(inputStream, entityAnalysisModel, entityAnalysisModelInstanceEntryPayload);
+            entityAnalysisModelInstanceEntryPayload.JObject = ParseJson(inputStream, entityAnalysisModel,
+                entityAnalysisModelInstanceEntryPayload);
 
-            var (entryId, referenceDate) = ExtractEntryAndReferenceDate(entityAnalysisModelInstanceEntryPayload.JObject, entityAnalysisModel, entityAnalysisModelInstanceEntryPayload.Payload);
+            var (entryId, referenceDate) = ExtractEntryAndReferenceDate(entityAnalysisModelInstanceEntryPayload.JObject,
+                entityAnalysisModel, entityAnalysisModelInstanceEntryPayload.Payload);
 
             entityAnalysisModelInstanceEntryPayload.EntityInstanceEntryId = entryId;
             entityAnalysisModelInstanceEntryPayload.ReferenceDate = referenceDate;
 
-            ProcessRequestXPaths(entityAnalysisModelInstanceEntryPayload.JObject, entityAnalysisModelInstanceEntryPayload, entityAnalysisModelInstanceEntryPayload.Payload, reportDatabaseValues, false);
+            ProcessRequestXPaths(entityAnalysisModelInstanceEntryPayload.JObject,
+                entityAnalysisModelInstanceEntryPayload, entityAnalysisModelInstanceEntryPayload.Payload,
+                reportDatabaseValues, false);
 
-            return new Context
+            return new Context.Context
             {
                 StartBytesUsed = GC.GetAllocatedBytesForCurrentThread(),
                 EntityAnalysisModel = entityAnalysisModel,
@@ -80,7 +85,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
         {
             if (inputStream.Length == 0)
             {
-                log.Info($"Json to Context Extractor: GUID payload {payload.EntityAnalysisModelInstanceEntryGuid} model id is {model.Instance.Id} has zero content length.");
+                log.Info(
+                    $"Json to Context Extractor: GUID payload {payload.EntityAnalysisModelInstanceEntryGuid} model id is {model.Instance.Id} has zero content length.");
                 return null;
             }
 
@@ -90,7 +96,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                 DateParseHandling = DateParseHandling.None
             });
 
-            log.Info($"Json to Context Extractor: GUID payload {payload.EntityAnalysisModelInstanceEntryGuid} model id is {model.Instance.Id} JSON parsed successfully.");
+            log.Info(
+                $"Json to Context Extractor: GUID payload {payload.EntityAnalysisModelInstanceEntryGuid} model id is {model.Instance.Id} JSON parsed successfully.");
             return json;
         }
 
@@ -111,11 +118,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     modelEntryValue = jToken.ToString();
                 }
 
-                log.Info($"Json to Context Extractor: Entity {model.Instance.Id}: extracted entry via {model.References.EntryXPath} value {modelEntryValue}");
+                log.Info(
+                    $"Json to Context Extractor: Entity {model.Instance.Id}: extracted entry via {model.References.EntryXPath} value {modelEntryValue}");
             }
             catch (Exception ex)
             {
-                log.Error($"Json to Context Extractor: Could not extract entry path {model.References.EntryXPath}: {ex.Message}");
+                log.Error(
+                    $"Json to Context Extractor: Could not extract entry path {model.References.EntryXPath}: {ex.Message}");
             }
 
             try
@@ -130,18 +139,22 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                         jToken = json?.SelectToken(model.References.ReferenceDateXpath);
                         if (jToken != null)
                         {
-                            referenceDateValue = DateTimeOffset.TryParse(jToken.Value<string>(), CultureInfo.InvariantCulture,
-                                environment.AppSettings("AssumeLocalDateInPayloadExtraction").Equals("True", StringComparison.CurrentCultureIgnoreCase)
+                            referenceDateValue = DateTimeOffset.TryParse(jToken.Value<string>(),
+                                CultureInfo.InvariantCulture,
+                                environment.AppSettings("AssumeLocalDateInPayloadExtraction")
+                                    .Equals("True", StringComparison.CurrentCultureIgnoreCase)
                                     ? DateTimeStyles.AssumeLocal
                                     : DateTimeStyles.AssumeUniversal,
                                 out var dto)
                                 ? dto.UtcDateTime
                                 : DateTime.UtcNow;
                         }
+
                         break;
                 }
 
-                log.Info($"Json to Context Extractor: Entity {model.Instance.Id}: extracted reference date {referenceDateValue}");
+                log.Info(
+                    $"Json to Context Extractor: Entity {model.Instance.Id}: extracted reference date {referenceDateValue}");
             }
             catch (Exception ex)
             {
@@ -168,7 +181,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
             if (log.IsInfoEnabled)
             {
-                log.Info($"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} model id {entityAnalysisModel.Instance.Id} beginning request XPath extraction.");
+                log.Info(
+                    $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} model id {entityAnalysisModel.Instance.Id} beginning request XPath extraction.");
             }
 
             foreach (var xPath in entityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths)
@@ -179,14 +193,17 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     {
                         if (log.IsInfoEnabled)
                         {
-                            log.Info($"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} duplicate key {xPath.Name} detected, skipping extraction.");
+                            log.Info(
+                                $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} duplicate key {xPath.Name} detected, skipping extraction.");
                         }
+
                         continue;
                     }
 
                     if (log.IsInfoEnabled)
                     {
-                        log.Info($"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} evaluating {xPath.Name} with path {xPath.XPath}.");
+                        log.Info(
+                            $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} evaluating {xPath.Name} with path {xPath.XPath}.");
                     }
 
                     string value = null;
@@ -198,7 +215,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
                         if (value == null)
                         {
-                            if (!String.IsNullOrEmpty(xPath.DefaultValue))
+                            if (!string.IsNullOrEmpty(xPath.DefaultValue))
                             {
                                 value = xPath.DefaultValue;
                                 defaultFallback = true;
@@ -207,21 +224,23 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     }
                     catch (Exception ex) when (ex is not OperationCanceledException)
                     {
-                        if (!String.IsNullOrEmpty(xPath.DefaultValue))
+                        if (!string.IsNullOrEmpty(xPath.DefaultValue))
                         {
                             value = xPath.DefaultValue;
                             defaultFallback = true;
 
                             if (log.IsInfoEnabled)
                             {
-                                log.Info($"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} failed: {ex.Message}. Using default {xPath.DefaultValue}.");
+                                log.Info(
+                                    $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} failed: {ex.Message}. Using default {xPath.DefaultValue}.");
                             }
                         }
                         else
                         {
                             if (log.IsInfoEnabled)
                             {
-                                log.Info($"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} failed: {ex.Message}. Default value is null and will be skipped.");
+                                log.Info(
+                                    $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} failed: {ex.Message}. Default value is null and will be skipped.");
                             }
                         }
                     }
@@ -241,12 +260,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    log.Error($"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} unhandled error processing {xPath.Name}: {ex}");
+                    log.Error(
+                        $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} unhandled error processing {xPath.Name}: {ex}");
                 }
             }
         }
 
-        private void ProcessTypedInsertion(EntityAnalysisModelInstanceEntryPayload entityAnalysisModelInstanceEntryPayload,
+        private void ProcessTypedInsertion(
+            EntityAnalysisModelInstanceEntryPayload entityAnalysisModelInstanceEntryPayload,
             EntityAnalysisModelRequestXPath xPath,
             string value,
             bool defaultFallback,
@@ -267,36 +288,43 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                         };
 
                         payload.TryAdd(xPath.Name, value);
-                        entityAnalysisModel.ResolveDictionaryValueForField(entityAnalysisModelInstanceEntryPayload, log, xPath.Name);
-                        reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, value, isReprocess: isReprocess);
+                        entityAnalysisModel.ResolveDictionaryValueForField(entityAnalysisModelInstanceEntryPayload, log,
+                            xPath.Name);
+                        reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, value,
+                            isReprocess: isReprocess);
 
-                        log.Info($"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as string {(defaultFallback ? "is default" : String.Empty)}.");
+                        log.Info(
+                            $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as string {(defaultFallback ? "is default" : string.Empty)}.");
 
                         break;
                     case 2:
-                        if (Int32.TryParse(value, out var intVal))
+                        if (int.TryParse(value, out var intVal))
                         {
                             payload.TryAdd(xPath.Name, intVal);
-                            reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, valueInt: Int32.Parse(value), isReprocess: isReprocess);
+                            reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
+                                valueInt: int.Parse(value), isReprocess: isReprocess);
 
-                            log.Info($"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as integer {(defaultFallback ? "is default" : String.Empty)}.");
+                            log.Info(
+                                $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as integer {(defaultFallback ? "is default" : string.Empty)}.");
                         }
                         else
                         {
-                            log.Info($"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as null integer {(defaultFallback ? "is default" : String.Empty)}.");
+                            log.Info(
+                                $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as null integer {(defaultFallback ? "is default" : string.Empty)}.");
                         }
 
                         break;
                     case 4:
                         DateTime dateValue;
-                        if (defaultFallback && Int32.TryParse(xPath.DefaultValue, out var daysBack))
+                        if (defaultFallback && int.TryParse(xPath.DefaultValue, out var daysBack))
                         {
                             dateValue = DateTime.UtcNow.AddDays(-daysBack);
                         }
                         else
                         {
                             dateValue = DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture,
-                                environment.AppSettings("AssumeLocalDateInPayloadExtraction").Equals("True", StringComparison.CurrentCultureIgnoreCase)
+                                environment.AppSettings("AssumeLocalDateInPayloadExtraction")
+                                    .Equals("True", StringComparison.CurrentCultureIgnoreCase)
                                     ? DateTimeStyles.AssumeLocal
                                     : DateTimeStyles.AssumeUniversal,
                                 out var dto)
@@ -305,55 +333,68 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                         }
 
                         payload.TryAdd(xPath.Name, dateValue);
-                        reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, valueDate: dateValue, isReprocess: isReprocess);
+                        reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
+                            valueDate: dateValue, isReprocess: isReprocess);
 
-                        log.Info($"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as datetime {(defaultFallback ? "is default" : String.Empty)}.");
+                        log.Info(
+                            $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as datetime {(defaultFallback ? "is default" : string.Empty)}.");
 
                         break;
                     case 5:
                         var boolVal = value.Equals("true", StringComparison.OrdinalIgnoreCase) || value == "1";
                         payload.TryAdd(xPath.Name, boolVal);
-                        reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, valueBool: boolVal, isReprocess: isReprocess);
+                        reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
+                            valueBool: boolVal, isReprocess: isReprocess);
 
-                        log.Info($"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as boolean {(defaultFallback ? "is default" : String.Empty)}.");
+                        log.Info(
+                            $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as boolean {(defaultFallback ? "is default" : string.Empty)}.");
 
                         break;
                     case 6:
                     case 7:
                     case 3:
-                        if (Double.TryParse(value, out var dblVal))
+                        if (double.TryParse(value, out var dblVal))
                         {
                             payload.TryAdd(xPath.Name, dblVal);
-                            reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, valueFloat: Double.Parse(value), isReprocess: isReprocess);
+                            reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
+                                valueFloat: double.Parse(value), isReprocess: isReprocess);
 
-                            log.Info($"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as double {(defaultFallback ? "is default" : String.Empty)}.");
+                            log.Info(
+                                $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as double {(defaultFallback ? "is default" : string.Empty)}.");
                         }
                         else
                         {
-                            log.Info($"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as null double {(defaultFallback ? "is default" : String.Empty)}.");
+                            log.Info(
+                                $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as null double {(defaultFallback ? "is default" : string.Empty)}.");
                         }
+
                         break;
 
                     default:
                         payload.TryAdd(xPath.Name, value);
-                        reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, value, isReprocess: isReprocess);
+                        reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, value,
+                            isReprocess: isReprocess);
 
-                        log.Info($"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as string {(defaultFallback ? "is default" : String.Empty)}.");
+                        log.Info(
+                            $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as string {(defaultFallback ? "is default" : string.Empty)}.");
 
                         break;
                 }
 
                 if (log.IsInfoEnabled)
                 {
-                    log.Info($"Json to Context Extractor: {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} processed field {xPath.Name} of type {xPath.DataTypeId} with value {value}");
+                    log.Info(
+                        $"Json to Context Extractor: {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} processed field {xPath.Name} of type {xPath.DataTypeId} with value {value}");
                 }
             }
             catch (Exception ex)
             {
                 if (log.IsInfoEnabled)
                 {
-                    log.Info($"Json to Context Extractor: {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} error parsing {xPath.Name}: {ex.Message}. Defaulting to string insert.");
+                    log.Info(
+                        $"Json to Context Extractor: {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} error parsing {xPath.Name}: {ex.Message}. Defaulting to string insert.");
                 }
+
                 payload.TryAdd(xPath.Name, value);
             }
         }

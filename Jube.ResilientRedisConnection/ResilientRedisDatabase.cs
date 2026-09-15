@@ -11,28 +11,34 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using Jube.ResilientNpgsqlConnection;
+using Jube.ResilientNpgsqlConnection.Extensions.Jube.ResilientNpgsqlConnection;
+using log4net;
+using Npgsql;
+using NpgsqlTypes;
+using Polly;
+using StackExchange.Redis;
+
 namespace Jube.ResilientRedisConnection
 {
-    using System.Globalization;
-    using System.Runtime.CompilerServices;
-    using log4net;
-    using Npgsql;
-    using NpgsqlTypes;
-    using Polly;
-    using ResilientNpgsqlConnection;
-    using ResilientNpgsqlConnection.Extensions.Jube.ResilientNpgsqlConnection;
-    using StackExchange.Redis;
-
-    public class ResilientRedisDatabase(IDatabase inner, IAsyncPolicy idempotentPolicy, IAsyncPolicy nonIdempotentPolicy, string connectionString, ILog log, bool hsetOffload)
+    public class ResilientRedisDatabase(
+        IDatabase inner,
+        IAsyncPolicy idempotentPolicy,
+        IAsyncPolicy nonIdempotentPolicy,
+        string connectionString,
+        ILog log,
+        bool hsetOffload)
         : IHybridResilientRedisDatabase
     {
-        private readonly IAsyncPolicy idempotentPolicy = idempotentPolicy ?? throw new ArgumentNullException(nameof(idempotentPolicy));
-        private readonly IAsyncPolicy nonIdempotentPolicy = nonIdempotentPolicy ?? throw new ArgumentNullException(nameof(nonIdempotentPolicy));
+        private readonly IAsyncPolicy idempotentPolicy =
+            idempotentPolicy ?? throw new ArgumentNullException(nameof(idempotentPolicy));
 
-        private IDatabase UnderlyingDatabase
-        {
-            get;
-        } = inner ?? throw new ArgumentNullException(nameof(inner));
+        private readonly IAsyncPolicy nonIdempotentPolicy =
+            nonIdempotentPolicy ?? throw new ArgumentNullException(nameof(nonIdempotentPolicy));
+
+        private IDatabase UnderlyingDatabase { get; } = inner ?? throw new ArgumentNullException(nameof(inner));
 
         public Task<bool> KeyExistsAsync(RedisKey key, CommandFlags flags = CommandFlags.None)
         {
@@ -88,7 +94,8 @@ namespace Jube.ResilientRedisConnection
                 new Context());
         }
 
-        public Task<RedisValue[]> HashGetAsync(RedisKey key, RedisValue[] fields, CommandFlags flags = CommandFlags.None)
+        public Task<RedisValue[]> HashGetAsync(RedisKey key, RedisValue[] fields,
+            CommandFlags flags = CommandFlags.None)
         {
             if (hsetOffload)
             {
@@ -193,6 +200,18 @@ namespace Jube.ResilientRedisConnection
                 new Context());
         }
 
+        public Task<long> HashLengthAsync(RedisKey key, CommandFlags flags = CommandFlags.None)
+        {
+            if (hsetOffload)
+            {
+                return PgHashLengthAsync(key);
+            }
+
+            return idempotentPolicy.ExecuteAsync(_ =>
+                    UnderlyingDatabase.HashLengthAsync(key, flags),
+                new Context());
+        }
+
         public IAsyncEnumerable<HashEntry> HashScanAsync(RedisKey key, RedisValue pattern = default,
             int pageSize = 250, long cursor = 0, int pageOffset = 0, CommandFlags flags = CommandFlags.None)
         {
@@ -216,6 +235,7 @@ namespace Jube.ResilientRedisConnection
                     {
                         results.Add(entry);
                     }
+
                     return results;
                 }
 
@@ -268,8 +288,8 @@ namespace Jube.ResilientRedisConnection
                 new Context());
         }
 
-        public Task<long> SortedSetLengthAsync(RedisKey key, double min = Double.NegativeInfinity,
-            double max = Double.PositiveInfinity, Exclude exclude = Exclude.None,
+        public Task<long> SortedSetLengthAsync(RedisKey key, double min = double.NegativeInfinity,
+            double max = double.PositiveInfinity, Exclude exclude = Exclude.None,
             CommandFlags flags = CommandFlags.None)
         {
             return idempotentPolicy.ExecuteAsync(_ =>
@@ -278,7 +298,7 @@ namespace Jube.ResilientRedisConnection
         }
 
         public Task<long> SortedSetRemoveRangeByScoreAsync(RedisKey key,
-            double start = Double.NegativeInfinity, double stop = Double.PositiveInfinity,
+            double start = double.NegativeInfinity, double stop = double.PositiveInfinity,
             Exclude exclude = Exclude.None, CommandFlags flags = CommandFlags.None)
         {
             return idempotentPolicy.ExecuteAsync(_ =>
@@ -301,7 +321,8 @@ namespace Jube.ResilientRedisConnection
                 new Context());
         }
 
-        public Task<long> SortedSetRemoveAsync(RedisKey key, RedisValue[] members, CommandFlags flags = CommandFlags.None)
+        public Task<long> SortedSetRemoveAsync(RedisKey key, RedisValue[] members,
+            CommandFlags flags = CommandFlags.None)
         {
             return idempotentPolicy.ExecuteAsync(_ =>
                     UnderlyingDatabase.SortedSetRemoveAsync(key, members, flags),
@@ -318,12 +339,13 @@ namespace Jube.ResilientRedisConnection
         }
 
         public Task<SortedSetEntry[]> SortedSetRangeByScoreWithScoresAsync(RedisKey key,
-            double start = Double.NegativeInfinity, double stop = Double.PositiveInfinity,
+            double start = double.NegativeInfinity, double stop = double.PositiveInfinity,
             Exclude exclude = Exclude.None, Order order = Order.Ascending,
             long skip = 0, long take = -1, CommandFlags flags = CommandFlags.None)
         {
             return idempotentPolicy.ExecuteAsync(_ =>
-                    UnderlyingDatabase.SortedSetRangeByScoreWithScoresAsync(key, start, stop, exclude, order, skip, take, flags),
+                    UnderlyingDatabase.SortedSetRangeByScoreWithScoresAsync(key, start, stop, exclude, order, skip,
+                        take, flags),
                 new Context());
         }
 
@@ -356,9 +378,10 @@ namespace Jube.ResilientRedisConnection
                 new Context());
         }
 
-        private async Task<ResilientNpgsqlConnection> OpenAsync(CancellationToken cancellationToken = default)
+        private async Task<ResilientNpgsqlConnection.ResilientNpgsqlConnection> OpenAsync(
+            CancellationToken cancellationToken = default)
         {
-            var conn = new ResilientNpgsqlConnection(connectionString, log);
+            var conn = new ResilientNpgsqlConnection.ResilientNpgsqlConnection(connectionString, log);
             await conn.OpenAsync(cancellationToken);
             return conn;
         }
@@ -435,6 +458,7 @@ namespace Jube.ResilientRedisConnection
                     cmd.Parameters["v"].Value = (byte[]?)e.Value ?? Array.Empty<byte>();
                     await cmd.ExecuteNonQueryAsync();
                 }
+
                 await tx.CommitAsync();
             }
             catch
@@ -456,18 +480,22 @@ namespace Jube.ResilientRedisConnection
             {
                 return RedisValue.Null;
             }
+
             if (!reader.IsDBNull(0))
             {
                 return (RedisValue)reader.GetFieldValue<byte[]>(0);
             }
+
             if (!reader.IsDBNull(1))
             {
                 return (RedisValue)reader.GetInt64(1).ToString();
             }
+
             if (!reader.IsDBNull(2))
             {
                 return (RedisValue)reader.GetDouble(2).ToString(CultureInfo.InvariantCulture);
             }
+
             return RedisValue.Null;
         }
 
@@ -506,9 +534,20 @@ namespace Jube.ResilientRedisConnection
                 {
                     value = RedisValue.Null;
                 }
+
                 lookup[f] = value;
             }
+
             return fs.Select(f => lookup.TryGetValue(f, out var v) ? v : RedisValue.Null).ToArray();
+        }
+
+        private async Task<long> PgHashLengthAsync(RedisKey key)
+        {
+            await using var conn = await OpenAsync();
+            await using var cmd = new ResilientNpgsqlCommand(conn,
+                """SELECT count(*) FROM "CacheSetHash" WHERE "Key"=@k;""");
+            cmd.Parameters.AddWithValue("k", key.ToString());
+            return (long)(await cmd.ExecuteScalarAsync() ?? 0L);
         }
 
         private async Task<bool> PgHashDeleteAsync(RedisKey key, RedisValue field)
@@ -589,18 +628,22 @@ namespace Jube.ResilientRedisConnection
             {
                 return 0L;
             }
+
             if (!reader.IsDBNull(0))
             {
                 return Convert.ToInt64(reader.GetValue(0));
             }
+
             if (!reader.IsDBNull(1))
             {
                 return Convert.ToInt64(reader.GetValue(1));
             }
+
             if (!reader.IsDBNull(2))
             {
                 return Convert.ToInt64(reader.GetValue(2));
             }
+
             return 0L;
         }
 
@@ -618,6 +661,7 @@ namespace Jube.ResilientRedisConnection
             {
                 cmd.Parameters.AddWithValue("p", like);
             }
+
             await using var reader = await cmd.ExecuteReaderAsync(token);
             while (await reader.ReadAsync(token))
             {
@@ -639,6 +683,7 @@ namespace Jube.ResilientRedisConnection
                 {
                     value = RedisValue.Null;
                 }
+
                 yield return new HashEntry(field, value);
             }
         }
@@ -646,7 +691,7 @@ namespace Jube.ResilientRedisConnection
         private static string? GlobToLike(RedisValue pattern)
         {
             var p = pattern.ToString();
-            if (String.IsNullOrEmpty(p) || p == "*")
+            if (string.IsNullOrEmpty(p) || p == "*")
             {
                 return null;
             }

@@ -29,6 +29,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
+using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -78,8 +79,10 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             }
 
             foreach (var inlineScriptId in createdInlineScriptIds)
+            {
                 await dbContext.GetTable<Data.Poco.EntityAnalysisInlineScript>().Where(w => w.Id == inlineScriptId)
                     .DeleteAsync();
+            }
         }
 
         private static Task<EntityAnalysisModelInlineScriptService> BuildServiceAsync(

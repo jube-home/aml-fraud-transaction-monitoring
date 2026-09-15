@@ -11,44 +11,63 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Cache.Observability;
+using Jube.Cache.Redis.Interfaces;
+using Jube.ResilientRedisConnection;
+using log4net;
+using StackExchange.Redis;
+
 namespace Jube.Cache.Redis
 {
-    using Interfaces;
-    using log4net;
-    using ResilientRedisConnection;
-    using StackExchange.Redis;
-
     public class CacheWalRepository(
         IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
         ILog log) : ICacheWalRepository
     {
-        public async Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, Guid entityAnalysisModelInstanceEntryGuid, string node, byte[] bytes)
+        public Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+            Guid entityAnalysisModelInstanceEntryGuid, string node, byte[] bytes)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheWalRepository.InsertAsync", async () =>
             {
-                var redisKey = $"Wal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{node}";
-                var redisHSetKey = $"{entityAnalysisModelInstanceEntryGuid:N}";
-                await resilientRedisResilientRedisDatabase.HashSetAsync(redisKey, redisHSetKey, bytes).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                try
+                {
+                    var redisKey = $"Wal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{node}";
+                    var redisHSetKey = $"{entityAnalysisModelInstanceEntryGuid:N}";
+                    await resilientRedisResilientRedisDatabase.HashSetAsync(redisKey, redisHSetKey, bytes)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
+            });
         }
 
-        public async Task FlushWalAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string node, Guid[] entityAnalysisModelInstanceEntryGuids)
+        public Task FlushWalAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string node,
+            Guid[] entityAnalysisModelInstanceEntryGuids)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheWalRepository.FlushWalAsync", async () =>
+            {
+                try
+                {
+                    var redisKey = $"Wal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{node}";
+                    await resilientRedisResilientRedisDatabase.HashDeleteAsync(redisKey,
+                        entityAnalysisModelInstanceEntryGuids.Select(x => (RedisValue)x.ToString("N"))
+                            .ToArray()).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
+            });
+        }
+
+        public Task<long> GetWalSizeAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string node)
+        {
+            return CacheDiagnostics.RecordAsync("CacheWalRepository.GetWalSizeAsync", () =>
             {
                 var redisKey = $"Wal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{node}";
-                await resilientRedisResilientRedisDatabase.HashDeleteAsync(redisKey,
-                    entityAnalysisModelInstanceEntryGuids.Select(x => (RedisValue)x.ToString("N"))
-                        .ToArray()).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                return resilientRedisResilientRedisDatabase.HashLengthAsync(redisKey);
+            });
         }
     }
 }

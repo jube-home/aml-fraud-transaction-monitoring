@@ -426,3 +426,7 @@
     width: 100%;
     box-sizing: border-box;
 }
+
+.jube-toolbar-filters label {
+    font-weight: normal;
+}

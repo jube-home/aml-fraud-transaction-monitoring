@@ -13,11 +13,11 @@
 
 namespace Jube.TaskCancellation.TaskHelper
 {
-
-    public class TimedTaskResult(TaskType taskType, long elapsedMicroseconds, long bytesAllocated)
+    public class TimedTaskResult(TaskType taskType, long elapsedMicroseconds, long bytesAllocated, bool faulted = false)
     {
         public TaskType TaskType { get; } = taskType;
         public long ComputeTime { get; } = elapsedMicroseconds;
         public long ThreadMemory { get; } = bytesAllocated;
+        public bool Faulted { get; } = faulted;
     }
 }

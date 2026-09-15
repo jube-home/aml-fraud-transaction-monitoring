@@ -11,28 +11,34 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Concurrent;
+using System.Reflection;
+using Jube.Cache;
+using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
+using Jube.Engine.Models;
+using Jube.Engine.Observability;
+using Jube.TaskCancellation.Interfaces;
+using log4net;
+using Newtonsoft.Json.Serialization;
+using RabbitMQ.Client;
+
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Jube.Engine.BackgroundTasks.Context.Models
 {
-    using System.Collections.Concurrent;
-    using System.Reflection;
-    using Cache;
-    using DynamicEnvironment;
-    using Jube.Engine.Models;
-    using log4net;
-    using Newtonsoft.Json.Serialization;
-    using RabbitMQ.Client;
-    using TaskCancellation;
-
     public class Services
     {
-        public DynamicEnvironment DynamicEnvironment { get; set; }
+        public DynamicEnvironment.DynamicEnvironment DynamicEnvironment { get; set; }
         public ILog Log { get; set; }
         public ITaskCoordinator TaskCoordinator { get; set; }
         public IConnection RabbitMqConnection { get; set; }
         public CacheService CacheService { get; set; }
+        public IImplicitAsyncInvocationTracker ImplicitAsyncInvocationTracker { get; set; }
         public DefaultContractResolver ContractResolver { get; set; }
-        public ConcurrentDictionary<string, Assembly> HashCacheAssembly { get; } = new ConcurrentDictionary<string, Assembly>();
-        public ConcurrentDictionary<string, HashCacheAssemblyPayload> HashCacheAssemblyMetadata { get; } = new ConcurrentDictionary<string, HashCacheAssemblyPayload>();
+        public ConcurrentDictionary<string, Assembly> HashCacheAssembly { get; } = new();
+        public ConcurrentDictionary<string, HashCacheAssemblyPayload> HashCacheAssemblyMetadata { get; } = new();
         public string ReportConnectionString { get; set; }
+        public OpenTelemetryExcludeCache OpenTelemetryExcludeCache { get; set; }
+        public LogCounterRuleCache LogCounterRuleCache { get; set; }
     }
 }

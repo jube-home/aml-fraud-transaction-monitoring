@@ -72,8 +72,6 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                 Locked = (byte)(dto.Locked ? 1 : 0),
                 RuleScriptTypeId = (byte)dto.RuleScriptTypeId,
                 BuilderRuleScript = dto.BuilderRuleScript,
-                // The Json column is jsonb -- an empty string (sent when RuleScriptTypeId selects the Coder
-                // surface, which doesn't populate Json) is not valid JSON, so it must go through as null.
                 Json = string.IsNullOrWhiteSpace(dto.Json) ? null : dto.Json,
                 CoderRuleScript = dto.CoderRuleScript,
                 Search = (byte)(dto.Search ? 1 : 0),

@@ -11,23 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+using log4net;
+using Microsoft.VisualBasic;
+using StackExchange.Redis;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Dictionary;
-    using EntityAnalysisModelManager.EntityAnalysisModel;
-    using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
-    using log4net;
-    using Microsoft.VisualBasic;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using ReflectionHelpers;
-    using StackExchange.Redis;
-
     public class Execute
     {
         public DistinctSearchKey DistinctSearchKey { get; init; }
@@ -35,10 +35,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
         public EntityAnalysisModel EntityAnalysisModel { get; init; }
         public EntityAnalysisModelInstanceEntryPayload EntityAnalysisModelInstanceEntryPayload { get; init; }
         public PooledDictionary<string, double> EntityInstanceEntryDictionaryKvPs { get; init; }
-        public ConcurrentDictionary<int, List<DictionaryNoBoxing<string>>> AbstractionRuleMatches { get; init; } = new ConcurrentDictionary<int, List<DictionaryNoBoxing<string>>>();
+
+        public ConcurrentDictionary<int, List<DictionaryNoBoxing<string>>> AbstractionRuleMatches { get; init; } =
+            new();
+
         public ILog Log { get; init; }
         public List<RedisValue> SortedSetKeys { get; init; }
         public Dictionary<string, DictionaryNoBoxing<string>> PayloadMap { get; init; }
+        public Context Context { get; init; }
 
         public Task StartAsync()
         {
@@ -58,19 +62,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
                         }
                     }
 
-                    if (Log.IsInfoEnabled)
-                    {
-                        Log.Info(
-                            $"Abstraction Rule Execute: GUID {EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} for grouping key {DistinctSearchKey.SearchKey} has parsed {documents.Count} from the database. Elapsed {sw.ElapsedMilliseconds}.");
-                    }
+                    Context.TraceLog(
+                        $"for grouping key {DistinctSearchKey.SearchKey} has parsed {documents.Count} from the database. Elapsed {sw.ElapsedMilliseconds}.");
 
                     documents.Add(CachePayloadDocument);
 
-                    if (Log.IsInfoEnabled)
-                    {
-                        Log.Info(
-                            $"Abstraction Rule Execute: GUID {EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} has created a filter for cache where {DistinctSearchKey.SearchKey} has added the current transaction to the records,  so there are now {documents.Count} records for evaluation.  The records will now be matched against the Abstraction rules where this {DistinctSearchKey.SearchKey} is expressed and the rule is marked as a history rule (else it will be done later as a basic rule). Elapsed {sw.ElapsedMilliseconds}.");
-                    }
+                    Context.TraceLog(
+                        $"has created a filter for cache where {DistinctSearchKey.SearchKey} has added the current transaction to the records, so there are now {documents.Count} records for evaluation. The records will now be matched against the Abstraction rules where this {DistinctSearchKey.SearchKey} is expressed and the rule is marked as a history rule (else it will be done later as a basic rule). Elapsed {sw.ElapsedMilliseconds}.");
 
                     var logicHashMatches = new Dictionary<string, List<DictionaryNoBoxing<string>>>();
                     var abstractionRuleMatches = new Dictionary<int, List<DictionaryNoBoxing<string>>>();
@@ -82,11 +80,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
                     {
                         try
                         {
-                            if (Log.IsInfoEnabled)
-                            {
-                                Log.Info(
-                                    $"Abstraction Rule Execute: GUID {EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} will process Abstraction Rule {evaluateAbstractionRule.Id}. Elapsed {sw.ElapsedMilliseconds}.");
-                            }
+                            Context.TraceLog(
+                                $"will process Abstraction Rule {evaluateAbstractionRule.Id}. Elapsed {sw.ElapsedMilliseconds}.");
 
                             if (!logicHashMatches.TryGetValue(evaluateAbstractionRule.LogicHash, out var matches))
                             {
@@ -97,19 +92,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
 
                                 logicHashMatches.Add(evaluateAbstractionRule.LogicHash, matches);
 
-                                if (Log.IsInfoEnabled)
-                                {
-                                    Log.Info(
-                                        $"Abstraction Rule Execute: GUID {EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} abstraction rule id {evaluateAbstractionRule.Id} logic hash {evaluateAbstractionRule.LogicHash} run now and added to logic cache - {matches.Count} matched. Elapsed {sw.ElapsedMilliseconds}.");
-                                }
+                                Context.TraceLog(
+                                    $"abstraction rule id {evaluateAbstractionRule.Id} logic hash {evaluateAbstractionRule.LogicHash} run now and added to logic cache - {matches.Count} matched. Elapsed {sw.ElapsedMilliseconds}.");
                             }
                             else
                             {
-                                if (Log.IsInfoEnabled)
-                                {
-                                    Log.Info(
-                                        $"Abstraction Rule Execute: GUID {EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} abstraction rule id {evaluateAbstractionRule.Id} reuse matches from logic cache [{matches.Count}] for logic hash {evaluateAbstractionRule.LogicHash}. Elapsed {sw.ElapsedMilliseconds}.");
-                                }
+                                Context.TraceLog(
+                                    $"abstraction rule id {evaluateAbstractionRule.Id} reuse matches from logic cache [{matches.Count}] for logic hash {evaluateAbstractionRule.LogicHash}. Elapsed {sw.ElapsedMilliseconds}.");
                             }
 
                             var fromDate = GetFromDate(evaluateAbstractionRule);
@@ -121,19 +110,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
 
                             abstractionRuleMatches[evaluateAbstractionRule.Id] = finalMatches;
 
-                            if (Log.IsInfoEnabled)
-                            {
-                                Log.Info(
-                                    $"Abstraction Rule Execute: GUID {EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} abstraction rule id {evaluateAbstractionRule.Id} has {finalMatches.Count} final matches. Elapsed {sw.ElapsedMilliseconds}.");
-                            }
+                            Context.TraceLog(
+                                $"abstraction rule id {evaluateAbstractionRule.Id} has {finalMatches.Count} final matches. Elapsed {sw.ElapsedMilliseconds}.");
                         }
                         catch (Exception ex) when (ex is not OperationCanceledException)
                         {
-                            if (Log.IsInfoEnabled)
-                            {
-                                Log.Info(
-                                    $"Abstraction Rule Execute: GUID {EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} abstraction rule id {evaluateAbstractionRule.Id} exception {ex}. Elapsed {sw.ElapsedMilliseconds}.");
-                            }
+                            Context.TraceLog(
+                                $"abstraction rule id {evaluateAbstractionRule.Id} exception {ex}. Elapsed {sw.ElapsedMilliseconds}.");
                         }
                     }
 
@@ -144,20 +127,15 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    if (Log.IsInfoEnabled)
-                    {
-                        Log.Info(
-                            $"Abstraction Rule Execute: GUID {EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} has produced an error for grouping key {DistinctSearchKey.SearchKey} as {ex}. Elapsed {sw.ElapsedMilliseconds}.");
-                    }
+                    Context.TraceLog(
+                        $"has produced an error for grouping key {DistinctSearchKey.SearchKey} as {ex}. Elapsed {sw.ElapsedMilliseconds}.");
                 }
                 finally
                 {
-                    if (Log.IsInfoEnabled)
-                    {
-                        Log.Info(
-                            $"Abstraction Rule Execute: GUID {EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} has concluded for grouping key {DistinctSearchKey.SearchKey}. Elapsed {sw.ElapsedMilliseconds}.");
-                    }
+                    Context.TraceLog(
+                        $"has concluded for grouping key {DistinctSearchKey.SearchKey}. Elapsed {sw.ElapsedMilliseconds}.");
                 }
+
                 return Task.CompletedTask;
             }
             catch (Exception exception)

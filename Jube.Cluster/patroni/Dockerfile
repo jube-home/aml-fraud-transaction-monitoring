@@ -24,6 +24,8 @@ FROM alpine:3.21
 RUN apk add --no-cache \
     postgresql17 \
     postgresql17-client \
+    postgresql17-contrib \
+    postgresql-pgvector \
     python3 \
     curl \
     jq \

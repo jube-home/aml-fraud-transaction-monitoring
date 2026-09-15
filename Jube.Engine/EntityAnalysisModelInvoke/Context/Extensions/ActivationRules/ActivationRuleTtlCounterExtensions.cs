@@ -11,225 +11,215 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Jube.Cache;
+using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+using Jube.Extensions;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Cache;
-    using EntityAnalysisModelManager.EntityAnalysisModel;
-    using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
-    using Jube.Extensions;
-    using TaskCancellation.TaskHelper;
-
     public static class ActivationRuleTtlCounterExtensions
     {
         public static async Task ActivationRuleTtlCounterAsync(this Context context,
             EntityAnalysisModelActivationRule evaluateActivationRule,
             Dictionary<int, EntityAnalysisModel> availableModels, CacheService cacheService)
         {
-            if (!evaluateActivationRule.EnableTtlCounter || context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
+            if (!evaluateActivationRule.EnableTtlCounter || context.EntityAnalysisModelInstanceEntryPayload
+                    .EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
             {
                 return;
             }
 
-            if (context.Log.IsInfoEnabled)
+            context.TraceLog(
+                $"is incrementing TTL counter {evaluateActivationRule.EntityAnalysisModelTtlCounterGuid} as this is enabled in the activation rule.");
+
+            var target = FindTargetTtlCounter(evaluateActivationRule, availableModels);
+            if (target == null)
             {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is incrementing TTL counter {evaluateActivationRule.EntityAnalysisModelTtlCounterGuid} as this is enabled in the activation rule.");
+                return;
             }
 
-            var found = false;
-            foreach (var (_, value) in
-                     from targetTtlCounterModelKvp in availableModels
-                     where evaluateActivationRule.EntityAnalysisModelGuidTtlCounter ==
-                           targetTtlCounterModelKvp.Value.Instance.Guid
-                     select targetTtlCounterModelKvp)
+            var (value, foundTtlCounter) = target.Value;
+
+            try
             {
-                var addedEntityAnalysisModelTtlCounters = new List<Guid>();
-                foreach (var foundTtlCounter in value.Collections.ModelTtlCounters)
+                context.TraceLog(
+                    $"has matched the name in the activation rule to the TTL counters loaded for {context.EntityAnalysisModel.Instance.Name} in model id {value.Instance.Id}.");
+
+                if (!context.EntityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(foundTtlCounter
+                        .TtlCounterDataName))
                 {
-                    if (evaluateActivationRule.EntityAnalysisModelTtlCounterGuid == foundTtlCounter.Guid)
-                    {
-                        try
-                        {
-                            if (context.Log.IsInfoEnabled)
-                            {
-                                context.Log.Info(
-                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has matched the name in the activation rule to the TTL counters loaded for {context.EntityAnalysisModel.Instance.Name} in model id {value.Instance.Id}.");
-                            }
+                    context.TraceLog(
+                        $"could not find a value for TTL counter name {foundTtlCounter.Name}.");
 
-                            if (context.EntityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(foundTtlCounter.TtlCounterDataName))
-                            {
-                                if (context.Log.IsInfoEnabled)
-                                {
-                                    context.Log.Info(
-                                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} found a value a value for TTL counter name {foundTtlCounter.Name} as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]}.");
-                                }
-
-                                if (value.Flags.EnableTtlCounter)
-                                {
-                                    if (evaluateActivationRule.EntityAnalysisModelGuidTtlCounter == value.Instance.Guid)
-                                    {
-                                        if (addedEntityAnalysisModelTtlCounters.Contains(foundTtlCounter.Guid))
-                                        {
-                                            context.Log.Info(
-                                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]} can only be incremented once during an evaluation of an activation rule.");
-
-                                            continue;
-                                        }
-
-                                        if (context.Environment.AppSettings("ActivationRuleIdempotency").Equals("True", StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            if (!await cacheService.CacheTtlCounterIdempotencyRepository.CheckAndClaimIdempotencyAsync(context.EntityAnalysisModel.Instance.TenantRegistryId,
-                                                    context.EntityAnalysisModel.Instance.Guid,
-                                                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid,
-                                                    foundTtlCounter.Guid))
-                                            {
-                                                if (context.Log.IsInfoEnabled)
-                                                {
-                                                    context.Log.Info(
-                                                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]} but failed idempotency check.");
-                                                }
-
-                                                continue;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (context.Log.IsInfoEnabled)
-                                            {
-                                                context.Log.Info(
-                                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]} won't check ActivationRuleIdempotency.");
-                                            }
-                                        }
-
-                                        if (context.Log.IsInfoEnabled)
-                                        {
-                                            context.Log.Info(
-                                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]}.  Is about to insert the entry.");
-                                        }
-
-                                        double incrementValue = 1;
-                                        if (foundTtlCounter.EnableSum)
-                                        {
-                                            incrementValue = context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataValue];
-
-                                            if (context.Log.IsInfoEnabled)
-                                            {
-                                                context.Log.Info(
-                                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]}.  Has incremented based on sum for value {foundTtlCounter.TtlCounterDataValue} with a increment value of {incrementValue}.");
-                                            }
-                                        }
-
-                                        if (!foundTtlCounter.EnableLiveForever)
-                                        {
-                                            var resolution = foundTtlCounter.ResolutionInterval switch
-                                            {
-                                                "n" => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.Floor(TimeSpan.FromMinutes(1)),
-                                                "h" => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.Floor(TimeSpan.FromHours(1)),
-                                                "d" => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.Floor(TimeSpan.FromDays(1)),
-                                                _ => context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.Floor(TimeSpan.FromMinutes(1))
-                                            };
-
-                                            if (context.Log.IsInfoEnabled)
-                                            {
-                                                context.Log.Info(
-                                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]}.  Is about to insert the entry with a resolution of {resolution}.");
-                                            }
-
-                                            context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.CacheTtlCounterEntryUpsertAsync, async () => await cacheService.CacheTtlCounterEntryRepository.UpsertAsync(
-                                                context.EntityAnalysisModel.Instance.TenantRegistryId, evaluateActivationRule.EntityAnalysisModelGuidTtlCounter,
-                                                foundTtlCounter.TtlCounterDataName,
-                                                context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]
-                                                    .AsString(),
-                                                foundTtlCounter.Guid,
-                                                resolution, incrementValue).ConfigureAwait(false)));
-                                        }
-                                        else
-                                        {
-                                            if (context.Log.IsInfoEnabled)
-                                            {
-                                                context.Log.Info(
-                                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]} is set to live forever so no entry has been made to wind back counters.");
-                                            }
-                                        }
-
-                                        if (!context.EntityAnalysisModelInstanceEntryPayload.Payload.TryGetValue(foundTtlCounter.TtlCounterDataName, out var payloadValue))
-                                        {
-                                            continue;
-                                        }
-
-                                        context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.CacheTtlCounterEntryIncrementAsync, async () => await cacheService.CacheTtlCounterRepository
-                                            .IncrementTtlCounterCacheAsync(context.EntityAnalysisModel.Instance.TenantRegistryId,
-                                                context.EntityAnalysisModel.Instance.Guid,
-                                                foundTtlCounter.TtlCounterDataName,
-                                                payloadValue.AsString(),
-                                                foundTtlCounter.Guid, incrementValue,
-                                                context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate
-                                            ).ConfigureAwait(false)));
-
-                                        if (context.EntityAnalysisModelInstanceEntryPayload.TtlCounter.TryGetValue(foundTtlCounter.Name, out var ttlCounterValue))
-                                        {
-                                            ttlCounterValue += incrementValue;
-                                            context.EntityAnalysisModelInstanceEntryPayload.TtlCounter[foundTtlCounter.Name] = ttlCounterValue;
-                                        }
-                                        else
-                                        {
-                                            context.EntityAnalysisModelInstanceEntryPayload.TtlCounter.Add(foundTtlCounter.Name, incrementValue);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (context.Log.IsInfoEnabled)
-                                    {
-                                        context.Log.Info(
-                                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} cannot create a TTL counter for name {value.Instance.Name} as TTL Counter Storage is disabled for the model id {value.Instance.Id}.");
-                                    }
-                                }
-
-                                addedEntityAnalysisModelTtlCounters.Add(foundTtlCounter.Guid);
-                            }
-                            else
-                            {
-                                if (context.Log.IsInfoEnabled)
-                                {
-                                    context.Log.Info(
-                                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} could not find a value for TTL counter name {foundTtlCounter.Name}.");
-                                }
-                            }
-                        }
-                        catch (Exception ex) when (ex is not OperationCanceledException)
-                        {
-                            if (context.Log.IsInfoEnabled)
-                            {
-                                context.Log.Info(
-                                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} error performing insertion on match for a TTL Counter by name of {foundTtlCounter.Name} and id of {foundTtlCounter.Id} with exception message of {ex.Message}.");
-                            }
-                        }
-
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has matched the name in the activation rule to the TTL counters loaded for {context.EntityAnalysisModel.Instance.Name} and has finished processing.");
-                        }
-
-                        found = true;
-                    }
-
-                    if (found)
-                    {
-                        break;
-                    }
+                    return;
                 }
 
-                if (found)
+                context.TraceLog(
+                    $"found a value for TTL counter name {foundTtlCounter.Name} as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]}.");
+
+                if (!value.Flags.EnableTtlCounter)
                 {
-                    break;
+                    context.TraceLog(
+                        $"cannot create a TTL counter for name {value.Instance.Name} as TTL Counter Storage is disabled for the model id {value.Instance.Id}.");
+
+                    return;
+                }
+
+                if (evaluateActivationRule.EntityAnalysisModelGuidTtlCounter != value.Instance.Guid)
+                {
+                    return;
+                }
+
+                if (context.Environment.AppSettings("ActivationRuleIdempotency")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!await cacheService.CacheTtlCounterIdempotencyRepository
+                            .CheckAndClaimIdempotencyAsync(
+                                context.EntityAnalysisModel.Instance.TenantRegistryId,
+                                context.EntityAnalysisModel.Instance.Guid,
+                                context.EntityAnalysisModelInstanceEntryPayload
+                                    .EntityAnalysisModelInstanceEntryGuid,
+                                foundTtlCounter.Guid))
+                    {
+                        context.TraceLog(
+                            $"has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]} but failed idempotency check.");
+
+                        return;
+                    }
+                }
+                else
+                {
+                    context.TraceLog(
+                        $"has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]} won't check ActivationRuleIdempotency.");
+                }
+
+                context.TraceLog(
+                    $"has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]}. Is about to insert the entry.");
+
+                var incrementValue = ResolveIncrementValue(foundTtlCounter,
+                    context.EntityAnalysisModelInstanceEntryPayload.Payload);
+                if (foundTtlCounter.EnableSum)
+                {
+                    context.TraceLog(
+                        $"has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]}. Has incremented based on sum for value {foundTtlCounter.TtlCounterDataValue} with an increment value of {incrementValue}.");
+                }
+
+                if (!foundTtlCounter.EnableLiveForever)
+                {
+                    var resolution = ResolveResolution(foundTtlCounter,
+                        context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate);
+
+                    context.TraceLog(
+                        $"has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]}. Is about to insert the entry with a resolution of {resolution}.");
+
+                    context.PendingWriteTasks.Add(
+                        TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                            TaskType.CacheTtlCounterEntryUpsertAsync, async () =>
+                                await cacheService.CacheTtlCounterEntryRepository.UpsertAsync(
+                                    context.EntityAnalysisModel.Instance.TenantRegistryId,
+                                    evaluateActivationRule.EntityAnalysisModelGuidTtlCounter,
+                                    foundTtlCounter.TtlCounterDataName,
+                                    context.EntityAnalysisModelInstanceEntryPayload
+                                        .Payload[foundTtlCounter.TtlCounterDataName]
+                                        .AsString(),
+                                    foundTtlCounter.Guid,
+                                    resolution, incrementValue).ConfigureAwait(false),
+                            context.Log));
+                }
+                else
+                {
+                    context.TraceLog(
+                        $"has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]} is set to live forever so no entry has been made to wind back counters.");
+                }
+
+                if (!context.EntityAnalysisModelInstanceEntryPayload.Payload.TryGetValue(
+                        foundTtlCounter.TtlCounterDataName, out var payloadValue))
+                {
+                    return;
+                }
+
+                context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                    TaskType.CacheTtlCounterEntryIncrementAsync, async () => await cacheService
+                        .CacheTtlCounterRepository
+                        .IncrementTtlCounterCacheAsync(
+                            context.EntityAnalysisModel.Instance.TenantRegistryId,
+                            context.EntityAnalysisModel.Instance.Guid,
+                            foundTtlCounter.TtlCounterDataName,
+                            payloadValue.AsString(),
+                            foundTtlCounter.Guid, incrementValue,
+                            context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate
+                        ).ConfigureAwait(false), context.Log));
+
+                if (context.EntityAnalysisModelInstanceEntryPayload.TtlCounter.TryGetValue(
+                        foundTtlCounter.Name, out var ttlCounterValue))
+                {
+                    ttlCounterValue += incrementValue;
+                    context.EntityAnalysisModelInstanceEntryPayload.TtlCounter[
+                        foundTtlCounter.Name] = ttlCounterValue;
+                }
+                else
+                {
+                    context.EntityAnalysisModelInstanceEntryPayload.TtlCounter.Add(
+                        foundTtlCounter.Name, incrementValue);
                 }
             }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                context.TraceLog(
+                    $"error performing insertion on match for a TTL Counter by name of {foundTtlCounter.Name} and id of {foundTtlCounter.Id} with exception message of {ex.Message}.");
+            }
+            finally
+            {
+                context.TraceLog(
+                    $"has matched the name in the activation rule to the TTL counters loaded for {context.EntityAnalysisModel.Instance.Name} and has finished processing.");
+            }
+        }
+
+        private static (EntityAnalysisModel Model, EntityAnalysisModelTtlCounter TtlCounter)?
+            FindTargetTtlCounter(EntityAnalysisModelActivationRule evaluateActivationRule,
+                Dictionary<int, EntityAnalysisModel> availableModels)
+        {
+            foreach (var (_, model) in availableModels)
+            {
+                if (evaluateActivationRule.EntityAnalysisModelGuidTtlCounter != model.Instance.Guid)
+                {
+                    continue;
+                }
+
+                foreach (var candidate in model.Collections.ModelTtlCounters)
+                {
+                    if (evaluateActivationRule.EntityAnalysisModelTtlCounterGuid == candidate.Guid)
+                    {
+                        return (model, candidate);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static double ResolveIncrementValue(EntityAnalysisModelTtlCounter foundTtlCounter,
+            DictionaryNoBoxing<string> payload)
+        {
+            return foundTtlCounter.EnableSum ? payload[foundTtlCounter.TtlCounterDataValue] : 1d;
+        }
+
+        private static DateTime ResolveResolution(EntityAnalysisModelTtlCounter foundTtlCounter,
+            DateTime referenceDate)
+        {
+            return foundTtlCounter.ResolutionInterval switch
+            {
+                "n" => referenceDate.Floor(TimeSpan.FromMinutes(1)),
+                "h" => referenceDate.Floor(TimeSpan.FromHours(1)),
+                "d" => referenceDate.Floor(TimeSpan.FromDays(1)),
+                _ => referenceDate.Floor(TimeSpan.FromMinutes(1))
+            };
         }
     }
 }

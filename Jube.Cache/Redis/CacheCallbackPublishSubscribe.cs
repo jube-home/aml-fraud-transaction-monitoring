@@ -11,26 +11,28 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Concurrent;
+using System.Net;
+using Jube.Cache.Observability;
+using Jube.ResilientRedisConnection;
+using Jube.TaskCancellation;
+using log4net;
+using StackExchange.Redis;
+
 namespace Jube.Cache.Redis
 {
-    using System.Collections.Concurrent;
-    using System.Net;
-    using log4net;
-    using ResilientRedisConnection;
-    using StackExchange.Redis;
-    using TaskCancellation;
-
     public class CacheCallbackPublishSubscribe
     {
         public readonly Task CallbackRemoveSubscriptionTask;
-        public readonly ConcurrentDictionary<Guid, TaskCompletionSource<Callback.Callback>> Callbacks;
 
         public readonly Task CallbackSetSubscriptionTask;
-        private readonly int callbackTimeout;
         public readonly Task CallbackTimeoutTask;
+        public readonly ConcurrentDictionary<Guid, TaskCompletionSource<Callback.Callback>> Callbacks;
+        private readonly int callbackTimeout;
         private readonly ConnectionMultiplexer connectionMultiplexer;
         private readonly string localCacheInstanceGuidString;
         private readonly ILog log;
+        private readonly ConcurrentDictionary<Guid, DateTime> pendingSince = new();
         private readonly IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase;
 
         public CacheCallbackPublishSubscribe(ConnectionMultiplexer connectionMultiplexer,
@@ -46,9 +48,24 @@ namespace Jube.Cache.Redis
             this.log = log;
             this.callbackTimeout = callbackTimeout;
             localCacheInstanceGuidString = Guid.NewGuid().ToString("N");
-            CallbackSetSubscriptionTask = taskCoordinator.RunAsync("CallbackListenAddAsync", _ => StartCallbackSubscriptionAddAsync(taskCoordinator.CancellationToken));
-            CallbackRemoveSubscriptionTask = taskCoordinator.RunAsync("CallbackListenRemoveAsync", _ => StartCallbackSubscriptionRemoveAsync(taskCoordinator.CancellationToken));
-            CallbackTimeoutTask = taskCoordinator.RunAsync("CallbackListenRemoveAsync", _ => StartCallbackTimeoutAsync(taskCoordinator.CancellationToken));
+            CallbackSetSubscriptionTask = taskCoordinator.RunAsync("CallbackListenAddAsync",
+                _ => StartCallbackSubscriptionAddAsync(taskCoordinator.CancellationToken));
+            CallbackRemoveSubscriptionTask = taskCoordinator.RunAsync("CallbackListenRemoveAsync",
+                _ => StartCallbackSubscriptionRemoveAsync(taskCoordinator.CancellationToken));
+            CallbackTimeoutTask = taskCoordinator.RunAsync("CallbackListenRemoveAsync",
+                _ => StartCallbackTimeoutAsync(taskCoordinator.CancellationToken));
+        }
+
+        internal CacheCallbackPublishSubscribe(
+            ConcurrentDictionary<Guid, TaskCompletionSource<Callback.Callback>> callbacks,
+            ILog log,
+            string localCacheInstanceGuidString,
+            IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase = null)
+        {
+            Callbacks = callbacks;
+            this.log = log;
+            this.localCacheInstanceGuidString = localCacheInstanceGuidString;
+            this.resilientRedisResilientRedisDatabase = resilientRedisResilientRedisDatabase;
         }
 
         private async Task<Task> StartCallbackTimeoutAsync(CancellationToken token)
@@ -71,37 +88,7 @@ namespace Jube.Cache.Redis
                             $"Callback Timeout Management: Threshold for timeout is {threshold} and it has been offset from now by {callbackTimeout} ms.");
                     }
 
-                    foreach (var pendingCallback in Callbacks)
-                    {
-                        var tcs = pendingCallback.Value;
-
-                        if (!tcs.Task.IsCompletedSuccessfully)
-                        {
-                            continue;
-                        }
-
- #pragma warning disable VSTHRD003
-                        var callback = await tcs.Task;//We know it is complete,  as above.
- #pragma warning restore VSTHRD003
-
-                        if (callback.CreatedDate > threshold)
-                        {
-                            continue;
-                        }
-
-                        if (log.IsDebugEnabled)
-                        {
-                            log.Debug($"Callback Timeout Management: Expired callback {pendingCallback.Key} found.");
-                        }
-
-                        Callbacks.TryRemove(pendingCallback);
-
-                        if (log.IsDebugEnabled)
-                        {
-                            log.Debug(
-                                $"Callback Timeout Management: Expired callback {pendingCallback.Key} removed..");
-                        }
-                    }
+                    SweepExpiredCallbacks(threshold);
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
@@ -111,10 +98,77 @@ namespace Jube.Cache.Redis
 
                 await Task.Delay(pollDelay, token);
             }
+
             return Task.FromResult(Task.CompletedTask);
         }
 
-        private void AddToDictionaryFromSubscription(string channel, byte[] value)
+        internal void SweepExpiredCallbacks(DateTime threshold)
+        {
+            var stillPending = new HashSet<Guid>();
+
+            foreach (var pendingCallback in Callbacks)
+            {
+                var guid = pendingCallback.Key;
+                var tcs = pendingCallback.Value;
+
+                if (tcs.Task.IsCompletedSuccessfully)
+                {
+                    pendingSince.TryRemove(guid, out _);
+
+#pragma warning disable VSTHRD002
+                    var callback = tcs.Task.GetAwaiter().GetResult();
+#pragma warning restore VSTHRD002
+
+                    if (callback.CreatedDate > threshold)
+                    {
+                        continue;
+                    }
+
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug($"Callback Timeout Management: Expired callback {guid} found.");
+                    }
+
+                    Callbacks.TryRemove(pendingCallback);
+
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug($"Callback Timeout Management: Expired callback {guid} removed..");
+                    }
+
+                    continue;
+                }
+
+                stillPending.Add(guid);
+                var firstSeenPending = pendingSince.GetOrAdd(guid, static _ => DateTime.UtcNow);
+
+                if (firstSeenPending > threshold)
+                {
+                    continue;
+                }
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"Callback Timeout Management: Pending callback {guid} has never arrived and is " +
+                              "past its timeout; faulting it and removing it.");
+                }
+
+                tcs.TrySetException(
+                    new TimeoutException($"Callback {guid} was never received within the configured timeout."));
+                Callbacks.TryRemove(pendingCallback);
+                pendingSince.TryRemove(guid, out _);
+            }
+
+            foreach (var trackedGuid in pendingSince.Keys)
+            {
+                if (!stillPending.Contains(trackedGuid))
+                {
+                    pendingSince.TryRemove(trackedGuid, out _);
+                }
+            }
+        }
+
+        internal void AddToDictionaryFromSubscription(string channel, byte[] value)
         {
             try
             {
@@ -132,20 +186,21 @@ namespace Jube.Cache.Redis
                 log.Info($"Failed to parse message from channel {channel} with error {ex}.");
             }
         }
-        private void AddToDictionary(byte[] value, Guid guid)
-        {
 
+        internal void AddToDictionary(byte[] value, Guid guid)
+        {
             var callback = new Callback.Callback
             {
                 CreatedDate = DateTime.UtcNow,
                 Payload = value
             };
 
-            var tcs = Callbacks.GetOrAdd(guid, _ => new TaskCompletionSource<Callback.Callback>(TaskCreationOptions.RunContinuationsAsynchronously));
+            var tcs = Callbacks.GetOrAdd(guid,
+                _ => new TaskCompletionSource<Callback.Callback>(TaskCreationOptions.RunContinuationsAsynchronously));
             tcs.TrySetResult(callback);
         }
 
-        private void RemoveFromDictionaryFromSubscription(string channel, RedisValue value)
+        internal void RemoveFromDictionaryFromSubscription(string channel, RedisValue value)
         {
             try
             {
@@ -225,36 +280,44 @@ namespace Jube.Cache.Redis
             }
         }
 
-        public async Task PublishAsync(byte[] json, Guid entityAnalysisModelInstanceEntryGuid, CancellationToken token = default)
+        public Task PublishAsync(byte[] json, Guid entityAnalysisModelInstanceEntryGuid,
+            CancellationToken token = default)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheCallbackPublishSubscribe.PublishAsync", async () =>
             {
-                AddToDictionary(json, entityAnalysisModelInstanceEntryGuid);
+                try
+                {
+                    AddToDictionary(json, entityAnalysisModelInstanceEntryGuid);
 
-                await resilientRedisResilientRedisDatabase.PublishAsync(
-                    RedisChannel.Pattern($"CallbackSet:{Dns.GetHostName()}:{localCacheInstanceGuidString}:{entityAnalysisModelInstanceEntryGuid:N}"),
-                    json);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
+                    await resilientRedisResilientRedisDatabase.PublishAsync(
+                        RedisChannel.Pattern(
+                            $"CallbackSet:{Dns.GetHostName()}:{localCacheInstanceGuidString}:{entityAnalysisModelInstanceEntryGuid:N}"),
+                        json);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache SQL: Has created an exception as {ex}.");
+                }
+            });
         }
 
-        public async Task DeleteAsync(Guid entityAnalysisModelInstanceEntryGuid, CancellationToken token = default)
+        public Task DeleteAsync(Guid entityAnalysisModelInstanceEntryGuid, CancellationToken token = default)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheCallbackPublishSubscribe.DeleteAsync", async () =>
             {
-                Callbacks.TryRemove(entityAnalysisModelInstanceEntryGuid, out _);
+                try
+                {
+                    Callbacks.TryRemove(entityAnalysisModelInstanceEntryGuid, out _);
 
-                await resilientRedisResilientRedisDatabase.PublishAsync(
-                    RedisChannel.Pattern($"CallbackRemove:{Dns.GetHostName()}:{localCacheInstanceGuidString}")
-                    , new RedisValue(entityAnalysisModelInstanceEntryGuid.ToString("N")));
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache SQL: Has created an exception as {ex}.");
-            }
+                    await resilientRedisResilientRedisDatabase.PublishAsync(
+                        RedisChannel.Pattern($"CallbackRemove:{Dns.GetHostName()}:{localCacheInstanceGuidString}")
+                        , new RedisValue(entityAnalysisModelInstanceEntryGuid.ToString("N")));
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache SQL: Has created an exception as {ex}.");
+                }
+            });
         }
     }
 }

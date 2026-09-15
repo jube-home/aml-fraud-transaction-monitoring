@@ -29,6 +29,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
+using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -520,21 +521,24 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
         }
 
         [Fact]
-        public async Task GetByIdMatchesOnParentListIdPreExistingRepositoryQuirkAsync()
+        public async Task GetByIdMatchesOnItsOwnIdNotItsParentListIdAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
-            var saved = await service.InsertAsync(NewDto(listId, UniqueValue("GetByIdQuirk")));
+            var saved = await service.InsertAsync(NewDto(listId, UniqueValue("GetById")));
             createdIds.Add(saved.Id);
 
             var byOwnId = await service.GetByIdAsync(saved.Id);
-            byOwnId.Should().BeNull();
+            byOwnId.Should().NotBeNull();
+            byOwnId!.Id.Should().Be(saved.Id);
 
-            var byParentListId = await service.GetByIdAsync(listId);
-            byParentListId.Should().NotBeNull();
-            byParentListId!.Id.Should().Be(saved.Id);
+            if (listId != saved.Id)
+            {
+                var byParentListId = await service.GetByIdAsync(listId);
+                byParentListId.Should().BeNull();
+            }
         }
 
         [Fact]

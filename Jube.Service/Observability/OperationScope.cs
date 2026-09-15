@@ -11,34 +11,33 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using log4net;
 
 namespace Jube.Service.Observability
 {
-    using System;
-    using System.Diagnostics;
-    using log4net;
-    using Reactivity;
-
     public sealed class OperationScope : IDisposable
     {
-        private readonly string area;
-        private readonly string operation;
+        private readonly Activity? activity;
         private readonly string actor;
-        private readonly int? tenantId;
+        private readonly string area;
         private readonly ILog audit;
         private readonly ILog log;
+        private readonly string operation;
         private readonly IServiceChangeBus serviceChangeBus;
-        private readonly Activity? activity;
         private readonly long startTs;
-        private string outcome = "ok";
+        private readonly int? tenantId;
         private int? entityId;
+        private ServiceChangeKind? kind;
+        private string outcome = "ok";
         private int? rowCount;
         private int? version;
-        private ServiceChangeKind? kind;
 
         private OperationScope(string area, string operation, string? actor, int? tenantId, ILog audit, ILog log,
-            IServiceChangeBus serviceChangeBus)
+            IServiceChangeBus serviceChangeBus, string callerMember, string callerFilePath, int callerLineNumber)
         {
             this.area = area;
             this.operation = operation;
@@ -51,47 +50,18 @@ namespace Jube.Service.Observability
             activity?.SetTag("jube.area", area);
             activity?.SetTag("jube.operation", operation);
             activity?.SetTag("jube.actor", this.actor);
+
             if (tenantId is { } t)
             {
                 activity?.SetTag("jube.tenant.id", t);
             }
 
+            activity?.SetTag("code.function", callerMember);
+            activity?.SetTag("code.filepath", callerFilePath);
+            activity?.SetTag("code.lineno", callerLineNumber);
+
             startTs = Stopwatch.GetTimestamp();
         }
-
-        public static OperationScope Start(string area, string operation, string? actor, int? tenantId, ILog audit,
-            ILog log, IServiceChangeBus serviceChangeBus) =>
-            new(area, operation, actor, tenantId, audit, log, serviceChangeBus);
-
-        public void Outcome(string value) => outcome = value;
-
-        public void Entity(int id)
-        {
-            entityId = id;
-            activity?.SetTag("jube.entity.id", id);
-        }
-
-        public void Rows(int n)
-        {
-            rowCount = n;
-            activity?.SetTag("jube.row.count", n);
-        }
-
-        public void Version(int v)
-        {
-            version = v;
-            activity?.SetTag("jube.version", v);
-        }
-
-        public void Error(Exception ex)
-        {
-            outcome = "error";
-            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
-        }
-
-        public void Created() => kind = ServiceChangeKind.Created;
-        public void Updated() => kind = ServiceChangeKind.Updated;
-        public void Deleted() => kind = ServiceChangeKind.Deleted;
 
         public void Dispose()
         {
@@ -135,6 +105,61 @@ namespace Jube.Service.Observability
             }
 
             activity?.Dispose();
+        }
+
+        public static OperationScope Start(string area, string operation, string? actor, int? tenantId, ILog audit,
+            ILog log, IServiceChangeBus serviceChangeBus,
+            [CallerMemberName] string callerMember = "",
+            [CallerFilePath] string callerFilePath = "",
+            [CallerLineNumber] int callerLineNumber = 0)
+        {
+            return new OperationScope(area, operation, actor, tenantId, audit, log, serviceChangeBus, callerMember,
+                callerFilePath,
+                callerLineNumber);
+        }
+
+        public void Outcome(string value)
+        {
+            outcome = value;
+        }
+
+        public void Entity(int id)
+        {
+            entityId = id;
+            activity?.SetTag("jube.entity.id", id);
+        }
+
+        public void Rows(int n)
+        {
+            rowCount = n;
+            activity?.SetTag("jube.row.count", n);
+        }
+
+        public void Version(int v)
+        {
+            version = v;
+            activity?.SetTag("jube.version", v);
+        }
+
+        public void Error(Exception ex)
+        {
+            outcome = "error";
+            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
+        }
+
+        public void Created()
+        {
+            kind = ServiceChangeKind.Created;
+        }
+
+        public void Updated()
+        {
+            kind = ServiceChangeKind.Updated;
+        }
+
+        public void Deleted()
+        {
+            kind = ServiceChangeKind.Deleted;
         }
     }
 }

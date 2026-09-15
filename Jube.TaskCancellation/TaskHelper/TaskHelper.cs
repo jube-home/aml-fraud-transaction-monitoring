@@ -11,74 +11,84 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics;
+using log4net;
+
 namespace Jube.TaskCancellation.TaskHelper
 {
-    using System.Diagnostics;
-
-    public enum TaskType
-    {
-        SanctionsAsync = 1,
-        TtlCountersAsync = 3,
-        AbstractionRulesWithSearchKeysAsync = 4,
-        CachePayloadLatestUpsertAsync = 5,
-        CachePayloadUpsertAsync = 6,
-        CachePayloadInsertAsync = 7,
-        CacheTtlCounterEntryUpsertAsync = 8,
-        CacheTtlCounterEntryIncrementAsync = 9,
-        CacheSanctionUpdateAsync = 10,
-        OnlineAggregationOfTtlCountersAsync = 11,
-        ExecuteOutOfProcessAggregationOfTtlCountersAsync = 12,
-        ExecuteTimeToLiveCounterIterationAsync = 13,
-        CachePayloadLatestInsertAsync = 14,
-        CacheSanctionInsertAsync = 15,
-        ExecuteAbstractionRulesWithSearchKeyAsync = 16,
-        BulkInsertCachePayloadRemovalBatchEntry = 17,
-        SortedSetRemoveReferenceDate = 18,
-        SetRemoveAsync = 19,
-        PublishAsync = 20,
-        HashDecrementBytes = 21,
-        HashDecrementCount = 22,
-        HashDeletePayload = 23,
-        HashDeletePayloadBulk = 24,
-        AppendBulkCleanupOfPayloadGuids = 25,
-        SortedSetRemoveReferenceDateLatest = 26,
-        HashDecrementLatestCount = 27,
-        HashDeletePayloadLatest = 28,
-        CachePayloadLatestRemovalBatchEntry = 29,
-        ProcessTtlCounterDeprecation = 30,
-        BulkInsertTtlCounterEntryRemovalBatchResponseTime = 31,
-        BulkInsertCachePayloadLatestRemovalBatchEntry = 32,
-        SortedSetLruJournalRemove = 33,
-        BulkTtlCounterIdempotencyRemovalBatchEntry = 34,
-        UpsertReferenceDateAsync = 35
-    }
-
     public static class TaskHelper
     {
-        [ThreadStatic]
-        private static long lastSeenBytes;
+        [ThreadStatic] private static long lastSeenBytes;
 
-        public static Task<TimedTaskResult> MeasureTaskTimeAndMemoryAllocatedAsync(TaskType taskType, Func<Task> taskFunc)
+        public static Task<TimedTaskResult> MeasureTaskTimeAndMemoryAllocatedAsync(TaskType taskType,
+            Func<Task> taskFunc, ILog? log = null, bool rethrowOnFault = false)
         {
             return Task.Run(async () =>
             {
                 var sw = Stopwatch.StartNew();
                 var startBytes = SafeGetAllocatedBytes();
 
-                await taskFunc().ConfigureAwait(false);
-
-                var endBytes = SafeGetAllocatedBytes();
-                sw.Stop();
-
-                var bytesAllocated = endBytes - startBytes;
-                if (bytesAllocated < 0)
+                if (log == null)
                 {
-                    bytesAllocated = endBytes;
+                    await taskFunc().ConfigureAwait(false);
+                    return BuildResult(taskType, sw, startBytes, false);
                 }
 
-                var elapsedMicroseconds = (long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
-                return new TimedTaskResult(taskType, elapsedMicroseconds, bytesAllocated);
+                try
+                {
+                    await taskFunc().ConfigureAwait(false);
+                    return BuildResult(taskType, sw, startBytes, false);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"TaskHelper: {taskType} faulted after {sw.Elapsed.TotalMilliseconds:F1}ms, as {ex}.");
+
+                    if (rethrowOnFault)
+                    {
+                        throw;
+                    }
+
+                    return BuildResult(taskType, sw, startBytes, true);
+                }
             });
+        }
+
+        public static TimedTaskResult MeasureTimeAndMemoryAllocated(TaskType taskType, Action action, ILog? log = null)
+        {
+            var sw = Stopwatch.StartNew();
+            var startBytes = SafeGetAllocatedBytes();
+
+            if (log == null)
+            {
+                action();
+                return BuildResult(taskType, sw, startBytes, false);
+            }
+
+            try
+            {
+                action();
+                return BuildResult(taskType, sw, startBytes, false);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"TaskHelper: {taskType} faulted after {sw.Elapsed.TotalMilliseconds:F1}ms, as {ex}.");
+                return BuildResult(taskType, sw, startBytes, true);
+            }
+        }
+
+        private static TimedTaskResult BuildResult(TaskType taskType, Stopwatch sw, long startBytes, bool faulted)
+        {
+            var endBytes = SafeGetAllocatedBytes();
+            sw.Stop();
+
+            var bytesAllocated = endBytes - startBytes;
+            if (bytesAllocated < 0)
+            {
+                bytesAllocated = endBytes;
+            }
+
+            var elapsedMicroseconds = (long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+            return new TimedTaskResult(taskType, elapsedMicroseconds, bytesAllocated, faulted);
         }
 
         private static long SafeGetAllocatedBytes()

@@ -32,16 +32,28 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Jube.Cache\Jube.Cache.csproj"/>
+        <ProjectReference Include="..\Jube.Cryptography\Jube.Cryptography.csproj"/>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
+        <ProjectReference Include="..\Jube.Dictionary\Jube.Dictionary.csproj"/>
         <ProjectReference Include="..\Jube.Dto\Jube.Dto.csproj"/>
         <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj"/>
+        <ProjectReference Include="..\Jube.Engine\Jube.Engine.csproj"/>
+        <ProjectReference Include="..\Jube.HttpAdaptationProtocol\Jube.HttpAdaptationProtocol.csproj"/>
+        <ProjectReference Include="..\Jube.Monitoring\Jube.Monitoring.csproj"/>
+        <ProjectReference Include="..\Jube.OpenTelemetryListener\Jube.OpenTelemetryListener.csproj"/>
+        <ProjectReference Include="..\Jube.ResilientRedisConnection\Jube.ResilientRedisConnection.csproj"/>
         <ProjectReference Include="..\Jube.Resources\Jube.Resources.csproj"/>
         <ProjectReference Include="..\Jube.Service\Jube.Service.csproj"/>
+        <ProjectReference Include="..\Jube.TaskCancellation\Jube.TaskCancellation.csproj"/>
         <ProjectReference Include="..\Jube.Validations\Jube.Validations.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Include="Exhaustive\Mock.csv">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
+        <AdditionalFiles Include="sdn.csv">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AdditionalFiles>
     </ItemGroup>

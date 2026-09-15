@@ -11,46 +11,44 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation.Results;
+using Jube.App.Dto;
+using Jube.App.Dto.Sanctions;
+using Jube.Cache.Redis.Callback;
+using Jube.Data.Extension;
+using Jube.Engine.BackgroundTasks.TaskStarters.Models;
+using Jube.Engine.EntityAnalysisModelInvoke;
+using Jube.Engine.EntityAnalysisModelInvoke.Exceptions;
+using Jube.Engine.Exhaustive.Extensions;
+using Jube.Engine.Sanctions;
+using log4net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+
 namespace Jube.App.Controllers.Invoke
 {
-    using System;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Cache.Redis.Callback;
-    using Data.Extension;
-    using Dto;
-    using Dto.Sanctions;
-    using DynamicEnvironment;
-    using Engine;
-    using Engine.BackgroundTasks.TaskStarters.Models;
-    using Engine.EntityAnalysisModelInvoke;
-    using Engine.EntityAnalysisModelInvoke.Exceptions;
-    using Engine.Exhaustive.Extensions;
-    using Engine.Sanctions;
-    using FluentValidation.Results;
-    using log4net;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json.Linq;
-    using SanctionEntryDto=Dto.Sanctions.SanctionEntryDto;
-
     [Authorize]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class InvokeController : Controller
     {
-        private readonly DynamicEnvironment dynamicEnvironment;
-        private readonly Engine engine;
+        private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
+        private readonly Engine.Engine engine;
         private readonly ILog log;
         private readonly string userName;
 
-        public InvokeController(ILog log, DynamicEnvironment dynamicEnvironment, IHttpContextAccessor httpContextAccessor,
-            Engine engine = null)
+        public InvokeController(ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IHttpContextAccessor httpContextAccessor,
+            Engine.Engine engine = null)
         {
             this.engine = engine;
             this.log = log;
@@ -69,7 +67,8 @@ namespace Jube.App.Controllers.Invoke
 
         [HttpGet("EntityAnalysisModel/Callback/{guid:Guid}")]
         [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> EntityAnalysisModelCallbackAsync(Guid guid, int? timeout, CancellationToken token = default)
+        public async Task<ActionResult> EntityAnalysisModelCallbackAsync(Guid guid, int? timeout,
+            CancellationToken token = default)
         {
             try
             {
@@ -81,7 +80,8 @@ namespace Jube.App.Controllers.Invoke
 
                 Interlocked.Increment(ref engine.Context.Counters.HttpCounterCallback);
 
-                var tcs = engine.Context.Services.CacheService.CacheCallbackPublishSubscribe.Callbacks.GetOrAdd(guid, _ => new TaskCompletionSource<Callback>(TaskCreationOptions.RunContinuationsAsynchronously));
+                var tcs = engine.Context.Services.CacheService.CacheCallbackPublishSubscribe.Callbacks.GetOrAdd(guid,
+                    _ => new TaskCompletionSource<Callback>(TaskCreationOptions.RunContinuationsAsynchronously));
                 var callback = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(timeout ?? 30000), token);
 
                 await engine.Context.Services.CacheService
@@ -89,10 +89,10 @@ namespace Jube.App.Controllers.Invoke
                     .DeleteAsync(guid, token).ConfigureAwait(false);
 
                 return File(callback.Payload, "application/json");
-
             }
             catch (TimeoutException)
             {
+                Interlocked.Increment(ref engine.Context.Counters.HttpCounterCallbackTimeout);
                 return StatusCode(408);
             }
             catch (Exception ex)
@@ -111,8 +111,10 @@ namespace Jube.App.Controllers.Invoke
         {
             try
             {
-                if (!dynamicEnvironment.AppSettings("EnablePublicInvokeController").Equals("True", StringComparison.OrdinalIgnoreCase)
-                    || !dynamicEnvironment.AppSettings("EnableEngine").Equals("True", StringComparison.OrdinalIgnoreCase))
+                if (!dynamicEnvironment.AppSettings("EnablePublicInvokeController")
+                        .Equals("True", StringComparison.OrdinalIgnoreCase)
+                    || !dynamicEnvironment.AppSettings("EnableEngine")
+                        .Equals("True", StringComparison.OrdinalIgnoreCase))
                 {
                     return Task.FromResult<ActionResult<SanctionSearchResponseDto>>(NotFound());
                 }
@@ -125,10 +127,14 @@ namespace Jube.App.Controllers.Invoke
                 Interlocked.Increment(ref engine.Context.Counters.HttpCounterSanction);
 
                 var effectiveMaxDistanceRatio = maxDistanceRatio ??
-                                                LevenshteinDistance.ParseNullableDistanceRatio(dynamicEnvironment.AppSettings("SanctionsLevenshteinMaxDistanceRatio"));
+                                                LevenshteinDistance.ParseNullableDistanceRatio(
+                                                    dynamicEnvironment.AppSettings(
+                                                        "SanctionsLevenshteinMaxDistanceRatio"));
 
                 var effectiveMaxCoverageRatio = maxCoverageRatio ??
-                                                LevenshteinDistance.ParseNullableCoverageRatio(dynamicEnvironment.AppSettings("SanctionsLevenshteinMaxCoverageRatio"));
+                                                LevenshteinDistance.ParseNullableCoverageRatio(
+                                                    dynamicEnvironment.AppSettings(
+                                                        "SanctionsLevenshteinMaxCoverageRatio"));
 
                 if (log.IsInfoEnabled)
                 {
@@ -137,13 +143,14 @@ namespace Jube.App.Controllers.Invoke
                 }
 
                 var sanctionEntryReturns = new LevenshteinDistance(effectiveMaxDistanceRatio, effectiveMaxCoverageRatio)
-                    .CheckMultipartString(multiPartString, distance, engine.Context.Sanctions.SanctionsEntries, engine.Context.Sanctions.SanctionsStopTokens);
+                    .CheckMultipartString(multiPartString, distance, engine.Context.Sanctions.SanctionsEntries,
+                        engine.Context.Sanctions.SanctionsStopTokens);
 
                 var entries = sanctionEntryReturns
                     .Select(sanctionEntryReturn => new SanctionEntryDto
                     {
                         Reference = sanctionEntryReturn.SanctionEntry.SanctionEntryReference,
-                        Value = String.Join(' ', sanctionEntryReturn.SanctionEntry.SanctionElementValue),
+                        Value = string.Join(' ', sanctionEntryReturn.SanctionEntry.SanctionElementValue),
                         SanctionEntrySourceId = sanctionEntryReturn.SanctionEntry.SanctionEntrySourceId,
                         Source = engine.Context.Sanctions.SanctionsSources.TryGetValue(sanctionEntryReturn.SanctionEntry
                             .SanctionEntrySourceId, out var source)
@@ -163,9 +170,10 @@ namespace Jube.App.Controllers.Invoke
                         return new SanctionSourceAggregationDto
                         {
                             SourceId = sourceGroup.Key,
-                            SourceName = engine.Context.Sanctions.SanctionsSources.TryGetValue(sourceGroup.Key, out var source)
-                                ? source.Name
-                                : "Missing",
+                            SourceName =
+                                engine.Context.Sanctions.SanctionsSources.TryGetValue(sourceGroup.Key, out var source)
+                                    ? source.Name
+                                    : "Missing",
                             Sum = SanctionAggregationCalculator.CalculateSum(sourceMatches),
                             Average = SanctionAggregationCalculator.CalculateAverage(sourceMatches),
                             Count = SanctionAggregationCalculator.CalculateCount(sourceMatches),
@@ -306,7 +314,8 @@ namespace Jube.App.Controllers.Invoke
                         Interlocked.Increment(ref engine.Context.Counters.HttpCounterModelAsync);
                     }
 
-                    var foundModels = engine.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels.ActiveEntityAnalysisModels
+                    var foundModels = engine.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                        .ActiveEntityAnalysisModels
                         .Where(modelKvp => guid == modelKvp.Value.Instance.Guid).ToList();
 
                     if (!foundModels.Any())
@@ -339,10 +348,14 @@ namespace Jube.App.Controllers.Invoke
                             {
                                 var context = await EntityAnalysisModelInvoke.InvokeAsync(
                                     value,
-                                    ms, Int32.Parse(dynamicEnvironment.AppSettings("MaxInvokeControllerRequestBytes")),
+                                    ms, int.Parse(dynamicEnvironment.AppSettings("MaxInvokeControllerRequestBytes")),
                                     async).ConfigureAwait(false);
 
-                                var bytes = context.EntityAnalysisModelInstanceEntryPayload.ResponseJson.Length > 0 ? context.EntityAnalysisModelInstanceEntryPayload.ResponseJson : context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson;
+                                var bytes = context.ImplicitAsyncTimedOut
+                                    ? context.ImplicitAsyncTimeoutResponseJson
+                                    : context.EntityAnalysisModelInstanceEntryPayload.ResponseJson.Length > 0
+                                        ? context.EntityAnalysisModelInstanceEntryPayload.ResponseJson
+                                        : context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson;
                                 Response.ContentType = "application/json";
                                 Response.ContentLength = bytes.Length;
                                 await Response.Body.WriteAsync(bytes);
@@ -373,7 +386,6 @@ namespace Jube.App.Controllers.Invoke
                         }
 
                         return BadRequest("Content body is zero length.");
-
                     }
 
                     if (log.IsInfoEnabled)
@@ -388,6 +400,17 @@ namespace Jube.App.Controllers.Invoke
                 {
                     return StatusCode(500, ex.Message);
                 }
+            }
+            catch (BadHttpRequestException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn(
+                        $"HTTP Handler Entity: Client did not complete the request body as {ex.Message}.  " +
+                        $"Returning {ex.StatusCode}.");
+                }
+
+                return StatusCode(ex.StatusCode);
             }
             catch (Exception ex)
             {
@@ -435,7 +458,8 @@ namespace Jube.App.Controllers.Invoke
                     log.Info($"Exhaustive Recall:  Recall received for {guid}.  Invoking handler.");
                 }
 
-                var foundExhaustive = engine.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels.ActiveEntityAnalysisModels
+                var foundExhaustive = engine.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                    .ActiveEntityAnalysisModels
                     .Where(w => w.Value.Collections.ExhaustiveModels.Any(a => a.Guid == guid)).ToList();
 
                 if (foundExhaustive.Count == 0)
@@ -456,13 +480,25 @@ namespace Jube.App.Controllers.Invoke
 
                     if (log.IsInfoEnabled)
                     {
-                        log.Info($"Exhaustive Recall:  Has invoked the handler and returned a value of {value}.  Returning.");
+                        log.Info(
+                            $"Exhaustive Recall:  Has invoked the handler and returned a value of {value}.  Returning.");
                     }
 
                     return response;
                 }
 
                 return Forbid();
+            }
+            catch (BadHttpRequestException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn(
+                        $"Exhaustive Recall: Client did not complete the request body as {ex.Message}.  " +
+                        $"Returning {ex.StatusCode}.");
+                }
+
+                return StatusCode(ex.StatusCode);
             }
             catch (Exception ex)
             {

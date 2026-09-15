@@ -11,49 +11,51 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Diagnostics;
-    using System.Threading;
-    using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
-
     public static class GatewayRulesExtensions
     {
         public static Context ExecuteGatewayRules(this Context context)
         {
-            if (context.Log.IsInfoEnabled)
+            context.TraceLog($"is going to invoke Gateway Rules.");
+
+            var stopwatch = Stopwatch.StartNew();
+            var items = new Dictionary<string, TaskPerformance>();
+
+            IterateAndProcess(context, items);
+
+            stopwatch.Stop();
+
+            if (!context.LogSampled)
             {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is going to invoke Gateway Rules.");
+                return context;
             }
 
-            IterateAndProcess(context);
-            StorePerformanceFromStopwatch(context);
+            var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                new InvokeStagePerformance();
+
+            stages.Gateway = new StageTiming<TaskPerformance>
+            {
+                DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                Items = items
+            };
 
             return context;
         }
 
-        private static void StorePerformanceFromStopwatch(Context context)
-        {
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.Gateway = (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
-
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Gateway Rules have concluded {context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency} ns.");
-            }
-        }
-
-        private static void IterateAndProcess(Context context)
+        private static void IterateAndProcess(Context context, Dictionary<string, TaskPerformance> items)
         {
             var gatewaySample = context.Random.NextDouble();
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has created a Gateway Sample of {gatewaySample}.");
-            }
+            context.TraceLog($"has created a Gateway Sample of {gatewaySample}.");
 
             var rulesCount = context.EntityAnalysisModel.Collections.ModelGatewayRules.Count;
             for (var i = 0; i < rulesCount; i++)
@@ -61,11 +63,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 var gatewayRule = context.EntityAnalysisModel.Collections.ModelGatewayRules[i];
                 try
                 {
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is going to invoke Gateway Rule {gatewayRule.EntityAnalysisModelGatewayRuleId} with a gateway sample of {gatewaySample}.  The model's Gateway Sample is {gatewayRule.GatewaySample} to be tested against {gatewaySample} .");
-                    }
+                    context.TraceLog(
+                        $"is going to invoke Gateway Rule {gatewayRule.EntityAnalysisModelGatewayRuleId} with a gateway sample of {gatewaySample}. The model's Gateway Sample is {gatewayRule.GatewaySample} to be tested against {gatewaySample}.");
 
                     if (gatewaySample >= gatewayRule.GatewaySample)
                     {
@@ -74,24 +73,30 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
                     IncrementEvaluationCounter(gatewayRule);
 
-                    if (!gatewayRule.GatewayRuleCompileDelegate(context.EntityAnalysisModelInstanceEntryPayload.Payload,
+                    var matched = false;
+                    var timed = TaskHelper.MeasureTimeAndMemoryAllocated(TaskType.Gateway, () =>
+                    {
+                        matched = gatewayRule.GatewayRuleCompileDelegate(
+                            context.EntityAnalysisModelInstanceEntryPayload.Payload,
                             context.EntityAnalysisModel.Dependencies.EntityAnalysisModelLists,
                             context.EntityAnalysisModelInstanceEntryPayload.Dictionary,
-                            context.Log))
+                            context.Log);
+                    });
+                    items[gatewayRule.Name] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
+
+                    if (!matched)
                     {
                         continue;
                     }
 
                     context.EntityAnalysisModelInstanceEntryPayload.MatchedGatewayRule = true;
-                    context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit = gatewayRule.MaxResponseElevation;
+                    context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit =
+                        gatewayRule.MaxResponseElevation;
 
                     IncrementGatewayRuleCounters(context, gatewayRule);
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is going to invoke Gateway Rule {gatewayRule.EntityAnalysisModelGatewayRuleId} as it has matched. The max response elevation has been set to {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit} and Model Invoke Gateway Counter has been set to {context.EntityAnalysisModel.Counters.ModelInvokeGatewayCounter}. The Entity Model Gateway Rule Counter has been set to {gatewayRule.ActivationCounter}.");
-                    }
+                    context.TraceLog(
+                        $"is going to invoke Gateway Rule {gatewayRule.EntityAnalysisModelGatewayRuleId} as it has matched. The max response elevation has been set to {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit} and Model Invoke Gateway Counter has been set to {context.EntityAnalysisModel.Counters.ModelInvokeGatewayCounter}. The Entity Model Gateway Rule Counter has been set to {gatewayRule.ActivationCounter}.");
 
                     break;
                 }

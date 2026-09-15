@@ -11,65 +11,72 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Jube.Data.Poco;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Diagnostics;
-    using Data.Poco;
-    using ReflectionHelpers;
-    using EntityAnalysisModelAbstractionCalculation=EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelAbstractionCalculation;
+    using EntityAnalysisModelAbstractionCalculation =
+        EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelAbstractionCalculation;
 
     public static class AbstractionCalculationsExtensions
     {
         public static Context ExecuteAbstractionCalculations(this Context context)
         {
-            if (context.Log.IsInfoEnabled)
+            context.TraceLog(
+                $"will now perform entity analysis abstractions calculations and will loop through each.");
+
+            var stopwatch = Stopwatch.StartNew();
+            var items = new Dictionary<string, TaskPerformance>();
+
+            IterateAndProcess(context, items);
+
+            stopwatch.Stop();
+
+            if (context.LogSampled)
             {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} will now perform entity analysis abstractions calculations and will loop through each.");
+                var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                    new InvokeStagePerformance();
+
+                stages.AbstractionCalculations = new StageTiming<TaskPerformance>
+                {
+                    DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                    Items = items
+                };
             }
 
-            IterateAndProcess(context);
-            StorePerformanceFromStopwatch(context);
+            context.TraceLog($"Abstraction Calculations have concluded.");
 
             return context;
         }
-        private static void StorePerformanceFromStopwatch(Context context)
+
+        private static void IterateAndProcess(Context context, Dictionary<string, TaskPerformance> items)
         {
-
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.ExecuteAbstractionCalculation = (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
-
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} Abstraction Calculations have concluded in {context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency} ns.");
-            }
-        }
-
-        private static void IterateAndProcess(Context context)
-        {
-            double calculationDouble = 0;
             foreach (var entityAnalysisModelAbstractionCalculation in context.EntityAnalysisModel.Collections
                          .EntityAnalysisModelAbstractionCalculations)
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id}.");
-                }
+                context.TraceLog(
+                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id}.");
 
+                var itemStopwatch = Stopwatch.StartNew();
+                var startBytes = GC.GetAllocatedBytesForCurrentThread();
                 try
                 {
-                    calculationDouble = entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId == 5 ? CalculationFromRule(context, entityAnalysisModelAbstractionCalculation) : CalculationFromConfigurationAndSwitches(context, entityAnalysisModelAbstractionCalculation, calculationDouble);
+                    var calculationDouble = entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId == 5
+                        ? CalculationFromRule(context, entityAnalysisModelAbstractionCalculation)
+                        : CalculationFromConfigurationAndSwitches(context, entityAnalysisModelAbstractionCalculation);
 
                     context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.Add(
                         entityAnalysisModelAbstractionCalculation.Name, calculationDouble);
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and has added the name {entityAnalysisModelAbstractionCalculation.Name} with the value {calculationDouble} to abstractions for processing.");
-                    }
+                    var calculationDoubleForLog = calculationDouble;
+
+                    context.TraceLog(
+                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and has added the name {entityAnalysisModelAbstractionCalculation.Name} with the value {calculationDoubleForLog} to abstractions for processing.");
 
                     if (entityAnalysisModelAbstractionCalculation.ReportTable)
                     {
@@ -82,11 +89,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                                 context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
                         });
 
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and has added the name {entityAnalysisModelAbstractionCalculation.Name} with the value {calculationDouble} to report payload also with a column name of {entityAnalysisModelAbstractionCalculation.Name}.");
-                        }
+                        context.TraceLog(
+                            $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and has added the name {entityAnalysisModelAbstractionCalculation.Name} with the value {calculationDoubleForLog} to report payload also with a column name of {entityAnalysisModelAbstractionCalculation.Name}.");
                     }
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
@@ -94,95 +98,103 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     context.Log.Error(
                         $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} has produced an error as {ex}.");
                 }
+                finally
+                {
+                    itemStopwatch.Stop();
+                    var allocated = GC.GetAllocatedBytesForCurrentThread() - startBytes;
+                    items[entityAnalysisModelAbstractionCalculation.Name] = new TaskPerformance(
+                        (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                        Math.Max(allocated, 0));
+                }
             }
         }
 
-        private static double CalculationFromConfigurationAndSwitches(Context context, EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation, double calculationDouble)
+        private static double CalculationFromConfigurationAndSwitches(Context context,
+            EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
         {
+            double calculationDouble;
+
             try
             {
                 var leftDouble = GetLeftValue(context, entityAnalysisModelAbstractionCalculation);
                 var rightDouble = GetRightValue(context, entityAnalysisModelAbstractionCalculation);
 
-                calculationDouble = PerformCalculation(context, entityAnalysisModelAbstractionCalculation, calculationDouble, leftDouble, rightDouble);
+                calculationDouble = PerformCalculation(context, entityAnalysisModelAbstractionCalculation,
+                    leftDouble, rightDouble);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 calculationDouble = 0;
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} has produced an error in calculation and has been set to zero with exception message of {ex.Message}.");
-                }
+                context.TraceLog(
+                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} has produced an error in calculation and has been set to zero with exception message of {ex.Message}.");
             }
 
-            if (!(Double.IsNaN(calculationDouble) | Double.IsInfinity(calculationDouble)))
+            if (!(double.IsNaN(calculationDouble) | double.IsInfinity(calculationDouble)))
             {
                 return calculationDouble;
             }
 
             calculationDouble = 0;
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} has produced IsNaN or IsInfinity and has been set to zero.");
-            }
+            context.TraceLog(
+                $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} has produced IsNaN or IsInfinity and has been set to zero.");
 
             return calculationDouble;
         }
-        private static double CalculationFromRule(Context context, EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
+
+        private static double CalculationFromRule(Context context,
+            EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
         {
             var calculationDouble = ReflectRuleHelper.Execute(entityAnalysisModelAbstractionCalculation,
                 context.EntityAnalysisModel,
-                context.EntityAnalysisModelInstanceEntryPayload, context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log);
+                context.EntityAnalysisModelInstanceEntryPayload,
+                context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log);
 
             return calculationDouble;
         }
 
-        private static double PerformCalculation(Context context, EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation, double calculationDouble, double leftDouble, double rightDouble)
+        private static double PerformCalculation(Context context,
+            EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation,
+            double leftDouble, double rightDouble)
         {
+            double calculationDouble;
+
             switch (entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId)
             {
                 case 1:
                     calculationDouble = leftDouble + rightDouble;
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} addition, produces value of {calculationDouble}.");
-                    }
+                    context.TraceLog(
+                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} addition, produces value of {calculationDouble}.");
 
                     break;
                 case 2:
                     calculationDouble = leftDouble - rightDouble;
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} subtraction, produces value of {calculationDouble}.");
-                    }
+                    context.TraceLog(
+                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} subtraction, produces value of {calculationDouble}.");
 
                     break;
                 case 3:
                     calculationDouble = leftDouble / rightDouble;
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} divide, produces value of {calculationDouble}.");
-                    }
+                    context.TraceLog(
+                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} divide, produces value of {calculationDouble}.");
 
                     break;
                 case 4:
                     calculationDouble = leftDouble * rightDouble;
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} multiply, produces value of {calculationDouble}.");
-                    }
+                    context.TraceLog(
+                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} multiply, produces value of {calculationDouble}.");
+
+                    break;
+                default:
+                    calculationDouble = 0;
+
+                    context.TraceLog(
+                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} has an unrecognised AbstractionCalculationTypeId {entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId} and has been set to zero.");
 
                     break;
             }
@@ -190,7 +202,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             return calculationDouble;
         }
 
-        private static double GetRightValue(Context context, EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
+        private static double GetRightValue(Context context,
+            EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
         {
             double value = 0;
 
@@ -202,25 +215,20 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             {
                 value = valueRight;
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and extracted right value of {value}.");
-                }
+                context.TraceLog(
+                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and extracted right value of {value}.");
             }
             else
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} but it does not contain a right value.");
-                }
+                context.TraceLog(
+                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} but it does not contain a right value.");
             }
 
             return value;
         }
 
-        private static double GetLeftValue(Context context, EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
+        private static double GetLeftValue(Context context,
+            EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
         {
             double value = 0;
 
@@ -232,19 +240,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             {
                 value = valueLeft;
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and has extracted left value of {value}.");
-                }
+                context.TraceLog(
+                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and has extracted left value of {value}.");
             }
             else
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} but it does not contain a left value.");
-                }
+                context.TraceLog(
+                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} but it does not contain a left value.");
             }
 
             return value;

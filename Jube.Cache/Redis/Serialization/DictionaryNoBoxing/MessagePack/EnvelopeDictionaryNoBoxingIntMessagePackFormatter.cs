@@ -11,16 +11,18 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Buffers;
+using Jube.Dictionary;
+using Jube.Dictionary.Models;
+using MessagePack;
+using MessagePack.Formatters;
+
 namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
 {
-    using Dictionary;
-    using Dictionary.Models;
-    using global::MessagePack;
-    using global::MessagePack.Formatters;
-
- #pragma warning disable MsgPack009// Analyzer doesn't recognise resolver-based disambiguation for closed generics
-    public class EnvelopeDictionaryNoBoxingIntMessagePackFormatter : IMessagePackFormatter<EnvelopeDictionaryNoBoxing<int>>
- #pragma warning restore MsgPack009
+#pragma warning disable MsgPack009 // Analyzer doesn't recognise resolver-based disambiguation for closed generics
+    public class
+        EnvelopeDictionaryNoBoxingIntMessagePackFormatter : IMessagePackFormatter<EnvelopeDictionaryNoBoxing<int>>
+#pragma warning restore MsgPack009
     {
         public void Serialize(ref MessagePackWriter writer, EnvelopeDictionaryNoBoxing<int> value,
             MessagePackSerializerOptions options)
@@ -32,8 +34,9 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
 
             writer.Write(value.Version);
 
-            if (value is not { Data: not null })
+            if (value.Data == null)
             {
+                writer.WriteNil();
                 return;
             }
 
@@ -60,8 +63,10 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
                     case InternalValue.ValueType.DateTime:
                         writer.WriteInt64(kv.Value.AsDateTime().ToUniversalTime().ToBinary());
                         break;
-                    case InternalValue.ValueType.None:
                     case InternalValue.ValueType.Guid:
+                        writer.Write(kv.Value.AsGuid().ToByteArray());
+                        break;
+                    case InternalValue.ValueType.None:
                     default:
                         writer.Write(kv.Value.AsString());
                         break;
@@ -76,6 +81,12 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
             {
                 Version = reader.ReadByte()
             };
+
+            if (reader.TryReadNil())
+            {
+                envelope.Data = null;
+                return envelope;
+            }
 
             var count = reader.ReadMapHeader();
             var data = new DictionaryNoBoxing<int>(count);
@@ -92,7 +103,7 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
                         var l = reader.ReadInt64();
                         try
                         {
-                            if (l > Int32.MaxValue || l < Int32.MinValue)
+                            if (l > int.MaxValue || l < int.MinValue)
                             {
                                 data.AddUnchecked(key, DateTime.FromBinary(l));
                             }
@@ -103,43 +114,72 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
                         }
                         catch (Exception)
                         {
-                            // element-level failure only: skip this entry, keep the envelope intact
+                            //Ignored
                         }
+
                         break;
                     }
                     case MessagePackType.Float:
                     {
                         var d = reader.ReadDouble();
-                        try { data.AddUnchecked(key, d); }
+                        try
+                        {
+                            data.AddUnchecked(key, d);
+                        }
                         catch (Exception)
                         {
-                            /* skip */
+                            //Ignored
                         }
+
                         break;
                     }
                     case MessagePackType.Boolean:
                     {
                         var b = reader.ReadBoolean();
-                        try { data.AddUnchecked(key, b); }
+                        try
+                        {
+                            data.AddUnchecked(key, b);
+                        }
                         catch (Exception)
                         {
-                            /* skip */
+                            //Ignored
                         }
+
                         break;
                     }
                     case MessagePackType.String:
                     {
                         var s = reader.ReadString();
-                        try { data.AddUnchecked(key, s); }
+                        try
+                        {
+                            data.AddUnchecked(key, s);
+                        }
                         catch (Exception)
                         {
-                            /* skip */
+                            //Ignored
                         }
+
+                        break;
+                    }
+                    case MessagePackType.Binary:
+                    {
+                        var byteSequence = reader.ReadBytes();
+                        var bytes = byteSequence.HasValue
+                            ? byteSequence.Value.ToArray()
+                            : [];
+                        try
+                        {
+                            data.AddUnchecked(key, new InternalValue(new Guid(bytes)));
+                        }
+                        catch (Exception)
+                        {
+                            //Ignored
+                        }
+
                         break;
                     }
                     case MessagePackType.Unknown:
                     case MessagePackType.Nil:
-                    case MessagePackType.Binary:
                     case MessagePackType.Array:
                     case MessagePackType.Map:
                     case MessagePackType.Extension:

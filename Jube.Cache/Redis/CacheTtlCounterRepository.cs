@@ -11,78 +11,91 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Cache.Observability;
+using Jube.Cache.Redis.Interfaces;
+using Jube.ResilientRedisConnection;
+using log4net;
+
 namespace Jube.Cache.Redis
 {
-    using Interfaces;
-    using log4net;
-    using ResilientRedisConnection;
-
     public class CacheTtlCounterRepository(
         IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
         ILog log) : ICacheTtlCounterRepository
     {
-        public async Task<double> DecrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        public Task<double> DecrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
             Guid entityAnalysisModelTtlCounterGuid,
             string dataName, string dataValue, double decrement)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheTtlCounterRepository.DecrementTtlCounterCacheAsync", async () =>
             {
-                var redisKey =
-                    $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
-                var redisHSetKey = $"{dataValue}";
-
-                var value = await resilientRedisResilientRedisDatabase.HashDecrementAsync(redisKey, redisHSetKey, decrement).ConfigureAwait(false);
-
-                if (value > 0)
+                try
                 {
-                    return value;
+                    var redisKey =
+                        $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
+                    var redisHSetKey = $"{dataValue}";
+
+                    var value = await resilientRedisResilientRedisDatabase
+                        .HashDecrementAsync(redisKey, redisHSetKey, decrement).ConfigureAwait(false);
+
+                    if (value > 0)
+                    {
+                        return value;
+                    }
+
+                    await resilientRedisResilientRedisDatabase.HashDeleteAsync(redisKey, redisHSetKey);
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
                 }
 
-                await resilientRedisResilientRedisDatabase.HashDeleteAsync(redisKey, redisHSetKey);
                 return 0;
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
-
-            return 0;
+            });
         }
 
-        public async Task<double> GetByNameDataNameDataValueAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        public Task<double> GetByNameDataNameDataValueAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
             Guid entityAnalysisModelTtlCounterGuid, string dataName, string dataValue)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheTtlCounterRepository.GetByNameDataNameDataValueAsync", async () =>
             {
-                var redisKey =
-                    $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
-                var redisHSetKey = $"{dataValue}";
-                return (double)await resilientRedisResilientRedisDatabase.HashGetAsync(redisKey, redisHSetKey).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                try
+                {
+                    var redisKey =
+                        $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
+                    var redisHSetKey = $"{dataValue}";
+                    return (double)await resilientRedisResilientRedisDatabase.HashGetAsync(redisKey, redisHSetKey)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
 
-            return 0;
+                return 0;
+            });
         }
 
-        public async Task IncrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string dataName,
+        public Task IncrementTtlCounterCacheAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string dataName,
             string dataValue,
             Guid entityAnalysisModelTtlCounterGuid, double increment, DateTime referenceDate)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheTtlCounterRepository.IncrementTtlCounterCacheAsync", async () =>
             {
-                var redisKey =
-                    $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
-                var redisHSetKey = $"{dataValue}";
+                try
+                {
+                    var redisKey =
+                        $"TtlCounter:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelTtlCounterGuid:N}:{dataName}";
+                    var redisHSetKey = $"{dataValue}";
 
-                await resilientRedisResilientRedisDatabase.HashIncrementAsync(redisKey, redisHSetKey, increment).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                    await resilientRedisResilientRedisDatabase.HashIncrementAsync(redisKey, redisHSetKey, increment)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
+            });
         }
     }
 }

@@ -11,77 +11,90 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Cache.Observability;
+using Jube.Cache.Redis.Interfaces;
+using Jube.Cache.Redis.Models;
+using Jube.Cache.Redis.Serialization;
+using Jube.ResilientRedisConnection;
+using log4net;
+using MessagePack;
+
 namespace Jube.Cache.Redis
 {
-    using Interfaces;
-    using log4net;
-    using MessagePack;
-    using Models;
-    using ResilientRedisConnection;
-    using Serialization;
-
     public class CacheSanctionRepository(
         IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
         ILog log) : ICacheSanctionRepository
     {
-        public async Task<CacheSanction> GetByMultiPartStringDistanceThresholdAsync(int tenantRegistryId,
+        public Task<CacheSanction> GetByMultiPartStringDistanceThresholdAsync(int tenantRegistryId,
             Guid entityAnalysisModelGuid, string multiPartString,
             int distanceThreshold)
         {
-            try
-            {
-                var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
-                var redisHSetKey = $"{multiPartString}:{distanceThreshold}";
-
-                var hashValue = await resilientRedisResilientRedisDatabase.HashGetAsync(redisKey, redisHSetKey).ConfigureAwait(false);
-
-                if (!hashValue.HasValue)
+            return CacheDiagnostics.RecordAsync("CacheSanctionRepository.GetByMultiPartStringDistanceThresholdAsync",
+                async () =>
                 {
+                    try
+                    {
+                        var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+                        var redisHSetKey = $"{multiPartString}:{distanceThreshold}";
+
+                        var hashValue = await resilientRedisResilientRedisDatabase.HashGetAsync(redisKey, redisHSetKey)
+                            .ConfigureAwait(false);
+
+                        if (!hashValue.HasValue)
+                        {
+                            return null;
+                        }
+
+                        var sanction = MessagePackSerializer
+                            .Deserialize<Sanction>(hashValue,
+                                MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(
+                                    false));
+
+                        return new CacheSanction
+                        {
+                            CreatedDate = sanction.CreatedDate,
+                            Value = sanction.Value
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Cache Redis: Has created an exception as {ex}.");
+                    }
+
                     return null;
-                }
-
-                var sanction = MessagePackSerializer
-                    .Deserialize<Sanction>(hashValue,
-                        MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(false));
-
-                return new CacheSanction
-                {
-                    CreatedDate = sanction.CreatedDate,
-                    Value = sanction.Value
-                };
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
-
-            return null;
+                });
         }
 
-        public async Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string multiPartString,
+        public Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string multiPartString,
             int distanceThreshold,
             double? value)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CacheSanctionRepository.InsertAsync", async () =>
             {
-                var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
-                var redisHSetKey = $"{multiPartString}:{distanceThreshold}";
-
-                var sanction = new Sanction
+                try
                 {
-                    Value = value,
-                    CreatedDate = DateTime.UtcNow
-                };
+                    var redisKey = $"Sanction:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+                    var redisHSetKey = $"{multiPartString}:{distanceThreshold}";
 
-                var ms = new MemoryStream();
-                await MessagePackSerializer.SerializeAsync(ms, sanction,
-                    MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(false)).ConfigureAwait(false);
-                await resilientRedisResilientRedisDatabase.HashSetAsync(redisKey, redisHSetKey, ms.ToArray()).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                    var sanction = new Sanction
+                    {
+                        Value = value,
+                        CreatedDate = DateTime.UtcNow
+                    };
+
+                    var ms = new MemoryStream();
+                    await MessagePackSerializer.SerializeAsync(ms, sanction,
+                            MessagePackSerializerOptionsHelper.StandardMessagePackSerializerWithCompressionOptions(
+                                false))
+                        .ConfigureAwait(false);
+                    await resilientRedisResilientRedisDatabase.HashSetAsync(redisKey, redisHSetKey, ms.ToArray())
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
+            });
         }
     }
 }

@@ -29,6 +29,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
+using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -509,7 +510,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRuleSuppression
         public async Task EntityAnalysisModelActivationRuleNameFromAnotherModelIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (modelAId, modelAGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelAGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var (modelBId, _) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var ruleOnModelBName = await CreateActivationRuleAsync(dbContext, fx.Seed.UserWithPermission, modelBId);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);

@@ -11,97 +11,98 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Jube.Cryptography;
+using Jube.Data.Poco;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Diagnostics;
-    using Cryptography;
-    using Data.Poco;
-    using ReflectionHelpers;
-    using EntityAnalysisModelInlineFunction=EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineFunction;
+    using EntityAnalysisModelInlineFunction =
+        EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineFunction;
 
     public static class InlineFunctionsExtensions
     {
         public static Context ExecuteInlineFunctions(this Context context)
         {
+            var stopwatch = Stopwatch.StartNew();
+            var items = new Dictionary<string, TaskPerformance>();
+
             try
             {
-                IterateAndProcess(context);
-                FinaliseStopwatchValues(context);
+                IterateAndProcess(context, items);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                if (context.Log.IsInfoEnabled)
+                context.TraceLog($"has experienced an error invoking inline functions as {ex}.");
+            }
+            finally
+            {
+                stopwatch.Stop();
+
+                if (context.LogSampled)
                 {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} has experienced an error invoking inline functions as {ex}.");
+                    var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                        new InvokeStagePerformance();
+
+                    stages.InlineFunctions = new StageTiming<TaskPerformance>
+                    {
+                        DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                        Items = items
+                    };
                 }
             }
 
             return context;
         }
 
-        private static void FinaliseStopwatchValues(Context context)
+        private static void IterateAndProcess(Context context, Dictionary<string, TaskPerformance> items)
         {
-
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.InlineFunction = (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
-
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} has passed inline functions.");
-            }
-        }
-
-        private static void IterateAndProcess(Context context)
-        {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is going to check for inline functions.");
-            }
+            context.TraceLog($"is going to check for inline functions.");
 
             foreach (var inlineFunction in context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineFunctions)
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is going to invoke inline function {inlineFunction.Id}.");
-                }
+                context.TraceLog($"is going to invoke inline function {inlineFunction.Id}.");
 
                 try
                 {
-                    var output = ReflectRuleHelper.Execute(inlineFunction, context.EntityAnalysisModel,
-                        context.EntityAnalysisModelInstanceEntryPayload,
-                        context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log);
-
-                    if (context.Log.IsInfoEnabled)
+                    object output = null;
+                    var timed = TaskHelper.MeasureTimeAndMemoryAllocated(TaskType.InlineFunction, () =>
                     {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} and returned a value of {output}.");
-                    }
+                        output = ReflectRuleHelper.Execute(inlineFunction, context.EntityAnalysisModel,
+                            context.EntityAnalysisModelInstanceEntryPayload,
+                            context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log);
+                    });
+                    items[inlineFunction.Name] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
+
+                    context.TraceLog(
+                        $"has invoked inline function {inlineFunction.Id} and returned a value of {output}.");
 
                     PopulateAllValues(context, inlineFunction, output);
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} has created an error as {ex}.");
-                    }
+                    context.TraceLog(
+                        $"has invoked inline function {inlineFunction.Id} but it has created an error as {ex}.");
                 }
             }
         }
 
-        private static void PopulateAllValues(Context context, EntityAnalysisModelInlineFunction inlineFunction, object output)
+        private static void PopulateAllValues(Context context, EntityAnalysisModelInlineFunction inlineFunction,
+            object output)
         {
             if (inlineFunction.ReturnDataTypeId == 1 && output != null)
             {
                 output = inlineFunction.EncryptionId switch
                 {
-                    1 => context.EntityAnalysisModel.Services.AesEncryption.Encrypt(output.ToString() ?? "", IvMode.Deterministic),
-                    2 => context.EntityAnalysisModel.Services.AesEncryption.Encrypt(output.ToString() ?? "", IvMode.Random),
+                    1 => context.EntityAnalysisModel.Services.AesEncryption.Encrypt(output.ToString() ?? "",
+                        IvMode.Deterministic),
+                    2 => context.EntityAnalysisModel.Services.AesEncryption.Encrypt(output.ToString() ?? "",
+                        IvMode.Random),
                     _ => output
                 };
             }
@@ -110,7 +111,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             if (inlineFunction.ReturnDataTypeId == 1 && writtenToPayload)
             {
-                context.EntityAnalysisModel.ResolveDictionaryValueForField(context.EntityAnalysisModelInstanceEntryPayload, context.Log, inlineFunction.Name);
+                context.EntityAnalysisModel.ResolveDictionaryValueForField(
+                    context.EntityAnalysisModelInstanceEntryPayload, context.Log, inlineFunction.Name);
             }
 
             if (inlineFunction.ReportTable)
@@ -119,9 +121,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             }
         }
 
-        private static void PopulateArchiveKeys(Context context, EntityAnalysisModelInlineFunction inlineFunction, object output)
+        private static void PopulateArchiveKeys(Context context, EntityAnalysisModelInlineFunction inlineFunction,
+            object output)
         {
-
             switch (inlineFunction.ReturnDataTypeId)
             {
                 case 1:
@@ -134,11 +136,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                             context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
                     });
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as string.");
-                    }
+                    context.TraceLog(
+                        $"has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as string.");
 
                     break;
                 case 2:
@@ -153,11 +152,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                                 context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
                         });
 
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as integer.");
-                        }
+                        context.TraceLog(
+                            $"has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as integer.");
                     }
 
                     break;
@@ -171,11 +167,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                             context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
                     });
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as double.");
-                    }
+                    context.TraceLog(
+                        $"has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as double.");
 
                     break;
                 case 4:
@@ -188,11 +181,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                             context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
                     });
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as date.");
-                    }
+                    context.TraceLog(
+                        $"has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as date.");
 
                     break;
                 case 5:
@@ -205,51 +195,42 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                             context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
                     });
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as boolean.");
-                    }
+                    context.TraceLog(
+                        $"has invoked inline function {inlineFunction.Id} but has added to report payload as name {inlineFunction.Name} with value of {output} as boolean.");
 
                     break;
             }
         }
 
-        private static bool PopulateCachePayloadDocumentStore(Context context, EntityAnalysisModelInlineFunction inlineFunction, object output)
+        private static bool PopulateCachePayloadDocumentStore(Context context,
+            EntityAnalysisModelInlineFunction inlineFunction, object output)
         {
-
             if (!context.EntityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(inlineFunction.Name))
             {
                 switch (inlineFunction.ReturnDataTypeId)
                 {
                     case 1:
-                        context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(inlineFunction.Name, output.ToString());
+                        context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(inlineFunction.Name,
+                            output == null ? null : Convert.ToString(output));
 
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as string.");
-                        }
+                        context.TraceLog(
+                            $"has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as string.");
 
                         break;
                     case 2:
-                        context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(inlineFunction.Name, Convert.ToInt32(output));
+                        context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(inlineFunction.Name,
+                            Convert.ToInt32(output));
 
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as integer.");
-                        }
+                        context.TraceLog(
+                            $"has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as integer.");
 
                         break;
                     case 3:
-                        context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(inlineFunction.Name, Convert.ToDouble(output));
+                        context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(inlineFunction.Name,
+                            Convert.ToDouble(output));
 
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as double.");
-                        }
+                        context.TraceLog(
+                            $"has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as double.");
 
                         break;
                     case 4:
@@ -257,21 +238,16 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                             inlineFunction.Name,
                             DateTime.SpecifyKind(Convert.ToDateTime(output), DateTimeKind.Utc));
 
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as date.");
-                        }
+                        context.TraceLog(
+                            $"has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as date.");
 
                         break;
                     case 5:
-                        context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(inlineFunction.Name, Convert.ToBoolean(output));
+                        context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(inlineFunction.Name,
+                            Convert.ToBoolean(output));
 
-                        if (context.Log.IsInfoEnabled)
-                        {
-                            context.Log.Info(
-                                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as boolean.");
-                        }
+                        context.TraceLog(
+                            $"has invoked inline function {inlineFunction.Id} but has added to payload as name {inlineFunction.Name} with value of {output} as boolean.");
 
                         break;
                 }
@@ -279,11 +255,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 return true;
             }
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel} is has invoked inline function {inlineFunction.Id} but has not added to payload as name {inlineFunction.Name} already exists.");
-            }
+            context.TraceLog(
+                $"has invoked inline function {inlineFunction.Id} but has not added to payload as name {inlineFunction.Name} already exists.");
 
             return false;
         }

@@ -11,40 +11,50 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Cache.Observability;
+using Jube.Cache.Redis.Interfaces;
+using Jube.ResilientRedisConnection;
+using log4net;
+
 namespace Jube.Cache.Redis
 {
-    using Interfaces;
-    using log4net;
-    using ResilientRedisConnection;
-
     public class CacheActivationNotificationIdempotencyRepository(
         IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
         ILog log) : ICacheActivationIdempotencyRepository
     {
-        public async Task<bool> CheckAndClaimIdempotencyAsync(int tenantRegistryId,
+        public Task<bool> CheckAndClaimIdempotencyAsync(int tenantRegistryId,
             Guid entityAnalysisModelGuid,
             Guid entityAnalysisModelActivationRuleGuid, Guid entityAnalysisModelInstanceEntryGuid)
         {
-            try
-            {
-                var redisKey = $"ActivationNotificationIdempotency:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelActivationRuleGuid:N}";
-                var redisJournal = $"IdempotencyJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
-                var redisSetKey = $"{entityAnalysisModelInstanceEntryGuid:N}";
-
-                if (await resilientRedisResilientRedisDatabase.SetContainsAsync(redisKey, redisSetKey))
+            return CacheDiagnostics.RecordAsync(
+                "CacheActivationNotificationIdempotencyRepository.CheckAndClaimIdempotencyAsync", async () =>
                 {
-                    return false;
-                }
+                    try
+                    {
+                        var redisKey =
+                            $"ActivationNotificationIdempotency:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelActivationRuleGuid:N}";
+                        var redisJournal = $"IdempotencyJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+                        var redisSetKey = $"{entityAnalysisModelInstanceEntryGuid:N}";
 
-                await resilientRedisResilientRedisDatabase.SetAddAsync(redisKey, redisSetKey).ConfigureAwait(false);
-                await resilientRedisResilientRedisDatabase.SetAddAsync(redisJournal, redisKey).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                        if (await resilientRedisResilientRedisDatabase.SetContainsAsync(redisKey, redisSetKey))
+                        {
+                            return false;
+                        }
 
-            return true;
+                        await resilientRedisResilientRedisDatabase.SetAddAsync(redisKey, redisSetKey)
+                            .ConfigureAwait(false);
+                        await resilientRedisResilientRedisDatabase.SetAddAsync(redisJournal, redisKey)
+                            .ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Cache Redis: Has created an exception as {ex}.");
+
+                        return false;
+                    }
+
+                    return true;
+                });
         }
     }
 }

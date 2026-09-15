@@ -11,25 +11,27 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Net;
+using Jube.Cache.Observability;
+using Jube.Cache.Redis.Interfaces;
+using Jube.Cache.Redis.Serialization;
+using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Data.Repository;
+using Jube.Dictionary;
+using Jube.Extensions;
+using Jube.ResilientRedisConnection;
+using Jube.TaskCancellation.TaskHelper;
+using log4net;
+using MessagePack;
+using StackExchange.Redis;
+
 namespace Jube.Cache.Redis
 {
-    using System.Collections.Concurrent;
-    using System.Diagnostics;
-    using System.Net;
-    using Data.Context;
-    using Data.Poco;
-    using Data.Repository;
-    using Dictionary;
-    using Extensions;
-    using Interfaces;
-    using log4net;
-    using MessagePack;
-    using ResilientRedisConnection;
-    using Serialization;
-    using Serialization.DictionaryNoBoxing.MessagePack;
-    using StackExchange.Redis;
-    using TaskCancellation.TaskHelper;
-    using LocalCacheInstanceKey=Models.LocalCacheInstanceKey;
+    using LocalCacheInstanceKey = Models.LocalCacheInstanceKey;
 
     public class CachePayloadRepository : ICachePayloadRepository
     {
@@ -38,6 +40,7 @@ namespace Jube.Cache.Redis
         private readonly bool activationRuleIdempotency;
         private readonly ConnectionMultiplexer connectionMultiplexer;
         private readonly bool fill;
+        private readonly Func<string> hostName;
         private readonly bool localCache;
         private readonly long localCacheBytes;
         private readonly ILog log;
@@ -47,7 +50,8 @@ namespace Jube.Cache.Redis
         private readonly bool publishSubscribe;
         private readonly IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase;
         private readonly bool storePayloadCountsAndBytes;
-        private readonly SemaphoreSlim timerSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim timerSemaphore = new(1, 1);
+
         // ReSharper disable once UnusedMember.Global
         public Task FillTask;
         private LocalCacheInstance localCacheInstance;
@@ -56,13 +60,20 @@ namespace Jube.Cache.Redis
         private LruCacheConcurrentSizedDictionary<string, byte[]> lruCacheConcurrentSizedDictionary;
         private Timer timer;
 
-        private CachePayloadRepository(ConnectionMultiplexer connectionMultiplexer, IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
+        internal CachePayloadRepository(ConnectionMultiplexer connectionMultiplexer,
+            IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase,
             string postgresConnectionString, ILog log,
-            bool fill, bool localCache, long localCacheBytes, bool messagePackCompression, bool storePayloadCountsAndBytes,
-            bool publishSubscribe, TimeSpan maxLruAge, bool activationRuleIdempotency, CancellationToken token = default)
+            bool fill, bool localCache, long localCacheBytes, bool messagePackCompression,
+            bool storePayloadCountsAndBytes,
+            bool publishSubscribe, TimeSpan maxLruAge, bool activationRuleIdempotency,
+            CancellationToken token = default, Func<string> hostNameProvider = null,
+            string localCacheInstanceGuidStringOverride = null)
         {
-            this.connectionMultiplexer = connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
-            this.resilientRedisResilientRedisDatabase = resilientRedisResilientRedisDatabase ?? throw new ArgumentNullException(nameof(resilientRedisResilientRedisDatabase));
+            this.connectionMultiplexer =
+                connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
+            this.resilientRedisResilientRedisDatabase = resilientRedisResilientRedisDatabase ??
+                                                        throw new ArgumentNullException(
+                                                            nameof(resilientRedisResilientRedisDatabase));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.fill = fill;
             this.localCache = localCache;
@@ -72,69 +83,81 @@ namespace Jube.Cache.Redis
             this.storePayloadCountsAndBytes = storePayloadCountsAndBytes;
             this.publishSubscribe = publishSubscribe;
             this.postgresConnectionString = postgresConnectionString;
+            hostName = hostNameProvider ?? Dns.GetHostName;
+            localCacheInstanceGuidString = localCacheInstanceGuidStringOverride;
 
-            messagePackSerializerOptions = MessagePackSerializerOptionsHelper.EnveloperMessagePackSerializerWithCompressionOptions(messagePackCompression);
+            messagePackSerializerOptions =
+                MessagePackSerializerOptionsHelper.EnveloperMessagePackSerializerWithCompressionOptions(
+                    messagePackCompression);
 
             InstantiateLruCacheConcurrentSizedDictionary();
             SubscribeToRedisHashEvents();
             InstantiateLocalCacheInstanceCountersTimer(token);
         }
 
-        public async Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        public Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
             DictionaryNoBoxing<int> payload,
             DateTime referenceDate,
             Guid entityAnalysisModelInstanceEntryGuid)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CachePayloadRepository.InsertAsync", async () =>
             {
-                var keyPayload = $"Payload:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
-                var localCacheForPayloadKey = GetLocalCacheEntry(keyPayload);
-
-                var ms = new MemoryStream();
-
-                var dictionaryNoBoxingWrapper = new EnvelopeDictionaryNoBoxing<int>
+                try
                 {
-                    Version = 1,
-                    Data = payload
-                };
+                    var keyPayload = $"Payload:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+                    var localCacheForPayloadKey = GetLocalCacheEntry(keyPayload);
 
-                await MessagePackSerializer.SerializeAsync(ms, dictionaryNoBoxingWrapper,
-                    messagePackSerializerOptions).ConfigureAwait(false);
+                    var ms = new MemoryStream();
 
-                var hSetKey = $"{entityAnalysisModelInstanceEntryGuid:N}";
-                var keyReferenceDate = $"ReferenceDate:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
-                var sortedSet = $"{entityAnalysisModelInstanceEntryGuid:N}";
+                    var dictionaryNoBoxingWrapper = new EnvelopeDictionaryNoBoxing<int>
+                    {
+                        Version = 1,
+                        Data = payload
+                    };
 
-                var bytes = ms.ToArray();
-                var tasks = new List<Task>
-                {
-                    resilientRedisResilientRedisDatabase.HashSetAsync(keyPayload, hSetKey, bytes),
-                    resilientRedisResilientRedisDatabase.SortedSetAddAsync(keyReferenceDate, sortedSet, referenceDate.ToUnixTimeMilliSeconds())
-                };
+                    await MessagePackSerializer.SerializeAsync(ms, dictionaryNoBoxingWrapper,
+                        messagePackSerializerOptions).ConfigureAwait(false);
 
-                if (publishSubscribe)
-                {
-                    tasks.Add(resilientRedisResilientRedisDatabase.PublishAsync(
-                        RedisChannel.Pattern($"HashSet:{Dns.GetHostName()}:{localCacheInstanceGuidString}:{keyPayload}:{hSetKey}"),
-                        bytes));
+                    var hSetKey = $"{entityAnalysisModelInstanceEntryGuid:N}";
+                    var keyReferenceDate = $"ReferenceDate:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+                    var sortedSet = $"{entityAnalysisModelInstanceEntryGuid:N}";
+
+                    var bytes = ms.ToArray();
+                    var tasks = new List<Task>
+                    {
+                        resilientRedisResilientRedisDatabase.HashSetAsync(keyPayload, hSetKey, bytes),
+                        resilientRedisResilientRedisDatabase.SortedSetAddAsync(keyReferenceDate, sortedSet,
+                            referenceDate.ToUnixTimeMilliSeconds())
+                    };
+
+                    if (publishSubscribe)
+                    {
+                        tasks.Add(resilientRedisResilientRedisDatabase.PublishAsync(
+                            RedisChannel.Pattern(
+                                $"HashSet:{hostName()}:{localCacheInstanceGuidString}:{keyPayload}:{hSetKey}"),
+                            bytes));
+                    }
+
+                    if (storePayloadCountsAndBytes)
+                    {
+                        var redisKeyPayloadCount = $"PayloadCount:{tenantRegistryId}";
+                        var redisKeyPayloadBytes = $"PayloadBytes:{tenantRegistryId}";
+                        tasks.Add(resilientRedisResilientRedisDatabase.HashIncrementAsync(redisKeyPayloadCount,
+                            entityAnalysisModelGuid.ToString("N"), 1));
+                        tasks.Add(resilientRedisResilientRedisDatabase.HashIncrementAsync(redisKeyPayloadBytes,
+                            entityAnalysisModelGuid.ToString("N"), bytes.Length));
+                    }
+
+                    AddToLruCacheConcurrentSizedDictionaryForLocalCacheInstanceKey(localCacheForPayloadKey, hSetKey,
+                        bytes);
+
+                    await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
                 }
-
-                if (storePayloadCountsAndBytes)
+                catch (Exception ex)
                 {
-                    var redisKeyPayloadCount = $"PayloadCount:{tenantRegistryId}";
-                    var redisKeyPayloadBytes = $"PayloadBytes:{tenantRegistryId}";
-                    tasks.Add(resilientRedisResilientRedisDatabase.HashIncrementAsync(redisKeyPayloadCount, entityAnalysisModelGuid.ToString("N"), 1));
-                    tasks.Add(resilientRedisResilientRedisDatabase.HashIncrementAsync(redisKeyPayloadBytes, entityAnalysisModelGuid.ToString("N"), bytes.Length));
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
                 }
-
-                AddToLruCacheConcurrentSizedDictionaryForLocalCacheInstanceKey(localCacheForPayloadKey, hSetKey, bytes);
-
-                await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+            });
         }
 
         public async Task UpsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
@@ -156,104 +179,15 @@ namespace Jube.Cache.Redis
             }
         }
 
-        public async Task DeleteByReferenceDatePreferReplicaAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+        public Task DeleteByReferenceDatePreferReplicaAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
             DateTime referenceDate, int limit, CancellationToken token = default)
         {
-            var referenceDateTimestampThreshold = referenceDate.ToUnixTimeMilliSeconds();
-            var redisKeyReferenceDate = $"ReferenceDate:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
-
-            while (!token.IsCancellationRequested)
-            {
-#pragma warning disable CA2016
-                var expiredSortedSetEntries = (await resilientRedisResilientRedisDatabase.SortedSetRangeByScoreWithScoresAsync(
-                    redisKeyReferenceDate,
-                    Int64.MinValue,
-                    referenceDateTimestampThreshold,
-                    Exclude.Stop,
-                    skip: 0,
-                    take: limit,
-                    flags: CommandFlags.PreferReplica
-                ).ConfigureAwait(false)).ToList();
-
-                if (expiredSortedSetEntries.Count == 0)
-                {
-                    return;
-                }
-
-                var tasks = new List<Task<TimedTaskResult>>();
-                var sortedSetExpiredCount = expiredSortedSetEntries.Count;
-                var expiredSortedSetMinTimestamp = (long)expiredSortedSetEntries.FirstOrDefault().Score;
-                var expiredSortedSetMaxTimestamp = (long)expiredSortedSetEntries.LastOrDefault().Score;
-
-                var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log);
-                try
-                {
-                    var cachePayloadRemovalBatchRepository = new CachePayloadRemovalBatchRepository(dbContext);
-
-                    // ReSharper disable once MethodSupportsCancellation
-                    var cachePayloadRemovalBatch = await InsertCachePayloadRemovalBatchAsync(cachePayloadRemovalBatchRepository,
-                        entityAnalysisModelGuid, referenceDate,
-                        sortedSetExpiredCount,
-                        expiredSortedSetMinTimestamp.FromUnixTimeMilliSeconds(),
-                        expiredSortedSetMaxTimestamp.FromUnixTimeMilliSeconds());
-
-                    var redisValuesToDelete = new List<RedisValue>();
-                    var bulkInsertEntries = new List<CachePayloadRemovalBatchEntry>();
-
-                    foreach (var expiredSortedSetEntry in expiredSortedSetEntries.TakeWhile(_ => !token.IsCancellationRequested))
-                    {
-                        redisValuesToDelete.Add(new RedisValue(expiredSortedSetEntry.Element.ToString()));
-                        bulkInsertEntries.Add(new CachePayloadRemovalBatchEntry
-                        {
-                            CachePayloadRemovalBatchId = cachePayloadRemovalBatch.Id,
-                            EntityAnalysisModelGuid = Guid.Parse(expiredSortedSetEntry.Element.ToString()),
-                            ReferenceDate = ((long)expiredSortedSetEntry.Score).FromUnixTimeMilliSeconds()
-                        });
-
-                        await AppendDeletionTasksAsync(tasks, tenantRegistryId, entityAnalysisModelGuid, expiredSortedSetEntry).ConfigureAwait(false);
-                    }
-
-                    if (redisValuesToDelete.Count <= 0)
-                    {
-                        continue;
-                    }
-
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
-
-                    var cachePayloadRemovalBatchEntryRepository = new CachePayloadRemovalBatchEntryRepository(dbContext);
-                    // ReSharper disable once MethodSupportsCancellation
-                    await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.AppendBulkCleanupOfPayloadGuids, async () => await AppendBulkCleanupOfPayloadGuidsAsync(tasks, tenantRegistryId, entityAnalysisModelGuid, redisKeyReferenceDate, redisValuesToDelete));
-
-                    // ReSharper disable once MethodSupportsCancellation
-                    await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.BulkInsertCachePayloadRemovalBatchEntry, async () => await cachePayloadRemovalBatchEntryRepository.BulkCopyAsync(bulkInsertEntries));
-
-                    // ReSharper disable once MethodSupportsCancellation
-                    if (activationRuleIdempotency)
-                    {
-                        await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.BulkTtlCounterIdempotencyRemovalBatchEntry, async () => await CleanupIdempotencyAsync(tenantRegistryId, entityAnalysisModelGuid, redisValuesToDelete));
-                    }
-
-                    var completedTasks = await Task.WhenAll(tasks).ConfigureAwait(false);
-                    var cachePayloadRemovalBatchResponseTimeRepository = new CachePayloadRemovalBatchResponseTimeRepository(dbContext);
-                    // ReSharper disable once MethodSupportsCancellation
-                    await cachePayloadRemovalBatchResponseTimeRepository.BulkCopyAsync(AggregateResponseTimesForBulkInsert(completedTasks, cachePayloadRemovalBatch));
-                    // ReSharper disable once MethodSupportsCancellation
-                    await UpdateCachePayloadRemovalBatchAsync(cachePayloadRemovalBatchRepository, cachePayloadRemovalBatch.Id);
-    #pragma warning restore CA2016
-                }
-                catch (Exception ex)
-                {
-                    log.Error($"DeleteByReferenceDateAsync has created an error {ex}");
-                }
-                finally
-                {
-                    await dbContext.CloseAsync();
-                    await dbContext.DisposeAsync();
-                }
-            }
+            return CacheDiagnostics.RecordAsync("CachePayloadRepository.DeleteByReferenceDatePreferReplicaAsync",
+                () => DeleteByReferenceDatePreferReplicaCoreAsync(tenantRegistryId, entityAnalysisModelGuid,
+                    referenceDate, limit, token));
         }
 
-        public async Task<List<RedisValue>> GetSortedSetKeysAsync(
+        public Task<List<RedisValue>> GetSortedSetKeysAsync(
             int tenantRegistryId,
             Guid entityAnalysisModelGuid,
             string key,
@@ -261,23 +195,26 @@ namespace Jube.Cache.Redis
             int limit,
             Guid excludeGuid)
         {
-            var redisKey = $"Journal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{key}:{value}";
-            var lruJournalKey = $"LruJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+            return CacheDiagnostics.RecordAsync("CachePayloadRepository.GetSortedSetKeysAsync", async () =>
+            {
+                var redisKey = $"Journal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{key}:{value}";
+                var lruJournalKey = $"LruJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
 
-            await resilientRedisResilientRedisDatabase.SortedSetAddAsync(
-                lruJournalKey, redisKey, DateTime.UtcNow.ToUnixTimeMilliSeconds());
+                await resilientRedisResilientRedisDatabase.SortedSetAddAsync(
+                    lruJournalKey, redisKey, DateTime.UtcNow.ToUnixTimeMilliSeconds());
 
-            var sortedSetEntries =
-                (await resilientRedisResilientRedisDatabase
-                    .SortedSetRangeByRankWithScoresAsync(redisKey, 0, limit, Order.Descending)
-                    .ConfigureAwait(false))
-                .Reverse().ToList();
+                var sortedSetEntries =
+                    (await resilientRedisResilientRedisDatabase
+                        .SortedSetRangeByRankWithScoresAsync(redisKey, 0, limit, Order.Descending)
+                        .ConfigureAwait(false))
+                    .Reverse().ToList();
 
-            return sortedSetEntries
-                .Where(entry => !entry.Element.IsNull &&
-                                entry.Element.ToString() != excludeGuid.ToString("N"))
-                .Select(entry => entry.Element)
-                .ToList();
+                return sortedSetEntries
+                    .Where(entry => !entry.Element.IsNull &&
+                                    entry.Element.ToString() != excludeGuid.ToString("N"))
+                    .Select(entry => entry.Element)
+                    .ToList();
+            });
         }
 
         public async Task<Dictionary<string, DictionaryNoBoxing<int>>> GetPayloadBatchAsync(
@@ -323,6 +260,7 @@ namespace Jube.Cache.Redis
                 .HashGetAsync(keyPayload, missedKeys.ToArray())
                 .ConfigureAwait(false);
             swRedis.Stop();
+            CacheDiagnostics.Record("CachePayloadRepository.GetPayloadBatchAsync", swRedis.Elapsed);
 
             if (log.IsInfoEnabled)
             {
@@ -331,8 +269,9 @@ namespace Jube.Cache.Redis
                     .Where(b => b != null)
                     .Sum(b => b.Length);
 
-                log.Info($"Batch payload fetch: GUID {entityAnalysisModelInstanceEntryGuid} fetched {fetched.Length} keys " +
-                         $"in {swRedis.ElapsedMilliseconds}ms, totalBytes={totalBytes}.");
+                log.Info(
+                    $"Batch payload fetch: GUID {entityAnalysisModelInstanceEntryGuid} fetched {fetched.Length} keys " +
+                    $"in {swRedis.ElapsedMilliseconds}ms, totalBytes={totalBytes}.");
             }
 
             var unpackTime = 0L;
@@ -357,7 +296,125 @@ namespace Jube.Cache.Redis
             return result;
         }
 
-        private static List<CachePayloadRemovalBatchResponseTime> AggregateResponseTimesForBulkInsert(TimedTaskResult[] tasks, CachePayloadRemovalBatch cachePayloadRemovalBatch)
+        private async Task DeleteByReferenceDatePreferReplicaCoreAsync(int tenantRegistryId,
+            Guid entityAnalysisModelGuid,
+            DateTime referenceDate, int limit, CancellationToken token)
+        {
+            var referenceDateTimestampThreshold = referenceDate.ToUnixTimeMilliSeconds();
+            var redisKeyReferenceDate = $"ReferenceDate:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+
+            while (!token.IsCancellationRequested)
+            {
+#pragma warning disable CA2016
+                var expiredSortedSetEntries = (await resilientRedisResilientRedisDatabase
+                    .SortedSetRangeByScoreWithScoresAsync(
+                        redisKeyReferenceDate,
+                        long.MinValue,
+                        referenceDateTimestampThreshold,
+                        Exclude.Stop,
+                        skip: 0,
+                        take: limit,
+                        flags: CommandFlags.PreferReplica
+                    ).ConfigureAwait(false)).ToList();
+
+                if (expiredSortedSetEntries.Count == 0)
+                {
+                    return;
+                }
+
+                var tasks = new List<Task<TimedTaskResult>>();
+                var sortedSetExpiredCount = expiredSortedSetEntries.Count;
+                var expiredSortedSetMinTimestamp = (long)expiredSortedSetEntries.FirstOrDefault().Score;
+                var expiredSortedSetMaxTimestamp = (long)expiredSortedSetEntries.LastOrDefault().Score;
+
+                var dbContext =
+                    DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log);
+                try
+                {
+                    var cachePayloadRemovalBatchRepository = new CachePayloadRemovalBatchRepository(dbContext);
+
+                    // ReSharper disable once MethodSupportsCancellation
+                    var cachePayloadRemovalBatch = await InsertCachePayloadRemovalBatchAsync(
+                        cachePayloadRemovalBatchRepository,
+                        entityAnalysisModelGuid, referenceDate,
+                        sortedSetExpiredCount,
+                        expiredSortedSetMinTimestamp.FromUnixTimeMilliSeconds(),
+                        expiredSortedSetMaxTimestamp.FromUnixTimeMilliSeconds());
+
+                    var redisValuesToDelete = new List<RedisValue>();
+                    var bulkInsertEntries = new List<CachePayloadRemovalBatchEntry>();
+
+                    foreach (var expiredSortedSetEntry in expiredSortedSetEntries.TakeWhile(_ =>
+                                 !token.IsCancellationRequested))
+                    {
+                        redisValuesToDelete.Add(new RedisValue(expiredSortedSetEntry.Element.ToString()));
+                        bulkInsertEntries.Add(new CachePayloadRemovalBatchEntry
+                        {
+                            CachePayloadRemovalBatchId = cachePayloadRemovalBatch.Id,
+                            EntityAnalysisModelGuid = Guid.Parse(expiredSortedSetEntry.Element.ToString()),
+                            ReferenceDate = ((long)expiredSortedSetEntry.Score).FromUnixTimeMilliSeconds()
+                        });
+
+                        await AppendDeletionTasksAsync(tasks, tenantRegistryId, entityAnalysisModelGuid,
+                            expiredSortedSetEntry).ConfigureAwait(false);
+                    }
+
+                    if (redisValuesToDelete.Count <= 0)
+                    {
+                        continue;
+                    }
+
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                    var cachePayloadRemovalBatchEntryRepository =
+                        new CachePayloadRemovalBatchEntryRepository(dbContext);
+
+                    // ReSharper disable once MethodSupportsCancellation
+                    await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.AppendBulkCleanupOfPayloadGuids,
+                        async () => await AppendBulkCleanupOfPayloadGuidsAsync(tasks, tenantRegistryId,
+                            entityAnalysisModelGuid, redisKeyReferenceDate, redisValuesToDelete));
+
+                    // ReSharper disable once MethodSupportsCancellation
+                    await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                        TaskType.BulkInsertCachePayloadRemovalBatchEntry,
+                        async () => await cachePayloadRemovalBatchEntryRepository.BulkCopyAsync(bulkInsertEntries));
+
+                    // ReSharper disable once MethodSupportsCancellation
+                    if (activationRuleIdempotency)
+                    {
+                        await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                            TaskType.BulkTtlCounterIdempotencyRemovalBatchEntry,
+                            async () => await CleanupIdempotencyAsync(tenantRegistryId, entityAnalysisModelGuid,
+                                redisValuesToDelete));
+                    }
+
+                    var completedTasks = await Task.WhenAll(tasks).ConfigureAwait(false);
+                    var cachePayloadRemovalBatchResponseTimeRepository =
+                        new CachePayloadRemovalBatchResponseTimeRepository(dbContext);
+
+                    // ReSharper disable once MethodSupportsCancellation
+                    await cachePayloadRemovalBatchResponseTimeRepository.BulkCopyAsync(
+                        AggregateResponseTimesForBulkInsert(completedTasks, cachePayloadRemovalBatch));
+
+                    // ReSharper disable once MethodSupportsCancellation
+                    await UpdateCachePayloadRemovalBatchAsync(cachePayloadRemovalBatchRepository,
+                        cachePayloadRemovalBatch.Id);
+#pragma warning restore CA2016
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"DeleteByReferenceDateAsync has created an error {ex}");
+                }
+                finally
+                {
+                    await dbContext.CloseAsync();
+                    await dbContext.DisposeAsync();
+                }
+            }
+        }
+
+        internal static List<CachePayloadRemovalBatchResponseTime> AggregateResponseTimesForBulkInsert(
+            TimedTaskResult[] tasks, CachePayloadRemovalBatch cachePayloadRemovalBatch)
         {
             var groupByComputeTime = tasks.GroupBy(g => g.TaskType).Select(s => new CachePayloadRemovalBatchResponseTime
             {
@@ -368,14 +425,16 @@ namespace Jube.Cache.Redis
             return groupByComputeTime;
         }
 
-        private static Task UpdateCachePayloadRemovalBatchAsync(CachePayloadRemovalBatchRepository cachePayloadRemovalBatchRepository,
+        private static Task UpdateCachePayloadRemovalBatchAsync(
+            CachePayloadRemovalBatchRepository cachePayloadRemovalBatchRepository,
             long cachePayloadRemovalBatchId,
             CancellationToken token = default)
         {
             return cachePayloadRemovalBatchRepository.FinishAsync(cachePayloadRemovalBatchId, token);
         }
 
-        private Task<CachePayloadRemovalBatch> InsertCachePayloadRemovalBatchAsync(CachePayloadRemovalBatchRepository cachePayloadRemovalBatchRepository,
+        private Task<CachePayloadRemovalBatch> InsertCachePayloadRemovalBatchAsync(
+            CachePayloadRemovalBatchRepository cachePayloadRemovalBatchRepository,
             Guid entityAnalysisModelGuid,
             DateTime referenceDate,
             int expiredSortedSetCount,
@@ -412,7 +471,8 @@ namespace Jube.Cache.Redis
         {
             var repository = new CachePayloadRepository(connectionMultiplexer, resilientRedisResilientRedisDatabase,
                 postgresConnectionString, log, localCacheFill, localCache, localCacheBytes,
-                messagePackCompression, storePayloadCountsAndBytes, publishSubscribe, maxLruAge, activationRuleIdempotency);
+                messagePackCompression, storePayloadCountsAndBytes, publishSubscribe, maxLruAge,
+                activationRuleIdempotency);
             await repository.FullyInitializeAsync(token).ConfigureAwait(false);
 
             return repository;
@@ -480,15 +540,18 @@ namespace Jube.Cache.Redis
                     return;
                 }
 
-                var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log);
+                var dbContext =
+                    DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log);
 
                 try
                 {
                     var localCacheInstanceKeyRepository = new LocalCacheInstanceKeyRepository(dbContext);
-                    await UpdateAllLocalCacheInstanceKeysAsync(localCacheInstanceKeyRepository, token).ConfigureAwait(false);
+                    await UpdateAllLocalCacheInstanceKeysAsync(localCacheInstanceKeyRepository, token)
+                        .ConfigureAwait(false);
 
                     var localCacheInstanceLruRepository = new LocalCacheInstanceLruRepository(dbContext);
-                    await InsertLocalCacheInstanceLruAsync(localCacheInstanceLruRepository, token).ConfigureAwait(false);
+                    await InsertLocalCacheInstanceLruAsync(localCacheInstanceLruRepository, token)
+                        .ConfigureAwait(false);
 
                     var localCacheInstanceRepository = new LocalCacheInstanceRepository(dbContext);
                     await UpdateLocalCacheInstanceAsync(localCacheInstanceRepository, token).ConfigureAwait(false);
@@ -518,9 +581,9 @@ namespace Jube.Cache.Redis
             }
         }
 
-        private async Task UpdateAllLocalCacheInstanceKeysAsync(LocalCacheInstanceKeyRepository localCacheInstanceKeyRepository, CancellationToken token = default)
+        private async Task UpdateAllLocalCacheInstanceKeysAsync(
+            LocalCacheInstanceKeyRepository localCacheInstanceKeyRepository, CancellationToken token = default)
         {
-
             foreach (var entry in localCacheInstanceKeys)
             {
                 try
@@ -543,7 +606,6 @@ namespace Jube.Cache.Redis
 
         private void ResetLocalCacheInstanceKeyCounters(KeyValuePair<string, LocalCacheInstanceKey> entry)
         {
-
             Interlocked.Exchange(ref entry.Value.Requests, 0);
             Interlocked.Exchange(ref entry.Value.Misses, 0);
             Interlocked.Exchange(ref entry.Value.MissRemoteResponseTime, 0);
@@ -556,7 +618,8 @@ namespace Jube.Cache.Redis
             Interlocked.Exchange(ref entry.Value.DualMiss, 0);
         }
 
-        private Task UpdateLocalCacheInstanceAsync(LocalCacheInstanceRepository localCacheInstanceRepository, CancellationToken token = default)
+        private Task UpdateLocalCacheInstanceAsync(LocalCacheInstanceRepository localCacheInstanceRepository,
+            CancellationToken token = default)
         {
             var info = GC.GetGCMemoryInfo();
 
@@ -567,7 +630,8 @@ namespace Jube.Cache.Redis
                 info.TotalCommittedBytes, token);
         }
 
-        private async Task InsertLocalCacheInstanceLruAsync(LocalCacheInstanceLruRepository localCacheInstanceLruRepository, CancellationToken token = default)
+        private async Task InsertLocalCacheInstanceLruAsync(
+            LocalCacheInstanceLruRepository localCacheInstanceLruRepository, CancellationToken token = default)
         {
             try
             {
@@ -601,7 +665,8 @@ namespace Jube.Cache.Redis
             }
         }
 
-        private Task InsertLocalCacheInstanceKeyAsync(LocalCacheInstanceKeyRepository localCacheInstanceKeyRepository, KeyValuePair<string, LocalCacheInstanceKey> entry, CancellationToken token = default)
+        private Task InsertLocalCacheInstanceKeyAsync(LocalCacheInstanceKeyRepository localCacheInstanceKeyRepository,
+            KeyValuePair<string, LocalCacheInstanceKey> entry, CancellationToken token = default)
         {
             var localCacheInstanceKey = new Data.Poco.LocalCacheInstanceKey
             {
@@ -638,42 +703,46 @@ namespace Jube.Cache.Redis
             void SubscribeToHashSet()
             {
                 var subscriber = connectionMultiplexer.GetSubscriber();
-                subscriber.Subscribe(RedisChannel.Pattern("HashSet:*:*:Payload*"), (channel, value) =>
-                {
-                    var splits = channel.ToString().Split(":");
-
-                    if (CheckThatTheEventDidNotComeFromThisHost(splits[2], splits[1]))
-                    {
-                        return;
-                    }
-
-                    var key = String.Join(":", splits[3..^1]);
-                    AddToLocalCacheIfNotExistsWithCounters(key, splits, value);
-                });
+                subscriber.Subscribe(RedisChannel.Pattern("HashSet:*:*:Payload*"), HandleHashSetMessage);
             }
 
             void SubscribeToHashRemove()
             {
                 var subscriber = connectionMultiplexer.GetSubscriber();
-                subscriber.Subscribe(RedisChannel.Pattern("HashRemove:*:*:Payload*"), (channel, value) =>
-                {
-                    var splits = channel.ToString().Split(":");
-
-                    if (localCacheInstanceGuidString == splits[2] && Dns.GetHostName() == splits[1])
-                    {
-                        return;
-                    }
-
-                    var hashSetKeyEntry = GetLocalCacheEntry(String.Join(":", splits[3..]));
-
-                    Interlocked.Increment(ref hashSetKeyEntry.HashRemoveSubscription);
-
-                    DeleteFromLocalCache(hashSetKeyEntry, value.ToString(), true);
-                });
+                subscriber.Subscribe(RedisChannel.Pattern("HashRemove:*:*:Payload*"), HandleHashRemoveMessage);
             }
         }
 
-        private void AddToLocalCacheIfNotExistsWithCounters(string key, string[] splits, RedisValue value)
+        internal void HandleHashSetMessage(RedisChannel channel, RedisValue value)
+        {
+            var splits = channel.ToString().Split(":");
+
+            if (CheckThatTheEventDidNotComeFromThisHost(splits[2], splits[1]))
+            {
+                return;
+            }
+
+            var key = string.Join(":", splits[3..^1]);
+            AddToLocalCacheIfNotExistsWithCounters(key, splits, value);
+        }
+
+        internal void HandleHashRemoveMessage(RedisChannel channel, RedisValue value)
+        {
+            var splits = channel.ToString().Split(":");
+
+            if (localCacheInstanceGuidString == splits[2] && hostName() == splits[1])
+            {
+                return;
+            }
+
+            var hashSetKeyEntry = GetLocalCacheEntry(string.Join(":", splits[3..]));
+
+            Interlocked.Increment(ref hashSetKeyEntry.HashRemoveSubscription);
+
+            DeleteFromLocalCache(hashSetKeyEntry, value.ToString(), true);
+        }
+
+        internal void AddToLocalCacheIfNotExistsWithCounters(string key, string[] splits, RedisValue value)
         {
             var localCacheForPayloadKey = GetLocalCacheEntry(key);
 
@@ -684,23 +753,25 @@ namespace Jube.Cache.Redis
 
             AddToLruCacheConcurrentSizedDictionaryForLocalCacheInstanceKey(localCacheForPayloadKey, splits[^1], value);
 
-            Interlocked.Add(ref localCacheForPayloadKey.UnpackResponseTime, (int)(sw.ElapsedTicks * 1000000 / Stopwatch.Frequency));
+            Interlocked.Add(ref localCacheForPayloadKey.UnpackResponseTime,
+                (int)(sw.ElapsedTicks * 1000000 / Stopwatch.Frequency));
 
             sw.Stop();
         }
 
-        private bool CheckThatTheEventDidNotComeFromThisHost(string cacheInstanceGuidString, string cacheHostName)
+        internal bool CheckThatTheEventDidNotComeFromThisHost(string cacheInstanceGuidString, string cacheHostName)
         {
-            return localCacheInstanceGuidString == cacheInstanceGuidString && Dns.GetHostName() == cacheHostName;
+            return localCacheInstanceGuidString == cacheInstanceGuidString && hostName() == cacheHostName;
         }
 
         private async Task CreateLocalCacheInstanceAsync(CancellationToken token = default)
         {
-            var localCacheInstanceRepository = new LocalCacheInstanceRepository(DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log));
+            var localCacheInstanceRepository = new LocalCacheInstanceRepository(
+                DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log));
 
             localCacheInstance = await localCacheInstanceRepository.InsertAsync(new LocalCacheInstance
             {
-                Instance = Dns.GetHostName(),
+                Instance = hostName(),
                 Guid = Guid.NewGuid()
             }, token);
 
@@ -709,7 +780,6 @@ namespace Jube.Cache.Redis
 
         private void InstantiateLruCacheConcurrentSizedDictionary()
         {
-
             lruCacheConcurrentSizedDictionary = new LruCacheConcurrentSizedDictionary<string, byte[]>(obj => obj.Length,
                 localCacheBytes, 0.85);
 
@@ -720,14 +790,17 @@ namespace Jube.Cache.Redis
         {
             try
             {
-                var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log);
+                var dbContext =
+                    DataConnectionDbContext.GetResilientDbContextDataConnection(postgresConnectionString, log);
                 try
                 {
                     var localCacheInstanceRepository = new LocalCacheInstanceRepository(dbContext);
 
                     if (!fill)
                     {
-                        await localCacheInstanceRepository.FinishFillAsync(localCacheInstance.Id, 0, 0, lruCacheConcurrentSizedDictionary.Count, lruCacheConcurrentSizedDictionary.TotalSize, token);
+                        await localCacheInstanceRepository.FinishFillAsync(localCacheInstance.Id, 0, 0,
+                            lruCacheConcurrentSizedDictionary.Count, lruCacheConcurrentSizedDictionary.TotalSize,
+                            token);
                         return;
                     }
 
@@ -740,11 +813,13 @@ namespace Jube.Cache.Redis
                     await localCacheInstanceRepository.StartFillAsync(localCacheInstance.Id, token);
 
                     var entityAnalysisModelRepository = new EntityAnalysisModelRepository(dbContext);
-                    foreach (var entityAnalysisModel in await entityAnalysisModelRepository.GetAsync(token).ConfigureAwait(false))
+                    foreach (var entityAnalysisModel in await entityAnalysisModelRepository.GetAsync(token)
+                                 .ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
 
-                        var lruJournalKey = $"LruJournal:{entityAnalysisModel.TenantRegistryId}:{entityAnalysisModel.Guid:N}";
+                        var lruJournalKey =
+                            $"LruJournal:{entityAnalysisModel.TenantRegistryId}:{entityAnalysisModel.Guid:N}";
                         var payloadKey = $"Payload:{entityAnalysisModel.TenantRegistryId}:{entityAnalysisModel.Guid:N}";
                         var localCacheForPayloadKey = GetLocalCacheEntry(lruJournalKey);
 
@@ -756,13 +831,14 @@ namespace Jube.Cache.Redis
                             {
                                 token.ThrowIfCancellationRequested();
 
-                                var hotKeyEntries = await resilientRedisResilientRedisDatabase.SortedSetRangeByRankWithScoresAsync(
-                                    lruJournalKey,
-                                    hotKeyPosition,
-                                    hotKeyPosition + HotKeysBatchSize - 1,
-                                    Order.Descending,
-                                    CommandFlags.PreferReplica
-                                );
+                                var hotKeyEntries = await resilientRedisResilientRedisDatabase
+                                    .SortedSetRangeByRankWithScoresAsync(
+                                        lruJournalKey,
+                                        hotKeyPosition,
+                                        hotKeyPosition + HotKeysBatchSize - 1,
+                                        Order.Descending,
+                                        CommandFlags.PreferReplica
+                                    );
 
                                 if (hotKeyEntries.Length == 0)
                                 {
@@ -783,13 +859,14 @@ namespace Jube.Cache.Redis
                                     {
                                         token.ThrowIfCancellationRequested();
 
-                                        var journalEntries = await resilientRedisResilientRedisDatabase.SortedSetRangeByRankWithScoresAsync(
-                                            hotKeyEntry.Element.ToString(),
-                                            journalPosition,
-                                            journalPosition + JournalBatchSize - 1,
-                                            Order.Descending,
-                                            CommandFlags.PreferReplica
-                                        );
+                                        var journalEntries = await resilientRedisResilientRedisDatabase
+                                            .SortedSetRangeByRankWithScoresAsync(
+                                                hotKeyEntry.Element.ToString(),
+                                                journalPosition,
+                                                journalPosition + JournalBatchSize - 1,
+                                                Order.Descending,
+                                                CommandFlags.PreferReplica
+                                            );
 
                                         if (journalEntries.Length == 0)
                                         {
@@ -797,7 +874,8 @@ namespace Jube.Cache.Redis
                                         }
 
                                         var hashTasks = journalEntries
-                                            .Select(e => resilientRedisResilientRedisDatabase.HashGetAsync(payloadKey, e.Element.ToString(),
+                                            .Select(e => resilientRedisResilientRedisDatabase.HashGetAsync(payloadKey,
+                                                e.Element.ToString(),
                                                 CommandFlags.PreferReplica))
                                             .ToList();
 
@@ -828,7 +906,8 @@ namespace Jube.Cache.Redis
 
                                             if (count % 100000 == 0)
                                             {
-                                                await UpdateFillInLocalCacheInstanceRepositoryAsync(localCacheInstanceRepository, count, bytes, token);
+                                                await UpdateFillInLocalCacheInstanceRepositoryAsync(
+                                                    localCacheInstanceRepository, count, bytes, token);
                                             }
 
                                             if (!lruCacheConcurrentSizedDictionary.IsFull)
@@ -836,7 +915,8 @@ namespace Jube.Cache.Redis
                                                 continue;
                                             }
 
-                                            await FinishFillInLocalCacheInstanceRepositoryAsync(localCacheInstanceRepository, count, bytes, token);
+                                            await FinishFillInLocalCacheInstanceRepositoryAsync(
+                                                localCacheInstanceRepository, count, bytes, token);
                                             return;
                                         }
 
@@ -863,7 +943,8 @@ namespace Jube.Cache.Redis
                         }
                     }
 
-                    await FinishFillInLocalCacheInstanceRepositoryAsync(localCacheInstanceRepository, count, bytes, token);
+                    await FinishFillInLocalCacheInstanceRepositoryAsync(localCacheInstanceRepository, count, bytes,
+                        token);
                 }
                 catch (Exception ex)
                 {
@@ -880,14 +961,18 @@ namespace Jube.Cache.Redis
             }
         }
 
-        private Task FinishFillInLocalCacheInstanceRepositoryAsync(LocalCacheInstanceRepository localCacheInstanceRepository, int count, long bytes, CancellationToken token = default)
+        private Task FinishFillInLocalCacheInstanceRepositoryAsync(
+            LocalCacheInstanceRepository localCacheInstanceRepository, int count, long bytes,
+            CancellationToken token = default)
         {
             var gCMemoryInfoForFinishFill = GC.GetGCMemoryInfo();
             return localCacheInstanceRepository.FinishFillAsync(localCacheInstance.Id, count, bytes,
                 gCMemoryInfoForFinishFill.HeapSizeBytes, gCMemoryInfoForFinishFill.TotalCommittedBytes, token);
         }
 
-        private Task UpdateFillInLocalCacheInstanceRepositoryAsync(LocalCacheInstanceRepository localCacheInstanceRepository, int count, long bytes, CancellationToken token = default)
+        private Task UpdateFillInLocalCacheInstanceRepositoryAsync(
+            LocalCacheInstanceRepository localCacheInstanceRepository, int count, long bytes,
+            CancellationToken token = default)
         {
             var gCMemoryInfoForUpdateFill = GC.GetGCMemoryInfo();
             return localCacheInstanceRepository.UpdateFillAsync(localCacheInstance.Id,
@@ -896,7 +981,7 @@ namespace Jube.Cache.Redis
                 gCMemoryInfoForUpdateFill.HeapSizeBytes, gCMemoryInfoForUpdateFill.TotalCommittedBytes, token);
         }
 
-        private DictionaryNoBoxing<int> Unpack(ReadOnlyMemory<byte> buffer)
+        internal DictionaryNoBoxing<int> Unpack(ReadOnlyMemory<byte> buffer)
         {
             if (buffer.IsEmpty)
             {
@@ -909,7 +994,8 @@ namespace Jube.Cache.Redis
             return unpacked.Data ?? new DictionaryNoBoxing<int>();
         }
 
-        private void AddToLruCacheConcurrentSizedDictionaryForLocalCacheInstanceKey(LocalCacheInstanceKey localCacheInstanceKey, string hSetKey,
+        internal void AddToLruCacheConcurrentSizedDictionaryForLocalCacheInstanceKey(
+            LocalCacheInstanceKey localCacheInstanceKey, string hSetKey,
             byte[] bytes)
         {
             if (!localCache)
@@ -920,15 +1006,17 @@ namespace Jube.Cache.Redis
             localCacheInstanceKey.LruCacheConcurrentSizedDictionary.TryAdd(hSetKey, bytes);
         }
 
-        private async Task AppendBulkCleanupOfPayloadGuidsAsync(List<Task<TimedTaskResult>> tasks, int tenantRegistryId, Guid entityAnalysisModelGuid, string redisKeyReferenceDate, List<RedisValue> payloadGuidsToDelete)
+        private async Task AppendBulkCleanupOfPayloadGuidsAsync(List<Task<TimedTaskResult>> tasks, int tenantRegistryId,
+            Guid entityAnalysisModelGuid, string redisKeyReferenceDate, List<RedisValue> payloadGuidsToDelete)
         {
             var redisKeyPayload = $"Payload:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
 
-            tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.SortedSetRemoveReferenceDate, async () => await BatchSortedSetRemoveAsync(
-                resilientRedisResilientRedisDatabase,
-                redisKeyReferenceDate,
-                payloadGuidsToDelete.ToArray()
-            )));
+            tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.SortedSetRemoveReferenceDate,
+                async () => await BatchSortedSetRemoveAsync(
+                    resilientRedisResilientRedisDatabase,
+                    redisKeyReferenceDate,
+                    payloadGuidsToDelete.ToArray()
+                )));
 
             if (storePayloadCountsAndBytes)
             {
@@ -938,87 +1026,104 @@ namespace Jube.Cache.Redis
 
                 foreach (var payloadGuidToDelete in payloadGuidsToDelete)
                 {
-                    var bytesToRemove = await resilientRedisResilientRedisDatabase.HashStringLengthAsync(redisKeyPayload, payloadGuidToDelete).ConfigureAwait(false);
+                    var bytesToRemove = await resilientRedisResilientRedisDatabase
+                        .HashStringLengthAsync(redisKeyPayload, payloadGuidToDelete).ConfigureAwait(false);
 
-                    tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.HashDecrementBytes, async () => await resilientRedisResilientRedisDatabase.HashDecrementAsync(
-                        redisKeyBytes, redisHashKeyForRedisKey,
-                        bytesToRemove
-                    )));
+                    tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.HashDecrementBytes, async () =>
+                        await resilientRedisResilientRedisDatabase.HashDecrementAsync(
+                            redisKeyBytes, redisHashKeyForRedisKey,
+                            bytesToRemove
+                        )));
 
-                    tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.HashDecrementCount, async () => await resilientRedisResilientRedisDatabase.HashDecrementAsync(
-                        redisKeyCount, redisHashKeyForRedisKey, 1
-                    )));
+                    tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.HashDecrementCount, async () =>
+                        await resilientRedisResilientRedisDatabase.HashDecrementAsync(
+                            redisKeyCount, redisHashKeyForRedisKey, 1
+                        )));
 
-                    tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.HashDeletePayload, async () => await resilientRedisResilientRedisDatabase.HashDeleteAsync(
-                        redisKeyPayload,
-                        payloadGuidToDelete
-                    )));
+                    tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.HashDeletePayload, async () =>
+                        await resilientRedisResilientRedisDatabase.HashDeleteAsync(
+                            redisKeyPayload,
+                            payloadGuidToDelete
+                        )));
                 }
             }
             else
             {
-                tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.HashDeletePayloadBulk, async () => await resilientRedisResilientRedisDatabase.HashDeleteAsync(
-                    redisKeyPayload,
-                    payloadGuidsToDelete.ToArray()
-                )));
+                tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.HashDeletePayloadBulk, async () =>
+                    await resilientRedisResilientRedisDatabase.HashDeleteAsync(
+                        redisKeyPayload,
+                        payloadGuidsToDelete.ToArray()
+                    )));
             }
         }
 
-        private async Task AppendDeletionTasksAsync(List<Task<TimedTaskResult>> tasks, int tenantRegistryId, Guid entityAnalysisModelGuid, SortedSetEntry sortedSetEntry)
+        private async Task AppendDeletionTasksAsync(List<Task<TimedTaskResult>> tasks, int tenantRegistryId,
+            Guid entityAnalysisModelGuid, SortedSetEntry sortedSetEntry)
         {
-            var redisKeyPayloadJournal = $"PayloadJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{sortedSetEntry.Element}";
-            var redisValuesForRedisKeyPayloadJournalToDelete = await resilientRedisResilientRedisDatabase.SetMembersAsync(redisKeyPayloadJournal).ConfigureAwait(false);
+            var redisKeyPayloadJournal =
+                $"PayloadJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{sortedSetEntry.Element}";
+            var redisValuesForRedisKeyPayloadJournalToDelete = await resilientRedisResilientRedisDatabase
+                .SetMembersAsync(redisKeyPayloadJournal).ConfigureAwait(false);
 
             foreach (var redisJournalValue in redisValuesForRedisKeyPayloadJournalToDelete)
             {
                 var redisJournalKey = $"Journal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{redisJournalValue}";
                 var keyPayload = $"Payload:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
                 var lruJournalKey = $"LruJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
-                var eventHashRemovePattern = $"HashRemove:{Dns.GetHostName()}:{localCacheInstanceGuidString}:{keyPayload}";
+                var eventHashRemovePattern =
+                    $"HashRemove:{hostName()}:{localCacheInstanceGuidString}:{keyPayload}";
 
                 DeleteFromLocalCache(keyPayload, sortedSetEntry.Element.ToString(), false);
-                AppendSetRemovalTasksAndPublishEvent(tasks, sortedSetEntry, redisJournalKey, redisKeyPayloadJournal, lruJournalKey, redisJournalValue, eventHashRemovePattern);
+                AppendSetRemovalTasksAndPublishEvent(tasks, sortedSetEntry, redisJournalKey, redisKeyPayloadJournal,
+                    lruJournalKey, redisJournalValue, eventHashRemovePattern);
             }
         }
 
-        private void AppendSetRemovalTasksAndPublishEvent(List<Task<TimedTaskResult>> tasks, SortedSetEntry sortedSetEntry,
-            string redisJournalKey, string redisKeyPayloadJournal, string redisLruJournalKey, RedisValue redisJournalValue,
+        private void AppendSetRemovalTasksAndPublishEvent(List<Task<TimedTaskResult>> tasks,
+            SortedSetEntry sortedSetEntry,
+            string redisJournalKey, string redisKeyPayloadJournal, string redisLruJournalKey,
+            RedisValue redisJournalValue,
             string eventHashRemovePattern)
         {
-            tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.SortedSetRemoveReferenceDate, async () => await resilientRedisResilientRedisDatabase.SortedSetRemoveAsync(
-                redisJournalKey,
-                sortedSetEntry.Element
-            )));
+            tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.SortedSetRemoveReferenceDate,
+                async () => await resilientRedisResilientRedisDatabase.SortedSetRemoveAsync(
+                    redisJournalKey,
+                    sortedSetEntry.Element
+                )));
 
-            tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.SetRemoveAsync, async () => await resilientRedisResilientRedisDatabase.SetRemoveAsync(
-                redisKeyPayloadJournal,
-                redisJournalValue
-            )));
+            tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.SetRemoveAsync, async () =>
+                await resilientRedisResilientRedisDatabase.SetRemoveAsync(
+                    redisKeyPayloadJournal,
+                    redisJournalValue
+                )));
 
             tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.SortedSetLruJournalRemove, async () =>
             {
                 if (!await resilientRedisResilientRedisDatabase.KeyExistsAsync(redisJournalKey))
                 {
-                    await resilientRedisResilientRedisDatabase.SortedSetRemoveAsync(redisLruJournalKey, redisJournalKey);
+                    await resilientRedisResilientRedisDatabase.SortedSetRemoveAsync(redisLruJournalKey,
+                        redisJournalKey);
                 }
             }));
 
             if (publishSubscribe)
             {
-                tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.PublishAsync, async () => await resilientRedisResilientRedisDatabase.PublishAsync(
-                    RedisChannel.Pattern(eventHashRemovePattern),
-                    sortedSetEntry.Element.ToString()
-                )));
+                tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.PublishAsync, async () =>
+                    await resilientRedisResilientRedisDatabase.PublishAsync(
+                        RedisChannel.Pattern(eventHashRemovePattern),
+                        sortedSetEntry.Element.ToString()
+                    )));
             }
         }
 
-        private void DeleteFromLocalCache(string keyPayload, string hashKey, bool subscription)
+        internal void DeleteFromLocalCache(string keyPayload, string hashKey, bool subscription)
         {
             var hashSetKeyEntry = GetLocalCacheEntry(keyPayload);
             DeleteFromLocalCache(hashSetKeyEntry, hashKey, subscription);
         }
 
-        private void DeleteFromLocalCache(LocalCacheInstanceKey localCacheInstanceKey, string hashKey, bool subscription)
+        internal void DeleteFromLocalCache(LocalCacheInstanceKey localCacheInstanceKey, string hashKey,
+            bool subscription)
         {
             if (!localCache)
             {
@@ -1030,22 +1135,22 @@ namespace Jube.Cache.Redis
             if (subscription)
             {
                 Interlocked.Increment(ref localCacheInstanceKey.HashRemoveSubscription);
-                if (removed)
+                if (!removed)
                 {
-                    Interlocked.Increment(ref localCacheInstanceKey.HashRemoveSubscription);
+                    Interlocked.Increment(ref localCacheInstanceKey.HashRemoveSubscriptionMiss);
                 }
             }
             else
             {
                 Interlocked.Increment(ref localCacheInstanceKey.HashRemove);
-                if (removed)
+                if (!removed)
                 {
                     Interlocked.Increment(ref localCacheInstanceKey.HashRemoveMiss);
                 }
             }
         }
 
-        private LocalCacheInstanceKey GetLocalCacheEntry(string payloadKey)
+        internal LocalCacheInstanceKey GetLocalCacheEntry(string payloadKey)
         {
             if (localCacheInstanceKeys.TryGetValue(payloadKey, out var localCacheForPayloadKey))
             {
@@ -1057,27 +1162,34 @@ namespace Jube.Cache.Redis
             return hashSetKeyEntry;
         }
 
-        public async Task InsertPayloadJournalAndLedgerAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string key,
+        public Task InsertPayloadJournalAndLedgerAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string key,
             string value,
             DateTime referenceDate, Guid entityAnalysisModelInstanceEntryGuid)
         {
-            try
+            return CacheDiagnostics.RecordAsync("CachePayloadRepository.InsertPayloadJournalAndLedgerAsync", async () =>
             {
-                var redisKeyJournal = $"Journal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{key}:{value}";
-                var redisKeyPayloadJournal = $"PayloadJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelInstanceEntryGuid:N}";
-                var valuePayloadGuid = $"{entityAnalysisModelInstanceEntryGuid:N}";
+                try
+                {
+                    var redisKeyJournal = $"Journal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{key}:{value}";
+                    var redisKeyPayloadJournal =
+                        $"PayloadJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{entityAnalysisModelInstanceEntryGuid:N}";
+                    var valuePayloadGuid = $"{entityAnalysisModelInstanceEntryGuid:N}";
 
-                await Task.WhenAll(
-                    resilientRedisResilientRedisDatabase.SortedSetAddAsync(redisKeyJournal, valuePayloadGuid, referenceDate.ToUnixTimeMilliSeconds()),
-                    resilientRedisResilientRedisDatabase.SetAddAsync(redisKeyPayloadJournal, $"{key}:{value}")).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Cache Redis: Has created an exception as {ex}.");
-            }
+                    await Task.WhenAll(
+                            resilientRedisResilientRedisDatabase.SortedSetAddAsync(redisKeyJournal, valuePayloadGuid,
+                                referenceDate.ToUnixTimeMilliSeconds()),
+                            resilientRedisResilientRedisDatabase.SetAddAsync(redisKeyPayloadJournal, $"{key}:{value}"))
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Cache Redis: Has created an exception as {ex}.");
+                }
+            });
         }
 
-        private async Task BatchSortedSetRemoveAsync(IHybridResilientRedisDatabase db, RedisKey key, IEnumerable<RedisValue> values)
+        internal async Task BatchSortedSetRemoveAsync(IHybridResilientRedisDatabase db, RedisKey key,
+            IEnumerable<RedisValue> values)
         {
             const int batchSize = 1000;
             var valuesArray = values.ToArray();
@@ -1091,7 +1203,7 @@ namespace Jube.Cache.Redis
             }
         }
 
-        private async Task CleanupIdempotencyAsync(int tenantRegistryId,
+        internal async Task CleanupIdempotencyAsync(int tenantRegistryId,
             Guid entityAnalysisModelGuid, List<RedisValue> entityAnalysisModelInstanceEntryGuids)
         {
             try
@@ -1099,7 +1211,8 @@ namespace Jube.Cache.Redis
                 var redisJournal = $"IdempotencyJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
                 var entryGuidsArray = entityAnalysisModelInstanceEntryGuids.ToArray();
 
-                var redisKeys = await resilientRedisResilientRedisDatabase.SetMembersAsync(redisJournal).ConfigureAwait(false);
+                var redisKeys = await resilientRedisResilientRedisDatabase.SetMembersAsync(redisJournal)
+                    .ConfigureAwait(false);
 
                 foreach (var redisKey in redisKeys)
                 {
@@ -1123,11 +1236,14 @@ namespace Jube.Cache.Redis
         public Task<long> PurgeExpiredLruJournalEntriesAsync(
             int tenantRegistryId, Guid entityAnalysisModelGuid, TimeSpan maxAge)
         {
-            var lruJournalKey = $"LruJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
-            var cutoff = DateTime.UtcNow.Add(-maxAge).ToUnixTimeMilliSeconds();
+            return CacheDiagnostics.RecordAsync("CachePayloadRepository.PurgeExpiredLruJournalEntriesAsync", () =>
+            {
+                var lruJournalKey = $"LruJournal:{tenantRegistryId}:{entityAnalysisModelGuid:N}";
+                var cutoff = DateTime.UtcNow.Add(-maxAge).ToUnixTimeMilliSeconds();
 
-            return resilientRedisResilientRedisDatabase
-                .SortedSetRemoveRangeByScoreAsync(lruJournalKey, Double.NegativeInfinity, cutoff);
+                return resilientRedisResilientRedisDatabase
+                    .SortedSetRemoveRangeByScoreAsync(lruJournalKey, double.NegativeInfinity, cutoff);
+            });
         }
     }
 }

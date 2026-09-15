@@ -11,31 +11,37 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Cache;
+using Jube.Engine.BackgroundTasks.Context;
+using Jube.Engine.BackgroundTasks.TaskStarters;
+using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
+using Jube.Engine.Exhaustive;
+using Jube.Engine.Helpers;
+using Jube.Engine.Observability;
+using Jube.TaskCancellation.Interfaces;
+using log4net;
+using RabbitMQ.Client;
+
 namespace Jube.Engine
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using BackgroundTasks.TaskStarters;
-    using Cache;
-    using DynamicEnvironment;
-    using Exhaustive;
-    using Helpers;
-    using log4net;
-    using RabbitMQ.Client;
-    using TaskCancellation;
-    using Context=BackgroundTasks.Context.Context;
+    using Context = Context;
 
     public class Engine(
-        DynamicEnvironment dynamicEnvironment,
+        DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
         ILog log,
         IConnection rabbitMqConnection,
         CacheService cacheService,
         JsonSerializationHelper jsonSerializationHelper,
         ITaskCoordinator taskCoordinator,
-        string reportConnectionString = null)
+        IImplicitAsyncInvocationTracker implicitAsyncInvocationTracker,
+        string reportConnectionString = null,
+        OpenTelemetryExcludeCache openTelemetryExcludeCache = null,
+        LogCounterRuleCache logCounterRuleCache = null)
     {
-        public readonly Context Context = new Context
+        public readonly Context Context = new()
         {
             JsonSerializationHelper = jsonSerializationHelper,
             Services =
@@ -45,7 +51,10 @@ namespace Jube.Engine
                 RabbitMqConnection = rabbitMqConnection,
                 CacheService = cacheService,
                 TaskCoordinator = taskCoordinator,
-                ReportConnectionString = reportConnectionString
+                ImplicitAsyncInvocationTracker = implicitAsyncInvocationTracker,
+                ReportConnectionString = reportConnectionString,
+                OpenTelemetryExcludeCache = openTelemetryExcludeCache,
+                LogCounterRuleCache = logCounterRuleCache
             }
         };
 
@@ -53,10 +62,14 @@ namespace Jube.Engine
         {
             try
             {
-                await SpinWaitAndConvergeCacheServiceAsync(Context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                await SpinWaitAndConvergeCacheServiceAsync(Context.Services.TaskCoordinator.CancellationToken)
+                    .ConfigureAwait(false);
                 await StartSanctionsTaskAsync().ConfigureAwait(false);
                 await StartEntityModelServerAsync().ConfigureAwait(false);
-                await Task.WhenAll(SpinWaitAndConvergeSanctionsAsync(Context.Services.TaskCoordinator.CancellationToken), SpinWaitEntityModelsAsync(Context.Services.TaskCoordinator.CancellationToken)).ConfigureAwait(false);
+                await Task.WhenAll(
+                        SpinWaitAndConvergeSanctionsAsync(Context.Services.TaskCoordinator.CancellationToken),
+                        SpinWaitEntityModelsAsync(Context.Services.TaskCoordinator.CancellationToken))
+                    .ConfigureAwait(false);
 
                 if (Context.Services.RabbitMqConnection != null)
                 {
@@ -71,13 +84,17 @@ namespace Jube.Engine
                 StartCaseAutomationServer();
                 StartAsyncEntityThreadsInLoop();
                 StartManageCounters();
+                StartApplicationLogEntry();
+                StartInfrastructureHealthMetrics();
+                StartInfrastructureHealthMetricsPurge();
                 StartTaggingStorage();
                 StartExhaustiveTrainingServer();
                 StartCaseCreation();
 
                 if (Context.Services.Log.IsInfoEnabled)
                 {
-                    Context.Services.Log.Info("Start: The start routine has without error completed. Running.  Use cancel token to quit.");
+                    Context.Services.Log.Info(
+                        "Start: The start routine has without error completed. Running.  Use cancel token to quit.");
                 }
 
                 Context.Ready = true;
@@ -104,7 +121,7 @@ namespace Jube.Engine
                         $"Start Case Creation: There are {Context.Services.DynamicEnvironment.AppSettings("CaseCreationThreads")} threads about to start.");
                 }
 
-                var threadCount = Int32.Parse(Context.Services.DynamicEnvironment.AppSettings("CaseCreationThreads"));
+                var threadCount = int.Parse(Context.Services.DynamicEnvironment.AppSettings("CaseCreationThreads"));
                 for (i = 1; i <= threadCount; i++)
                 {
                     var caseCreationTaskStarter = new CaseCreationTaskStarter(Context);
@@ -129,7 +146,8 @@ namespace Jube.Engine
 
         private async Task SpinWaitEntityModelsAsync(CancellationToken token = default)
         {
-            while (!Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels.EntityModelsHasLoadedForStartup)
+            while (!Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                       .EntityModelsHasLoadedForStartup)
             {
                 await Task.Delay(100, token).ConfigureAwait(false);
             }
@@ -153,24 +171,28 @@ namespace Jube.Engine
 
         private void StartAmqp()
         {
-            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCallback").Equals("True", StringComparison.OrdinalIgnoreCase))
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCallback")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
             var amqpTaskStarter = new AmqpTaskStarter(Context);
-            Context.Tasks.AmqpTask = Context.Services.TaskCoordinator.RunAsync("AmqpTask", _ => amqpTaskStarter.StartAsync());
+            Context.Tasks.AmqpTask =
+                Context.Services.TaskCoordinator.RunAsync("AmqpTask", _ => amqpTaskStarter.StartAsync());
         }
 
         private void StartNotificationsViaAmqp()
         {
-            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCallback").Equals("True", StringComparison.OrdinalIgnoreCase))
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCallback")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
             var notificationsViaAmqpStarter = new NotificationsViaAmqpStarter(Context);
-            Context.Tasks.NotificationsViaAmqp = Context.Services.TaskCoordinator.RunAsync("NotificationsViaAmqpTask", _ => notificationsViaAmqpStarter.StartAsync());
+            Context.Tasks.NotificationsViaAmqp = Context.Services.TaskCoordinator.RunAsync("NotificationsViaAmqpTask",
+                _ => notificationsViaAmqpStarter.StartAsync());
         }
 
         private Task StartSanctionsTaskAsync()
@@ -187,7 +209,8 @@ namespace Jube.Engine
             }
 
             var sanctionsTaskStarter = new SanctionsTaskStarter(Context);
-            Context.Tasks.SanctionsTask = Context.Services.TaskCoordinator.RunAsync("SanctionsTask", _ => sanctionsTaskStarter.StartAsync());
+            Context.Tasks.SanctionsTask =
+                Context.Services.TaskCoordinator.RunAsync("SanctionsTask", _ => sanctionsTaskStarter.StartAsync());
 
             if (Context.Services.Log.IsInfoEnabled)
             {
@@ -210,8 +233,10 @@ namespace Jube.Engine
                 Context.Services.Log.Debug("Start: Starting Exhaustive Training Server.");
             }
 
-            var exhaustiveTrainingStarter = new Training(Context.Services.Log, Context.Services.DynamicEnvironment, Context.JsonSerializationHelper);
-            Context.Tasks.ExhaustiveTrainingTask = Context.Services.TaskCoordinator.RunAsync("ExhaustiveTrainingTask", token => exhaustiveTrainingStarter.StartAsync(token));
+            var exhaustiveTrainingStarter = new Training(Context.Services.Log, Context.Services.DynamicEnvironment,
+                Context.JsonSerializationHelper);
+            Context.Tasks.ExhaustiveTrainingTask = Context.Services.TaskCoordinator.RunAsync("ExhaustiveTrainingTask",
+                token => exhaustiveTrainingStarter.StartAsync(token));
 
             if (Context.Services.Log.IsInfoEnabled)
             {
@@ -227,7 +252,8 @@ namespace Jube.Engine
             }
 
             var taggingStarter = new TaggingStarter(Context);
-            Context.Tasks.TaggingTask = Context.Services.TaskCoordinator.RunAsync("TaggingTask", _ => taggingStarter.StartAsync());
+            Context.Tasks.TaggingTask =
+                Context.Services.TaskCoordinator.RunAsync("TaggingTask", _ => taggingStarter.StartAsync());
 
             if (Context.Services.Log.IsDebugEnabled)
             {
@@ -243,7 +269,8 @@ namespace Jube.Engine
             }
 
             var manageCountersStarter = new ManageCountersStarter(Context);
-            Context.Tasks.ManageCountersTask = Context.Services.TaskCoordinator.RunAsync("CountersTask", _ => manageCountersStarter.StartAsync());
+            Context.Tasks.ManageCountersTask =
+                Context.Services.TaskCoordinator.RunAsync("CountersTask", _ => manageCountersStarter.StartAsync());
 
             if (Context.Services.Log.IsDebugEnabled)
             {
@@ -251,9 +278,62 @@ namespace Jube.Engine
             }
         }
 
+        private void StartApplicationLogEntry()
+        {
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Start: Starting Application Log Entry routine.");
+            }
+
+            var applicationLogEntryStarter = new ApplicationLogEntryStarter(Context);
+            Context.Tasks.ApplicationLogEntryTask = Context.Services.TaskCoordinator.RunAsync(
+                "ApplicationLogEntryTask", _ => applicationLogEntryStarter.StartAsync());
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Start: Started Application Log Entry Thread in start routine.");
+            }
+        }
+
+        private void StartInfrastructureHealthMetrics()
+        {
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Start: Starting Infrastructure Health Metrics routine.");
+            }
+
+            var infrastructureHealthMetricsStarter = new InfrastructureHealthMetricsStarter(Context);
+            Context.Tasks.InfrastructureHealthMetricsTask = Context.Services.TaskCoordinator.RunAsync(
+                "InfrastructureHealthMetricsTask", _ => infrastructureHealthMetricsStarter.StartAsync());
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Start: Started Infrastructure Health Metrics Thread in start routine.");
+            }
+        }
+
+        private void StartInfrastructureHealthMetricsPurge()
+        {
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Start: Starting Infrastructure Health Metrics Purge routine.");
+            }
+
+            var infrastructureHealthMetricsPurgeStarter = new InfrastructureHealthMetricsPurgeStarter(Context);
+            Context.Tasks.InfrastructureHealthMetricsPurgeTask = Context.Services.TaskCoordinator.RunAsync(
+                "InfrastructureHealthMetricsPurgeTask", _ => infrastructureHealthMetricsPurgeStarter.StartAsync());
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug(
+                    "Start: Started Infrastructure Health Metrics Purge Thread in start routine.");
+            }
+        }
+
         private void StartAsyncEntityThreadsInLoop()
         {
-            var asyncThreads = Int32.Parse(Context.Services.DynamicEnvironment.AppSettings("ModelInvokeAsynchronousThreads"));
+            var asyncThreads =
+                int.Parse(Context.Services.DynamicEnvironment.AppSettings("ModelInvokeAsynchronousThreads"));
 
             for (var i = 1; i <= asyncThreads; i++)
             {
@@ -263,7 +343,9 @@ namespace Jube.Engine
                 }
 
                 var asyncHttpContextCorrelationStarter = new AsyncHttpContextCorrelationStarter(Context);
-                Context.Tasks.AsyncHttpContextCorrelationTasks.Add(Context.Services.TaskCoordinator.RunAsync("AsyncHttpContextCorrelationTask", _ => asyncHttpContextCorrelationStarter.StartAsync()));
+                Context.Tasks.AsyncHttpContextCorrelationTasks.Add(
+                    Context.Services.TaskCoordinator.RunAsync("AsyncHttpContextCorrelationTask",
+                        _ => asyncHttpContextCorrelationStarter.StartAsync()));
 
                 if (Context.Services.Log.IsDebugEnabled)
                 {
@@ -286,7 +368,9 @@ namespace Jube.Engine
             }
 
             var caseAutomationStarter = new CaseAutomationStarter(Context);
-            Context.Tasks.CaseAutomationTask = Context.Services.TaskCoordinator.RunAsync("CasesAutomationTask", _ => caseAutomationStarter.StartAsync());
+            Context.Tasks.CaseAutomationTask =
+                Context.Services.TaskCoordinator.RunAsync("CasesAutomationTask",
+                    _ => caseAutomationStarter.StartAsync());
 
             if (Context.Services.Log.IsDebugEnabled)
             {
@@ -308,7 +392,8 @@ namespace Jube.Engine
             }
 
             var notificationsViaConcurrentQueueStarter = new NotificationsViaConcurrentQueueStarter(Context);
-            Context.Tasks.NotificationsViaConcurrentQueueTask = Context.Services.TaskCoordinator.RunAsync("NotificationRelayFromConcurrentQueueTask", _ => notificationsViaConcurrentQueueStarter.StartAsync());
+            Context.Tasks.NotificationsViaConcurrentQueueTask = Context.Services.TaskCoordinator.RunAsync(
+                "NotificationRelayFromConcurrentQueueTask", _ => notificationsViaConcurrentQueueStarter.StartAsync());
 
             if (Context.Services.Log.IsDebugEnabled)
             {
@@ -335,13 +420,16 @@ namespace Jube.Engine
                 Context.Services.Log.Debug("Start: Starting the entity subsystem.");
             }
 
-            Context.Tasks.EntityAnalysisModelManager = new EntityAnalysisModelManager.EntityAnalysisModelManager(Context);
-            Context.Tasks.EntityAnalysisModelManagerTask = Context.Services.TaskCoordinator.RunAsync("EntityAnalysisModelManagerTask", _ => Context.Tasks.EntityAnalysisModelManager.StartAsync());
+            Context.Tasks.EntityAnalysisModelManager =
+                new EntityAnalysisModelManager.EntityAnalysisModelManager(Context);
+            Context.Tasks.EntityAnalysisModelManagerTask = Context.Services.TaskCoordinator.RunAsync(
+                "EntityAnalysisModelManagerTask", _ => Context.Tasks.EntityAnalysisModelManager.StartAsync());
 
             if (Context.Services.Log.IsDebugEnabled)
             {
                 Context.Services.Log.Debug("Start: Started the entity subsystem.");
             }
+
             return Task.CompletedTask;
         }
     }

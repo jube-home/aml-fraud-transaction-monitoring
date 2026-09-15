@@ -1,25 +1,12 @@
-// Description: C# Extension Methods | Enhance the .NET Framework and .NET Core with over 1000 extension methods.
-// Website & Documentation: https://csharp-extension.com/
-// Issues: https://github.com/zzzprojects/Z.ExtensionMethods/issues
-// License (MIT): https://github.com/zzzprojects/Z.ExtensionMethods/blob/master/LICENSE
-// More projects: https://zzzprojects.com/
-// Copyright � ZZZ Projects Inc. All rights reserved.
+// Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
+// See NOTICE.md for full attribution.
 namespace Jube.Dictionary.Extensions
 {
-    using String=global::System.String;
-
     public static partial class Extensions
     {
-        /// <summary>
-        ///     A string extension method that replace first occurence.
-        /// </summary>
-        /// <param name="this">The @this to act on.</param>
-        /// <param name="oldValue">The old value.</param>
-        /// <param name="newValue">The new value.</param>
-        /// <returns>The string with the first occurence of old value replace by new value.</returns>
         public static string ReplaceFirst(this string @this, string oldValue, string newValue)
         {
-            var startindex = @this.IndexOf(oldValue);
+            var startindex = @this.IndexOf(oldValue, StringComparison.Ordinal);
 
             if (startindex == -1)
             {
@@ -29,24 +16,16 @@ namespace Jube.Dictionary.Extensions
             return @this.Remove(startindex, oldValue.Length).Insert(startindex, newValue);
         }
 
-        /// <summary>
-        ///     A string extension method that replace first number of occurences.
-        /// </summary>
-        /// <param name="this">The @this to act on.</param>
-        /// <param name="number">Number of.</param>
-        /// <param name="oldValue">The old value.</param>
-        /// <param name="newValue">The new value.</param>
-        /// <returns>The string with the numbers of occurences of old value replace by new value.</returns>
         public static string ReplaceFirst(this string @this, int number, string oldValue, string newValue)
         {
             var list = @this.Split(oldValue).ToList();
             var old = number + 1;
             var listStart = list.Take(old);
-            var listEnd = list.Skip(old);
+            var listEnd = list.Skip(old).ToList();
 
-            return String.Join(newValue, listStart) +
-                   (listEnd.Any() ? oldValue : "") +
-                   String.Join(oldValue, listEnd);
+            return string.Join(newValue, listStart) +
+                   (listEnd.Count > 0 ? oldValue : "") +
+                   string.Join(oldValue, listEnd);
         }
     }
 }

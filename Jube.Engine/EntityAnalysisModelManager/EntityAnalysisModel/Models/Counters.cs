@@ -11,10 +11,10 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
 {
-    using System;
-
     public class Counters
     {
         public int ActivationWatcherCount;
@@ -22,10 +22,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public char MaxActivationWatcherInterval;
         public double MaxActivationWatcherThreshold;
         public int MaxActivationWatcherValue;
+        public long MaxModelResponseTime = long.MinValue;
         public double MaxResponseElevation;
         public char MaxResponseElevationInterval;
         public int MaxResponseElevationThreshold;
         public int MaxResponseElevationValue;
+        public long MinModelResponseTime = long.MaxValue;
+        public int ModelImplicitAsyncCompletedAfterTimeoutCounter;
+        public int ModelImplicitAsyncFaultedAfterTimeoutCounter;
+        public int ModelImplicitAsyncInvokeCounter;
+        public int ModelImplicitAsyncTimeoutCounter;
         public int ModelInvokeCounter;
         public int ModelInvokeGatewayCounter;
         public int ModelResponseElevationCounter;

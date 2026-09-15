@@ -21,7 +21,10 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         {
             get
             {
-                if (all != null) return all;
+                if (all != null)
+                {
+                    return all;
+                }
 
                 var tools = new List<ServiceToolDescriptor>();
 
@@ -47,6 +50,48 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddEntityAnalysisModelActivationRuleSuppression(tools);
                 AddEntityAnalysisModelReprocessingRule(tools);
                 AddEntityAnalysisModelReprocessingRuleInstance(tools);
+                AddEntityAnalysisModelStagePerformanceCounter(tools);
+                AddEntityAnalysisModelResponseTimePipelineCounter(tools);
+                AddEntityAnalysisModelTaskPerformanceCounter(tools);
+                AddApplicationLogEntry(tools);
+                AddDotNetRuntimeMetric(tools);
+                AddPostgresMetric(tools);
+                AddRedisMetric(tools);
+                AddRedisSlowOperation(tools);
+                AddRedisConnectionMultiplexerMetric(tools);
+                AddPostgresTableStatistics(tools);
+                AddPostgresIndexStatistics(tools);
+                AddPostgresReplicationStatus(tools);
+                AddPostgresLogEntry(tools);
+                AddContainerLogEntry(tools);
+                AddDockerEvent(tools);
+                AddRedisSentinelStatus(tools);
+                AddRedisSentinelEvent(tools);
+                AddModelInvokeWarning(tools);
+                AddArchiverStagePerformanceCounter(tools);
+                AddCaseCreationStagePerformanceCounter(tools);
+                AddCaseCreationWarning(tools);
+                AddArchiverWarning(tools);
+                AddCaptureQueueHealth(tools);
+                AddRedisConnectionEvent(tools);
+                AddRedisCallCounter(tools);
+                AddEtcdMemberStatus(tools);
+                AddPatroniMemberStatus(tools);
+                AddEtcdClusterEvent(tools);
+                AddPatroniClusterEvent(tools);
+                AddDockerContainerMetric(tools);
+                AddDockerHostMetric(tools);
+                AddOpenTelemetryMetric(tools);
+                AddOpenTelemetryLogCounter(tools);
+                AddOpenTelemetryExclude(tools);
+                AddOtlpDispatchCounter(tools);
+                AddUserLogin(tools);
+                AddPostgresActivity(tools);
+                AddPostgresStatementStatistics(tools);
+                AddHttpProcessingCounter(tools);
+                AddEntityAnalysisAsynchronousQueueBalance(tools);
+                AddEntityAnalysisModelAsynchronousQueueBalance(tools);
+                AddEntityAnalysisModelProcessingCounter(tools);
                 all = tools;
 
                 return all;
@@ -75,5 +120,47 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddEntityAnalysisModelActivationRuleSuppression(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelReprocessingRule(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelReprocessingRuleInstance(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelStagePerformanceCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelResponseTimePipelineCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelTaskPerformanceCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddApplicationLogEntry(List<ServiceToolDescriptor> tools);
+        static partial void AddDotNetRuntimeMetric(List<ServiceToolDescriptor> tools);
+        static partial void AddPostgresMetric(List<ServiceToolDescriptor> tools);
+        static partial void AddRedisMetric(List<ServiceToolDescriptor> tools);
+        static partial void AddRedisSlowOperation(List<ServiceToolDescriptor> tools);
+        static partial void AddRedisConnectionMultiplexerMetric(List<ServiceToolDescriptor> tools);
+        static partial void AddPostgresTableStatistics(List<ServiceToolDescriptor> tools);
+        static partial void AddPostgresIndexStatistics(List<ServiceToolDescriptor> tools);
+        static partial void AddPostgresReplicationStatus(List<ServiceToolDescriptor> tools);
+        static partial void AddPostgresLogEntry(List<ServiceToolDescriptor> tools);
+        static partial void AddContainerLogEntry(List<ServiceToolDescriptor> tools);
+        static partial void AddDockerEvent(List<ServiceToolDescriptor> tools);
+        static partial void AddRedisSentinelStatus(List<ServiceToolDescriptor> tools);
+        static partial void AddRedisSentinelEvent(List<ServiceToolDescriptor> tools);
+        static partial void AddModelInvokeWarning(List<ServiceToolDescriptor> tools);
+        static partial void AddArchiverStagePerformanceCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseCreationStagePerformanceCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseCreationWarning(List<ServiceToolDescriptor> tools);
+        static partial void AddArchiverWarning(List<ServiceToolDescriptor> tools);
+        static partial void AddCaptureQueueHealth(List<ServiceToolDescriptor> tools);
+        static partial void AddRedisConnectionEvent(List<ServiceToolDescriptor> tools);
+        static partial void AddRedisCallCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddEtcdMemberStatus(List<ServiceToolDescriptor> tools);
+        static partial void AddPatroniMemberStatus(List<ServiceToolDescriptor> tools);
+        static partial void AddEtcdClusterEvent(List<ServiceToolDescriptor> tools);
+        static partial void AddPatroniClusterEvent(List<ServiceToolDescriptor> tools);
+        static partial void AddDockerContainerMetric(List<ServiceToolDescriptor> tools);
+        static partial void AddDockerHostMetric(List<ServiceToolDescriptor> tools);
+        static partial void AddOpenTelemetryMetric(List<ServiceToolDescriptor> tools);
+        static partial void AddOpenTelemetryLogCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddOpenTelemetryExclude(List<ServiceToolDescriptor> tools);
+        static partial void AddOtlpDispatchCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddUserLogin(List<ServiceToolDescriptor> tools);
+        static partial void AddPostgresActivity(List<ServiceToolDescriptor> tools);
+        static partial void AddPostgresStatementStatistics(List<ServiceToolDescriptor> tools);
+        static partial void AddHttpProcessingCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisAsynchronousQueueBalance(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelAsynchronousQueueBalance(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelProcessingCounter(List<ServiceToolDescriptor> tools);
     }
 }

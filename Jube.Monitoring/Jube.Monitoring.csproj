@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <AssemblyName>Jube.Monitoring</AssemblyName>
+        <RootNamespace>Jube.Monitoring</RootNamespace>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+        <PackageReference Include="OpenTelemetry" Version="1.18.0"/>
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.18.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Reuses Jube.Data's Poco/DbContext/Repository classes for DockerContainerMetric/DockerHostMetric
+             rather than defining its own: a standalone copy of those model classes would drift from the
+             read side, the same class of bug that has already bitten this project once with an in place
+             edited migration. The one real cost worth accepting here is pulling in Jube.Data's transitive
+             dependencies (Accord.* included). Jube.Monitoring itself never touches any of that code, and
+             the .NET runtime does not load an assembly it never calls into, so the unused libraries add
+             to the container image's disk footprint only, not its runtime memory or CPU. -->
+        <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
+        <!-- A single zero-dependency regex helper (no DynamicEnvironment, no log4net) used to resolve the
+             same [@SECRET_NAME@] Docker-secret tokens the rest of this suite substitutes via
+             DynamicEnvironment. Jube.Monitoring reads its own env vars directly (see Program.cs) and needs
+             this one piece of that logic without taking on DynamicEnvironment itself. -->
+        <ProjectReference Include="..\Jube.Tokenisation\Jube.Tokenisation.csproj"/>
+    </ItemGroup>
+
+</Project>

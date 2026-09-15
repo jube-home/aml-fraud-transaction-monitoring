@@ -11,25 +11,28 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Cache.Observability.CacheCallCounters;
+using Jube.Cache.Redis.Models;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Data.Repository;
+using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.TtlCounterAdministration;
+using Jube.Extensions;
+using Jube.TaskCancellation.TaskHelper;
+
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Cache.Redis.Models;
-    using Context;
-    using Data.Context;
-    using Data.Poco;
-    using Data.Repository;
-    using Extensions;
-    using TaskCancellation.TaskHelper;
-    using TtlCounterAdministration;
-    using EntityAnalysisModel=EntityAnalysisModel.EntityAnalysisModel;
-    using EntityAnalysisModelTtlCounter=EntityAnalysisModel.Models.Models.EntityAnalysisModelTtlCounter;
+    using EntityAnalysisModel = EntityAnalysisModel.EntityAnalysisModel;
+    using EntityAnalysisModelTtlCounter = EntityAnalysisModel.Models.Models.EntityAnalysisModelTtlCounter;
 
-    public class TtlCounterAdministrationTaskStarter(Context context)
+    public class TtlCounterAdministrationTaskStarter(Context.Context context)
     {
         public async Task StartAsync()
         {
@@ -39,7 +42,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 {
                     try
                     {
-                        var activeModelsForLoopWithoutEnumError = context.EntityAnalysisModels.ActiveEntityAnalysisModels.ToList();
+                        var activeModelsForLoopWithoutEnumError =
+                            context.EntityAnalysisModels.ActiveEntityAnalysisModels.ToList();
                         foreach (var (key, value) in
                                  from modelEntityKvp in activeModelsForLoopWithoutEnumError
                                  where modelEntityKvp.Value.Started
@@ -68,13 +72,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     }
                     finally
                     {
-                        await Task.Delay(Int32.Parse(context.Services.DynamicEnvironment.AppSettings("WaitTtlCounterDecrement")), context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(
+                            int.Parse(context.Services.DynamicEnvironment.AppSettings("WaitTtlCounterDecrement")),
+                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                     }
                 }
             }
             catch (OperationCanceledException ex)
             {
-                context.Services.Log.Info($"Graceful Cancellation TtlCounterAdministrationAsync: has produced an error {ex}");
+                context.Services.Log.Info(
+                    $"Graceful Cancellation TtlCounterAdministrationAsync: has produced an error {ex}");
             }
             catch (Exception ex)
             {
@@ -82,7 +89,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
         }
 
-        private static async Task ProcessAsync(Context context, EntityAnalysisModel entityAnalysisModel)
+        internal static async Task ProcessAsync(Context.Context context, EntityAnalysisModel entityAnalysisModel)
         {
             try
             {
@@ -104,9 +111,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 $"TTL Counter Administration: has started for {entityAnalysisModel.Instance.Id} is about to process TTL Counter {ttlCounterWithinLoop.Name} and data name {ttlCounterWithinLoop.TtlCounterDataName}.");
                         }
 
-                        var ttlCounterAdministrationCacheService = new TtlCounterAdministrationCacheService(entityAnalysisModel);
+                        var ttlCounterAdministrationCacheService =
+                            new TtlCounterAdministrationCacheService(entityAnalysisModel);
 
-                        var referenceDate = await ttlCounterAdministrationCacheService.CacheServiceGetReferenceDateAsync().ConfigureAwait(false);
+                        var referenceDate = await ttlCounterAdministrationCacheService
+                            .CacheServiceGetReferenceDateAsync().ConfigureAwait(false);
 
                         if (referenceDate.HasValue)
                         {
@@ -117,13 +126,18 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             }
 
                             var adjustedTtlCounterDate =
-                                ttlCounterAdministrationCacheService.GetAdjustedTtlCounterDate(ttlCounterWithinLoop, referenceDate.Value);
+                                ttlCounterAdministrationCacheService.GetAdjustedTtlCounterDate(ttlCounterWithinLoop,
+                                    referenceDate.Value);
 
-                            var ttlCounterEntryDeleteLimit = Int32.Parse(context.Services.DynamicEnvironment.AppSettings("TtlCounterEntryDeleteLimit"));
+                            var ttlCounterEntryDeleteLimit =
+                                int.Parse(context.Services.DynamicEnvironment.AppSettings(
+                                    "TtlCounterEntryDeleteLimit"));
 
-                            var expiredTtlCounterEntries = await ttlCounterAdministrationCacheService.GetAllExpiredByTtlCounterAsync(
-                                entityAnalysisModel.Services.CacheService.CacheTtlCounterEntryRepository, ttlCounterWithinLoop,
-                                adjustedTtlCounterDate, ttlCounterEntryDeleteLimit).ConfigureAwait(false);
+                            var expiredTtlCounterEntries = await ttlCounterAdministrationCacheService
+                                .GetAllExpiredByTtlCounterAsync(
+                                    entityAnalysisModel.Services.CacheService.CacheTtlCounterEntryRepository,
+                                    ttlCounterWithinLoop,
+                                    adjustedTtlCounterDate, ttlCounterEntryDeleteLimit).ConfigureAwait(false);
 
                             if (!expiredTtlCounterEntries.Any())
                             {
@@ -131,44 +145,69 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             }
 
                             var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
-                                context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+                                context.Services.DynamicEnvironment.AppSettings("ConnectionString"),
+                                context.Services.Log);
 
                             try
                             {
                                 var sortedSetExpiredCount = expiredTtlCounterEntries.Count;
-                                var expiredSortedSetMinTimestamp = expiredTtlCounterEntries.FirstOrDefault().ReferenceDate.ToUnixTimeMilliSeconds();
-                                var expiredSortedSetMaxTimestamp = expiredTtlCounterEntries.LastOrDefault().ReferenceDate.ToUnixTimeMilliSeconds();
+                                var expiredSortedSetMinTimestamp = expiredTtlCounterEntries.FirstOrDefault()
+                                    .ReferenceDate.ToUnixTimeMilliSeconds();
+                                var expiredSortedSetMaxTimestamp = expiredTtlCounterEntries.LastOrDefault()
+                                    .ReferenceDate.ToUnixTimeMilliSeconds();
 
-                                var cacheTtlCounterEntryRemovalBatchRepository = new CacheTtlCounterEntryRemovalBatchRepository(dbContext);
-                                var cacheTtlCounterEntryRemovalBatch = await cacheTtlCounterEntryRemovalBatchRepository.InsertAsync(new CacheTtlCounterEntryRemovalBatch
-                                {
-                                    EntityAnalysisModelTtlCounterGuid = ttlCounterWithinLoop.Guid,
-                                    ReferenceDate = referenceDate,
-                                    ExpiredHashSetCount = sortedSetExpiredCount,
-                                    FirstExpiredHashSetReferenceDate = expiredSortedSetMinTimestamp.FromUnixTimeMilliSeconds(),
-                                    LastExpiredHashSetReferenceDate = expiredSortedSetMaxTimestamp.FromUnixTimeMilliSeconds()
-                                }, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                var cacheTtlCounterEntryRemovalBatchRepository =
+                                    new CacheTtlCounterEntryRemovalBatchRepository(dbContext);
+                                var cacheTtlCounterEntryRemovalBatch = await cacheTtlCounterEntryRemovalBatchRepository
+                                    .InsertAsync(new CacheTtlCounterEntryRemovalBatch
+                                    {
+                                        EntityAnalysisModelTtlCounterGuid = ttlCounterWithinLoop.Guid,
+                                        ReferenceDate = referenceDate,
+                                        ExpiredHashSetCount = sortedSetExpiredCount,
+                                        FirstExpiredHashSetReferenceDate =
+                                            expiredSortedSetMinTimestamp.FromUnixTimeMilliSeconds(),
+                                        LastExpiredHashSetReferenceDate =
+                                            expiredSortedSetMaxTimestamp.FromUnixTimeMilliSeconds()
+                                    }, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
-                                var cacheTtlCounterEntryRemovalBatchEntryList = new ConcurrentBag<CacheTtlCounterEntryRemovalBatchEntry>();
+                                var maxConcurrency =
+                                    int.Parse(context.Services.DynamicEnvironment.AppSettings(
+                                        "TtlCounterAdministrationMaxConcurrency"));
+                                var concurrencyLimiter = new SemaphoreSlim(maxConcurrency, maxConcurrency);
+                                var cacheTtlCounterEntryRemovalBatchEntryList =
+                                    new ConcurrentBag<CacheTtlCounterEntryRemovalBatchEntry>();
                                 var tasks = new List<Task<TimedTaskResult>>();
                                 foreach (var expiredTtlCounterEntry in expiredTtlCounterEntries)
                                 {
                                     context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
 
-                                    tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.ProcessTtlCounterDeprecation, async () => await ProcessTtlCounterDeprecationAsync(entityAnalysisModel,
-                                        ttlCounterAdministrationCacheService, ttlCounterWithinLoop, expiredTtlCounterEntry,
-                                        cacheTtlCounterEntryRemovalBatchEntryList, cacheTtlCounterEntryRemovalBatch).ConfigureAwait(false)));
+                                    tasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                                        TaskType.ProcessTtlCounterDeprecation, () =>
+                                            ProcessTtlCounterDeprecationWithConcurrencyLimitAsync(concurrencyLimiter,
+                                                context.Services.TaskCoordinator.CancellationToken, entityAnalysisModel,
+                                                ttlCounterAdministrationCacheService, ttlCounterWithinLoop,
+                                                expiredTtlCounterEntry,
+                                                cacheTtlCounterEntryRemovalBatchEntryList,
+                                                cacheTtlCounterEntryRemovalBatch)));
                                 }
 
                                 await Task.WhenAll(tasks).ConfigureAwait(false);
-                                var cacheTtlCounterEntryRemovalBatchEntryRepository = new CacheTtlCounterEntryRemovalBatchEntryRepository(dbContext);
-                                await cacheTtlCounterEntryRemovalBatchEntryRepository.BulkCopyAsync(cacheTtlCounterEntryRemovalBatchEntryList).ConfigureAwait(false);
+                                var cacheTtlCounterEntryRemovalBatchEntryRepository =
+                                    new CacheTtlCounterEntryRemovalBatchEntryRepository(dbContext);
+                                await cacheTtlCounterEntryRemovalBatchEntryRepository
+                                    .BulkCopyAsync(cacheTtlCounterEntryRemovalBatchEntryList).ConfigureAwait(false);
 
                                 var completedTasks = await Task.WhenAll(tasks).ConfigureAwait(false);
-                                var cacheTtlCounterEntryRemovalBatchResponseTimeRepository = new CacheTtlCounterEntryRemovalBatchResponseTimeRepository(dbContext);
+                                var cacheTtlCounterEntryRemovalBatchResponseTimeRepository =
+                                    new CacheTtlCounterEntryRemovalBatchResponseTimeRepository(dbContext);
                                 // ReSharper disable once MethodSupportsCancellation
-                                await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.BulkInsertTtlCounterEntryRemovalBatchResponseTime, async () => await cacheTtlCounterEntryRemovalBatchResponseTimeRepository.BulkCopyAsync(AggregateResponseTimesForBulkInsert(completedTasks, cacheTtlCounterEntryRemovalBatch)).ConfigureAwait(false));
-                                await cacheTtlCounterEntryRemovalBatchRepository.FinishAsync(cacheTtlCounterEntryRemovalBatch.Id).ConfigureAwait(false);
+                                await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                                    TaskType.BulkInsertTtlCounterEntryRemovalBatchResponseTime,
+                                    async () => await cacheTtlCounterEntryRemovalBatchResponseTimeRepository
+                                        .BulkCopyAsync(AggregateResponseTimesForBulkInsert(completedTasks,
+                                            cacheTtlCounterEntryRemovalBatch)).ConfigureAwait(false));
+                                await cacheTtlCounterEntryRemovalBatchRepository
+                                    .FinishAsync(cacheTtlCounterEntryRemovalBatch.Id).ConfigureAwait(false);
                             }
                             catch (Exception ex)
                             {
@@ -211,36 +250,66 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
         }
 
-        private static async Task ProcessTtlCounterDeprecationAsync(EntityAnalysisModel entityAnalysisModel, TtlCounterAdministrationCacheService ttlCounterAdministrationCacheService,
+        internal static async Task ProcessTtlCounterDeprecationWithConcurrencyLimitAsync(
+            SemaphoreSlim concurrencyLimiter, CancellationToken token, EntityAnalysisModel entityAnalysisModel,
+            TtlCounterAdministrationCacheService ttlCounterAdministrationCacheService,
             EntityAnalysisModelTtlCounter ttlCounterWithinLoop, ExpiredTtlCounterEntry expiredTtlCounterEntry,
             ConcurrentBag<CacheTtlCounterEntryRemovalBatchEntry> cacheTtlCounterEntryRemovalBatchEntryList,
             CacheTtlCounterEntryRemovalBatch cacheTtlCounterEntryRemovalBatch)
         {
+            var waitStopwatch = Stopwatch.StartNew();
+            await concurrencyLimiter.WaitAsync(token).ConfigureAwait(false);
+            waitStopwatch.Stop();
+            CacheCallCounters.Record("TtlCounterAdministrationTaskStarter.ConcurrencyWait",
+                waitStopwatch.Elapsed.TotalMilliseconds);
 
-            var revisedCount = await ttlCounterAdministrationCacheService.CacheServiceDecrementTtlCounterAsync(ttlCounterWithinLoop, expiredTtlCounterEntry.DataName, expiredTtlCounterEntry.Value).ConfigureAwait(false);
+            try
+            {
+                await ProcessTtlCounterDeprecationAsync(entityAnalysisModel, ttlCounterAdministrationCacheService,
+                    ttlCounterWithinLoop, expiredTtlCounterEntry, cacheTtlCounterEntryRemovalBatchEntryList,
+                    cacheTtlCounterEntryRemovalBatch).ConfigureAwait(false);
+            }
+            finally
+            {
+                concurrencyLimiter.Release();
+            }
+        }
 
-            await ttlCounterAdministrationCacheService.CacheServiceDeleteTtlCounterEntryAsync(entityAnalysisModel.Services.CacheService.CacheTtlCounterEntryRepository, ttlCounterWithinLoop,
-                expiredTtlCounterEntry.DataName,
+        internal static async Task ProcessTtlCounterDeprecationAsync(EntityAnalysisModel entityAnalysisModel,
+            TtlCounterAdministrationCacheService ttlCounterAdministrationCacheService,
+            EntityAnalysisModelTtlCounter ttlCounterWithinLoop, ExpiredTtlCounterEntry expiredTtlCounterEntry,
+            ConcurrentBag<CacheTtlCounterEntryRemovalBatchEntry> cacheTtlCounterEntryRemovalBatchEntryList,
+            CacheTtlCounterEntryRemovalBatch cacheTtlCounterEntryRemovalBatch)
+        {
+            var revisedCount = await ttlCounterAdministrationCacheService
+                .CacheServiceDecrementTtlCounterAsync(ttlCounterWithinLoop, expiredTtlCounterEntry.DataValue,
+                    expiredTtlCounterEntry.Value).ConfigureAwait(false);
+
+            await ttlCounterAdministrationCacheService.CacheServiceDeleteTtlCounterEntryAsync(
+                entityAnalysisModel.Services.CacheService.CacheTtlCounterEntryRepository, ttlCounterWithinLoop,
+                expiredTtlCounterEntry.DataValue,
                 expiredTtlCounterEntry.ReferenceDate).ConfigureAwait(false);
 
             cacheTtlCounterEntryRemovalBatchEntryList.Add(new CacheTtlCounterEntryRemovalBatchEntry
             {
                 CacheTtlCounterEntryRemovalBatchId = cacheTtlCounterEntryRemovalBatch.Id,
-                Value = expiredTtlCounterEntry.DataName,
+                Value = expiredTtlCounterEntry.DataValue,
                 DecrementCount = expiredTtlCounterEntry.Value,
                 RevisedCount = revisedCount,
                 ReferenceDate = expiredTtlCounterEntry.ReferenceDate
             });
         }
 
-        private static List<CacheTtlCounterEntryRemovalBatchResponseTime> AggregateResponseTimesForBulkInsert(TimedTaskResult[] tasks, CacheTtlCounterEntryRemovalBatch cacheTtlCounterEntryRemovalBatch)
+        internal static List<CacheTtlCounterEntryRemovalBatchResponseTime> AggregateResponseTimesForBulkInsert(
+            TimedTaskResult[] tasks, CacheTtlCounterEntryRemovalBatch cacheTtlCounterEntryRemovalBatch)
         {
-            var groupByComputeTime = tasks.GroupBy(g => g.TaskType).Select(s => new CacheTtlCounterEntryRemovalBatchResponseTime
-            {
-                TaskTypeId = (int)s.Key,
-                ResponseTime = s.Sum(a => a.ComputeTime),
-                CacheTtlCounterEntryRemovalBatchId = cacheTtlCounterEntryRemovalBatch.Id
-            }).ToList();
+            var groupByComputeTime = tasks.GroupBy(g => g.TaskType).Select(s =>
+                new CacheTtlCounterEntryRemovalBatchResponseTime
+                {
+                    TaskTypeId = (int)s.Key,
+                    ResponseTime = s.Sum(a => a.ComputeTime),
+                    CacheTtlCounterEntryRemovalBatchId = cacheTtlCounterEntryRemovalBatch.Id
+                }).ToList();
             return groupByComputeTime;
         }
     }

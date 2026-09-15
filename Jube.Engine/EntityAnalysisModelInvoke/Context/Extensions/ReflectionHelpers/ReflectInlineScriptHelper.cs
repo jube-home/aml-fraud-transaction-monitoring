@@ -11,16 +11,20 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Threading.Tasks;
+using Jube.Data.Poco;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers
 {
-    using System;
-    using System.Threading.Tasks;
-    using Data.Poco;
-    using EntityAnalysisModelInlineScript=EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
+    using EntityAnalysisModelInlineScript =
+        Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
 
     public static class ReflectInlineScriptHelper
     {
-        public static async Task<bool> ExecuteAsync(EntityAnalysisModelInlineScript.EntityAnalysisModelInlineScript entityAnalysisModelInlineScript, Context context)
+        public static async Task<bool> ExecuteAsync(
+            EntityAnalysisModelInlineScript.EntityAnalysisModelInlineScript entityAnalysisModelInlineScript,
+            Context context)
         {
             var instance = entityAnalysisModelInlineScript.ActivatorDelegate();
 
@@ -33,8 +37,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
             }
             catch (Exception ex)
             {
-                context.Log.Info($"Error executing Inline Script {entityAnalysisModelInlineScript.Id}:", ex);
-                return true;
+                context.Log.Error($"Error executing Inline Script {entityAnalysisModelInlineScript.Id}:", ex);
+                return false;
             }
 
             foreach (var prop in entityAnalysisModelInlineScript.EntityAnalysisModelInlineScriptPropertyAttributes)
@@ -75,7 +79,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                     {
                         case string s:
                             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(prop.Key, s);
-                            context.EntityAnalysisModel.ResolveDictionaryValueForField(context.EntityAnalysisModelInstanceEntryPayload, context.Log, prop.Key);
+                            context.EntityAnalysisModel.ResolveDictionaryValueForField(
+                                context.EntityAnalysisModelInstanceEntryPayload, context.Log, prop.Key);
 
                             if (prop.Value.ReportTable)
                             {
@@ -85,7 +90,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                                     Key = prop.Key,
                                     KeyValueString = value == null ? null : Convert.ToString(value),
                                     EntityAnalysisModelInstanceEntryGuid =
-                                        context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
+                                        context.EntityAnalysisModelInstanceEntryPayload
+                                            .EntityAnalysisModelInstanceEntryGuid
                                 });
                             }
 
@@ -102,7 +108,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                                     Key = prop.Key,
                                     KeyValueInteger = i,
                                     EntityAnalysisModelInstanceEntryGuid =
-                                        context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
+                                        context.EntityAnalysisModelInstanceEntryPayload
+                                            .EntityAnalysisModelInstanceEntryGuid
                                 });
                             }
 
@@ -119,7 +126,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                                     Key = prop.Key,
                                     KeyValueBoolean = b,
                                     EntityAnalysisModelInstanceEntryGuid =
-                                        context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
+                                        context.EntityAnalysisModelInstanceEntryPayload
+                                            .EntityAnalysisModelInstanceEntryGuid
                                 });
                             }
 
@@ -136,7 +144,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                                     Key = prop.Key,
                                     KeyValueFloat = d,
                                     EntityAnalysisModelInstanceEntryGuid =
-                                        context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
+                                        context.EntityAnalysisModelInstanceEntryPayload
+                                            .EntityAnalysisModelInstanceEntryGuid
                                 });
                             }
 
@@ -153,7 +162,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                                     Key = prop.Key,
                                     KeyValueDate = dt,
                                     EntityAnalysisModelInstanceEntryGuid =
-                                        context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
+                                        context.EntityAnalysisModelInstanceEntryPayload
+                                            .EntityAnalysisModelInstanceEntryGuid
                                 });
                             }
 
@@ -170,7 +180,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                                     Key = prop.Key,
                                     KeyValueString = value.ToString(),
                                     EntityAnalysisModelInstanceEntryGuid =
-                                        context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
+                                        context.EntityAnalysisModelInstanceEntryPayload
+                                            .EntityAnalysisModelInstanceEntryGuid
                                 });
                             }
 

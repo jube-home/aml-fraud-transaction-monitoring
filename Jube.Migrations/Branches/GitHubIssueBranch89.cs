@@ -11,10 +11,10 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using FluentMigrator;
+
 namespace Jube.Migrations.Branches
 {
-    using FluentMigrator;
-
     [Migration(20251113124600)]
     public class GitHubIssueBranch89 : Migration
     {
@@ -23,7 +23,7 @@ namespace Jube.Migrations.Branches
             AddNewColumnsToArchive();
             AddNewColumnsToArchiveKey();
             AddNewColumnToEntityAnalysisAsynchronousQueueBalance();
-            
+
             CreateCacheTtlCounterEntryRemovalBatch();
             CreateCacheTtlCounterEntryRemovalBatchEntry();
             CreateCacheTtlCounterEntryRemovalBatchResponseTime();
@@ -36,6 +36,7 @@ namespace Jube.Migrations.Branches
             CreateArchiveVersion();
             CreateArchiveKeyVersion();
         }
+
         private void AddNewColumnToEntityAnalysisAsynchronousQueueBalance()
         {
             Alter.Table("EntityAnalysisAsynchronousQueueBalance").AddColumn("CaseCreation").AsInt32().Nullable();
@@ -118,7 +119,8 @@ namespace Jube.Migrations.Branches
             Create.Index().OnTable("CachePayloadLatestRemovalBatchResponseTime")
                 .OnColumn("CachePayloadLatestRemovalBatchId").Ascending();
 
-            Create.ForeignKey().FromTable("CachePayloadLatestRemovalBatchResponseTime").ForeignColumn("CachePayloadLatestRemovalBatchId")
+            Create.ForeignKey().FromTable("CachePayloadLatestRemovalBatchResponseTime")
+                .ForeignColumn("CachePayloadLatestRemovalBatchId")
                 .ToTable("CachePayloadLatestRemovalBatch").PrimaryColumn("Id");
         }
 
@@ -133,8 +135,9 @@ namespace Jube.Migrations.Branches
             Create.Index().OnTable("CachePayloadLatestRemovalBatchEntry")
                 .OnColumn("CachePayloadLatestRemovalBatchId").Ascending();
 
-            Create.ForeignKey().FromTable("CachePayloadLatestRemovalBatchEntry").ForeignColumn("CachePayloadLatestRemovalBatchId")
-                .ToTable("CachePayloadRemovalBatch").PrimaryColumn("Id");
+            Create.ForeignKey().FromTable("CachePayloadLatestRemovalBatchEntry")
+                .ForeignColumn("CachePayloadLatestRemovalBatchId")
+                .ToTable("CachePayloadLatestRemovalBatch").PrimaryColumn("Id");
         }
 
         private void CreateCachePayloadLatestRemovalBatch()
@@ -165,7 +168,8 @@ namespace Jube.Migrations.Branches
             Create.Index().OnTable("CachePayloadRemovalBatchResponseTime")
                 .OnColumn("CachePayloadRemovalBatchId").Ascending();
 
-            Create.ForeignKey().FromTable("CachePayloadRemovalBatchResponseTime").ForeignColumn("CachePayloadRemovalBatchId")
+            Create.ForeignKey().FromTable("CachePayloadRemovalBatchResponseTime")
+                .ForeignColumn("CachePayloadRemovalBatchId")
                 .ToTable("CachePayloadRemovalBatch").PrimaryColumn("Id");
         }
 
@@ -211,7 +215,8 @@ namespace Jube.Migrations.Branches
             Create.Index().OnTable("CacheTtlCounterEntryRemovalBatchResponseTime")
                 .OnColumn("CacheTtlCounterEntryRemovalBatchId").Ascending();
 
-            Create.ForeignKey().FromTable("CacheTtlCounterEntryRemovalBatchResponseTime").ForeignColumn("CacheTtlCounterEntryRemovalBatchId")
+            Create.ForeignKey().FromTable("CacheTtlCounterEntryRemovalBatchResponseTime")
+                .ForeignColumn("CacheTtlCounterEntryRemovalBatchId")
                 .ToTable("CacheTtlCounterEntryRemovalBatch").PrimaryColumn("Id");
         }
 
@@ -228,7 +233,8 @@ namespace Jube.Migrations.Branches
             Create.Index().OnTable("CacheTtlCounterEntryRemovalBatchEntry")
                 .OnColumn("CacheTtlCounterEntryRemovalBatchId").Ascending();
 
-            Create.ForeignKey().FromTable("CacheTtlCounterEntryRemovalBatchEntry").ForeignColumn("CacheTtlCounterEntryRemovalBatchId")
+            Create.ForeignKey().FromTable("CacheTtlCounterEntryRemovalBatchEntry")
+                .ForeignColumn("CacheTtlCounterEntryRemovalBatchId")
                 .ToTable("CacheTtlCounterEntryRemovalBatch").PrimaryColumn("Id");
         }
 
@@ -250,7 +256,6 @@ namespace Jube.Migrations.Branches
 
         public override void Down()
         {
-
         }
     }
 }

@@ -11,28 +11,29 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Data.Repository;
+using Jube.Engine.Sanctions;
+using Jube.Engine.Sanctions.Models;
+using Microsoft.VisualBasic.FileIO;
+
 namespace Jube.Engine.BackgroundTasks.TaskStarters
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using Data.Context;
-    using Data.Poco;
-    using Data.Repository;
-    using Microsoft.VisualBasic.FileIO;
-    using Sanctions;
-    using Sanctions.Models;
-    using static System.Int32;
-    using SanctionEntry=Sanctions.Models.SanctionEntry;
+    using static Int32;
+    using SanctionEntry = Sanctions.Models.SanctionEntry;
 
-    public class SanctionsTaskStarter(Context context)
+    public class SanctionsTaskStarter(Context.Context context)
     {
-        private static readonly HttpClient Client = new HttpClient();
+        private static readonly HttpClient client = new();
+
         public async Task StartAsync()
         {
             try
@@ -55,8 +56,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         await LoadSanctionsFromFilesAsync(context, dbContext).ConfigureAwait(false);
                         context.Sanctions.SanctionsLoadedForStartup = true;
 
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
+                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
 
                         if (context.Services.Log.IsInfoEnabled)
                         {
@@ -64,23 +67,29 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                 "Sanctions Cache Loader: Has finished entries load,  close the database connection and is waiting.");
                         }
 
-                        await Task.Delay(Parse(context.Services.DynamicEnvironment.AppSettings("SanctionLoaderWait")), context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(Parse(context.Services.DynamicEnvironment.AppSettings("SanctionLoaderWait")),
+                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
+                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
 
                         throw;
                     }
                     catch (Exception ex)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
+                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
 
                         context.Services.Log.Error($"Sanctions Cache Loader: Error {ex}");
 
-                        await Task.Delay(Parse(context.Services.DynamicEnvironment.AppSettings("SanctionLoaderWait")), context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(Parse(context.Services.DynamicEnvironment.AppSettings("SanctionLoaderWait")),
+                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -94,7 +103,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
         }
 
-        private static async Task LoadSanctionsEntriesAsync(Context context, DbContext dbContext)
+        private static async Task LoadSanctionsEntriesAsync(Context.Context context, DbContext dbContext)
         {
             try
             {
@@ -106,7 +115,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         "Sanctions Cache Loader: Has instantiated the command object to return all Entries from the Sanctions Cache.");
                 }
 
-                var records = await repository.GetAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                var records = await repository.GetAsync(context.Services.TaskCoordinator.CancellationToken)
+                    .ConfigureAwait(false);
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
@@ -154,13 +164,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
         }
 
-        private static async Task LoadSanctionsFromFilesAsync(Context context, DbContext dbContext)
+        private static async Task LoadSanctionsFromFilesAsync(Context.Context context, DbContext dbContext)
         {
             try
             {
                 var sanctionEntriesSources = await GetSanctionsSourcesAsync(context, dbContext).ConfigureAwait(false);
 
-                if (context.Services.DynamicEnvironment.AppSettings("EnableSanctionLoader").Equals("True", StringComparison.OrdinalIgnoreCase))
+                if (context.Services.DynamicEnvironment.AppSettings("EnableSanctionLoader")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
                 {
                     var processSanctionEntriesSources = sanctionEntriesSources.ToList();
                     foreach (var processSanctionEntriesSource in processSanctionEntriesSources)
@@ -177,15 +188,20 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                                 try
                                 {
-                                    using var response = await Client.GetAsync(processSanctionEntriesSource.HttpLocation, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    using var response = await client
+                                        .GetAsync(processSanctionEntriesSource.HttpLocation,
+                                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                                     response.EnsureSuccessStatusCode();
 
-                                    var stream = await response.Content.ReadAsStreamAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    var stream = await response.Content
+                                        .ReadAsStreamAsync(context.Services.TaskCoordinator.CancellationToken)
+                                        .ConfigureAwait(false);
                                     await using var stream1 = stream.ConfigureAwait(false);
 
                                     if (context.Services.Log.IsInfoEnabled)
                                     {
-                                        context.Services.Log.Info($"Sanctions Loader: HTTP request successful for {processSanctionEntriesSource.HttpLocation}.");
+                                        context.Services.Log.Info(
+                                            $"Sanctions Loader: HTTP request successful for {processSanctionEntriesSource.HttpLocation}.");
                                     }
 
                                     using var tfp = new TextFieldParser(stream);
@@ -196,7 +212,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                                     if (context.Services.Log.IsInfoEnabled)
                                     {
-                                        context.Services.Log.Info("Sanctions Loader: Connection established, data downloaded, and opened with TextFieldParser.");
+                                        context.Services.Log.Info(
+                                            "Sanctions Loader: Connection established, data downloaded, and opened with TextFieldParser.");
                                     }
 
                                     var (result, inserted, revived, unchanged) = await ProcessTextFieldParserAsync(
@@ -204,10 +221,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                         processSanctionEntriesSource.Skip, import.Id).ConfigureAwait(false);
 
                                     var removedCount = await ReconcileSourceAsync(context, dbContext,
-                                        processSanctionEntriesSource.SanctionEntrySourceId, result.Hashes).ConfigureAwait(false);
+                                            processSanctionEntriesSource.SanctionEntrySourceId, result.Hashes)
+                                        .ConfigureAwait(false);
 
                                     await CompleteImportAsync(dbContext, import, result, inserted, revived, unchanged,
-                                        removedCount, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                            removedCount, context.Services.TaskCoordinator.CancellationToken)
+                                        .ConfigureAwait(false);
 
                                     if (context.Services.Log.IsInfoEnabled)
                                     {
@@ -247,7 +266,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                                             foreach (var fileWithinLoop in files)
                                             {
-                                                context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
+                                                context.Services.TaskCoordinator.CancellationToken
+                                                    .ThrowIfCancellationRequested();
 
                                                 try
                                                 {
@@ -264,8 +284,9 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                                                     var (result, fileInserted, fileRevived, fileUnchanged) =
                                                         await ProcessTextFieldParserAsync(context, dbContext, tfp,
-                                                            processSanctionEntriesSource,
-                                                            processSanctionEntriesSource.Skip, import.Id).ConfigureAwait(false);
+                                                                processSanctionEntriesSource,
+                                                                processSanctionEntriesSource.Skip, import.Id)
+                                                            .ConfigureAwait(false);
 
                                                     seenHashes.UnionWith(result.Hashes);
                                                     totalRows += result.TotalRows;
@@ -282,37 +303,44 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                                                     if (context.Services.Log.IsInfoEnabled)
                                                     {
-                                                        context.Services.Log.Info($"Sanctions Loader: Is about to delete {fileWithinLoop}.");
+                                                        context.Services.Log.Info(
+                                                            $"Sanctions Loader: Is about to delete {fileWithinLoop}.");
                                                     }
 
                                                     File.Delete(fileWithinLoop);
 
                                                     if (context.Services.Log.IsInfoEnabled)
                                                     {
-                                                        context.Services.Log.Info($"Sanctions Loader: Has deleted {fileWithinLoop}.");
+                                                        context.Services.Log.Info(
+                                                            $"Sanctions Loader: Has deleted {fileWithinLoop}.");
                                                     }
                                                 }
                                                 catch (Exception ex) when (ex is not OperationCanceledException)
                                                 {
                                                     if (context.Services.Log.IsInfoEnabled)
                                                     {
-                                                        context.Services.Log.Info($"Sanctions Loader: Error loading record {ex}");
+                                                        context.Services.Log.Info(
+                                                            $"Sanctions Loader: Error loading record {ex}");
                                                     }
                                                 }
                                             }
 
                                             var removedCount = await ReconcileSourceAsync(context, dbContext,
-                                                processSanctionEntriesSource.SanctionEntrySourceId, seenHashes).ConfigureAwait(false);
+                                                    processSanctionEntriesSource.SanctionEntrySourceId, seenHashes)
+                                                .ConfigureAwait(false);
 
                                             await CompleteImportAsync(dbContext, import,
-                                                new SanctionEntryFileImportResult(seenHashes, totalRows, rejectedRows),
-                                                inserted, revived, unchanged, removedCount,
-                                                context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                                    new SanctionEntryFileImportResult(seenHashes, totalRows,
+                                                        rejectedRows),
+                                                    inserted, revived, unchanged, removedCount,
+                                                    context.Services.TaskCoordinator.CancellationToken)
+                                                .ConfigureAwait(false);
                                         }
                                         catch (Exception ex) when (ex is not OperationCanceledException)
                                         {
                                             await FailImportAsync(dbContext, import, ex,
-                                                context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                                    context.Services.TaskCoordinator.CancellationToken)
+                                                .ConfigureAwait(false);
 
                                             throw;
                                         }
@@ -352,7 +380,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
         }
 
-        private static async Task<IEnumerable<SanctionEntriesSource>> GetSanctionsSourcesAsync(Context context, DbContext dbContext)
+        private static async Task<IEnumerable<SanctionEntriesSource>> GetSanctionsSourcesAsync(Context.Context context,
+            DbContext dbContext)
         {
             var sanctionEntriesSources = new List<SanctionEntriesSource>();
             try
@@ -365,7 +394,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         "Sanctions Cache Loader: Has instantiated the command object to return all Sources for the Sanctions Cache.");
                 }
 
-                var records = await repository.GetAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                var records = await repository.GetAsync(context.Services.TaskCoordinator.CancellationToken)
+                    .ConfigureAwait(false);
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
@@ -461,7 +491,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             return sanctionEntriesSources;
         }
 
-        private static async Task LoadSanctionsStopTokensAsync(Context context, DbContext dbContext)
+        private static async Task LoadSanctionsStopTokensAsync(Context.Context context, DbContext dbContext)
         {
             try
             {
@@ -488,7 +518,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                     try
                     {
-                        if (String.IsNullOrWhiteSpace(record.Token))
+                        if (string.IsNullOrWhiteSpace(record.Token))
                         {
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -519,7 +549,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
         }
 
-        private static async Task<int> ReconcileSourceAsync(Context context, DbContext dbContext,
+        private static async Task<int> ReconcileSourceAsync(Context.Context context, DbContext dbContext,
             int sanctionEntrySourceId, HashSet<string> seenHashes)
         {
             var repository = new SanctionsEntryRepository(dbContext);
@@ -577,7 +607,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         }
 
         private static async Task<(SanctionEntryFileImportResult Result, int Inserted, int Revived, int Unchanged)>
-            ProcessTextFieldParserAsync(Context context, DbContext dbContext, TextFieldParser tfp,
+            ProcessTextFieldParserAsync(Context.Context context, DbContext dbContext, TextFieldParser tfp,
                 SanctionEntriesSource processSanctionEntriesSource, int skip, int sanctionEntryImportId)
         {
             var repository = new SanctionsEntryRepository(dbContext);
@@ -619,7 +649,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     var sanctionEntry = new SanctionEntry
                     {
                         SanctionEntrySourceId = processSanctionEntriesSource.SanctionEntrySourceId,
-                        SanctionEntryReference = !String.IsNullOrEmpty(record.Reference) ? record.Reference : "NA",
+                        SanctionEntryReference = !string.IsNullOrEmpty(record.Reference) ? record.Reference : "NA",
                         SanctionElementValue = record.ElementValue
                             .Split([" "], StringSplitOptions.RemoveEmptyEntries)
                             .Select(SanctionEntryFileImporter.NormalizeElementValue)

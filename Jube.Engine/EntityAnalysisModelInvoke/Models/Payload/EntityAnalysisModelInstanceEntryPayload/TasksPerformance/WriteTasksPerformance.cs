@@ -21,7 +21,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
         public TaskPerformance CacheTtlCounterEntryUpsertAsync { get; set; }
         public TaskPerformance CacheTtlCounterEntryIncrementAsync { get; set; }
         public TaskPerformance CacheSanctionInsertAsync { get; set; }
-        public TaskPerformance CacheSanctionUpdateAsync { get; set; }
-        public TaskPerformance CachePayloadLatestInsertAsync { get; set; }
+        public TaskPerformance UpsertReferenceDateAsync { get; set; }
     }
 }

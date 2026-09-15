@@ -29,6 +29,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
+using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -63,12 +64,16 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             await using var dbContext = fx.GetDbContext();
 
             foreach (var id in createdInstanceIds)
+            {
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelReprocessingRuleInstance>()
                     .Where(w => w.Id == id).DeleteAsync();
+            }
 
             foreach (var id in createdReprocessingRuleIds)
+            {
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelReprocessingRule>().Where(w => w.Id == id)
                     .DeleteAsync();
+            }
 
             foreach (var modelId in createdModelIds)
             {
@@ -725,7 +730,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             await CreateParentReprocessingRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId);
-            
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 

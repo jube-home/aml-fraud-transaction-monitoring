@@ -11,17 +11,16 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using Jube.Data.Poco;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Extensions
 {
-
     namespace YourNamespace.Extensions
     {
-        using System;
-        using System.Collections.Generic;
-        using Data.Poco;
-        using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
-        using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-
         public static class ArchiveKeyExtensions
         {
             public static void AddArchiveKey(

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
 {
     public class Flags
@@ -22,6 +23,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public bool EnableRdbmsArchive { get; set; }
         public bool EnableActivationWatcher { get; set; }
         public bool EnableResponseElevationLimit { get; set; }
+        public bool EnableImplicitAsync { get; set; }
+        public int? ImplicitAsyncTimeoutMilliseconds { get; set; }
+        public bool EnableTrace { get; set; }
+        public bool EnableLogs { get; set; }
+        public bool EnableLogsInfo { get; set; }
+        public bool EnableLogsWarnThreshold { get; set; }
+        public int? LogsWarnThresholdMilliseconds { get; set; }
+        public bool EnableLogsInResponse { get; set; }
+        public bool EnableSampling { get; set; }
+        public double? SamplePercentage { get; set; }
         public string FallbackResponseElevationRedirect { get; set; }
     }
 }

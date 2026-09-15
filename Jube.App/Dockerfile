@@ -81,6 +81,11 @@ COPY --from=publish /app/publish .
 
 COPY --from=publish /app/publish/HealthCheck/ /app/HealthCheck/
 
-HEALTHCHECK CMD dotnet /app/HealthCheck/Jube.HealthCheck.dll || exit 1
+# Explicit cadence, matching Patroni's own HEALTHCHECK (Jube.Cluster/patroni/Dockerfile) elsewhere in this
+# cluster - without it Docker falls back to its engine defaults (interval=30s, timeout=30s, retries=3),
+# which is far slower to notice a wedged container than the 5s in-process timeout Jube.HealthCheck itself
+# already uses. start-period gives ASP.NET Core's own startup time before failures count against retries.
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 --start-period=30s \
+    CMD dotnet /app/HealthCheck/Jube.HealthCheck.dll || exit 1
 
 ENTRYPOINT ["dotnet", "Jube.App.dll"]

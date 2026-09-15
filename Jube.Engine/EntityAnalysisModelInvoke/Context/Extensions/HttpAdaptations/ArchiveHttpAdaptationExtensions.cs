@@ -11,17 +11,21 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Globalization;
+using Jube.Data.Poco;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.HttpAdaptations
 {
-    using System.Globalization;
-    using Data.Poco;
-    using EntityAnalysisModelHttpAdaptation=EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelHttpAdaptation;
+    using EntityAnalysisModelHttpAdaptation =
+        EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelHttpAdaptation;
 
     public static class ArchiveHttpAdaptationExtensions
     {
-        public static void ArchiveHttpAdaptation(this Context context, EntityAnalysisModelHttpAdaptation modelAdaptation)
+        public static void ArchiveHttpAdaptation(this Context context,
+            EntityAnalysisModelHttpAdaptation modelAdaptation)
         {
-            if (!modelAdaptation.ReportTable || context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
+            if (!modelAdaptation.ReportTable || context.EntityAnalysisModelInstanceEntryPayload
+                    .EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
             {
                 return;
             }
@@ -33,14 +37,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.HttpAdaptatio
                 ProcessingTypeId = 9,
                 Key = modelAdaptation.Name,
                 KeyValueFloat = adaptation.Value,
-                EntityAnalysisModelInstanceEntryGuid = context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
+                EntityAnalysisModelInstanceEntryGuid = context.EntityAnalysisModelInstanceEntryPayload
+                    .EntityAnalysisModelInstanceEntryGuid
             });
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is evaluating {modelAdaptation.Id} has archived the HTTP Adaptation response for {modelAdaptation.Name} with a Value of {adaptation.Value?.ToString(CultureInfo.InvariantCulture) ?? "null"} to the SQL report payload.");
-            }
+            context.TraceLog(
+                $"is evaluating {modelAdaptation.Id} and has archived the HTTP Adaptation response for {modelAdaptation.Name} with a value of {adaptation.Value?.ToString(CultureInfo.InvariantCulture) ?? "null"} to the SQL report payload.");
         }
     }
 }

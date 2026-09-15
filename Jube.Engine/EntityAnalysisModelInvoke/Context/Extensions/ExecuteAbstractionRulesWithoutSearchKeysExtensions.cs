@@ -11,93 +11,107 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using Jube.Data.Poco;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System.Diagnostics;
-    using System.Linq;
-    using Data.Poco;
-    using ReflectionHelpers;
-
     public static class ExecuteAbstractionRulesWithoutSearchKeysExtensions
     {
         public static Context ExecuteAbstractionRulesWithoutSearchKeys(this Context context)
         {
+            var stopwatch = Stopwatch.StartNew();
+            var items = new Dictionary<string, TaskPerformance>();
+
             foreach (var evaluateAbstractionRule in
                      from evaluateAbstractionRuleLinq in context.EntityAnalysisModel.Collections.ModelAbstractionRules
                      where !evaluateAbstractionRuleLinq.Search
                      select evaluateAbstractionRuleLinq)
             {
-                if (context.Log.IsInfoEnabled)
+                context.TraceLog(
+                    $"abstraction rule {evaluateAbstractionRule.Id} is being processed as a basic rule.");
+
+                var itemStopwatch = Stopwatch.StartNew();
+                var startBytes = GC.GetAllocatedBytesForCurrentThread();
+                try
                 {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} abstraction rule {evaluateAbstractionRule.Id} is being processed as a basic rule.");
-                }
+                    double abstractionValue;
 
-                double abstractionValue;
-
-                if (ReflectRuleHelper.Execute(evaluateAbstractionRule, context.EntityAnalysisModel, context.EntityAnalysisModelInstanceEntryPayload.Payload,
-                        context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log))
-                {
-                    abstractionValue = 1;
-
-                    if (context.Log.IsInfoEnabled)
+                    if (ReflectRuleHelper.Execute(evaluateAbstractionRule, context.EntityAnalysisModel,
+                            context.EntityAnalysisModelInstanceEntryPayload.Payload,
+                            context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log))
                     {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} abstraction rule {evaluateAbstractionRule.Id} has returned true and set abstraction value to {abstractionValue}.");
+                        abstractionValue = 1;
+
+                        context.TraceLog(
+                            $"abstraction rule {evaluateAbstractionRule.Id} has returned true and set abstraction value to {abstractionValue}.");
                     }
-                }
-                else
-                {
-                    abstractionValue = 0;
-
-                    if (context.Log.IsInfoEnabled)
+                    else
                     {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} abstraction rule {evaluateAbstractionRule.Id} has returned false and set abstraction value to {abstractionValue}.");
+                        abstractionValue = 0;
+
+                        context.TraceLog(
+                            $"abstraction rule {evaluateAbstractionRule.Id} has returned false and set abstraction value to {abstractionValue}.");
                     }
-                }
 
-                context.EntityAnalysisModelInstanceEntryPayload.Abstraction.Add(evaluateAbstractionRule.Name,
-                    abstractionValue);
+                    context.EntityAnalysisModelInstanceEntryPayload.Abstraction.Add(evaluateAbstractionRule.Name,
+                        abstractionValue);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is a basic abstraction rule {evaluateAbstractionRule.Id} added value {abstractionValue} to processing.");
-                }
+                    context.TraceLog(
+                        $"is a basic abstraction rule {evaluateAbstractionRule.Id} added value {abstractionValue} to processing.");
 
-                if (evaluateAbstractionRule.ReportTable)
-                {
-                    context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Add(new ArchiveKey
+                    if (evaluateAbstractionRule.ReportTable)
                     {
-                        ProcessingTypeId = 5,
-                        Key = evaluateAbstractionRule.Name,
-                        KeyValueFloat = abstractionValue,
-                        EntityAnalysisModelInstanceEntryGuid =
-                            context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
-                    });
+                        context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Add(new ArchiveKey
+                        {
+                            ProcessingTypeId = 5,
+                            Key = evaluateAbstractionRule.Name,
+                            KeyValueFloat = abstractionValue,
+                            EntityAnalysisModelInstanceEntryGuid =
+                                context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid
+                        });
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is a basic abstraction rule {evaluateAbstractionRule.Id} added value {abstractionValue} to report payload with a column name of {evaluateAbstractionRule.Name}.");
+                        context.TraceLog(
+                            $"is a basic abstraction rule {evaluateAbstractionRule.Id} added value {abstractionValue} to report payload with a column name of {evaluateAbstractionRule.Name}.");
                     }
-                }
 
-                if (context.Log.IsInfoEnabled)
+                    context.TraceLog($"finished basic abstraction rule {evaluateAbstractionRule.Id}.");
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} finished basic abstraction rule {evaluateAbstractionRule.Id}.");
+                    context.Log.Error(
+                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} abstraction rule {evaluateAbstractionRule.Id} has produced an error as {ex}.");
+                }
+                finally
+                {
+                    itemStopwatch.Stop();
+                    var allocated = GC.GetAllocatedBytesForCurrentThread() - startBytes;
+                    items[evaluateAbstractionRule.Name] = new TaskPerformance(
+                        (long)(itemStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                        Math.Max(allocated, 0));
                 }
             }
 
-            context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.ComputeTimes.ExecuteAbstractionRulesWithoutSearchKey = (int)(context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency);
+            stopwatch.Stop();
 
-            if (context.Log.IsInfoEnabled)
+            if (context.LogSampled)
             {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} Abstraction has concluded in {context.Stopwatch.ElapsedTicks * 1000000 / Stopwatch.Frequency} ns.");
+                var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                    new InvokeStagePerformance();
+
+                stages.AbstractionRulesWithoutSearchKeys = new StageTiming<TaskPerformance>
+                {
+                    DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
+                    Items = items
+                };
             }
+
+            context.TraceLog($"Abstraction has concluded.");
 
             return context;
         }

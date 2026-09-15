@@ -26,6 +26,9 @@ namespace Jube.Dto.EntityAnalysisModel
     [FormGroup("Response Elevation Limit", Order = 40, Collapsed = true)]
     [FormGroup("Activation Watcher", Order = 50, Collapsed = true)]
     [FormGroup("Archiving & Counters", Order = 60, Collapsed = true)]
+    [FormGroup("Implicit Async", Order = 70, Collapsed = true)]
+    [FormGroup("Trace", Order = 75, Collapsed = true)]
+    [FormGroup("Logs", Order = 76, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
     public class EntityAnalysisModelDto : IUpdated, IActivatable, ILockable, IGuidIdentified
     {
@@ -188,6 +191,107 @@ namespace Jube.Dto.EntityAnalysisModel
                      "sent is discarded.")]
         [FormField(Group = "Archiving & Counters", Order = 40, Widget = "switch", ReadOnly = true)]
         public bool EnableElasticsearchArchive { get; set; }
+
+        [Description("When true, a synchronous transaction invocation waits inline for the model to finish " +
+                     "processing, up to the configured timeout, before falling back to the same response shape " +
+                     "populated with whatever has been computed so far. The caller can then poll the callback " +
+                     "endpoint (/api/invoke/EntityAnalysisModel/Callback/{guid}) for the completed result.")]
+        [FormField(Group = "Implicit Async", Order = 10, Widget = "switch")]
+        [NewDefault(false)]
+        public bool EnableImplicitAsync { get; set; }
+
+        [Description("Number of milliseconds a synchronous invocation waits inline before falling back to an " +
+                     "in-progress snapshot of the response, when Implicit Async is enabled.")]
+        [FormField(Group = "Implicit Async", Order = 20, Widget = "number")]
+        [VisibleWhen(nameof(EnableImplicitAsync), true)]
+        [RequiredWhen(nameof(EnableImplicitAsync), true)]
+        [NewDefault(5000)]
+        public int ImplicitAsyncTimeoutMilliseconds { get; set; }
+
+        [Description("When true, invocation responses for this model echo the full per-stage and per-rule " +
+                     "performance breakdown (Stages) into the direct HTTP response, in addition to the " +
+                     "always-present task wrapper stats. This breakdown is always captured to the Archive " +
+                     "payload regardless of this switch -- Enable Response Trace only controls whether the " +
+                     "already-captured detail is also returned directly, since it can be large for models with " +
+                     "many rules.")]
+        [FormField(Group = "Response Trace", Order = 10, Widget = "switch")]
+        [NewDefault(false)]
+        public bool EnableTrace { get; set; }
+
+        [Description("Master switch for this model's invocation log capture -- Enable Logs: Info and Enable " +
+                     "Logs: Warn Threshold below (and anything added under this group in future) only capture " +
+                     "when this is also on. Turning it off disables both immediately without losing their own " +
+                     "settings underneath, so it doubles as a single, unambiguous kill switch. This does not " +
+                     "affect log4net's own INFO logging, which remains controlled separately by the logging " +
+                     "configuration.")]
+        [FormField(Group = "Logs", Order = 5, Widget = "switch")]
+        [NewDefault(false)]
+        public bool EnableLogs { get; set; }
+
+        [Description("Captures the same step-by-step trace normally only visible via log4net INFO logging into a " +
+                     "logs array on the invocation payload instead, for a sampled subset of invocations (see " +
+                     "Enable Sampling/Sample Percentage below) -- lets full step-by-step detail run continuously " +
+                     "in production at a small fraction of its normal disk/CPU/payload-size cost. Independent of " +
+                     "Enable Logs: Warn Threshold below -- the two are separate monitors, not mutually exclusive " +
+                     "levels of one switch, and can be on together, individually, or not at all. Each captured " +
+                     "entry records which of the two caused it (CapturedByInfoSampling/CapturedByWarnThreshold), " +
+                     "so a trace point captured by both at once is still reportable as either. This does not " +
+                     "affect log4net's own INFO logging, which remains controlled separately by the logging " +
+                     "configuration.")]
+        [FormField(Group = "Logs", Order = 10, Widget = "switch")]
+        [VisibleWhen(nameof(EnableLogs), true)]
+        [NewDefault(false)]
+        public bool EnableLogsInfo { get; set; }
+
+        [Description("When true, only a random sample of invocations actually have Enable Logs: Info's trace " +
+                     "points captured (see Sample Percentage) rather than every one -- lets Info-level detail " +
+                     "run continuously in production at a small fraction of its normal disk/CPU/payload-size " +
+                     "cost. Has no effect on Enable Logs: Warn Threshold, which always evaluates every " +
+                     "invocation regardless of this switch, since sampling it would risk missing the very " +
+                     "breaches it exists to catch.")]
+        [FormField(Group = "Logs", Order = 15, Widget = "switch")]
+        [VisibleWhen(nameof(EnableLogsInfo), true)]
+        [NewDefault(false)]
+        public bool EnableSampling { get; set; }
+
+        [Description("Percentage of invocations captured at Info level when Enable Sampling is on, e.g. 0.02 " +
+                     "means roughly 1 in 5000 invocations. Also gates the always-on Response Time Pipeline and " +
+                     "Task Performance Counter capture for this model, so a report can correlate sampled logs " +
+                     "with the timing/memory data captured for the same invocations. Sampling volume is itself " +
+                     "an important performance signal, reported independently via the jube.engine.logs.info.count " +
+                     "metric.")]
+        [FormField(Group = "Logs", Order = 16, Widget = "slider")]
+        [VisibleWhen(nameof(EnableLogsInfo), true)]
+        [RequiredWhen(nameof(EnableSampling), true)]
+        [NewDefault(100)]
+        public double SamplePercentage { get; set; }
+
+        [Description("Captures a trace point into the same logs array as Enable Logs: Info, but only when the " +
+                     "gap since the previous captured entry exceeds Warn Threshold Milliseconds below -- an " +
+                     "always-on anomaly watch (every invocation, never sampled) rather than a representative " +
+                     "sample. Independent of Enable Logs: Info above -- the two are separate monitors that can " +
+                     "be on together, individually, or not at all.")]
+        [FormField(Group = "Logs", Order = 18, Widget = "switch")]
+        [VisibleWhen(nameof(EnableLogs), true)]
+        [NewDefault(false)]
+        public bool EnableLogsWarnThreshold { get; set; }
+
+        [Description("Milliseconds a trace point's gap since the last captured entry must exceed to be " +
+                     "captured, when Enable Logs: Warn Threshold is on.")]
+        [FormField(Group = "Logs", Order = 20, Widget = "slider")]
+        [VisibleWhen(nameof(EnableLogsWarnThreshold), true)]
+        [RequiredWhen(nameof(EnableLogsWarnThreshold), true)]
+        [NewDefault(250)]
+        public int LogsWarnThresholdMilliseconds { get; set; }
+
+        [Description("When true, invocation responses for this model include the captured logs array, in " +
+                     "addition to it always being included in the Archive payload whenever either Enable Logs: " +
+                     "Info or Enable Logs: Warn Threshold is on. Has no effect when both are off, since nothing " +
+                     "is ever captured to include.")]
+        [FormField(Group = "Logs", Order = 30, Widget = "switch")]
+        [VisibleWhen(nameof(EnableLogs), true)]
+        [NewDefault(false)]
+        public bool EnableLogsInResponse { get; set; }
 
         [Description("When true, the model participates in transaction invocation and rule synchronisation.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]

@@ -11,29 +11,30 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Globalization;
+using System.Threading.Tasks;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+using Jube.HttpAdaptationProtocol;
+using Jube.HttpAdaptationProtocol.Parsing;
+using Newtonsoft.Json;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.HttpAdaptations
 {
-    using System.Globalization;
-    using System.Threading.Tasks;
-    using HttpAdaptationProtocol;
-    using HttpAdaptationProtocol.Parsing;
-    using Newtonsoft.Json;
-    using EntityAnalysisModelHttpAdaptation=EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelHttpAdaptation;
+    using EntityAnalysisModelHttpAdaptation = EntityAnalysisModelHttpAdaptation;
 
     public static class RecallHttpAdaptationEndpointExtensions
     {
         public static async Task<Adaptation> RecallHttpEndpointAsync(this Context context,
             EntityAnalysisModelHttpAdaptation modelAdaptation, JsonSerializerSettings jsonSerializerSettings)
         {
-            var rawBody = await modelAdaptation.PostAsync(context.EntityAnalysisModelInstanceEntryPayload, jsonSerializerSettings, context.Log).ConfigureAwait(false);
+            var rawBody = await modelAdaptation
+                .PostAsync(context.EntityAnalysisModelInstanceEntryPayload, jsonSerializerSettings, context.Log)
+                .ConfigureAwait(false);
 
             var adaptation = rawBody.ParseAdaptationResponse(context.Log);
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is evaluating {modelAdaptation.Id} has called the HTTP Adaptation endpoint with a Value of {adaptation.Value?.ToString(CultureInfo.InvariantCulture) ?? "null"} and Error of {adaptation.Error ?? "none"}.");
-            }
+            context.TraceLog(
+                $"is evaluating {modelAdaptation.Id} and has called the HTTP Adaptation endpoint with a value of {adaptation.Value?.ToString(CultureInfo.InvariantCulture) ?? "null"} and error of {adaptation.Error ?? "none"}.");
 
             return adaptation;
         }

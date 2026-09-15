@@ -13,6 +13,9 @@
 # Local dev test settings (DB-backed Jube.Tests connection string) -- machine-specific, never committed
 .runsettings
 
+# Local docker-compose secrets -- machine-specific, never committed
+.env
+
 # User-specific files
 *.rsuser
 *.suo
@@ -38,8 +41,6 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
-[Ll]og/
-[Ll]ogs/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

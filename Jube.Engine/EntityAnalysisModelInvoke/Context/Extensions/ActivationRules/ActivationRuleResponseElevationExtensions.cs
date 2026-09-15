@@ -11,57 +11,47 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Threading;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules
 {
-    using System;
-    using System.Threading;
-    using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-
     public static class ActivationRuleResponseElevationExtensions
     {
         public static void ProcessResponseElevation(this Context context,
             EntityAnalysisModelActivationRule evaluateActivationRule, ref double responseElevationHighWaterMark,
             bool suppressed)
         {
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                    $"and model {context.EntityAnalysisModel.Instance.Id} will begin processing of response elevation for activation " +
-                    $"rule {evaluateActivationRule.Id}. " +
-                    $"Current high water mark on response elevation is {responseElevationHighWaterMark}.");
-            }
+            var startingHighWaterMark = responseElevationHighWaterMark;
+            context.TraceLog(
+                $"will begin processing of response elevation for activation " +
+                $"rule {evaluateActivationRule.Id}. " +
+                $"Current high water mark on response elevation is {startingHighWaterMark}.");
 
             if (suppressed || !evaluateActivationRule.EnableResponseElevation)
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} response elevation for activation rule {evaluateActivationRule.Id} is suppressed or disabled and will not be evaluated.");
-                }
+                context.TraceLog(
+                    $"response elevation for activation rule {evaluateActivationRule.Id} is suppressed or disabled and will not be evaluated.");
 
                 return;
             }
 
             if (responseElevationHighWaterMark > evaluateActivationRule.ResponseElevation)
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} response elevation for activation rule {evaluateActivationRule.Id} is less than the current largest Response Elevation {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation} which is {responseElevationHighWaterMark} and will not be processed.");
-                }
+                var unchangedHighWaterMark = responseElevationHighWaterMark;
+                context.TraceLog(
+                    $"response elevation for activation rule {evaluateActivationRule.Id} is less than the current largest Response Elevation {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation} which is {unchangedHighWaterMark} and will not be processed.");
 
                 return;
             }
 
             responseElevationHighWaterMark = evaluateActivationRule.ResponseElevation;
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} response elevation for activation rule {evaluateActivationRule.Id} is the current largest Response Elevation {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation} but is less than the new value of {responseElevationHighWaterMark} so it will be elevated.  Will be tested against certain other model constraints.");
-            }
+            var updatedHighWaterMark = responseElevationHighWaterMark;
+            context.TraceLog(
+                $"response elevation for activation rule {evaluateActivationRule.Id} is the current largest Response Elevation {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation} but is less than the new value of {updatedHighWaterMark} so it will be elevated. Will be tested against certain other model constraints.");
 
             if (responseElevationHighWaterMark > context.EntityAnalysisModel.Counters.MaxResponseElevation)
             {
@@ -70,45 +60,36 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
                 Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ResponseElevationValueLimitCounter);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} the response elevation exceeds the maximum allowed in the model of {context.EntityAnalysisModel.Counters.MaxResponseElevation}, so has been truncated to {context.EntityAnalysisModel.Counters.MaxResponseElevation} and the Response Elevation Value Limit Counter incremented.");
-                }
+                context.TraceLog(
+                    $"the response elevation exceeds the maximum allowed in the model of {context.EntityAnalysisModel.Counters.MaxResponseElevation}, so has been truncated to {context.EntityAnalysisModel.Counters.MaxResponseElevation} and the Response Elevation Value Limit Counter incremented.");
             }
             else
             {
-                if (responseElevationHighWaterMark > context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit)
+                if (responseElevationHighWaterMark >
+                    context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit)
                 {
                     context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation.Value =
                         context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit;
 
-                    Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ResponseElevationFrequencyLimitCounter);
+                    Interlocked.Increment(ref context.EntityAnalysisModel.Counters
+                        .ResponseElevationFrequencyLimitCounter);
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} the response elevation exceeds the maximum allowed in the gateway rule of {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit}, so has been truncated and the Response Elevation Value Gateway Limit counter incremented.");
-                    }
+                    context.TraceLog(
+                        $"the response elevation exceeds the maximum allowed in the gateway rule of {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevationLimit}, so has been truncated and the Response Elevation Value Gateway Limit counter incremented.");
                 }
                 else
                 {
                     context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation.Value =
                         responseElevationHighWaterMark;
 
-                    if (context.Log.IsInfoEnabled)
-                    {
-                        context.Log.Info(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} the response elevation has tested the limits and the response elevation is being carried forward as {responseElevationHighWaterMark}.");
-                    }
+                    var carriedForwardHighWaterMark = responseElevationHighWaterMark;
+                    context.TraceLog(
+                        $"the response elevation has tested the limits and the response elevation is being carried forward as {carriedForwardHighWaterMark}.");
                 }
             }
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} response elevation for activation rule {evaluateActivationRule.Id} is being tested against the current limits and cap to zero if exceeded.");
-            }
+            context.TraceLog(
+                $"response elevation for activation rule {evaluateActivationRule.Id} is being tested against the current limits and cap to zero if exceeded.");
 
             context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation.Content =
                 evaluateActivationRule.ResponseElevationContent;
@@ -134,11 +115,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation.BackColor =
                 evaluateActivationRule.ResponseElevationBackColor;
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} response elevation for activation rule {evaluateActivationRule.Id} updated the response elevation to {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation}.");
-            }
+            context.TraceLog(
+                $"response elevation for activation rule {evaluateActivationRule.Id} updated the response elevation to {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation}.");
 
             if (context.EntityAnalysisModel.Flags.EnableResponseElevationLimit)
             {
@@ -148,19 +126,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                     Value = context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation.Value
                 });
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has noted the response elevation date on the counter queue. There are {context.EntityAnalysisModel.ConcurrentQueues.ActivationWatcherCountJournal.Count} in queue.");
-                }
+                context.TraceLog(
+                    $"has noted the response elevation date on the counter queue. There are {context.EntityAnalysisModel.ConcurrentQueues.ActivationWatcherCountJournal.Count} in queue.");
             }
             else
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} does not have response elevation limit enabled,  so has not noted the response elevation date.");
-                }
+                context.TraceLog(
+                    $"does not have response elevation limit enabled, so has not noted the response elevation date.");
             }
         }
     }

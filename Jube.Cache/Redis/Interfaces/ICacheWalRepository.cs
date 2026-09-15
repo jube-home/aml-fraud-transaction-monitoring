@@ -15,7 +15,12 @@ namespace Jube.Cache.Redis.Interfaces
 {
     public interface ICacheWalRepository
     {
-        Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, Guid entityAnalysisModelInstanceEntryGuid, string node, byte[] bytes);
-        Task FlushWalAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string node, Guid[] entityAnalysisModelInstanceEntryGuids);
+        Task InsertAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, Guid entityAnalysisModelInstanceEntryGuid,
+            string node, byte[] bytes);
+
+        Task FlushWalAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string node,
+            Guid[] entityAnalysisModelInstanceEntryGuids);
+
+        Task<long> GetWalSizeAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, string node);
     }
 }

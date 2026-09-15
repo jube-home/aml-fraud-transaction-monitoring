@@ -11,14 +11,19 @@
  * see <https://www.gnu.org/licenses/>.
  *@
 @page
-@model Jube.App.Pages.Administration.EntityAnalysisModelProcessingCounter
+@model EntityAnalysisModelProcessingCounter
 @{
     Layout = "Shared/_Layout";
 }
+
 @section Scripts
 {
+    <script src="/js/GridCsvExport.js"></script>
+    <script src="/js/GridStatisticsTable.js"></script>
     <script src="/js/Administration/EntityAnalysisModelProcessingCounter.js"></script>
 }
+
 <div>
     <div id="grid"></div>
+    <div id="statistics"></div>
 </div>

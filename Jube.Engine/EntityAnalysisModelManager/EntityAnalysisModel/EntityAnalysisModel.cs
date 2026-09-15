@@ -13,60 +13,30 @@
 
 // ReSharper disable CollectionNeverUpdated.Global
 
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ResponseTimePipelineCounters;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.StagePerformanceCounters;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.TaskPerformanceCounters;
+using Jube.Engine.Helpers;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel
 {
-    using Jube.Engine.Helpers;
-    using Models;
-
     public class EntityAnalysisModel
     {
         public bool Started { get; set; }
-
         public JsonSerializationHelper JsonSerializationHelper { get; init; }
-
-        public Instance Instance
-        {
-            get;
-        } = new Instance();
-
-        public Services Services
-        {
-            get;
-        } = new Services();
-
-        public Flags Flags
-        {
-            get;
-        } = new Flags();
-
-        public Collections Collections
-        {
-            get;
-        } = new Collections();
-
-        public Dependencies Dependencies
-        {
-            get;
-        } = new Dependencies();
-
-        public ConcurrentQueues ConcurrentQueues
-        {
-            get;
-        } = new ConcurrentQueues();
-
-        public Counters Counters
-        {
-            get;
-        } = new Counters();
-
-        public Cache Cache
-        {
-            get;
-        } = new Cache();
-
-        public References References
-        {
-            get;
-        } = new References();
+        public Instance Instance { get; } = new();
+        public Services Services { get; } = new();
+        public Flags Flags { get; } = new();
+        public Collections Collections { get; } = new();
+        public Dependencies Dependencies { get; } = new();
+        public ConcurrentQueues ConcurrentQueues { get; } = new();
+        public Counters Counters { get; } = new();
+        public StagePerformanceCounters StagePerformanceCounters { get; } = new();
+        public StagePerformanceCounters ArchiverStagePerformanceCounters { get; } = new();
+        public ResponseTimePipelineCounters ResponseTimePipelineCounters { get; } = new();
+        public TaskPerformanceCounters TaskPerformanceCounters { get; } = new();
+        public Models.Cache Cache { get; } = new();
+        public References References { get; } = new();
     }
 }

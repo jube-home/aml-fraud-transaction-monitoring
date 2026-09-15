@@ -174,6 +174,7 @@ Build the images from source:
 ```bash
 docker build --no-cache -t jube.patroni:<date> .
 docker build --no-cache -f Jube.App/Dockerfile -t jube.app:<date> .
+docker build --no-cache -f Jube.Monitoring/Dockerfile -t jube.monitoring:<date> .
 ```
 
 Save each image to a tar file, collected under an `images/` directory at the root of this repository:
@@ -181,6 +182,7 @@ Save each image to a tar file, collected under an `images/` directory at the roo
 ```bash
 docker save -o images/jube.patroni:<date>.tar jube.patroni:<date>
 docker save -o images/jube.app:<date>.tar jube.app:<date>
+docker save -o images/jube.monitoring:<date>.tar jube.monitoring:<date>
 docker save -o images/redis.tar redis:7-alpine
 docker save -o images/etcd.tar quay.io/coreos/etcd:v3.5.3
 docker save -o images/haproxy.tar haproxy:2.8
@@ -300,6 +302,7 @@ From the cluster directory, load images **on every host**:
 ```bash
 docker load -i images/jube.patroni:<date>.tar
 docker load -i images/jube.app:<date>.tar
+docker load -i images/jube.monitoring:<date>.tar
 docker load -i images/redis.tar
 docker load -i images/etcd.tar
 docker load -i images/haproxy.tar
@@ -393,6 +396,8 @@ Create the `.env` file the compose file reads image tags and zone assignments fr
 cat <<EOF > .env
 JUBE_IMAGE=jube.app:<date>
 PATRONI_IMAGE=jube.patroni:<date>
+JUBE_MONITORING_IMAGE=jube.monitoring:<date>
+JUBE_OTEL_LISTENER_IMAGE=jube.opentelemetrylistener:<date>
 CRITICAL_HOST_1=host1
 CRITICAL_HOST_2=host1
 CRITICAL_HOST_3=host1
@@ -615,6 +620,63 @@ docker service update --force jube-cluster_<service>
 docker service update --force --image <image>:latest jube-cluster_<service>
 ```
 
+## Changing a Postgres Parameter on an Already-Bootstrapped Cluster
+
+Editing `bootstrap.dcs.postgresql.parameters` in `patroni/patroni{1,2,3,4}.yml` and redeploying the image does
+**nothing** on a cluster that already exists. Patroni's container entrypoint just execs
+`patroni /etc/patroni.yml` - there is no reconciliation step anywhere in this repo that pushes file changes into
+the DCS. Patroni only ever reads `bootstrap:` once, the very first time it initialises a brand-new cluster in
+etcd; every later container start reads the config already stored in etcd instead and ignores the file's
+`bootstrap` section entirely. Editing these files is still correct and worth keeping in sync - it is what a
+future from-scratch bootstrap (disaster recovery, a new environment) will use - it just isn't how you change a
+parameter on the cluster you're already running.
+
+For that, push the change into the DCS directly with `patronictl edit-config`, from any running Patroni
+container:
+
+```bash
+# -p is shorthand for postgresql.parameters.<key>=<value>; repeat it per parameter.
+# --force skips the interactive confirmation prompt.
+docker exec -it $(docker ps -q -f name=patroni1) \
+    patronictl -c /etc/patroni.yml edit-config \
+    -p shared_preload_libraries=pg_stat_statements \
+    -p pg_stat_statements.track=all \
+    -p pg_stat_statements.max=10000 \
+    --force postgres-cluster
+```
+
+Confirm it landed and see which members now need a restart to actually pick it up:
+
+```bash
+docker exec -it $(docker ps -q -f name=patroni1) patronictl -c /etc/patroni.yml list postgres-cluster
+```
+
+`shared_preload_libraries` is postmaster-context - Patroni marks every member "pending restart" but keeps serving
+traffic on the old value until each is actually restarted. Restart replicas first, one at a time, and the current
+leader last and deliberately - restarting the leader forces a failover:
+
+```bash
+docker exec -it $(docker ps -q -f name=patroni1) patronictl -c /etc/patroni.yml restart postgres-cluster <replica-member>
+# ...repeat for every replica, then finally:
+docker exec -it $(docker ps -q -f name=patroni1) patronictl -c /etc/patroni.yml restart postgres-cluster <leader-member>
+```
+
+Verify the live value once every member is back:
+
+```bash
+docker exec -it $(docker ps -q -f name=patroni1) su-exec postgres psql -U postgres -c "SHOW shared_preload_libraries;"
+```
+
+Ordering trap: `CREATE EXTENSION IF NOT EXISTS pg_stat_statements;` alone would **not** catch a missed restart -
+it succeeds either way, since it only registers catalog objects; the underlying shared-memory hook it actually
+needs is only wired up at postmaster start via `shared_preload_libraries`, so without it you'd get a silently dead
+extension and a confusing failure later, the first time something queries the view. The migration
+(`AddImplicitAsyncRecallAndTimeoutFeatures`) guards against exactly this: its very first statement checks
+`current_setting('shared_preload_libraries')` and raises an explicit error if `pg_stat_statements` isn't in it,
+before anything else in that migration runs. So if `jube-jobs` reaches this migration before the rolling restart
+above has happened, the whole migration fails loudly and cleanly instead - do the `edit-config` + rolling restart
+first, and only then (re)deploy or let `jube-jobs` pick up the pending migration.
+
 ## Full Reset of Corrupted Swarm State
 
 ```bash
@@ -628,88 +690,6 @@ docker swarm init --advertise-addr <node1-ip>
 docker stack deploy -c docker-compose.yml jube-cluster
 ```
 
-## Monitoring Dashboards
-
-Two operational dashboards are deployed alongside the cluster - a container log viewer and an uptime monitor - both
-defined in `docker-compose.yml`:
-
-```yaml
-  dozzle:
-    image: amir20/dozzle:latest
-    command:
-      - --auth-provider
-      - simple
-    environment:
-      - DOZZLE_MODE=swarm
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./dozzle/users.yml:/data/users.yml:ro
-    ports:
-      - "8080:8080"
-    networks:
-      jube-cluster:
-        aliases:
-          - dozzle
-    deploy:
-      mode: global
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      placement:
-        constraints:
-          - node.role == manager
-
-  uptime-kuma:
-    image: louislam/uptime-kuma:1
-    volumes:
-      - kuma_data:/app/data
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    ports:
-      - "3001:3001"
-    networks:
-      jube-cluster:
-        aliases:
-          - uptime-kuma
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-```
-
-A few choices here are worth understanding rather than copying blind:
-
-* **`mode: global` with a manager-only constraint on Dozzle**, rather than a fixed replica count, deploys one Dozzle
-  instance per manager node. Paired with `DOZZLE_MODE=swarm`, each instance discovers and aggregates logs from every
-  task across the whole Swarm, not just containers local to its own node - this is what the internal-only agent port
-  `7007` in the Port Map below is for (agent-to-UI communication between those instances), and is Dozzle's documented
-  pattern for Swarm log aggregation, rather than something specific to this cluster.
-* **Uptime Kuma is pinned to `replicas: 1`** rather than scaled or global, and uses a named external volume
-  (`kuma_data`) rather than a bind mount. Uptime Kuma keeps its state in a local SQLite database, which cannot be
-  shared across replicas - running more than one would mean two independent, diverging monitors, and an unpinned
-  single replica risks Swarm rescheduling it onto a node without its data volume. Pinning to `manager` plus
-  `replicas: 1` keeps it running in exactly one predictable place.
-* **Both mount `/var/run/docker.sock` read-only.** Docker socket access is powerful regardless of the read-only
-  flag on the bind mount (a process with socket access can still start/stop/inspect containers via the Docker API),
-  so this is a real trust decision, not a fully contained one - it's what both tools need to introspect the cluster,
-  and is the standard mechanism for this class of tool, but it's worth knowing these two containers are more
-  privileged than the rest of the stack.
-* **Dozzle is given its own login** (`--auth-provider simple`, backed by `./dozzle/users.yml`) on top of the
-  network-layer restriction described below - defense in depth, since Dozzle's log viewer can surface anything an
-  application logs, which may include sensitive data depending on log level. Generate real credentials before
-  deploying:
-
-  ```bash
-  docker run --rm amir20/dozzle generate <username> --password <password> --name "<Display Name>"
-  ```
-
-  and replace the placeholder `dozzle/users.yml` with the output - the template committed in this directory is
-  intentionally not a working credential file. Uptime Kuma has its own first-run admin account setup instead (no
-  compose-level configuration needed for it).
-
 ## Port Map
 
 ### Host-Exposed Ports
@@ -719,8 +699,6 @@ A few choices here are worth understanding rather than copying blind:
 | `5432` | PostgreSQL R/W | HAProxy → patroni1/2/3/4   | ⚠️ Dev only | Remove in production                 |
 | `5433` | PostgreSQL R/O | HAProxy → patroni1/2/3/4   | ⚠️ Dev only | Remove in production                 |
 | `7000` | HAProxy Stats  | haproxy                    | ✅ Always    | Ops monitoring dashboard             |
-| `8080` | Dozzle UI      | dozzle (manager only)      | ✅ Always    | Container log viewer                 |
-| `3001` | Uptime Kuma    | uptime-kuma (manager only) | ✅ Always    | Uptime monitoring                    |
 | `5001` | Jube UI        | jube-ui                    | ✅ Always    | Web interface                        |
 | `5002` | Jube API       | jube-api                   | ✅ Always    | Public API (maps to 5001 internally) |
 
@@ -731,13 +709,10 @@ Unlike Postgres, Redis has no host-published port and no HAProxy entry at all in
 Jube itself) reach it exclusively via the Sentinel ports below, from inside the overlay network, matching the
 Sentinel-aware connection pattern described in [Architecture Overview](#architecture-overview).
 
-Ports `7000` (HAProxy stats) and `3001` (Uptime Kuma) are ops/diagnostic dashboards with no authentication layer of
-their own beyond Uptime Kuma's first-run admin account. Port `8080` (Dozzle) has its own login (see
-[Monitoring Dashboards](#monitoring-dashboards) above). For all three, this deployment assumes the ports are
-reachable only from a private management network or VPN, never from the open internet - Dozzle's own auth is
-defense in depth, not a substitute for that assumption. If it doesn't hold for your network, put a reverse proxy
-with authentication in front of HAProxy stats and Uptime Kuma too, or firewall all three to known management IPs,
-before exposing the cluster more broadly.
+Port `7000` (HAProxy stats) is an ops/diagnostic dashboard with no authentication layer of its own. This deployment
+assumes it is reachable only from a private management network or VPN, never from the open internet. If that
+doesn't hold for your network, put a reverse proxy with authentication in front of HAProxy stats, or firewall it to
+known management IPs, before exposing the cluster more broadly.
 
 ### Internal-Only Ports
 
@@ -749,7 +724,6 @@ before exposing the cluster more broadly.
 | `8008`  | Patroni REST API  | HAProxy health checks only                                                                            |
 | `6379`  | Redis direct      | Not used - see Sentinel ports below                                                                   |
 | `26379` | Redis Sentinel    | Sentinel-to-Sentinel coordination, and the entry point Jube's Sentinel-aware Redis client connects to |
-| `7007`  | Dozzle agent      | Agent-to-UI communication only                                                                        |
 
 ## Health Checks
 

@@ -66,8 +66,6 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                 Name = dto.Name,
                 Priority = dto.Priority,
                 BuilderRuleScript = dto.BuilderRuleScript,
-                // The Json column is jsonb -- an empty string (sent when RuleScriptTypeId selects the Coder
-                // surface, which doesn't populate Json) is not valid JSON, so it must go through as null.
                 Json = string.IsNullOrWhiteSpace(dto.Json) ? null : dto.Json,
                 RuleScriptTypeId = (byte)dto.RuleScriptTypeId,
                 CoderRuleScript = dto.CoderRuleScript,

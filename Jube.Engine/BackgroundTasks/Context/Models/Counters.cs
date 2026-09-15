@@ -13,19 +13,16 @@
 
 namespace Jube.Engine.BackgroundTasks.Context.Models
 {
-    using System;
-
     public class Counters
     {
         public int HttpCounterAllError;
         public int HttpCounterAllRequests;
         public int HttpCounterCallback;
+        public int HttpCounterCallbackTimeout;
         public int HttpCounterExhaustive;
         public int HttpCounterModel;
         public int HttpCounterModelAsync;
         public int HttpCounterSanction;
         public int HttpCounterTag;
-        public DateTime LastBalanceCountersWritten { get; set; }
-        public DateTime LastHttpCountersWritten { get; set; }
     }
 }

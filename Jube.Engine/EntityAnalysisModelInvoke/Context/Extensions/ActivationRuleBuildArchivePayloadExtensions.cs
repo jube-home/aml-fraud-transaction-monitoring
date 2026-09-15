@@ -11,83 +11,82 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Archiver;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
-    using System;
-    using System.Threading.Tasks;
-    using EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Archiver;
-
     public static class ActivationRuleBuildArchivePayloadExtensions
     {
         public static async Task<Context> ActivationRuleBuildArchivePayloadAsync(this Context context)
         {
+            var stopwatch = Stopwatch.StartNew();
             context.EntityAnalysisModelInstanceEntryPayload.ArchiveEnqueueDate = DateTime.UtcNow;
 
-            if (context.Log.IsInfoEnabled)
-            {
-                context.Log.Info(
-                    $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} " +
-                    $"has been selected for sampling or case creation is been specified. " +
-                    $"Is building the XML payload from the payload created. ArchiveEnqueueDate set to {context.EntityAnalysisModelInstanceEntryPayload.ArchiveEnqueueDate}.");
-            }
+            context.TraceLog(
+                $"has been selected for sampling or case creation has been specified. " +
+                $"Is building the XML payload from the payload created. ArchiveEnqueueDate set to {context.EntityAnalysisModelInstanceEntryPayload.ArchiveEnqueueDate}.");
 
             CalculateMemoryUsedInThreadForPayload(context);
 
-            context.Log.Info(
-                $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                $"and model {context.EntityAnalysisModel.Instance.Id} a payload has been created for archive.");
+            context.TraceLog($"a payload has been created for archive.");
 
             if (context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
             {
-                await ArchiverProcessing.CaseCreationAndArchiveStorageAsync(context.EntityAnalysisModelInstanceEntryPayload,
-                    context.EntityAnalysisModel.JsonSerializationHelper,
-                    null, null, context.Environment, context.EntityAnalysisModel.Services.CacheService, context.Log).ConfigureAwait(false);
+                await ArchiverProcessing.CaseCreationAndArchiveStorageAsync(
+                        context.EntityAnalysisModelInstanceEntryPayload,
+                        context.EntityAnalysisModel,
+                        context.EntityAnalysisModel.JsonSerializationHelper,
+                        null, null, context.Environment, context.EntityAnalysisModel.Services.CacheService, context.Log)
+                    .ConfigureAwait(false);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} a payload has been added for archive synchronously as it is set for reprocessing.");
-                }
+                context.TraceLog(
+                    $"a payload has been added for archive synchronously as it is set for reprocessing.");
             }
             else
             {
-                context.EntityAnalysisModel.ConcurrentQueues.PersistToDatabaseAsync.Enqueue(context.EntityAnalysisModelInstanceEntryPayload);
+                context.EntityAnalysisModel.ConcurrentQueues.PersistToDatabaseAsync.Enqueue(
+                    context.EntityAnalysisModelInstanceEntryPayload);
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} a payload has been added for archive asynchronously.");
-                }
+                context.TraceLog($"a payload has been added for archive asynchronously.");
             }
+
+            stopwatch.Stop();
+
+            if (!context.LogSampled)
+            {
+                return context;
+            }
+
+            var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
+                new InvokeStagePerformance();
+            stages.BuildArchivePayload = new StageDuration
+            {
+                DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency))
+            };
 
             return context;
         }
 
         private static void CalculateMemoryUsedInThreadForPayload(Context context)
         {
-
             if (context.StartBytesUsed.HasValue)
             {
                 var currentBytes = GC.GetAllocatedBytesForCurrentThread();
-                context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Memory = context.StartBytesUsed.Value - GC.GetAllocatedBytesForCurrentThread();
+                context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Memory =
+                    currentBytes - context.StartBytesUsed.Value;
 
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $"and model {context.EntityAnalysisModel.Instance.Id} has start bytes of {context.StartBytesUsed} and currentBytes {currentBytes}. " +
-                        $"The used bytes is {context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Memory}.");
-                }
+                context.TraceLog(
+                    $"has start bytes of {context.StartBytesUsed} and currentBytes {currentBytes}. " +
+                    $"The used bytes is {context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Memory}.");
             }
             else
             {
-                if (context.Log.IsInfoEnabled)
-                {
-                    context.Log.Info(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} " +
-                        $"and model {context.EntityAnalysisModel.Instance.Id} does not have start bytes recorded in the context so can't " +
-                        $"calculate memory usage.");
-                }
+                context.TraceLog(
+                    $"does not have start bytes recorded in the context so can't calculate memory usage.");
             }
         }
     }

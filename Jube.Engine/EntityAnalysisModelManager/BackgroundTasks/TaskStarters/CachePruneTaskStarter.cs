@@ -11,15 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Context;
-    using EntityAnalysisModel;
-
-    public class CachePruneTaskStarter(Context context)
+    public class CachePruneTaskStarter(Context.Context context)
     {
         public async Task StartAsync()
         {
@@ -31,7 +29,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         "Cache Prune: Starting task.");
                 }
 
-                var waitCachePrune = Int32.Parse(context.Services.DynamicEnvironment.AppSettings("WaitCachePrune"));
+                var waitCachePrune = int.Parse(context.Services.DynamicEnvironment.AppSettings("WaitCachePrune"));
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
@@ -59,67 +57,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     {
                         context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
 
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Cache Prune: For model {model.Instance.Id} the reference date will be looked up.");
-                        }
-
-                        var referenceDate = await context.Services.CacheService.CacheReferenceDateRepository.GetReferenceDateAsync(model.Instance.TenantRegistryId, model.Instance.Guid)
-                            .ConfigureAwait(false);
-
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Cache Prune: For model {model.Instance.Id} the reference date for {model.References.ReferenceDateName} is {referenceDate}.  " +
-                                $"Will test not null before proceeding to delete.  Will move to calculate the threshold date.");
-                        }
-
-                        if (!referenceDate.HasValue)
-                        {
-                            continue;
-                        }
-
-                        var thresholdReferenceDatePayload = GetThresholdReferenceDateForDeletion(model, referenceDate);
-
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Cache Prune: For model {model.Instance.Id} the threshold reference date for " +
-                                $"{model.References.ReferenceDateName} is {thresholdReferenceDatePayload}.  Will now instruct the delete if threshold date not null.");
-                        }
-
-                        if (thresholdReferenceDatePayload == null)
-                        {
-                            continue;
-                        }
-
-                        await context.Services.CacheService.CachePayloadRepository.DeleteByReferenceDatePreferReplicaAsync(model.Instance.TenantRegistryId, model.Instance.Guid,
-                            thresholdReferenceDatePayload.Value, limit,
-                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Cache Prune: For model {model.Instance.Id} deletion routine has returned in the Payload repository.");
-                        }
-
-                        await context.Services.CacheService.CachePayloadLatestRepository.DeleteByReferenceDateAsync(model.Instance.TenantRegistryId, model.Instance.Guid,
-                            referenceDate.Value, thresholdReferenceDatePayload.Value, limit,
-                            model.Collections.DistinctSearchKeys.Select(distinctSearchKey
-                                => (distinctSearchKey.Key,
-                                    distinctSearchKey.Value.SearchKeyTtlInterval,
-                                    distinctSearchKey.Value.SearchKeyTtlIntervalValue)).ToList()).ConfigureAwait(false);
-
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Cache Prune: For model {model.Instance.Id} deletion routine has returned in the Payload Latest " +
-                                $"repository.  Will now loop around search keys to begin deletion of sorted sets linking to payload.");
-                        }
+                        await PruneModelAsync(model, limit).ConfigureAwait(false);
                     }
 
-                    await Task.Delay(waitCachePrune, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                    await Task.Delay(waitCachePrune, context.Services.TaskCoordinator.CancellationToken)
+                        .ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException ex)
@@ -132,7 +74,72 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
         }
 
-        private static DateTime? GetThresholdReferenceDateForDeletion(EntityAnalysisModel model,
+        internal async Task PruneModelAsync(EntityAnalysisModel.EntityAnalysisModel model, int limit)
+        {
+            if (context.Services.Log.IsDebugEnabled)
+            {
+                context.Services.Log.Debug(
+                    $"Cache Prune: For model {model.Instance.Id} the reference date will be looked up.");
+            }
+
+            var referenceDate = await context.Services.CacheService.CacheReferenceDateRepository
+                .GetReferenceDateAsync(model.Instance.TenantRegistryId, model.Instance.Guid)
+                .ConfigureAwait(false);
+
+            if (context.Services.Log.IsDebugEnabled)
+            {
+                context.Services.Log.Debug(
+                    $"Cache Prune: For model {model.Instance.Id} the reference date for {model.References.ReferenceDateName} is {referenceDate}.  " +
+                    $"Will test not null before proceeding to delete.  Will move to calculate the threshold date.");
+            }
+
+            if (!referenceDate.HasValue)
+            {
+                return;
+            }
+
+            var thresholdReferenceDatePayload = GetThresholdReferenceDateForDeletion(model, referenceDate);
+
+            if (context.Services.Log.IsDebugEnabled)
+            {
+                context.Services.Log.Debug(
+                    $"Cache Prune: For model {model.Instance.Id} the threshold reference date for " +
+                    $"{model.References.ReferenceDateName} is {thresholdReferenceDatePayload}.  Will now instruct the delete if threshold date not null.");
+            }
+
+            if (thresholdReferenceDatePayload == null)
+            {
+                return;
+            }
+
+            await context.Services.CacheService.CachePayloadRepository.DeleteByReferenceDatePreferReplicaAsync(
+                model.Instance.TenantRegistryId, model.Instance.Guid,
+                thresholdReferenceDatePayload.Value, limit,
+                context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+
+            if (context.Services.Log.IsDebugEnabled)
+            {
+                context.Services.Log.Debug(
+                    $"Cache Prune: For model {model.Instance.Id} deletion routine has returned in the Payload repository.");
+            }
+
+            await context.Services.CacheService.CachePayloadLatestRepository.DeleteByReferenceDateAsync(
+                model.Instance.TenantRegistryId, model.Instance.Guid,
+                referenceDate.Value, thresholdReferenceDatePayload.Value, limit,
+                model.Collections.DistinctSearchKeys.Select(distinctSearchKey
+                    => (distinctSearchKey.Key,
+                        distinctSearchKey.Value.SearchKeyTtlInterval,
+                        distinctSearchKey.Value.SearchKeyTtlIntervalValue)).ToList()).ConfigureAwait(false);
+
+            if (context.Services.Log.IsDebugEnabled)
+            {
+                context.Services.Log.Debug(
+                    $"Cache Prune: For model {model.Instance.Id} deletion routine has returned in the Payload Latest " +
+                    $"repository.  Will now loop around search keys to begin deletion of sorted sets linking to payload.");
+            }
+        }
+
+        internal static DateTime? GetThresholdReferenceDateForDeletion(EntityAnalysisModel.EntityAnalysisModel model,
             DateTime? referenceDate)
         {
             if (referenceDate == null)
@@ -153,12 +160,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             return thresholdReferenceDate;
         }
 
-        private int GetDeletionLimitOrDefaultIfNull()
+        internal int GetDeletionLimitOrDefaultIfNull()
         {
             var limit = 100;
             if (context.Services.DynamicEnvironment.AppSettings("CacheTtlDeleteLimit") != null)
             {
-                limit = Int32.Parse(context.Services.DynamicEnvironment.AppSettings("CacheTtlDeleteLimit"));
+                limit = int.Parse(context.Services.DynamicEnvironment.AppSettings("CacheTtlDeleteLimit"));
             }
 
             return limit;

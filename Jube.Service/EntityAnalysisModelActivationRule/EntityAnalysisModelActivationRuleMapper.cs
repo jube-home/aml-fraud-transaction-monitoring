@@ -97,8 +97,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                 ReviewStatusId = (byte)dto.ReviewStatusId,
                 RuleScriptTypeId = (byte)dto.RuleScriptTypeId,
                 BuilderRuleScript = dto.BuilderRuleScript,
-                // The Json column is jsonb -- an empty string (sent when RuleScriptTypeId selects the Coder
-                // surface, which doesn't populate Json) is not valid JSON, so it must go through as null.
                 Json = string.IsNullOrWhiteSpace(dto.Json) ? null : dto.Json,
                 CoderRuleScript = dto.CoderRuleScript,
                 EnableSuppression = (byte)(dto.EnableSuppression ? 1 : 0),
@@ -131,9 +129,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                 EnableReprocessing = (byte)(dto.EnableReprocessing ? 1 : 0),
                 ReportTable = (byte)(dto.ReportTable ? 1 : 0),
                 ResponsePayload = (byte)(dto.ResponsePayload ? 1 : 0),
-                // These two counters and their date are also mapped by the legacy AutoMapper configuration this
-                // replaces, which has no Ignore() for them -- so, as before, a Create/Update payload that doesn't
-                // round-trip them (the page's GetData() never populates them) resets them. See report.md.
                 EvaluationCounter = dto.EvaluationCounter,
                 ActivationCounter = dto.ActivationCounter,
                 ActivationCounterDate = dto.ActivationCounterDate?.UtcDateTime
