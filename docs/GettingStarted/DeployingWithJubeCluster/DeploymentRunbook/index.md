@@ -169,27 +169,59 @@ stateless, horizontally-scaled request handlers.
 
 ## Building and Distributing Images
 
-Build the images from source:
+`Jube.Cluster/build-images.sh` automates the four builds below, tagging each image with the current git HEAD's
+short SHA automatically (rather than you filling in `<sha>` by hand) and writing the tags straight into
+`Jube.Cluster/.env` (if it already exists). Run it from anywhere - it locates the repo root itself:
 
 ```bash
-docker build --no-cache -t jube.patroni:<date> .
-docker build --no-cache -f Jube.App/Dockerfile -t jube.app:<date> .
-docker build --no-cache -f Jube.Monitoring/Dockerfile -t jube.monitoring:<date> .
+Jube.Cluster/build-images.sh
 ```
 
-Save each image to a tar file, collected under an `images/` directory at the root of this repository:
+Pass `--save` to also `docker save` each of the four images straight after building, collected under
+`Jube.Cluster/Images/` (gitignored - the tarballs are too large to push to git) as `<image>:<sha>.tar`, matching the
+tags just written to `.env`:
 
 ```bash
-docker save -o images/jube.patroni:<date>.tar jube.patroni:<date>
-docker save -o images/jube.app:<date>.tar jube.app:<date>
-docker save -o images/jube.monitoring:<date>.tar jube.monitoring:<date>
-docker save -o images/redis.tar redis:7-alpine
-docker save -o images/etcd.tar quay.io/coreos/etcd:v3.5.3
-docker save -o images/haproxy.tar haproxy:2.8
+Jube.Cluster/build-images.sh --save
 ```
 
-Zip the whole directory (after resetting permissions - see [File System](#file-system) below, and removing any
-`.git`/IDE directories) with a date, name or version in the archive name, and distribute it to every node.
+`jube-otel-listener` is one of the four despite being only a throwaway local OTLP receiver for manual testing,
+because `docker-compose.yml` deploys it unconditionally (`replicas: 1`, not gated behind any `EnableOpenTelemetry`
+flag) - without its image, that service has nothing to run and sits failing in `docker service ls`.
+
+> If you don't need OpenTelemetry testing, the simpler fix is commenting out the `jube-otel-listener` service in
+> `docker-compose.yml` entirely rather than building and distributing an image you'll never point anything at - and
+> then dropping it from the manual commands below.
+
+To build manually instead, from the root of the repository (`Jube.Cluster/patroni/Dockerfile` has no `-f`-implied
+default, so it needs one just like the other three):
+
+```bash
+docker build --no-cache -f Jube.Cluster/patroni/Dockerfile -t jube.patroni:<sha> .
+docker build --no-cache -f Jube.App/Dockerfile -t jube.app:<sha> .
+docker build --no-cache -f Jube.Monitoring/Dockerfile -t jube.monitoring:<sha> .
+docker build --no-cache -f Jube.OpenTelemetryListener/Dockerfile -t jube.opentelemetrylistener:<sha> .
+```
+
+Save each image to a tar file, collected under `Jube.Cluster/Images/` (the same directory `build-images.sh --save`
+uses, and gitignored for the same reason - the tarballs are too large to push to git):
+
+```bash
+docker save -o Jube.Cluster/Images/jube.patroni:<sha>.tar jube.patroni:<sha>
+docker save -o Jube.Cluster/Images/jube.app:<sha>.tar jube.app:<sha>
+docker save -o Jube.Cluster/Images/jube.monitoring:<sha>.tar jube.monitoring:<sha>
+docker save -o Jube.Cluster/Images/jube.opentelemetrylistener:<sha>.tar jube.opentelemetrylistener:<sha>
+docker save -o Jube.Cluster/Images/redis.tar redis:7-alpine
+docker save -o Jube.Cluster/Images/etcd.tar quay.io/coreos/etcd:v3.5.3
+docker save -o Jube.Cluster/Images/haproxy.tar haproxy:2.8
+```
+
+`build-images.sh --save` only covers the four images it builds; `redis`, `etcd` and `haproxy` are pulled, not built,
+so they always need saving manually like this regardless of which path you took above.
+
+Zip the whole `Jube.Cluster/Images/` directory (after resetting permissions - see [File System](#file-system) below,
+and removing any `.git`/IDE directories) with a date, name or version in the archive name, and distribute it to every
+node.
 
 This tar-file distribution, rather than pushing to a private registry, is the standard approach where the cluster's
 network cannot reach an external registry (an air-gapped or tightly firewalled deployment, which is common for
@@ -297,15 +329,17 @@ service's inspected configuration.
 
 ### On All Nodes
 
-From the cluster directory, load images **on every host**:
+From the cluster directory (`Jube.Cluster/`, where the distributed archive's `Images/` folder lands), load images
+**on every host**:
 
 ```bash
-docker load -i images/jube.patroni:<date>.tar
-docker load -i images/jube.app:<date>.tar
-docker load -i images/jube.monitoring:<date>.tar
-docker load -i images/redis.tar
-docker load -i images/etcd.tar
-docker load -i images/haproxy.tar
+docker load -i Images/jube.patroni:<sha>.tar
+docker load -i Images/jube.app:<sha>.tar
+docker load -i Images/jube.monitoring:<sha>.tar
+docker load -i Images/jube.opentelemetrylistener:<sha>.tar
+docker load -i Images/redis.tar
+docker load -i Images/etcd.tar
+docker load -i Images/haproxy.tar
 ```
 
 Verify the images are present, and that no stale images/volumes remain from a previous version:
@@ -394,10 +428,10 @@ Create the `.env` file the compose file reads image tags and zone assignments fr
 
 ```bash
 cat <<EOF > .env
-JUBE_IMAGE=jube.app:<date>
-PATRONI_IMAGE=jube.patroni:<date>
-JUBE_MONITORING_IMAGE=jube.monitoring:<date>
-JUBE_OTEL_LISTENER_IMAGE=jube.opentelemetrylistener:<date>
+JUBE_IMAGE=jube.app:<sha>
+PATRONI_IMAGE=jube.patroni:<sha>
+JUBE_MONITORING_IMAGE=jube.monitoring:<sha>
+JUBE_OTEL_LISTENER_IMAGE=jube.opentelemetrylistener:<sha>
 CRITICAL_HOST_1=host1
 CRITICAL_HOST_2=host1
 CRITICAL_HOST_3=host1

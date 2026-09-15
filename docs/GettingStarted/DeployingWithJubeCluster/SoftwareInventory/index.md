@@ -124,11 +124,14 @@ build-tag-load workflow in the
 [Deployment Runbook](../DeploymentRunbook/index.html#building-and-distributing-images):
 
 ```bash
-docker build --no-cache -t jube.patroni:<date> .
-docker build --no-cache -f Jube.App/Dockerfile -t jube.app:<date> .
-docker build --no-cache -f Jube.Monitoring/Dockerfile -t jube.monitoring:<date> .
-docker build --no-cache -f Jube.OpenTelemetryListener/Dockerfile -t jube.opentelemetrylistener:<date> .
+docker build --no-cache -f Jube.Cluster/patroni/Dockerfile -t jube.patroni:<sha> .
+docker build --no-cache -f Jube.App/Dockerfile -t jube.app:<sha> .
+docker build --no-cache -f Jube.Monitoring/Dockerfile -t jube.monitoring:<sha> .
+docker build --no-cache -f Jube.OpenTelemetryListener/Dockerfile -t jube.opentelemetrylistener:<sha> .
 ```
+
+`Jube.Cluster/build-images.sh` automates the first three of these (not the OpenTelemetry listener), tagging with
+git HEAD's short SHA rather than `<date>` and updating `Jube.Cluster/.env` directly.
 
 `.env` then sets `PATRONI_IMAGE=jube.patroni:<date>`, `JUBE_IMAGE=jube.app:<date>`,
 `JUBE_MONITORING_IMAGE=jube.monitoring:<date>` and `JUBE_OTEL_LISTENER_IMAGE=jube.opentelemetrylistener:<date>`.
