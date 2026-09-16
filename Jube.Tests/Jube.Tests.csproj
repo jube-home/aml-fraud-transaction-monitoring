@@ -32,6 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Jube.App\Jube.App.csproj"/>
         <ProjectReference Include="..\Jube.Cache\Jube.Cache.csproj"/>
         <ProjectReference Include="..\Jube.Cryptography\Jube.Cryptography.csproj"/>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
