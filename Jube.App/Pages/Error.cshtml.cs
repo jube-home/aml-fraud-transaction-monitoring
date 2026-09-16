@@ -12,6 +12,8 @@
  */
 
 using System.Diagnostics;
+using log4net;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -20,7 +22,7 @@ namespace Jube.App.Pages
     using System;
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public class ErrorModel : PageModel
+    public class ErrorModel(ILog log) : PageModel
     {
         public string RequestId { get; set; }
 
@@ -35,6 +37,13 @@ namespace Jube.App.Pages
         public void OnGet()
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
+            var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            if (exceptionFeature?.Error != null)
+            {
+                log.Error(
+                    $"Unhandled exception for request path {exceptionFeature.Path} (Request ID {RequestId}): {exceptionFeature.Error}");
+            }
         }
     }
 }

@@ -24,10 +24,10 @@ namespace Jube.App.Code
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var allowAnonymous = context.MethodInfo
+            var allowAnonymous = context.MethodInfo?
                 .GetCustomAttributes(true)
                 .OfType<AllowAnonymousAttribute>()
-                .Any();
+                .Any() ?? false;
 
             if (allowAnonymous)
             {
