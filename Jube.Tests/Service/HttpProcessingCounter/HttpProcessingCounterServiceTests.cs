@@ -100,7 +100,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var instanceOne = await CreateCounterAsync(dbContext, 10, createdDate: DateTime.UtcNow.AddMinutes(-30));
             var instanceTwo = await CreateCounterAsync(dbContext, 20, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: DateTime.UtcNow.AddHours(-1));
 
             var mine = result.Rows.Where(r => r.Instance == instanceOne || r.Instance == instanceTwo).ToList();
@@ -113,7 +113,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -125,6 +125,15 @@ namespace Jube.Test.Service.HttpProcessingCounter
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -161,7 +170,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var instanceOne = await CreateCounterAsync(dbContext, 1);
             var instanceTwo = await CreateCounterAsync(dbContext, 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(samplePercentage: 0);
 
             result.Rows.Should().NotContain(r => r.Instance == instanceOne || r.Instance == instanceTwo);
@@ -174,7 +183,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var instanceOne = await CreateCounterAsync(dbContext, 1);
             var instanceTwo = await CreateCounterAsync(dbContext, 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(samplePercentage: 100);
 
             result.Rows.Where(r => r.Instance == instanceOne || r.Instance == instanceTwo).Should().HaveCount(2);
@@ -189,7 +198,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var oldInstance = await CreateCounterAsync(dbContext, 1, createdDate: oldDate);
             var newInstance = await CreateCounterAsync(dbContext, 2, createdDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Instance == oldInstance || r.Instance == newInstance).ToList();
@@ -206,7 +215,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var oldInstance = await CreateCounterAsync(dbContext, 1, createdDate: twoHoursAgo);
             var newInstance = await CreateCounterAsync(dbContext, 2, createdDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Instance == oldInstance || r.Instance == newInstance).ToList();
@@ -222,7 +231,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var instanceMid = await CreateCounterAsync(dbContext, 20);
             var instanceHigh = await CreateCounterAsync(dbContext, 30);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "all", sortDirection: "asc");
             var ascendingMine = ascending.Rows
@@ -245,7 +254,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var instanceA = await CreateCounterAsync(dbContext, 1, instance: $"{prefix}A");
             var instanceB = await CreateCounterAsync(dbContext, 2, instance: $"{prefix}B");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "instance", sortDirection: "asc");
             var ascendingMine = ascending.Rows.Where(r => r.Instance == instanceA || r.Instance == instanceB)
@@ -268,7 +277,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var instanceHigh = await CreateCounterAsync(dbContext, 20);
             var instanceLow = await CreateCounterAsync(dbContext, 10);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "all", sortDirection: ascendingKeyword);
 
             var mine = result.Rows.Where(r => r.Instance == instanceHigh || r.Instance == instanceLow).ToList();
@@ -282,7 +291,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var instanceLow = await CreateCounterAsync(dbContext, 10);
             var instanceHigh = await CreateCounterAsync(dbContext, 20);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "all", sortDirection: "banana");
 
             var mine = result.Rows.Where(r => r.Instance == instanceLow || r.Instance == instanceHigh).ToList();
@@ -296,7 +305,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             var instanceOld = await CreateCounterAsync(dbContext, 1, createdDate: DateTime.UtcNow.AddMinutes(-30));
             var instanceNew = await CreateCounterAsync(dbContext, 2, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "notARealColumn", from: DateTime.UtcNow.AddHours(-1));
 
             var mine = result.Rows.Where(r => r.Instance == instanceOld || r.Instance == instanceNew).ToList();
@@ -314,7 +323,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
                 await CreateCounterAsync(dbContext, 1);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, from);
 
             result.Rows.Should().HaveCount(2);
@@ -327,7 +336,7 @@ namespace Jube.Test.Service.HttpProcessingCounter
             await using var dbContext = fx.GetDbContext();
             await CreateCounterAsync(dbContext, 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

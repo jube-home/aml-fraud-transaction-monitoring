@@ -18,10 +18,8 @@ namespace Jube.Data.Repository
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Context;
     using LinqToDB;
-    using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
 
     public class RoleRegistryRepository
@@ -97,19 +95,29 @@ namespace Jube.Data.Repository
 
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
-            model.CreatedUser = userName;
-            model.CreatedDate = DateTime.UtcNow;
+            model.CreatedUser = existing.CreatedUser;
+            model.CreatedDate = existing.CreatedDate;
+            model.UpdatedUser = userName;
+            model.UpdatedDate = DateTime.UtcNow;
             model.TenantRegistryId = tenantRegistryId;
+            model.ImportId = existing.ImportId;
 
             await dbContext.UpdateAsync(model, token: token);
 
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
+            var audit = new RoleRegistryVersion
             {
-                cfg.CreateMap<RoleRegistry, RoleRegistryVersion>();
-            }, NullLoggerFactory.Instance));
-
-            var audit = mapper.Map<RoleRegistryVersion>(existing);
-            audit.RoleRegistryId = existing.Id;
+                RoleRegistryId = existing.Id,
+                Name = existing.Name,
+                Active = existing.Active,
+                Locked = existing.Locked,
+                Deleted = existing.Deleted,
+                CreatedDate = existing.CreatedDate,
+                CreatedUser = existing.CreatedUser,
+                UpdatedDate = existing.UpdatedDate,
+                UpdatedUser = existing.UpdatedUser,
+                Version = existing.Version,
+                TenantRegistryId = existing.TenantRegistryId,
+            };
 
             await dbContext.InsertAsync(audit, token: token);
 
@@ -125,6 +133,7 @@ namespace Jube.Data.Repository
                             && (d.Locked == 0 || d.Locked == null))
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .Set(s => s.DeletedUser, userName)
                 .UpdateAsync(token);
 
             if (records == 0)
@@ -133,7 +142,8 @@ namespace Jube.Data.Repository
             }
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.RoleRegistry
                 .Where(d => d.TenantRegistryId == tenantRegistryIdOutsideOfInstance

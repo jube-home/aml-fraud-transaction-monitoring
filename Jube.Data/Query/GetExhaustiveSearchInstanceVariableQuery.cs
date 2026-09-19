@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Jube.Data.Query
 {
     using System.Collections.Generic;
@@ -39,13 +40,22 @@ namespace Jube.Data.Query
                 .Where(w =>
                     w.ExhaustiveSearchInstanceVariable.ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId ==
                     tenantRegistryId
-                    && w.ExhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceId == exhaustiveSearchInstanceId)
+                    && w.ExhaustiveSearchInstanceVariable.ExhaustiveSearchInstanceId == exhaustiveSearchInstanceId
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceVariable.Deleted == 0
+                        || w.ExhaustiveSearchInstanceVariable.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceVariable.ExhaustiveSearchInstance.Deleted == 0
+                        || w.ExhaustiveSearchInstanceVariable.ExhaustiveSearchInstance.Deleted == null))
                 .ToListAsync(token);
 
             var variables = await dbContext.ExhaustiveSearchInstanceVariable
                 .Where(w =>
                     w.ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
-                    && w.ExhaustiveSearchInstanceId == exhaustiveSearchInstanceId).ToListAsync(token);
+                    && w.ExhaustiveSearchInstanceId == exhaustiveSearchInstanceId
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstance.Deleted == 0 || w.ExhaustiveSearchInstance.Deleted == null))
+                .OrderBy(o => o.Id)
+                .ToListAsync(token);
 
             var joined = new List<Dto>();
             foreach (var variable in variables)
@@ -104,6 +114,7 @@ namespace Jube.Data.Query
             public int DistinctValues { get; set; }
             public double Correlation { get; set; }
             public int CorrelationAbsRank { get; set; }
+
             // ReSharper disable once CollectionNeverQueried.Global
             public List<HistogramValue> HistogramValues { get; set; } = [];
 

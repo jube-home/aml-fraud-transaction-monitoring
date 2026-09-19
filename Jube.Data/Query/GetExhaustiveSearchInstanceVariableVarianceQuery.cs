@@ -38,7 +38,12 @@ namespace Jube.Data.Query
             return await dbContext.ExhaustiveSearchInstanceVariableMultiCollinearity
                 .Where(w => w.ExhaustiveSearchInstanceVariable
                                 .ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
-                            && w.ExhaustiveSearchInstanceVariableId == exhaustiveSearchInstanceVariableId)
+                            && w.ExhaustiveSearchInstanceVariableId == exhaustiveSearchInstanceVariableId
+                            && (w.ExhaustiveSearchInstanceVariable.Deleted == 0
+                                || w.ExhaustiveSearchInstanceVariable.Deleted == null)
+                            && (w.ExhaustiveSearchInstanceVariable.ExhaustiveSearchInstance.Deleted == 0
+                                || w.ExhaustiveSearchInstanceVariable.ExhaustiveSearchInstance.Deleted == null)
+                            && (w.Deleted == 0 || w.Deleted == null))
                 .OrderBy(o => o.CorrelationAbsRank)
                 .Select(s => new Dto
                 {

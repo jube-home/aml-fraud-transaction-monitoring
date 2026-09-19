@@ -22,15 +22,24 @@ namespace Jube.App.Code
 
     public static class Jwt
     {
-        public static string CreateToken(string userName, string jwtKey, string jwtIssuer, string jwtAudience)
+        public static string CreateToken(string userName, string jwtKey, string jwtIssuer, string jwtAudience,
+            DateTime? utcNow = null, DateTime? sessionStartUtc = null, DateTime? expiresUtc = null)
         {
+            var now = utcNow ?? DateTime.UtcNow;
+            var sessionStart = sessionStartUtc ?? now;
             var descriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, userName)
+                    new(ClaimTypes.Name, userName),
+                    new(Data.Security.TokenValidity.IssuedMillisecondsClaim,
+                        new DateTimeOffset(DateTime.SpecifyKind(sessionStart, DateTimeKind.Utc))
+                            .ToUnixTimeMilliseconds()
+                            .ToString(System.Globalization.CultureInfo.InvariantCulture))
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                IssuedAt = now,
+                NotBefore = now,
+                Expires = expiresUtc ?? now.AddMinutes(15),
                 Issuer = jwtIssuer,
                 Audience = jwtAudience,
                 SigningCredentials = new SigningCredentials(

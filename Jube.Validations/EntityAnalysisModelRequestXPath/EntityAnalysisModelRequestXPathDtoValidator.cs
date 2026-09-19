@@ -31,10 +31,16 @@ namespace Jube.Validations.EntityAnalysisModelRequestXPath
         private static readonly string[] allowedIntervals = ["s", "n", "h", "d"];
 
         public EntityAnalysisModelRequestXPathDtoValidator(
-            EntityAnalysisModelRequestXPathRepository repository, IStringLocalizer localiser)
+            EntityAnalysisModelRequestXPathRepository repository, IStringLocalizer localiser,
+            EntityAnalysisModelRepository entityAnalysisModelRepository)
         {
             RuleFor(p => p.EntityAnalysisModelId)
+                .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
+                .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdInvalid")
+                .MustAsync(async (id, cancellation) =>
+                    await entityAnalysisModelRepository.GetByIdAsync(id, cancellation) != null)
                 .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
 
@@ -95,13 +101,13 @@ namespace Jube.Validations.EntityAnalysisModelRequestXPath
                 .When(p => p.SearchKey);
 
             RuleFor(p => p.SearchKeyTtlIntervalValue)
-                .GreaterThanOrEqualTo(0)
+                .Must((dto, value) => value >= 0 && value <= IntervalLimits.Max(dto.SearchKeyTtlInterval))
                 .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.SearchKeyTtlIntervalValueRange])
                 .WithErrorCode("SearchKeyTtlIntervalValueRange")
                 .When(p => p.SearchKey);
 
             RuleFor(p => p.SearchKeyFetchLimit)
-                .GreaterThanOrEqualTo(0)
+                .InclusiveBetween(0, IntervalLimits.MaxFetchLimit)
                 .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.SearchKeyFetchLimitRange])
                 .WithErrorCode("SearchKeyFetchLimitRange")
                 .When(p => p.SearchKey);
@@ -113,13 +119,13 @@ namespace Jube.Validations.EntityAnalysisModelRequestXPath
                 .When(p => p.SearchKey && p.SearchKeyCache);
 
             RuleFor(p => p.SearchKeyCacheValue)
-                .GreaterThanOrEqualTo(0)
+                .Must((dto, value) => value >= 0 && value <= IntervalLimits.Max(dto.SearchKeyCacheInterval))
                 .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.SearchKeyCacheValueRange])
                 .WithErrorCode("SearchKeyCacheValueRange")
                 .When(p => p.SearchKey && p.SearchKeyCache);
 
             RuleFor(p => p.SearchKeyCacheFetchLimit)
-                .GreaterThanOrEqualTo(0)
+                .InclusiveBetween(0, IntervalLimits.MaxFetchLimit)
                 .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.SearchKeyCacheFetchLimitRange])
                 .WithErrorCode("SearchKeyCacheFetchLimitRange")
                 .When(p => p.SearchKey && p.SearchKeyCache);
@@ -131,7 +137,7 @@ namespace Jube.Validations.EntityAnalysisModelRequestXPath
                 .When(p => p.SearchKey && p.SearchKeyCache);
 
             RuleFor(p => p.SearchKeyCacheTtlValue)
-                .GreaterThanOrEqualTo(0)
+                .Must((dto, value) => value >= 0 && value <= IntervalLimits.Max(dto.SearchKeyCacheTtlInterval))
                 .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.SearchKeyCacheTtlValueRange])
                 .WithErrorCode("SearchKeyCacheTtlValueRange")
                 .When(p => p.SearchKey && p.SearchKeyCache);

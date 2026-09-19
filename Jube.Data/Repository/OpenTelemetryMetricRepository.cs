@@ -55,6 +55,7 @@ namespace Jube.Data.Repository
             var rows = await BuildFilteredQuery(from, to, search, samplePercentage)
                 .OrderByDescending(o => o.Id)
                 .Take(statisticsCap)
+                .Select(s => new { s.Count, s.Sum, s.Min, s.Max })
                 .ToListAsync(token).ConfigureAwait(false);
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>

@@ -23,8 +23,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Lists captured archiver warn-threshold breaches -- the specific invocation (when the stage " +
                     "operates on one item; null for BulkCopyArchiveBuffer), the model, and the slow stage -- " +
                     "most recent first, capped at 100000, with optional date-range and exact-match (StageId, " +
-                    "e.g. 1=BuildArchiveJson) filters. Landlord callers see every tenant; other callers only " +
-                    "their own. Also accepts samplePercentage (0-100) to draw an unbiased random subset of " +
+                    "e.g. 1=BuildArchiveJson) filters. Landlord only: every other caller is refused with a 403. Also accepts samplePercentage (0-100) to draw an unbiased random subset of " +
                     "matching rows instead of the most recent ones."));
         }
     }

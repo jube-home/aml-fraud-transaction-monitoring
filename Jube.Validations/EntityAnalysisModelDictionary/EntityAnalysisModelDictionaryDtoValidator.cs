@@ -32,6 +32,12 @@ namespace Jube.Validations.EntityAnalysisModelDictionary
                 .WithMessage(_ => localiser[EntityAnalysisModelDictionaryResources.EntityAnalysisModelGuidInvalid])
                 .WithErrorCode("EntityAnalysisModelGuidInvalid");
 
+            RuleFor(p => p.EntityAnalysisModelGuid)
+                .MustAsync(repository.ParentModelVisibleByGuidAsync)
+                .WithMessage(_ => localiser[EntityAnalysisModelDictionaryResources.EntityAnalysisModelGuidInvalid])
+                .WithErrorCode("EntityAnalysisModelGuidNotFound")
+                .When(p => p.Id == 0 && p.EntityAnalysisModelGuid != Guid.Empty);
+
             RuleFor(p => p.Name)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelDictionaryResources.NameRequired])

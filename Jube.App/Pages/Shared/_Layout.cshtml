@@ -1,4 +1,4 @@
-﻿@using System.Diagnostics
+@using System.Diagnostics
 @using Jube.App.Code
 @using Jube.DynamicEnvironment
 @using log4net
@@ -419,43 +419,28 @@
                 </li>
             }
 
-            @if (permissionValidation.Validate(new[]
+            @if (landlord || permissionValidation.Validate(new[]
                      {
-                         27, 34, 35, 36, 31, 32, 33, 42, 43
+                         34, 35, 36, 31, 32, 33
                      }))
             {
                 <li>
                     Administration
                     <ul>
-                        @if (permissionValidation.Validate(new[]
-                                 {
-                                     42, 43
-                                 }))
+                        @if (landlord)
                         {
                             <li>
                                 OpenTelemetry
                                 <ul>
-                                    @if (permissionValidation.Validate(new[]
-                                             {
-                                                 42
-                                             }))
-                                    {
-                                        <li>
-                                            <a href='/Administration/OpenTelemetryLogCounter'>OpenTelemetry Log
-                                                Counter</a>
-                                        </li>
-                                    }
+                                    <li>
+                                        <a href='/Administration/OpenTelemetryLogCounter'>OpenTelemetry Log
+                                            Counter</a>
+                                    </li>
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
-                                                 43
-                                             }))
-                                    {
-                                        <li>
-                                            <a href='/Administration/OpenTelemetryExclude'>OpenTelemetry
-                                                Exclude</a>
-                                        </li>
-                                    }
+                                    <li>
+                                        <a href='/Administration/OpenTelemetryExclude'>OpenTelemetry
+                                            Exclude</a>
+                                    </li>
                                 </ul>
                             </li>
                         }
@@ -549,15 +534,16 @@
                                         <li>
                                             <a href='/Administration/UserLogin'>User Login</a>
                                         </li>
+
+                                        <li>
+                                            <a href='/Administration/UserLogout'>User Logout</a>
+                                        </li>
                                     }
                                 </ul>
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
-                                     39
-                                 }))
+                        @if (landlord)
                         {
                             <li>
                                 Performance
@@ -839,7 +825,7 @@
                     }
 
                     <li>
-                        <a href="/Account/Logout">Logout</a>
+                        <a href="#" onclick="jubeLogout(); return false;">Logout</a>
                     </li>
                 </ul>
             </li>
@@ -909,6 +895,19 @@
         $(document).ready(function () {
             $("#menu").kendoMenu();
         });
+
+        // Ends the session through POST /api/Authentication/Logout (same origin, cookies included), then shows the
+        // logout page. Logout fails closed on the server, so whatever the response the page is the right place to land
+        // (it offers the button again while the session is still valid).
+        async function jubeLogout() {
+            try {
+                await fetch('/api/Authentication/Logout', {method: 'POST', credentials: 'same-origin'});
+            } catch (e) {
+                // Network failure: the logout page offers the confirmation button to try again.
+            }
+
+            window.location.href = '/Account/Logout';
+        }
 
         (function () {
             const pollInterval = 10_000;

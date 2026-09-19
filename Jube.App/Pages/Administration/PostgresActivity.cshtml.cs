@@ -40,10 +40,7 @@ namespace Jube.App.Pages.Administration
 
         public ActionResult OnGet()
         {
-            if (!permissionValidation.Validate(new[]
-                {
-                    27
-                }))
+            if (!permissionValidation.Landlord)
             {
                 return Forbid();
             }

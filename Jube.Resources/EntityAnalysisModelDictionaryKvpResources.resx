@@ -57,4 +57,7 @@
     <data name="DeleteExpiryDateMustBeFuture" xml:space="preserve">
     <value>Delete Expiry Date must be greater than the current date and time.</value>
   </data>
+    <data name="DictionaryNotFound" xml:space="preserve">
+    <value>The Dictionary was not found.</value>
+  </data>
 </root>

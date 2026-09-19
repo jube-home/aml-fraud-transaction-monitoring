@@ -17,15 +17,9 @@ namespace Jube.App.Middlewares
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
 
-    public class RequestTrackingMiddleware
+    public class RequestTrackingMiddleware(RequestDelegate next)
     {
         private static int activeRequests;
-        private readonly RequestDelegate next;
-
-        public RequestTrackingMiddleware(RequestDelegate next)
-        {
-            this.next = next;
-        }
 
         public async Task InvokeAsync(HttpContext context)
         {

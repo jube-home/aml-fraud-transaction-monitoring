@@ -22,9 +22,9 @@ namespace Jube.Monitoring
     {
         private static readonly TimeSpan tcpConnectTimeout = TimeSpan.FromSeconds(5);
 
-        public async Task<List<HAProxyReachabilityProbe>> SampleAsync()
+        public async Task<List<HaProxyReachabilityProbe>> SampleAsync()
         {
-            var results = new List<HAProxyReachabilityProbe>();
+            var results = new List<HaProxyReachabilityProbe>();
 
             IPAddress[] addresses;
             try
@@ -47,7 +47,7 @@ namespace Jube.Monitoring
             return results;
         }
 
-        private async Task<HAProxyReachabilityProbe> ProbeHttpAsync(IPAddress address, int port, string target)
+        private async Task<HaProxyReachabilityProbe> ProbeHttpAsync(IPAddress address, int port, string target)
         {
             var haProxyAddress = $"{address}:{port}";
             var stopwatch = Stopwatch.StartNew();
@@ -57,10 +57,10 @@ namespace Jube.Monitoring
                     .GetAsync($"http://{FormatHost(address)}:{port}/api/ready").ConfigureAwait(false);
                 stopwatch.Stop();
 
-                return new HAProxyReachabilityProbe
+                return new HaProxyReachabilityProbe
                 {
                     Target = target,
-                    HAProxyAddress = haProxyAddress,
+                    HaProxyAddress = haProxyAddress,
                     Success = response.IsSuccessStatusCode,
                     ConnectMicroseconds = ToMicroseconds(stopwatch),
                     HttpStatusCode = (int)response.StatusCode
@@ -70,10 +70,10 @@ namespace Jube.Monitoring
             {
                 stopwatch.Stop();
 
-                return new HAProxyReachabilityProbe
+                return new HaProxyReachabilityProbe
                 {
                     Target = target,
-                    HAProxyAddress = haProxyAddress,
+                    HaProxyAddress = haProxyAddress,
                     Success = false,
                     ConnectMicroseconds = ToMicroseconds(stopwatch),
                     ErrorMessage = Truncate(ex.Message)
@@ -81,7 +81,7 @@ namespace Jube.Monitoring
             }
         }
 
-        private static async Task<HAProxyReachabilityProbe> ProbeTcpAsync(IPAddress address, int port,
+        private static async Task<HaProxyReachabilityProbe> ProbeTcpAsync(IPAddress address, int port,
             string target)
         {
             var haProxyAddress = $"{address}:{port}";
@@ -99,10 +99,10 @@ namespace Jube.Monitoring
                 await connectTask.ConfigureAwait(false);
                 stopwatch.Stop();
 
-                return new HAProxyReachabilityProbe
+                return new HaProxyReachabilityProbe
                 {
                     Target = target,
-                    HAProxyAddress = haProxyAddress,
+                    HaProxyAddress = haProxyAddress,
                     Success = true,
                     ConnectMicroseconds = ToMicroseconds(stopwatch)
                 };
@@ -111,10 +111,10 @@ namespace Jube.Monitoring
             {
                 stopwatch.Stop();
 
-                return new HAProxyReachabilityProbe
+                return new HaProxyReachabilityProbe
                 {
                     Target = target,
-                    HAProxyAddress = haProxyAddress,
+                    HaProxyAddress = haProxyAddress,
                     Success = false,
                     ConnectMicroseconds = ToMicroseconds(stopwatch),
                     ErrorMessage = Truncate(ex.Message)

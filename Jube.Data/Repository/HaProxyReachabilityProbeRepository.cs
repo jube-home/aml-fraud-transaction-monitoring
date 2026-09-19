@@ -27,12 +27,12 @@ namespace Jube.Data.Repository
 {
     public class HaProxyReachabilityProbeRepository(DbContext dbContext)
     {
-        public Task BulkCopyAsync(List<HAProxyReachabilityProbe> models, CancellationToken token = default)
+        public Task BulkCopyAsync(List<HaProxyReachabilityProbe> models, CancellationToken token = default)
         {
             return dbContext.BulkCopyAsync(models, token);
         }
 
-        public async Task<IEnumerable<HAProxyReachabilityProbe>> GetLastAsync(int take, DateTime? from, DateTime? to,
+        public async Task<IEnumerable<HaProxyReachabilityProbe>> GetLastAsync(int take, DateTime? from, DateTime? to,
             string search, double? samplePercentage, string sortField, string sortDirection,
             CancellationToken token = default)
         {
@@ -64,7 +64,7 @@ namespace Jube.Data.Repository
             });
         }
 
-        private IQueryable<HAProxyReachabilityProbe> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
+        private IQueryable<HaProxyReachabilityProbe> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
             double? samplePercentage)
         {
             var query = dbContext.HaProxyReachabilityProbe.AsQueryable();
@@ -84,7 +84,7 @@ namespace Jube.Data.Repository
                 var lowerSearch = search.ToLower();
                 query = query.Where(w =>
                     (w.Target != null && w.Target.ToLower().Contains(lowerSearch)) ||
-                    (w.HAProxyAddress != null && w.HAProxyAddress.ToLower().Contains(lowerSearch)));
+                    (w.HaProxyAddress != null && w.HaProxyAddress.ToLower().Contains(lowerSearch)));
             }
 
             if (samplePercentage.HasValue)
@@ -95,14 +95,14 @@ namespace Jube.Data.Repository
             return query;
         }
 
-        private static IOrderedQueryable<HAProxyReachabilityProbe> ApplySort(
-            IQueryable<HAProxyReachabilityProbe> query, string sortField, string sortDirection)
+        private static IOrderedQueryable<HaProxyReachabilityProbe> ApplySort(
+            IQueryable<HaProxyReachabilityProbe> query, string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
             return sortField switch
             {
                 "target" => query.OrderByField(o => o.Target, descending),
-                "haProxyAddress" => query.OrderByField(o => o.HAProxyAddress, descending),
+                "haProxyAddress" => query.OrderByField(o => o.HaProxyAddress, descending),
                 "success" => query.OrderByField(o => o.Success, descending),
                 "connectMicroseconds" => query.OrderByField(o => o.ConnectMicroseconds, descending),
                 "httpStatusCode" => query.OrderByField(o => o.HttpStatusCode, descending),

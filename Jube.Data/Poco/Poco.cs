@@ -5175,6 +5175,29 @@ namespace Jube.Data.Poco
 
     [Table]
     [MessagePackObject]
+    public class UserLogout
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public string CreatedUser { get; set; }
+        [Column] [Nullable] [Key(2)] public int? TenantRegistryId { get; set; }
+        [Column] [Nullable] [Key(3)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(4)] public int ReasonId { get; set; }
+        [Column] [Nullable] [Key(5)] public int OutcomeId { get; set; }
+        [Column] [Nullable] [Key(6)] public string RemoteIp { get; set; }
+        [Column] [Nullable] [Key(7)] public string LocalIp { get; set; }
+        [Column] [Nullable] [Key(8)] public string UserAgent { get; set; }
+        [Column] [Nullable] [Key(9)] public DateTime? SessionStartDate { get; set; }
+        [Column] [Nullable] [Key(10)] public string CutByUser { get; set; }
+        [Column] [Nullable] [Key(11)] public string Message { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
     public class UserInTenant
     {
         [Column]
@@ -6049,9 +6072,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(21)] public string Instance { get; set; }
     }
 
-    [Table]
+    [Table(Name = "HAProxyServerStatus")]
     [MessagePackObject]
-    public class HAProxyServerStatus
+    public class HaProxyServerStatus
     {
         [Column]
         [PrimaryKey]
@@ -6081,9 +6104,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(20)] public string Instance { get; set; }
     }
 
-    [Table]
+    [Table(Name = "HAProxyReachabilityProbe")]
     [MessagePackObject]
-    public class HAProxyReachabilityProbe
+    public class HaProxyReachabilityProbe
     {
         [Column]
         [PrimaryKey]
@@ -6093,7 +6116,7 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
         [Column] [Nullable] [Key(2)] public string Target { get; set; }
-        [Column] [Nullable] [Key(3)] public string HAProxyAddress { get; set; }
+        [Column(Name = "HAProxyAddress")] [Nullable] [Key(3)] public string HaProxyAddress { get; set; }
         [Column] [Nullable] [Key(4)] public bool? Success { get; set; }
         [Column] [Nullable] [Key(5)] public long? ConnectMicroseconds { get; set; }
         [Column] [Nullable] [Key(6)] public int? HttpStatusCode { get; set; }

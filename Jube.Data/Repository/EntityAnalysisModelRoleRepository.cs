@@ -42,6 +42,23 @@ namespace Jube.Data.Repository
             this.tenantRegistryId = tenantRegistryId;
         }
 
+        public Task<bool> ExistsEntityAnalysisModelAsync(Guid entityAnalysisModelGuid,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModel.AnyAsync(w =>
+                w.Guid == entityAnalysisModelGuid
+                && w.TenantRegistryId == tenantRegistryId
+                && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
+        public Task<bool> ExistsRoleRegistryAsync(Guid roleRegistryGuid, CancellationToken token = default)
+        {
+            return dbContext.RoleRegistry.AnyAsync(w =>
+                w.Guid == roleRegistryGuid
+                && w.TenantRegistryId == tenantRegistryId
+                && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<IEnumerable<EntityAnalysisModelRole>> GetAllDescAsync(CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelRole
@@ -50,7 +67,8 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token);
         }
 
-        public Task<List<EntityAnalysisModelRole>> GetByEntityAnalysisModelGuidAsync(Guid entityAnalysisModelGuid, CancellationToken token = default)
+        public Task<List<EntityAnalysisModelRole>> GetByEntityAnalysisModelGuidAsync(Guid entityAnalysisModelGuid,
+            CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelRole.Where(w =>
                 w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
@@ -58,13 +76,42 @@ namespace Jube.Data.Repository
                 && (w.Deleted == 0 || w.Deleted == null)).ToListAsync(token);
         }
 
-        public async Task<EntityAnalysisModelRole> InsertAsync(EntityAnalysisModelRole model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelRole> InsertAsync(EntityAnalysisModelRole model,
+            CancellationToken token = default)
         {
+            var existing = await dbContext.EntityAnalysisModelRole.FirstOrDefaultAsync(w =>
+                    w.EntityAnalysisModelGuid == model.EntityAnalysisModelGuid && w.RoleRegistryGuid ==
+                                                                               model.RoleRegistryGuid
+                                                                               && (w.Deleted == 0 || w.Deleted == null),
+                token);
+            if (existing != null)
+            {
+                return existing;
+            }
+
             model.CreatedUser = userName ?? model.CreatedUser;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
-            model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+            try
+            {
+                model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+            }
+            catch (Exception ex) when (GrantInsertion.IsUniqueViolation(ex))
+            {
+                var raced = await dbContext.EntityAnalysisModelRole.FirstOrDefaultAsync(w =>
+                        w.EntityAnalysisModelGuid == model.EntityAnalysisModelGuid && w.RoleRegistryGuid ==
+                        model.RoleRegistryGuid
+                        && (w.Deleted == 0 || w.Deleted == null),
+                    token);
+                if (raced == null)
+                {
+                    throw;
+                }
+
+                return raced;
+            }
+
             return model;
         }
 
@@ -85,7 +132,8 @@ namespace Jube.Data.Repository
             }
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelRole
                 .Where(d =>

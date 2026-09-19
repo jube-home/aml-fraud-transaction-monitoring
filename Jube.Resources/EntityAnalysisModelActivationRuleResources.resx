@@ -150,4 +150,7 @@
     <data name="PriorityRange" xml:space="preserve">
     <value>The priority cannot be negative.</value>
   </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>The rule builder definition must be valid JSON of no more than 1 MB.</value>
+  </data>
 </root>

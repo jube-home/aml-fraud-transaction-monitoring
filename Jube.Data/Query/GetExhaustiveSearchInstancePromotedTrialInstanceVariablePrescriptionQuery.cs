@@ -20,8 +20,19 @@ namespace Jube.Data.Query
     using Context;
     using LinqToDB;
 
-    public class GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(DbContext dbContext)
+    public class GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery
     {
+        private readonly DbContext dbContext;
+        private readonly int tenantRegistryId;
+
+        public GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery(DbContext dbContext,
+            string userName)
+        {
+            this.dbContext = dbContext;
+            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == userName)
+                .Select(s => (int?)s.TenantRegistryId).FirstOrDefault() ?? -1;
+        }
+
         public async Task<IEnumerable<Dto>> ExecuteAsync(
             int exhaustiveSearchInstancePromotedTrialInstanceId, CancellationToken token = default)
         {
@@ -42,7 +53,14 @@ namespace Jube.Data.Query
                     .ExhaustiveSearchInstanceVariable
                     .Where(w => w.Id == t.ExhaustiveSearchInstanceVariableId)
                 where g.Id == exhaustiveSearchInstancePromotedTrialInstanceId
+                      && g.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
+                          .EntityAnalysisModel.TenantRegistryId == tenantRegistryId
                       && (t.Removed == 0 || t.Removed == null)
+                      && (t.Deleted == 0 || t.Deleted == null)
+                      && (v.Deleted == 0 || v.Deleted == null)
+                      && (g.Deleted == 0 || g.Deleted == null)
+                      && (g.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                          || g.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null)
                 orderby s.Sensitivity descending
                 select new Dto
                 {

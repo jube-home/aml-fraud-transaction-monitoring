@@ -27,6 +27,16 @@ namespace Jube.Data.Repository
 
     public class ArchiveRepository(DbContext dbContext)
     {
+        public Task<int?> GetTenantRegistryIdByEntityAnalysisModelInstanceEntryGuidAsync(
+            Guid entityAnalysisModelInstanceEntryGuid,
+            CancellationToken token = default)
+        {
+            return dbContext.Archive
+                .Where(w => w.EntityAnalysisModelInstanceEntryGuid == entityAnalysisModelInstanceEntryGuid)
+                .Select(s => s.EntityAnalysisModel.TenantRegistryId)
+                .FirstOrDefaultAsync(token);
+        }
+
         public async Task<Archive> UpdateTagsByEntityAnalysisModelInstanceEntryGuidAsync(
             Guid entityAnalysisModelInstanceEntryGuid,
             string[] tags,
@@ -38,7 +48,7 @@ namespace Jube.Data.Repository
                               $"No archive record found for {entityAnalysisModelInstanceEntryGuid}.");
 
             var jObject = JObject.Parse(archive.Json);
-            jObject["tag"] = new JArray([..tags]);
+            jObject["tag"] = new JArray([.. tags]);
             archive.Json = jObject.ToString(Formatting.None);
 
             await dbContext.UpdateAsync(archive, token: token);
@@ -81,14 +91,16 @@ namespace Jube.Data.Repository
             await dbContext.InsertAsync(audit, token: token);
         }
 
-        public async Task<long> GetCountsByReferenceDateAsync(Guid entityAnalysisModelGuid, DateTime referenceDate, CancellationToken token = default)
+        public async Task<long> GetCountsByReferenceDateAsync(Guid entityAnalysisModelGuid, DateTime referenceDate,
+            CancellationToken token = default)
         {
             return await dbContext.Archive
                 .CountAsync(w => w.EntityAnalysisModel.Guid == entityAnalysisModelGuid
                                  && w.ReferenceDate >= referenceDate, token).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<string>> GetJsonByEntityAnalysisModelIdRandomLimitAsync(int entityAnalysisModelId, int limit, CancellationToken token = default)
+        public async Task<IEnumerable<string>> GetJsonByEntityAnalysisModelIdRandomLimitAsync(int entityAnalysisModelId,
+            int limit, CancellationToken token = default)
         {
             return await dbContext.Archive
                 .Where(w => w.EntityAnalysisModelId == entityAnalysisModelId)

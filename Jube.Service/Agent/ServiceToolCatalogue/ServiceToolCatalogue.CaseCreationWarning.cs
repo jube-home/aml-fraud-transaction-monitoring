@@ -23,8 +23,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Lists captured case creation warn-threshold breaches -- the specific case (workflow, key, " +
                     "key value), the slow stage, and the notification/HTTP destination when relevant -- most " +
                     "recent first, capped at 100000, with optional date-range, exact-match (StageId, e.g. " +
-                    "1=ExistingCasePriorityLookup), and substring (CaseKeyValue) filters. Landlord callers see " +
-                    "every tenant; other callers only their own. Also accepts samplePercentage (0-100) to draw " +
+                    "1=ExistingCasePriorityLookup), and substring (CaseKeyValue) filters. Landlord only: every other caller is refused with a 403. Also accepts samplePercentage (0-100) to draw " +
                     "an unbiased random subset of matching rows instead of the most recent ones."));
         }
     }

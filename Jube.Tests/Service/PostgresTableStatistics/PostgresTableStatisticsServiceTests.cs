@@ -52,7 +52,7 @@ namespace Jube.Test.Service.PostgresTableStatistics
         public async Task ListReturnsRealTablesFromTheSchemaAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync();
 
@@ -65,6 +65,15 @@ namespace Jube.Test.Service.PostgresTableStatistics
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -90,7 +99,7 @@ namespace Jube.Test.Service.PostgresTableStatistics
         public async Task ListIsNotTenantScopedAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await otherTenantService.ListAsync();
 
@@ -101,7 +110,7 @@ namespace Jube.Test.Service.PostgresTableStatistics
         public async Task ListSortsByTotalSizeBytesAscendingAndDescendingAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync("totalSizeBytes", "asc");
             ascending.Rows.Select(r => r.TotalSizeBytes).Should().BeInAscendingOrder();
@@ -114,7 +123,7 @@ namespace Jube.Test.Service.PostgresTableStatistics
         public async Task ListWithUnrecognisedSortFieldPreservesQueryOrderAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var unsorted = await service.ListAsync();
             var withGarbageSort = await service.ListAsync("notARealColumn");
@@ -126,7 +135,7 @@ namespace Jube.Test.Service.PostgresTableStatistics
         public async Task ListTotalReflectsRowCountAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync();
 
@@ -137,7 +146,7 @@ namespace Jube.Test.Service.PostgresTableStatistics
         public async Task ListStatisticsIncludesEveryContinuousMeasuredColumnAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync();
 

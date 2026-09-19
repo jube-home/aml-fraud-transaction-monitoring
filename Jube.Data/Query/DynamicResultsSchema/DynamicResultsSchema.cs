@@ -18,11 +18,18 @@ namespace Jube.Data.Query.DynamicResultsSchema
 
     public static class DynamicResultSchema
     {
+        public static DateTimeOffset ToUtcOffset(DateTime dt)
+        {
+            return new DateTimeOffset(
+                dt.Kind == DateTimeKind.Local ? dt.ToUniversalTime() : DateTime.SpecifyKind(dt, DateTimeKind.Utc),
+                TimeSpan.Zero);
+        }
+
         public static object NormaliseRecordValue(object value)
         {
             return value switch
             {
-                DateTime dt => new DateTimeOffset(dt.Kind == DateTimeKind.Utc ? dt : dt.ToUniversalTime(), TimeSpan.Zero),
+                DateTime dt => ToUtcOffset(dt),
                 DBNull => null,
                 _ => value
             };

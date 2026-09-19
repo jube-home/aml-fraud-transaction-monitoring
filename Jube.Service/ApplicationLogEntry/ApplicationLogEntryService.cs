@@ -30,7 +30,8 @@ namespace Jube.Service.ApplicationLogEntry
     public sealed class ApplicationLogEntryService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -155,8 +156,9 @@ namespace Jube.Service.ApplicationLogEntry
                     sortField, sortDirection, token).ConfigureAwait(false);
 
                 var dtos = rows.Select(r => new ApplicationLogEntryDto(
-                    r.Id, r.OccurredDate.GetValueOrDefault(), r.Level, r.LoggerName, r.ThreadContext, r.Message,
-                    r.Exception, r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
+                    r.Id, r.OccurredDate.GetValueOrDefault(), r.Level, r.LoggerName,
+                    LogTextRedactor.Redact(r.ThreadContext), LogTextRedactor.Redact(r.Message),
+                    LogTextRedactor.Redact(r.Exception), r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
 
                 var total = await repository.CountAsync(from, to, search, clampedSamplePercentage, token)
                     .ConfigureAwait(false);
@@ -198,14 +200,14 @@ namespace Jube.Service.ApplicationLogEntry
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[ApplicationLogEntryResources.PermissionDenied], permissions);

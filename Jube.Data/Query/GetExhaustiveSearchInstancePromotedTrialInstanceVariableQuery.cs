@@ -23,13 +23,15 @@ namespace Jube.Data.Query
     public class GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery
     {
         private readonly DbContext dbContext;
-        private readonly int? tenantRegistryId;
+        private readonly int tenantRegistryId;
+        private readonly bool tenantRestricted;
 
         public GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(DbContext dbContext, string userName)
         {
             this.dbContext = dbContext;
+            tenantRestricted = true;
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
+                .Select(s => (int?)s.TenantRegistryId).FirstOrDefault() ?? -1;
         }
 
         public GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(DbContext dbContext)
@@ -50,6 +52,12 @@ namespace Jube.Data.Query
                     .Where(w2 => w2.ExhaustiveSearchInstanceTrialInstanceVariableId == t.Id).DefaultIfEmpty()
                 where (t.Removed == 0 || t.Removed == null)
                       && t.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId
+                      && (!tenantRestricted
+                          || (v.ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                              && (t.Deleted == 0 || t.Deleted == null)
+                              && (v.Deleted == 0 || v.Deleted == null)
+                              && (v.ExhaustiveSearchInstance.Deleted == 0
+                                  || v.ExhaustiveSearchInstance.Deleted == null)))
                 orderby t.VariableSequence
                 select new Dto
                 {
@@ -82,8 +90,12 @@ namespace Jube.Data.Query
                 .Where(w =>
                     w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
                     && w.Active == 1
-                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
-                        .EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue))
+                    && (!tenantRestricted
+                        || (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
+                                .EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                            && (w.Deleted == 0 || w.Deleted == null)
+                            && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                                || w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null))))
                 .OrderByDescending(o => o.Id)
                 .Select(s => s.ExhaustiveSearchInstanceTrialInstanceId.GetValueOrDefault())
                 .FirstOrDefaultAsync(token).ConfigureAwait(false);

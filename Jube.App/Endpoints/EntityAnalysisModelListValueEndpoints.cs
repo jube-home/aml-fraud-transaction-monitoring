@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,6 +35,7 @@ namespace Jube.App.Endpoints
     public static class EntityAnalysisModelListValueEndpoints
     {
         private const string Base = "/api/EntityAnalysisModelListValue";
+        private const string CsvUploadBase = "/api/EntityAnalysisModelListCsvFileUpload";
 
         public static void MapEntityAnalysisModelListValueEndpoints(this IEndpointRouteBuilder endpoints)
         {
@@ -69,18 +71,139 @@ namespace Jube.App.Endpoints
                 .Produces((int)HttpStatusCode.NoContent)
                 .Produces((int)HttpStatusCode.BadRequest)
                 .WithName("EntityAnalysisModelListValueDelete");
+
+            endpoints.MapPost(CsvUploadBase, UploadCsvAsync)
+                .RequireAuthorization()
+                .DisableAntiforgery()
+                .WithTags("EntityAnalysisModelListValue")
+                .Produces((int)HttpStatusCode.OK)
+                .Produces((int)HttpStatusCode.Forbidden)
+                .Produces((int)HttpStatusCode.NotFound)
+                .WithName("EntityAnalysisModelListValueUploadCsv");
+        }
+
+        private static async Task<int> ResolveListIdAsync(HttpContext httpContext)
+        {
+            if (httpContext.Request.Query.TryGetValue("entityAnalysisModelListId", out var queryValue) &&
+                int.TryParse(queryValue, out var queryId))
+            {
+                return queryId;
+            }
+
+            if (httpContext.Request.HasFormContentType)
+            {
+                var form = await httpContext.Request.ReadFormAsync();
+                if (form.TryGetValue("entityAnalysisModelListId", out var formValue) &&
+                    int.TryParse(formValue, out var formId))
+                {
+                    return formId;
+                }
+            }
+
+            return 0;
+        }
+
+        private static async Task<IResult> UploadCsvAsync(
+            IFormFileCollection files, HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+            var entityAnalysisModelListId = await ResolveListIdAsync(httpContext);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"POST {CsvUploadBase}: entry entityAnalysisModelListId={entityAnalysisModelListId} user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+            var streams = new List<Stream>();
+            try
+            {
+                var service = await EntityAnalysisModelListValueService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                var dtos = new List<EntityAnalysisModelListValueCsvFileDto>();
+                foreach (var file in files)
+                {
+                    var stream = file.OpenReadStream();
+                    streams.Add(stream);
+                    dtos.Add(new EntityAnalysisModelListValueCsvFileDto
+                    {
+                        FileName = file.FileName, Length = file.Length, Content = stream
+                    });
+                }
+
+                await service.UploadCsvAsync(entityAnalysisModelListId, dtos, token);
+                return TypedResults.StatusCode((int)HttpStatusCode.OK);
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {CsvUploadBase}: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {CsvUploadBase}: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn(
+                        $"POST {CsvUploadBase}: 404 entityAnalysisModelListId={entityAnalysisModelListId} user={user}");
+                }
+
+                return TypedResults.NotFound();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {CsvUploadBase}: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {CsvUploadBase}: 500 user={user}", e);
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+            finally
+            {
+                foreach (var stream in streams)
+                {
+                    await stream.DisposeAsync();
+                }
+            }
         }
 
         private static async Task<int?> ResolveIdAsync(HttpContext httpContext)
         {
             if (httpContext.Request.Query.TryGetValue("id", out var queryValue) &&
                 int.TryParse(queryValue, out var queryId))
+            {
                 return queryId;
+            }
 
             if (httpContext.Request.HasFormContentType)
             {
                 var form = await httpContext.Request.ReadFormAsync();
-                if (form.TryGetValue("id", out var formValue) && int.TryParse(formValue, out var formId)) return formId;
+                if (form.TryGetValue("id", out var formValue) && int.TryParse(formValue, out var formId))
+                {
+                    return formId;
+                }
             }
 
             return null;
@@ -92,7 +215,10 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
-            if (log.IsDebugEnabled) log.Debug($"GET {Base}: entry user={user}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"GET {Base}: entry user={user}");
+            }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
@@ -105,19 +231,28 @@ namespace Jube.App.Endpoints
             }
             catch (NotAuthenticatedException)
             {
-                if (log.IsWarnEnabled) log.Warn($"GET {Base}: 403 (not authenticated) user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}: 403 (not authenticated) user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (ForbiddenException)
             {
-                if (log.IsWarnEnabled) log.Warn($"GET {Base}: 403 user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}: 403 user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (OperationCanceledException)
             {
-                if (log.IsDebugEnabled) log.Debug($"GET {Base}: client cancelled user={user}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"GET {Base}: client cancelled user={user}");
+                }
 
                 throw;
             }
@@ -128,15 +263,26 @@ namespace Jube.App.Endpoints
             }
         }
 
+        private static int ResolveEntityAnalysisModelListId(HttpContext httpContext)
+        {
+            return httpContext.Request.Query.TryGetValue("entityAnalysisModelListId", out var queryValue) &&
+                   int.TryParse(queryValue, out var queryId)
+                ? queryId
+                : 0;
+        }
+
         private static async Task<IResult> GetByEntityAnalysisModelListIdAsync(
-            int entityAnalysisModelListId, HttpContext httpContext, ILog log,
+            HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+            var entityAnalysisModelListId = ResolveEntityAnalysisModelListId(httpContext);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"GET {Base}/ByEntityAnalysisModelListId/{entityAnalysisModelListId}: entry user={user}");
+            }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
@@ -150,23 +296,29 @@ namespace Jube.App.Endpoints
             catch (NotAuthenticatedException)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn(
                         $"GET {Base}/ByEntityAnalysisModelListId/{entityAnalysisModelListId}: 403 (not authenticated) user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (ForbiddenException)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn($"GET {Base}/ByEntityAnalysisModelListId/{entityAnalysisModelListId}: 403 user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"GET {Base}/ByEntityAnalysisModelListId/{entityAnalysisModelListId}: client cancelled user={user}");
+                }
 
                 throw;
             }
@@ -183,7 +335,10 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
-            if (log.IsDebugEnabled) log.Debug($"GET {Base}/{id}: entry user={user}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"GET {Base}/{id}: entry user={user}");
+            }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
@@ -196,19 +351,28 @@ namespace Jube.App.Endpoints
             }
             catch (NotAuthenticatedException)
             {
-                if (log.IsWarnEnabled) log.Warn($"GET {Base}/{id}: 403 (not authenticated) user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}/{id}: 403 (not authenticated) user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (ForbiddenException)
             {
-                if (log.IsWarnEnabled) log.Warn($"GET {Base}/{id}: 403 user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}/{id}: 403 user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (OperationCanceledException)
             {
-                if (log.IsDebugEnabled) log.Debug($"GET {Base}/{id}: client cancelled user={user}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"GET {Base}/{id}: client cancelled user={user}");
+                }
 
                 throw;
             }
@@ -225,7 +389,10 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
-            if (log.IsDebugEnabled) log.Debug($"POST {Base}: entry user={user}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}: entry user={user}");
+            }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
@@ -238,25 +405,37 @@ namespace Jube.App.Endpoints
             }
             catch (NotAuthenticatedException)
             {
-                if (log.IsWarnEnabled) log.Warn($"POST {Base}: 403 (not authenticated) user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}: 403 (not authenticated) user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (ForbiddenException)
             {
-                if (log.IsWarnEnabled) log.Warn($"POST {Base}: 403 user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}: 403 user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (DtoValidationException ex)
             {
-                if (log.IsWarnEnabled) log.Warn($"POST {Base}: 400 user={user} errors={ex.Result.Errors.Count}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}: 400 user={user} errors={ex.Result.Errors.Count}");
+                }
 
                 return TypedResults.BadRequest(ex.Result);
             }
             catch (OperationCanceledException)
             {
-                if (log.IsDebugEnabled) log.Debug($"POST {Base}: client cancelled user={user}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}: client cancelled user={user}");
+                }
 
                 throw;
             }
@@ -273,7 +452,10 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
-            if (log.IsDebugEnabled) log.Debug($"PUT {Base}: entry user={user}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"PUT {Base}: entry user={user}");
+            }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
@@ -286,31 +468,46 @@ namespace Jube.App.Endpoints
             }
             catch (NotAuthenticatedException)
             {
-                if (log.IsWarnEnabled) log.Warn($"PUT {Base}: 403 (not authenticated) user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 403 (not authenticated) user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (ForbiddenException)
             {
-                if (log.IsWarnEnabled) log.Warn($"PUT {Base}: 403 user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 403 user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (DtoValidationException ex)
             {
-                if (log.IsWarnEnabled) log.Warn($"PUT {Base}: 400 user={user} errors={ex.Result.Errors.Count}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 400 user={user} errors={ex.Result.Errors.Count}");
+                }
 
                 return TypedResults.BadRequest(ex.Result);
             }
             catch (NotFoundException)
             {
-                if (log.IsWarnEnabled) log.Warn($"PUT {Base}: 204 (not found) user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 204 (not found) user={user}");
+                }
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
             catch (OperationCanceledException)
             {
-                if (log.IsDebugEnabled) log.Debug($"PUT {Base}: client cancelled user={user}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"PUT {Base}: client cancelled user={user}");
+                }
 
                 throw;
             }
@@ -331,12 +528,18 @@ namespace Jube.App.Endpoints
             var id = await ResolveIdAsync(httpContext);
             if (id is null)
             {
-                if (log.IsWarnEnabled) log.Warn($"DELETE {Base}: 400 (missing or invalid id) user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"DELETE {Base}: 400 (missing or invalid id) user={user}");
+                }
 
                 return TypedResults.BadRequest();
             }
 
-            if (log.IsDebugEnabled) log.Debug($"DELETE {Base}?id={id}: entry user={user}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"DELETE {Base}?id={id}: entry user={user}");
+            }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
@@ -349,25 +552,37 @@ namespace Jube.App.Endpoints
             }
             catch (NotAuthenticatedException)
             {
-                if (log.IsWarnEnabled) log.Warn($"DELETE {Base}?id={id}: 403 (not authenticated) user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"DELETE {Base}?id={id}: 403 (not authenticated) user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (ForbiddenException)
             {
-                if (log.IsWarnEnabled) log.Warn($"DELETE {Base}?id={id}: 403 user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"DELETE {Base}?id={id}: 403 user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (NotFoundException)
             {
-                if (log.IsWarnEnabled) log.Warn($"DELETE {Base}?id={id}: 204 (not found) user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"DELETE {Base}?id={id}: 204 (not found) user={user}");
+                }
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
             catch (OperationCanceledException)
             {
-                if (log.IsDebugEnabled) log.Debug($"DELETE {Base}?id={id}: client cancelled user={user}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"DELETE {Base}?id={id}: client cancelled user={user}");
+                }
 
                 throw;
             }

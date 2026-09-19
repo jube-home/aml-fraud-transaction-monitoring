@@ -182,6 +182,11 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+            if (model is null)
+            {
+                return TypedResults.BadRequest();
+            }
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -245,6 +250,11 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+            if (model is null)
+            {
+                return TypedResults.BadRequest();
+            }
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PUT {Base}: entry user={user}");

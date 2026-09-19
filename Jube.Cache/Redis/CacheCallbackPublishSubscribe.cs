@@ -179,7 +179,8 @@ namespace Jube.Cache.Redis
                 }
 
                 var guid = Guid.Parse(splits[3]);
-                AddToDictionary(value, guid);
+                var tenantRegistryId = int.Parse(splits[4]);
+                AddToDictionary(value, guid, tenantRegistryId);
             }
             catch (Exception ex)
             {
@@ -187,12 +188,13 @@ namespace Jube.Cache.Redis
             }
         }
 
-        internal void AddToDictionary(byte[] value, Guid guid)
+        internal void AddToDictionary(byte[] value, Guid guid, int tenantRegistryId)
         {
             var callback = new Callback.Callback
             {
                 CreatedDate = DateTime.UtcNow,
-                Payload = value
+                Payload = value,
+                TenantRegistryId = tenantRegistryId
             };
 
             var tcs = Callbacks.GetOrAdd(guid,
@@ -281,17 +283,17 @@ namespace Jube.Cache.Redis
         }
 
         public Task PublishAsync(byte[] json, Guid entityAnalysisModelInstanceEntryGuid,
-            CancellationToken token = default)
+            int tenantRegistryId, CancellationToken token = default)
         {
             return CacheDiagnostics.RecordAsync("CacheCallbackPublishSubscribe.PublishAsync", async () =>
             {
                 try
                 {
-                    AddToDictionary(json, entityAnalysisModelInstanceEntryGuid);
+                    AddToDictionary(json, entityAnalysisModelInstanceEntryGuid, tenantRegistryId);
 
                     await resilientRedisResilientRedisDatabase.PublishAsync(
                         RedisChannel.Pattern(
-                            $"CallbackSet:{Dns.GetHostName()}:{localCacheInstanceGuidString}:{entityAnalysisModelInstanceEntryGuid:N}"),
+                            $"CallbackSet:{Dns.GetHostName()}:{localCacheInstanceGuidString}:{entityAnalysisModelInstanceEntryGuid:N}:{tenantRegistryId}"),
                         json);
                 }
                 catch (Exception ex)

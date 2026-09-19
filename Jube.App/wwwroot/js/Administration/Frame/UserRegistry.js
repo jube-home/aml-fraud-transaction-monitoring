@@ -108,6 +108,29 @@ var resetButton = $("#Reset").kendoButton({
     }
 }).hide();
 
+var revokeTokensButton = $("#RevokeTokens").kendoButton({
+    click: function () {
+        if (!confirm("Revoke all browser and bearer (JWT) sessions of this user? They will have to log in again on " +
+            "their next request. API keys are revoked separately (see the API key list below).")) {
+            return;
+        }
+
+        $("#Processing").show();
+        $.ajax({
+            url: "/api/UserRegistry/RevokeTokens/" + id,
+            type: "POST",
+            success: function () {
+                $("#Processing").hide();
+                $("#ErrorMessage").html("Sessions revoked. API keys are not affected.");
+            },
+            error: function (xhr) {
+                $("#Processing").hide();
+                $("#ErrorMessage").html("The sessions could not be revoked (" + xhr.status + ").");
+            }
+        });
+    }
+}).hide();
+
 var addKey = $("#AddKey").kendoButton({
     click: beginAdd
 }).hide();
@@ -195,6 +218,7 @@ $.get("/api/RoleRegistry",
                     wirePasswordHash.value(data.wirePasswordHash);
 
                     resetButton.show();
+                    revokeTokensButton.show();
                     gridElement.show();
                     addKey.show();
 
@@ -229,6 +253,7 @@ $(function () {
                 Create(endpoint, getData(), "id", parentKeyName);
 
                 resetButton.show();
+                revokeTokensButton.show();
                 gridElement.show();
                 addKey.show();
             } else {
@@ -244,6 +269,7 @@ $(function () {
                 Update(endpoint, getData(), "id", parentKeyName);
 
                 resetButton.show();
+                revokeTokensButton.show();
                 gridElement.show();
                 addKey.show();
             } else {

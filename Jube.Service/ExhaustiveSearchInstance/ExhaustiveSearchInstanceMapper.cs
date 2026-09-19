@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.ExhaustiveSearchInstance;
 
 namespace Jube.Service.ExhaustiveSearchInstance
@@ -19,6 +20,7 @@ namespace Jube.Service.ExhaustiveSearchInstance
 
     internal static class ExhaustiveSearchInstanceMapper
     {
+        [return: NotNullIfNotNull(nameof(exhaustiveSearchInstance))]
         public static ExhaustiveSearchInstanceDto? ToDto(ExhaustiveSearchInstancePoco? exhaustiveSearchInstance)
         {
             return exhaustiveSearchInstance is null
@@ -57,7 +59,7 @@ namespace Jube.Service.ExhaustiveSearchInstance
 
         public static List<ExhaustiveSearchInstanceDto> ToDto(IEnumerable<ExhaustiveSearchInstancePoco>? source)
         {
-            return (source ?? Enumerable.Empty<ExhaustiveSearchInstancePoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<ExhaustiveSearchInstancePoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static ExhaustiveSearchInstancePoco ToPoco(ExhaustiveSearchInstanceDto dto)

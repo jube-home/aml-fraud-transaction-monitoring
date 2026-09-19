@@ -77,7 +77,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("EntityAnalysisModelAbstractionCalculation.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(
                     strings[EntityAnalysisModelAbstractionCalculationResources.NotAuthenticated]);
@@ -89,8 +91,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn(
                         $"EntityAnalysisModelAbstractionCalculation.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(
                     strings[EntityAnalysisModelAbstractionCalculationResources.NotAuthenticated]);
@@ -112,7 +116,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelAbstractionCalculation.List: entry user={userName}");
+            }
 
             try
             {
@@ -121,7 +127,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelAbstractionCalculation.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -134,7 +142,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelAbstractionCalculation.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -158,8 +168,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation",
                 "ListByEntityAnalysisModelId", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelAbstractionCalculation.ListByEntityAnalysisModelId: entry entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+            }
 
             try
             {
@@ -170,8 +182,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelAbstractionCalculation.ListByEntityAnalysisModelId: {dtos.Count} rows entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 return dtos;
             }
@@ -184,8 +198,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelAbstractionCalculation.ListByEntityAnalysisModelId: cancelled entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 throw;
             }
@@ -210,7 +226,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelAbstractionCalculation.Get: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -219,8 +237,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 if (abstractionCalculation == null)
                 {
                     if (log.IsDebugEnabled)
+                    {
                         log.Debug(
                             $"EntityAnalysisModelAbstractionCalculation.Get: id={id} not found or not visible to tenant user={userName}");
+                    }
 
                     return null;
                 }
@@ -237,7 +257,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelAbstractionCalculation.Get: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -265,8 +287,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelAbstractionCalculation.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -293,7 +317,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelAbstractionCalculation.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -317,21 +343,26 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelAbstractionCalculation.Create: entry user={userName} name={model?.Name}");
+            }
 
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
+                model.Id = 0;
                 EnsurePermitted(writePermissions, "EntityAnalysisModelAbstractionCalculation.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelAbstractionCalculation.Create: validation failed user={userName} " +
                             $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -345,9 +376,11 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelAbstractionCalculation.Create: created Id={saved.Id} name={saved.Name} " +
                         $"user={userName}");
+                }
 
                 return saved;
             }
@@ -365,7 +398,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelAbstractionCalculation.Create: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -390,7 +425,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelAbstractionCalculation.Update: entry id={model?.Id} user={userName}");
+            }
 
             try
             {
@@ -401,9 +438,11 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelAbstractionCalculation.Update: validation failed id={model.Id} " +
                             $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -418,8 +457,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelAbstractionCalculation.Update: id={model.Id} not found, locked, deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Abstraction Calculation was not found.", ex);
                 }
@@ -429,8 +470,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelAbstractionCalculation.Update: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
 
                 return saved;
             }
@@ -453,8 +496,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelAbstractionCalculation.Update: cancelled id={model?.Id} user={userName}");
+                }
 
                 throw;
             }
@@ -481,7 +526,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelAbstractionCalculation.Delete: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -494,8 +541,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelAbstractionCalculation.Delete: id={id} not found, locked, already deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Abstraction Calculation was not found.", ex);
                 }
@@ -504,7 +553,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 op.Deleted();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelAbstractionCalculation.Delete: soft-deleted Id={id} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -520,7 +571,9 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelAbstractionCalculation.Delete: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -536,10 +589,15 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
 
         private void EnsurePermitted(int[] specs, string op)
         {
-            if (permissionValidation.Validate(specs)) return;
+            if (permissionValidation.Validate(specs))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", specs)}]");
+            }
 
             throw new ForbiddenException(
                 strings[EntityAnalysisModelAbstractionCalculationResources.PermissionDenied], specs);

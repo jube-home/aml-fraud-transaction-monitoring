@@ -22,7 +22,8 @@ namespace Jube.Validations.OpenTelemetryLogCounter
     public sealed class OpenTelemetryLogCounterDtoValidator : AbstractValidator<OpenTelemetryLogCounterDto>
     {
         private const int MaxNameLength = 255;
-        private static readonly TimeSpan RegexMatchTimeout = TimeSpan.FromSeconds(1);
+        private const int MaxRegexLength = 2000;
+        private static readonly TimeSpan regexMatchTimeout = TimeSpan.FromSeconds(1);
 
         public OpenTelemetryLogCounterDtoValidator(IStringLocalizer localiser)
         {
@@ -34,7 +35,7 @@ namespace Jube.Validations.OpenTelemetryLogCounter
                 .WithMessage(_ => string.Format(localiser[OpenTelemetryLogCounterResources.NameMaxLength],
                     MaxNameLength))
                 .WithErrorCode("NameMaximumLength")
-                .Matches("^[A-Za-z0-9._-]+$")
+                .Matches(@"\A[A-Za-z0-9._-]+\z")
                 .WithMessage(_ => localiser[OpenTelemetryLogCounterResources.NameInvalidCharacters])
                 .WithErrorCode("NameInvalidCharacters");
 
@@ -42,17 +43,26 @@ namespace Jube.Validations.OpenTelemetryLogCounter
                 .NotEmpty()
                 .WithMessage(_ => localiser[OpenTelemetryLogCounterResources.RegexRequired])
                 .WithErrorCode("RegexNotEmpty")
+                .MaximumLength(MaxRegexLength)
+                .WithMessage(_ => string.Format(localiser[OpenTelemetryLogCounterResources.RegexTooLong],
+                    MaxRegexLength))
+                .WithErrorCode("RegexMaximumLength")
                 .Must(BeAValidRegex)
+                .When(p => !string.IsNullOrEmpty(p.Regex), ApplyConditionTo.CurrentValidator)
                 .WithMessage(_ => localiser[OpenTelemetryLogCounterResources.RegexInvalid])
-                .WithErrorCode("RegexInvalid")
-                .When(p => !string.IsNullOrEmpty(p.Regex));
+                .WithErrorCode("RegexInvalid");
         }
 
         private static bool BeAValidRegex(string? pattern)
         {
+            if (pattern is null)
+            {
+                return false;
+            }
+
             try
             {
-                _ = new Regex(pattern!, RegexOptions.None, RegexMatchTimeout);
+                _ = new Regex(pattern, RegexOptions.None, regexMatchTimeout);
                 return true;
             }
             catch (ArgumentException)

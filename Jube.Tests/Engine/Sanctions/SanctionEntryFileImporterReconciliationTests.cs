@@ -129,7 +129,7 @@ namespace Jube.Test.Engine.Sanctions
             removedEntry.SanctionEntryReference.Should().Be("2");
 
             var active = await repository.GetActiveBySanctionEntrySourceIdAsync(sourceId);
-            var sanctionEntries = active as SanctionEntry[] ?? active.ToArray();
+            var sanctionEntries = active as SanctionEntry[] ?? [.. active];
             sanctionEntries.Should().HaveCount(2);
             sanctionEntries.Should().NotContain(e => e.SanctionEntryReference == "2");
             sanctionEntries.Should().Contain(e => e.SanctionEntryReference == "1");

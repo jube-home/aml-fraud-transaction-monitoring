@@ -72,7 +72,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
         private async Task<int> CreateEntryAsync(DbContext dbContext, string instance, string pxName = "jube_ui",
             string? svName = null, string status = "UP", DateTime? createdDate = null, int chkFail = 0)
         {
-            var id = await dbContext.InsertWithInt32IdentityAsync(new HAProxyServerStatus
+            var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.HaProxyServerStatus
             {
                 OccurredDate = createdDate ?? DateTime.UtcNow,
                 PxName = pxName,
@@ -109,7 +109,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             var firstId = await CreateEntryAsync(dbContext, instance);
             var secondId = await CreateEntryAsync(dbContext, instance);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var mine = result.Rows.Where(r => r.Instance == instance).ToList();
@@ -122,7 +122,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -134,6 +134,15 @@ namespace Jube.Test.Service.HaProxyServerStatus
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -166,7 +175,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             await CreateEntryAsync(dbContext, $"{instance}Old", createdDate: oldDate);
             await CreateEntryAsync(dbContext, $"{instance}New", createdDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Instance.StartsWith(instance)).ToList();
@@ -184,7 +193,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             await CreateEntryAsync(dbContext, instance, uniquePxName);
             await CreateEntryAsync(dbContext, $"{instance}Other", "jube_api");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniquePxName);
 
             var mine = result.Rows.Where(r => r.Instance == instance || r.Instance == $"{instance}Other").ToList();
@@ -201,7 +210,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             await CreateEntryAsync(dbContext, instance, status: "DOWN");
             await CreateEntryAsync(dbContext, $"{instance}Other", status: "UP");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: "DOWN");
 
             var mine = result.Rows.Where(r => r.Instance == instance || r.Instance == $"{instance}Other").ToList();
@@ -216,7 +225,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, instance);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Instance == instance);
@@ -233,7 +242,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             await CreateEntryAsync(dbContext, $"{instance}Old", createdDate: twoHoursAgo);
             await CreateEntryAsync(dbContext, $"{instance}New", createdDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var mine = result.Rows.Where(r => r.Instance.StartsWith(instance)).ToList();
@@ -250,7 +259,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             await CreateEntryAsync(dbContext, instance, chkFail: 1);
             await CreateEntryAsync(dbContext, instance, chkFail: 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: instance, sortField: "chkFail", sortDirection: "asc");
             ascending.Rows.Select(r => r.ChkFail).Should().Equal(1, 2, 3);
@@ -267,7 +276,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             await CreateEntryAsync(dbContext, instance, chkFail: 1);
             await CreateEntryAsync(dbContext, instance, chkFail: 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance, sortField: "chkFail", sortDirection: "banana");
 
             result.Rows.Select(r => r.ChkFail).Should().Equal(2, 1);
@@ -281,7 +290,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             var firstId = await CreateEntryAsync(dbContext, instance, createdDate: DateTime.UtcNow.AddMinutes(-30));
             var secondId = await CreateEntryAsync(dbContext, instance, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -299,7 +308,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
                 await CreateEntryAsync(dbContext, instance);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: instance);
 
             result.Rows.Should().HaveCount(2);
@@ -317,7 +326,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
                 await CreateEntryAsync(dbContext, instance, chkFail: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var stats = result.Statistics.Columns["chkFail"];
@@ -336,7 +345,7 @@ namespace Jube.Test.Service.HaProxyServerStatus
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, instance);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

@@ -76,7 +76,9 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("EntityAnalysisModelSuppression.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisModelSuppressionResources.NotAuthenticated]);
             }
@@ -87,8 +89,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn(
                         $"EntityAnalysisModelSuppression.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisModelSuppressionResources.NotAuthenticated]);
             }
@@ -108,7 +112,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
         {
             using var op = OperationScope.Start("EntityAnalysisModelSuppression", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelSuppression.List: entry user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSuppression.List: entry user={userName}");
+            }
 
             try
             {
@@ -117,7 +124,9 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSuppression.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -129,7 +138,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelSuppression.List: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelSuppression.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -153,8 +165,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             using var op = OperationScope.Start("EntityAnalysisModelSuppression", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelSuppression.ListByEntityAnalysisModelId: entry entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+            }
 
             try
             {
@@ -163,8 +177,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                     .GetByEntityAnalysisModelIdAsync(entityAnalysisModelId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelSuppression.ListByEntityAnalysisModelId: {dtos.Count} rows entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 return dtos;
             }
@@ -177,8 +193,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelSuppression.ListByEntityAnalysisModelId: cancelled entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 throw;
             }
@@ -203,7 +221,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
         {
             using var op = OperationScope.Start("EntityAnalysisModelSuppression", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelSuppression.Get: entry id={id} user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSuppression.Get: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -212,8 +233,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 if (suppression == null)
                 {
                     if (log.IsDebugEnabled)
+                    {
                         log.Debug(
                             $"EntityAnalysisModelSuppression.Get: id={id} not found or not visible to tenant user={userName}");
+                    }
 
                     return null;
                 }
@@ -230,7 +253,9 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSuppression.Get: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -256,8 +281,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelSuppression.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -284,7 +311,9 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSuppression.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -306,7 +335,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
         {
             using var op = OperationScope.Start("EntityAnalysisModelSuppression", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelSuppression.Create: entry user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSuppression.Create: entry user={userName}");
+            }
 
             try
             {
@@ -317,8 +349,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelSuppression.Create: validation failed user={userName} " +
                                  $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -331,7 +365,9 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelSuppression.Create: created Id={saved.Id} user={userName}");
+                }
 
                 return saved;
             }
@@ -348,7 +384,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelSuppression.Create: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelSuppression.Create: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -376,7 +415,9 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             using var op = OperationScope.Start("EntityAnalysisModelSuppression", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelSuppression.Update: entry id={model?.Id} user={userName}");
+            }
 
             try
             {
@@ -387,8 +428,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelSuppression.Update: validation failed id={model.Id} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -402,8 +445,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelSuppression.Update: id={model.Id} not found or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Suppression was not found.", ex);
                 }
@@ -413,8 +458,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelSuppression.Update: toggled Id={saved.Id} user={userName}");
+                }
 
                 return saved;
             }
@@ -437,7 +484,9 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSuppression.Update: cancelled id={model?.Id} user={userName}");
+                }
 
                 throw;
             }
@@ -466,8 +515,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             using var op = OperationScope.Start("EntityAnalysisModelSuppression", "UpdateDeleteExpiryDate",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelSuppression.UpdateDeleteExpiryDate: entry entityAnalysisModelGuid={model?.EntityAnalysisModelGuid} user={userName}");
+            }
 
             try
             {
@@ -478,9 +529,11 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelSuppression.UpdateDeleteExpiryDate: validation failed user={userName} " +
                             $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -495,9 +548,11 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelSuppression.UpdateDeleteExpiryDate: no active Suppression matched " +
                             $"entityAnalysisModelGuid={model.EntityAnalysisModelGuid} user={userName}");
+                    }
 
                     throw new NotFoundException("The Suppression was not found.", ex);
                 }
@@ -507,10 +562,12 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelSuppression.UpdateDeleteExpiryDate: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
 
-                return EntityAnalysisModelSuppressionMapper.ToDto(saved)!;
+                return EntityAnalysisModelSuppressionMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -531,8 +588,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelSuppression.UpdateDeleteExpiryDate: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -558,7 +617,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
         {
             using var op = OperationScope.Start("EntityAnalysisModelSuppression", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelSuppression.Delete: entry id={id} user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSuppression.Delete: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -571,8 +633,10 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelSuppression.Delete: id={id} not found, already deleted, expired, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Suppression was not found.", ex);
                 }
@@ -581,7 +645,9 @@ namespace Jube.Service.EntityAnalysisModelSuppression
                 op.Deleted();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelSuppression.Delete: soft-deleted Id={id} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -597,7 +663,9 @@ namespace Jube.Service.EntityAnalysisModelSuppression
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSuppression.Delete: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -611,10 +679,15 @@ namespace Jube.Service.EntityAnalysisModelSuppression
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions)) return;
+            if (permissionValidation.Validate(permissions))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+            }
 
             throw new ForbiddenException(strings[EntityAnalysisModelSuppressionResources.PermissionDenied],
                 permissions);

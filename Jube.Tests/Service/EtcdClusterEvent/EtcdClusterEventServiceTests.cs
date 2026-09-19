@@ -102,7 +102,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             var secondId = await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.AlarmRaised,
                 newValue: "NOSPACE");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Endpoint == endpoint).ToList();
@@ -117,7 +117,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -129,6 +129,15 @@ namespace Jube.Test.Service.EtcdClusterEvent
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -161,7 +170,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, $"{endpoint}Old", EtcdClusterEventType.LeaderChanged, oldDate);
             await CreateEntryAsync(dbContext, $"{endpoint}New", EtcdClusterEventType.LeaderChanged, newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Endpoint.StartsWith(endpoint)).ToList();
@@ -178,7 +187,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, uniqueEndpoint, EtcdClusterEventType.AlarmRaised, newValue: "NOSPACE");
             await CreateEntryAsync(dbContext, "OtherHost:2379", EtcdClusterEventType.LeaderChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: "NOSPACE");
 
             var mine = result.Rows.Where(r => r.Endpoint == uniqueEndpoint || r.Endpoint == "OtherHost:2379").ToList();
@@ -194,7 +203,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged);
             await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.AlarmRaised);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -208,7 +217,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged);
             await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.AlarmRaised);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -221,7 +230,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             var endpoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:2379";
             await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Endpoint == endpoint);
@@ -238,7 +247,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, $"{endpoint}Old", EtcdClusterEventType.LeaderChanged, twoHoursAgo);
             await CreateEntryAsync(dbContext, $"{endpoint}New", EtcdClusterEventType.LeaderChanged, justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint);
 
             var mine = result.Rows.Where(r => r.Endpoint.StartsWith(endpoint)).ToList();
@@ -255,7 +264,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, $"{endpoint}A", EtcdClusterEventType.LeaderChanged);
             await CreateEntryAsync(dbContext, $"{endpoint}B", EtcdClusterEventType.LeaderChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: endpoint, sortField: "endpoint", sortDirection: "asc");
             ascending.Rows.Select(r => r.Endpoint).Should().Equal($"{endpoint}A", $"{endpoint}B", $"{endpoint}C");
@@ -276,7 +285,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, $"{endpoint}B", EtcdClusterEventType.LeaderChanged);
             await CreateEntryAsync(dbContext, $"{endpoint}A", EtcdClusterEventType.LeaderChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, sortField: "endpoint",
                 sortDirection: ascendingKeyword);
 
@@ -291,7 +300,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, $"{endpoint}A", EtcdClusterEventType.LeaderChanged);
             await CreateEntryAsync(dbContext, $"{endpoint}B", EtcdClusterEventType.LeaderChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, sortField: "endpoint",
                 sortDirection: "banana");
 
@@ -308,7 +317,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             var secondId = await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged,
                 DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -326,7 +335,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
                 await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: endpoint);
 
             result.Rows.Should().HaveCount(2);
@@ -340,7 +349,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             var endpoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:2379";
             await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint);
 
             result.Statistics.Columns.Should().BeEmpty(

@@ -368,9 +368,9 @@ namespace Jube.Test.Engine.TtlCounter
                         break;
                     }
                 }
-            });
+            }, pumpCts.Token);
 
-            await Task.Delay(pollMs * 2);
+            await Task.Delay(pollMs * 2, pumpCts.Token);
             var stillPresentBeforeInterval = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
             stillPresentBeforeInterval.Should().Be(incrementValue,
@@ -379,12 +379,11 @@ namespace Jube.Test.Engine.TtlCounter
             return (model, counter, cancellationTokenProvider, loopTask, pumpCts, pumpTask, pollMs);
         }
 
-        private static async Task StopBatchAdministrationAsync(CancellationTokenProvider cancellationTokenProvider,
-            Task loopTask, CancellationTokenSource pumpCts, Task pumpTask)
+        private static Task CancelBatchAdministrationAsync(CancellationTokenProvider cancellationTokenProvider,
+            CancellationTokenSource pumpCts)
         {
             cancellationTokenProvider.Cancel();
-            await pumpCts.CancelAsync();
-            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5)));
+            return pumpCts.CancelAsync();
         }
 
         [Fact]
@@ -402,7 +401,8 @@ namespace Jube.Test.Engine.TtlCounter
 
             await Task.Delay(TimeSpan.FromSeconds(ttlCounterValueSeconds) + TimeSpan.FromMilliseconds(pollMs * 4));
 
-            await StopBatchAdministrationAsync(cancellationTokenProvider, loopTask, pumpCts, pumpTask);
+            await CancelBatchAdministrationAsync(cancellationTokenProvider, pumpCts);
+            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5)));
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
@@ -451,7 +451,8 @@ namespace Jube.Test.Engine.TtlCounter
 
             await Task.Delay(TimeSpan.FromSeconds(ttlCounterValueSeconds) + TimeSpan.FromMilliseconds(pollMs * 4));
 
-            await StopBatchAdministrationAsync(cancellationTokenProvider, loopTask, pumpCts, pumpTask);
+            await CancelBatchAdministrationAsync(cancellationTokenProvider, pumpCts);
+            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5)));
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
@@ -494,7 +495,8 @@ namespace Jube.Test.Engine.TtlCounter
             var stillPresent = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
 
-            await StopBatchAdministrationAsync(cancellationTokenProvider, loopTask, pumpCts, pumpTask);
+            await CancelBatchAdministrationAsync(cancellationTokenProvider, pumpCts);
+            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5)));
 
             stillPresent.Should().Be(incrementValue,
                 "the eight-second interval is nowhere near elapsed; the loop must not have touched the counter " +
@@ -572,11 +574,12 @@ namespace Jube.Test.Engine.TtlCounter
                         break;
                     }
                 }
-            });
+            }, pumpCts.Token);
 
-            await Task.Delay(TimeSpan.FromSeconds(2) + TimeSpan.FromMilliseconds(pollMs * 4));
+            await Task.Delay(TimeSpan.FromSeconds(2) + TimeSpan.FromMilliseconds(pollMs * 4), pumpCts.Token);
 
-            await StopBatchAdministrationAsync(cancellationTokenProvider, loopTask, pumpCts, pumpTask);
+            await CancelBatchAdministrationAsync(cancellationTokenProvider, pumpCts);
+            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5)));
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
@@ -591,7 +594,7 @@ namespace Jube.Test.Engine.TtlCounter
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
             var batchExists = await dbContext.CacheTtlCounterEntryRemovalBatch
-                .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid);
+                .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid, token: pumpCts.Token);
             batchExists.Should().BeFalse(
                 "the administration loop finds nothing expired for a Live Forever counter, so it never records " +
                 "a removal batch for it");
@@ -662,11 +665,12 @@ namespace Jube.Test.Engine.TtlCounter
                         break;
                     }
                 }
-            });
+            }, pumpCts.Token);
 
-            await Task.Delay(pollMs * 5);
+            await Task.Delay(pollMs * 5, pumpCts.Token);
 
-            await StopBatchAdministrationAsync(cancellationTokenProvider, loopTask, pumpCts, pumpTask);
+            await CancelBatchAdministrationAsync(cancellationTokenProvider, pumpCts);
+            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5)));
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
@@ -754,11 +758,12 @@ namespace Jube.Test.Engine.TtlCounter
                         break;
                     }
                 }
-            });
+            }, pumpCts.Token);
 
-            await Task.Delay(TimeSpan.FromSeconds(2) + TimeSpan.FromMilliseconds(pollMs * 4));
+            await Task.Delay(TimeSpan.FromSeconds(2) + TimeSpan.FromMilliseconds(pollMs * 4), pumpCts.Token);
 
-            await StopBatchAdministrationAsync(cancellationTokenProvider, loopTask, pumpCts, pumpTask);
+            await CancelBatchAdministrationAsync(cancellationTokenProvider, pumpCts);
+            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5)));
 
             var shortRemaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, shortCounter.Guid, dataName,
@@ -838,11 +843,12 @@ namespace Jube.Test.Engine.TtlCounter
                         break;
                     }
                 }
-            });
+            }, pumpCts.Token);
 
-            await Task.Delay(TimeSpan.FromSeconds(2) + TimeSpan.FromMilliseconds(pollMs * 4));
+            await Task.Delay(TimeSpan.FromSeconds(2) + TimeSpan.FromMilliseconds(pollMs * 4), pumpCts.Token);
 
-            await StopBatchAdministrationAsync(cancellationTokenProvider, loopTask, pumpCts, pumpTask);
+            await CancelBatchAdministrationAsync(cancellationTokenProvider, pumpCts);
+            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5)));
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, counter.Guid, dataName, dataValue);
@@ -853,7 +859,7 @@ namespace Jube.Test.Engine.TtlCounter
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
             var batchExists = await dbContext.CacheTtlCounterEntryRemovalBatch
-                .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid);
+                .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid, token: pumpCts.Token);
             batchExists.Should().BeFalse("a model that was never started should never be processed at all");
         }
 

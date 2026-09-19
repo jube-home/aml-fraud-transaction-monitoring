@@ -50,6 +50,12 @@ namespace Jube.Data.Repository
             this.dbContext = dbContext;
         }
 
+        public Task<bool> ParentModelVisibleAsync(int entityAnalysisModelId, CancellationToken token = default)
+        {
+            return EntityAnalysisModelParentGuard.IsVisibleAsync(dbContext, tenantRegistryId, entityAnalysisModelId,
+                token);
+        }
+
         public Task<EntityAnalysisModelActivationRule> GetByNameEntityAnalysisModelIdAsync(string name,
             int entityAnalysisModelId, CancellationToken token = default)
         {
@@ -165,7 +171,10 @@ namespace Jube.Data.Repository
 
                 await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);
 
-                if (records == 0) throw new KeyNotFoundException();
+                if (records == 0)
+                {
+                    throw new KeyNotFoundException();
+                }
             }
             catch
             {
@@ -185,7 +194,10 @@ namespace Jube.Data.Repository
                 .Set(s => s.EvaluationCounter, 0L)
                 .UpdateAsync(token).ConfigureAwait(false);
 
-            if (records == 0) throw new KeyNotFoundException();
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
         }
 
         public Task UpdateCompileStatusAsync(int id, bool compiled, string compileError,
@@ -210,7 +222,16 @@ namespace Jube.Data.Repository
                                           && (w.Deleted == 0 || w.Deleted == null)
                                           && (w.Locked == 0 || w.Locked == null), token);
 
-            if (existing == null) throw new KeyNotFoundException();
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            if (!await ParentModelVisibleAsync(model.EntityAnalysisModelId.GetValueOrDefault(), token)
+                    .ConfigureAwait(false))
+            {
+                throw new KeyNotFoundException();
+            }
 
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
@@ -246,7 +267,10 @@ namespace Jube.Data.Repository
                 .Set(s => s.DeletedUser, userName)
                 .UpdateAsync(token);
 
-            if (records == 0) throw new KeyNotFoundException();
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
         }
 
         public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,

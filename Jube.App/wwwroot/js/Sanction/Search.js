@@ -11,6 +11,33 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+const processingFailed = "Processing failed.  Please contact Support to check logs for the source of the error.";
+
+function DisplayValidationErrors(jqXHR) {
+    const $errorContainer = $("#ErrorMessage");
+    $errorContainer.empty();
+
+    if (jqXHR.status !== 400) {
+        $errorContainer.text(processingFailed);
+        return;
+    }
+
+    try {
+        const response = JSON.parse(jqXHR.responseText);
+        const $container = $('<div class="server-error-box"><div class="server-error-title">Validation Errors:</div></div>');
+
+        if (response.errors) {
+            Object.values(response.errors).forEach(function (e) {
+                $container.append($('<div class="server-error-line"></div>').text(e.errorMessage));
+            });
+        }
+
+        $errorContainer.append($container);
+    } catch (e) {
+        $errorContainer.text(processingFailed);
+    }
+}
+
 const aggregationColumns = [
     {field: "sum", title: "Sum", format: "{0:n2}"},
     {field: "average", title: "Average", format: "{0:n2}"},
@@ -128,6 +155,8 @@ $(document).ready(function () {
 
     $("#Check").kendoButton({
         click: function () {
+            $("#ErrorMessage").empty();
+
             $.get("../api/Invoke/Sanction", {
                 multiPartString: $("#MultiPartString").val(),
                 distance: $("#Distance").data("kendoSlider").value(),
@@ -138,7 +167,7 @@ $(document).ready(function () {
 
                 $("#AggregationsTotal").data("kendoGrid").dataSource.data([response.aggregations.total]);
                 $("#AggregationsBySource").data("kendoGrid").dataSource.data(response.aggregations.bySource);
-            });
+            }).fail(DisplayValidationErrors);
         }
     });
 });

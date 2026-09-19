@@ -30,7 +30,8 @@ namespace Jube.Service.EtcdMemberStatus
     public sealed class EtcdMemberStatusService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -162,8 +163,9 @@ namespace Jube.Service.EtcdMemberStatus
                     sortField, sortDirection, token).ConfigureAwait(false);
 
                 var dtos = rows.Select(r => new EtcdMemberStatusDto(
-                    r.Id, r.OccurredDate.GetValueOrDefault(), r.Endpoint, r.MemberId, r.Name, r.PeerUrls,
-                    r.ClientUrls, r.IsLearner, r.Version, r.ClusterVersion, r.HealthOk, r.HealthReason,
+                    r.Id, r.OccurredDate.GetValueOrDefault(), r.Endpoint, r.MemberId, r.Name,
+                    LogTextRedactor.Redact(r.PeerUrls), LogTextRedactor.Redact(r.ClientUrls), r.IsLearner,
+                    r.Version, r.ClusterVersion, r.HealthOk, LogTextRedactor.Redact(r.HealthReason),
                     r.LeaderId, r.IsLeader, r.HasLeader, r.LeaderChangesTotal, r.DbSizeBytes,
                     r.DbSizeInUseBytes, r.RaftIndex, r.RaftTerm, r.RaftAppliedIndex, r.ProposalsCommittedTotal,
                     r.ProposalsAppliedTotal, r.ProposalsPendingCount, r.ProposalsFailedTotal,
@@ -211,14 +213,14 @@ namespace Jube.Service.EtcdMemberStatus
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[EtcdMemberStatusResources.PermissionDenied], permissions);

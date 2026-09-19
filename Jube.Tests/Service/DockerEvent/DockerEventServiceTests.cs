@@ -96,7 +96,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", "start", uniqueActorName);
             await CreateEntryAsync(dbContext, "container", "die", uniqueActorName2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: DatabaseFixture.Prefix);
 
             var mine = result.Rows.Where(r => r.ActorName == uniqueActorName || r.ActorName == uniqueActorName2)
@@ -112,7 +112,7 @@ namespace Jube.Test.Service.DockerEvent
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -124,6 +124,15 @@ namespace Jube.Test.Service.DockerEvent
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -157,7 +166,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", "kill", uniqueActorName, oldDate);
             await CreateEntryAsync(dbContext, "container", "kill", uniqueActorName2, newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1), search: DatabaseFixture.Prefix);
 
             var mine = result.Rows.Where(r => r.ActorName == uniqueActorName || r.ActorName == uniqueActorName2)
@@ -178,7 +187,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", "kill", uniqueActorName, twoHoursAgo);
             await CreateEntryAsync(dbContext, "container", "kill", uniqueActorName2, justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: DatabaseFixture.Prefix);
 
             var mine = result.Rows.Where(r => r.ActorName == uniqueActorName || r.ActorName == uniqueActorName2)
@@ -196,7 +205,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", uniqueAction, "some-container");
             await CreateEntryAsync(dbContext, "container", "other-action", "some-container");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueAction[..12].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.Action == uniqueAction).ToList();
@@ -212,7 +221,7 @@ namespace Jube.Test.Service.DockerEvent
 
             await CreateEntryAsync(dbContext, "container", uniqueAction, uniqueActorName);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueActorName);
 
             result.Rows.Should().Contain(r => r.Action == uniqueAction);
@@ -226,7 +235,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", uniqueAction, "a");
             await CreateEntryAsync(dbContext, "container", uniqueAction, "b");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueAction, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -240,7 +249,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", uniqueAction, "a");
             await CreateEntryAsync(dbContext, "container", uniqueAction, "b");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueAction, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -253,7 +262,7 @@ namespace Jube.Test.Service.DockerEvent
             var uniqueAction = $"{DatabaseFixture.Prefix}crosstenant{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, "container", uniqueAction, "a");
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync(search: uniqueAction);
 
             otherTenantResult.Rows.Should().Contain(r => r.Action == uniqueAction);
@@ -268,7 +277,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", "a-action", uniqueActorName);
             await CreateEntryAsync(dbContext, "container", "b-action", uniqueActorName);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: uniqueActorName, sortField: "action",
                 sortDirection: "asc");
@@ -290,7 +299,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", "b-action", uniqueActorName);
             await CreateEntryAsync(dbContext, "container", "a-action", uniqueActorName);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueActorName, sortField: "action",
                 sortDirection: ascendingKeyword);
 
@@ -305,7 +314,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", "a-action", uniqueActorName);
             await CreateEntryAsync(dbContext, "container", "b-action", uniqueActorName);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueActorName, sortField: "action",
                 sortDirection: "banana");
 
@@ -321,7 +330,7 @@ namespace Jube.Test.Service.DockerEvent
                 DateTime.UtcNow.AddMinutes(-30));
             await CreateEntryAsync(dbContext, "container", "second", uniqueActorName, DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueActorName, sortField: "notARealColumn");
 
             result.Rows.Select(r => r.Action).Should().Equal("second", "first");
@@ -337,7 +346,7 @@ namespace Jube.Test.Service.DockerEvent
                 await CreateEntryAsync(dbContext, "container", "action", uniqueActorName);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: uniqueActorName);
 
             result.Rows.Should().HaveCount(2);
@@ -351,7 +360,7 @@ namespace Jube.Test.Service.DockerEvent
             var uniqueActorName = $"{DatabaseFixture.Prefix}stats{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, "container", "action", uniqueActorName);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueActorName);
 
             result.Statistics.Should().NotBeNull();

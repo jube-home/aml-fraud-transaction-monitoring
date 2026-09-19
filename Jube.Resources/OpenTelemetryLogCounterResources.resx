@@ -57,4 +57,7 @@
     <data name="RegexInvalid" xml:space="preserve">
     <value>Regex is not a valid regular expression.</value>
   </data>
+    <data name="RegexTooLong" xml:space="preserve">
+    <value>Regex must be {0} characters or fewer.</value>
+  </data>
 </root>

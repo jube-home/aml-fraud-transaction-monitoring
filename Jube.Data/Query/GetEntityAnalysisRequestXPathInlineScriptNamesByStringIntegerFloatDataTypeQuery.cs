@@ -26,7 +26,8 @@ namespace Jube.Data.Query
         private readonly DbContext dbContext;
         private readonly int tenantRegistryId;
 
-        public GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery(DbContext dbContext, string userName)
+        public GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery(DbContext dbContext,
+            string userName)
         {
             this.dbContext = dbContext;
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == userName)
@@ -37,13 +38,18 @@ namespace Jube.Data.Query
         {
             var searchKeys = new List<Dto>();
 
-            var entityAnalysisModelRequestXpath = new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId);
-            var entityAnalysisModelInlineScriptRepository = new EntityAnalysisModelInlineScriptRepository(dbContext, tenantRegistryId);
-            var entityAnalysisModelInlineScripts = await entityAnalysisModelInlineScriptRepository.GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+            var entityAnalysisModelRequestXpath =
+                new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId);
+            var entityAnalysisModelInlineScriptRepository =
+                new EntityAnalysisModelInlineScriptRepository(dbContext, tenantRegistryId);
+            var entityAnalysisModelInlineScripts = await entityAnalysisModelInlineScriptRepository
+                .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+            entityAnalysisModelInlineScripts = entityAnalysisModelInlineScripts.Where(w => w.Active == 1);
             var entityAnalysisInlineScriptRepository = new EntityAnalysisInlineScriptRepository(dbContext);
 
             var entityAnalysisModelRequestXpaths = await entityAnalysisModelRequestXpath
                 .GetByEntityAnalysisModelIdByDataTypeAsync(entityAnalysisModelId, token, 1, 3);
+            entityAnalysisModelRequestXpaths = entityAnalysisModelRequestXpaths.Where(w => w.Active == 1);
 
             var entityAnalysisModelRequestXpathsStaging = entityAnalysisModelRequestXpaths
                 .Select(s => new Dto
@@ -78,10 +84,14 @@ namespace Jube.Data.Query
                 searchKeys.AddRange(inlineScriptKeys);
             }
 
-            var entityAnalysisInlineFunctionRepository = new EntityAnalysisModelInlineFunctionRepository(dbContext);
-            var entityAnalysisModelInlineFunctions = (await entityAnalysisInlineFunctionRepository.GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token)).ToList();
+            var entityAnalysisInlineFunctionRepository =
+                new EntityAnalysisModelInlineFunctionRepository(dbContext, tenantRegistryId);
+            var entityAnalysisModelInlineFunctions =
+                (await entityAnalysisInlineFunctionRepository.GetByEntityAnalysisModelIdOrderByIdAsync(
+                    entityAnalysisModelId, token)).Where(w => w.Active == 1).ToList();
 
-            var entityAnalysisModelInlineFunctionsStaging = entityAnalysisModelInlineFunctions.Where(w => w.ReturnDataTypeId == 1)
+            var entityAnalysisModelInlineFunctionsStaging = entityAnalysisModelInlineFunctions
+                .Where(w => w.ReturnDataTypeId == 1)
                 .Select(s => new Dto
                 {
                     Name = s.Name,

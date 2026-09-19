@@ -13,6 +13,9 @@
 
 namespace Jube.Data.Query.CaseQuery
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
@@ -35,7 +38,15 @@ namespace Jube.Data.Query.CaseQuery
             var xPaths = await caseWorkflowXPathByCaseWorkflowIdQuery
                 .ExecuteAsync(getCaseByIdDto.CaseWorkflowGuid, token);
 
-            var json = JObject.Parse(getCaseByIdDto.Json);
+            JObject json;
+            try
+            {
+                json = JObject.Parse(getCaseByIdDto.Json ?? "{}");
+            }
+            catch (Newtonsoft.Json.JsonException)
+            {
+                json = new JObject();
+            }
 
             getCaseByIdDto.FormattedPayload = [];
 
@@ -63,7 +74,8 @@ namespace Jube.Data.Query.CaseQuery
                             {
                                 try
                                 {
-                                    var regex = new Regex(xPath.RegularExpression);
+                                    var regex = new Regex(xPath.RegularExpression, RegexOptions.None,
+                                        TimeSpan.FromSeconds(1));
 
                                     var match = regex.Match(getCaseByIdFieldEntryDto.Value);
                                     getCaseByIdFieldEntryDto.ExistsMatch = match.Success;
@@ -96,21 +108,23 @@ namespace Jube.Data.Query.CaseQuery
             }
 
             getCaseByIdDto.Activation = [];
-            var jTokensActivation = json.SelectTokens("$.activation");
-            foreach (var activationJToken in jTokensActivation)
-            foreach (var x in activationJToken)
+            IEnumerable<JToken> jTokensActivation;
+            try
             {
-                var key = ((JProperty)x).Name;
-                var jValue = ((JProperty)x).Value;
+                jTokensActivation = json.SelectTokens("$.activation").ToList();
+            }
+            catch (Newtonsoft.Json.JsonException)
+            {
+                jTokensActivation = [];
+            }
 
-                var getCaseByIdActivationDto = new GetCaseByIdActivationDto
+            foreach (var activationJToken in jTokensActivation.OfType<JObject>())
+            foreach (var property in activationJToken.Properties())
+            {
+                if (property.Value is JObject jValue && jValue["visible"]?.Type == JTokenType.Integer
+                                                     && (int)jValue["visible"] == 1)
                 {
-                    Name = key
-                };
-
-                if ((int)jValue["visible"] == 1)
-                {
-                    getCaseByIdDto.Activation.Add(getCaseByIdActivationDto);
+                    getCaseByIdDto.Activation.Add(new GetCaseByIdActivationDto { Name = property.Name });
                 }
             }
 

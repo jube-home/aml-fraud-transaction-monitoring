@@ -125,7 +125,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     context.EntityAnalysisModelInstanceEntryPayload.ResponseJson.Length > 0
                         ? context.EntityAnalysisModelInstanceEntryPayload.ResponseJson
                         : context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson,
-                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid)
+                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid,
+                    tenantRegistryId: context.EntityAnalysisModel.Instance.TenantRegistryId)
                 .ConfigureAwait(false);
 
             context.TraceLog($"will store the callback in the database.");

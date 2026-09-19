@@ -129,7 +129,10 @@ namespace Jube.Data.Repository
                                           && (w.Deleted == 0 || w.Deleted == null)
                                           && (w.Locked == 0 || w.Locked == null), token);
 
-            if (existing == null) throw new KeyNotFoundException();
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
 
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
@@ -163,7 +166,10 @@ namespace Jube.Data.Repository
                 .Set(s => s.DeletedUser, userName)
                 .UpdateAsync(token);
 
-            if (records == 0) throw new KeyNotFoundException();
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
         }
 
         public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,

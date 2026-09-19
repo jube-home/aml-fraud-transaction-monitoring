@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.OpenTelemetryExclude;
 
 namespace Jube.Service.OpenTelemetryExclude
@@ -19,6 +20,7 @@ namespace Jube.Service.OpenTelemetryExclude
 
     internal static class OpenTelemetryExcludeMapper
     {
+        [return: NotNullIfNotNull(nameof(exclude))]
         public static OpenTelemetryExcludeDto? ToDto(ExcludePoco? exclude)
         {
             return exclude is null
@@ -41,7 +43,7 @@ namespace Jube.Service.OpenTelemetryExclude
 
         public static List<OpenTelemetryExcludeDto> ToDto(IEnumerable<ExcludePoco>? source)
         {
-            return (source ?? Enumerable.Empty<ExcludePoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<ExcludePoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static ExcludePoco ToPoco(OpenTelemetryExcludeDto dto)

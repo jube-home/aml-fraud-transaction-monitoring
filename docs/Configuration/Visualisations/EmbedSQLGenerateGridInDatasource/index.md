@@ -6,10 +6,13 @@ parent: Visualisations
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # Embed SQL and Generate Grid in Datasource
-Datasource's are the tiles inside the Visualisation which are in their core SQL statements executed against the database and returned for presentation as either a grid or some form of chart, map or tokenized HTML iteration.
+
+Datasource's are the tiles inside the Visualisation which are in their core SQL statements executed against the database
+and returned for presentation as either a grid or some form of chart, map or tokenized HTML iteration.
 
 As introduced beforehand, the following SQL is to be executed:
 
@@ -18,13 +21,21 @@ select * from "ExampleCaseVolumeEntry"
 where "ActivationRuleName" LIKE @Name
 ```
 
-The tokenization will be performed on the basis of the Visualisation Registry Parameter created, and will be matched on the basis of the name.
+The tokenization will be performed on the basis of the Visualisation Registry Parameter created, and will be matched on
+the basis of the name. A token such as `@Name` is only replaced when the Visualisation Registry has a Parameter of
+exactly that name (letters are case sensitive, and spaces in a Parameter name become underscores in the token); an
+undefined token is left in the SQL, which the database then refuses, for example with `column "name" does not exist`.
+
+The SQL must be a single `SELECT` statement: statements that write, several statements, functions that sleep or read the
+server, the system catalogues and the identity and credential tables are refused, and the statement runs in a read only
+transaction limited to 30 seconds and 100,000 rows (see Software Validations).
 
 To create a datasource, start by navigating to Administration >> Visualisations >> Visualisations Datasources:
 
 ![Image](VisualisationsDatasourceTopOfTree.png)
 
-To create a new Datasource for the Visualisation Registry Wrapper,  click on the node for the Visualisation Registry,  in this case Demonstration:
+To create a new Datasource for the Visualisation Registry Wrapper, click on the node for the Visualisation Registry, in
+this case Demonstration:
 
 ![Image](EmptyVisualisationDatasource.png)
 
@@ -58,7 +69,8 @@ The Visualisation Registry Datasource accepts the following parameters:
     }
 })
 ```
-For SQL invocation and grid display only,  complete the page as follows:
+
+For SQL invocation and grid display only, complete the page as follows:
 
 ![Image](CompletedPageForGridDatasource.png)
 
@@ -66,18 +78,27 @@ Click Add to create a version of the Visualisation Registry Datasource:
 
 ![Image](CreatedVersionOfDatasource.png)
 
-On the creation the SQL is tested to ensure it is valid and the return columns parsed to establish the datatype.  In the event that an error is returned including the response from the database to direct correction of the SQL, for example:
+On the creation the SQL is tested to ensure it is valid and the return columns parsed to establish the datatype. In the
+event that an error is returned it includes the database's own message and its SQLSTATE code to direct correction of the
+SQL (never the statement itself, nor the position or detail), for example
+`The reporting database rejected the SQL command: column "missing" does not exist (42703).`  SQL that the safety check
+refuses (not a single SELECT, or a blocked function or table) is reported as such:
 
 ![Image](ExampleError.png)
 
-Given the use of parameter queries and the validation of SQL on creation of a datasource, the prospect of errors during execution are minimised (although execution performance is available with each datasource execution being logged).
+Given the use of parameter queries and the validation of SQL on creation of a datasource, the prospect of errors during
+execution are minimised (although execution performance is available with each datasource execution being logged).
 
 Navigate to the Visualisation Registry through the Visualisation Directory to recall:
 
 ![Image](NoteDefaultValue.png)
 
-Noting the default parameter value for Name, as Email, click on Run to execute the datasource, whereby SQL will be tokenized for with the parameter value provided:
+Noting the default parameter value for Name, as Email, click on Run to execute the datasource, whereby SQL will be
+tokenized for with the parameter value provided:
 
 ![Image](GridResultInTile.png)
 
-Notice the SQL response presented as a grid taking up 100% of the height and width in the tile. If a display were specified too, the grid would appear at the bottom half of the tile, instead taking up 50% of the height, but still 100% of the width. The functionality to have both grids and charts in the same container is to allow for reuse of the SQL and present a charts raw data alongside the chart.
+Notice the SQL response presented as a grid taking up 100% of the height and width in the tile. If a display were
+specified too, the grid would appear at the bottom half of the tile, instead taking up 50% of the height, but still 100%
+of the width. The functionality to have both grids and charts in the same container is to allow for reuse of the SQL and
+present a charts raw data alongside the chart.

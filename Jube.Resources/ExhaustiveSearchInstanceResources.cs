@@ -25,5 +25,8 @@ namespace Jube.Resources
         public const string FilterJsonRequired = nameof(FilterJsonRequired);
         public const string FilterSqlRequired = nameof(FilterSqlRequired);
         public const string FilterTokensRequired = nameof(FilterTokensRequired);
+        public const string FilterJsonInvalid = nameof(FilterJsonInvalid);
+        public const string FilterSqlInvalid = nameof(FilterSqlInvalid);
+        public const string FilterTokensInvalid = nameof(FilterTokensInvalid);
     }
 }

@@ -66,6 +66,9 @@
     <data name="BuilderRuleScriptMaxLength" xml:space="preserve">
     <value>The rule script must be {0} characters or fewer.</value>
   </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>The rule builder definition must be valid JSON.</value>
+  </data>
     <data name="JsonRequired" xml:space="preserve">
     <value>A rule builder definition is required.</value>
   </data>

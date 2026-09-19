@@ -58,5 +58,6 @@ namespace Jube.Resources
 
         public const string ActivationSampleRange = nameof(ActivationSampleRange);
         public const string PriorityRange = nameof(PriorityRange);
+        public const string JsonInvalid = nameof(JsonInvalid);
     }
 }

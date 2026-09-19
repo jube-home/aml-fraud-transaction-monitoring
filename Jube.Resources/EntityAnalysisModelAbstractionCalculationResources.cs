@@ -31,5 +31,11 @@ namespace Jube.Resources
 
         public const string FunctionScriptRequired = nameof(FunctionScriptRequired);
         public const string FunctionScriptMaxLength = nameof(FunctionScriptMaxLength);
+
+        public const string EntityAnalysisModelAbstractionNameLeftMaxLength =
+            nameof(EntityAnalysisModelAbstractionNameLeftMaxLength);
+
+        public const string EntityAnalysisModelAbstractionNameRightMaxLength =
+            nameof(EntityAnalysisModelAbstractionNameRightMaxLength);
     }
 }

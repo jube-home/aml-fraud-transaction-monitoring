@@ -30,10 +30,18 @@ namespace Jube.Validations.EntityAnalysisModelGatewayRule
         public EntityAnalysisModelGatewayRuleDtoValidator(EntityAnalysisModelGatewayRuleRepository repository,
             IStringLocalizer localiser)
         {
+            Include(new FiniteNumberValidator<EntityAnalysisModelGatewayRuleDto>());
+
             RuleFor(p => p.EntityAnalysisModelId)
                 .GreaterThan(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
+
+            RuleFor(p => p.EntityAnalysisModelId)
+                .MustAsync(repository.ParentModelVisibleAsync)
+                .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdNotFound")
+                .When(p => p.Id == 0 && p.EntityAnalysisModelId > 0);
 
             RuleFor(p => p.Name)
                 .NotEmpty()
@@ -51,10 +59,7 @@ namespace Jube.Validations.EntityAnalysisModelGatewayRule
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.NameAlreadyExists])
                 .WithErrorCode("NameDuplicate");
-
-            // RuleScriptTypeId selects the rule's authoring surface (1 = Builder, 2 = Coder) and the two are
-            // mutually exclusive: Builder authors BuilderRuleScript/Json, Coder authors CoderRuleScript. Only the
-            // selected surface's script is required.
+            
             RuleFor(p => p.BuilderRuleScript)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.BuilderRuleScriptRequired])
@@ -66,11 +71,23 @@ namespace Jube.Validations.EntityAnalysisModelGatewayRule
                 .WithErrorCode("BuilderRuleScriptMaximumLength")
                 .When(p => p.RuleScriptTypeId == 1);
 
+            RuleFor(p => p.BuilderRuleScript)
+                .MaximumLength(MaxRuleScriptLength)
+                .WithMessage(_ =>
+                    string.Format(localiser[EntityAnalysisModelGatewayRuleResources.BuilderRuleScriptMaxLength],
+                        MaxRuleScriptLength))
+                .WithErrorCode("BuilderRuleScriptMaximumLength");
+
             RuleFor(p => p.Json)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.JsonRequired])
                 .WithErrorCode("JsonNotEmpty")
                 .When(p => p.RuleScriptTypeId == 1);
+
+            RuleFor(p => p.Json)
+                .Must(JsonText.IsAcceptable)
+                .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.JsonInvalid])
+                .WithErrorCode("JsonInvalid");
 
             RuleFor(p => p.CoderRuleScript)
                 .NotEmpty()
@@ -82,6 +99,13 @@ namespace Jube.Validations.EntityAnalysisModelGatewayRule
                         MaxRuleScriptLength))
                 .WithErrorCode("CoderRuleScriptMaximumLength")
                 .When(p => p.RuleScriptTypeId == 2);
+
+            RuleFor(p => p.CoderRuleScript)
+                .MaximumLength(MaxRuleScriptLength)
+                .WithMessage(_ =>
+                    string.Format(localiser[EntityAnalysisModelGatewayRuleResources.CoderRuleScriptMaxLength],
+                        MaxRuleScriptLength))
+                .WithErrorCode("CoderRuleScriptMaximumLength");
 
             RuleFor(p => p.RuleScriptTypeId)
                 .Must(m => allowedRuleScriptTypeIds.Contains(m))

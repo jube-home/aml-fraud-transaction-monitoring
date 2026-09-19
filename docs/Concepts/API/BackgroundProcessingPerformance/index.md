@@ -6,17 +6,18 @@ parent: API
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # Background Processing Performance
 
-[HTTP API Performance Trace](../PerformanceTrace/index.html) covers the invoke pipeline itself -- the serial, per-request
-stages a transaction passes through on the thread that received it. Two further pipelines run entirely off that thread,
-each on its own background queue: the **Archiver** (serialising and persisting the invocation's Archive payload, then
-handing off to case creation) and **case creation** itself (looking up existing case priority, persisting the workflow
-status, then optionally a notification and/or HTTP callback). Both get the same cluster-wide, aggregate rollup and
-warn-threshold capture treatment as the invoke pipeline, and both feed a shared `CaptureQueueHealth` mechanism that also
-covers a handful of other bounded in-memory queues elsewhere in the platform.
+[HTTP API Performance Trace](../PerformanceTrace/index.html) covers the invoke pipeline itself -- the serial,
+per-request stages a transaction passes through on the thread that received it. Two further pipelines run entirely off
+that thread, each on its own background queue: the **Archiver** (serialising and persisting the invocation's Archive
+payload, then handing off to case creation) and **case creation** itself (looking up existing case priority, persisting
+the workflow status, then optionally a notification and/or HTTP callback). Both get the same cluster-wide, aggregate
+rollup and warn-threshold capture treatment as the invoke pipeline, and both feed a shared `CaptureQueueHealth`
+mechanism that also covers a handful of other bounded in-memory queues elsewhere in the platform.
 
 ## `ArchiverStagePerformanceCounter`
 
@@ -41,19 +42,19 @@ order by "CreatedDate" desc
 ```
 
 Up to the last 100000 rows are also browsable without a database connection: `GET /api/ArchiverStagePerformanceCounter`
-(requires the **View Counter and Balance** permission), or via the **Administration > Performance > Archiver Stage
+(landlord tenant only, any other caller receives 403), or via the **Administration > Performance > Archiver Stage
 Performance Counter** page in the UI. It accepts `from`/`to` (against `CreatedDate`, each defaulting independently to
 the last hour), an exact-match `stageId` (`1`=`BuildArchiveJson`, `2`=`CaseCreationDispatch`,
-`3`=`RdbmsArchiveWrite`, `4`=`BulkCopyArchiveBuffer`), `take` (clamped to 100000), `samplePercentage` (0-100,
-clamped -- not surfaced in the UI toolbar; for an agent drawing an unbiased baseline sample) and `sortField`/`sortDirection`
-(any column the grid displays; `sortDirection` case-insensitive, `asc` for ascending and anything else including
-omitted for descending; an unrecognised or omitted `sortField` falls back to most-recent-first). The response is an
-envelope `{ rows, total, statistics }` -- `rows` respects `take`, `total` is the full filtered count regardless of
+`3`=`RdbmsArchiveWrite`, `4`=`BulkCopyArchiveBuffer`), `take` (clamped to 100000), `samplePercentage` (0-100, clamped --
+not surfaced in the UI toolbar; for an agent drawing an unbiased baseline sample) and `sortField`/`sortDirection`
+(any column the grid displays; `sortDirection` case-insensitive, `asc` for ascending and anything else including omitted
+for descending; an unrecognised or omitted `sortField` falls back to most-recent-first). The response is an envelope
+`{ rows, total, statistics }` -- `rows` respects `take`, `total` is the full filtered count regardless of
 `take`, and `statistics` (Min/Max/Mean/Median/StandardDeviation plus a 10-bucket histogram, computed over the full
 filtered set capped at 100000) covers `totalMicroseconds`, `minMicroseconds`, `maxMicroseconds` and `invokeCount` --
-`stageId` itself, being a category code rather than a measured quantity, is excluded. Every endpoint documented on
-this page shares this same envelope, sort and statistics shape; the notes below only call out each table's specific
-filters and statistics columns.
+`stageId` itself, being a category code rather than a measured quantity, is excluded. Every endpoint documented on this
+page shares this same envelope, sort and statistics shape; the notes below only call out each table's specific filters
+and statistics columns.
 
 Each stage duration is also recorded to **`jube.engine.archiver.stage.duration`** -- an OpenTelemetry histogram metric
 (milliseconds), tagged by `stage`, exported whenever `EnableOpenTelemetry` is set. A separate instrument from
@@ -69,9 +70,9 @@ the Model, the specific invocation (`EntityAnalysisModelInstanceEntryGuid`, null
 stage was slow, and its actual duration -- so a slow Archiver backlog can be traced to the specific item and cause, not
 just the aggregate stage stats above.
 
-Up to the last 100000 rows are also browsable without a database connection: `GET /api/ArchiverWarning` (requires the
-**View Counter and Balance** permission), or via the **Administration > Performance > Archiver Warning** page in the
-UI. It accepts the same `from`/`to`, `stageId`, `take`, `samplePercentage` and `sortField`/`sortDirection` as
+Up to the last 100000 rows are also browsable without a database connection: `GET /api/ArchiverWarning` (landlord tenant
+only, any other caller receives 403), or via the **Administration > Performance > Archiver Warning** page in the UI. It
+accepts the same `from`/`to`, `stageId`, `take`, `samplePercentage` and `sortField`/`sortDirection` as
 `ArchiverStagePerformanceCounter` above; `statistics` covers `durationMicroseconds` only.
 
 Each breach also increments **`jube.engine.archiver.warn.count`** -- an OpenTelemetry counter, tagged by `stage`,
@@ -96,7 +97,7 @@ order by "CreatedDate" desc
 ```
 
 Up to the last 100000 rows are also browsable without a database connection:
-`GET /api/CaseCreationStagePerformanceCounter` (requires the **View Counter and Balance** permission), or via the
+`GET /api/CaseCreationStagePerformanceCounter` (landlord tenant only, any other caller receives 403), or via the
 **Administration > Performance > Case Creation Stage Performance Counter** page in the UI. It accepts the same
 `from`/`to`, `stageId` (`1`=`ExistingCasePriorityLookup`, `2`=`WorkflowStatusLookupAndPersist`, `3`=`Notification`,
 `4`=`HttpEndpoint`), `take`, `samplePercentage` and `sortField`/`sortDirection` as above; `statistics` covers
@@ -113,9 +114,9 @@ Archiver's threshold -- notification/webhook callbacks in particular are routine
 workflow, case key/value, which stage was slow, its duration, and -- when the slow stage was `Notification` or
 `HttpEndpoint` -- the actual destination or URL involved.
 
-Up to the last 100000 rows are also browsable without a database connection: `GET /api/CaseCreationWarning` (requires
-the **View Counter and Balance** permission), or via the **Administration > Performance > Case Creation Warning** page
-in the UI. It accepts the same `from`/`to`, `stageId`, `take`, `samplePercentage` and `sortField`/`sortDirection` as
+Up to the last 100000 rows are also browsable without a database connection: `GET /api/CaseCreationWarning` (landlord
+tenant only, any other caller receives 403), or via the **Administration > Performance > Case Creation Warning** page in
+the UI. It accepts the same `from`/`to`, `stageId`, `take`, `samplePercentage` and `sortField`/`sortDirection` as
 `CaseCreationStagePerformanceCounter` above, plus a case-insensitive substring `search` against `CaseKeyValue`;
 `statistics` covers `durationMicroseconds` only.
 
@@ -131,12 +132,12 @@ exactly the same call site that increments the OTel counter, so the two never di
 event. Carries the Model, the specific invocation, the trace point's message text, and both the elapsed-since-start and
 elapsed-since-previous-trace-point durations.
 
-Up to the last 100000 rows are also browsable without a database connection: `GET /api/ModelInvokeWarning` (requires
-the **View Counter and Balance** permission), or via the **Administration > Logs > Model Invoke Warning** page in the
-UI. It accepts `from`/`to` (against `OccurredDate`, each defaulting independently to the last hour), a
-case-insensitive substring `search` against the Model name or message, `take`, `samplePercentage` and
-`sortField`/`sortDirection`. `entityAnalysisModelGuid` (an exact match) is also accepted but not surfaced in
-the UI toolbar, since `search` against the Model name already covers the common case. `statistics` covers
+Up to the last 100000 rows are also browsable without a database connection: `GET /api/ModelInvokeWarning` (landlord
+tenant only, any other caller receives 403), or via the **Administration > Logs > Model Invoke Warning** page in the UI.
+It accepts `from`/`to` (against `OccurredDate`, each defaulting independently to the last hour), a case-insensitive
+substring `search` against the Model name or message, `take`, `samplePercentage` and
+`sortField`/`sortDirection`. `entityAnalysisModelGuid` (an exact match) is also accepted but not surfaced in the UI
+toolbar, since `search` against the Model name already covers the common case. `statistics` covers
 `elapsedMicroseconds` and `sinceLastEntryMicroseconds`.
 
 ## `CaptureQueueHealth`
@@ -148,9 +149,9 @@ two more elsewhere in the platform (`RedisSentinelEvent` and `RedisConnectionEve
 share the same shape: a bounded in-memory queue (20000 entries, or 10000 distinct series for `OpenTelemetryMetric`)
 that something enqueues to and a background flush drains once a minute. `CaptureQueueHealth` is the one row-per-queue,
 per-minute health check over all six of them -- `QueueDepth` (how many entries were sitting in the queue at the moment
-it flushed; normally near zero) and `DroppedCount` (how many were dropped because the queue was full since the
-previous flush; always zero in healthy operation). A `QueueDepth` that never falls, or any non-zero `DroppedCount`, is
-worth investigating immediately -- either means real data is being delayed or silently discarded.
+it flushed; normally near zero) and `DroppedCount` (how many were dropped because the queue was full since the previous
+flush; always zero in healthy operation). A `QueueDepth` that never falls, or any non-zero `DroppedCount`, is worth
+investigating immediately -- either means real data is being delayed or silently discarded.
 
 Unlike the stage/warning tables above, this one never skips a row even when nothing happened: a flatline at zero
 depth/drops is itself the useful signal ("everything's fine"), distinct from "no data because nothing happened" -- an
@@ -163,8 +164,8 @@ where "DroppedCount" > 0
 order by "CreatedDate" desc
 ```
 
-Up to the last 100000 rows are also browsable without a database connection: `GET /api/CaptureQueueHealth` (requires
-the **View Counter and Balance** permission), or via the **Administration > Performance > Capture Queue Health** page
-in the UI. It accepts `from`/`to` (against `CreatedDate`), an exact-match `queueId` (`1`=`ModelInvokeWarning`,
+Up to the last 100000 rows are also browsable without a database connection: `GET /api/CaptureQueueHealth` (landlord
+tenant only, any other caller receives 403), or via the **Administration > Performance > Capture Queue Health** page in
+the UI. It accepts `from`/`to` (against `CreatedDate`), an exact-match `queueId` (`1`=`ModelInvokeWarning`,
 `2`=`CaseCreationWarning`, `3`=`ArchiverWarning`, `4`=`RedisSentinelEvent`, `5`=`RedisConnectionEvent`,
 `6`=`OpenTelemetryMetric`), `take` and `samplePercentage`.

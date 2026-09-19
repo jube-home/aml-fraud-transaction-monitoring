@@ -64,10 +64,10 @@ logged them, since observability capture must never be allowed to slow down or f
 
 ## Browsing it without a database connection
 
-Up to the last 100,000 rows are browsable directly: `GET /api/ApplicationLogEntry` (requires the **View Counter and
-Balance** permission), or via the **Performance > Application Log Entry** page in the UI. Unlike the per-Model counter
-viewers alongside it, this is not scoped to a tenant or Model -- any caller with the permission sees every captured row,
-since the underlying data is not tenant-scoped either.
+Up to the last 100,000 rows are browsable directly: `GET /api/ApplicationLogEntry` (landlord tenant only, any other
+caller receives 403), or via the **Performance > Application Log Entry** page in the UI. Unlike the per-Model counter
+viewers alongside it, this is not scoped to a tenant or Model -- the landlord sees every captured row, since the
+underlying data is not tenant-scoped either.
 
 The same endpoint accepts `from`/`to` (a UTC date/time range against `OccurredDate`, inclusive) and `search` (a
 case-insensitive substring match against `Message`, `LoggerName` or `Exception`), both pushed down to the database
@@ -78,7 +78,7 @@ the same three filters from a toolbar above the grid, pre-populated with that sa
 
 In the endpoint, it also accepts `samplePercentage` (0-100, clamped), applied server-side as an additional filter
 alongside `from`/` to `/`search` rather than after fetching -- each already-matching row is included independently with
-that probability, so `samplePercentage=10` returns roughly a random one-tenth of matching rows rather than the newest tenth. This is not
-exposed in the UI toolbar; it exists for an agent to draw an unbiased random baseline sample of logged problems early on
-and compare it against recent activity later, which the endpoint's normal most-recent-first ordering can't provide by
-itself.
+that probability, so `samplePercentage=10` returns roughly a random one-tenth of matching rows rather than the newest
+tenth. This is not exposed in the UI toolbar; it exists for an agent to draw an unbiased random baseline sample of
+logged problems early on and compare it against recent activity later, which the endpoint's normal most-recent-first
+ordering can't provide by itself.

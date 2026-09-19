@@ -14,24 +14,17 @@
 namespace Jube.App.Middlewares
 {
     using System;
+    using System.Globalization;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using Code;
+    using Data.Security;
     using DynamicEnvironment;
     using Microsoft.AspNetCore.Http;
 
-    public class TokenRefreshMiddleware
+    public class TokenRefreshMiddleware(RequestDelegate next, DynamicEnvironment dynamicEnvironment)
     {
-        private readonly DynamicEnvironment dynamicEnvironment;
-        private readonly RequestDelegate next;
-
-        public TokenRefreshMiddleware(RequestDelegate next, DynamicEnvironment dynamicEnvironment)
-        {
-            this.next = next;
-            this.dynamicEnvironment = dynamicEnvironment;
-        }
-
         public async Task InvokeAsync(HttpContext context)
         {
             await TryRefreshAccessTokenAsync(context);
@@ -40,7 +33,10 @@ namespace Jube.App.Middlewares
 
         private Task TryRefreshAccessTokenAsync(HttpContext context)
         {
-            if (context.User.Identity?.IsAuthenticated != true
+            if (context.Request.Path.StartsWithSegments("/Account/Logout", StringComparison.OrdinalIgnoreCase)
+                || context.Request.Path.StartsWithSegments("/api/Authentication/Logout",
+                    StringComparison.OrdinalIgnoreCase)
+                || context.User.Identity?.IsAuthenticated != true
                 || !context.Request.Cookies.TryGetValue("authentication-jwt", out var accessToken)
                 || String.IsNullOrEmpty(accessToken))
             {
@@ -59,34 +55,34 @@ namespace Jube.App.Middlewares
                 return Task.CompletedTask;
             }
 
+            var now = DateTime.UtcNow;
+            var sessionStart = now;
+            if (long.TryParse(context.User.FindFirstValue(TokenValidity.IssuedMillisecondsClaim),
+                    NumberStyles.Integer, CultureInfo.InvariantCulture, out var sessionStartMilliseconds))
+            {
+                sessionStart = DateTimeOffset.FromUnixTimeMilliseconds(sessionStartMilliseconds).UtcDateTime;
+            }
+
+            var expiration = now.AddMinutes(15);
+            var absoluteLifetime = AbsoluteSessionLifetime.From(dynamicEnvironment);
+            if (absoluteLifetime.HasValue && sessionStart + absoluteLifetime.Value < expiration)
+            {
+                expiration = sessionStart + absoluteLifetime.Value;
+            }
+
+            if (expiration <= now)
+            {
+                return Task.CompletedTask;
+            }
+
             var token = Jwt.CreateToken(username,
                 dynamicEnvironment.AppSettings("JWTKey"),
                 dynamicEnvironment.AppSettings("JWTValidIssuer"),
-                dynamicEnvironment.AppSettings("JWTValidAudience")
+                dynamicEnvironment.AppSettings("JWTValidAudience"),
+                now, sessionStart, expiration
             );
 
-            var expiration = DateTime.UtcNow.AddMinutes(15);
-
-            var cookieExpiration = dynamicEnvironment.AppSettings("SessionCookie")
-                .Equals("True", StringComparison.OrdinalIgnoreCase) ? (DateTime?)null : expiration;
-
-            var cookieOptions = new CookieOptions
-            {
-                Expires = cookieExpiration,
-                HttpOnly = false
-            };
-
-            if (dynamicEnvironment.AppSettings("SecureHttpCookie").Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
-                cookieOptions.Secure = true;
-                cookieOptions.SameSite = SameSiteMode.Strict;
-            }
-
-            context.Response.Cookies.Append("authentication-jwt", token, cookieOptions);
-
-            context.Response.Cookies.Append("authentication-expiry",
-                expiration.ToString("O"),
-                cookieOptions);
+            AuthenticationCookieIssuer.AppendCookies(context.Response, dynamicEnvironment, token, expiration);
 
             return Task.CompletedTask;
         }

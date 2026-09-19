@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Jube.Data.Query
 {
     using System;
@@ -40,6 +41,9 @@ namespace Jube.Data.Query
                 .Where(w =>
                     w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
                     && w.Active == 1
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null)
                     && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
                         .EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
                 .Select(s =>
@@ -77,28 +81,28 @@ namespace Jube.Data.Query
 
             if (confusion != null)
             {
-                tableTotal = confusion.TruePositive + confusion.TrueNegative + confusion.FalseNegative +
-                             confusion.TrueNegative;
+                tableTotal = confusion.TruePositive + confusion.TrueNegative + confusion.FalsePositive +
+                             confusion.FalseNegative;
                 positiveRowTotal = confusion.TruePositive + confusion.FalseNegative;
                 positiveColumnTotal = confusion.TruePositive + confusion.FalsePositive;
                 negativeRowTotal = confusion.FalsePositive + confusion.TrueNegative;
                 negativeColumnTotal = confusion.FalseNegative + confusion.TrueNegative;
-                truePositiveRowTotal = Math.Round((double)confusion.TruePositive / positiveRowTotal, 2);
-                truePositiveColumnTotal = Math.Round((double)confusion.TruePositive / positiveColumnTotal, 2);
-                truePositiveTableTotal = Math.Round((double)confusion.TruePositive / tableTotal, 2);
-                falsePositiveRowTotal = Math.Round((double)confusion.FalsePositive / negativeRowTotal, 2);
-                falsePositiveColumnTotal = Math.Round((double)confusion.FalsePositive / positiveColumnTotal, 2);
-                falsePositiveTableTotal = Math.Round((double)confusion.FalsePositive / tableTotal, 2);
-                falseNegativeRowTotal = Math.Round((double)confusion.FalsePositive / positiveRowTotal, 2);
-                falseNegativeColumnTotal = Math.Round((double)confusion.FalsePositive / negativeColumnTotal, 2);
-                falseNegativeTableTotal = Math.Round((double)confusion.FalsePositive / tableTotal, 2);
-                trueNegativeRowTotal = Math.Round((double)confusion.TrueNegative / negativeRowTotal, 2);
-                trueNegativeColumnTotal = Math.Round((double)confusion.TrueNegative / negativeColumnTotal, 2);
-                trueNegativeTableTotal = Math.Round((double)confusion.TrueNegative / tableTotal, 2);
-                negativeColumnTableTotal = Math.Round((double)negativeColumnTotal / tableTotal, 2);
-                positiveColumnTableTotal = Math.Round((double)positiveColumnTotal / tableTotal, 2);
-                positiveRowTableTotal = Math.Round((double)positiveRowTotal / tableTotal, 2);
-                negativeRowTableTotal = Math.Round((double)negativeRowTotal / tableTotal, 2);
+                truePositiveRowTotal = Ratio(confusion.TruePositive, positiveRowTotal);
+                truePositiveColumnTotal = Ratio(confusion.TruePositive, positiveColumnTotal);
+                truePositiveTableTotal = Ratio(confusion.TruePositive, tableTotal);
+                falsePositiveRowTotal = Ratio(confusion.FalsePositive, negativeRowTotal);
+                falsePositiveColumnTotal = Ratio(confusion.FalsePositive, positiveColumnTotal);
+                falsePositiveTableTotal = Ratio(confusion.FalsePositive, tableTotal);
+                falseNegativeRowTotal = Ratio(confusion.FalseNegative, positiveRowTotal);
+                falseNegativeColumnTotal = Ratio(confusion.FalseNegative, negativeColumnTotal);
+                falseNegativeTableTotal = Ratio(confusion.FalseNegative, tableTotal);
+                trueNegativeRowTotal = Ratio(confusion.TrueNegative, negativeRowTotal);
+                trueNegativeColumnTotal = Ratio(confusion.TrueNegative, negativeColumnTotal);
+                trueNegativeTableTotal = Ratio(confusion.TrueNegative, tableTotal);
+                negativeColumnTableTotal = Ratio(negativeColumnTotal, tableTotal);
+                positiveColumnTableTotal = Ratio(positiveColumnTotal, tableTotal);
+                positiveRowTableTotal = Ratio(positiveRowTotal, tableTotal);
+                negativeRowTableTotal = Ratio(negativeRowTotal, tableTotal);
             }
             else
             {
@@ -128,6 +132,11 @@ namespace Jube.Data.Query
             confusion.TrueNegativeTableTotal = trueNegativeTableTotal;
 
             return confusion;
+        }
+
+        private static double Ratio(double numerator, int denominator)
+        {
+            return denominator == 0 ? 0d : Math.Round(numerator / denominator, 2);
         }
 
         public class Dto

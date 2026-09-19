@@ -58,11 +58,71 @@ RUN mkdir -p /var/lib/postgresql/data \
 
 ENV TMPDIR=/var/lib/postgresql/tmp
 
+RUN mkdir -p /docker-entrypoint-initdb.d && chown postgres:postgres /docker-entrypoint-initdb.d
+
+# Runs once, on the first node only, immediately after Patroni's initdb (bootstrap.post_bootstrap). Mirrors the
+# official postgres image: POSTGRES_USER / POSTGRES_PASSWORD / POSTGRES_DB (each also as *_FILE or a Docker
+# secret of the same name) and /docker-entrypoint-initdb.d/*.{sh,sql}. The Patroni superuser stays "postgres"
+# with PATRONI_SUPERUSER_PASSWORD, so POSTGRES_USER other than "postgres" adds an extra superuser rather than
+# renaming it, and POSTGRES_PASSWORD is not applied to "postgres" itself.
 RUN cat > /post_bootstrap.sh << 'EOF'
 #!/bin/bash
-PATRONI_ADMIN_PASSWORD=$(cat /run/secrets/PATRONI_ADMIN_PASSWORD)
-psql -U postgres -c "CREATE USER admin WITH PASSWORD '${PATRONI_ADMIN_PASSWORD}' CREATEROLE CREATEDB;" 2>/dev/null || \
-psql -U postgres -c "ALTER USER admin WITH PASSWORD '${PATRONI_ADMIN_PASSWORD}';"
+set -e
+
+file_env() {
+    local var="$1" file_var="${1}_FILE" default="${2:-}"
+    if [ -n "${!var:-}" ]; then
+        return
+    elif [ -n "${!file_var:-}" ]; then
+        export "$var"="$(cat "${!file_var}")"
+    elif [ -f "/run/secrets/$var" ]; then
+        export "$var"="$(cat "/run/secrets/$var")"
+    else
+        export "$var"="$default"
+    fi
+}
+
+file_env POSTGRES_USER postgres
+file_env POSTGRES_PASSWORD
+file_env POSTGRES_DB "$POSTGRES_USER"
+file_env PATRONI_ADMIN_PASSWORD
+
+psql_admin() { psql -v ON_ERROR_STOP=1 -U postgres -d postgres "$@"; }
+
+if [ "$POSTGRES_USER" != "postgres" ]; then
+    if [ -z "$POSTGRES_PASSWORD" ]; then
+        echo "POSTGRES_PASSWORD is required when POSTGRES_USER is not postgres" >&2
+        exit 1
+    fi
+    psql_admin -v u="$POSTGRES_USER" -v p="$POSTGRES_PASSWORD" <<'SQL'
+SELECT format('CREATE ROLE %I LOGIN SUPERUSER', :'u')
+ WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = :'u') \gexec
+SELECT format('ALTER ROLE %I WITH PASSWORD %L', :'u', :'p') \gexec
+SQL
+fi
+
+if [ -n "$PATRONI_ADMIN_PASSWORD" ]; then
+    psql_admin -v p="$PATRONI_ADMIN_PASSWORD" <<'SQL'
+SELECT 'CREATE ROLE admin LOGIN CREATEROLE CREATEDB'
+ WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'admin') \gexec
+SELECT format('ALTER ROLE admin WITH PASSWORD %L', :'p') \gexec
+SQL
+fi
+
+if [ "$POSTGRES_DB" != "postgres" ]; then
+    psql_admin -v d="$POSTGRES_DB" -v u="$POSTGRES_USER" <<'SQL'
+SELECT format('CREATE DATABASE %I OWNER %I', :'d', :'u')
+ WHERE NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = :'d') \gexec
+SQL
+fi
+
+for f in /docker-entrypoint-initdb.d/*; do
+    case "$f" in
+        *.sh)  echo "post_bootstrap: running $f"; bash "$f" ;;
+        *.sql) echo "post_bootstrap: running $f"; psql -v ON_ERROR_STOP=1 -U postgres -d "$POSTGRES_DB" -f "$f" ;;
+        *.sql.gz) echo "post_bootstrap: running $f"; gunzip -c "$f" | psql -v ON_ERROR_STOP=1 -U postgres -d "$POSTGRES_DB" ;;
+    esac
+done
 EOF
 RUN chmod +x /post_bootstrap.sh
 

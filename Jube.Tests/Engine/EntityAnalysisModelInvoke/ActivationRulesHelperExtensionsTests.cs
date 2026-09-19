@@ -395,7 +395,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
                 new Dictionary<string, List<string>>
                 {
-                    ["Country"] = new() { "IR", "KP" }
+                    ["Country"] = ["IR", "KP"]
                 };
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
             var suppressedRules = new List<string>();
@@ -418,7 +418,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
                 new Dictionary<string, List<string>>
                 {
-                    ["Country"] = new() { "IR", "KP" }
+                    ["Country"] = ["IR", "KP"]
                 };
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "GB");
             var suppressedRules = new List<string>();
@@ -441,12 +441,12 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
                 new Dictionary<string, List<string>>
                 {
-                    ["Country"] = new() { "IR" }
+                    ["Country"] = ["IR"]
                 };
             context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionRules["Country"] =
                 new Dictionary<string, List<string>>
                 {
-                    ["IR"] = new() { "RuleA", "RuleB" }
+                    ["IR"] = ["RuleA", "RuleB"]
                 };
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
             var suppressedRules = new List<string>();
@@ -469,7 +469,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
                 new Dictionary<string, List<string>>
                 {
-                    ["Country"] = new() { "IR" }
+                    ["Country"] = ["IR"]
                 };
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
             var suppressedRules = new List<string>();

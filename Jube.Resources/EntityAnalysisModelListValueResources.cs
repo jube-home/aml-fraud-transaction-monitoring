@@ -21,5 +21,6 @@ namespace Jube.Resources
         public const string ListValueMaxLength = nameof(ListValueMaxLength);
         public const string EntityAnalysisModelListIdInvalid = nameof(EntityAnalysisModelListIdInvalid);
         public const string DeleteExpiryDateMustBeFuture = nameof(DeleteExpiryDateMustBeFuture);
+        public const string ListNotFound = nameof(ListNotFound);
     }
 }

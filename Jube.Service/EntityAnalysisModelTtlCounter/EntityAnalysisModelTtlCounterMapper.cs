@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelTtlCounter;
 
 namespace Jube.Service.EntityAnalysisModelTtlCounter
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
 
     internal static class EntityAnalysisModelTtlCounterMapper
     {
+        [return: NotNullIfNotNull(nameof(ttlCounter))]
         public static EntityAnalysisModelTtlCounterDto? ToDto(TtlCounterPoco? ttlCounter)
         {
             return ttlCounter is null
@@ -51,7 +53,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
 
         public static List<EntityAnalysisModelTtlCounterDto> ToDto(IEnumerable<TtlCounterPoco>? source)
         {
-            return (source ?? Enumerable.Empty<TtlCounterPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<TtlCounterPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static TtlCounterPoco ToPoco(EntityAnalysisModelTtlCounterDto dto)

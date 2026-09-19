@@ -151,6 +151,12 @@ namespace Jube.DynamicEnvironment
                     "SanctionLoaderWait", "3600000"
                 },
                 {
+                    "EnableSanctionLoaderChangePoll", "True"
+                },
+                {
+                    "SanctionLoaderChangePoll", "60000"
+                },
+                {
                     "EnableSanctionLoader", "False"
                 },
                 {
@@ -283,9 +289,6 @@ namespace Jube.DynamicEnvironment
                     "WaitHashCacheAssemblyObservability", "60000"
                 },
                 {
-                    "EnableSandbox", "False"
-                },
-                {
                     "Landlord", "True"
                 },
                 {
@@ -359,6 +362,18 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "SecureHttpCookie", "False"
+                },
+                {
+                    "SessionAbsoluteLifetimeMinutes", "720"
+                },
+                {
+                    "MaxConcurrentConnections", "10000"
+                },
+                {
+                    "HubRevocationCheckSeconds", "30"
+                },
+                {
+                    "CsrfOriginCheck", "True"
                 },
                 {
                     "ElementSymmetricEncryptionKey", "SuperSecretEncryptionKeyGoesHere"
@@ -801,6 +816,12 @@ namespace Jube.DynamicEnvironment
         public string AppSettings(string[] keys)
         {
             return keys.Select(AppSettings).FirstOrDefault(value => value != null);
+        }
+
+        public bool ParserAssertSelectOnly()
+        {
+            var setting = AppSettings("ParserAssertSelectOnly");
+            return setting == null || setting.Equals("True", StringComparison.OrdinalIgnoreCase);
         }
 
         public string AppSettings(string key)

@@ -1,4 +1,4 @@
-﻿@* Copyright (C) 2022-present Jube Holdings Limited
+@* Copyright (C) 2022-present Jube Holdings Limited
  *
  * This file is part of Jube™ software.
  *
@@ -32,13 +32,27 @@
 <main role="main">
     <br/>
     <div class="topPaddedGeneral bottomPaddedGeneral">
-        <p class="text-justify">
-            Jooby is sad you are leaving. Come back soon.
-        </p>
-        <p class="topPaddedGeneral">
-            <a href="/account/login">Login.</a>
-        </p>
+        @if (Model.LoggedOut || !Model.IsAuthenticated)
+        {
+            <p class="text-justify">
+                Jooby is sad you are leaving. Come back soon.
+            </p>
+            <p class="topPaddedGeneral">
+                <a href="/account/login">Login.</a>
+            </p>
+        }
+        else
+        {
+            <p class="text-justify">
+                Do you want to log out?
+            </p>
+            <p>
+                <button type="button" id="LogoutButton" class="btn btn-primary">Log out</button>
+            </p>
+            <p id="LogoutError" class="text-danger" style="display: none;"></p>
+        }
     </div>
 </main>
+<script src="/js/Account/Logout.js"></script>
 </body>
 </html>

@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Globalization;
 
 namespace Jube.App.Endpoints
 {
@@ -19,12 +20,15 @@ namespace Jube.App.Endpoints
     {
         public static int? ParseNullableInt(string value)
         {
-            return int.TryParse(value, out var parsed) ? parsed : null;
+            return value != null && value.IndexOf('\0') < 0 &&
+                   int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed)
+                ? parsed
+                : null;
         }
 
         public static Guid? ParseNullableGuid(string value)
         {
-            return Guid.TryParse(value, out var parsed) ? parsed : null;
+            return value != null && value.IndexOf('\0') < 0 && Guid.TryParse(value, out var parsed) ? parsed : null;
         }
     }
 }

@@ -28,10 +28,16 @@ namespace Jube.Validations.EntityAnalysisModelSanction
         private static readonly byte[] allowedAggregationTypeIds = [1, 2, 3, 4, 5, 6, 7, 8];
 
         public EntityAnalysisModelSanctionDtoValidator(EntityAnalysisModelSanctionRepository repository,
-            IStringLocalizer localiser)
+            IStringLocalizer localiser,
+            EntityAnalysisModelRepository entityAnalysisModelRepository)
         {
             RuleFor(p => p.EntityAnalysisModelId)
+                .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
+                .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdInvalid")
+                .MustAsync(async (id, cancellation) =>
+                    await entityAnalysisModelRepository.GetByIdAsync(id, cancellation) != null)
                 .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
 
@@ -61,14 +67,14 @@ namespace Jube.Validations.EntityAnalysisModelSanction
                     string.Format(localiser[EntityAnalysisModelSanctionResources.MultipartStringDataNameMaxLength],
                         MaxMultipartStringDataNameLength))
                 .WithErrorCode("MultipartStringDataNameMaximumLength");
-            
+
             RuleFor(p => p.Distance)
                 .InclusiveBetween(0, 5)
                 .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.DistanceRange])
                 .WithErrorCode("DistanceRange");
 
             RuleFor(p => p.CacheValue)
-                .GreaterThanOrEqualTo(0)
+                .Must((dto, value) => value >= 0 && value <= IntervalLimits.Max(dto.CacheInterval))
                 .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.CacheValueRange])
                 .WithErrorCode("CacheValueRange");
 
@@ -76,7 +82,7 @@ namespace Jube.Validations.EntityAnalysisModelSanction
                 .Must(m => allowedCacheIntervals.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.CacheIntervalInvalid])
                 .WithErrorCode("CacheIntervalInvalid");
-            
+
             RuleFor(p => p.AggregationTypeId)
                 .Must(m => !m.HasValue || allowedAggregationTypeIds.Contains(m.Value))
                 .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.AggregationTypeIdInvalid])

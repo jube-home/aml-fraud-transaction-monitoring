@@ -97,7 +97,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var instanceOne = await CreateRowAsync(dbContext, createdDate: DateTime.UtcNow.AddMinutes(-30));
             var instanceTwo = await CreateRowAsync(dbContext, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: DateTime.UtcNow.AddHours(-1));
 
             var mine = result.Rows.Where(r => r.Instance == instanceOne || r.Instance == instanceTwo).ToList();
@@ -110,7 +110,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -122,6 +122,15 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -158,7 +167,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var instanceOne = await CreateRowAsync(dbContext, 1);
             var instanceTwo = await CreateRowAsync(dbContext, 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(samplePercentage: 0);
 
             result.Rows.Should().NotContain(r => r.Instance == instanceOne || r.Instance == instanceTwo);
@@ -171,7 +180,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var instanceOne = await CreateRowAsync(dbContext, 1);
             var instanceTwo = await CreateRowAsync(dbContext, 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(samplePercentage: 100);
 
             result.Rows.Where(r => r.Instance == instanceOne || r.Instance == instanceTwo).Should().HaveCount(2);
@@ -186,7 +195,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var oldInstance = await CreateRowAsync(dbContext, createdDate: oldDate);
             var newInstance = await CreateRowAsync(dbContext, createdDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Instance == oldInstance || r.Instance == newInstance).ToList();
@@ -203,7 +212,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var oldInstance = await CreateRowAsync(dbContext, createdDate: twoHoursAgo);
             var newInstance = await CreateRowAsync(dbContext, createdDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Instance == oldInstance || r.Instance == newInstance).ToList();
@@ -219,7 +228,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var instanceMid = await CreateRowAsync(dbContext, 20);
             var instanceHigh = await CreateRowAsync(dbContext, 30);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "caseCreation", sortDirection: "asc");
             var ascendingMine = ascending.Rows
@@ -242,7 +251,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var instanceA = await CreateRowAsync(dbContext, instance: $"{prefix}A");
             var instanceB = await CreateRowAsync(dbContext, instance: $"{prefix}B");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "instance", sortDirection: "asc");
             var ascendingMine = ascending.Rows.Where(r => r.Instance == instanceA || r.Instance == instanceB)
@@ -265,7 +274,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var instanceHigh = await CreateRowAsync(dbContext, 20);
             var instanceLow = await CreateRowAsync(dbContext, 10);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "caseCreation", sortDirection: ascendingKeyword);
 
             var mine = result.Rows.Where(r => r.Instance == instanceHigh || r.Instance == instanceLow).ToList();
@@ -279,7 +288,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var instanceLow = await CreateRowAsync(dbContext, 10);
             var instanceHigh = await CreateRowAsync(dbContext, 20);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "caseCreation", sortDirection: "banana");
 
             var mine = result.Rows.Where(r => r.Instance == instanceLow || r.Instance == instanceHigh).ToList();
@@ -293,7 +302,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             var instanceOld = await CreateRowAsync(dbContext, createdDate: DateTime.UtcNow.AddMinutes(-30));
             var instanceNew = await CreateRowAsync(dbContext, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "notARealColumn", from: DateTime.UtcNow.AddHours(-1));
 
             var mine = result.Rows.Where(r => r.Instance == instanceOld || r.Instance == instanceNew).ToList();
@@ -311,7 +320,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
                 await CreateRowAsync(dbContext, 1);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, from);
 
             result.Rows.Should().HaveCount(2);
@@ -324,7 +333,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             await using var dbContext = fx.GetDbContext();
             await CreateRowAsync(dbContext, 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(
@@ -340,7 +349,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             await using var dbContext = fx.GetDbContext();
             var instance = await CreateRowAsync(dbContext, 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Single(r => r.Instance == instance);
@@ -354,7 +363,7 @@ namespace Jube.Test.Service.EntityAnalysisAsynchronousQueueBalance
             await using var dbContext = fx.GetDbContext();
             var instance = await CreateRowAsync(dbContext, asynchronousInvoke: 42);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Single(r => r.Instance == instance);

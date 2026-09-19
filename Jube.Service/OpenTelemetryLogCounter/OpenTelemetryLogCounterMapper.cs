@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.OpenTelemetryLogCounter;
 
 namespace Jube.Service.OpenTelemetryLogCounter
@@ -19,6 +20,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
 
     internal static class OpenTelemetryLogCounterMapper
     {
+        [return: NotNullIfNotNull(nameof(logCounter))]
         public static OpenTelemetryLogCounterDto? ToDto(LogCounterPoco? logCounter)
         {
             return logCounter is null
@@ -42,7 +44,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
 
         public static List<OpenTelemetryLogCounterDto> ToDto(IEnumerable<LogCounterPoco>? source)
         {
-            return (source ?? Enumerable.Empty<LogCounterPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<LogCounterPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static LogCounterPoco ToPoco(OpenTelemetryLogCounterDto dto)

@@ -97,7 +97,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway");
             await CreateEntryAsync(dbContext, metricName, "stage=Activation");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.MetricName == metricName).ToList();
@@ -110,7 +110,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -122,6 +122,15 @@ namespace Jube.Test.Service.OpenTelemetryMetric
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -154,7 +163,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, $"{metricName}Old", "stage=Gateway", oldDate);
             await CreateEntryAsync(dbContext, $"{metricName}New", "stage=Gateway", newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.MetricName.StartsWith(metricName)).ToList();
@@ -171,7 +180,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, uniqueMetricName, "stage=Gateway");
             await CreateEntryAsync(dbContext, "OtherMetric", "stage=Gateway");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueMetricName[..14].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.MetricName == uniqueMetricName || r.MetricName == "OtherMetric")
@@ -190,7 +199,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, metricName, uniqueTags);
             await CreateEntryAsync(dbContext, metricName, "model=OtherModel");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueTags);
 
             var mine = result.Rows.Where(r => r.MetricName == metricName).ToList();
@@ -206,7 +215,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway");
             await CreateEntryAsync(dbContext, metricName, "stage=Activation");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: metricName, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -220,7 +229,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway");
             await CreateEntryAsync(dbContext, metricName, "stage=Activation");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: metricName, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -233,7 +242,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             var metricName = $"{DatabaseFixture.Prefix}Metric{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var negative = await service.ListAsync(search: metricName, samplePercentage: -10);
             negative.Rows.Should().BeEmpty();
 
@@ -248,7 +257,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             var metricName = $"{DatabaseFixture.Prefix}Metric{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway");
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.MetricName == metricName);
@@ -265,7 +274,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, $"{metricName}Old", "stage=Gateway", twoHoursAgo);
             await CreateEntryAsync(dbContext, $"{metricName}New", "stage=Gateway", justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: metricName);
 
             var mine = result.Rows.Where(r => r.MetricName.StartsWith(metricName)).ToList();
@@ -282,7 +291,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway", sum: 1000);
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway", sum: 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: metricName, sortField: "sum", sortDirection: "asc");
             ascending.Rows.Select(r => r.Sum).Should().Equal(1000, 2000, 3000);
@@ -302,7 +311,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway", sum: 2000);
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway", sum: 1000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: metricName, sortField: "sum",
                 sortDirection: ascendingKeyword);
 
@@ -317,7 +326,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway", sum: 1000);
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway", sum: 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: metricName, sortField: "sum", sortDirection: "banana");
 
             result.Rows.Select(r => r.Sum).Should().Equal(2000, 1000);
@@ -332,7 +341,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
                 DateTime.UtcNow.AddMinutes(-30));
             await CreateEntryAsync(dbContext, metricName, "stage=Activation", DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: metricName, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.MetricName == metricName).ToList();
@@ -350,7 +359,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
                 await CreateEntryAsync(dbContext, metricName, "stage=Gateway");
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: metricName);
 
             result.Rows.Should().HaveCount(2);
@@ -368,7 +377,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
                 await CreateEntryAsync(dbContext, metricName, "stage=Gateway", sum: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: metricName);
 
             var stats = result.Statistics.Columns["sum"];
@@ -387,7 +396,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             var metricName = $"{DatabaseFixture.Prefix}Metric{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: metricName);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo("count", "sum", "min", "max");

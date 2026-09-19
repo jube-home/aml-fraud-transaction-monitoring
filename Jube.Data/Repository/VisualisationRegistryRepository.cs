@@ -18,10 +18,8 @@ namespace Jube.Data.Repository
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Context;
     using LinqToDB;
-    using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
 
     public class VisualisationRegistryRepository
@@ -70,7 +68,8 @@ namespace Jube.Data.Repository
         {
             return dbContext.VisualisationRegistry.FirstOrDefaultAsync(w => w.Guid == guid
                                                                             && w.TenantRegistryId == tenantRegistryId
-                                                                            && (w.Deleted == 0 || w.Deleted == null), token);
+                                                                            && (w.Deleted == 0 || w.Deleted == null),
+                token);
         }
 
         public Task<VisualisationRegistry> GetByGuidActiveOnlyAsync(Guid guid, CancellationToken token = default)
@@ -79,40 +78,58 @@ namespace Jube.Data.Repository
                                                                             && w.TenantRegistryId == tenantRegistryId
                                                                             && w.Active == 1
                                                                             && dbContext.VisualisationRegistryRole
-                                                                                .Where(r => r.VisualisationRegistryGuid == w.Guid
-                                                                                            && (r.Deleted == 0 || r.Deleted == null))
+                                                                                .Where(r =>
+                                                                                    r.VisualisationRegistryGuid ==
+                                                                                    w.Guid
+                                                                                    && (r.Deleted == 0 ||
+                                                                                        r.Deleted == null))
                                                                                 .Any(r => dbContext.RoleRegistry
-                                                                                    .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))
+                                                                                    .Where(rr =>
+                                                                                        rr.Guid == r.RoleRegistryGuid &&
+                                                                                        (rr.Deleted == 0 ||
+                                                                                            rr.Deleted == null))
                                                                                     .Any(rr => dbContext.UserRegistry
-                                                                                        .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
-                                                                            && (w.Deleted == 0 || w.Deleted == null), token);
+                                                                                        .Any(u => u.RoleRegistryGuid ==
+                                                                                            rr.Guid && u.Name ==
+                                                                                            userName)))
+                                                                            && (w.Deleted == 0 || w.Deleted == null),
+                token);
         }
 
         public Task<VisualisationRegistry> GetByIdAsync(int id, CancellationToken token = default)
         {
             return dbContext.VisualisationRegistry.FirstOrDefaultAsync(w => w.Id == id
                                                                             && w.TenantRegistryId == tenantRegistryId
-                                                                            && (w.Deleted == 0 || w.Deleted == null), token);
+                                                                            && (w.Deleted == 0 || w.Deleted == null),
+                token);
         }
 
 
-        public async Task<IEnumerable<VisualisationRegistry>> GetByShowInDirectoryActiveOrderByIdDescAsync(CancellationToken token = default)
+        public async Task<IEnumerable<VisualisationRegistry>> GetByShowInDirectoryActiveOrderByIdDescAsync(
+            CancellationToken token = default)
         {
             return await dbContext.VisualisationRegistry.Where(w => w.ShowInDirectory == 1
                                                                     && w.Active == 1
                                                                     && dbContext.VisualisationRegistryRole
-                                                                        .Where(r => r.VisualisationRegistryGuid == w.Guid
-                                                                                    && (r.Deleted == 0 || r.Deleted == null))
+                                                                        .Where(r => r.VisualisationRegistryGuid ==
+                                                                            w.Guid
+                                                                            && (r.Deleted == 0 || r.Deleted == null))
                                                                         .Any(r => dbContext.RoleRegistry
-                                                                            .Where(rr => rr.Guid == r.RoleRegistryGuid)
+                                                                            .Where(rr =>
+                                                                                rr.Guid == r.RoleRegistryGuid &&
+                                                                                (rr.Deleted == 0 || rr.Deleted == null))
                                                                             .Any(rr => dbContext.UserRegistry
-                                                                                .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
+                                                                                .Any(u =>
+                                                                                    u.RoleRegistryGuid == rr.Guid &&
+                                                                                    u.Name == userName)))
                                                                     && w.TenantRegistryId == tenantRegistryId
-                                                                    && (w.Deleted == 0 || w.Deleted == null)).OrderBy(o => o.Id).ToListAsync(token);
+                                                                    && (w.Deleted == 0 || w.Deleted == null))
+                .OrderBy(o => o.Id).ToListAsync(token);
         }
 
 
-        public async Task<VisualisationRegistry> InsertAsync(VisualisationRegistry model, CancellationToken token = default)
+        public async Task<VisualisationRegistry> InsertAsync(VisualisationRegistry model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName ?? model.CreatedUser;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
@@ -124,43 +141,63 @@ namespace Jube.Data.Repository
             return model;
         }
 
-        public async Task<VisualisationRegistry> UpdateAsync(VisualisationRegistry model, CancellationToken token = default)
+        public async Task<VisualisationRegistry> UpdateAsync(VisualisationRegistry model,
+            CancellationToken token = default)
         {
             var existing = await dbContext.VisualisationRegistry.FirstOrDefaultAsync(w => w.Id
-                                                                                          == model.Id
-                                                                                          && w.TenantRegistryId == tenantRegistryId
-                                                                                          && (w.Deleted == 0 || w.Deleted == null)
-                                                                                          && (w.Locked == 0 || w.Locked == null), token);
+                == model.Id
+                && w.TenantRegistryId == tenantRegistryId
+                && (w.Deleted == 0 || w.Deleted == null)
+                && (w.Locked == 0 || w.Locked == null), token);
 
             if (existing == null)
             {
                 throw new KeyNotFoundException();
             }
 
-            model.CreatedUser = userName;
-            model.CreatedDate = DateTime.UtcNow;
+            model.CreatedUser = existing.CreatedUser;
+            model.CreatedDate = existing.CreatedDate;
+            model.UpdatedUser = userName;
+            model.UpdatedDate = DateTime.UtcNow;
             model.TenantRegistryId = tenantRegistryId;
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
+            model.ImportId = existing.ImportId;
 
             await dbContext.UpdateAsync(model, token: token);
 
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
+            var audit = new VisualisationRegistryVersion
             {
-                cfg.CreateMap<VisualisationRegistry, VisualisationRegistryVersion>();
-            }, NullLoggerFactory.Instance));
+                VisualisationRegistryId = existing.Id,
+                Name = existing.Name,
+                Active = existing.Active,
+                Locked = existing.Locked,
+                ShowInDirectory = existing.ShowInDirectory,
+                Columns = existing.Columns,
+                ColumnWidth = existing.ColumnWidth,
+                RowHeight = existing.RowHeight,
+                CreatedUser = existing.CreatedUser,
+                CreatedDate = existing.CreatedDate,
+                UpdatedUser = existing.UpdatedUser,
+                UpdatedDate = existing.UpdatedDate,
+                Deleted = existing.Deleted,
+                DeletedUser = existing.DeletedUser,
+                DeletedDate = existing.DeletedDate,
+                Version = existing.Version,
+            };
 
-            var audit = mapper.Map<VisualisationRegistryVersion>(existing);
-            audit.VisualisationRegistryId = existing.Id;
+            await dbContext.InsertAsync(audit, token: token);
 
             return model;
         }
 
-        public Task DeleteAsync(int id, CancellationToken token = default)
+        public async Task DeleteAsync(int id, CancellationToken token = default)
         {
-            var record = dbContext.VisualisationRegistry
-                .FirstOrDefault(u => u.TenantRegistryId == tenantRegistryId
-                                     && u.Id == id);
+            var record = await dbContext.VisualisationRegistry
+                .FirstOrDefaultAsync(w => w.TenantRegistryId == tenantRegistryId
+                                          && w.Id == id
+                                          && (w.Deleted == 0 || w.Deleted == null)
+                                          && (w.Locked == 0 || w.Locked == null), token);
 
             if (record == null)
             {
@@ -170,10 +207,11 @@ namespace Jube.Data.Repository
             record.DeletedUser = userName;
             record.DeletedDate = DateTime.UtcNow;
             record.Deleted = 1;
-            return dbContext.UpdateAsync(record, token: token);
+            await dbContext.UpdateAsync(record, token: token);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.VisualisationRegistry
                 .Where(d => d.TenantRegistryId == tenantRegistryIdOutsideOfInstance

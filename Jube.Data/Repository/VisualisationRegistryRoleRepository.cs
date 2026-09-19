@@ -42,6 +42,23 @@ namespace Jube.Data.Repository
             this.tenantRegistryId = tenantRegistryId;
         }
 
+        public Task<bool> ExistsVisualisationRegistryAsync(Guid visualisationRegistryGuid,
+            CancellationToken token = default)
+        {
+            return dbContext.VisualisationRegistry.AnyAsync(w =>
+                w.Guid == visualisationRegistryGuid
+                && w.TenantRegistryId == tenantRegistryId
+                && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
+        public Task<bool> ExistsRoleRegistryAsync(Guid roleRegistryGuid, CancellationToken token = default)
+        {
+            return dbContext.RoleRegistry.AnyAsync(w =>
+                w.Guid == roleRegistryGuid
+                && w.TenantRegistryId == tenantRegistryId
+                && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<IEnumerable<VisualisationRegistryRole>> GetAllDescAsync(CancellationToken token = default)
         {
             return await dbContext.VisualisationRegistryRole
@@ -50,7 +67,8 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token);
         }
 
-        public Task<List<VisualisationRegistryRole>> GetByVisualisationRegistryGuidAsync(Guid visualisationRegistryGuid, CancellationToken token = default)
+        public Task<List<VisualisationRegistryRole>> GetByVisualisationRegistryGuidAsync(Guid visualisationRegistryGuid,
+            CancellationToken token = default)
         {
             return dbContext.VisualisationRegistryRole.Where(w =>
                 w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
@@ -58,13 +76,41 @@ namespace Jube.Data.Repository
                 && (w.Deleted == 0 || w.Deleted == null)).ToListAsync(token);
         }
 
-        public async Task<VisualisationRegistryRole> InsertAsync(VisualisationRegistryRole model, CancellationToken token = default)
+        public async Task<VisualisationRegistryRole> InsertAsync(VisualisationRegistryRole model,
+            CancellationToken token = default)
         {
+            var existing = await dbContext.VisualisationRegistryRole.FirstOrDefaultAsync(w =>
+                    w.VisualisationRegistryGuid == model.VisualisationRegistryGuid && w.RoleRegistryGuid ==
+                    model.RoleRegistryGuid
+                    && (w.Deleted == 0 || w.Deleted == null),
+                token);
+            if (existing != null)
+            {
+                return existing;
+            }
+
             model.CreatedUser = userName ?? model.CreatedUser;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
-            model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+            try
+            {
+                model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+            }
+            catch (Exception ex) when (GrantInsertion.IsUniqueViolation(ex))
+            {
+                var raced = await dbContext.VisualisationRegistryRole.FirstOrDefaultAsync(w =>
+                    w.VisualisationRegistryGuid == model.VisualisationRegistryGuid &&
+                    w.RoleRegistryGuid == model.RoleRegistryGuid
+                    && (w.Deleted == 0 || w.Deleted == null), token);
+                if (raced == null)
+                {
+                    throw;
+                }
+
+                return raced;
+            }
+
             return model;
         }
 
@@ -85,7 +131,8 @@ namespace Jube.Data.Repository
             }
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.VisualisationRegistryRole
                 .Where(d =>

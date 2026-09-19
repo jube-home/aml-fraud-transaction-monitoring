@@ -101,7 +101,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
             var firstId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, 3, 2, 1, 30, 0, 3000, 800, 1200);
             var secondId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, 7, 5, 2, 70, 4, 9000, 900, 1600);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -122,7 +122,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -134,6 +134,15 @@ namespace Jube.Test.Service.OtlpDispatchCounter
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -154,7 +163,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
             var tracesId = await CreateCounterAsync(dbContext, OtlpSignal.Traces);
             var logsId = await CreateCounterAsync(dbContext, OtlpSignal.Logs);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(signalId: (int)OtlpSignal.Traces);
 
             var mine = result.Rows.Where(r => r.Id == tracesId || r.Id == logsId).ToList();
@@ -173,7 +182,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
             var oldId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, createdDate: twoHoursAgo);
             var newId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, createdDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Id == oldId || r.Id == newId).ToList();
@@ -190,7 +199,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
             var midId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, 20);
             var highId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, 30);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "count", sortDirection: "asc");
             var ascendingMine = ascending.Rows
@@ -214,7 +223,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
             var highId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, 20);
             var lowId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, 10);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "count", sortDirection: ascendingKeyword);
 
             var mine = result.Rows.Where(r => r.Id == highId || r.Id == lowId).ToList();
@@ -229,7 +238,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
             var lowId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, 10);
             var highId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, 20);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "count", sortDirection: "banana");
 
             var mine = result.Rows.Where(r => r.Id == lowId || r.Id == highId).ToList();
@@ -245,7 +254,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
                 createdDate: DateTime.UtcNow.AddMinutes(-30));
             var secondId = await CreateCounterAsync(dbContext, OtlpSignal.Traces, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -263,7 +272,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
                 await CreateCounterAsync(dbContext, OtlpSignal.Traces);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, from);
 
             result.Rows.Should().HaveCount(2);
@@ -276,7 +285,7 @@ namespace Jube.Test.Service.OtlpDispatchCounter
             await using var dbContext = fx.GetDbContext();
             await CreateCounterAsync(dbContext, OtlpSignal.Traces);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

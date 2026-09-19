@@ -22,30 +22,41 @@ administrative UI for this yet, consistent with how [`RuleScriptToken`](../RuleC
 managed today. Once curated, it is used from a rule exactly like any other extension method:
 
 ``` vb
-If Payload("Email").IsCorporateEmail Then
+If Payload.Email.IsGmailEmail Then
     Return Matched
 End If
 ```
 
-`IsCorporateEmail` is not a real method here — it is a row in `DictionaryEvalExpression`. Nothing else about the rule
+`IsGmailEmail` is not a real method here — it is a row in `DictionaryEvalExpression`. Nothing else about the rule
 changes: the rule author writes plain VB.NET fluent syntax, with no visible reference to how the value is actually
 produced.
+
+**This example, and every curated name on this page, is illustrative of the mechanism only — it is not a promise that
+any particular name exists on a given instance.** `IsGmailEmail` happens to be one of the rows the migration below
+seeds, but curated names can be added, renamed or removed by an administrator at any time, and
+`EnableDynamicEval` may simply be off. Before relying on a curated name in a rule, check the live
+`DictionaryEvalExpression` table (or the effective `RuleScriptToken` allowlist) on the target instance — a rule that
+references an unregistered curated name fails the soft-parse integrity check exactly like any other unknown token, with
+no other warning.
 
 ## The DictionaryEvalExpression Table
 
 | Column         | Description                                                                                                                                                                                                                                                               |
 |----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `Id`           | Primary key.                                                                                                                                                                                                                                                              |
-| `Name`         | The bare identifier rules use, e.g. `IsCorporateEmail`. Must not collide with a real extension method or another curated name.                                                                                                                                            |
+| `Name`         | The bare identifier rules use, e.g. `IsGmailEmail`. Must not collide with a real extension method or another curated name.                                                                                                                                                |
 | `Expression`   | The expression body, evaluated against a single bound parameter named `value` — e.g. `!value.EndsWith("gmail.com")`.                                                                                                                                                      |
 | `ResultTypeId` | `1`=String, `2`=Integer, `3`=Double, `4`=DateTime, `5`=Boolean — the same `ReturnDataTypeId` convention already used by `EntityAnalysisModelInlineFunction` and `EntityAnalysisInlineScript`, reused here rather than introducing a second, differently-shaped type code. |
 | `Compiled`     | Written back on every background model synchronisation cycle: `1` if the row compiled successfully, `0` if it did not.                                                                                                                                                    |
 | `CompileError` | The compiler error text when `Compiled` is `0`; `null` otherwise. The same `Compiled`/`CompileError` convention used by Activation, Gateway and Abstraction Rules.                                                                                                        |
 
-The migration that creates this table also seeds one worked example per `ResultTypeId` (`Shout`, `Length`,
-`HalfLength`, `ParseAsDate`, `IsCorporateEmail`) so there is always a concrete, testable row of each supported type
-present — including while `EnableDynamicEval` is off, since being off only stops rows being registered as rule tokens,
-not their existence in the table.
+The migration that creates this table also seeds one worked example per `ResultTypeId` (`ShoutString`,
+`WhatIsLength`, `HalfLength`, `ParseStringAsDate`, `IsGmailEmail` — verified against
+`AddImplicitAsyncRecallAndTimeoutFeatures.AddDictionaryEvalExpression` in `Jube.Migrations`) so there is always a
+concrete, testable row of each supported type present at install time — including while `EnableDynamicEval` is off,
+since being off only stops rows being registered as rule tokens, not their existence in the table. This is a fixed set
+from a single migration, though: nothing stops a later migration, or an administrator, from adding, renaming or removing
+rows, so even this seeded set should be confirmed against the live table rather than assumed to be there.
 
 ## Enabling the Feature
 
@@ -70,11 +81,11 @@ Dynamic Expressions are layered on top of that mechanism rather than around it, 
    together this is a materially smaller surface than the VB.NET rule compiler itself, which compiles to a real assembly
    with the full breadth of referenced .NET libraries available to it.
 2. **The underlying mechanism is never a reachable rule token, regardless of `EnableDynamicEval`.** A curated name like
-   `IsCorporateEmail` is only ever expanded into its real, generic-typed call *after* the soft parser has already
-   validated the rule author's original, unexpanded text against the token allowlist — so the expanded syntax never
-   itself has to pass that check. The mechanism name that performs this expansion is permanently excluded from the token
-   allowlist, in every configuration, so there is no way to reach it directly by typing it in a rule; only a name
-   already curated in `DictionaryEvalExpression` can ever be rewritten into a call to it. Enabling `EnableDynamicEval`
+   `IsGmailEmail` is only ever expanded into its real, generic-typed call *after* the soft parser has already validated
+   the rule author's original, unexpanded text against the token allowlist — so the expanded syntax never itself has to
+   pass that check. The mechanism name that performs this expansion is permanently excluded from the token allowlist, in
+   every configuration, so there is no way to reach it directly by typing it in a rule; only a name already curated in
+   `DictionaryEvalExpression` can ever be rewritten into a call to it. Enabling `EnableDynamicEval`
    only ever adds more *named* tokens (one per curated row) to the allowlist, the same way adding a
    [`RuleScriptToken`](../RuleCompilationAlgorithm/index.html) row does — it never weakens the token check itself.
 

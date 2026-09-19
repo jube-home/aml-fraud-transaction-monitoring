@@ -24,10 +24,16 @@ namespace Jube.Validations.EntityAnalysisModelTag
         private const int MaxNameLength = 256;
 
         public EntityAnalysisModelTagDtoValidator(EntityAnalysisModelTagRepository repository,
-            IStringLocalizer localiser)
+            IStringLocalizer localiser,
+            EntityAnalysisModelRepository entityAnalysisModelRepository)
         {
             RuleFor(p => p.EntityAnalysisModelId)
+                .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
+                .WithMessage(_ => localiser[EntityAnalysisModelTagResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdInvalid")
+                .MustAsync(async (id, cancellation) =>
+                    await entityAnalysisModelRepository.GetByIdAsync(id, cancellation) != null)
                 .WithMessage(_ => localiser[EntityAnalysisModelTagResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
 

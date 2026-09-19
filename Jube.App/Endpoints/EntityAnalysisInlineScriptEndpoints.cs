@@ -50,7 +50,10 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
-            if (log.IsDebugEnabled) log.Debug($"GET {Base}: entry user={user}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"GET {Base}: entry user={user}");
+            }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
@@ -63,19 +66,28 @@ namespace Jube.App.Endpoints
             }
             catch (NotAuthenticatedException)
             {
-                if (log.IsWarnEnabled) log.Warn($"GET {Base}: 403 (not authenticated) user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}: 403 (not authenticated) user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (ForbiddenException)
             {
-                if (log.IsWarnEnabled) log.Warn($"GET {Base}: 403 user={user}");
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}: 403 user={user}");
+                }
 
                 return TypedResults.Forbid();
             }
             catch (OperationCanceledException)
             {
-                if (log.IsDebugEnabled) log.Debug($"GET {Base}: client cancelled user={user}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"GET {Base}: client cancelled user={user}");
+                }
 
                 throw;
             }

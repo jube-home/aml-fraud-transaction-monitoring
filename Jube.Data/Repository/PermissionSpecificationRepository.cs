@@ -14,6 +14,7 @@
 namespace Jube.Data.Repository
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
@@ -22,9 +23,12 @@ namespace Jube.Data.Repository
 
     public class PermissionSpecificationRepository(DbContext dbContext)
     {
+        private const int RetiredMonitoringSpecificationId = 27;
+
         public async Task<IEnumerable<PermissionSpecification>> GetAsync(CancellationToken token = default)
         {
-            return await dbContext.PermissionSpecification.ToListAsync(token);
+            return await dbContext.PermissionSpecification.Where(w => w.Id != RetiredMonitoringSpecificationId)
+                .ToListAsync(token);
         }
     }
 }

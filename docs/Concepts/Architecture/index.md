@@ -5,7 +5,8 @@ nav_order: 1
 parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # Architecture
 
@@ -29,18 +30,17 @@ stateless nature of Jube allows for scaling to massive extremes.
 
 Jube has a highly scalable architecture. Jube performs as much processing as possible in memory in predictably sized
 thread capacity. Where database interactions are required, it is at a minimum against entities which are optimised to
-return datasets quickly based on indexed key value pairs using a Redis instance (anything RESP
-wire compatible in practice, and increasingly Jube would suggest alternatives given improved performance and fallback
-persistence, such as in KeyDB). Configuration and rule compilation (this is .Net reflection) is done perpetually in
-background threads so that real-time request processing is not interrupted with computationally expensive language
-interpretation. Archive storage of the response payload happens asynchronously using internal concurrent queues,
-sometime after the response payload has been dispatched (and usually in bulk). The Archive payload is comprehensive;
-When exploited via Postgres binary JSON functions and the functionality inside Jube to promote keys, analytical
-reporting capability is enhanced to a great extent.
+return datasets quickly based on indexed key value pairs using a Redis instance (anything RESP wire compatible in
+practice, and increasingly Jube would suggest alternatives given improved performance and fallback persistence, such as
+in KeyDB). Configuration and rule compilation (this is .Net reflection) is done perpetually in background threads so
+that real-time request processing is not interrupted with computationally expensive language interpretation. Archive
+storage of the response payload happens asynchronously using internal concurrent queues, sometime after the response
+payload has been dispatched (and usually in bulk). The Archive payload is comprehensive; When exploited via Postgres
+binary JSON functions and the functionality inside Jube to promote keys, analytical reporting capability is enhanced to
+a great extent.
 
 The software is written in C# and is presented as a single binary application, although it can be taken to be stateless
-for
-the purposes of clustering. While a single binary, Environment Variables are used to enable or disable threads,
+for the purposes of clustering. While a single binary, Environment Variables are used to enable or disable threads,
 allocating threads based on desired architecture and work allocation.
 
 Jube is intended to run on a commodity Linux open source infrastructure and has the following software dependencies:
@@ -48,15 +48,15 @@ Jube is intended to run on a commodity Linux open source infrastructure and has 
 * .Net 9 Runtime.
 * Postgres database version 13 onwards (tested on 15.4 but no significant database development to cause a breaking
   change).
-* Redis version 6 or above (it probably works fine on earlier versions, as the command used are basic. RESP
-  wire compatible implies that it is possible to use KeyDB, DragonflyDB, Garnet or any RESP compliant wire protocol
+* Redis version 6 or above (it probably works fine on earlier versions, as the command used are basic. RESP wire
+  compatible implies that it is possible to use KeyDB, DragonflyDB, Garnet or any RESP compliant wire protocol
   database).
 
 Jube will of course run on Windows, or indeed any platform that is supported by the .Net runtime, however, alternative
-platforms are not recommended for production use. Windows is not tested. Furthermore, Redis, KeyDB and DragonflyDB,
-does not support Windows, so Cache options are limited to Postgres Database of Garnet (although there may well be other
-RESP wire compatible databases that have been overlooked that work on Windows). Unclear why Windows would be a first
-choice, however.
+platforms are not recommended for production use. Windows is not tested. Furthermore, Redis, KeyDB and DragonflyDB, does
+not support Windows, so Cache options are limited to Postgres Database of Garnet (although there may well be other RESP
+wire compatible databases that have been overlooked that work on Windows). Unclear why Windows would be a first choice,
+however.
 
 ## Migration
 
@@ -95,30 +95,47 @@ In the event Migration is disabled,
 the [Fluent Migrator Command Line Runner](https://fluentmigrator.github.io/articles/runners/runner-console.html) will
 need to be executed separately, targeting the Jube.Migrations.dll binary for Postgres 11.0.
 
+Most migrations only add structure, but some tighten integrity by adding unique indexes, and those repair existing data
+first so that the index can be created:
+
+* Names that must be unique among live (not soft deleted) rows, compared case insensitively, are enforced by the
+  database: a User name across the whole instance, a Case Workflow name within its Model, a Case Workflow Action,
+  Display or Filter name within its Case Workflow, a Visualisation Registry name within its tenant and a Visualisation
+  Datasource or Parameter name within its Visualisation Registry. A row that duplicates an earlier one is renamed by
+  appending ` [dup Id]` (the Id of the row), so nothing is deleted and the row can be found and corrected afterwards.
+* A Role can be granted to an entity only once. On the twelve Role Allocation tables (Case Workflow, Status, XPath,
+  Action, Display, Filter, Form and Macro, Visualisation Registry, Datasource and Parameter, and Entity Analysis Model)
+  a repeated live grant is soft deleted, keeping the earliest, with `DeletedUser` set to `Migration`. Granting the same
+  Role to the same entity again simply returns the grant that exists.
+* `UserRegistry` gains a nullable `TokensValidFrom` column, used for session revocation (see Authentication Concepts).
+
+Where the data of an existing instance matters, run the migration against a copy first and look at the rows renamed with
+` [dup ` in the name, since the migration takes the place of a person deciding which duplicate to keep.
+
 Migrations do not exist as a concept for Redis as this is a schemaless Key \ Value Pair in memory database where Keys
 are upserted (inserted or updated on existence). Henceforth, Redis does not have a schema, although values do have a
 very specific structure native to Jube.
 
 ## Embedded Kestrel HTTP Web Server
 
-The Jube instance exposes an embedded web server by the name Kestrel. As long as the application started
-without error - itself a simple matter of ensuring the .Net runtime and Postgres database connection - then HTTP
-requests can be made.
+The Jube instance exposes an embedded web server by the name Kestrel. As long as the application started without error -
+itself a simple matter of ensuring the .Net runtime and Postgres database connection - then HTTP requests can be made.
 
 All HTTP requests will be targeted at the Kestrel webserver, and include:
 
 * Static content such as javascript files and images not subject to authentication.
-* Page HTML content which is subject to authentication, except the authentication page itself. HTML
-  content and static content is entirely dependent on API controllers.
-* The API controllers which are subject to authentication, except for the authentication controller itself and a public
-  facing invocation endpoint. The API is a variety of endpoints that are parametrized as either JSON post bodies, and
-  less frequently querystring values. The API is documented via Swagger
+* Page HTML content which is subject to authentication, except the authentication page itself. HTML content and static
+  content is entirely dependent on the API endpoints.
+* The API endpoints (Minimal API, backed by the service layer) which are subject to authentication, except for the login
+  and logout endpoints and the readiness probe. The invocation endpoints are intended for integration and also require
+  authentication (a JWT or an API Key). The API is a variety of endpoints that are parametrized as either JSON post
+  bodies, and less frequently querystring values. The API is documented via Swagger
   at [https://localhost:5001/swagger](https://localhost:5001/swagger), once the Jube instance is running and responding
   to HTTP requests. It follows that any interaction that can be achieved in the user interface, can also be achieved via
   API directly, subject to authentication.
 
-Authentication relies on a standard implementation of JSON web tokens stored in an HTTP header called authenticate, or an
-http cookie called authentication, which must always be present except for unauthenticated resources.
+Authentication relies on a standard implementation of JSON web tokens stored in an HTTP header called authenticate, or
+an http cookie called authentication, which must always be present except for unauthenticated resources.
 
 The JSON web token encrypts using Environment Variables:
 
@@ -134,16 +151,15 @@ JWTKey=ExtraSuperDuperSecretKeyCreatedOnFirstStartup
 | JWTValidIssuer   | The server domain that issued the token.                                                                                                                  |
 | JWTKey           | The encryption key for the token.  This key is created randomly on first instantiation of Jube,  but can be changed by updating the Environment Variable. |
 
-Notwithstanding a stateless architecture, the token contains a single claim type of
-Name (http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name), which will contain only the username (e.g.
-Administrator).
+Notwithstanding a stateless architecture, the token contains a single claim type of Name
+(http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name), which will contain only the username (e.g. Administrator).
 
 ### Custom HTTP Response Headers
 
-Arbitrary HTTP response headers (for example security headers such as HSTS or a Content Security Policy) can be
-injected into every response by inserting rows directly into the `HttpResponseHeader` table (Header, Value columns).
-There is no administrative page for this - rows are read once into an in-memory dictionary at startup and applied to
-every response by middleware, so a change to the table requires a restart of the instance to take effect.
+Arbitrary HTTP response headers (for example security headers such as HSTS or a Content Security Policy) can be injected
+into every response by inserting rows directly into the `HttpResponseHeader` table (Header, Value columns). There is no
+administrative page for this - rows are read once into an in-memory dictionary at startup and applied to every response
+by middleware, so a change to the table requires a restart of the instance to take effect.
 
 Example headers are:
 
@@ -177,16 +193,15 @@ Cache has extreme performance demands and should be entirely uncontested when re
 Furthermore, cache should be forced almost entirely into memory, which in the case of Redis is the only option anyway.
 Ensuring that cache has an uncontested in-memory habitat is not all that achievable without offloading these entities to
 a separately sized and memory optimal process and server (this is complicated by Redis being a single thread, which
-makes
-alternatives such as DragonflyDB, KeyDB and Garnet increasingly attractive, offering better performance and greater
-consolidation).
+makes alternatives such as DragonflyDB, KeyDB and Garnet increasingly attractive, offering better performance and
+greater consolidation).
 
-Given Redis being used as a cache the installation by its nature will be entirely in memory and writing to
-disk, which is asynchronous in the form of an Append Only Log (AOL), exists for recovery only. In memory databases like
-Redis need meticulous capacity planning and monitoring, so not to allow for a situation where memory runs and keys
-are evicted (a disastrous situation for Cache integrity). Key eviction is so problematic, it is suggested to consider
-KeyDB and its flash capability allowing for fall back to flash, not to mention the benefits of multithreaded
-performance which Redis has fallen far behind on.
+Given Redis being used as a cache the installation by its nature will be entirely in memory and writing to disk, which
+is asynchronous in the form of an Append Only Log (AOL), exists for recovery only. In memory databases like Redis need
+meticulous capacity planning and monitoring, so not to allow for a situation where memory runs and keys are evicted (a
+disastrous situation for Cache integrity). Key eviction is so problematic, it is suggested to consider KeyDB and its
+flash capability allowing for fall back to flash, not to mention the benefits of multithreaded performance which Redis
+has fallen far behind on.
 
 A Jube instance is designed in an entirely stateless manner such to sit behind a standard HTTP load balancer. In HTTP
 load balancing, requests to the load balancer are sent to different backend servers in rotation, allowing for horizontal
@@ -218,7 +233,7 @@ invocation. The purpose of the RabbitMQ is to provide the following additional c
   Watcher functionality by Postgres notification or polling the Activations table in the database.
 * Notifications dispatched as a consequence of an Activation Rule match can be placed to a queue called "
   jubeNotifications". If RabbitMQ is not enabled, the same effect is achieved for supporting Activation Rule Match
-  Notification functionality by polling the Notifications table in the database.(notifications sent via the case
+  Notification functionality by polling the Notifications table in the database. (notifications sent via the case
   management system are synchronous).
 
 To enable RabbitMQ, the following Environment Variable needs to be updated:
@@ -233,11 +248,11 @@ AMQPUri=amqps://hostname:secret@cow.moo.cloudamqp.com/hostname
 | AMQP    | True or False to signify that connections should be established via the AMQPUri connection string to the RabbitMQ server or cluster. |
 | AMQPUri | The connection string to the RabbitMQ server.                                                                                        |
 
-## HTTPS Highly Available Load Balanced Distributed 
+## HTTPS Highly Available Load Balanced Distributed
 
-Jube in a single process, but given the stateless nature it can be clustered and arranged in a highly available
-manner. Given the comprehensive nature of the Jube instance, it is foreseeable that certain services, which would be
-background threads consuming resources, may not be used despite being instantiated by the default Environment Variable
+Jube in a single process, but given the stateless nature it can be clustered and arranged in a highly available manner.
+Given the comprehensive nature of the Jube instance, it is foreseeable that certain services, which would be background
+threads consuming resources, may not be used despite being instantiated by the default Environment Variable
 configuration (although they will be wait sleeping if not in use, so the effect is minimal).
 
 The following diagram shows how the Jube instance can be arranged in a highly available fashion as backend servers to a
@@ -264,7 +279,7 @@ public user of the Invocation HTTP API endpoint is allowed, hence an Environment
 default. Public invocation of the Invocation HTTP API endpoint can be restricted by updating an Environment Variable as:
 
 ```text
-EnablePublicInvocationController=False
+EnablePublicInvokeController=False
 ```
 
 Model processing relies on a complex set of background threads collectively referred to as the engine.
@@ -318,8 +333,7 @@ A Jube instance is stateless however the platform application itself would be st
 database and cache.
 
 High availability of the Postgres database nor Redis is outside the scope of this documentation, as the manner in which
-high
-availability is achieved is standard and generic.
+high availability is achieved is standard and generic.
 
 It is suggested that storage be offloaded to highly durable external storage in the case of archive and highly
 performance local storage in the case of Cache. WAL should be written to separate high performance disks and

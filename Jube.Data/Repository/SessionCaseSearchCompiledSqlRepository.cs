@@ -26,7 +26,7 @@ namespace Jube.Data.Repository
         public SessionCaseSearchCompiledSql GetByGuid(Guid guid)
         {
             return dbContext.SessionCaseSearchCompiledSql
-                .FirstOrDefault(w => w.Guid == guid);
+                .FirstOrDefault(w => w.Guid == guid && w.CreatedUser == userName);
         }
 
         public Task<SessionCaseSearchCompiledSql> GetByLastAsync(CancellationToken token = default)
@@ -37,7 +37,13 @@ namespace Jube.Data.Repository
                 .FirstOrDefaultAsync(token);
         }
 
-        public async Task<SessionCaseSearchCompiledSql> InsertAsync(SessionCaseSearchCompiledSql model, CancellationToken token = default)
+        public Task UpdateRebuiltAsync(SessionCaseSearchCompiledSql model, CancellationToken token = default)
+        {
+            return dbContext.UpdateAsync(model, token: token);
+        }
+
+        public async Task<SessionCaseSearchCompiledSql> InsertAsync(SessionCaseSearchCompiledSql model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;

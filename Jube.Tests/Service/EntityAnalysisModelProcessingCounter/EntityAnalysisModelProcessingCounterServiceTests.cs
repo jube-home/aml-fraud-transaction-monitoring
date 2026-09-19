@@ -123,12 +123,12 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListReturnsMostRecentFirstAndProjectsModelNameAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             await CreateRowAsync(dbContext, modelGuid, 1, createdDate: DateTime.UtcNow.AddMinutes(-30));
             await CreateRowAsync(dbContext, modelGuid, 2, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.EntityAnalysisModelGuid == modelGuid).ToList();
@@ -142,7 +142,7 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -154,6 +154,15 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -179,12 +188,12 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListWithZeroSamplePercentageExcludesEveryMatchingRowAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             await CreateRowAsync(dbContext, modelGuid, 1);
             await CreateRowAsync(dbContext, modelGuid, 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -194,35 +203,34 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListWithHundredSamplePercentageIncludesEveryMatchingRowAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             await CreateRowAsync(dbContext, modelGuid, 1);
             await CreateRowAsync(dbContext, modelGuid, 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(samplePercentage: 100);
 
             result.Rows.Where(r => r.EntityAnalysisModelGuid == modelGuid).Should().HaveCount(2);
         }
 
         [Fact]
-        public async Task ListDoesNotCrossTenantsForNonLandlordUserAsync()
+        public async Task ListIsForbiddenForNonLandlordUsersOfAnyTenantAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
-            await CreateRowAsync(dbContext, modelGuid, 1);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
-            var otherTenantResult = await otherTenantService.ListAsync();
-
-            otherTenantResult.Rows.Should().NotContain(r => r.EntityAnalysisModelGuid == modelGuid);
+            foreach (var user in new[] { fx.Seed.UserWithPermission, fx.Seed.UserTenantB })
+            {
+                var service = await BuildServiceAsync(dbContext, user);
+                await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+            }
         }
 
         [Fact]
         public async Task ListIncludesEveryTenantForLandlordUserAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
             await CreateRowAsync(dbContext, modelGuid, 1);
 
             var landlordService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -235,14 +243,14 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListFiltersByDateRangeAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             var oldDate = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var newDate = DateTime.UtcNow;
             await CreateRowAsync(dbContext, modelGuid, 1, createdDate: oldDate);
             await CreateRowAsync(dbContext, modelGuid, 2, createdDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.EntityAnalysisModelGuid == modelGuid).ToList();
@@ -254,14 +262,14 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListDefaultsToLastHourWhenFromAndToOmittedAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             var twoHoursAgo = DateTime.UtcNow.AddHours(-2);
             var justNow = DateTime.UtcNow;
             await CreateRowAsync(dbContext, modelGuid, 1, createdDate: twoHoursAgo);
             await CreateRowAsync(dbContext, modelGuid, 2, createdDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.EntityAnalysisModelGuid == modelGuid).ToList();
@@ -274,12 +282,12 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         {
             await using var dbContext = fx.GetDbContext();
             var searchToken = $"Findme{Guid.NewGuid():N}";
-            var (_, matchingGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission, searchToken);
-            var (_, otherGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, matchingGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser, searchToken);
+            var (_, otherGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
             await CreateRowAsync(dbContext, matchingGuid, 1);
             await CreateRowAsync(dbContext, otherGuid, 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: searchToken.ToLower());
 
             var mine = result.Rows
@@ -293,13 +301,13 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListSortsByModelInvokeAscendingAndDescendingAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             await CreateRowAsync(dbContext, modelGuid, 30);
             await CreateRowAsync(dbContext, modelGuid, 10);
             await CreateRowAsync(dbContext, modelGuid, 20);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "modelInvoke", sortDirection: "asc");
             var ascendingMine = ascending.Rows.Where(r => r.EntityAnalysisModelGuid == modelGuid).ToList();
@@ -317,12 +325,12 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListSortDirectionIsCaseInsensitiveForAscendingAsync(string ascendingKeyword)
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             await CreateRowAsync(dbContext, modelGuid, 20);
             await CreateRowAsync(dbContext, modelGuid, 10);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "modelInvoke", sortDirection: ascendingKeyword);
 
             var mine = result.Rows.Where(r => r.EntityAnalysisModelGuid == modelGuid).ToList();
@@ -333,12 +341,12 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListWithGarbageSortDirectionFallsBackToDescendingAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             await CreateRowAsync(dbContext, modelGuid, 10);
             await CreateRowAsync(dbContext, modelGuid, 20);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "modelInvoke", sortDirection: "banana");
 
             var mine = result.Rows.Where(r => r.EntityAnalysisModelGuid == modelGuid).ToList();
@@ -349,12 +357,12 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListWithUnrecognisedSortFieldFallsBackToMostRecentFirstAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             await CreateRowAsync(dbContext, modelGuid, 1, createdDate: DateTime.UtcNow.AddMinutes(-30));
             await CreateRowAsync(dbContext, modelGuid, 2, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.EntityAnalysisModelGuid == modelGuid).ToList();
@@ -366,15 +374,17 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListTotalReflectsFullFilteredCountEvenWhenTakeIsSmallerAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
+            var modelName = await dbContext.EntityAnalysisModel.Where(m => m.Guid == modelGuid)
+                .Select(m => m.Name).SingleAsync();
 
             for (var i = 0; i < 5; i++)
             {
                 await CreateRowAsync(dbContext, modelGuid, i);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var result = await service.ListAsync(2, DateTime.UtcNow.AddMinutes(-1));
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var result = await service.ListAsync(2, DateTime.UtcNow.AddMinutes(-1), search: modelName);
 
             var mine = result.Rows.Where(r => r.EntityAnalysisModelGuid == modelGuid).ToList();
             mine.Should().HaveCount(2);
@@ -385,12 +395,12 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListProjectsMinAndMaxResponseTimeMicrosecondsAndArchiveWalPendingCountAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             await CreateRowAsync(dbContext, modelGuid, minResponseTimeMicroseconds: 1200,
                 maxResponseTimeMicroseconds: 9800, archiveWalPendingCount: 42);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Single(r => r.EntityAnalysisModelGuid == modelGuid);
@@ -403,10 +413,10 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListIdIsAlwaysZeroAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
             await CreateRowAsync(dbContext, modelGuid, 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Single(r => r.EntityAnalysisModelGuid == modelGuid);
@@ -418,14 +428,14 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListStatisticsComputesExactValuesForResponseElevationSumAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
 
             foreach (var value in new double[] { 1, 2, 3, 4, 5 })
             {
                 await CreateRowAsync(dbContext, modelGuid, responseElevationSum: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: DateTime.UtcNow.AddMinutes(-1));
 
             var stats = result.Statistics.Columns["responseElevationSum"];
@@ -441,11 +451,13 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListStatisticsWithSingleValueHasZeroStandardDeviationAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
+            var modelName = await dbContext.EntityAnalysisModel.Where(m => m.Guid == modelGuid)
+                .Select(m => m.Name).SingleAsync();
             await CreateRowAsync(dbContext, modelGuid, activationWatcher: 7);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var result = await service.ListAsync(from: DateTime.UtcNow.AddMinutes(-1));
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var result = await service.ListAsync(from: DateTime.UtcNow.AddMinutes(-1), search: modelName);
 
             var stats = result.Statistics.Columns["activationWatcher"];
             stats.Min.Should().Be(7);
@@ -457,7 +469,7 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListStatisticsOverZeroMatchingRowsDoesNotThrowAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result =
                 await service.ListAsync(from: DateTime.UtcNow.AddSeconds(1), to: DateTime.UtcNow.AddSeconds(2));
@@ -470,10 +482,10 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         public async Task ListStatisticsIncludesEveryContinuousMeasuredColumnAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
             await CreateRowAsync(dbContext, modelGuid, 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

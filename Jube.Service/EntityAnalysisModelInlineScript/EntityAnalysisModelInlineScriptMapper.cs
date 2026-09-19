@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelInlineScript;
 
 namespace Jube.Service.EntityAnalysisModelInlineScript
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
 
     internal static class EntityAnalysisModelInlineScriptMapper
     {
+        [return: NotNullIfNotNull(nameof(inlineScript))]
         public static EntityAnalysisModelInlineScriptDto? ToDto(InlineScriptPoco? inlineScript)
         {
             return inlineScript is null
@@ -43,7 +45,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
 
         public static List<EntityAnalysisModelInlineScriptDto> ToDto(IEnumerable<InlineScriptPoco>? source)
         {
-            return (source ?? Enumerable.Empty<InlineScriptPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<InlineScriptPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static InlineScriptPoco ToPoco(EntityAnalysisModelInlineScriptDto dto)

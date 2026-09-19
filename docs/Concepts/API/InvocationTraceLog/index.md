@@ -33,8 +33,8 @@ neither on:
 Turning either on never changes what log4net writes -- the two are independent sinks fed from the same call sites. The
 intention is that log4net be relegated to developer tooling only.
 
-Warn Threshold Milliseconds measures the gap since the previous captured entry, not since the invocation started --
-e.g. a threshold of 250 means "only capture a trace point if at least 250ms have passed since the last one that was
+Warn Threshold Milliseconds measures the gap since the previous captured entry, not since the invocation started -- e.g.
+a threshold of 250 means "only capture a trace point if at least 250ms have passed since the last one that was
 captured," so a model that logs at every stage boundary will only surface the boundaries where something was actually
 slow. Independent of Enable Logs: Info -- the Warn threshold check runs regardless of whether Info is also on, and a
 single trace point can be captured because of Info sampling, the Warn threshold, or both at once (see Shape below for
@@ -63,16 +63,16 @@ every invocation regardless of Enable Sampling.
 
 The same per-invocation sample decision also gates the Response Time Pipeline, Task Performance Counter, and
 `invokeTaskPerformance.stages` (Enable Response Trace's own per-stage/per-rule breakdown) capture for that Model (see
-[HTTP API Performance Trace](../../PerformanceTrace/index.html)) -- all three are otherwise always-on and have no
+[HTTP API Performance Trace](../PerformanceTrace/index.html)) -- all three are otherwise always-on and have no
 Off/Info/Warn level of their own to exempt. `stages` being built at all is itself real per-invocation cost (a
-`StageDuration`/`StageTiming` object per pipeline stage, plus a further per-rule dictionary for stages that loop
-over a configured collection of rules), so gating it the same way avoids paying that cost on every invocation at
-high throughput regardless of whether Enable Response Trace happens to be on for that Model -- Enable Response Trace
-only ever controls whether an already-captured `stages` survives into the *direct* response; the Archive payload keeps
-the full breakdown regardless, for whichever invocations were sampled. This means a sampled invocation's `logs`,
-`responseTimePipeline`, `invokeTaskPerformance.taskWrapperStats` and `invokeTaskPerformance.stages` all line up
-with each other, so a report built from one sampled invocation can correlate its trace against its own timing and
-memory data rather than against a different, unrelated set of sampled invocations.
+`StageDuration`/`StageTiming` object per pipeline stage, plus a further per-rule dictionary for stages that loop over a
+configured collection of rules), so gating it the same way avoids paying that cost on every invocation at high
+throughput regardless of whether Enable Response Trace happens to be on for that Model -- Enable Response Trace only
+ever controls whether an already-captured `stages` survives into the *direct* response; the Archive payload keeps the
+full breakdown regardless, for whichever invocations were sampled. This means a sampled invocation's `logs`,
+`responseTimePipeline`, `invokeTaskPerformance.taskWrapperStats` and `invokeTaskPerformance.stages` all line up with
+each other, so a report built from one sampled invocation can correlate its trace against its own timing and memory data
+rather than against a different, unrelated set of sampled invocations.
 
 Whether a given invocation was selected is recorded on the payload itself as `isSampled` (a top-level boolean, alongside
 `logs`), so a report never has to re-derive it from whether `logs.entries` happens to be present. `isSampled` is `true`
@@ -108,9 +108,9 @@ logs
 
 The Archive payload always carries the full `logs` array whenever either Enable Logs: Info or Enable Logs: Warn
 Threshold is on, the same treatment given to the performance `stages` breakdown (see
-[HTTP API Performance Trace](../../PerformanceTrace/index.html)). The direct `/api/invoke` response only includes it
-when **Enable Logs In Response** is also switched on for the Model -- independently of which of the two switches is on,
-so a Model can capture Warn-only anomalies into the Archive for later reporting while never adding them to the direct
+[HTTP API Performance Trace](../PerformanceTrace/index.html)). The direct `/api/invoke` response only includes it when
+**Enable Logs In Response** is also switched on for the Model -- independently of which of the two switches is on, so a
+Model can capture Warn-only anomalies into the Archive for later reporting while never adding them to the direct
 response, or the reverse.
 
 ## Monitoring capture volume across transactions
@@ -123,9 +123,9 @@ alongside `jube.engine.stage.duration` whenever `EnableOpenTelemetry` is set
   since the last captured entry exceeds the threshold. Gives a cluster-wide rate of "unexpectedly slow gaps between
   trace points" without needing to open the Archive payload for any single transaction.
 - **`jube.engine.logs.info.count`** -- incremented every time Enable Logs: Info captures a trace point (i.e. this
-  invocation was sampled). Since sampling volume is itself an important performance signal -- how much of the
-  Info-level capture cost a model's traffic is actually paying -- this makes it directly observable rather than only
-  ever inferable from Sample Percentage's configured value.
+  invocation was sampled). Since sampling volume is itself an important performance signal -- how much of the Info-level
+  capture cost a model's traffic is actually paying -- this makes it directly observable rather than only ever inferable
+  from Sample Percentage's configured value.
 
 The two are independent: a trace point captured for both reasons at once increments both counters, correctly, since it
 really did happen because of both.

@@ -49,7 +49,8 @@ namespace Jube.Data.Repository
             this.dbContext = dbContext;
         }
 
-        public Task<VisualisationRegistryParameter> GetByNameVisualisationRegistryIdAsync(string name, int visualisationRegistryId, CancellationToken token = default)
+        public Task<VisualisationRegistryParameter> GetByNameVisualisationRegistryIdAsync(string name,
+            int visualisationRegistryId, CancellationToken token = default)
         {
             return dbContext.VisualisationRegistryParameter
                 .FirstOrDefaultAsync(f =>
@@ -59,7 +60,8 @@ namespace Jube.Data.Repository
                     && f.Name.ToLower() == name.ToLower(), token);
         }
 
-        public Task<List<VisualisationRegistryParameter>> GetByVisualisationRegistryDatasourceIdAsync(int visualisationRegistryDatasourceId, CancellationToken token = default)
+        public Task<List<VisualisationRegistryParameter>> GetByVisualisationRegistryDatasourceIdAsync(
+            int visualisationRegistryDatasourceId, CancellationToken token = default)
         {
             return dbContext.VisualisationRegistryParameter
                 .Where(vrp => vrp.VisualisationRegistry.VisualisationRegistryDatasource
@@ -94,10 +96,10 @@ namespace Jube.Data.Repository
             return await dbContext.VisualisationRegistryParameter
                 .Where(w =>
                     (w.VisualisationRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                    && (w.VisualisationRegistry.Deleted == 0 || w.VisualisationRegistry.Deleted == null)// Added
+                    && (w.VisualisationRegistry.Deleted == 0 || w.VisualisationRegistry.Deleted == null)
                     && w.VisualisationRegistryId == visualisationRegistryId
                     && w.Active == 1
-                    && (w.Deleted == 0 || w.Deleted == null)// Moved up
+                    && (w.Deleted == 0 || w.Deleted == null)
                     && dbContext.VisualisationRegistryRole
                         .Where(r => r.VisualisationRegistryGuid == w.VisualisationRegistry.Guid
                                     && (r.Deleted == 0 || r.Deleted == null))
@@ -123,7 +125,8 @@ namespace Jube.Data.Repository
                    && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
-        public async Task<VisualisationRegistryParameter> InsertAsync(VisualisationRegistryParameter model, CancellationToken token = default)
+        public async Task<VisualisationRegistryParameter> InsertAsync(VisualisationRegistryParameter model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName ?? model.CreatedUser;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
@@ -133,7 +136,8 @@ namespace Jube.Data.Repository
             return model;
         }
 
-        public async Task<VisualisationRegistryParameter> UpdateAsync(VisualisationRegistryParameter model, CancellationToken token = default)
+        public async Task<VisualisationRegistryParameter> UpdateAsync(VisualisationRegistryParameter model,
+            CancellationToken token = default)
         {
             var existing = await dbContext.VisualisationRegistryParameter
                 .FirstOrDefaultAsync(w =>
@@ -149,15 +153,17 @@ namespace Jube.Data.Repository
 
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
-            model.CreatedUser = userName;
-            model.CreatedDate = DateTime.UtcNow;
+            model.CreatedUser = existing.CreatedUser;
+            model.CreatedDate = existing.CreatedDate;
+            model.UpdatedUser = userName;
+            model.UpdatedDate = DateTime.UtcNow;
+            model.ImportId = existing.ImportId;
 
             await dbContext.UpdateAsync(model, token: token);
 
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<VisualisationRegistryParameter, VisualisationRegistryParameterVersion>();
-            }, NullLoggerFactory.Instance));
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<VisualisationRegistryParameter, VisualisationRegistryParameterVersion>(); },
+                NullLoggerFactory.Instance));
 
             var audit = mapper.Map<VisualisationRegistryParameterVersion>(existing);
             audit.VisualisationRegistryParameterId = existing.Id;
@@ -186,7 +192,8 @@ namespace Jube.Data.Repository
             }
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.VisualisationRegistryParameter
                 .Where(d =>

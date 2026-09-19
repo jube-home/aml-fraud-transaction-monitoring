@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelGatewayRule;
 
 namespace Jube.Service.EntityAnalysisModelGatewayRule
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
 
     internal static class EntityAnalysisModelGatewayRuleMapper
     {
+        [return: NotNullIfNotNull(nameof(gatewayRule))]
         public static EntityAnalysisModelGatewayRuleDto? ToDto(GatewayRulePoco? gatewayRule)
         {
             return gatewayRule is null
@@ -54,7 +56,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
 
         public static List<EntityAnalysisModelGatewayRuleDto> ToDto(IEnumerable<GatewayRulePoco>? source)
         {
-            return (source ?? Enumerable.Empty<GatewayRulePoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<GatewayRulePoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static GatewayRulePoco ToPoco(EntityAnalysisModelGatewayRuleDto dto)

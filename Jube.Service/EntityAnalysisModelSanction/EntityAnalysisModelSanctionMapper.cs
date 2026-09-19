@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelSanction;
 
 namespace Jube.Service.EntityAnalysisModelSanction
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
 
     internal static class EntityAnalysisModelSanctionMapper
     {
+        [return: NotNullIfNotNull(nameof(sanction))]
         public static EntityAnalysisModelSanctionDto? ToDto(SanctionPoco? sanction)
         {
             return sanction is null
@@ -51,7 +53,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
 
         public static List<EntityAnalysisModelSanctionDto> ToDto(IEnumerable<SanctionPoco>? source)
         {
-            return (source ?? Enumerable.Empty<SanctionPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<SanctionPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static SanctionPoco ToPoco(EntityAnalysisModelSanctionDto dto)

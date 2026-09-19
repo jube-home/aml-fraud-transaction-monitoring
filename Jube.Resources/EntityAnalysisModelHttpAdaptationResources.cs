@@ -25,5 +25,6 @@ namespace Jube.Resources
         public const string HttpEndpointMaxLength = nameof(HttpEndpointMaxLength);
         public const string HttpEndpointMustBeAbsolutePath = nameof(HttpEndpointMustBeAbsolutePath);
         public const string PriorityRange = nameof(PriorityRange);
+        public const string HttpEndpointInvalidPath = nameof(HttpEndpointInvalidPath);
     }
 }

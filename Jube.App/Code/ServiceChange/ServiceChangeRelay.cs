@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 
 namespace Jube.App.Code.ServiceChange
@@ -20,24 +21,34 @@ namespace Jube.App.Code.ServiceChange
     using log4net;
     using Microsoft.AspNetCore.SignalR;
     using signalr;
-    
+
     public sealed class ServiceChangeRelay
     {
         // ReSharper disable once NotAccessedField.Local
         private IDisposable subscription;
 
-        public Task StartAsync(IHubContext<ServiceChangeHub> serviceChangeHub, IServiceChangeBus serviceChangeBus, ILog log)
+        public Task StartAsync(IHubContext<ServiceChangeHub> serviceChangeHub, IServiceChangeBus serviceChangeBus,
+            ILog log)
         {
             subscription = serviceChangeBus.Subscribe(async change =>
             {
                 try
                 {
-                    await serviceChangeHub.Clients.Group("Tenant_" + change.TenantRegistryId)
+                    var groupName = TenantGroup.TryName(change.TenantRegistryId);
+                    if (groupName is null)
+                    {
+                        log.Warn($"ServiceChangeRelay: dropped {change.Area}.{change.Kind}, no valid tenant.");
+                        return;
+                    }
+
+                    await serviceChangeHub.Clients.Group(groupName)
                         .SendAsync("ServiceChange", change).ConfigureAwait(false);
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    log.Error($"ServiceChangeRelay: failed to relay {change.Area}.{change.Kind} to Tenant_{change.TenantRegistryId}", ex);
+                    log.Error(
+                        $"ServiceChangeRelay: failed to relay {change.Area}.{change.Kind} to tenant {change.TenantRegistryId}",
+                        ex);
                 }
             });
 

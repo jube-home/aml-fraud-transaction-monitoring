@@ -40,7 +40,12 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates a Key Value Pair in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a Key Value Pair in the caller's tenant by id.")
+                    "Soft-deletes a Key Value Pair in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryKvpUploadCsv", OperationKind.Write, false, false,
+                    "Imports CSV files of key,value[,deleteExpiryDate] lines into a Dictionary in the caller's " +
+                    "tenant; existing keys are updated, lines that fail are skipped, and one upload record is " +
+                    "written per file.")
             ]);
         }
     }

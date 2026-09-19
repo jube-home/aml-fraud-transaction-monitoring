@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelReprocessingRuleInstance;
 
 namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
 
     internal static class EntityAnalysisModelReprocessingRuleInstanceMapper
     {
+        [return: NotNullIfNotNull(nameof(reprocessingRuleInstance))]
         public static EntityAnalysisModelReprocessingRuleInstanceDto? ToDto(
             ReprocessingRuleInstancePoco? reprocessingRuleInstance)
         {
@@ -50,7 +52,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         public static List<EntityAnalysisModelReprocessingRuleInstanceDto> ToDto(
             IEnumerable<ReprocessingRuleInstancePoco>? source)
         {
-            return (source ?? Enumerable.Empty<ReprocessingRuleInstancePoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<ReprocessingRuleInstancePoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static ReprocessingRuleInstancePoco ToPoco(EntityAnalysisModelReprocessingRuleInstanceDto dto)

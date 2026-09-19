@@ -137,10 +137,12 @@ namespace Jube.Test.Engine.TtlCounter
                     DbContext = dbContext,
                     Log = TestLog.NoOp,
                     Parser = new Parser.Parser(TestLog.NoOp, [])
+                },
+                EntityAnalysisModels =
+                {
+                    ActiveEntityAnalysisModels = new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
                 }
             };
-            context.EntityAnalysisModels.ActiveEntityAnalysisModels =
-                new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model };
 
             await context.SyncEntityAnalysisModelTtlCountersAsync();
 
@@ -197,10 +199,12 @@ namespace Jube.Test.Engine.TtlCounter
                     DbContext = dbContext,
                     Log = TestLog.NoOp,
                     Parser = new Parser.Parser(TestLog.NoOp, [])
+                },
+                EntityAnalysisModels =
+                {
+                    ActiveEntityAnalysisModels = new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
                 }
             };
-            context.EntityAnalysisModels.ActiveEntityAnalysisModels =
-                new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model };
 
             await context.SyncEntityAnalysisModelTtlCountersAsync();
 
@@ -252,10 +256,12 @@ namespace Jube.Test.Engine.TtlCounter
                     DbContext = dbContext,
                     Log = TestLog.NoOp,
                     Parser = new Parser.Parser(TestLog.NoOp, [])
+                },
+                EntityAnalysisModels =
+                {
+                    ActiveEntityAnalysisModels = new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
                 }
             };
-            syncContext.EntityAnalysisModels.ActiveEntityAnalysisModels =
-                new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model };
 
             await syncContext.SyncEntityAnalysisModelTtlCountersAsync();
 
@@ -309,13 +315,14 @@ namespace Jube.Test.Engine.TtlCounter
                         break;
                     }
                 }
-            });
+            }, pumpCts.Token);
 
-            await Task.Delay(TimeSpan.FromSeconds(ttlCounterValueSeconds) + TimeSpan.FromMilliseconds(pollMs * 4));
+            await Task.Delay(TimeSpan.FromSeconds(ttlCounterValueSeconds) + TimeSpan.FromMilliseconds(pollMs * 4),
+                pumpCts.Token);
 
             cancellationTokenProvider.Cancel();
             await pumpCts.CancelAsync();
-            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5)));
+            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5), pumpCts.Token));
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, syncedCounter.Guid, dataName,
@@ -327,7 +334,7 @@ namespace Jube.Test.Engine.TtlCounter
             var batch = await dbContext.CacheTtlCounterEntryRemovalBatch
                 .Where(w => w.EntityAnalysisModelTtlCounterGuid == syncedCounter.Guid)
                 .OrderByDescending(o => o.Id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(token: pumpCts.Token);
             batch.Should().NotBeNull("the removal batch audit table must reflect the synced counter's Guid");
             batch!.FinishedDate.Should().NotBeNull();
         }

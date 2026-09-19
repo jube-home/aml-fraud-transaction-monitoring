@@ -57,7 +57,8 @@ namespace Jube.Service.EntityAnalysisModelSanction
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelSanctionRepository(dbContext, userName);
-            validator = new EntityAnalysisModelSanctionDtoValidator(repository, strings);
+            validator = new EntityAnalysisModelSanctionDtoValidator(repository, strings,
+                new EntityAnalysisModelRepository(dbContext, userName));
         }
 
         public static Task<EntityAnalysisModelSanctionService> CreateAsync(DbContext dbContext,
@@ -77,7 +78,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("EntityAnalysisModelSanction.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisModelSanctionResources.NotAuthenticated]);
             }
@@ -88,8 +91,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn(
                         $"EntityAnalysisModelSanction.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisModelSanctionResources.NotAuthenticated]);
             }
@@ -107,7 +112,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelSanction.List: entry user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSanction.List: entry user={userName}");
+            }
 
             try
             {
@@ -116,7 +124,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSanction.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -128,7 +138,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelSanction.List: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelSanction.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -152,8 +165,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelSanction.ListByEntityAnalysisModelId: entry entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+            }
 
             try
             {
@@ -162,8 +177,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                     .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelSanction.ListByEntityAnalysisModelId: {dtos.Count} rows entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 return dtos;
             }
@@ -176,8 +193,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelSanction.ListByEntityAnalysisModelId: cancelled entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 throw;
             }
@@ -201,7 +220,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelSanction.Get: entry id={id} user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSanction.Get: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -210,8 +232,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 if (sanction == null)
                 {
                     if (log.IsDebugEnabled)
+                    {
                         log.Debug(
                             $"EntityAnalysisModelSanction.Get: id={id} not found or not visible to tenant user={userName}");
+                    }
 
                     return null;
                 }
@@ -228,7 +252,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSanction.Get: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -254,8 +280,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelSanction.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -282,7 +310,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSanction.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -305,7 +335,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelSanction.Create: entry user={userName} name={model?.Name}");
+            }
 
             try
             {
@@ -316,8 +348,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelSanction.Create: validation failed user={userName} " +
                                  $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -330,8 +364,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelSanction.Create: created Id={saved.Id} name={saved.Name} " +
                              $"user={userName}");
+                }
 
                 return saved;
             }
@@ -349,7 +385,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSanction.Create: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -374,7 +412,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelSanction.Update: entry id={model?.Id} user={userName}");
+            }
 
             try
             {
@@ -385,8 +425,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelSanction.Update: validation failed id={model.Id} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -400,8 +442,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelSanction.Update: id={model.Id} not found, locked, deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Sanction check was not found.", ex);
                 }
@@ -411,8 +455,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelSanction.Update: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
 
                 return saved;
             }
@@ -435,7 +481,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSanction.Update: cancelled id={model?.Id} user={userName}");
+                }
 
                 throw;
             }
@@ -462,7 +510,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
             using var op = OperationScope.Start("EntityAnalysisModelSanction", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelSanction.Delete: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -475,8 +525,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelSanction.Delete: id={id} not found, locked, already deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Sanction check was not found.", ex);
                 }
@@ -485,7 +537,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 op.Deleted();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelSanction.Delete: soft-deleted Id={id} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -501,7 +555,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelSanction.Delete: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -515,10 +571,15 @@ namespace Jube.Service.EntityAnalysisModelSanction
 
         private void EnsurePermitted(int[] specs, string op)
         {
-            if (permissionValidation.Validate(specs)) return;
+            if (permissionValidation.Validate(specs))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", specs)}]");
+            }
 
             throw new ForbiddenException(strings[EntityAnalysisModelSanctionResources.PermissionDenied], specs);
         }

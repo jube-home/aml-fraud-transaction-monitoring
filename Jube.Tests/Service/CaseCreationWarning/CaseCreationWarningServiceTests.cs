@@ -99,13 +99,13 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListReturnsMostRecentFirstAndProjectsFieldsAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var firstId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission,
+            var firstId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 CaseCreationStage.ExistingCasePriorityLookup,
                 occurredDate: DateTime.UtcNow.AddMinutes(-30));
-            var secondId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission,
+            var secondId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 CaseCreationStage.HttpEndpoint, 2000, occurredDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -121,7 +121,7 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -133,6 +133,15 @@ namespace Jube.Test.Service.CaseCreationWarning
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -155,22 +164,22 @@ namespace Jube.Test.Service.CaseCreationWarning
         }
 
         [Fact]
-        public async Task ListDoesNotCrossTenantsForNonLandlordUserAsync()
+        public async Task ListIsForbiddenForNonLandlordUsersOfAnyTenantAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var id = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
-            var otherTenantResult = await otherTenantService.ListAsync();
-
-            otherTenantResult.Rows.Should().NotContain(r => r.Id == id);
+            foreach (var user in new[] { fx.Seed.UserWithPermission, fx.Seed.UserTenantB })
+            {
+                var service = await BuildServiceAsync(dbContext, user);
+                await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+            }
         }
 
         [Fact]
         public async Task ListIncludesEveryTenantForLandlordUserAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var id = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission);
+            var id = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser);
 
             var landlordService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var landlordResult = await landlordService.ListAsync();
@@ -184,10 +193,10 @@ namespace Jube.Test.Service.CaseCreationWarning
             await using var dbContext = fx.GetDbContext();
             var oldDate = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var newDate = DateTime.UtcNow;
-            var oldId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, occurredDate: oldDate);
-            var newId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, occurredDate: newDate);
+            var oldId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, occurredDate: oldDate);
+            var newId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, occurredDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Id == oldId || r.Id == newId).ToList();
@@ -201,10 +210,10 @@ namespace Jube.Test.Service.CaseCreationWarning
             await using var dbContext = fx.GetDbContext();
             var twoHoursAgo = DateTime.UtcNow.AddHours(-2);
             var justNow = DateTime.UtcNow;
-            var oldId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, occurredDate: twoHoursAgo);
-            var newId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, occurredDate: justNow);
+            var oldId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, occurredDate: twoHoursAgo);
+            var newId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, occurredDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Id == oldId || r.Id == newId).ToList();
@@ -216,12 +225,12 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListFiltersByStageIdAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var priorityId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission,
+            var priorityId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 CaseCreationStage.ExistingCasePriorityLookup);
-            var httpId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission,
+            var httpId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 CaseCreationStage.HttpEndpoint);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(stageId: (int)CaseCreationStage.ExistingCasePriorityLookup);
 
             var mine = result.Rows.Where(r => r.Id == priorityId || r.Id == httpId).ToList();
@@ -234,11 +243,11 @@ namespace Jube.Test.Service.CaseCreationWarning
         {
             await using var dbContext = fx.GetDbContext();
             var uniqueCaseKeyValue = $"UniqueCase{Guid.NewGuid():N}";
-            var matchingId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission,
+            var matchingId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 caseKeyValue: uniqueCaseKeyValue);
-            var otherId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission);
+            var otherId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueCaseKeyValue.ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.Id == matchingId || r.Id == otherId).ToList();
@@ -250,10 +259,10 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListWithZeroSamplePercentageExcludesEveryMatchingRowAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission);
-            await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission);
+            await CreateWarningAsync(dbContext, fx.Seed.LandlordUser);
+            await CreateWarningAsync(dbContext, fx.Seed.LandlordUser);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -263,10 +272,10 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListWithHundredSamplePercentageIncludesEveryMatchingRowAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var id1 = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission);
-            var id2 = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission);
+            var id1 = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser);
+            var id2 = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(samplePercentage: 100);
 
             result.Rows.Where(r => r.Id == id1 || r.Id == id2).Should().HaveCount(2);
@@ -276,12 +285,12 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListSortsByDurationMicrosecondsAscendingAndDescendingAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var id1 = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, durationMicroseconds: 3000);
-            var id2 = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, durationMicroseconds: 1000);
-            var id3 = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, durationMicroseconds: 2000);
+            var id1 = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 3000);
+            var id2 = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 1000);
+            var id3 = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 2000);
             var ids = new HashSet<int> { id1, id2, id3 };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending =
                 await service.ListAsync(sortField: "durationMicroseconds", sortDirection: "asc");
@@ -302,11 +311,11 @@ namespace Jube.Test.Service.CaseCreationWarning
         {
             await using var dbContext = fx.GetDbContext();
             var highId =
-                await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, durationMicroseconds: 2000);
-            var lowId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, durationMicroseconds: 1000);
+                await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 2000);
+            var lowId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 1000);
             var ids = new HashSet<int> { highId, lowId };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "durationMicroseconds",
                 sortDirection: ascendingKeyword);
 
@@ -318,12 +327,12 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListWithGarbageSortDirectionFallsBackToDescendingAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var lowId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, durationMicroseconds: 1000);
+            var lowId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 1000);
             var highId =
-                await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, durationMicroseconds: 2000);
+                await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: 2000);
             var ids = new HashSet<int> { lowId, highId };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "durationMicroseconds", sortDirection: "banana");
 
             result.Rows.Where(r => ids.Contains(r.Id)).Select(r => r.DurationMicroseconds)
@@ -334,12 +343,12 @@ namespace Jube.Test.Service.CaseCreationWarning
         public async Task ListWithUnrecognisedSortFieldFallsBackToMostRecentFirstAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var firstId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission,
+            var firstId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 occurredDate: DateTime.UtcNow.AddMinutes(-30));
-            var secondId = await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission,
+            var secondId = await CreateWarningAsync(dbContext, fx.Seed.LandlordUser,
                 occurredDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -353,10 +362,10 @@ namespace Jube.Test.Service.CaseCreationWarning
             await using var dbContext = fx.GetDbContext();
             for (var i = 0; i < 5; i++)
             {
-                await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission);
+                await CreateWarningAsync(dbContext, fx.Seed.LandlordUser);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, DateTime.UtcNow.AddMinutes(-1));
 
             result.Rows.Should().HaveCount(2);
@@ -370,10 +379,10 @@ namespace Jube.Test.Service.CaseCreationWarning
 
             foreach (var value in new long[] { 1, 2, 3, 4, 5 })
             {
-                await CreateWarningAsync(dbContext, fx.Seed.UserWithPermission, durationMicroseconds: value);
+                await CreateWarningAsync(dbContext, fx.Seed.LandlordUser, durationMicroseconds: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: DateTime.UtcNow.AddMinutes(-1));
 
             var stats = result.Statistics.Columns["durationMicroseconds"];

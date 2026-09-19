@@ -70,7 +70,9 @@ namespace Jube.Service.EntityAnalysisInlineScript
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("EntityAnalysisInlineScript.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisInlineScriptResources.NotAuthenticated]);
             }
@@ -81,7 +83,9 @@ namespace Jube.Service.EntityAnalysisInlineScript
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn($"EntityAnalysisInlineScript.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisInlineScriptResources.NotAuthenticated]);
             }
@@ -100,7 +104,10 @@ namespace Jube.Service.EntityAnalysisInlineScript
         {
             using var op = OperationScope.Start("EntityAnalysisInlineScript", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisInlineScript.List: entry user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisInlineScript.List: entry user={userName}");
+            }
 
             try
             {
@@ -109,7 +116,9 @@ namespace Jube.Service.EntityAnalysisInlineScript
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisInlineScript.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -121,7 +130,10 @@ namespace Jube.Service.EntityAnalysisInlineScript
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisInlineScript.List: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisInlineScript.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -148,8 +160,10 @@ namespace Jube.Service.EntityAnalysisInlineScript
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisInlineScript.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -175,7 +189,9 @@ namespace Jube.Service.EntityAnalysisInlineScript
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisInlineScript.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -189,10 +205,15 @@ namespace Jube.Service.EntityAnalysisInlineScript
 
         private void EnsurePermitted(int[] specs, string op)
         {
-            if (permissionValidation.Validate(specs)) return;
+            if (permissionValidation.Validate(specs))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", specs)}]");
+            }
 
             throw new ForbiddenException(strings[EntityAnalysisInlineScriptResources.PermissionDenied], specs);
         }

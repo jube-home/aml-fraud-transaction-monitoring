@@ -30,7 +30,8 @@ namespace Jube.Service.ModelInvokeWarning
     public sealed class ModelInvokeWarningService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -105,7 +106,7 @@ namespace Jube.Service.ModelInvokeWarning
                      "alone. Only populated for models with Enable Logs and Enable Logs: Warn Threshold both " +
                      "on. Most recent first when no sort is given, capped at 'take' rows (max 100000, " +
                      "default 100000). Each of from/to defaults independently to the last hour when omitted. " +
-                     "Not scoped to any tenant -- the model itself carries no tenant boundary at this layer. " +
+                     "Landlord only: every other caller is refused with a 403 (permission denied), and the rows cover every tenant. " +
                      "Optionally restrict to a single model (by entityAnalysisModelGuid) and/or a date range " +
                      "(by OccurredDate) and/or a case-insensitive substring search against the model name or " +
                      "the message. Optionally apply samplePercentage on top of every other filter to draw a " +
@@ -156,23 +157,27 @@ namespace Jube.Service.ModelInvokeWarning
             try
             {
                 EnsurePermitted("ModelInvokeWarning.List");
+                int? restrictToTenantRegistryId = permissionValidation.Landlord ? null : tenantRegistryId;
 
                 var rows = await repository.GetLastAsync(clampedTake, from, to, entityAnalysisModelGuid, search,
-                    clampedSamplePercentage, sortField, sortDirection, token).ConfigureAwait(false);
+                        clampedSamplePercentage, sortField, sortDirection, restrictToTenantRegistryId, token)
+                    .ConfigureAwait(false);
 
                 var dtos = rows.Select(r => new ModelInvokeWarningDto(
                     r.Id, r.OccurredDate.GetValueOrDefault(), r.EntityAnalysisModelGuid, r.EntityAnalysisModelName,
-                    r.EntityAnalysisModelInstanceEntryGuid, r.Message, r.ElapsedMicroseconds.GetValueOrDefault(),
+                    r.EntityAnalysisModelInstanceEntryGuid, LogTextRedactor.Redact(r.Message),
+                    r.ElapsedMicroseconds.GetValueOrDefault(),
                     r.SinceLastEntryMicroseconds.GetValueOrDefault(), r.ThreadId.GetValueOrDefault(),
                     r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
 
                 var total = await repository
-                    .CountAsync(from, to, entityAnalysisModelGuid, search, clampedSamplePercentage, token)
+                    .CountAsync(from, to, entityAnalysisModelGuid, search, clampedSamplePercentage,
+                        restrictToTenantRegistryId, token)
                     .ConfigureAwait(false);
 
                 var statistics = await repository
                     .GetStatisticsAsync(from, to, entityAnalysisModelGuid, search, clampedSamplePercentage,
-                        MaxListTake, token)
+                        MaxListTake, restrictToTenantRegistryId, token)
                     .ConfigureAwait(false);
 
                 op.Rows(dtos.Count);
@@ -208,14 +213,14 @@ namespace Jube.Service.ModelInvokeWarning
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[ModelInvokeWarningResources.PermissionDenied], permissions);

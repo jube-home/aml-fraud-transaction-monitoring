@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModel;
 
 namespace Jube.Service.EntityAnalysisModel
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModel
 
     internal static class EntityAnalysisModelMapper
     {
+        [return: NotNullIfNotNull(nameof(entityAnalysisModel))]
         public static EntityAnalysisModelDto? ToDto(ModelPoco? entityAnalysisModel)
         {
             return entityAnalysisModel is null
@@ -80,7 +82,7 @@ namespace Jube.Service.EntityAnalysisModel
 
         public static List<EntityAnalysisModelDto> ToDto(IEnumerable<ModelPoco>? source)
         {
-            return (source ?? Enumerable.Empty<ModelPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<ModelPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static ModelPoco ToPoco(EntityAnalysisModelDto dto)
@@ -100,11 +102,13 @@ namespace Jube.Service.EntityAnalysisModel
                 CacheTtlInterval = dto.CacheTtlInterval,
                 CacheTtlIntervalValue = dto.CacheTtlIntervalValue,
                 MaxResponseElevation = dto.MaxResponseElevation,
-                MaxResponseElevationInterval = dto.MaxResponseElevationInterval,
+                MaxResponseElevationInterval =
+                    dto.MaxResponseElevationInterval == '\0' ? null : dto.MaxResponseElevationInterval,
                 MaxResponseElevationValue = dto.MaxResponseElevationValue,
                 MaxResponseElevationThreshold = dto.MaxResponseElevationThreshold,
                 EnableResponseElevationLimit = (byte)(dto.EnableResponseElevationLimit ? 1 : 0),
-                MaxActivationWatcherInterval = dto.MaxActivationWatcherInterval,
+                MaxActivationWatcherInterval =
+                    dto.MaxActivationWatcherInterval == '\0' ? null : dto.MaxActivationWatcherInterval,
                 MaxActivationWatcherValue = dto.MaxActivationWatcherValue,
                 MaxActivationWatcherThreshold = dto.MaxActivationWatcherThreshold,
                 ActivationWatcherSample = dto.ActivationWatcherSample,

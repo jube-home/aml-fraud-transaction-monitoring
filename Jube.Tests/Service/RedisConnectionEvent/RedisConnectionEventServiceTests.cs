@@ -107,7 +107,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
                 endPoint: endPoint,
                 failureType: ConnectionFailureType.SocketClosed);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.EndPoint == endPoint).ToList();
@@ -122,7 +122,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -134,6 +134,15 @@ namespace Jube.Test.Service.RedisConnectionEvent
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -166,7 +175,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, oldDate, $"{endPoint}Old");
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, newDate, $"{endPoint}New");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.EndPoint.StartsWith(endPoint)).ToList();
@@ -185,7 +194,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             await CreateEntryAsync(dbContext, RedisConnectionEventType.InternalError, endPoint: "OtherHost:6379",
                 origin: "ReadFromPipe");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueEndPoint[..12].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.EndPoint == uniqueEndPoint || r.EndPoint == "OtherHost:6379").ToList();
@@ -201,7 +210,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, endPoint: endPoint);
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionRestored, endPoint: endPoint);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endPoint, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -215,7 +224,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, endPoint: endPoint);
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionRestored, endPoint: endPoint);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endPoint, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -228,7 +237,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             var endPoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:6379";
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, endPoint: endPoint);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.EndPoint == endPoint);
@@ -247,7 +256,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, justNow,
                 $"{endPoint}New");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endPoint);
 
             var mine = result.Rows.Where(r => r.EndPoint.StartsWith(endPoint)).ToList();
@@ -267,7 +276,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: endPoint, sortField: "retryCount",
                 sortDirection: "asc");
@@ -291,7 +300,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endPoint, sortField: "retryCount",
                 sortDirection: ascendingKeyword);
 
@@ -308,7 +317,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endPoint, sortField: "retryCount",
                 sortDirection: "banana");
 
@@ -325,7 +334,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             var secondId = await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed,
                 DateTime.UtcNow, endPoint);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endPoint, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -343,7 +352,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
                 await CreateEntryAsync(dbContext, RedisConnectionEventType.ConnectionFailed, endPoint: endPoint);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: endPoint);
 
             result.Rows.Should().HaveCount(2);
@@ -362,7 +371,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
                     retryCount: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endPoint);
 
             var stats = result.Statistics.Columns["retryCount"];
@@ -382,7 +391,7 @@ namespace Jube.Test.Service.RedisConnectionEvent
             await CreateEntryAsync(dbContext, RedisConnectionEventType.ReconnectRetry, endPoint: endPoint,
                 retryCount: 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endPoint);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

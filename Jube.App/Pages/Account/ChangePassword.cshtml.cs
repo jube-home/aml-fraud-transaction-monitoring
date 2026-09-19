@@ -20,15 +20,8 @@ namespace Jube.App.Pages.Account
     using Microsoft.AspNetCore.Mvc.RazorPages;
 
     [Authorize]
-    public class ChangePassword : PageModel
+    public class ChangePassword(DynamicEnvironment dynamicEnvironment) : PageModel
     {
-        private readonly DynamicEnvironment dynamicEnvironment;
-
-        public ChangePassword(DynamicEnvironment dynamicEnvironment)
-        {
-            this.dynamicEnvironment = dynamicEnvironment;
-        }
-
         public ActionResult OnGet()
         {
             if (dynamicEnvironment.AppSettings("OAuthAuthentication").Equals("True", StringComparison.CurrentCultureIgnoreCase)

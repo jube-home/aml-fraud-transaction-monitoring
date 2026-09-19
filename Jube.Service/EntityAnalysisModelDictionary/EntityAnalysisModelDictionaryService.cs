@@ -75,7 +75,9 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("EntityAnalysisModelDictionary.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisModelDictionaryResources.NotAuthenticated]);
             }
@@ -86,8 +88,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn(
                         $"EntityAnalysisModelDictionary.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisModelDictionaryResources.NotAuthenticated]);
             }
@@ -105,7 +109,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
         {
             using var op = OperationScope.Start("EntityAnalysisModelDictionary", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelDictionary.List: entry user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelDictionary.List: entry user={userName}");
+            }
 
             try
             {
@@ -114,7 +121,9 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionary.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -126,7 +135,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelDictionary.List: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelDictionary.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -150,8 +162,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             using var op = OperationScope.Start("EntityAnalysisModelDictionary", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelDictionary.ListByEntityAnalysisModelId: entry entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+            }
 
             try
             {
@@ -161,8 +175,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelDictionary.ListByEntityAnalysisModelId: {dtos.Count} rows entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 return dtos;
             }
@@ -175,8 +191,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelDictionary.ListByEntityAnalysisModelId: cancelled entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 throw;
             }
@@ -200,7 +218,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
         {
             using var op = OperationScope.Start("EntityAnalysisModelDictionary", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelDictionary.Get: entry id={id} user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelDictionary.Get: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -209,8 +230,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                 if (dictionary == null)
                 {
                     if (log.IsDebugEnabled)
+                    {
                         log.Debug(
                             $"EntityAnalysisModelDictionary.Get: id={id} not found or not visible to tenant user={userName}");
+                    }
 
                     return null;
                 }
@@ -227,7 +250,9 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionary.Get: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -253,8 +278,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelDictionary.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -281,7 +308,9 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionary.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -304,19 +333,24 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             using var op = OperationScope.Start("EntityAnalysisModelDictionary", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelDictionary.Create: entry user={userName} name={model?.Name}");
+            }
 
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
+                model.Id = 0;
                 EnsurePermitted("EntityAnalysisModelDictionary.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelDictionary.Create: validation failed user={userName} " +
                                  $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -329,8 +363,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelDictionary.Create: created Id={saved.Id} name={saved.Name} user={userName}");
+                }
 
                 return saved;
             }
@@ -347,7 +383,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelDictionary.Create: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelDictionary.Create: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -373,7 +412,9 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             using var op = OperationScope.Start("EntityAnalysisModelDictionary", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelDictionary.Update: entry id={model?.Id} user={userName}");
+            }
 
             try
             {
@@ -384,8 +425,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelDictionary.Update: validation failed id={model.Id} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -399,8 +442,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelDictionary.Update: id={model.Id} not found, locked, deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Dictionary was not found.", ex);
                 }
@@ -410,8 +455,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelDictionary.Update: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
 
                 return saved;
             }
@@ -434,7 +481,9 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionary.Update: cancelled id={model?.Id} user={userName}");
+                }
 
                 throw;
             }
@@ -459,7 +508,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
         {
             using var op = OperationScope.Start("EntityAnalysisModelDictionary", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelDictionary.Delete: entry id={id} user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelDictionary.Delete: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -472,8 +524,10 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelDictionary.Delete: id={id} not found, locked, already deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Dictionary was not found.", ex);
                 }
@@ -482,7 +536,9 @@ namespace Jube.Service.EntityAnalysisModelDictionary
                 op.Deleted();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelDictionary.Delete: soft-deleted Id={id} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -498,7 +554,9 @@ namespace Jube.Service.EntityAnalysisModelDictionary
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionary.Delete: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -512,10 +570,15 @@ namespace Jube.Service.EntityAnalysisModelDictionary
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions)) return;
+            if (permissionValidation.Validate(permissions))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+            }
 
             throw new ForbiddenException(strings[EntityAnalysisModelDictionaryResources.PermissionDenied],
                 permissions);

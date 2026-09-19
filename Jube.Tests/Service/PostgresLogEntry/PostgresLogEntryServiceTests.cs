@@ -94,7 +94,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "LOG", uniqueMessage);
             await CreateEntryAsync(dbContext, "ERROR", uniqueMessage2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: DatabaseFixture.Prefix);
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage || r.Message == uniqueMessage2).ToList();
@@ -109,7 +109,7 @@ namespace Jube.Test.Service.PostgresLogEntry
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -121,6 +121,15 @@ namespace Jube.Test.Service.PostgresLogEntry
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -154,7 +163,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "LOG", uniqueMessage, oldDate);
             await CreateEntryAsync(dbContext, "ERROR", uniqueMessage2, newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1), search: DatabaseFixture.Prefix);
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage || r.Message == uniqueMessage2).ToList();
@@ -171,7 +180,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "LOG", uniqueMessage);
             await CreateEntryAsync(dbContext, "LOG", "other message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueMessage[..14].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage).ToList();
@@ -186,7 +195,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "LOG", uniqueMessage);
             await CreateEntryAsync(dbContext, "ERROR", uniqueMessage);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueMessage, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -200,7 +209,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "LOG", uniqueMessage);
             await CreateEntryAsync(dbContext, "ERROR", uniqueMessage);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueMessage, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -213,7 +222,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             var uniqueMessage = $"{DatabaseFixture.Prefix}crosstenant{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, "ERROR", uniqueMessage);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync(search: uniqueMessage);
 
             otherTenantResult.Rows.Should().Contain(r => r.Message == uniqueMessage);
@@ -231,7 +240,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "LOG", uniqueMessage, twoHoursAgo);
             await CreateEntryAsync(dbContext, "ERROR", uniqueMessage2, justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: DatabaseFixture.Prefix);
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage || r.Message == uniqueMessage2).ToList();
@@ -248,7 +257,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "ERROR", prefix);
             await CreateEntryAsync(dbContext, "LOG", prefix);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: prefix, sortField: "level", sortDirection: "asc");
             ascending.Rows.Select(r => r.Level).Should().Equal("ERROR", "LOG", "WARNING");
@@ -269,7 +278,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "LOG", prefix);
             await CreateEntryAsync(dbContext, "ERROR", prefix);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: prefix, sortField: "level",
                 sortDirection: ascendingKeyword);
 
@@ -284,7 +293,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "ERROR", prefix);
             await CreateEntryAsync(dbContext, "LOG", prefix);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: prefix, sortField: "level", sortDirection: "banana");
 
             result.Rows.Select(r => r.Level).Should().Equal("LOG", "ERROR");
@@ -299,7 +308,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             await CreateEntryAsync(dbContext, "LOG", uniqueMessage, DateTime.UtcNow.AddMinutes(-30));
             await CreateEntryAsync(dbContext, "LOG", uniqueMessage2, DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: DatabaseFixture.Prefix, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage || r.Message == uniqueMessage2).ToList();
@@ -317,7 +326,7 @@ namespace Jube.Test.Service.PostgresLogEntry
                 await CreateEntryAsync(dbContext, "LOG", prefix);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: prefix);
 
             result.Rows.Should().HaveCount(2);
@@ -331,7 +340,7 @@ namespace Jube.Test.Service.PostgresLogEntry
             var prefix = $"{DatabaseFixture.Prefix}{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, "LOG", prefix);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: prefix);
 
             result.Statistics.Columns.Should().BeEmpty(

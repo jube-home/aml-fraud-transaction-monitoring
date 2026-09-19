@@ -54,14 +54,33 @@ namespace Jube.Data.Repository
                 !tenantRegistryId.HasValue).ToListAsync(token);
         }
 
-        public async Task<IEnumerable<CaseNote>> GetByCaseKeyValueAsync(string key, string value, CancellationToken token = default)
+        public async Task<IEnumerable<CaseNote>> GetByCaseKeyValueAsync(string key, string value,
+            CancellationToken token = default)
         {
             return await dbContext.CaseNote.Where(w
                     => (w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
                         !tenantRegistryId.HasValue)
                        && (w.Case.CaseWorkflow.EntityAnalysisModel.Deleted == 0 ||
                            w.Case.CaseWorkflow.EntityAnalysisModel.Deleted == null)
-                       && w.CaseKey == key && w.CaseKeyValue == value)
+                       && w.CaseKey == key && w.CaseKeyValue == value
+                       && (userName == null
+                           || (dbContext.CaseWorkflowRole
+                                   .Where(r => r.CaseWorkflowGuid == w.Case.CaseWorkflow.Guid
+                                               && (r.Deleted == 0 || r.Deleted == null))
+                                   .Any(r => dbContext.RoleRegistry
+                                       .Where(rr => rr.Guid == r.RoleRegistryGuid
+                                                    && (rr.Deleted == 0 || rr.Deleted == null))
+                                       .Any(rr => dbContext.UserRegistry
+                                           .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
+                               && dbContext.CaseWorkflowStatusRole
+                                   .Where(r => r.CaseWorkflowStatusGuid == w.Case.CaseWorkflowStatus.Guid
+                                               && (r.Deleted == 0 || r.Deleted == null))
+                                   .Any(r => dbContext.RoleRegistry
+                                       .Where(rr => rr.Guid == r.RoleRegistryGuid
+                                                    && (rr.Deleted == 0 || rr.Deleted == null))
+                                       .Any(rr => dbContext.UserRegistry
+                                           .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))))
+                )
                 .OrderByDescending(o => o.Id).ToListAsync(token);
         }
 

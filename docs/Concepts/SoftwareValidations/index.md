@@ -5,7 +5,8 @@ nav_order: 10
 parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 ## Native .NET MVC Pipeline
 
@@ -32,9 +33,11 @@ In developer mode, which is set via an environment variable, the picture is diff
 
 ## Authenticate Attribute Decoration
 
-The .NET authentication pipeline is implemented, which takes care of identity. All controllers and pages are decorated
-with the `[Authorize]` attribute, with the exception of the authentication controller, which by its nature is intended
-to establish authentication. For example:
+The .NET authentication pipeline is implemented, which takes care of identity. Every endpoint and page requires
+authentication, with the exception of a short, named list of anonymous routes: the login and logout endpoints and pages
+(`/api/Authentication/ByUserNamePassword`, `WirePasswordHash` and `Logout`, `/Account/Login` and `/Account/Logout`), the
+readiness probe (`/api/Ready`), the error and landing pages, and the mock endpoints used for demonstration. A test fails
+the build if any other route can be reached anonymously. For example:
 
 ![AuthorizeAttribute](AuthorizeAttribute.png)
 
@@ -80,8 +83,8 @@ code.
 
 The vast majority of the database interactions take place via repository patterns, where each repository performs
 database interactions via strongly typed C# LINQ2DB, an Object Relation Mapper (ORM) which is transposed to SQL without
-intervention from the developer.
-It follows that parameterisation is almost universally assured and there is no means to inject SQL where ORMs are used.
+intervention from the developer. It follows that parameterisation is almost universally assured and there is no means to
+inject SQL where ORMs are used.
 
 ![LINQ](LINQ.png)
 
@@ -107,11 +110,22 @@ the SQL and allow only on it being of the form `SELECT`:
 
 In the case of malicious SQL, the query will simply fail and log out the exception.
 
-The Assert Select Only Parser itself can be bypassed via the `ParserAssertSelectOnly` Environment Variable, which
-exists purely to make certain test scenarios easier to construct where standing up a full Postgres-backed
-integration test is impractical. **This must be set to True for every production workload** - see
-[Environment Variables](../EnvironmentVariables/index.html) - since setting it to False removes this validation
-layer from every dynamic SQL execution path in the platform, not just the one being tested.
+The parser walks the whole syntax tree rather than matching text, so comments, letter case, whitespace, unicode and
+dollar quoting cannot disguise a statement. Exactly one plain `SELECT` is accepted; anything that writes (including data
+modifying `WITH` clauses and `SELECT INTO`), locks rows (`FOR UPDATE`), stacks a second statement or changes session
+state is refused, as are functions that sleep, change settings or sequences, read the server file system, open
+connections or return the text of another query (`pg_sleep`, `set_config`, `nextval`, `lo_import`, `pg_read_file`,
+`dblink`, `query_to_xml` and the like), and the system catalogues. SQL a user authors (Visualisation Datasources) is
+additionally refused access to the identity and credential tables (`UserRegistry`, `TenantRegistry` and their siblings).
+Execution then runs inside a read only transaction with a statement timeout (30 seconds) and a ceiling of 100,000 rows,
+so that the database itself refuses a write and a runaway query is cancelled even if the parser were to miss something.
+An absent `ParserAssertSelectOnly` setting fails closed: the gate stays on.
+
+The Assert Select Only Parser itself can be bypassed via the `ParserAssertSelectOnly` Environment Variable, which exists
+purely to make certain test scenarios easier to construct where standing up a full Postgres-backed integration test is
+impractical. **This must be set to True for every production workload** - see
+[Environment Variables](../EnvironmentVariables/index.html) - since setting it to False removes this validation layer
+from every dynamic SQL execution path in the platform, not just the one being tested.
 
 There exists one administrator-only page which allows for the embedding of SQL:
 
@@ -130,10 +144,8 @@ it suffices to say that .NET code is filtered on a token basis for allowed token
 # Generic Validations and Display of Error Messages
 
 The following describes the scenario where there is database interuption which will bring about errors in the Jube
-software.
-Such errors are not displayed directly in the software and are instead bubbled up as a generic message. For example, a
-fairly
-standard CRUD process as follows, where the database has been terminated:
+software. Such errors are not displayed directly in the software and are instead bubbled up as a generic message. For
+example, a fairly standard CRUD process as follows, where the database has been terminated:
 
 In the case above, the following error is bubbled up to the user interface:
 
@@ -145,32 +157,31 @@ Meanwhile the error is available in the logs:
 
 ![ErrorInLogs.png](ErrorInLogs.png)
 
-There are certain administrative pages in the application that do bubble up more detailed errors,
-given that their purpose is the to created reports on the basis of SQl, it does provide more reliable feedback as to the
-error.
+There are certain administrative pages in the application that do bubble up more detailed errors, given that their
+purpose is the to created reports on the basis of SQl, it does provide more reliable feedback as to the error.
 
 ## Direct Object Reference and Role Based Access (RBAC) Validation
 
-The vertical slices that exist in Jube follow the pattern of Controller > Repository > Data Context (Object Relation
-Mapper) > Database. The create bulk of the system does not make direct SQL calls to the database and instead pushes SQL
-down via LINQ. The approach makes for a very strongly typed approach where models are mapped through the layers of the
-application
-whereby there is no direct object reference. In the following case it can be seen that the input from the user is mapped
-indirectly to the object required of the Repository layer:
+The vertical slices that exist in Jube follow the pattern of Endpoint > Service > Repository > Data Context (Object
+Relation Mapper) > Database (the screenshots below show the original Controller form, whose logic now lives in the
+service). The create bulk of the system does not make direct SQL calls to the database and instead pushes SQL down via
+LINQ. The approach makes for a very strongly typed approach where models are mapped through the layers of the
+application whereby there is no direct object reference. In the following case it can be seen that the input from the
+user is mapped indirectly to the object required of the Repository layer:
 
 ![PassingObjectsAround.png](PassingObjectsAround.png)
 
-Meanwhile,  the repository layer maps once more via LINQ to the underlying SQL:
+Meanwhile, the repository layer maps once more via LINQ to the underlying SQL:
 
 ![StronglyTypedDatabaseAccess.png](StronglyTypedDatabaseAccess.png)
 
-In terms of RBAC, much of the horizontal data isolation is achived by passing the users identity as part of paramaterised 
-query, where the identity is taken from the .NET authentication pipeline only:
+In terms of RBAC, much of the horizontal data isolation is achived by passing the users identity as part of
+paramaterised query, where the identity is taken from the .NET authentication pipeline only:
 
 ![CheckingPermissionsAtController.png](CheckingPermissionsAtController.png)
 
-In addition to validations set out above, every call to an API will first validate RBAC for that functionality, and the functionality
-is only adressible in the case a Permission is added:
+In addition to validations set out above, every call to an API will first validate RBAC for that functionality, and the
+functionality is only adressible in the case a Permission is added:
 
 ![ControllerPermissions.png](ControllerPermissions.png)
 

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Text.Json;
 using FluentValidation;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelReprocessingRule;
@@ -29,10 +30,16 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
         private static readonly string[] allowedReprocessingIntervals = ["n", "h", "d", "m"];
 
         public EntityAnalysisModelReprocessingRuleDtoValidator(
-            EntityAnalysisModelReprocessingRuleRepository repository, IStringLocalizer localiser)
+            EntityAnalysisModelReprocessingRuleRepository repository, IStringLocalizer localiser,
+            EntityAnalysisModelRepository entityAnalysisModelRepository)
         {
             RuleFor(p => p.EntityAnalysisModelId)
+                .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
+                .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdInvalid")
+                .MustAsync(async (id, cancellation) =>
+                    await entityAnalysisModelRepository.GetByIdAsync(id, cancellation) != null)
                 .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
 
@@ -58,7 +65,7 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
                 .GreaterThanOrEqualTo(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.PriorityRange])
                 .WithErrorCode("PriorityRange");
-            
+
             RuleFor(p => p.RuleScriptTypeId)
                 .Must(m => allowedRuleScriptTypeIds.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.RuleScriptTypeIdInvalid])
@@ -81,6 +88,12 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
                 .WithErrorCode("JsonNotEmpty")
                 .When(p => p.RuleScriptTypeId == 1);
 
+            RuleFor(p => p.Json)
+                .Must(BeJson)
+                .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.JsonInvalid])
+                .WithErrorCode("JsonInvalid")
+                .When(p => !string.IsNullOrWhiteSpace(p.Json));
+
             RuleFor(p => p.CoderRuleScript)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.CoderRuleScriptRequired])
@@ -98,7 +111,7 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
                 .WithErrorCode("ReprocessingSampleRange");
 
             RuleFor(p => p.ReprocessingValue)
-                .GreaterThanOrEqualTo(0)
+                .Must((dto, value) => value >= 0 && value <= IntervalLimits.Max(dto.ReprocessingInterval))
                 .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.ReprocessingValueRange])
                 .WithErrorCode("ReprocessingValueRange");
 
@@ -106,6 +119,25 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
                 .Must(m => allowedReprocessingIntervals.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.ReprocessingIntervalInvalid])
                 .WithErrorCode("ReprocessingIntervalInvalid");
+        }
+
+        private static bool BeJson(string? value)
+        {
+            if (value == null || value.Contains("\\u0000", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            try
+            {
+                using var document = JsonDocument.Parse(value,
+                    new JsonDocumentOptions { MaxDepth = 64 });
+                return true;
+            }
+            catch (JsonException)
+            {
+                return false;
+            }
         }
     }
 }

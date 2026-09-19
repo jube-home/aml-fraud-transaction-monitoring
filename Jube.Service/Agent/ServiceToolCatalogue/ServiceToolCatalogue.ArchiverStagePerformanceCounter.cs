@@ -23,8 +23,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Lists background archiver stage performance rows across every Model -- BuildArchiveJson, " +
                     "CaseCreationDispatch, RdbmsArchiveWrite, BulkCopyArchiveBuffer -- most recent first, " +
                     "capped at 100000, with optional date-range and exact-match (StageId, e.g. " +
-                    "1=BuildArchiveJson) filters. Landlord callers see every tenant; other callers only their " +
-                    "own. Also accepts samplePercentage (0-100) to draw an unbiased random subset of matching " +
+                    "1=BuildArchiveJson) filters. Landlord only: every other caller is refused with a 403. Also accepts samplePercentage (0-100) to draw an unbiased random subset of matching " +
                     "rows instead of the most recent ones."));
         }
     }

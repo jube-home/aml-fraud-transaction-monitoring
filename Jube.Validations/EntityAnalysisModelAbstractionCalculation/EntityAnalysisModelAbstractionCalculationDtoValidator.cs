@@ -36,6 +36,13 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionCalculation
                     localiser[EntityAnalysisModelAbstractionCalculationResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
 
+            RuleFor(p => p.EntityAnalysisModelId)
+                .MustAsync(repository.ParentModelVisibleAsync)
+                .WithMessage(_ =>
+                    localiser[EntityAnalysisModelAbstractionCalculationResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdNotFound")
+                .When(p => p.Id == 0 && p.EntityAnalysisModelId > 0);
+
             RuleFor(p => p.Name)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionCalculationResources.NameRequired])
@@ -59,7 +66,7 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionCalculation
                 .WithMessage(_ =>
                     localiser[EntityAnalysisModelAbstractionCalculationResources.AbstractionCalculationTypeIdInvalid])
                 .WithErrorCode("AbstractionCalculationTypeIdInvalid");
-            
+
             RuleFor(p => p.EntityAnalysisModelAbstractionNameLeft)
                 .NotEmpty()
                 .WithMessage(_ => localiser[
@@ -67,12 +74,30 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionCalculation
                 .WithErrorCode("EntityAnalysisModelAbstractionNameLeftNotEmpty")
                 .When(w => w.AbstractionCalculationTypeId != 5);
 
+            RuleFor(p => p.EntityAnalysisModelAbstractionNameLeft)
+                .MaximumLength(MaxNameLength)
+                .WithMessage(_ =>
+                    string.Format(
+                        localiser[
+                            EntityAnalysisModelAbstractionCalculationResources
+                                .EntityAnalysisModelAbstractionNameLeftMaxLength], MaxNameLength))
+                .WithErrorCode("EntityAnalysisModelAbstractionNameLeftMaximumLength");
+
             RuleFor(p => p.EntityAnalysisModelAbstractionNameRight)
                 .NotEmpty()
                 .WithMessage(_ => localiser[
                     EntityAnalysisModelAbstractionCalculationResources.EntityAnalysisModelAbstractionNameRightRequired])
                 .WithErrorCode("EntityAnalysisModelAbstractionNameRightNotEmpty")
                 .When(w => w.AbstractionCalculationTypeId != 5);
+
+            RuleFor(p => p.EntityAnalysisModelAbstractionNameRight)
+                .MaximumLength(MaxNameLength)
+                .WithMessage(_ =>
+                    string.Format(
+                        localiser[
+                            EntityAnalysisModelAbstractionCalculationResources
+                                .EntityAnalysisModelAbstractionNameRightMaxLength], MaxNameLength))
+                .WithErrorCode("EntityAnalysisModelAbstractionNameRightMaximumLength");
 
             RuleFor(p => p.FunctionScript)
                 .NotEmpty()
@@ -85,6 +110,13 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionCalculation
                         MaxFunctionScriptLength))
                 .WithErrorCode("FunctionScriptMaximumLength")
                 .When(w => w.AbstractionCalculationTypeId == 5);
+
+            RuleFor(p => p.FunctionScript)
+                .MaximumLength(MaxFunctionScriptLength)
+                .WithMessage(_ =>
+                    string.Format(localiser[EntityAnalysisModelAbstractionCalculationResources.FunctionScriptMaxLength],
+                        MaxFunctionScriptLength))
+                .WithErrorCode("FunctionScriptMaximumLength");
         }
     }
 }

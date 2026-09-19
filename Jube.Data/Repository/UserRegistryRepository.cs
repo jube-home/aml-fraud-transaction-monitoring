@@ -64,19 +64,41 @@ namespace Jube.Data.Repository
                     && f.Name.ToLower() == name.ToLower(), token);
         }
 
+        public async Task<bool> NameTakenOutsideTenantAsync(string name, CancellationToken token = default)
+        {
+            var lower = name.ToLower();
+            var tenant = tenantRegistryId.GetValueOrDefault();
+
+            var heldByUser = await dbContext.UserRegistry.AnyAsync(w =>
+                w.Name.ToLower() == lower
+                && (w.Deleted == 0 || w.Deleted == null)
+                && w.RoleRegistry.TenantRegistryId != tenant, token);
+
+            if (heldByUser)
+            {
+                return true;
+            }
+
+            return await dbContext.UserInTenant.AnyAsync(w =>
+                w.User.ToLower() == lower && w.TenantRegistryId != tenant, token);
+        }
+
         public async Task<IEnumerable<UserRegistry>> GetAsync(CancellationToken token = default)
         {
             return await dbContext.UserRegistry
-                .Where(w => w.RoleRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                .Where(w => (w.RoleRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                            && (w.Deleted == 0 || w.Deleted == null))
                 .ToListAsync(token);
         }
 
         public Task<bool> AnyAsync(CancellationToken token = default)
         {
-            return dbContext.UserRegistry.AnyAsync(w => w.RoleRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue, token);
+            return dbContext.UserRegistry.AnyAsync(
+                w => w.RoleRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue, token);
         }
 
-        public async Task<IEnumerable<UserRegistry>> GetByRoleRegistryGuidAsync(Guid roleRegistryGuid, CancellationToken token = default)
+        public async Task<IEnumerable<UserRegistry>> GetByRoleRegistryGuidAsync(Guid roleRegistryGuid,
+            CancellationToken token = default)
         {
             return await dbContext.UserRegistry
                 .Where(w => w.RoleRegistry.TenantRegistryId == tenantRegistryId
@@ -128,8 +150,9 @@ namespace Jube.Data.Repository
         public async Task<UserRegistry> UpdateAsync(UserRegistry model, CancellationToken token = default)
         {
             var existing = dbContext.UserRegistry
-                .FirstOrDefault(w => w.Id
-                                     == model.Id
+                .FirstOrDefault(w => w.Id == model.Id
+                                     && (w.RoleRegistry.TenantRegistryId == tenantRegistryId
+                                         || !tenantRegistryId.HasValue)
                                      && (w.Deleted == 0 || w.Deleted == null));
 
             if (existing == null)
@@ -139,18 +162,23 @@ namespace Jube.Data.Repository
 
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
-            model.CreatedUser = userName;
+            model.CreatedUser = existing.CreatedUser;
+            model.CreatedDate = existing.CreatedDate;
             model.Password = existing.Password;
             model.PasswordExpiryDate = existing.PasswordExpiryDate;
             model.PasswordCreatedDate = existing.PasswordCreatedDate;
-            model.CreatedDate = DateTime.UtcNow;
+            model.InheritedId = existing.InheritedId;
+
+            var unlocking = existing.PasswordLocked == 1 && model.PasswordLocked != 1;
+            model.FailedPasswordCount = unlocking ? 0 : existing.FailedPasswordCount;
+            model.LastLoginDate = existing.LastLoginDate;
+            model.PasswordLockedDate = model.PasswordLocked == 1 ? existing.PasswordLockedDate : null;
 
             await dbContext.UpdateAsync(model, token: token);
 
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<UserRegistry, UserRegistryVersion>();
-            }, NullLoggerFactory.Instance));
+            var mapper =
+                new Mapper(new MapperConfiguration(cfg => { cfg.CreateMap<UserRegistry, UserRegistryVersion>(); },
+                    NullLoggerFactory.Instance));
 
             var audit = mapper.Map<UserRegistryVersion>(existing);
             audit.UserRegistryId = existing.Id;
@@ -175,7 +203,8 @@ namespace Jube.Data.Repository
             }
         }
 
-        public async Task SetPasswordAsync(int id, string password, DateTime? expiryDate, bool wirePasswordHash = true, CancellationToken token = default)
+        public async Task SetPasswordAsync(int id, string password, DateTime? expiryDate, bool wirePasswordHash = true,
+            CancellationToken token = default)
         {
             var records = await dbContext.UserRegistry
                 .Where(d => (d.RoleRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
@@ -211,6 +240,36 @@ namespace Jube.Data.Repository
             }
         }
 
+        public async Task<int?> ReserveLoginAttemptAsync(int id, CancellationToken token = default)
+        {
+            var counts = await LinqToDB.Data.DataConnectionExtensions.QueryToListAsync<int>(dbContext,
+                "UPDATE \"UserRegistry\" SET \"FailedPasswordCount\" = COALESCE(\"FailedPasswordCount\", 0) + 1 " +
+                "WHERE \"Id\" = @id AND (\"Deleted\" = 0 OR \"Deleted\" IS NULL) " +
+                "AND COALESCE(\"PasswordLocked\", 0) <> 1 RETURNING \"FailedPasswordCount\"",
+                new LinqToDB.Data.DataParameter("id", id));
+
+            return counts.Count == 0 ? null : counts[0];
+        }
+
+        public Task<int> ReleaseLoginAttemptAsync(int id, CancellationToken token = default)
+        {
+            return dbContext.UserRegistry
+                .Where(d => d.Id == id && (d.Deleted == 0 || d.Deleted == null) && d.FailedPasswordCount > 0)
+                .Set(s => s.FailedPasswordCount, s => s.FailedPasswordCount - 1)
+                .UpdateAsync(token);
+        }
+
+        public async Task<bool> LockIfAttemptsReachedAsync(int id, int threshold, CancellationToken token = default)
+        {
+            var records = await dbContext.UserRegistry
+                .Where(d => d.Id == id && (d.Deleted == 0 || d.Deleted == null) && d.FailedPasswordCount >= threshold)
+                .Set(s => s.PasswordLocked, (byte)1)
+                .Set(s => s.PasswordLockedDate, DateTime.UtcNow)
+                .UpdateAsync(token);
+
+            return records > 0;
+        }
+
         public Task IncrementFailedPasswordAsync(int id, CancellationToken token = default)
         {
             var existing = dbContext.UserRegistry
@@ -226,6 +285,24 @@ namespace Jube.Data.Repository
             existing.FailedPasswordCount += 1;
 
             return dbContext.UpdateAsync(existing, token: token);
+        }
+
+        public async Task<string> RevokeTokensAsync(int id, DateTimeOffset cutoff, CancellationToken token = default)
+        {
+            var name = await dbContext.UserRegistry
+                .Where(d => (d.RoleRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                            && d.Id == id
+                            && (d.Deleted == 0 || d.Deleted == null))
+                .Select(d => d.Name)
+                .FirstOrDefaultAsync(token);
+
+            if (name == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            await Security.TokenValidity.RevokeUserBeforeAsync(dbContext, name, cutoff, token);
+            return name;
         }
 
         public async Task DeleteAsync(int id, CancellationToken token = default)

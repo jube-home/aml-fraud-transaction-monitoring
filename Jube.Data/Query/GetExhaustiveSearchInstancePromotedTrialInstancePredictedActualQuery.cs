@@ -41,22 +41,29 @@ namespace Jube.Data.Query
                 .Where(w =>
                     w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
                     && w.Active == 1
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null)
                     && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
                         .EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
                 .OrderByDescending(o => o.Id)
                 .Select(s => s.ExhaustiveSearchInstanceTrialInstanceId)
                 .FirstOrDefaultAsync(token);
 
-            return await dbContext.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
+            var rows = await dbContext.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
                 .Where(w =>
-                    w.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId)
+                    w.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId
+                    && (w.Deleted == 0 || w.Deleted == null))
                 .OrderBy(o => o.Id)
-                .Select(s => new Dto
-                {
-                    Predicted = s.Predicted.Value,
-                    Actual = s.Actual.Value,
-                    Error = s.Actual.Value - s.Predicted.Value
-                }).ToListAsync(token);
+                .Select(s => new { s.Predicted, s.Actual })
+                .ToListAsync(token);
+
+            return rows.Select(s => new Dto
+            {
+                Predicted = s.Predicted.GetValueOrDefault(),
+                Actual = s.Actual.GetValueOrDefault(),
+                Error = s.Actual.GetValueOrDefault() - s.Predicted.GetValueOrDefault()
+            }).ToList();
         }
 
         public class Dto

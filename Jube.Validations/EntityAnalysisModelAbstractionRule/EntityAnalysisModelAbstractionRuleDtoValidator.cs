@@ -35,10 +35,18 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
         public EntityAnalysisModelAbstractionRuleDtoValidator(EntityAnalysisModelAbstractionRuleRepository repository,
             IStringLocalizer localiser)
         {
+            Include(new FiniteNumberValidator<EntityAnalysisModelAbstractionRuleDto>());
+
             RuleFor(p => p.EntityAnalysisModelId)
                 .GreaterThan(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
+
+            RuleFor(p => p.EntityAnalysisModelId)
+                .MustAsync(repository.ParentModelVisibleAsync)
+                .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdNotFound")
+                .When(p => p.Id == 0 && p.EntityAnalysisModelId > 0);
 
             RuleFor(p => p.Name)
                 .NotEmpty()
@@ -57,10 +65,7 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.NameAlreadyExists])
                 .WithErrorCode("NameDuplicate");
-
-            // RuleScriptTypeId selects the rule's authoring surface (1 = Builder, 2 = Coder) and the two are
-            // mutually exclusive: Builder authors BuilderRuleScript/Json, Coder authors CoderRuleScript. Only the
-            // selected surface's script is required.
+            
             RuleFor(p => p.RuleScriptTypeId)
                 .Must(m => allowedRuleScriptTypeIds.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.RuleScriptTypeIdInvalid])
@@ -77,11 +82,23 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
                 .WithErrorCode("BuilderRuleScriptMaximumLength")
                 .When(p => p.RuleScriptTypeId == 1);
 
+            RuleFor(p => p.BuilderRuleScript)
+                .MaximumLength(MaxRuleScriptLength)
+                .WithMessage(_ =>
+                    string.Format(localiser[EntityAnalysisModelAbstractionRuleResources.BuilderRuleScriptMaxLength],
+                        MaxRuleScriptLength))
+                .WithErrorCode("BuilderRuleScriptMaximumLength");
+
             RuleFor(p => p.Json)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.JsonRequired])
                 .WithErrorCode("JsonNotEmpty")
                 .When(p => p.RuleScriptTypeId == 1);
+
+            RuleFor(p => p.Json)
+                .Must(JsonText.IsAcceptable)
+                .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.JsonInvalid])
+                .WithErrorCode("JsonInvalid");
 
             RuleFor(p => p.CoderRuleScript)
                 .NotEmpty()
@@ -93,6 +110,13 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
                         MaxRuleScriptLength))
                 .WithErrorCode("CoderRuleScriptMaximumLength")
                 .When(p => p.RuleScriptTypeId == 2);
+
+            RuleFor(p => p.CoderRuleScript)
+                .MaximumLength(MaxRuleScriptLength)
+                .WithMessage(_ =>
+                    string.Format(localiser[EntityAnalysisModelAbstractionRuleResources.CoderRuleScriptMaxLength],
+                        MaxRuleScriptLength))
+                .WithErrorCode("CoderRuleScriptMaximumLength");
 
             RuleFor(p => p.SearchKey)
                 .NotEmpty()

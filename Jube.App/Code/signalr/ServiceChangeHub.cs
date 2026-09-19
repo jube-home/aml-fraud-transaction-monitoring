@@ -16,15 +16,18 @@ namespace Jube.App.Code.signalr
     using System.Threading.Tasks;
     using Data.Context;
     using Data.Repository;
+    using Jube.Service.Reactivity;
     using DynamicEnvironment;
     using log4net;
     using Microsoft.AspNetCore.SignalR;
-    
+
     public class ServiceChangeHub(DynamicEnvironment dynamicEnvironment, ILog log) : Hub
     {
         public override async Task OnConnectedAsync()
         {
             var userName = Context.User?.Identity?.Name;
+            WatcherConnectionRegistry.Instance.Track(Context.ConnectionId, userName, Context.Abort,
+                Context.User?.FindFirst(Data.Security.TokenValidity.IssuedMillisecondsClaim)?.Value);
             if (!string.IsNullOrWhiteSpace(userName))
             {
                 await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -32,13 +35,19 @@ namespace Jube.App.Code.signalr
 
                 var tenantRegistryId = await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, userName);
 
-                if (tenantRegistryId is { } id)
+                if (TenantGroup.TryName(tenantRegistryId) is { } groupName)
                 {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, "Tenant_" + id);
+                    await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
                 }
             }
 
             await base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(System.Exception exception)
+        {
+            WatcherConnectionRegistry.Instance.Remove(Context.ConnectionId);
+            return base.OnDisconnectedAsync(exception);
         }
     }
 }

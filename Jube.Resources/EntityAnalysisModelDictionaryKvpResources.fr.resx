@@ -39,4 +39,7 @@
     <data name="KvpKeyRequired" xml:space="preserve">
     <value>Veuillez saisir une clé pour ce dictionnaire.</value>
   </data>
+    <data name="DictionaryNotFound" xml:space="preserve">
+    <value>Le dictionnaire est introuvable.</value>
+  </data>
 </root>

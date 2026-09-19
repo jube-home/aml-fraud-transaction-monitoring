@@ -89,7 +89,10 @@ namespace Jube.Data.Repository
                                           && (w.Deleted == 0 || w.Deleted == null)
                                           && (w.Locked == 0 || w.Locked == null), token);
 
-            if (existing == null) throw new KeyNotFoundException();
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
 
             model.Version = existing.Version + 1;
             model.CreatedUser = userName;
@@ -118,7 +121,10 @@ namespace Jube.Data.Repository
                 .Set(s => s.DeletedUser, userName)
                 .UpdateAsync(token);
 
-            if (records == 0) throw new KeyNotFoundException();
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
         }
     }
 }

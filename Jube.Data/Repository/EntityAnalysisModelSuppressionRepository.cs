@@ -56,7 +56,8 @@ namespace Jube.Data.Repository
                 .ToListAsync(token);
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelSuppression>> GetByEntityAnalysisModelIdAsync(int entityAnalysisModelId, CancellationToken token = default)
+        public async Task<IEnumerable<EntityAnalysisModelSuppression>> GetByEntityAnalysisModelIdAsync(
+            int entityAnalysisModelId, CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelSuppression
                 .Where(w =>
@@ -65,7 +66,8 @@ namespace Jube.Data.Repository
                     && w.EntityAnalysisModel.Id == entityAnalysisModelId
                     && (w.Deleted == 0 || w.Deleted == null)
                     && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow)
-                    && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)).ToListAsync(token).ConfigureAwait(false);
+                    && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)).ToListAsync(token)
+                .ConfigureAwait(false);
         }
 
         public Task<EntityAnalysisModelSuppression> GetByIdAsync(int id, CancellationToken token = default)
@@ -76,7 +78,8 @@ namespace Jube.Data.Repository
                 && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
         }
 
-        public async Task<EntityAnalysisModelSuppression> InsertAsync(EntityAnalysisModelSuppression model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelSuppression> InsertAsync(EntityAnalysisModelSuppression model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
@@ -85,7 +88,8 @@ namespace Jube.Data.Repository
             return model;
         }
 
-        public async Task<EntityAnalysisModelSuppression> UpdateAsync(EntityAnalysisModelSuppression model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelSuppression> UpdateAsync(EntityAnalysisModelSuppression model,
+            CancellationToken token = default)
         {
             EntityAnalysisModelSuppression existing;
 
@@ -93,7 +97,8 @@ namespace Jube.Data.Repository
             {
                 existing = await dbContext.EntityAnalysisModelSuppression
                     .FirstOrDefaultAsync(w =>
-                        w.Id == model.Id
+                        (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                        && w.Id == model.Id
                         && (w.Deleted == 0 || w.Deleted == null)
                         && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
             }
@@ -104,7 +109,8 @@ namespace Jube.Data.Repository
                                               && w.SuppressionKeyValue == model.SuppressionKeyValue
                                               && w.EntityAnalysisModelGuid == model.EntityAnalysisModelGuid
                                               && (w.Deleted == 0 || w.Deleted == null)
-                                              && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
+                                              && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow),
+                        token);
             }
 
             if (existing != null)
@@ -148,7 +154,8 @@ namespace Jube.Data.Repository
         }
 
         public async Task<EntityAnalysisModelSuppression> UpdateDeleteExpiryDateAsync(Guid entityAnalysisModelGuid,
-            string suppressionKey, string suppressionKeyValue, DateTime? deleteExpiryDate, CancellationToken token = default)
+            string suppressionKey, string suppressionKeyValue, DateTime? deleteExpiryDate,
+            CancellationToken token = default)
         {
             var existing = await dbContext.EntityAnalysisModelSuppression
                 .FirstOrDefaultAsync(w =>
@@ -181,10 +188,9 @@ namespace Jube.Data.Repository
 
         private Task InsertVersionAsync(EntityAnalysisModelSuppression existing, CancellationToken token)
         {
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<EntityAnalysisModelSuppression, EntityAnalysisModelSuppressionVersion>();
-            }, NullLoggerFactory.Instance));
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<EntityAnalysisModelSuppression, EntityAnalysisModelSuppressionVersion>(); },
+                NullLoggerFactory.Instance));
 
             var audit = mapper.Map<EntityAnalysisModelSuppressionVersion>(existing);
             audit.EntityAnalysisModelSuppressionId = existing.Id;
@@ -192,7 +198,8 @@ namespace Jube.Data.Repository
             return dbContext.InsertAsync(audit, token: token);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelSuppression
                 .Where(d =>

@@ -5,25 +5,25 @@ nav_order: 9
 parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # SIGTERM Handling
 
 SIGTERM is handled robustly via the centralisation of a cancellation token in the application. The application
-background tasks are all dismantled on the basis of instruction to the singular cancellation token. The application is designed to
-shut down very quickly and very safely to fully support dynamic scaling of the application with tooling such as
-Kubernetes or Docker Swarm.
+background tasks are all dismantled on the basis of instruction to the singular cancellation token. The application is
+designed to shut down very quickly and very safely to fully support dynamic scaling of the application with tooling such
+as Kubernetes or Docker Swarm.
 
 On cancellation all background tasks monitor for cancellation, and will gracefully exit if sensitive, otherwise cause
-immediate cancellation if inconsequential. In the case of background
-tasks that are responsible for draining concurrency queues, asynchronous database writes and Redis cache prune,
-these queues will be drained before cancellation (the application won't drop data on SIGTERM). On SIGTERM, in the event
-that a background task can't be stopped for reasons of draining, its cancellation status will be
-written out to console every two seconds for observability.
+immediate cancellation if inconsequential. In the case of background tasks that are responsible for draining concurrency
+queues, asynchronous database writes and Redis cache prune, these queues will be drained before cancellation (the
+application won't drop data on SIGTERM). On SIGTERM, in the event that a background task can't be stopped for reasons of
+draining, its cancellation status will be written out to console every two seconds for observability.
 
 Upon SIGTERM, an inflight requests via the embedded Kestrel server or AMQP will be drained also, being allowed to fully
-conclude. In the case of HTTP requests, on SIGTERM, any requests being served as part of drainage will include a disconnect header
-instructing the client to consider the connection as closed, notwithstanding the response.
+conclude. In the case of HTTP requests, on SIGTERM, any requests being served as part of drainage will include a
+disconnect header instructing the client to consider the connection as closed, notwithstanding the response.
 
 # Ready Endpoint
 
@@ -33,8 +33,8 @@ https://localhost:5001/api/ready:
 ![img.png](img.png)
 
 The Ready Endpoint will return HTTP Status Code 200 when ready, otherwise HTTP Stratus Code 503. The Ready Endpoint is
-also the backing for Docker health check, and is included in the Docker File. 
-It follows that Docker communication of health status rests upon receiving a 200 HTTP Status from this endpoint
+also the backing for Docker health check, and is included in the Docker File. It follows that Docker communication of
+health status rests upon receiving a 200 HTTP Status from this endpoint
 
 In the case of SIGTERM having been received, the Ready Endpoint will immediately return HTTP Status Code 503.
 
@@ -45,3 +45,11 @@ The Ready Endpoint checks for the instantiation of the following services:
   sanctions and any other dependencies have been loaded.
 * In the case of the StreamingActivationWatcher environment variable being true, the Relay instantiation, which implies
   readiness to relay information to the Activation Watcher.
+
+The Ready Endpoint is anonymous by design, as an orchestrator or load balancer has no user to authenticate as. It reads
+no data, needs no permission and writes no audit record, because a probe may call it every few seconds, and it returns
+only a status code with no body. The checks run in a fixed order and stop at the first that fails: shutdown requested,
+then the Engine (only when `EnableEngine` is True), then the Relay (only when `StreamingActivationWatcher` is True). Any
+failure is HTTP 503, which takes the node out of rotation, and a ready node is HTTP 200. If `EnableEngine` is True but
+the Engine was not registered at all, the endpoint is not ready to answer and returns HTTP 500 instead.
+

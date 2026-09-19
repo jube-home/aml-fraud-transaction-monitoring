@@ -93,7 +93,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             var firstId = await CreateEntryAsync(dbContext, channel, "first message");
             var secondId = await CreateEntryAsync(dbContext, channel, "second message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Channel == channel).ToList();
@@ -107,7 +107,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -119,6 +119,15 @@ namespace Jube.Test.Service.RedisSentinelEvent
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -151,7 +160,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             await CreateEntryAsync(dbContext, $"{channel}Old", "old message", oldDate);
             await CreateEntryAsync(dbContext, $"{channel}New", "new message", newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Channel.StartsWith(channel)).ToList();
@@ -168,7 +177,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             await CreateEntryAsync(dbContext, uniqueChannel, "some message");
             await CreateEntryAsync(dbContext, "+OtherChannel", "some message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueChannel[..14].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.Channel == uniqueChannel || r.Channel == "+OtherChannel").ToList();
@@ -184,7 +193,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             await CreateEntryAsync(dbContext, channel, "first message");
             await CreateEntryAsync(dbContext, channel, "second message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: channel, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -198,7 +207,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             await CreateEntryAsync(dbContext, channel, "first message");
             await CreateEntryAsync(dbContext, channel, "second message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: channel, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -211,7 +220,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             var channel = $"{DatabaseFixture.Prefix}Channel{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, channel, "message");
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Channel == channel);
@@ -228,7 +237,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             await CreateEntryAsync(dbContext, $"{channel}Old", "old message", twoHoursAgo);
             await CreateEntryAsync(dbContext, $"{channel}New", "new message", justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: channel);
 
             var mine = result.Rows.Where(r => r.Channel.StartsWith(channel)).ToList();
@@ -245,7 +254,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             await CreateEntryAsync(dbContext, $"{channel}A", "message");
             await CreateEntryAsync(dbContext, $"{channel}B", "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: channel, sortField: "channel", sortDirection: "asc");
             ascending.Rows.Select(r => r.Channel).Should().Equal($"{channel}A", $"{channel}B", $"{channel}C");
@@ -266,7 +275,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             await CreateEntryAsync(dbContext, $"{channel}B", "message");
             await CreateEntryAsync(dbContext, $"{channel}A", "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: channel, sortField: "channel",
                 sortDirection: ascendingKeyword);
 
@@ -281,7 +290,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             await CreateEntryAsync(dbContext, $"{channel}A", "message");
             await CreateEntryAsync(dbContext, $"{channel}B", "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: channel, sortField: "channel", sortDirection: "banana");
 
             result.Rows.Select(r => r.Channel).Should().Equal($"{channel}B", $"{channel}A");
@@ -296,7 +305,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
                 DateTime.UtcNow.AddMinutes(-30));
             var secondId = await CreateEntryAsync(dbContext, channel, "message", DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: channel, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -314,7 +323,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
                 await CreateEntryAsync(dbContext, channel, "message");
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: channel);
 
             result.Rows.Should().HaveCount(2);
@@ -328,7 +337,7 @@ namespace Jube.Test.Service.RedisSentinelEvent
             var channel = $"{DatabaseFixture.Prefix}Channel{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, channel, "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: channel);
 
             result.Statistics.Columns.Should().BeEmpty(

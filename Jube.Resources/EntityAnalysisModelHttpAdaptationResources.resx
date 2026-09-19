@@ -66,4 +66,7 @@
     <data name="PriorityRange" xml:space="preserve">
     <value>The priority must be zero or greater.</value>
   </data>
+    <data name="HttpEndpointInvalidPath" xml:space="preserve">
+    <value>The HTTP endpoint must be a plain path without control characters, whitespace or dot segments.</value>
+  </data>
 </root>

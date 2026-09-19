@@ -49,7 +49,14 @@ namespace Jube.Data.Repository
             this.dbContext = dbContext;
         }
 
-        public Task<ExhaustiveSearchInstance> GetByNameEntityAnalysisModelIdAsync(string name, int entityAnalysisModelId, CancellationToken token = default)
+        public Task<bool> ParentModelVisibleAsync(int entityAnalysisModelId, CancellationToken token = default)
+        {
+            return EntityAnalysisModelParentGuard.IsVisibleAsync(dbContext, tenantRegistryId, entityAnalysisModelId,
+                token);
+        }
+
+        public Task<ExhaustiveSearchInstance> GetByNameEntityAnalysisModelIdAsync(string name,
+            int entityAnalysisModelId, CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstance
                 .FirstOrDefaultAsync(f =>
@@ -68,7 +75,8 @@ namespace Jube.Data.Repository
                 .ToListAsync(token).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<ExhaustiveSearchInstance>> GetByEntityAnalysisModelIdOrderByIdAsync(int entityAnalysisModelId, CancellationToken token = default)
+        public async Task<IEnumerable<ExhaustiveSearchInstance>> GetByEntityAnalysisModelIdOrderByIdAsync(
+            int entityAnalysisModelId, CancellationToken token = default)
         {
             return await dbContext.ExhaustiveSearchInstance.Where(w =>
                     (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
@@ -77,7 +85,8 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<ExhaustiveSearchInstance>> GetByEntityAnalysisModelIdOrderByNameAsync(int entityAnalysisModelId, CancellationToken token = default)
+        public async Task<IEnumerable<ExhaustiveSearchInstance>> GetByEntityAnalysisModelIdOrderByNameAsync(
+            int entityAnalysisModelId, CancellationToken token = default)
         {
             return await dbContext.ExhaustiveSearchInstance.Where(w =>
                     (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
@@ -93,7 +102,8 @@ namespace Jube.Data.Repository
                 && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
-        public async Task<ExhaustiveSearchInstance> InsertAsync(ExhaustiveSearchInstance model, CancellationToken token = default)
+        public async Task<ExhaustiveSearchInstance> InsertAsync(ExhaustiveSearchInstance model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName ?? model.CreatedUser;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
@@ -105,7 +115,8 @@ namespace Jube.Data.Repository
             return model;
         }
 
-        public async Task<ExhaustiveSearchInstance> UpdateAsync(ExhaustiveSearchInstance model, CancellationToken token = default)
+        public async Task<ExhaustiveSearchInstance> UpdateAsync(ExhaustiveSearchInstance model,
+            CancellationToken token = default)
         {
             var existing = dbContext.ExhaustiveSearchInstance
                 .FirstOrDefault(w => w.Id
@@ -122,6 +133,12 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            if (!await ParentModelVisibleAsync(model.EntityAnalysisModelId.GetValueOrDefault(), token)
+                    .ConfigureAwait(false))
+            {
+                throw new KeyNotFoundException();
+            }
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = userName;
@@ -129,10 +146,9 @@ namespace Jube.Data.Repository
 
             await dbContext.UpdateAsync(model, token: token).ConfigureAwait(false);
 
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ExhaustiveSearchInstance, ExhaustiveSearchInstanceVersion>();
-            }, NullLoggerFactory.Instance));
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<ExhaustiveSearchInstance, ExhaustiveSearchInstanceVersion>(); },
+                NullLoggerFactory.Instance));
 
             var audit = mapper.Map<ExhaustiveSearchInstanceVersion>(existing);
             audit.ExhaustiveSearchInstanceId = existing.Id;
@@ -232,7 +248,8 @@ namespace Jube.Data.Repository
             }
         }
 
-        public async Task UpdateBestScoreAsync(int id, double score, int topologyComplexity, CancellationToken token = default)
+        public async Task UpdateBestScoreAsync(int id, double score, int topologyComplexity,
+            CancellationToken token = default)
         {
             var records = await dbContext.ExhaustiveSearchInstance
                 .Where(d =>
@@ -269,7 +286,8 @@ namespace Jube.Data.Repository
             }
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstance
                 .Where(d =>

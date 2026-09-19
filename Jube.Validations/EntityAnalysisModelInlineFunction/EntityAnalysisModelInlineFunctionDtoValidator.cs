@@ -29,10 +29,16 @@ namespace Jube.Validations.EntityAnalysisModelInlineFunction
         private static readonly int[] allowedEncryptionIds = [0, 1, 2];
 
         public EntityAnalysisModelInlineFunctionDtoValidator(
-            EntityAnalysisModelInlineFunctionRepository repository, IStringLocalizer localiser)
+            EntityAnalysisModelInlineFunctionRepository repository, IStringLocalizer localiser,
+            EntityAnalysisModelRepository entityAnalysisModelRepository)
         {
             RuleFor(p => p.EntityAnalysisModelId)
+                .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
+                .WithMessage(_ => localiser[EntityAnalysisModelInlineFunctionResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdInvalid")
+                .MustAsync(async (id, cancellation) =>
+                    await entityAnalysisModelRepository.GetByIdAsync(id, cancellation) != null)
                 .WithMessage(_ => localiser[EntityAnalysisModelInlineFunctionResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
 
