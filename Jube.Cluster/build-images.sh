@@ -14,12 +14,12 @@
 # the same way here for consistency.)
 #
 # Usage:
-#   ./build-images.sh              # tag with HEAD's short SHA
+#   ./build-images.sh              # tag with HEAD's short SHA, docker save each image to Jube.Cluster/Images/
 #   ./build-images.sh abc1234      # tag with an explicit SHA/ref instead of HEAD
 #   ./build-images.sh --no-env     # build only, skip writing .env
-#   ./build-images.sh --save       # also docker save each image to Jube.Cluster/Images/
+#   ./build-images.sh --no-save    # skip docker save of the images
 #
-# --save tarballs are too big to push to git - Jube.Cluster/Images/ is gitignored.
+# The saved tarballs are too big to push to git - Jube.Cluster/Images/ is gitignored.
 
 set -euo pipefail
 
@@ -32,11 +32,12 @@ if [ ! -d "$REPO_ROOT/.git" ]; then
 fi
 
 UPDATE_ENV=1
-SAVE_IMAGES=0
+SAVE_IMAGES=1
 REF="HEAD"
 for arg in "$@"; do
     case "$arg" in
         --no-env) UPDATE_ENV=0 ;;
+        --no-save) SAVE_IMAGES=0 ;;
         --save) SAVE_IMAGES=1 ;;
         *) REF="$arg" ;;
     esac
