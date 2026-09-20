@@ -78,7 +78,7 @@ namespace Jube.Test.Service.OpenTelemetryExclude
         public async Task InsertPersistsAndReturnsVersionOneAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var saved = await service.InsertAsync(new OpenTelemetryExcludeDto
             {
@@ -89,14 +89,14 @@ namespace Jube.Test.Service.OpenTelemetryExclude
 
             saved.Id.Should().BeGreaterThan(0);
             saved.Version.Should().Be(1);
-            saved.CreatedUser.Should().Be(fx.Seed.UserWithPermission);
+            saved.CreatedUser.Should().Be(fx.Seed.LandlordUser);
         }
 
         [Fact]
         public async Task GetAllReturnsCreatedRowAndGetByIdReturnsItAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var name = UniqueName("List");
             var saved = await service.InsertAsync(new OpenTelemetryExcludeDto { Name = name, Active = true });
@@ -114,7 +114,7 @@ namespace Jube.Test.Service.OpenTelemetryExclude
         public async Task UpdateChangesFieldsAndIncrementsVersionAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var saved = await service.InsertAsync(new OpenTelemetryExcludeDto
             {
@@ -134,14 +134,14 @@ namespace Jube.Test.Service.OpenTelemetryExclude
             updated.Name.Should().Be(newName);
             updated.Active.Should().Be(0);
             updated.Version.Should().Be(2);
-            updated.UpdatedUser.Should().Be(fx.Seed.UserWithPermission);
+            updated.UpdatedUser.Should().Be(fx.Seed.LandlordUser);
         }
 
         [Fact]
         public async Task DeleteSoftDeletesRowAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var saved = await service.InsertAsync(new OpenTelemetryExcludeDto
             {
@@ -160,7 +160,7 @@ namespace Jube.Test.Service.OpenTelemetryExclude
         public async Task UpdateOnLockedRowThrowsLockedExceptionAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var saved = await service.InsertAsync(new OpenTelemetryExcludeDto
             {
@@ -184,7 +184,7 @@ namespace Jube.Test.Service.OpenTelemetryExclude
         public async Task DeleteOnLockedRowThrowsLockedExceptionAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var saved = await service.InsertAsync(new OpenTelemetryExcludeDto
             {
@@ -203,7 +203,7 @@ namespace Jube.Test.Service.OpenTelemetryExclude
         public async Task InsertWithEmptyNameIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var act = () => service.InsertAsync(new OpenTelemetryExcludeDto { Name = string.Empty, Active = true });
 
@@ -215,6 +215,21 @@ namespace Jube.Test.Service.OpenTelemetryExclude
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            var act = () => service.InsertAsync(new OpenTelemetryExcludeDto
+            {
+                Name = UniqueName("Forbidden"),
+                Active = true
+            });
+
+            await act.Should().ThrowAsync<ForbiddenException>();
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var act = () => service.InsertAsync(new OpenTelemetryExcludeDto
             {

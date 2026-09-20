@@ -1598,7 +1598,10 @@ function SetPlacementColorAndSetTags() {
 function onSuccess(e) {
     const file0Uid = e.files[0].uid;
     $(".k-file[data-uid='" + file0Uid + "']").find(".k-file-name")
-        .html("<a target=\"_blank\" href='../api/CaseFile?id=" + e.response.id + "'>" + e.files[0].name + "</a>");
+        .empty()
+        .append($("<a>").attr({target: "_blank", rel: "noopener noreferrer"})
+            .attr("href", "../api/CaseFile?id=" + encodeURIComponent(e.response.id))
+            .text(e.files[0].name));
 }
 
 function onUpload(e) {

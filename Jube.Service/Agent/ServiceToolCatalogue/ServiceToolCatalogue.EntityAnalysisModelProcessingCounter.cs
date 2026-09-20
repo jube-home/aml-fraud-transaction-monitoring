@@ -24,8 +24,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "optional date-range and Model-name substring filters. Each row is a roughly " +
                     "one-minute interval's counts for one Entity Analysis Model -- synchronous invocations, " +
                     "Gateway Rule matches, response-elevation triggers, activation-watcher triggers, " +
-                    "response times, and pending archive WAL entries. Landlord callers see every tenant; " +
-                    "other callers only their own. Also accepts samplePercentage (0-100) to draw an " +
+                    "response times, and pending archive WAL entries. Landlord only: every other caller is refused with a 403. Also accepts samplePercentage (0-100) to draw an " +
                     "unbiased random subset of matching rows instead of the most recent ones."));
         }
     }

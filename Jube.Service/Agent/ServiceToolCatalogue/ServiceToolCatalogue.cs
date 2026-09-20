@@ -86,12 +86,88 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddOpenTelemetryExclude(tools);
                 AddOtlpDispatchCounter(tools);
                 AddUserLogin(tools);
+                AddUserLogout(tools);
                 AddPostgresActivity(tools);
                 AddPostgresStatementStatistics(tools);
                 AddHttpProcessingCounter(tools);
                 AddEntityAnalysisAsynchronousQueueBalance(tools);
                 AddEntityAnalysisModelAsynchronousQueueBalance(tools);
                 AddEntityAnalysisModelProcessingCounter(tools);
+                AddArchive(tools);
+                AddActivationWatcher(tools);
+                AddCase(tools);
+                AddCaseFile(tools);
+                AddCaseNote(tools);
+                AddCaseWorkflow(tools);
+                AddCaseWorkflowAction(tools);
+                AddCaseWorkflowActionRole(tools);
+                AddCaseWorkflowDisplay(tools);
+                AddCaseWorkflowDisplayRole(tools);
+                AddCaseWorkflowFilter(tools);
+                AddCaseWorkflowFilterRole(tools);
+                AddCaseWorkflowForm(tools);
+                AddCaseWorkflowFormEntry(tools);
+                AddCaseWorkflowFormEntryValue(tools);
+                AddCaseWorkflowFormRole(tools);
+                AddCaseWorkflowMacro(tools);
+                AddCaseWorkflowMacroRole(tools);
+                AddCaseWorkflowPriority(tools);
+                AddCaseWorkflowRole(tools);
+                AddCaseWorkflowStatus(tools);
+                AddCaseWorkflowStatusRole(tools);
+                AddCaseWorkflowXPath(tools);
+                AddCaseWorkflowXPathRole(tools);
+                AddEntityAnalysisModelRole(tools);
+                AddEntityAnalysisModelSynchronisationSchedule(tools);
+                AddExhaustiveSearchInstancePromotedTrialInstance(tools);
+                AddPermissionSpecification(tools);
+                AddRoleRegistry(tools);
+                AddRoleRegistryPermission(tools);
+                AddSanctionEntrySource(tools);
+                AddTenantRegistry(tools);
+                AddUserInTenant(tools);
+                AddUserRegistry(tools);
+                AddUserRegistryApiKey(tools);
+                AddVisualisationRegistry(tools);
+                AddVisualisationRegistryDatasource(tools);
+                AddVisualisationRegistryDatasourceRole(tools);
+                AddVisualisationRegistryDatasourceSeries(tools);
+                AddVisualisationRegistryParameter(tools);
+                AddVisualisationRegistryParameterRole(tools);
+                AddVisualisationRegistryRole(tools);
+                AddCaseByCaseKeyValue(tools);
+                AddCaseById(tools);
+                AddCaseBySessionCaseSearchCompile(tools);
+                AddCaseEventByCaseKeyValue(tools);
+                AddCaseJournal(tools);
+                AddCaseNoteByCaseKeyValue(tools);
+                AddCaseWorkflowFormEntryByCaseKeyValue(tools);
+                AddEntityAnalysisModelActivationRuleSuppressionQuery(tools);
+                AddEntityAnalysisModelSample(tools);
+                AddEntityAnalysisModelSuppressionQuery(tools);
+                AddEntityAnalysisModelSynchronisationNodeStatusEntries(tools);
+                AddEntityAnalysisPotentialMultiPartStringNames(tools);
+                AddEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType(tools);
+                AddExhaustiveSearchInstancePromotedTrialInstanceConfusion(tools);
+                AddExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram(tools);
+                AddExhaustiveSearchInstancePromotedTrialInstanceLearningCurve(tools);
+                AddExhaustiveSearchInstancePromotedTrialInstancePredictedActual(tools);
+                AddExhaustiveSearchInstancePromotedTrialInstanceQuery(tools);
+                AddExhaustiveSearchInstancePromotedTrialInstanceRoc(tools);
+                AddExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription(tools);
+                AddExhaustiveSearchInstanceTrialInstanceVariable(tools);
+                AddExhaustiveSearchInstanceTrialInstanceVariableVariance(tools);
+                AddExhaustiveSearchInstanceVariable(tools);
+                AddVisualisationRegistryDatasourceCommandExecution(tools);
+                AddTreeChildren(tools);
+                AddSessionCaseJournal(tools);
+                AddSessionCaseSearchCompiledSql(tools);
+                AddCompletions(tools);
+                AddIcons(tools);
+                AddParser(tools);
+                AddCaseWorkflowDisplayExecution(tools);
+                AddCaseWorkflowMacroExecution(tools);
+                AddRegisterSignalrConnection(tools);
                 all = tools;
 
                 return all;
@@ -156,11 +232,101 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddOpenTelemetryExclude(List<ServiceToolDescriptor> tools);
         static partial void AddOtlpDispatchCounter(List<ServiceToolDescriptor> tools);
         static partial void AddUserLogin(List<ServiceToolDescriptor> tools);
+        static partial void AddUserLogout(List<ServiceToolDescriptor> tools);
         static partial void AddPostgresActivity(List<ServiceToolDescriptor> tools);
         static partial void AddPostgresStatementStatistics(List<ServiceToolDescriptor> tools);
         static partial void AddHttpProcessingCounter(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisAsynchronousQueueBalance(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelAsynchronousQueueBalance(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelProcessingCounter(List<ServiceToolDescriptor> tools);
+        static partial void AddArchive(List<ServiceToolDescriptor> tools);
+        static partial void AddActivationWatcher(List<ServiceToolDescriptor> tools);
+        static partial void AddCase(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseFile(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseNote(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflow(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowAction(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowActionRole(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowDisplay(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowDisplayRole(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowFilter(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowFilterRole(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowForm(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowFormEntry(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowFormEntryValue(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowFormRole(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowMacro(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowMacroRole(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowPriority(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowRole(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowStatus(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowStatusRole(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowXPath(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowXPathRole(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelRole(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelSynchronisationSchedule(List<ServiceToolDescriptor> tools);
+        static partial void AddExhaustiveSearchInstancePromotedTrialInstance(List<ServiceToolDescriptor> tools);
+        static partial void AddPermissionSpecification(List<ServiceToolDescriptor> tools);
+        static partial void AddRoleRegistry(List<ServiceToolDescriptor> tools);
+        static partial void AddRoleRegistryPermission(List<ServiceToolDescriptor> tools);
+        static partial void AddSanctionEntrySource(List<ServiceToolDescriptor> tools);
+        static partial void AddTenantRegistry(List<ServiceToolDescriptor> tools);
+        static partial void AddUserInTenant(List<ServiceToolDescriptor> tools);
+        static partial void AddUserRegistry(List<ServiceToolDescriptor> tools);
+        static partial void AddUserRegistryApiKey(List<ServiceToolDescriptor> tools);
+        static partial void AddVisualisationRegistry(List<ServiceToolDescriptor> tools);
+        static partial void AddVisualisationRegistryDatasource(List<ServiceToolDescriptor> tools);
+        static partial void AddVisualisationRegistryDatasourceRole(List<ServiceToolDescriptor> tools);
+        static partial void AddVisualisationRegistryDatasourceSeries(List<ServiceToolDescriptor> tools);
+        static partial void AddVisualisationRegistryParameter(List<ServiceToolDescriptor> tools);
+        static partial void AddVisualisationRegistryParameterRole(List<ServiceToolDescriptor> tools);
+        static partial void AddVisualisationRegistryRole(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseByCaseKeyValue(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseById(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseBySessionCaseSearchCompile(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseEventByCaseKeyValue(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseJournal(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseNoteByCaseKeyValue(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowFormEntryByCaseKeyValue(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelActivationRuleSuppressionQuery(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelSample(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelSuppressionQuery(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelSynchronisationNodeStatusEntries(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisPotentialMultiPartStringNames(List<ServiceToolDescriptor> tools);
+
+        static partial void AddEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType(
+            List<ServiceToolDescriptor> tools);
+
+        static partial void
+            AddExhaustiveSearchInstancePromotedTrialInstanceConfusion(List<ServiceToolDescriptor> tools);
+
+        static partial void AddExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram(
+            List<ServiceToolDescriptor> tools);
+
+        static partial void AddExhaustiveSearchInstancePromotedTrialInstanceLearningCurve(
+            List<ServiceToolDescriptor> tools);
+
+        static partial void AddExhaustiveSearchInstancePromotedTrialInstancePredictedActual(
+            List<ServiceToolDescriptor> tools);
+
+        static partial void AddExhaustiveSearchInstancePromotedTrialInstanceQuery(List<ServiceToolDescriptor> tools);
+        static partial void AddExhaustiveSearchInstancePromotedTrialInstanceRoc(List<ServiceToolDescriptor> tools);
+
+        static partial void AddExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription(
+            List<ServiceToolDescriptor> tools);
+
+        static partial void AddExhaustiveSearchInstanceTrialInstanceVariable(List<ServiceToolDescriptor> tools);
+        static partial void AddExhaustiveSearchInstanceTrialInstanceVariableVariance(List<ServiceToolDescriptor> tools);
+        static partial void AddExhaustiveSearchInstanceVariable(List<ServiceToolDescriptor> tools);
+        static partial void AddVisualisationRegistryDatasourceCommandExecution(List<ServiceToolDescriptor> tools);
+        static partial void AddTreeChildren(List<ServiceToolDescriptor> tools);
+        static partial void AddSessionCaseJournal(List<ServiceToolDescriptor> tools);
+        static partial void AddSessionCaseSearchCompiledSql(List<ServiceToolDescriptor> tools);
+        static partial void AddCompletions(List<ServiceToolDescriptor> tools);
+        static partial void AddIcons(List<ServiceToolDescriptor> tools);
+        static partial void AddParser(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowDisplayExecution(List<ServiceToolDescriptor> tools);
+        static partial void AddCaseWorkflowMacroExecution(List<ServiceToolDescriptor> tools);
+        static partial void AddRegisterSignalrConnection(List<ServiceToolDescriptor> tools);
     }
 }

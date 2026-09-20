@@ -19,16 +19,9 @@ namespace Jube.App.Middlewares
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Primitives;
 
-    public class ResponseHttpHeadersMiddleware
+    public class ResponseHttpHeadersMiddleware(RequestDelegate next, HttpHeadersFromDatabase httpHeadersFromDatabase)
     {
-        private readonly IReadOnlyDictionary<string, string> headersValue;
-        private readonly RequestDelegate next;
-
-        public ResponseHttpHeadersMiddleware(RequestDelegate next, HttpHeadersFromDatabase httpHeadersFromDatabase)
-        {
-            this.next = next;
-            headersValue = httpHeadersFromDatabase.HeaderValues;
-        }
+        private readonly IReadOnlyDictionary<string, string> headersValue = httpHeadersFromDatabase.HeaderValues;
 
         public Task InvokeAsync(HttpContext context)
         {

@@ -28,10 +28,16 @@ namespace Jube.Validations.EntityAnalysisModelTtlCounter
         private static readonly string[] allowedResolutionIntervals = ["n", "h", "d"];
 
         public EntityAnalysisModelTtlCounterDtoValidator(EntityAnalysisModelTtlCounterRepository repository,
-            IStringLocalizer localiser)
+            IStringLocalizer localiser,
+            EntityAnalysisModelRepository entityAnalysisModelRepository)
         {
             RuleFor(p => p.EntityAnalysisModelId)
+                .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
+                .WithMessage(_ => localiser[EntityAnalysisModelTtlCounterResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdInvalid")
+                .MustAsync(async (id, cancellation) =>
+                    await entityAnalysisModelRepository.GetByIdAsync(id, cancellation) != null)
                 .WithMessage(_ => localiser[EntityAnalysisModelTtlCounterResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
 
@@ -68,7 +74,7 @@ namespace Jube.Validations.EntityAnalysisModelTtlCounter
                 .WithErrorCode("TtlCounterIntervalInvalid");
 
             RuleFor(p => p.TtlCounterValue)
-                .GreaterThanOrEqualTo(0)
+                .Must((dto, value) => value >= 0 && value <= IntervalLimits.Max(dto.TtlCounterInterval))
                 .WithMessage(_ => localiser[EntityAnalysisModelTtlCounterResources.TtlCounterValueRange])
                 .WithErrorCode("TtlCounterValueRange");
 

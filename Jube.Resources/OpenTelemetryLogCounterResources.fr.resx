@@ -57,4 +57,7 @@
     <data name="RegexInvalid" xml:space="preserve">
     <value>L'expression régulière n'est pas valide.</value>
   </data>
+    <data name="RegexTooLong" xml:space="preserve">
+    <value>L'expression régulière doit comporter {0} caractères ou moins.</value>
+  </data>
 </root>

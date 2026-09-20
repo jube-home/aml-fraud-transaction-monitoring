@@ -42,6 +42,22 @@ namespace Jube.Data.Repository
             this.tenantRegistryId = tenantRegistryId;
         }
 
+        public Task<bool> ExistsCaseWorkflowActionAsync(Guid caseWorkflowActionGuid, CancellationToken token = default)
+        {
+            return dbContext.CaseWorkflowAction.AnyAsync(w =>
+                w.Guid == caseWorkflowActionGuid
+                && w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
+        public Task<bool> ExistsRoleRegistryAsync(Guid roleRegistryGuid, CancellationToken token = default)
+        {
+            return dbContext.RoleRegistry.AnyAsync(w =>
+                w.Guid == roleRegistryGuid
+                && w.TenantRegistryId == tenantRegistryId
+                && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<IEnumerable<CaseWorkflowActionRole>> GetAllDescAsync(CancellationToken token = default)
         {
             return await dbContext.CaseWorkflowActionRole
@@ -50,7 +66,8 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token);
         }
 
-        public Task<List<CaseWorkflowActionRole>> GetByCaseWorkflowActionGuidAsync(Guid caseWorkflowActionGuid, CancellationToken token = default)
+        public Task<List<CaseWorkflowActionRole>> GetByCaseWorkflowActionGuidAsync(Guid caseWorkflowActionGuid,
+            CancellationToken token = default)
         {
             return dbContext.CaseWorkflowActionRole.Where(w =>
                 w.CaseWorkflowAction.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
@@ -58,13 +75,42 @@ namespace Jube.Data.Repository
                 && (w.Deleted == 0 || w.Deleted == null)).ToListAsync(token);
         }
 
-        public async Task<CaseWorkflowActionRole> InsertAsync(CaseWorkflowActionRole model, CancellationToken token = default)
+        public async Task<CaseWorkflowActionRole> InsertAsync(CaseWorkflowActionRole model,
+            CancellationToken token = default)
         {
+            var duplicate = await dbContext.CaseWorkflowActionRole.FirstOrDefaultAsync(w =>
+                    w.CaseWorkflowActionGuid == model.CaseWorkflowActionGuid && w.RoleRegistryGuid ==
+                                                                             model.RoleRegistryGuid
+                                                                             && (w.Deleted == 0 || w.Deleted == null),
+                token);
+            if (duplicate != null)
+            {
+                return duplicate;
+            }
+
             model.CreatedUser = userName ?? model.CreatedUser;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
-            model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+            try
+            {
+                model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+            }
+            catch (Exception ex) when (GrantInsertion.IsUniqueViolation(ex))
+            {
+                var raced = await dbContext.CaseWorkflowActionRole.FirstOrDefaultAsync(w =>
+                        w.CaseWorkflowActionGuid == model.CaseWorkflowActionGuid && w.RoleRegistryGuid ==
+                        model.RoleRegistryGuid
+                        && (w.Deleted == 0 || w.Deleted == null),
+                    token);
+                if (raced == null)
+                {
+                    throw;
+                }
+
+                return raced;
+            }
+
             return model;
         }
 
@@ -85,11 +131,13 @@ namespace Jube.Data.Repository
             }
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.CaseWorkflowActionRole
                 .Where(d =>
-                    d.CaseWorkflowAction.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
+                    d.CaseWorkflowAction.CaseWorkflow.EntityAnalysisModel.TenantRegistryId ==
+                    tenantRegistryIdOutsideOfInstance
                     && (d.Deleted == 0 || d.Deleted == null))
                 .Set(s => s.ImportId, importId)
                 .Set(s => s.Deleted, Convert.ToByte(1))

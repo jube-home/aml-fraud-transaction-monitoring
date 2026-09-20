@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -51,6 +52,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                 "Sanctions Cache Loader: Has opened the database connection for retrieving the Sanctions Cache and Stop Tokens.");
                         }
 
+                        var changeMarker = await ReadChangeMarkerSafelyAsync(dbContext).ConfigureAwait(false);
+
                         await LoadSanctionsStopTokensAsync(context, dbContext).ConfigureAwait(false);
                         await LoadSanctionsEntriesAsync(context, dbContext).ConfigureAwait(false);
                         await LoadSanctionsFromFilesAsync(context, dbContext).ConfigureAwait(false);
@@ -67,8 +70,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                 "Sanctions Cache Loader: Has finished entries load,  close the database connection and is waiting.");
                         }
 
-                        await Task.Delay(Parse(context.Services.DynamicEnvironment.AppSettings("SanctionLoaderWait")),
-                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await WaitForNextCycleAsync(changeMarker).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -103,6 +105,114 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
         }
 
+        internal static int LightRefreshCount => Volatile.Read(ref lightRefreshCount);
+
+        private static int lightRefreshCount;
+
+        internal static Func<DbContext, CancellationToken, Task<string>> ChangeMarkerReader { get; set; } =
+            (dbContext, token) => new SanctionEntryImportRepository(dbContext).GetChangeMarkerAsync(token);
+
+        private async Task<string> ReadChangeMarkerSafelyAsync(DbContext dbContext)
+        {
+            try
+            {
+                return await ChangeMarkerReader(dbContext, context.Services.TaskCoordinator.CancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                context.Services.Log.Error($"Sanctions Cache Loader: could not read the import fingerprint {ex}");
+                return null;
+            }
+        }
+
+        private const int DefaultChangePollMilliseconds = 60000;
+
+        internal static int ResolveChangePollMilliseconds(string setting)
+        {
+            return TryParse(setting, out var value) && value > 0 ? value : DefaultChangePollMilliseconds;
+        }
+
+        private async Task WaitForNextCycleAsync(string lastMarker)
+        {
+            var token = context.Services.TaskCoordinator.CancellationToken;
+            var wait = Parse(context.Services.DynamicEnvironment.AppSettings("SanctionLoaderWait"));
+
+            if (!context.Services.DynamicEnvironment.AppSettings("EnableSanctionLoaderChangePoll")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                await Task.Delay(wait, token).ConfigureAwait(false);
+                return;
+            }
+
+            var poll = Math.Min(
+                ResolveChangePollMilliseconds(
+                    context.Services.DynamicEnvironment.AppSettings("SanctionLoaderChangePoll")),
+                wait);
+
+            var stopwatch = Stopwatch.StartNew();
+            while (stopwatch.ElapsedMilliseconds < wait)
+            {
+                var remaining = wait - (int)stopwatch.ElapsedMilliseconds;
+                await Task.Delay(Math.Min(poll, Math.Max(remaining, 0)), token).ConfigureAwait(false);
+
+                lastMarker = await RefreshWhenChangedAsync(lastMarker).ConfigureAwait(false);
+            }
+        }
+
+        private async Task<string> RefreshWhenChangedAsync(string lastMarker)
+        {
+            var token = context.Services.TaskCoordinator.CancellationToken;
+            DbContext dbContext = null;
+            try
+            {
+                dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                    context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+
+                var marker = await ChangeMarkerReader(dbContext, token).ConfigureAwait(false);
+                if (marker == lastMarker)
+                {
+                    return lastMarker;
+                }
+
+                await LoadSanctionsStopTokensAsync(context, dbContext).ConfigureAwait(false);
+                await LoadSanctionsEntriesAsync(context, dbContext).ConfigureAwait(false);
+                Interlocked.Increment(ref lightRefreshCount);
+
+                if (context.Services.Log.IsInfoEnabled)
+                {
+                    context.Services.Log.Info(
+                        $"Sanctions Cache Loader: A new import was seen ({marker}), the cache now holds {context.Sanctions.SanctionsEntries.Count} entries.");
+                }
+
+                return marker;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                context.Services.Log.Error($"Sanctions Cache Loader: the change poll has produced an error {ex}");
+                return lastMarker;
+            }
+            finally
+            {
+                if (dbContext != null)
+                {
+                    try
+                    {
+                        await dbContext.CloseAsync(token).ConfigureAwait(false);
+                        await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                    }
+                    // ReSharper disable once EmptyGeneralCatchClause
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+        }
+
         private static async Task LoadSanctionsEntriesAsync(Context.Context context, DbContext dbContext)
         {
             try
@@ -124,15 +234,21 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         "Sanctions Cache Loader: Has executed a reader to return all entries from the Sanctions Cache.");
                 }
 
+                var liveIds = new HashSet<int>();
                 foreach (var record in records)
                 {
                     context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
+                    liveIds.Add(record.Id);
 
                     try
                     {
-                        if (context.Sanctions.SanctionsEntries.ContainsKey(record.Id))
+                        if (context.Sanctions.SanctionsEntries.TryGetValue(record.Id, out var existing))
                         {
-                            continue;
+                            if (existing.SanctionEntrySourceId == (record.SanctionEntrySourceId ?? 0) &&
+                                existing.SanctionEntryReference == (record.SanctionEntryReference ?? "NA"))
+                            {
+                                continue;
+                            }
                         }
 
                         var sanctionEntry = new SanctionEntry
@@ -150,12 +266,17 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                         sanctionEntry.SanctionEntryId = record.Id;
 
-                        context.Sanctions.SanctionsEntries.TryAdd(sanctionEntry.SanctionEntryId, sanctionEntry);
+                        context.Sanctions.SanctionsEntries[sanctionEntry.SanctionEntryId] = sanctionEntry;
                     }
                     catch (Exception ex) when (ex is not OperationCanceledException)
                     {
                         context.Services.Log.Error($"Sanctions Cache Loader: Error loading a hash value {ex}");
                     }
+                }
+
+                foreach (var cachedId in context.Sanctions.SanctionsEntries.Keys.Where(id => !liveIds.Contains(id)))
+                {
+                    context.Sanctions.SanctionsEntries.TryRemove(cachedId, out _);
                 }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)

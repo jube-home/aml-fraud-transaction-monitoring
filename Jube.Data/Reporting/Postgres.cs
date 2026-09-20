@@ -13,6 +13,7 @@
 
 namespace Jube.Data.Reporting
 {
+    using Jube.Data.Reporting.Models;
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -32,13 +33,51 @@ namespace Jube.Data.Reporting
     public class Postgres : IDisposable
     {
         private readonly ResilientNpgsqlConnection connection;
+        private readonly bool blockProtectedRelations;
         private readonly bool parserAssertSelectOnly;
         private bool disposed;
 
-        public Postgres(string connectionString, ILog log, bool parserAssertSelectOnly)
+        public static int StatementTimeoutSeconds { get; set; } = 30;
+
+        public const int MaximumRows = 100000;
+
+        private static string GuardedConnectionString(string connectionString, bool guarded)
+        {
+            if (!guarded)
+            {
+                return connectionString;
+            }
+
+            var builder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);
+            var settings =
+                $"-c default_transaction_read_only=on -c statement_timeout={StatementTimeoutSeconds * 1000} -c lock_timeout=5000";
+            builder.Options = string.IsNullOrWhiteSpace(builder.Options) ? settings : builder.Options + " " + settings;
+            return builder.ConnectionString;
+        }
+
+        private async Task<GuardScope> BeginGuardAsync(CancellationToken token)
+        {
+            if (!parserAssertSelectOnly)
+            {
+                return new GuardScope(null);
+            }
+
+            await using (var begin = new ResilientNpgsqlCommand(connection,
+                             $"BEGIN READ ONLY; SET LOCAL statement_timeout = {StatementTimeoutSeconds * 1000}; SET LOCAL lock_timeout = 5000"))
+            {
+                await begin.ExecuteNonQueryAsync(token).ConfigureAwait(false);
+            }
+
+            return new GuardScope(connection);
+        }
+
+        public Postgres(string connectionString, ILog log, bool parserAssertSelectOnly,
+            bool blockProtectedRelations = false)
         {
             this.parserAssertSelectOnly = parserAssertSelectOnly;
-            connection = new ResilientNpgsqlConnection(connectionString, log);
+            this.blockProtectedRelations = blockProtectedRelations;
+            connection =
+                new ResilientNpgsqlConnection(GuardedConnectionString(connectionString, parserAssertSelectOnly), log);
             try
             {
                 connection.Open();
@@ -61,17 +100,21 @@ namespace Jube.Data.Reporting
             connection.Dispose();
         }
 
-        public async Task<Dictionary<string, string>> IntrospectAsync(string sql, Dictionary<string, object> parameters, CancellationToken token = default)
+        public async Task<Dictionary<string, string>> IntrospectAsync(string sql, Dictionary<string, object> parameters,
+            CancellationToken token = default)
         {
             var values = new Dictionary<string, string>();
             var wrapSql = $"SELECT * FROM ({sql}) b LIMIT 0";
 
             if (parserAssertSelectOnly)
             {
-                PostgresSqlValidator.AssertSelectOnly(wrapSql);
+                PostgresSqlValidator.AssertSelectOnly(wrapSql, blockProtectedRelations);
             }
 
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
             await using var command = new ResilientNpgsqlCommand(connection, wrapSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
 
             foreach (var (key, value) in parameters.Where(parameter => sql.Contains("@" + parameter.Key)))
             {
@@ -90,17 +133,21 @@ namespace Jube.Data.Reporting
             return values;
         }
 
-        public async Task<Dictionary<string, string>> IntrospectAsync(string sql, List<object> parameters, CancellationToken token = default)
+        public async Task<Dictionary<string, string>> IntrospectAsync(string sql, List<object> parameters,
+            CancellationToken token = default)
         {
             var values = new Dictionary<string, string>();
             var wrapSql = $"SELECT * FROM ({sql}) b LIMIT 0";
 
             if (parserAssertSelectOnly)
             {
-                PostgresSqlValidator.AssertSelectOnly(wrapSql);
+                PostgresSqlValidator.AssertSelectOnly(wrapSql, blockProtectedRelations);
             }
 
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
             await using var command = new ResilientNpgsqlCommand(connection, wrapSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
 
             for (var i = 0; i < parameters.Count; i++)
             {
@@ -123,10 +170,13 @@ namespace Jube.Data.Reporting
         {
             if (parserAssertSelectOnly)
             {
-                PostgresSqlValidator.AssertSelectOnly(sql);
+                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
             }
 
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
             await using var command = new ResilientNpgsqlCommand(connection, sql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
 
             for (var i = 0; i < parameters.Count; i++)
             {
@@ -151,15 +201,18 @@ namespace Jube.Data.Reporting
 
             var dynamicGatedSql =
                 $"select \"Json\" from \"{tableName}\" where \"EntityAnalysisModelId\" = (@{tokens.Count - 1})"
-                + " and " + sql
-                + $" order by \"EntityAnalysisModelInstanceEntryGuid\" limit (@{limit})";
+                + " and (" + sql + ")"
+                + $" order by \"EntityAnalysisModelInstanceEntryGuid\" limit (@{tokens.Count})";
 
             if (parserAssertSelectOnly)
             {
-                PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql);
+                PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql, blockProtectedRelations);
             }
 
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
             await using var command = new ResilientNpgsqlCommand(connection, dynamicGatedSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
 
             for (var i = 0; i < tokens.Count; i++)
             {
@@ -193,10 +246,13 @@ namespace Jube.Data.Reporting
 
             if (parserAssertSelectOnly)
             {
-                PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql);
+                PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql, blockProtectedRelations);
             }
 
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
             await using var command = new ResilientNpgsqlCommand(connection, dynamicGatedSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
             command.Parameters.AddWithValue("@entityAnalysisModelId", entityAnalysisModelId);
             command.Parameters.AddWithValue("@sample", sample);
             command.Parameters.AddWithValue("@dateFrom", dateFrom ?? DateTime.UtcNow);
@@ -221,10 +277,13 @@ namespace Jube.Data.Reporting
         {
             if (parserAssertSelectOnly)
             {
-                PostgresSqlValidator.AssertSelectOnly(sql);
+                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
             }
 
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
             await using var command = new ResilientNpgsqlCommand(connection, sql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
 
             command.Parameters.AddWithValue("adjustedStartDate", adjustedStartDate);
             command.Parameters.AddWithValue("limit", limit);
@@ -275,6 +334,10 @@ namespace Jube.Data.Reporting
                 }
 
                 value.Add(dictionaryNoBoxing);
+                if (value.Count > MaximumRows)
+                {
+                    throw new InvalidOperationException("The result exceeds the maximum number of rows permitted.");
+                }
             }
 
             return value;
@@ -285,10 +348,13 @@ namespace Jube.Data.Reporting
         {
             if (parserAssertSelectOnly)
             {
-                PostgresSqlValidator.AssertSelectOnly(sql);
+                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
             }
 
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
             await using var command = new ResilientNpgsqlCommand(connection, sql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
 
             foreach (var (key, o) in parameters)
             {
@@ -305,11 +371,16 @@ namespace Jube.Data.Reporting
                 {
                     if (!eo.ContainsKey(reader.GetName(index)))
                     {
-                        eo.Add(reader.GetName(index), await reader.IsDBNullAsync(index, token) ? null : reader.GetValue(index));
+                        eo.Add(reader.GetName(index),
+                            await reader.IsDBNullAsync(index, token) ? null : reader.GetValue(index));
                     }
                 }
 
                 value.Add(eo);
+                if (value.Count > MaximumRows)
+                {
+                    throw new InvalidOperationException("The result exceeds the maximum number of rows permitted.");
+                }
             }
 
             return value;
@@ -320,10 +391,13 @@ namespace Jube.Data.Reporting
         {
             if (parserAssertSelectOnly)
             {
-                PostgresSqlValidator.AssertSelectOnly(sql);
+                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
             }
 
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
             await using var command = new ResilientNpgsqlCommand(connection, sql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
 
             for (var i = 0; i < parameters.Count; i++)
             {
@@ -340,11 +414,16 @@ namespace Jube.Data.Reporting
                 {
                     if (!eo.ContainsKey(reader.GetName(index)))
                     {
-                        eo.Add(reader.GetName(index), await reader.IsDBNullAsync(index, token) ? null : reader.GetValue(index));
+                        eo.Add(reader.GetName(index),
+                            await reader.IsDBNullAsync(index, token) ? null : reader.GetValue(index));
                     }
                 }
 
                 value.Add(eo);
+                if (value.Count > MaximumRows)
+                {
+                    throw new InvalidOperationException("The result exceeds the maximum number of rows permitted.");
+                }
             }
 
             return value;
@@ -355,10 +434,13 @@ namespace Jube.Data.Reporting
         {
             if (parserAssertSelectOnly)
             {
-                PostgresSqlValidator.AssertSelectOnly(sql);
+                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
             }
 
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
             await using var command = new ResilientNpgsqlCommand(connection, sql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
 
             for (var i = 0; i < parameters.Count; i++)
             {

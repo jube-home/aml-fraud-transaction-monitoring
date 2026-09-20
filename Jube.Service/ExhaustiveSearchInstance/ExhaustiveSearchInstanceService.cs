@@ -77,7 +77,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("ExhaustiveSearchInstance.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[ExhaustiveSearchInstanceResources.NotAuthenticated]);
             }
@@ -88,7 +90,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn($"ExhaustiveSearchInstance.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[ExhaustiveSearchInstanceResources.NotAuthenticated]);
             }
@@ -107,7 +111,10 @@ namespace Jube.Service.ExhaustiveSearchInstance
         {
             using var op = OperationScope.Start("ExhaustiveSearchInstance", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"ExhaustiveSearchInstance.List: entry user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"ExhaustiveSearchInstance.List: entry user={userName}");
+            }
 
             try
             {
@@ -116,7 +123,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"ExhaustiveSearchInstance.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -129,7 +138,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"ExhaustiveSearchInstance.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -153,8 +164,10 @@ namespace Jube.Service.ExhaustiveSearchInstance
             using var op = OperationScope.Start("ExhaustiveSearchInstance", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"ExhaustiveSearchInstance.ListByEntityAnalysisModelId: entry entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+            }
 
             try
             {
@@ -164,8 +177,10 @@ namespace Jube.Service.ExhaustiveSearchInstance
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"ExhaustiveSearchInstance.ListByEntityAnalysisModelId: {dtos.Count} rows entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 return dtos;
             }
@@ -178,8 +193,10 @@ namespace Jube.Service.ExhaustiveSearchInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"ExhaustiveSearchInstance.ListByEntityAnalysisModelId: cancelled entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 throw;
             }
@@ -204,7 +221,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             using var op = OperationScope.Start("ExhaustiveSearchInstance", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"ExhaustiveSearchInstance.Get: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -213,8 +232,10 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 if (exhaustiveSearchInstance == null)
                 {
                     if (log.IsDebugEnabled)
+                    {
                         log.Debug(
                             $"ExhaustiveSearchInstance.Get: id={id} not found or not visible to tenant user={userName}");
+                    }
 
                     return null;
                 }
@@ -231,7 +252,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"ExhaustiveSearchInstance.Get: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -258,8 +281,10 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"ExhaustiveSearchInstance.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -285,7 +310,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"ExhaustiveSearchInstance.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -309,19 +336,24 @@ namespace Jube.Service.ExhaustiveSearchInstance
             using var op = OperationScope.Start("ExhaustiveSearchInstance", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"ExhaustiveSearchInstance.Create: entry user={userName} name={model?.Name}");
+            }
 
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
+                model.Id = 0;
                 EnsurePermitted(writePermissions, "ExhaustiveSearchInstance.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"ExhaustiveSearchInstance.Create: validation failed user={userName} " +
                                  $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -335,9 +367,11 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"ExhaustiveSearchInstance.Create: created Id={saved.Id} name={saved.Name} " +
                         $"user={userName}");
+                }
 
                 return saved;
             }
@@ -355,7 +389,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"ExhaustiveSearchInstance.Create: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -382,7 +418,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             using var op = OperationScope.Start("ExhaustiveSearchInstance", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"ExhaustiveSearchInstance.Update: entry id={model?.Id} user={userName}");
+            }
 
             try
             {
@@ -393,8 +431,10 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"ExhaustiveSearchInstance.Update: validation failed id={model.Id} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -409,9 +449,11 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"ExhaustiveSearchInstance.Update: id={model.Id} not found, locked, deleted, already " +
                             $"picked up for training, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Exhaustive Adaptation was not found.", ex);
                 }
@@ -421,8 +463,10 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"ExhaustiveSearchInstance.Update: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
 
                 return saved;
             }
@@ -445,7 +489,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"ExhaustiveSearchInstance.Update: cancelled id={model?.Id} user={userName}");
+                }
 
                 throw;
             }
@@ -471,7 +517,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             using var op = OperationScope.Start("ExhaustiveSearchInstance", "Stop", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"ExhaustiveSearchInstance.Stop: entry guid={guid} user={userName}");
+            }
 
             try
             {
@@ -482,7 +530,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"ExhaustiveSearchInstance.Stop: requested stop guid={guid} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -493,7 +543,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"ExhaustiveSearchInstance.Stop: cancelled guid={guid} user={userName}");
+                }
 
                 throw;
             }
@@ -518,7 +570,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             using var op = OperationScope.Start("ExhaustiveSearchInstance", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"ExhaustiveSearchInstance.Delete: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -531,8 +585,10 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"ExhaustiveSearchInstance.Delete: id={id} not found, locked, already deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Exhaustive Adaptation was not found.", ex);
                 }
@@ -541,7 +597,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
                 op.Deleted();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"ExhaustiveSearchInstance.Delete: soft-deleted Id={id} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -557,7 +615,9 @@ namespace Jube.Service.ExhaustiveSearchInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"ExhaustiveSearchInstance.Delete: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -572,10 +632,15 @@ namespace Jube.Service.ExhaustiveSearchInstance
 
         private void EnsurePermitted(int[] specs, string op)
         {
-            if (permissionValidation.Validate(specs)) return;
+            if (permissionValidation.Validate(specs))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", specs)}]");
+            }
 
             throw new ForbiddenException(strings[ExhaustiveSearchInstanceResources.PermissionDenied], specs);
         }

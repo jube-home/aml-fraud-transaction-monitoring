@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas la permission d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un tenant pour effectuer cette action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Le XPath du flux de travail n'a pas été trouvé.</value>
+  </data>
+    <data name="CaseWorkflowIdInvalid" xml:space="preserve">
+    <value>Un flux de travail parent valide est requis.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>Le flux de travail référencé n'a pas été trouvé dans votre tenant.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Le nom est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom ne peut pas dépasser {0} caractères.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="XPathRequired" xml:space="preserve">
+    <value>Le champ est requis.</value>
+  </data>
+    <data name="XPathMaxLength" xml:space="preserve">
+    <value>Le champ ne peut pas dépasser {0} caractères.</value>
+  </data>
+    <data name="ColorMaxLength" xml:space="preserve">
+    <value>La couleur ne peut pas dépasser {0} caractères.</value>
+  </data>
+    <data name="BoldLineFormatForeColorRequired" xml:space="preserve">
+    <value>La couleur de premier plan de la ligne en gras est requise lorsque Bold Line Matched est activé.</value>
+  </data>
+    <data name="BoldLineFormatBackColorRequired" xml:space="preserve">
+    <value>La couleur d'arrière-plan de la ligne en gras est requise lorsque Bold Line Matched est activé.</value>
+  </data>
+    <data name="RegularExpressionRequired" xml:space="preserve">
+    <value>L'expression régulière est requise lorsque le formatage conditionnel est activé.</value>
+  </data>
+    <data name="RegularExpressionMaxLength" xml:space="preserve">
+    <value>L'expression régulière ne peut pas dépasser {0} caractères.</value>
+  </data>
+    <data name="ConditionalFormatForeColorRequired" xml:space="preserve">
+    <value>La couleur de premier plan du formatage conditionnel est requise lorsque le formatage conditionnel est activé.</value>
+  </data>
+    <data name="ConditionalFormatBackColorRequired" xml:space="preserve">
+    <value>La couleur d'arrière-plan du formatage conditionnel est requise lorsque le formatage conditionnel est activé.</value>
+  </data>
+    <data name="ColorInvalid" xml:space="preserve">
+    <value>La couleur doit être une valeur hexadécimale telle que #FF0000, un nom de couleur ou une valeur rgb().</value>
+  </data>
+</root>

@@ -26,11 +26,15 @@ namespace Jube.Data.Repository
 
     public class ArchiveTagRepository(DbContext dbContext, string userName)
     {
-        public async Task MergeTagsAsync(Guid entityAnalysisModelInstanceEntryGuid, string[] tags, CancellationToken token = default)
+        public async Task MergeTagsAsync(Guid entityAnalysisModelInstanceEntryGuid, string[] tags,
+            CancellationToken token = default)
         {
             await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
             try
             {
+                await LinqToDB.Data.DataConnectionExtensions.ExecuteAsync(dbContext,
+                    "SELECT pg_advisory_xact_lock(hashtext(@guid))", token,
+                    new LinqToDB.Data.DataParameter("guid", entityAnalysisModelInstanceEntryGuid.ToString()));
                 var archiveTags = new List<ArchiveTag>();
                 foreach (var tag in tags.Distinct())
                 {
@@ -45,7 +49,8 @@ namespace Jube.Data.Repository
                     await UpsertAsync(archiveTag, token).ConfigureAwait(false);
                 }
 
-                await DeleteWhereNotInListAsync(entityAnalysisModelInstanceEntryGuid, archiveTags, token).ConfigureAwait(false);
+                await DeleteWhereNotInListAsync(entityAnalysisModelInstanceEntryGuid, archiveTags, token)
+                    .ConfigureAwait(false);
 
                 await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);
             }
@@ -75,8 +80,9 @@ namespace Jube.Data.Repository
         private async Task UpsertAsync(ArchiveTag model, CancellationToken token = default)
         {
             var existing = await dbContext.ArchiveTag
-                .FirstOrDefaultAsync(f => f.EntityAnalysisModelInstanceEntryGuid == model.EntityAnalysisModelInstanceEntryGuid
-                                          && f.Name == model.Name, token);
+                .FirstOrDefaultAsync(f =>
+                    f.EntityAnalysisModelInstanceEntryGuid == model.EntityAnalysisModelInstanceEntryGuid
+                    && f.Name == model.Name, token);
 
             if (existing == null)
             {
@@ -90,10 +96,8 @@ namespace Jube.Data.Repository
 
                 await dbContext.UpdateAsync(model, token: token);
 
-                var mapper = new Mapper(new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<ArchiveTag, ArchiveTagVersion>();
-                }, NullLoggerFactory.Instance));
+                var mapper = new Mapper(new MapperConfiguration(
+                    cfg => { cfg.CreateMap<ArchiveTag, ArchiveTagVersion>(); }, NullLoggerFactory.Instance));
 
                 var audit = mapper.Map<ArchiveTagVersion>(existing);
                 audit.ArchiveTagId = existing.Id;

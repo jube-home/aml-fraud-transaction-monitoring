@@ -58,7 +58,8 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelInlineScriptRepository(dbContext, userName);
             validator = new EntityAnalysisModelInlineScriptDtoValidator(repository,
-                new EntityAnalysisInlineScriptRepository(dbContext), strings);
+                new EntityAnalysisInlineScriptRepository(dbContext), strings,
+                new EntityAnalysisModelRepository(dbContext, userName));
         }
 
         public static Task<EntityAnalysisModelInlineScriptService> CreateAsync(DbContext dbContext,
@@ -78,7 +79,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("EntityAnalysisModelInlineScript.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(
                     strings[EntityAnalysisModelInlineScriptResources.NotAuthenticated]);
@@ -90,8 +93,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn(
                         $"EntityAnalysisModelInlineScript.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(
                     strings[EntityAnalysisModelInlineScriptResources.NotAuthenticated]);
@@ -111,7 +116,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelInlineScript.List: entry user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineScript.List: entry user={userName}");
+            }
 
             try
             {
@@ -120,7 +128,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelInlineScript.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -132,7 +142,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelInlineScript.List: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelInlineScript.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -156,8 +169,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "ListByEntityAnalysisModelId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelInlineScript.ListByEntityAnalysisModelId: entry entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+            }
 
             try
             {
@@ -166,8 +181,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                     .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelInlineScript.ListByEntityAnalysisModelId: {dtos.Count} rows entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 return dtos;
             }
@@ -180,8 +197,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelInlineScript.ListByEntityAnalysisModelId: cancelled entityAnalysisModelId={entityAnalysisModelId} user={userName}");
+                }
 
                 throw;
             }
@@ -205,7 +224,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
         {
             using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelInlineScript.Get: entry id={id} user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineScript.Get: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -214,8 +236,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 if (inlineScript == null)
                 {
                     if (log.IsDebugEnabled)
+                    {
                         log.Debug(
                             $"EntityAnalysisModelInlineScript.Get: id={id} not found or not visible to tenant user={userName}");
+                    }
 
                     return null;
                 }
@@ -232,7 +256,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelInlineScript.Get: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -259,8 +285,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelInlineScript.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -287,7 +315,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelInlineScript.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -310,7 +340,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelInlineScript.Create: entry user={userName} name={model?.Name}");
+            }
 
             try
             {
@@ -321,8 +353,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelInlineScript.Create: validation failed user={userName} " +
                                  $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -335,8 +369,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelInlineScript.Create: created Id={saved.Id} name={saved.Name} " +
                              $"user={userName}");
+                }
 
                 return saved;
             }
@@ -354,7 +390,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelInlineScript.Create: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -381,7 +419,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelInlineScript.Update: entry id={model?.Id} user={userName}");
+            }
 
             try
             {
@@ -392,8 +432,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelInlineScript.Update: validation failed id={model.Id} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -407,8 +449,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelInlineScript.Update: id={model.Id} not found, locked, deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Inline Script registration was not found.", ex);
                 }
@@ -418,8 +462,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelInlineScript.Update: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
 
                 return saved;
             }
@@ -442,7 +488,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelInlineScript.Update: cancelled id={model?.Id} user={userName}");
+                }
 
                 throw;
             }
@@ -469,7 +517,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelInlineScript.Delete: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -482,8 +532,10 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelInlineScript.Delete: id={id} not found, locked, already deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Inline Script registration was not found.", ex);
                 }
@@ -492,7 +544,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 op.Deleted();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelInlineScript.Delete: soft-deleted Id={id} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -508,7 +562,9 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelInlineScript.Delete: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -522,10 +578,15 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
 
         private void EnsurePermitted(int[] specs, string op)
         {
-            if (permissionValidation.Validate(specs)) return;
+            if (permissionValidation.Validate(specs))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", specs)}]");
+            }
 
             throw new ForbiddenException(strings[EntityAnalysisModelInlineScriptResources.PermissionDenied], specs);
         }

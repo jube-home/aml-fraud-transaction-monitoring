@@ -129,7 +129,8 @@ comma and a Delete Expiry Date. The Delete Expiry Date must be in .NET's round-t
 ambiguity inherent in free-form date parsing of a text file. Where the Delete Expiry Date is omitted or left blank, the
 List Value never expires. A template CSV file, illustrating both a List Value with no expiry and one with a Delete
 Expiry Date, can be downloaded directly from the List page using the Download CSV Template link found next to the Select
-Files control.
+Files control. A blank value, one longer than 512 characters, or a line the database rejects is logged and skipped, and
+the remaining lines are still imported.
 
 The control to upload a file is the button Select Files:
 

@@ -30,7 +30,8 @@ namespace Jube.Service.ContainerLogEntry
     public sealed class ContainerLogEntryService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -160,7 +161,8 @@ namespace Jube.Service.ContainerLogEntry
 
                 var dtos = rows.Select(r => new ContainerLogEntryDto(
                     r.Id, r.OccurredDate.GetValueOrDefault(), r.ContainerName, r.StreamTypeId.GetValueOrDefault(),
-                    DescribeStreamType((ContainerLogStreamType)r.StreamTypeId.GetValueOrDefault()), r.Message,
+                    DescribeStreamType((ContainerLogStreamType)r.StreamTypeId.GetValueOrDefault()),
+                    LogTextRedactor.Redact(r.Message),
                     r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
 
                 var total = await repository.CountAsync(from, to, streamTypeId, search, clampedSamplePercentage,
@@ -214,14 +216,14 @@ namespace Jube.Service.ContainerLogEntry
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[ContainerLogEntryResources.PermissionDenied], permissions);

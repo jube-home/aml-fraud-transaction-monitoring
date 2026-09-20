@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
 namespace Jube.Data.Security
 {
     using System;
@@ -70,6 +71,7 @@ namespace Jube.Data.Security
                     "and (rr.\"Deleted\" = 0 or rr.\"Deleted\" IS NULL) " +
                     "and (rrp.\"Deleted\" = 0 or rrp.\"Deleted\" IS NULL) " +
                     "and (ur.\"PasswordLocked\" = 0 or ur.\"PasswordLocked\" IS NULL) " +
+                    "and (ur.\"Deleted\" = 0 or ur.\"Deleted\" IS NULL) " +
                     "and ur.\"Name\" = @userName";
 
                 var p = command.CreateParameter();
@@ -98,6 +100,8 @@ namespace Jube.Data.Security
                 "inner join \"UserRegistry\" ur on ur.\"RoleRegistryGuid\" = rr.\"Guid\" " +
                 "where ur.\"Name\" = @userName " +
                 "and ur.\"Active\" = 1 " +
+                "and (ur.\"PasswordLocked\" = 0 or ur.\"PasswordLocked\" IS NULL) " +
+                "and (ur.\"Deleted\" = 0 or ur.\"Deleted\" IS NULL) " +
                 "and (rr.\"Deleted\" = 0 or rr.\"Deleted\" IS NULL) " +
                 "and tr.\"Active\" = 1 " +
                 "order by tr.\"Id\"";

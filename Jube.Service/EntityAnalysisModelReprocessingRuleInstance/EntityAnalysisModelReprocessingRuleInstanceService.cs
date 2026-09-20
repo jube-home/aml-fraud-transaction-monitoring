@@ -76,7 +76,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("EntityAnalysisModelReprocessingRuleInstance.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(
                     strings[EntityAnalysisModelReprocessingRuleInstanceResources.NotAuthenticated]);
@@ -88,8 +90,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn(
                         $"EntityAnalysisModelReprocessingRuleInstance.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(
                     strings[EntityAnalysisModelReprocessingRuleInstanceResources.NotAuthenticated]);
@@ -111,7 +115,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelReprocessingRuleInstance.List: entry user={userName}");
+            }
 
             try
             {
@@ -120,7 +126,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -133,7 +141,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -160,8 +170,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 "ListByEntityAnalysisModelReprocessingId", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelReprocessingRuleInstance.ListByEntityAnalysisModelReprocessingId: entry entityAnalysisModelReprocessingId={entityAnalysisModelReprocessingId} user={userName}");
+            }
 
             try
             {
@@ -171,8 +183,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelReprocessingRuleInstance.ListByEntityAnalysisModelReprocessingId: {dtos.Count} rows entityAnalysisModelReprocessingId={entityAnalysisModelReprocessingId} user={userName}");
+                }
 
                 return dtos;
             }
@@ -185,8 +199,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelReprocessingRuleInstance.ListByEntityAnalysisModelReprocessingId: cancelled entityAnalysisModelReprocessingId={entityAnalysisModelReprocessingId} user={userName}");
+                }
 
                 throw;
             }
@@ -211,7 +227,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Get: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -220,8 +238,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 if (reprocessingRuleInstance == null)
                 {
                     if (log.IsDebugEnabled)
+                    {
                         log.Debug(
                             $"EntityAnalysisModelReprocessingRuleInstance.Get: id={id} not found or not visible to tenant user={userName}");
+                    }
 
                     return null;
                 }
@@ -238,7 +258,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Get: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -267,8 +289,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelReprocessingRuleInstance.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -295,7 +319,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -321,8 +347,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelReprocessingRuleInstance.Create: entry user={userName} entityAnalysisModelReprocessingRuleId={model?.EntityAnalysisModelReprocessingRuleId}");
+            }
 
             try
             {
@@ -333,9 +361,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelReprocessingRuleInstance.Create: validation failed user={userName} " +
                             $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -349,9 +379,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelReprocessingRuleInstance.Create: created Id={saved.Id} " +
                         $"entityAnalysisModelReprocessingRuleId={saved.EntityAnalysisModelReprocessingRuleId} user={userName}");
+                }
 
                 return saved;
             }
@@ -369,7 +401,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Create: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -396,8 +430,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance",
                 "CreateByExistingUpdateUncompleted", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelReprocessingRuleInstance.CreateByExistingUpdateUncompleted: entry user={userName} entityAnalysisModelReprocessingRuleId={model?.EntityAnalysisModelReprocessingRuleId}");
+            }
 
             try
             {
@@ -408,9 +444,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelReprocessingRuleInstance.CreateByExistingUpdateUncompleted: validation failed user={userName} " +
                             $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -426,8 +464,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelReprocessingRuleInstance.CreateByExistingUpdateUncompleted: entityAnalysisModelReprocessingRuleId={model.EntityAnalysisModelReprocessingRuleId} already has an uncompleted instance user={userName}");
+                    }
 
                     throw new ConflictException(
                         strings[EntityAnalysisModelReprocessingRuleInstanceResources.AlreadyHasActiveInstance], ex);
@@ -438,9 +478,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelReprocessingRuleInstance.CreateByExistingUpdateUncompleted: created Id={saved.Id} " +
                         $"entityAnalysisModelReprocessingRuleId={saved.EntityAnalysisModelReprocessingRuleId} user={userName}");
+                }
 
                 return saved;
             }
@@ -463,8 +505,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelReprocessingRuleInstance.CreateByExistingUpdateUncompleted: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -493,8 +537,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelReprocessingRuleInstance.Update: entry id={model?.Id} user={userName}");
+            }
 
             try
             {
@@ -505,9 +551,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelReprocessingRuleInstance.Update: validation failed id={model.Id} " +
                             $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -522,8 +570,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelReprocessingRuleInstance.Update: id={model.Id} not found, deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Reprocessing Rule instance was not found.", ex);
                 }
@@ -533,8 +583,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelReprocessingRuleInstance.Update: superseded Id={model.Id} with new Id={saved.Id} version->{saved.Version} user={userName}");
+                }
 
                 return saved;
             }
@@ -557,8 +609,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelReprocessingRuleInstance.Update: cancelled id={model?.Id} user={userName}");
+                }
 
                 throw;
             }
@@ -583,7 +637,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Delete: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -596,8 +652,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelReprocessingRuleInstance.Delete: id={id} not found, already deleted, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Reprocessing Rule instance was not found.", ex);
                 }
@@ -606,8 +664,10 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 op.Deleted();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelReprocessingRuleInstance.Delete: soft-deleted Id={id} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -623,7 +683,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelReprocessingRuleInstance.Delete: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -639,10 +701,15 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions)) return;
+            if (permissionValidation.Validate(permissions))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+            }
 
             throw new ForbiddenException(
                 strings[EntityAnalysisModelReprocessingRuleInstanceResources.PermissionDenied], permissions);

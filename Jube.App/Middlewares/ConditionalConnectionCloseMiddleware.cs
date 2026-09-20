@@ -16,15 +16,8 @@ namespace Jube.App.Middlewares
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
 
-    public class ConditionalConnectionCloseMiddleware
+    public class ConditionalConnectionCloseMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate next;
-
-        public ConditionalConnectionCloseMiddleware(RequestDelegate next)
-        {
-            this.next = next;
-        }
-
         public Task InvokeAsync(HttpContext context)
         {
             context.Response.OnStarting(() =>

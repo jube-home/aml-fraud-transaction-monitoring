@@ -26,6 +26,7 @@ namespace Jube.Resources
         public const string BuilderRuleScriptRequired = nameof(BuilderRuleScriptRequired);
         public const string BuilderRuleScriptMaxLength = nameof(BuilderRuleScriptMaxLength);
         public const string JsonRequired = nameof(JsonRequired);
+        public const string JsonInvalid = nameof(JsonInvalid);
         public const string CoderRuleScriptRequired = nameof(CoderRuleScriptRequired);
         public const string CoderRuleScriptMaxLength = nameof(CoderRuleScriptMaxLength);
         public const string ReprocessingSampleRange = nameof(ReprocessingSampleRange);

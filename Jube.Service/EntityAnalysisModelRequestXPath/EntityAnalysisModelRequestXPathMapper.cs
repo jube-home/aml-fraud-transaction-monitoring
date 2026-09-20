@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Data.Poco;
 using Jube.Dto.EntityAnalysisModelRequestXPath;
 
@@ -20,6 +21,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
 
     internal static class EntityAnalysisModelRequestXPathMapper
     {
+        [return: NotNullIfNotNull(nameof(requestXPath))]
         public static EntityAnalysisModelRequestXPathDto? ToDto(RequestXPathPoco? requestXPath)
         {
             return requestXPath is null
@@ -62,7 +64,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
 
         public static List<EntityAnalysisModelRequestXPathDto> ToDto(IEnumerable<RequestXPathPoco>? source)
         {
-            return (source ?? Enumerable.Empty<RequestXPathPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<RequestXPathPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static RequestXPathPoco ToPoco(EntityAnalysisModelRequestXPathDto dto)

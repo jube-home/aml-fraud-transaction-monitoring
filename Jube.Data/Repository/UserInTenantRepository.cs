@@ -35,7 +35,8 @@ namespace Jube.Data.Repository
             this.userName = userName;
         }
 
-        public async Task UpdateAsync(string user, int tenantRegistryId, CancellationToken token = default)
+        public async Task<UserInTenant> UpdateAsync(string user, int tenantRegistryId,
+            CancellationToken token = default)
         {
             var existing = await dbContext.UserInTenant
                 .FirstOrDefaultAsync(w => w.User == user, token);
@@ -57,16 +58,27 @@ namespace Jube.Data.Repository
                 };
 
                 await dbContext.InsertAsync(userInTenantSwitchLog, token: token);
+
+                return existing;
             }
-            else
+
+            var created = new UserInTenant
             {
-                await dbContext.InsertAsync(new UserInTenant
-                {
-                    TenantRegistryId = tenantRegistryId,
-                    SwitchedUser = userName,
-                    SwitchedDate = DateTime.UtcNow
-                }, token: token);
-            }
+                User = user,
+                TenantRegistryId = tenantRegistryId,
+                SwitchedUser = userName,
+                SwitchedDate = DateTime.UtcNow
+            };
+
+            created.Id = await dbContext.InsertWithInt32IdentityAsync(created, token: token);
+
+            return created;
+        }
+
+        public Task<bool> ExistsTenantRegistryAsync(int tenantRegistryId, CancellationToken token = default)
+        {
+            return dbContext.TenantRegistry.AnyAsync(w =>
+                w.Id == tenantRegistryId && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
         public UserInTenant GetCurrentTenantRegistry()

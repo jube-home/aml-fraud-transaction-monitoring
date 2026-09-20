@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Helpers;
 using Jube.Data.Repository;
 using Jube.Dto.PatroniMemberStatus;
 using Jube.Dto.Payload;
@@ -30,7 +31,8 @@ namespace Jube.Service.PatroniMemberStatus
     public sealed class PatroniMemberStatusService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -159,7 +161,8 @@ namespace Jube.Service.PatroniMemberStatus
                     sortField, sortDirection, token).ConfigureAwait(false);
 
                 var dtos = rows.Select(r => new PatroniMemberStatusDto(
-                    r.Id, r.OccurredDate.GetValueOrDefault(), r.Name, r.Host, r.Port, r.ApiUrl, r.Role,
+                    r.Id, r.OccurredDate.GetValueOrDefault(), r.Name, r.Host, r.Port,
+                    SensitiveTextRedactor.Redact(r.ApiUrl), r.Role,
                     r.State, r.TimelineId, r.LagBytes, r.PendingRestart, r.PatroniVersion, r.Scope,
                     r.PostgresServerVersion, r.DatabaseSystemIdentifier, r.XlogLocationBytes,
                     r.ReceivedLocationBytes, r.ReplayPaused, r.ClusterUnlocked, r.SyncStandby,
@@ -205,14 +208,14 @@ namespace Jube.Service.PatroniMemberStatus
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[PatroniMemberStatusResources.PermissionDenied], permissions);

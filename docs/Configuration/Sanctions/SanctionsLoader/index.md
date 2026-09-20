@@ -6,13 +6,14 @@ parent: Sanctions
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # Sanctions Loader
 
 Sanctions are published by various bodies and provide a list of names for which business is prohibited. The
-functionality offered by Jube allows the loading of Sanctions lists into the engine for matching using fuzzy logic (
-Levenshtein Distance) to create matches. Jube also allows this matching to be embedded into the Entity Analysis Model
+functionality offered by Jube allows the loading of Sanctions lists into the engine for matching using fuzzy logic
+(Levenshtein Distance) to create matches. Jube also allows this matching to be embedded into the Entity Analysis Model
 recall in real time. Sanctions data is stored in the engine, in memory, so to assure that the recall is extremely fast.
 
 Sanctions requires the EnableSanction Environment Variable being set to True:
@@ -58,10 +59,12 @@ New entries to the SanctionEntrySource table can be accepted as following defini
 
 To enable the loading process, the following Environment Variables need to be set:
 
-| Value                | Description                                                                                                                                                                                                                      |
-|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| EnableSanctionLoader | A flag indicating if sanctions should be loaded via this instance of the engine and inserted into the SanctionEntry database table,  noting that this table will be synchronised to memory.                                      |
-| SanctionLoaderWait   | Interval in millisecond between polling and synchronizing new sanctions files.  A key concept is regular polling of the official locations with a view to perpetual validation and merging of the new records with the database. |
+| Value                          | Description                                                                                                                                                                                                                                                                                                                                                                               |
+|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| EnableSanctionLoader           | A flag indicating if sanctions should be loaded via this instance of the engine and inserted into the SanctionEntry database table,  noting that this table will be synchronised to memory.                                                                                                                                                                                               |
+| SanctionLoaderWait             | Interval in millisecond between polling and synchronizing new sanctions files.  A key concept is regular polling of the official locations with a view to perpetual validation and merging of the new records with the database.                                                                                                                                                          |
+| EnableSanctionLoaderChangePoll | True (default) enables the check described under SanctionLoaderChangePoll. False restores a single wait of SanctionLoaderWait. It is independent of EnableSanctionLoader, which only gates loading of the HTTP and directory sources.                                                                                                                                                     |
+| SanctionLoaderChangePoll       | Interval in milliseconds (default 60000, one minute) at which the engine checks the import audit for a new import, such as an upload from the UI, and refreshes the sanctions cache straight away, so a new list is searchable within seconds rather than after SanctionLoaderWait. A missing, non numeric, zero or negative value is read as 60000. Nothing is downloaded by this check. |
 
 ```text
 EnableSanctionLoader=True
@@ -91,11 +94,10 @@ entry rather than an update to the old one.
 
 ## Import and rejection audit trail
 
-Every run of the loader - for every SanctionEntrySource in turn - records a SanctionEntryImport row describing
-what happened: total rows read, and how many were Inserted, Revived, Unchanged, Removed and Rejected, along with
-whether the run was Successful and, if not, the error message. Individual bad rows are recorded to
-SanctionEntryRejection with the row number, raw data and a rejection ReasonId, rather than only failing the run as a
-whole:
+Every run of the loader - for every SanctionEntrySource in turn - records a SanctionEntryImport row describing what
+happened: total rows read, and how many were Inserted, Revived, Unchanged, Removed and Rejected, along with whether the
+run was Successful and, if not, the error message. Individual bad rows are recorded to SanctionEntryRejection with the
+row number, raw data and a rejection ReasonId, rather than only failing the run as a whole:
 
 | ReasonId | Meaning                                                                                                                     |
 |----------|-----------------------------------------------------------------------------------------------------------------------------|
@@ -103,8 +105,8 @@ whole:
 | 2        | NoReferenceIndexConfigured - the SanctionEntrySource has no Reference Index configured, so no reference could be extracted. |
 | 3        | ParseError - an unexpected error occurred while parsing the row.                                                            |
 
-Only the ReasonId is stored, not the underlying exception message - rows sharing the same failure mode would
-otherwise duplicate near-identical free text with no real diagnostic gain over the enum itself.
+Only the ReasonId is stored, not the underlying exception message - rows sharing the same failure mode would otherwise
+duplicate near-identical free text with no real diagnostic gain over the enum itself.
 
 The four outcomes recorded per entry are:
 
@@ -115,26 +117,33 @@ The four outcomes recorded per entry are:
 | Revived   | The entry's hash matches an existing row that had previously been soft-deleted (see below) - the row is restored in place rather than re-inserted, so its Id is preserved.                                                                                                                                                                          |
 | Removed   | An existing active entry for this source was not present in this run's file at all, and is soft-deleted (SanctionEntry.Deleted / DeletedDate / DeletedUser set) rather than physically removed. If a file produces zero rows at all, removal is skipped entirely for that run, so a broken or empty download cannot mass-delete a source's entries. |
 
-Because Removed entries are soft-deleted rather than physically deleted, an entry that disappears from a published
-list and later reappears (Revived) keeps its original Id and any history associated with it, rather than starting
-over as a new row.
+Because Removed entries are soft-deleted rather than physically deleted, an entry that disappears from a published list
+and later reappears (Revived) keeps its original Id and any history associated with it, rather than starting over as a
+new row.
 
 ## Manual upload
 
 In addition to the automatic polling loader above, a source's file can be uploaded manually from Administration >>
-Sanctions Loader, which requires Landlord permission. This is useful where a source only publishes on an ad hoc
-basis, or where outbound internet access from the Jube servers is restricted and files are instead obtained and
-vetted out of band before being loaded.
+Sanctions Loader, which requires Landlord permission. This is useful where a source only publishes on an ad hoc basis,
+or where outbound internet access from the Jube servers is restricted and files are instead obtained and vetted out of
+band before being loaded.
 
 Manual upload shares the same import path as the automatic loader described above - the same hash-based
-Inserted/Unchanged/Revived/Removed reconciliation, and the same SanctionEntryImport/SanctionEntryRejection audit
-rows are written - so a manually uploaded file behaves identically to one picked up automatically, except that
-CreatedUser on the resulting audit trail records the logged-in user's name rather than the background loader.
+Inserted/Unchanged/Revived/Removed reconciliation, and the same SanctionEntryImport/SanctionEntryRejection audit rows
+are written - so a manually uploaded file behaves identically to one picked up automatically, except that CreatedUser on
+the resulting audit trail records the logged-in user's name rather than the background loader.
+
+The search reads the engine's in memory copy, so a successful upload is searchable once that copy has been refreshed.
+Between full loader cycles (every SanctionLoaderWait, hourly by default) the engine checks the successful imports in
+SanctionEntryImport every SanctionLoaderChangePoll (one minute by default); when a new successful import is seen it
+reloads the stop tokens and the entries and brings the memory copy into line with the database in both directions:
+new entries are added, and entries that have been removed or soft deleted (for example because the new file no longer
+contains them) leave memory too. A failed import, or a source that answered an error, does not change the copy.
 
 ## Stop Tokens
 
 Before matching, common honorific and religious/cultural titles - tokens such as those equivalent to "Sheikh" or
-"Imam" that are common in some naming conventions - are stripped from both the searched string and every sanction
-entry, so that including or omitting such a title does not itself affect whether names match. The list of stop
-tokens lives in the SanctionStopToken database table, seeded with an illustrative starting set via migration, and is
-loaded into memory at the start of every loader cycle alongside sanction entries and files.
+"Imam" that are common in some naming conventions - are stripped from both the searched string and every sanction entry,
+so that including or omitting such a title does not itself affect whether names match. The list of stop tokens lives in
+the SanctionStopToken database table, seeded with an illustrative starting set via migration, and is loaded into memory
+at the start of every loader cycle alongside sanction entries and files.

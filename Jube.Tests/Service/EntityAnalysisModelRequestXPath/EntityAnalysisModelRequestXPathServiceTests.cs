@@ -351,7 +351,7 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
 
             var updateDto = NewDto(modelId, saved.Name);
             updateDto.Id = saved.Id;
-            await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.UpdateAsync(updateDto));
+            await Assert.ThrowsAsync<DtoValidationException>(() => otherTenant.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.DeleteAsync(saved.Id));
 
             var stillThere = await owner.GetByIdAsync(saved.Id);

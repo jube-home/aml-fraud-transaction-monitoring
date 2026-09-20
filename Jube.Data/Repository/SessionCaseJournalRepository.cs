@@ -35,11 +35,20 @@ namespace Jube.Data.Repository
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
+        public Task<bool> ExistsCaseWorkflowAsync(Guid caseWorkflowGuid, CancellationToken token = default)
+        {
+            return dbContext.CaseWorkflow.AnyAsync(w =>
+                w.Guid == caseWorkflowGuid
+                && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public Task<SessionCaseJournal> GetByCaseWorkflowGuidAsync(Guid guid, CancellationToken token = default)
         {
             return dbContext.SessionCaseJournal.FirstOrDefaultAsync(w
-                => w.CreatedUser == userName &&
-                   w.CaseWorkflow.Guid == guid, token);
+                => w.CreatedUser == userName
+                   && w.CaseWorkflow.Guid == guid
+                   && w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId, token);
         }
 
         public async Task<SessionCaseJournal> UpsertAsync(SessionCaseJournal model, CancellationToken token = default)
@@ -60,7 +69,7 @@ namespace Jube.Data.Repository
             existing.CreatedDate = DateTime.UtcNow;
             existing.Json = model.Json;
             await dbContext.UpdateAsync(existing, token: token);
-            return model;
+            return existing;
         }
     }
 }

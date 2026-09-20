@@ -11,6 +11,7 @@
 * see <https://www.gnu.org/licenses/>.
 */
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Jube.Data.Query
 {
     using System;
@@ -28,8 +29,10 @@ namespace Jube.Data.Query
             var query = from c in dbContext.Case
                 from n in dbContext.CaseWorkflowFormEntry.InnerJoin(w => w.CaseId == c.Id)
                 from a in dbContext.CaseWorkflowForm.InnerJoin(w => w.Id == n.CaseWorkflowFormId)
-                from i in dbContext.CaseWorkflow.InnerJoin(w => w.Guid == c.CaseWorkflowGuid && (w.Deleted == 0 || w.Deleted == null))
-                from s in dbContext.CaseWorkflowStatus.InnerJoin(w => w.Guid == c.CaseWorkflowStatusGuid && (w.Deleted == 0 || w.Deleted == null))
+                from i in dbContext.CaseWorkflow.InnerJoin(w =>
+                    w.Guid == c.CaseWorkflowGuid && (w.Deleted == 0 || w.Deleted == null))
+                from s in dbContext.CaseWorkflowStatus.InnerJoin(w =>
+                    w.Guid == c.CaseWorkflowStatusGuid && (w.Deleted == 0 || w.Deleted == null))
                 from m in dbContext.EntityAnalysisModel.InnerJoin(w =>
                     w.Id == i.EntityAnalysisModelId && (w.Deleted == 0 || w.Deleted == null))
                 from t in dbContext.TenantRegistry.InnerJoin(w => w.Id == m.TenantRegistryId)
@@ -56,7 +59,9 @@ namespace Jube.Data.Query
                 {
                     Id = n.Id,
                     CaseId = n.CaseId.GetValueOrDefault(),
-                    CreatedDate = new DateTimeOffset(n.CreatedDate.GetValueOrDefault().ToUniversalTime(), TimeSpan.Zero),
+                    CreatedDate =
+                        new DateTimeOffset(DateTime.SpecifyKind(n.CreatedDate.GetValueOrDefault(), DateTimeKind.Utc),
+                            TimeSpan.Zero),
                     CreatedUser = n.CreatedUser,
                     Name = a.Name
                 };

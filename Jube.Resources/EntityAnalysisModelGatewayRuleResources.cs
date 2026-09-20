@@ -30,5 +30,6 @@ namespace Jube.Resources
         public const string GatewaySampleRange = nameof(GatewaySampleRange);
         public const string MaxResponseElevationRange = nameof(MaxResponseElevationRange);
         public const string PriorityRange = nameof(PriorityRange);
+        public const string JsonInvalid = nameof(JsonInvalid);
     }
 }

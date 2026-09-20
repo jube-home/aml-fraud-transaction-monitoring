@@ -23,13 +23,13 @@ namespace Jube.Mfa.Rsa
     using Newtonsoft.Json.Serialization;
     using Request;
     using Response;
-    
+
     public sealed class RsaSecurIdMfaProvider : IMfaProvider
     {
         private const string AuthnAttemptIdMetadataKey = "AuthnAttemptId";
         private const string InResponseToMetadataKey = "InResponseTo";
 
-        private static readonly MediaTypeHeaderValue JsonMediaType = new("application/json");
+        private static readonly MediaTypeHeaderValue jsonMediaType = new("application/json");
 
         private readonly string clientId;
         private readonly string clientKey;
@@ -83,13 +83,14 @@ namespace Jube.Mfa.Rsa
 
             if (log.IsInfoEnabled)
             {
-                log.Info($"MFA ClientId: {clientId}; SubjectName: {request.SubjectName}; POST Request Json: {json}");
+                log.Info(
+                    $"MFA ClientId: {clientId}; SubjectName: {request.SubjectName}; Posting verification request.");
             }
 
             try
             {
                 using var content = new ByteArrayContent(Encoding.UTF8.GetBytes(json));
-                content.Headers.ContentType = JsonMediaType;
+                content.Headers.ContentType = jsonMediaType;
 
                 using var httpRequest = new HttpRequestMessage(HttpMethod.Post, endpoint);
                 httpRequest.Content = content;
@@ -102,14 +103,14 @@ namespace Jube.Mfa.Rsa
                 if (!response.IsSuccessStatusCode)
                 {
                     log.Info($"MFA ClientId: {clientId}; SubjectName: {request.SubjectName};" +
-                             $" Http Status Code: {(int)response.StatusCode}; Response Json: {responseJson}.");
+                             $" Http Status Code: {(int)response.StatusCode}.");
 
-                    throw new HttpRequestException($"RSA AM returned {(int)response.StatusCode}: {responseJson}");
+                    throw new HttpRequestException($"RSA AM returned {(int)response.StatusCode}.");
                 }
 
                 if (log.IsInfoEnabled)
                 {
-                    log.Info($"MFA ClientId: {clientId}; SubjectName: {request.SubjectName}; Response Json: {responseJson}");
+                    log.Info($"MFA ClientId: {clientId}; SubjectName: {request.SubjectName}; Response received.");
                 }
 
                 var authenticationResponse = JsonConvert.DeserializeObject<AuthenticationResponse>(responseJson);
@@ -191,12 +192,15 @@ namespace Jube.Mfa.Rsa
                 sb.Append(e.GetType().Name).Append(": ").Append(e.Message);
                 switch (e)
                 {
-                    case HttpRequestException hre: sb.Append($" [{hre.HttpRequestError}, Status={hre.StatusCode}]"); break;
+                    case HttpRequestException hre:
+                        sb.Append($" [{hre.HttpRequestError}, Status={hre.StatusCode}]"); break;
                     case SocketException se: sb.Append($" [SocketError={se.SocketErrorCode}]"); break;
                     case AuthenticationException: sb.Append(" [TLS handshake]"); break;
                 }
+
                 sb.Append(" --> ");
             }
+
             return sb.ToString();
         }
     }

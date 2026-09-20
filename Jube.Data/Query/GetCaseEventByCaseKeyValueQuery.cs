@@ -27,7 +27,8 @@ namespace Jube.Data.Query
         {
             var query = from c in dbContext.Case
                 from e in dbContext.CaseEvent.InnerJoin(w => w.CaseId == c.Id)
-                from i in dbContext.CaseWorkflow.InnerJoin(w => w.Guid == c.CaseWorkflowGuid && (w.Deleted == 0 || w.Deleted == null))
+                from i in dbContext.CaseWorkflow.InnerJoin(w =>
+                    w.Guid == c.CaseWorkflowGuid && (w.Deleted == 0 || w.Deleted == null))
                 from m in dbContext.EntityAnalysisModel.InnerJoin(w =>
                     w.Id == i.EntityAnalysisModelId && (w.Deleted == 0 || w.Deleted == null))
                 from t in dbContext.TenantRegistry.InnerJoin(w => w.Id == m.TenantRegistryId)
@@ -61,7 +62,10 @@ namespace Jube.Data.Query
                 {
                     Id = caseEvent.Id,
                     CaseId = caseEvent.CaseId.GetValueOrDefault(),
-                    CreatedDate = new DateTimeOffset(caseEvent.CreatedDate.GetValueOrDefault().ToUniversalTime(), TimeSpan.Zero),
+                    CreatedDate =
+                        new DateTimeOffset(
+                            DateTime.SpecifyKind(caseEvent.CreatedDate.GetValueOrDefault(), DateTimeKind.Utc),
+                            TimeSpan.Zero),
                     CreatedUser = caseEvent.CreatedUser,
                     Before = caseEvent.Before,
                     After = caseEvent.After,

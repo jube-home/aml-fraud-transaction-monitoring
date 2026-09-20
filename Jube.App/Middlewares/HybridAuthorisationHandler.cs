@@ -22,6 +22,9 @@ namespace Jube.App.Middlewares
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
     using ApiTokensCache;
+    using Data.Context;
+    using Code;
+    using Data.Security;
     using log4net;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Http;
@@ -30,23 +33,16 @@ namespace Jube.App.Middlewares
     using Microsoft.IdentityModel.Tokens;
     using Models;
 
-    public class HybridAuthHandler : AuthenticationHandler<HybridAuthOptions>
+    public class HybridAuthHandler(
+        IOptionsMonitor<HybridAuthOptions> options,
+        ILoggerFactory logger,
+        UrlEncoder encoder,
+        ApiTokensCache apiTokensCache,
+        DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+        ILog log)
+        : AuthenticationHandler<HybridAuthOptions>(options, logger, encoder)
     {
         private const string ApiKeyHeader = "X-API-KEY";
-        private readonly ApiTokensCache apiTokensCache;
-        private readonly ILog log;
-
-        public HybridAuthHandler(
-            IOptionsMonitor<HybridAuthOptions> options,
-            ILoggerFactory logger,
-            UrlEncoder encoder,
-            ApiTokensCache apiTokensCache,
-            ILog log)
-            : base(options, logger, encoder)
-        {
-            this.apiTokensCache = apiTokensCache;
-            this.log = log;
-        }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -87,10 +83,9 @@ namespace Jube.App.Middlewares
                     return Task.FromResult(Fail("API Key Not Found."));
                 }
 
-                return Task.FromResult(Success(new[]
-                {
+                return Task.FromResult(Success([
                     new Claim(ClaimTypes.Name, userName), new Claim(ClaimTypes.AuthenticationMethod, "ApiHmacKey")
-                }));
+                ]));
             }
             catch (Exception ex)
             {
@@ -103,6 +98,7 @@ namespace Jube.App.Middlewares
         private async Task<AuthenticateResult> ValidateJwtAsync(string token)
         {
             ClaimsPrincipal principal;
+            SecurityToken validated;
             try
             {
                 var o = Options;
@@ -121,20 +117,53 @@ namespace Jube.App.Middlewares
                     NameClaimType = ClaimTypes.Name
                 };
 
-                principal = await Task.Run(() => handler.ValidateToken(token, validationParams, out _));
+                var result = await Task.Run(() =>
+                {
+                    var validatedPrincipal = handler.ValidateToken(token, validationParams, out var securityToken);
+                    return (validatedPrincipal, securityToken);
+                });
+                principal = result.validatedPrincipal;
+                validated = result.securityToken;
             }
             catch (SecurityTokenExpiredException)
             {
                 return Fail("Token has expired.");
             }
-            catch (SecurityTokenException)
+            catch (Exception)
             {
                 return Fail("Invalid token.");
             }
 
             var username = principal.FindFirstValue(ClaimTypes.Name);
 
-            return String.IsNullOrEmpty(username) ? Fail("Malformed token claims.") : AuthenticateResult.Success(new AuthenticationTicket(principal, Scheme.Name));
+            if (String.IsNullOrEmpty(username))
+            {
+                return Fail("Malformed token claims.");
+            }
+
+            var issuedMilliseconds = principal.FindFirstValue(TokenValidity.IssuedMillisecondsClaim);
+            if (AbsoluteSessionLifetime.IsExpired(dynamicEnvironment, issuedMilliseconds, DateTimeOffset.UtcNow))
+            {
+                return Fail("Session has expired.");
+            }
+
+            try
+            {
+                await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                    dynamicEnvironment.AppSettings("ConnectionString"), log);
+                if (await TokenValidity.IsRevokedAsync(dbContext, username, issuedMilliseconds,
+                        (validated as JwtSecurityToken)?.IssuedAt).ConfigureAwait(false))
+                {
+                    return Fail("Token has been revoked.");
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("ValidateJwtAsync could not check token revocation.", ex);
+                return Fail("Token could not be verified.");
+            }
+
+            return AuthenticateResult.Success(new AuthenticationTicket(principal, Scheme.Name));
         }
 
         private static AuthenticateResult Fail(string reason)
@@ -151,7 +180,9 @@ namespace Jube.App.Middlewares
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
         {
-            if (Request.Path.StartsWithSegments("/api"))
+            if (Request.Path.StartsWithSegments("/api")
+                || Request.Path.StartsWithSegments("/watcherHub")
+                || Request.Path.StartsWithSegments("/serviceChangeHub"))
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return Task.CompletedTask;

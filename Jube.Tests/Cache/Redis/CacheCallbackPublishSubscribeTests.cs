@@ -47,9 +47,9 @@ namespace Jube.Test.Cache.Redis
         {
             var (instance, _, callbacks, _) = NewContext("my-instance");
             var guid = Guid.NewGuid();
-            var channel = $"CallbackSet:{hostName}:my-instance:{guid:N}";
+            var channel = $"CallbackSet:{hostName}:my-instance:{guid:N}:1";
 
-            instance.AddToDictionaryFromSubscription(channel, "payload"u8.ToArray());
+            instance.AddToDictionaryFromSubscription(channel, [.. "payload"u8]);
 
             callbacks.Should().BeEmpty();
         }
@@ -59,7 +59,7 @@ namespace Jube.Test.Cache.Redis
         {
             var (instance, _, callbacks, _) = NewContext("my-instance");
             var guid = Guid.NewGuid();
-            var channel = $"CallbackSet:other-host:other-instance:{guid:N}";
+            var channel = $"CallbackSet:other-host:other-instance:{guid:N}:1";
             var payload = "payload"u8.ToArray();
 
             instance.AddToDictionaryFromSubscription(channel, payload);
@@ -78,7 +78,7 @@ namespace Jube.Test.Cache.Redis
         {
             var (instance, log, callbacks, _) = NewContext("my-instance");
 
-            var act = () => instance.AddToDictionaryFromSubscription("CallbackSet:onlyhost", "payload"u8.ToArray());
+            var act = () => instance.AddToDictionaryFromSubscription("CallbackSet:onlyhost", [.. "payload"u8]);
 
             act.Should().NotThrow();
             callbacks.Should().BeEmpty();
@@ -91,7 +91,7 @@ namespace Jube.Test.Cache.Redis
             var (instance, log, callbacks, _) = NewContext("my-instance");
             var channel = "CallbackSet:other-host:other-instance:not-a-guid";
 
-            var act = () => instance.AddToDictionaryFromSubscription(channel, "payload"u8.ToArray());
+            var act = () => instance.AddToDictionaryFromSubscription(channel, [.. "payload"u8]);
 
             act.Should().NotThrow();
             callbacks.Should().BeEmpty();
@@ -143,7 +143,7 @@ namespace Jube.Test.Cache.Redis
             var guid = Guid.NewGuid();
             var payload = "hello"u8.ToArray();
 
-            instance.AddToDictionary(payload, guid);
+            instance.AddToDictionary(payload, guid, 1);
 
             callbacks.Should().ContainKey(guid);
             var tcs = callbacks[guid];
@@ -163,7 +163,7 @@ namespace Jube.Test.Cache.Redis
             callbacks.TryAdd(guid, pending);
             var payload = "hello"u8.ToArray();
 
-            instance.AddToDictionary(payload, guid);
+            instance.AddToDictionary(payload, guid, 1);
 
             callbacks.Should().HaveCount(1);
             ReferenceEquals(callbacks[guid], pending).Should().BeTrue(
@@ -281,7 +281,7 @@ namespace Jube.Test.Cache.Redis
             var guid = Guid.NewGuid();
             var payload = Encoding.UTF8.GetBytes("json-payload");
 
-            await instance.PublishAsync(payload, guid);
+            await instance.PublishAsync(payload, guid, 7);
 
             callbacks.Should().ContainKey(guid);
 
@@ -290,7 +290,7 @@ namespace Jube.Test.Cache.Redis
 #pragma warning restore VSTHRD003
 
             var message = fake.PublishedMessages.Should().ContainSingle().Subject;
-            message.Channel.ToString().Should().Be($"CallbackSet:{hostName}:my-instance:{guid:N}");
+            message.Channel.ToString().Should().Be($"CallbackSet:{hostName}:my-instance:{guid:N}:7");
             ((byte[])message.Message)!.Should().Equal(payload);
         }
 
@@ -316,7 +316,7 @@ namespace Jube.Test.Cache.Redis
             var (instance, log, _, fake) = NewContext();
             fake.ThrowOnMethod = nameof(IHybridResilientRedisDatabase.PublishAsync);
 
-            var act = async () => await instance.PublishAsync("payload"u8.ToArray(), Guid.NewGuid());
+            var act = async () => await instance.PublishAsync([.. "payload"u8], Guid.NewGuid(), 7);
 
             await act.Should().NotThrowAsync();
             log.Entries.Should().Contain(e => e.Level == "ERROR");

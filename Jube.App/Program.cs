@@ -15,6 +15,7 @@ namespace Jube.App
 {
     using System;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Server.Kestrel.Core;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
@@ -56,29 +57,39 @@ namespace Jube.App
             }
         }
 
+        public static long? ParseConnectionLimit(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value) || !long.TryParse(value, out var limit))
+            {
+                return 10000;
+            }
+
+            return limit > 0 ? limit : null;
+        }
+
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.ConfigureKestrel(options =>
+                    webBuilder.ConfigureKestrel((context, options) =>
                     {
-                        options.Limits.MinRequestBodyDataRate = null;
+                        options.AddServerHeader = false;
+                        options.Limits.MinRequestBodyDataRate = new MinDataRate(240, TimeSpan.FromSeconds(10));
                         options.Limits.MinResponseDataRate = null;
-                        options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5);
-                        options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(2);
-                        options.Limits.MaxConcurrentConnections = null;
-                        options.Limits.MaxConcurrentUpgradedConnections = null;
+                        options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+                        options.Limits.RequestHeadersTimeout = TimeSpan.FromSeconds(30);
+                        var maxConcurrentConnections =
+                            ParseConnectionLimit(context.Configuration["MaxConcurrentConnections"]);
+                        options.Limits.MaxConcurrentConnections = maxConcurrentConnections;
+                        options.Limits.MaxConcurrentUpgradedConnections = maxConcurrentConnections;
                         options.Limits.Http2.MaxStreamsPerConnection = 100;
                         options.Limits.Http2.InitialConnectionWindowSize = 131072;
                         options.Limits.Http2.InitialStreamWindowSize = 98304;
                     });
                 })
-                .ConfigureLogging((_, logging) =>
-                {
-                    logging.ClearProviders();
-                });
+                .ConfigureLogging((_, logging) => { logging.ClearProviders(); });
         }
     }
 }

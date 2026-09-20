@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelDictionaryKvp;
 
 namespace Jube.Service.EntityAnalysisModelDictionaryKvp
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
 
     internal static class EntityAnalysisModelDictionaryKvpMapper
     {
+        [return: NotNullIfNotNull(nameof(dictionaryKvp))]
         public static EntityAnalysisModelDictionaryKvpDto? ToDto(DictionaryKvpPoco? dictionaryKvp)
         {
             return dictionaryKvp is null
@@ -42,7 +44,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
 
         public static List<EntityAnalysisModelDictionaryKvpDto> ToDto(IEnumerable<DictionaryKvpPoco>? source)
         {
-            return (source ?? Enumerable.Empty<DictionaryKvpPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<DictionaryKvpPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static DictionaryKvpPoco ToPoco(EntityAnalysisModelDictionaryKvpDto dto)

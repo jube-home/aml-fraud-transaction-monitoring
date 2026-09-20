@@ -24,7 +24,7 @@ using LinqToDB;
 
 namespace Jube.Data.Repository
 {
-    public class UserLoginRepository(DbContext dbContext, string userName = null)
+    public class UserLoginRepository(DbContext dbContext, string userName = null, int? scopeToTenantRegistryId = null)
     {
         public async Task<UserLogin> InsertAsync(UserLogin model, CancellationToken token = default)
         {
@@ -62,6 +62,13 @@ namespace Jube.Data.Repository
             double? samplePercentage)
         {
             var query = dbContext.UserLogin.AsQueryable();
+
+            if (scopeToTenantRegistryId.HasValue)
+            {
+                var scopedTenantRegistryId = scopeToTenantRegistryId.Value;
+                query = query.Where(w => dbContext.UserInTenant.Any(u =>
+                    u.User == w.CreatedUser && u.TenantRegistryId == scopedTenantRegistryId));
+            }
 
             if (from.HasValue)
             {

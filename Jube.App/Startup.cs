@@ -26,6 +26,9 @@ using Jube.App.Code.ServiceChange;
 using Jube.App.Code.signalr;
 using Jube.App.Code.WatcherDispatch;
 using Jube.App.Endpoints;
+using Jube.App.Endpoints.Mocks;
+using Jube.App.Endpoints.Query;
+using Jube.App.Endpoints.Repository;
 using Jube.App.Middlewares;
 using Jube.App.Middlewares.Extensions;
 using Jube.App.Middlewares.Models;
@@ -409,6 +412,8 @@ namespace Jube.App
             services.AddAuthorization();
             services.AddLocalization();
             services.AddRazorPages();
+            services.AddSingleton(WatcherConnectionRegistry.Instance);
+            services.AddHostedService<WatcherConnectionSweeper>();
             services.AddHttpContextAccessor();
             services.AddControllers().AddNewtonsoftJson(options =>
             {
@@ -1132,6 +1137,7 @@ namespace Jube.App
                     appBuilder => appBuilder.UseHttpsRedirection()
                 );
 
+                app.UseMiddleware<RequestHardeningMiddleware>();
                 app.UseRouting();
 
                 app.UseRequestLocalization(new RequestLocalizationOptions()
@@ -1141,6 +1147,7 @@ namespace Jube.App
 
                 app.UseAuthentication();
                 app.UseAuthorization();
+                app.UseMiddleware<EmptyBodyGuardMiddleware>();
 
                 app.UseWhen(
                     httpContext =>
@@ -1205,6 +1212,12 @@ namespace Jube.App
                 );
 
                 app.UseWhen(
+                    httpContext => httpContext.Request.Path.StartsWithSegments("/swagger",
+                        StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseMiddleware<SwaggerAuthenticationMiddleware>()
+                );
+
+                app.UseWhen(
                     httpContext =>
                         !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
                     appBuilder => appBuilder.UseSwagger()
@@ -1220,8 +1233,8 @@ namespace Jube.App
                 {
                     endpoints.MapRazorPages();
                     endpoints.MapControllers();
-                    endpoints.MapHub<WatcherHub>("/watcherHub");
-                    endpoints.MapHub<ServiceChangeHub>("/serviceChangeHub");
+                    endpoints.MapHub<WatcherHub>("/watcherHub").RequireAuthorization();
+                    endpoints.MapHub<ServiceChangeHub>("/serviceChangeHub").RequireAuthorization();
                     endpoints.MapEntityAnalysisModelEndpoints();
                     endpoints.MapEntityAnalysisModelRequestXPathEndpoints();
                     endpoints.MapEntityAnalysisModelInlineFunctionEndpoints();
@@ -1268,6 +1281,8 @@ namespace Jube.App
                     endpoints.MapOpenTelemetryExcludeEndpoints();
                     endpoints.MapOtlpDispatchCounterEndpoints();
                     endpoints.MapUserLoginEndpoints();
+                    endpoints.MapUserLogoutEndpoints();
+                    endpoints.MapActivationWatcherEndpoints();
                     endpoints.MapPostgresActivityEndpoints();
                     endpoints.MapPostgresStatementStatisticsEndpoints();
                     endpoints.MapEntityAnalysisModelAbstractionRuleEndpoints();
@@ -1289,6 +1304,86 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisAsynchronousQueueBalanceEndpoints();
                     endpoints.MapEntityAnalysisModelAsynchronousQueueBalanceEndpoints();
                     endpoints.MapEntityAnalysisModelProcessingCounterEndpoints();
+                    endpoints.MapArchiveEndpoints();
+                    endpoints.MapCaseEndpoints();
+                    endpoints.MapCaseFileEndpoints();
+                    endpoints.MapCaseNoteEndpoints();
+                    endpoints.MapCaseWorkflowEndpoints();
+                    endpoints.MapCaseWorkflowActionEndpoints();
+                    endpoints.MapCaseWorkflowActionRoleEndpoints();
+                    endpoints.MapCaseWorkflowDisplayEndpoints();
+                    endpoints.MapCaseWorkflowDisplayRoleEndpoints();
+                    endpoints.MapCaseWorkflowFilterEndpoints();
+                    endpoints.MapCaseWorkflowFilterRoleEndpoints();
+                    endpoints.MapCaseWorkflowFormEndpoints();
+                    endpoints.MapCaseWorkflowFormEntryEndpoints();
+                    endpoints.MapCaseWorkflowFormEntryValueEndpoints();
+                    endpoints.MapCaseWorkflowFormRoleEndpoints();
+                    endpoints.MapCaseWorkflowMacroEndpoints();
+                    endpoints.MapCaseWorkflowMacroRoleEndpoints();
+                    endpoints.MapCaseWorkflowPriorityEndpoints();
+                    endpoints.MapCaseWorkflowRoleEndpoints();
+                    endpoints.MapCaseWorkflowStatusEndpoints();
+                    endpoints.MapCaseWorkflowStatusRoleEndpoints();
+                    endpoints.MapCaseWorkflowXPathEndpoints();
+                    endpoints.MapCaseWorkflowXPathRoleEndpoints();
+                    endpoints.MapEntityAnalysisModelRoleEndpoints();
+                    endpoints.MapEntityAnalysisModelSynchronisationScheduleEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceEndpoints();
+                    endpoints.MapPermissionSpecificationEndpoints();
+                    endpoints.MapRoleRegistryEndpoints();
+                    endpoints.MapRoleRegistryPermissionEndpoints();
+                    endpoints.MapSanctionEntrySourceEndpoints();
+                    endpoints.MapTenantRegistryEndpoints();
+                    endpoints.MapUserInTenantEndpoints();
+                    endpoints.MapUserRegistryEndpoints();
+                    endpoints.MapUserRegistryApiKeyEndpoints();
+                    endpoints.MapVisualisationRegistryEndpoints();
+                    endpoints.MapVisualisationRegistryDatasourceEndpoints();
+                    endpoints.MapVisualisationRegistryDatasourceRoleEndpoints();
+                    endpoints.MapVisualisationRegistryDatasourceSeriesEndpoints();
+                    endpoints.MapVisualisationRegistryParameterEndpoints();
+                    endpoints.MapVisualisationRegistryParameterRoleEndpoints();
+                    endpoints.MapVisualisationRegistryRoleEndpoints();
+                    endpoints.MapCaseByCaseKeyValueEndpoints();
+                    endpoints.MapCaseByIdEndpoints();
+                    endpoints.MapCaseBySessionCaseSearchCompileEndpoints();
+                    endpoints.MapCaseEventByCaseKeyValueEndpoints();
+                    endpoints.MapCaseJournalEndpoints();
+                    endpoints.MapCaseNoteByCaseKeyValueEndpoints();
+                    endpoints.MapCaseWorkflowFormEntryByCaseKeyValueEndpoints();
+                    endpoints.MapEntityAnalysisModelActivationRuleSuppressionQueryEndpoints();
+                    endpoints.MapEntityAnalysisModelSampleEndpoints();
+                    endpoints.MapEntityAnalysisModelSuppressionQueryEndpoints();
+                    endpoints.MapEntityAnalysisModelSynchronisationNodeStatusEntriesEndpoints();
+                    endpoints.MapEntityAnalysisPotentialMultiPartStringNamesEndpoints();
+                    endpoints.MapEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceConfusionEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceLearningCurveEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstancePredictedActualEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceQueryEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceRocEndpoints();
+                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionEndpoints();
+                    endpoints.MapExhaustiveSearchInstanceTrialInstanceVariableEndpoints();
+                    endpoints.MapExhaustiveSearchInstanceTrialInstanceVariableVarianceEndpoints();
+                    endpoints.MapExhaustiveSearchInstanceVariableEndpoints();
+                    endpoints.MapVisualisationRegistryDatasourceCommandExecutionEndpoints();
+                    endpoints.MapTreeChildrenEndpoints();
+                    endpoints.MapSessionCaseJournalEndpoints();
+                    endpoints.MapSessionCaseSearchCompiledSqlEndpoints();
+                    endpoints.MapPreservationEndpoints();
+                    endpoints.MapReadyEndpoints();
+                    endpoints.MapAuthenticationEndpoints();
+                    endpoints.MapMockHttpAdaptationEndpoints();
+                    endpoints.MapMockRsaMfaEndpoints();
+                    endpoints.MapInvokeEndpoints();
+                    endpoints.MapCompletionsEndpoints();
+                    endpoints.MapIconsEndpoints();
+                    endpoints.MapParserEndpoints();
+                    endpoints.MapCaseWorkflowDisplayExecutionEndpoints();
+                    endpoints.MapCaseWorkflowMacroExecutionEndpoints();
+                    endpoints.MapRegisterSignalrConnectionEndpoints();
                 });
 
                 await app.StartRelayAsync().ConfigureAwait(false);

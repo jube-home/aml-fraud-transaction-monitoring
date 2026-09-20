@@ -26,10 +26,16 @@ namespace Jube.Validations.EntityAnalysisModelInlineScript
 
         public EntityAnalysisModelInlineScriptDtoValidator(
             EntityAnalysisModelInlineScriptRepository repository,
-            EntityAnalysisInlineScriptRepository entityAnalysisInlineScriptRepository, IStringLocalizer localiser)
+            EntityAnalysisInlineScriptRepository entityAnalysisInlineScriptRepository, IStringLocalizer localiser,
+            EntityAnalysisModelRepository entityAnalysisModelRepository)
         {
             RuleFor(p => p.EntityAnalysisModelId)
+                .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
+                .WithMessage(_ => localiser[EntityAnalysisModelInlineScriptResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdInvalid")
+                .MustAsync(async (id, cancellation) =>
+                    await entityAnalysisModelRepository.GetByIdAsync(id, cancellation) != null)
                 .WithMessage(_ => localiser[EntityAnalysisModelInlineScriptResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
 

@@ -70,8 +70,16 @@ namespace Jube.Test.Service.UserLogin
 
         private async Task CreateSampleAsync(DbContext dbContext, string createdUser, byte failed,
             int? authenticationTypeId = null, int failureTypeId = 0, string? failureMessage = null,
-            DateTime? createdDate = null)
+            DateTime? createdDate = null, bool inTenantA = true)
         {
+            if (inTenantA && !await dbContext.UserInTenant.AnyAsync(u => u.User == createdUser))
+            {
+                var tenantAId = await dbContext.UserInTenant.Where(u => u.User == fx.Seed.UserWithPermission)
+                    .Select(u => u.TenantRegistryId).FirstAsync();
+                await dbContext.InsertAsync(new Data.Poco.UserInTenant
+                    { User = createdUser, TenantRegistryId = tenantAId }).ConfigureAwait(false);
+            }
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.UserLogin
             {
                 CreatedDate = createdDate ?? DateTime.UtcNow,
@@ -224,16 +232,43 @@ namespace Jube.Test.Service.UserLogin
         }
 
         [Fact]
-        public async Task ListIsNotTenantScopedAsync()
+        public async Task ListIsScopedToTheCallersTenantAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var user = $"{DatabaseFixture.Prefix}User{Guid.NewGuid():N}";
             await CreateSampleAsync(dbContext, user, 0, 1);
 
+            var sameTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
-            var otherTenantResult = await otherTenantService.ListAsync();
 
-            otherTenantResult.Rows.Should().Contain(r => r.CreatedUser == user);
+            (await sameTenantService.ListAsync(search: user)).Rows.Should().Contain(r => r.CreatedUser == user);
+            (await otherTenantService.ListAsync(search: user)).Rows.Should().NotContain(r => r.CreatedUser == user);
+        }
+
+        [Fact]
+        public async Task AttemptsAgainstUnknownNamesAreVisibleToALandlordOnlyAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var unknown = $"{DatabaseFixture.Prefix}Nobody{Guid.NewGuid():N}";
+            await CreateSampleAsync(dbContext, unknown, 1, 1, 1, inTenantA: false);
+
+            var tenantService = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var landlordService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
+            (await tenantService.ListAsync(search: unknown)).Rows.Should().BeEmpty();
+            (await landlordService.ListAsync(search: unknown)).Rows.Should().Contain(r => r.CreatedUser == unknown);
+        }
+
+        [Fact]
+        public async Task LandlordSeesTheLoginAttemptsOfEveryTenantAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var user = $"{DatabaseFixture.Prefix}User{Guid.NewGuid():N}";
+            await CreateSampleAsync(dbContext, user, 0, 1);
+
+            var landlordService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
+            (await landlordService.ListAsync(search: user)).Rows.Should().Contain(r => r.CreatedUser == user);
         }
 
         [Fact]

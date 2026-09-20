@@ -23,8 +23,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Lists per-Model asynchronous processing queue balance rows, most recent first, capped " +
                     "at 100000, with optional date-range and Model-name substring filters. Each row is a " +
                     "roughly one-minute interval's queue depth for asynchronous archiving and " +
-                    "activation-watcher dispatch for one Entity Analysis Model. Landlord callers see every " +
-                    "tenant; other callers only their own. Also accepts samplePercentage (0-100) to draw an " +
+                    "activation-watcher dispatch for one Entity Analysis Model. Landlord only: every other caller is refused with a 403. Also accepts samplePercentage (0-100) to draw an " +
                     "unbiased random subset of matching rows instead of the most recent ones."));
         }
     }

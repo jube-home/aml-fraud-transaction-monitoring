@@ -94,7 +94,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             var secondId = await CreateRowAsync(dbContext, CaptureQueueType.ArchiverWarning, 2, 5,
                 DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -110,7 +110,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -122,6 +122,15 @@ namespace Jube.Test.Service.CaptureQueueHealth
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -152,7 +161,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             var oldId = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning, createdDate: oldDate);
             var newId = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning, createdDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Id == oldId || r.Id == newId).ToList();
@@ -170,7 +179,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
                 createdDate: twoHoursAgo);
             var newId = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning, createdDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Id == oldId || r.Id == newId).ToList();
@@ -185,7 +194,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             var modelInvokeId = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning);
             var archiverId = await CreateRowAsync(dbContext, CaptureQueueType.ArchiverWarning);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(queueId: (int)CaptureQueueType.ModelInvokeWarning);
 
             var mine = result.Rows.Where(r => r.Id == modelInvokeId || r.Id == archiverId).ToList();
@@ -200,7 +209,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning);
             await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(queueId: (int)CaptureQueueType.ModelInvokeWarning,
                 samplePercentage: 0);
 
@@ -214,7 +223,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             var id1 = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning);
             var id2 = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(queueId: (int)CaptureQueueType.ModelInvokeWarning,
                 samplePercentage: 100);
 
@@ -230,7 +239,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             var id3 = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning, 20);
             var ids = new HashSet<int> { id1, id2, id3 };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(queueId: (int)CaptureQueueType.ModelInvokeWarning,
                 sortField: "queueDepth", sortDirection: "asc");
@@ -252,7 +261,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             var lowId = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning, 10);
             var ids = new HashSet<int> { highId, lowId };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(queueId: (int)CaptureQueueType.ModelInvokeWarning,
                 sortField: "queueDepth", sortDirection: ascendingKeyword);
 
@@ -267,7 +276,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             var highId = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning, 20);
             var ids = new HashSet<int> { lowId, highId };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(queueId: (int)CaptureQueueType.ModelInvokeWarning,
                 sortField: "queueDepth", sortDirection: "banana");
 
@@ -283,7 +292,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             var secondId = await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning,
                 createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -300,7 +309,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
                 await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, queueId: (int)CaptureQueueType.ModelInvokeWarning,
                 from: DateTime.UtcNow.AddMinutes(-1));
 
@@ -314,7 +323,7 @@ namespace Jube.Test.Service.CaptureQueueHealth
             await using var dbContext = fx.GetDbContext();
             await CreateRowAsync(dbContext, CaptureQueueType.ModelInvokeWarning);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo("queueDepth", "droppedCount");

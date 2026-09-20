@@ -92,7 +92,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 5);
             await CreateSampleAsync(dbContext, instance, 10);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Instance == instance).ToList();
@@ -105,7 +105,7 @@ namespace Jube.Test.Service.RedisMetric
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -117,6 +117,15 @@ namespace Jube.Test.Service.RedisMetric
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -149,7 +158,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 5, oldDate);
             await CreateSampleAsync(dbContext, instance, 10, newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Instance == instance).ToList();
@@ -167,7 +176,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, uniqueInstance, 5);
             await CreateSampleAsync(dbContext, otherInstance, 10);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueInstance[..20].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.Instance == uniqueInstance || r.Instance == otherInstance).ToList();
@@ -183,7 +192,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 5);
             await CreateSampleAsync(dbContext, instance, 10);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -197,7 +206,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 5);
             await CreateSampleAsync(dbContext, instance, 10);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -210,7 +219,7 @@ namespace Jube.Test.Service.RedisMetric
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
             await CreateSampleAsync(dbContext, instance, 20);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Instance == instance);
@@ -227,7 +236,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, $"{instance}Old", 5, twoHoursAgo);
             await CreateSampleAsync(dbContext, $"{instance}New", 10, justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var mine = result.Rows.Where(r => r.Instance.StartsWith(instance)).ToList();
@@ -244,7 +253,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 1000);
             await CreateSampleAsync(dbContext, instance, 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: instance, sortField: "connectedClients",
                 sortDirection: "asc");
@@ -266,7 +275,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 2000);
             await CreateSampleAsync(dbContext, instance, 1000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance, sortField: "connectedClients",
                 sortDirection: ascendingKeyword);
 
@@ -281,7 +290,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 1000);
             await CreateSampleAsync(dbContext, instance, 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance, sortField: "connectedClients",
                 sortDirection: "banana");
 
@@ -296,7 +305,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 5, DateTime.UtcNow.AddMinutes(-30));
             await CreateSampleAsync(dbContext, instance, 10, DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Instance == instance).ToList();
@@ -314,7 +323,7 @@ namespace Jube.Test.Service.RedisMetric
                 await CreateSampleAsync(dbContext, instance, i);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: instance);
 
             result.Rows.Should().HaveCount(2);
@@ -332,7 +341,7 @@ namespace Jube.Test.Service.RedisMetric
                 await CreateSampleAsync(dbContext, instance, value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var stats = result.Statistics.Columns["connectedClients"];
@@ -355,7 +364,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 1, lastAofRewriteDate: lastAofRewriteDate,
                 lastBgSaveDate: lastBgSaveDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var mine = result.Rows.Where(r => r.Instance == instance).ToList();
@@ -371,7 +380,7 @@ namespace Jube.Test.Service.RedisMetric
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
             await CreateSampleAsync(dbContext, instance, 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var mine = result.Rows.Where(r => r.Instance == instance).ToList();
@@ -390,7 +399,7 @@ namespace Jube.Test.Service.RedisMetric
             await CreateSampleAsync(dbContext, instance, 1, lastBgSaveDate: later);
             await CreateSampleAsync(dbContext, instance, 2, lastBgSaveDate: earlier);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: instance, sortField: "lastBgSaveDate",
                 sortDirection: "asc");
@@ -408,7 +417,7 @@ namespace Jube.Test.Service.RedisMetric
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
             await CreateSampleAsync(dbContext, instance, 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,22 +13,24 @@
 
 namespace Jube.App.Pages.Account
 {
-    using DynamicEnvironment;
-    using log4net;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
 
     public class LogoutModel : PageModel
     {
-        public LogoutModel(ILog log, DynamicEnvironment dynamicEnvironment, IHttpContextAccessor httpContextAccessor)
-        {
-        }
+        public bool LoggedOut { get; private set; }
+
+        public bool IsAuthenticated => User.Identity?.IsAuthenticated == true;
 
         public ActionResult OnGet()
         {
-            Response.Cookies.Delete("authentication-jwt");
-            Response.Cookies.Delete("authentication-expiry");
+            if (!IsAuthenticated)
+            {
+                Response.Cookies.Delete("authentication-jwt");
+                Response.Cookies.Delete("authentication-expiry");
+                LoggedOut = true;
+            }
+
             return new PageResult();
         }
     }

@@ -7,9 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Jube.ApiTokensCache\Jube.ApiTokensCache.csproj"/>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
         <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj"/>
         <ProjectReference Include="..\Jube.Dto\Jube.Dto.csproj"/>
+        <ProjectReference Include="..\Jube.Engine\Jube.Engine.csproj"/>
+        <ProjectReference Include="..\Jube.Preservation\Jube.Preservation.csproj"/>
         <ProjectReference Include="..\Jube.Resources\Jube.Resources.csproj"/>
         <ProjectReference Include="..\Jube.Validations\Jube.Validations.csproj"/>
     </ItemGroup>

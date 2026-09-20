@@ -30,7 +30,8 @@ namespace Jube.Service.EtcdClusterEvent
     public sealed class EtcdClusterEventService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -162,8 +163,9 @@ namespace Jube.Service.EtcdClusterEvent
                 var dtos = rows.Select(r => new EtcdClusterEventDto(
                     r.Id, r.OccurredDate.GetValueOrDefault(), r.Endpoint, r.MemberId, r.Name,
                     r.EventTypeId.GetValueOrDefault(),
-                    DescribeEventType((EtcdClusterEventType)r.EventTypeId.GetValueOrDefault()), r.PreviousValue,
-                    r.NewValue, r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
+                    DescribeEventType((EtcdClusterEventType)r.EventTypeId.GetValueOrDefault()),
+                    LogTextRedactor.Redact(r.PreviousValue),
+                    LogTextRedactor.Redact(r.NewValue), r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
 
                 var total = await repository.CountAsync(from, to, eventTypeId, search, clampedSamplePercentage,
                     token).ConfigureAwait(false);
@@ -217,14 +219,14 @@ namespace Jube.Service.EtcdClusterEvent
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[EtcdClusterEventResources.PermissionDenied], permissions);

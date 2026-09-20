@@ -40,6 +40,9 @@ namespace Jube.Data.Query
                 .ExhaustiveSearchInstancePromotedTrialInstance
                 .Where(w =>
                     w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null)
                     && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
                         .EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
                 .OrderBy(o => o.Id)

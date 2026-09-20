@@ -31,7 +31,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
 
     public sealed class OpenTelemetryLogCounterService
     {
-        private static readonly int[] permissions = [42];
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -415,14 +415,14 @@ namespace Jube.Service.OpenTelemetryLogCounter
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[OpenTelemetryLogCounterResources.PermissionDenied], permissions);

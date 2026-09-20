@@ -27,12 +27,12 @@ namespace Jube.Data.Repository
 {
     public class HaProxyServerStatusRepository(DbContext dbContext)
     {
-        public Task BulkCopyAsync(List<HAProxyServerStatus> models, CancellationToken token = default)
+        public Task BulkCopyAsync(List<HaProxyServerStatus> models, CancellationToken token = default)
         {
             return dbContext.BulkCopyAsync(models, token);
         }
 
-        public async Task<IEnumerable<HAProxyServerStatus>> GetLastAsync(int take, DateTime? from, DateTime? to,
+        public async Task<IEnumerable<HaProxyServerStatus>> GetLastAsync(int take, DateTime? from, DateTime? to,
             string search, double? samplePercentage, string sortField, string sortDirection,
             CancellationToken token = default)
         {
@@ -70,7 +70,7 @@ namespace Jube.Data.Repository
             });
         }
 
-        private IQueryable<HAProxyServerStatus> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
+        private IQueryable<HaProxyServerStatus> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
             double? samplePercentage)
         {
             var query = dbContext.HaProxyServerStatus.AsQueryable();
@@ -102,7 +102,7 @@ namespace Jube.Data.Repository
             return query;
         }
 
-        private static IOrderedQueryable<HAProxyServerStatus> ApplySort(IQueryable<HAProxyServerStatus> query,
+        private static IOrderedQueryable<HaProxyServerStatus> ApplySort(IQueryable<HaProxyServerStatus> query,
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);

@@ -30,7 +30,8 @@ namespace Jube.Service.EntityAnalysisModelAsynchronousQueueBalance
     public sealed class EntityAnalysisModelAsynchronousQueueBalanceService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -107,8 +108,7 @@ namespace Jube.Service.EntityAnalysisModelAsynchronousQueueBalance
                      "one-minute interval's queue depth for asynchronous archiving and activation-watcher " +
                      "dispatch for one Entity Analysis Model. Each of from/to defaults independently to the " +
                      "last hour when omitted. Optionally restrict to a case-insensitive substring match on the " +
-                     "Model's name. Landlord callers see rows for every tenant; other callers only see rows " +
-                     "for Models in their own tenant. Optionally apply samplePercentage on top of every other " +
+                     "Model's name. Landlord only: every other caller is refused with a 403 (permission denied). Optionally apply samplePercentage on top of every other " +
                      "filter to draw a random subset instead of the most recent rows -- useful for taking an " +
                      "unbiased baseline sample of activity to compare later, rather than only ever seeing the " +
                      "latest, potentially unrepresentative rows. The response also carries the true Total row " +
@@ -213,14 +213,14 @@ namespace Jube.Service.EntityAnalysisModelAsynchronousQueueBalance
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(

@@ -76,13 +76,13 @@ namespace Jube.Test.Infrastructure
                 return true;
             }
 
-            if (strings.TryRemove(key, out var v))
+            if (!strings.TryRemove(key, out var v))
             {
-                strings[newKey] = v;
-                return true;
+                return false;
             }
 
-            return false;
+            strings[newKey] = v;
+            return true;
         }
 
         public Task<bool> HashSetAsync(RedisKey key, RedisValue field, RedisValue value, When when = When.Always,
@@ -95,7 +95,6 @@ namespace Jube.Test.Infrastructure
             switch (when)
             {
                 case When.NotExists when existed:
-                    return Task.FromResult(false);
                 case When.Exists when !existed:
                     return Task.FromResult(false);
                 default:

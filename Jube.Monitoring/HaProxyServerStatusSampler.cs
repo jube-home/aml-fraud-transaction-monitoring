@@ -17,9 +17,9 @@ namespace Jube.Monitoring
 {
     public sealed class HaProxyServerStatusSampler(HttpClient httpClient, string statsUrl)
     {
-        public async Task<List<HAProxyServerStatus>> SampleAsync()
+        public async Task<List<HaProxyServerStatus>> SampleAsync()
         {
-            var results = new List<HAProxyServerStatus>();
+            var results = new List<HaProxyServerStatus>();
 
             string csv;
             try
@@ -57,7 +57,7 @@ namespace Jube.Monitoring
                     continue;
                 }
 
-                results.Add(new HAProxyServerStatus
+                results.Add(new HaProxyServerStatus
                 {
                     PxName = Field(fields, columnIndex, "pxname"),
                     SvName = Field(fields, columnIndex, "svname"),

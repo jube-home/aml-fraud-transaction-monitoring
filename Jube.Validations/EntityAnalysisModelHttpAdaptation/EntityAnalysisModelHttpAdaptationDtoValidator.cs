@@ -28,10 +28,18 @@ namespace Jube.Validations.EntityAnalysisModelHttpAdaptation
         public EntityAnalysisModelHttpAdaptationDtoValidator(EntityAnalysisModelHttpAdaptationRepository repository,
             IStringLocalizer localiser)
         {
+            Include(new FiniteNumberValidator<EntityAnalysisModelHttpAdaptationDto>());
+
             RuleFor(p => p.EntityAnalysisModelId)
                 .GreaterThan(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelHttpAdaptationResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
+
+            RuleFor(p => p.EntityAnalysisModelId)
+                .MustAsync(repository.ParentModelVisibleAsync)
+                .WithMessage(_ => localiser[EntityAnalysisModelHttpAdaptationResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdNotFound")
+                .When(p => p.Id == 0 && p.EntityAnalysisModelId > 0);
 
             RuleFor(p => p.Name)
                 .NotEmpty()
@@ -59,17 +67,40 @@ namespace Jube.Validations.EntityAnalysisModelHttpAdaptation
                     string.Format(localiser[EntityAnalysisModelHttpAdaptationResources.HttpEndpointMaxLength],
                         MaxHttpEndpointLength))
                 .WithErrorCode("HttpEndpointMaximumLength");
-            
+
             RuleFor(p => p.HttpEndpoint)
-                .Must(m => m!.StartsWith('/'))
+                .Must(m => m is not null && m.StartsWith('/'))
                 .WithMessage(_ => localiser[EntityAnalysisModelHttpAdaptationResources.HttpEndpointMustBeAbsolutePath])
                 .WithErrorCode("HttpEndpointMustBeAbsolutePath")
+                .When(w => !string.IsNullOrEmpty(w.HttpEndpoint));
+
+            RuleFor(p => p.HttpEndpoint)
+                .Must(m => m is not null && IsPlainPath(m))
+                .WithMessage(_ => localiser[EntityAnalysisModelHttpAdaptationResources.HttpEndpointInvalidPath])
+                .WithErrorCode("HttpEndpointInvalidPath")
                 .When(w => !string.IsNullOrEmpty(w.HttpEndpoint));
 
             RuleFor(p => p.Priority)
                 .GreaterThanOrEqualTo(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelHttpAdaptationResources.PriorityRange])
                 .WithErrorCode("PriorityRange");
+        }
+
+        private static bool IsPlainPath(string endpoint)
+        {
+            if (endpoint.Any(c => char.IsControl(c) || char.IsWhiteSpace(c) || c == '\\'))
+            {
+                return false;
+            }
+
+            var path = endpoint.Split('?', '#')[0];
+            var decoded = Uri.UnescapeDataString(path);
+            if (decoded.Any(c => char.IsControl(c) || c == '\\'))
+            {
+                return false;
+            }
+
+            return !decoded.Split('/').Any(segment => segment is "." or "..");
         }
     }
 }

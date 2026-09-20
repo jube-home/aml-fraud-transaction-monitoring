@@ -21,15 +21,8 @@ namespace Jube.App.Pages.Account
     using Microsoft.AspNetCore.Mvc.RazorPages;
 
     [AllowAnonymous]
-    public class LoginModel : PageModel
+    public class LoginModel(DynamicEnvironment dynamicEnvironment) : PageModel
     {
-        private readonly DynamicEnvironment dynamicEnvironment;
-
-        public LoginModel(DynamicEnvironment dynamicEnvironment)
-        {
-            this.dynamicEnvironment = dynamicEnvironment;
-        }
-
         public IActionResult OnGet(string redirectUrl = "/")
         {
             if (String.IsNullOrWhiteSpace(redirectUrl))

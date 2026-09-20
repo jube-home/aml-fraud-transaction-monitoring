@@ -41,6 +41,16 @@ namespace Jube.Data.Repository
                 .ToListAsync(token).ConfigureAwait(false);
         }
 
+        public async Task<string> GetChangeMarkerAsync(CancellationToken token = default)
+        {
+            var successful = dbContext.SanctionEntryImport.Where(w => w.Successful == 1);
+            var count = await successful.CountAsync(token).ConfigureAwait(false);
+            var maxId = await successful.Select(s => (int?)s.Id).MaxAsync(token).ConfigureAwait(false);
+            var maxEnd = await successful.Select(s => s.EndDate).MaxAsync(token).ConfigureAwait(false);
+
+            return $"{count}|{maxId}|{maxEnd:O}";
+        }
+
         public async Task<SanctionEntryImport> InsertAsync(SanctionEntryImport model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);

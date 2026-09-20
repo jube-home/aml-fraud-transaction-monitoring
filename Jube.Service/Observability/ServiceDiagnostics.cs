@@ -20,10 +20,10 @@ namespace Jube.Service.Observability
     public static class ServiceDiagnostics
     {
         public const string Name = "Jube.Service";
-        private static readonly AssemblyName Asm = typeof(ServiceDiagnostics).Assembly.GetName();
+        private static readonly AssemblyName asm = typeof(ServiceDiagnostics).Assembly.GetName();
 
         // ReSharper disable once MemberCanBePrivate.Global
-        public static readonly string Version = Asm.Version?.ToString() ?? "0.0.0";
+        public static readonly string Version = asm.Version?.ToString() ?? "0.0.0";
         public static readonly ActivitySource ActivitySource = new(Name, Version);
 
         // ReSharper disable once MemberCanBePrivate.Global

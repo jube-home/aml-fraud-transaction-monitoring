@@ -22,5 +22,6 @@ namespace Jube.Resources
         public const string KvpValueRequired = nameof(KvpValueRequired);
         public const string EntityAnalysisModelDictionaryIdInvalid = nameof(EntityAnalysisModelDictionaryIdInvalid);
         public const string DeleteExpiryDateMustBeFuture = nameof(DeleteExpiryDateMustBeFuture);
+        public const string DictionaryNotFound = nameof(DictionaryNotFound);
     }
 }

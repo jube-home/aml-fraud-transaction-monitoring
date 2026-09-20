@@ -79,7 +79,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     continue;
                                 }
 
-                                var entityAnalysisModelRuleReprocessing = await GetEntityAnalysisModelRuleReprocessingInstanceAsync(dbContext, modelKvp, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                var entityAnalysisModelRuleReprocessing =
+                                    await GetEntityAnalysisModelRuleReprocessingInstanceAsync(dbContext, modelKvp,
+                                        context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
                                 if (!entityAnalysisModelRuleReprocessing.FoundInstance)
                                 {
@@ -93,7 +95,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 }
 
                                 var documentsInitialCounts =
-                                    await GetInitialCountsAsync(dbContext, modelKvp.Value.Instance.Guid, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    await GetInitialCountsAsync(dbContext, modelKvp.Value.Instance.Guid,
+                                        context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
                                 if (documentsInitialCounts != null)
                                 {
@@ -101,10 +104,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                         entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance,
                                         documentsInitialCounts);
 
-                                    await UpdateEntityAnalysisModelsReprocessingRuleInstanceReferenceDateCountAsync(dbContext,
-                                        entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance, modelKvp.Value.Instance.Guid, dateRangeAndCount.adjustedStartDate, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    await UpdateEntityAnalysisModelsReprocessingRuleInstanceReferenceDateCountAsync(
+                                        dbContext,
+                                        entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance,
+                                        modelKvp.Value.Instance.Guid, dateRangeAndCount.adjustedStartDate,
+                                        context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
-                                    var limit = Int32.Parse(context.Services.DynamicEnvironment.AppSettings("ReprocessingBulkLimit"));
+                                    var limit = Int32.Parse(
+                                        context.Services.DynamicEnvironment.AppSettings("ReprocessingBulkLimit"));
 
                                     if (context.Services.Log.IsInfoEnabled)
                                     {
@@ -125,9 +132,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     // ReSharper disable once RedundantAssignment
                                     var deleted = false;
 
-                                    using var archiveDatabase = new Postgres(context.Services.ReportConnectionString ?? dbContext.Connection.ConnectionString,
+                                    using var archiveDatabase = new Postgres(
+                                        context.Services.ReportConnectionString ??
+                                        dbContext.Connection.ConnectionString,
                                         context.Services.Log,
-                                        context.Services.DynamicEnvironment.AppSettings("ParserAssertSelectOnly").Equals("True", StringComparison.OrdinalIgnoreCase));
+                                        context.Services.DynamicEnvironment.ParserAssertSelectOnly());
                                     do
                                     {
                                         if (context.Services.Log.IsInfoEnabled)
@@ -136,13 +145,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                                 $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is about to run a query on cache to bring back all document for filter,  skipping {processed} and limiting {limit}.");
                                         }
 
-                                        var archivePayloadSelectAndBody = modelKvp.Value.References.ArchivePayloadSqlSelect + " " + modelKvp.Value.References.ArchivePayloadSqlBody;
+                                        var archivePayloadSelectAndBody =
+                                            modelKvp.Value.References.ArchivePayloadSqlSelect + " " +
+                                            modelKvp.Value.References.ArchivePayloadSqlBody;
 
                                         var documents =
                                             await archiveDatabase.ExecuteReturnPayloadFromArchiveWithSkipLimitAsync(
-                                                archivePayloadSelectAndBody, dateRangeAndCount.adjustedStartDate,
-                                                processed,
-                                                limit, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                                    archivePayloadSelectAndBody, dateRangeAndCount.adjustedStartDate,
+                                                    processed,
+                                                    limit, context.Services.TaskCoordinator.CancellationToken)
+                                                .ConfigureAwait(false);
 
                                         if (documents.Count == 0)
                                         {
@@ -151,7 +163,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                                         foreach (var entry in documents)
                                         {
-                                            context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
+                                            context.Services.TaskCoordinator.CancellationToken
+                                                .ThrowIfCancellationRequested();
 
                                             try
                                             {
@@ -161,7 +174,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                                         $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is about to process document {processed}.");
                                                 }
 
-                                                if (entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance
+                                                if (entityAnalysisModelRuleReprocessing
+                                                        .EntityAnalysisModelRuleReprocessingInstance
                                                         .ReprocessingSample >= random.NextDouble())
                                                 {
                                                     if (context.Services.Log.IsInfoEnabled)
@@ -175,7 +189,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                                     var entityInstanceEntryDictionaryKvPs =
                                                         new PooledDictionary<string, DictionaryNoBoxing<string>>();
 
-                                                    if (entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance
+                                                    if (entityAnalysisModelRuleReprocessing
+                                                        .EntityAnalysisModelRuleReprocessingInstance
                                                         .ReprocessingRuleCompileDelegate(entry,
                                                             modelKvp.Value.Dependencies.EntityAnalysisModelLists,
                                                             entityInstanceEntryDictionaryKvPs, context.Services.Log))
@@ -184,7 +199,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                                             entry[modelKvp.Value.References.ReferenceDateName];
 
                                                         await InvokeReprocessingForDocumentAsync(modelKvp.Value,
-                                                            entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance, processed,
+                                                            entityAnalysisModelRuleReprocessing
+                                                                .EntityAnalysisModelRuleReprocessingInstance, processed,
                                                             entry).ConfigureAwait(false);
 
                                                         matched += 1;
@@ -231,9 +247,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                             if (lastUpdated <= DateTime.UtcNow.AddSeconds(-10))
                                             {
                                                 if (await LogAndGetTerminateAsync(dbContext,
-                                                        entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance,
-                                                        processed, sampled, matched, errors,
-                                                        dateRangeAndCount.lastReferenceDate, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false))
+                                                            entityAnalysisModelRuleReprocessing
+                                                                .EntityAnalysisModelRuleReprocessingInstance,
+                                                            processed, sampled, matched, errors,
+                                                            dateRangeAndCount.lastReferenceDate,
+                                                            context.Services.TaskCoordinator.CancellationToken)
+                                                        .ConfigureAwait(false))
                                                 {
                                                     if (context.Services.Log.IsInfoEnabled)
                                                     {
@@ -260,12 +279,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                         }
 
                                         deleted = await LogAndGetTerminateAsync(dbContext,
-                                            entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance,
-                                            processed, sampled, matched, errors, dateRangeAndCount.lastReferenceDate, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                            entityAnalysisModelRuleReprocessing
+                                                .EntityAnalysisModelRuleReprocessingInstance,
+                                            processed, sampled, matched, errors, dateRangeAndCount.lastReferenceDate,
+                                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                                     } while (!deleted);
 
                                     await FinishReprocessBatchChunkAsync(dbContext,
-                                        entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                        entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance,
+                                        context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                                 }
                                 else
                                 {
@@ -288,26 +310,34 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 "Entity Reprocessing: Has finished a cycle and will now sleep for 20 seconds,  the database connection to Database will also be closed.");
                         }
 
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
+                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
 
-                        await Task.Delay(20000, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(20000, context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
+                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
 
                         throw;
                     }
                     catch (Exception ex) when (ex is not OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
+                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
 
                         context.Services.Log.Error($"Entity Reprocessing: {ex}. Waiting.");
 
-                        await Task.Delay(20000, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(20000, context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
                     }
                 }
             }
@@ -373,7 +403,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is processing {processed} and matched the rule and will now invoke.");
                 }
 
-                await EntityAnalysisModelInvoke.InvokeAsync(entityAnalysisModel, entry, entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId).ConfigureAwait(false);
+                await EntityAnalysisModelInvoke.InvokeAsync(entityAnalysisModel, entry,
+                        entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId)
+                    .ConfigureAwait(false);
 
                 if (context.Services.Log.IsInfoEnabled)
                 {
@@ -388,7 +420,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
         }
 
         private async Task FinishReprocessBatchChunkAsync(DbContext dbContext,
-            EntityAnalysisModelRuleReprocessingInstance entityAnalysisModelRuleReprocessingInstance, CancellationToken token = default)
+            EntityAnalysisModelRuleReprocessingInstance entityAnalysisModelRuleReprocessingInstance,
+            CancellationToken token = default)
         {
             try
             {
@@ -415,7 +448,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
         }
 
-        private async Task UpdateEntityAnalysisModelsReprocessingRuleInstanceReferenceDateCountAsync(DbContext dbContext,
+        private async Task UpdateEntityAnalysisModelsReprocessingRuleInstanceReferenceDateCountAsync(
+            DbContext dbContext,
             EntityAnalysisModelRuleReprocessingInstance entityAnalysisModelRuleReprocessingInstance,
             Guid entityAnalysisModelGuid, DateTime lastReferenceDate, CancellationToken token = default)
         {
@@ -428,7 +462,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 }
 
                 var archiveRepository = new ArchiveRepository(dbContext);
-                var allCount = await archiveRepository.GetCountsByReferenceDateAsync(entityAnalysisModelGuid, lastReferenceDate, token).ConfigureAwait(false);
+                var allCount = await archiveRepository
+                    .GetCountsByReferenceDateAsync(entityAnalysisModelGuid, lastReferenceDate, token)
+                    .ConfigureAwait(false);
 
                 if (context.Services.Log.IsInfoEnabled)
                 {
@@ -456,7 +492,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                context.Services.Log.Error($"UpdateEntityAnalysisModelsReprocessingRuleInstanceReferenceDateCount: has produced an error {ex}");
+                context.Services.Log.Error(
+                    $"UpdateEntityAnalysisModelsReprocessingRuleInstanceReferenceDateCount: has produced an error {ex}");
             }
         }
 
@@ -470,7 +507,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
             try
             {
-
                 if (context.Services.Log.IsInfoEnabled)
                 {
                     context.Services.Log.Info(
@@ -588,7 +624,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             try
             {
                 var getArchiveRangeAndCountsQuery = new GetArchiveRangeAndCountsQuery(dbContext);
-                value = await getArchiveRangeAndCountsQuery.ExecuteAsync(entityAnalysisModelGuid, token).ConfigureAwait(false);
+                value = await getArchiveRangeAndCountsQuery.ExecuteAsync(entityAnalysisModelGuid, token)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -598,10 +635,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             return value;
         }
 
-        private async Task<(EntityAnalysisModelRuleReprocessingInstance EntityAnalysisModelRuleReprocessingInstance, bool FoundInstance)> GetEntityAnalysisModelRuleReprocessingInstanceAsync(DbContext dbContext,
-            KeyValuePair<int, EntityAnalysisModel> modelKvp, CancellationToken token = default)
+        private async
+            Task<(EntityAnalysisModelRuleReprocessingInstance EntityAnalysisModelRuleReprocessingInstance, bool
+                FoundInstance)> GetEntityAnalysisModelRuleReprocessingInstanceAsync(DbContext dbContext,
+                KeyValuePair<int, EntityAnalysisModel> modelKvp, CancellationToken token = default)
         {
-            var returnTuple = (EntityAnalysisModelRuleReprocessingInstance: new EntityAnalysisModelRuleReprocessingInstance(), FoundInstance: false);
+            var returnTuple = (
+                EntityAnalysisModelRuleReprocessingInstance: new EntityAnalysisModelRuleReprocessingInstance(),
+                FoundInstance: false);
 
             try
             {
@@ -624,9 +665,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                 if (record != null)
                 {
-                    returnTuple.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelId = record.EntityAnalysisModelId;
+                    returnTuple.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelId =
+                        record.EntityAnalysisModelId;
 
-                    returnTuple.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId
+                    returnTuple.EntityAnalysisModelRuleReprocessingInstance
+                            .EntityAnalysisModelsReprocessingRuleInstanceId
                         = record.Id;
 
                     if (context.Services.Log.IsDebugEnabled)
@@ -681,7 +724,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                     if (record.ReprocessingSample.HasValue)
                     {
-                        returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingSample = record.ReprocessingSample.Value;
+                        returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingSample =
+                            record.ReprocessingSample.Value;
 
                         if (context.Services.Log.IsDebugEnabled)
                         {
@@ -702,7 +746,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                     if (record.RuleScriptTypeId.HasValue)
                     {
-                        returnTuple.EntityAnalysisModelRuleReprocessingInstance.RuleScriptTypeId = record.RuleScriptTypeId.Value;
+                        returnTuple.EntityAnalysisModelRuleReprocessingInstance.RuleScriptTypeId =
+                            record.RuleScriptTypeId.Value;
 
                         if (context.Services.Log.IsDebugEnabled)
                         {
@@ -735,7 +780,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                     foreach (var entityAnalysisModelRequestXPath in
                              entityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths
-                                 .Where(entityAnalysisModelRequestXPath => !parser.EntityAnalysisModelRequestXPaths.ContainsKey(entityAnalysisModelRequestXPath.Name)))
+                                 .Where(entityAnalysisModelRequestXPath =>
+                                     !parser.EntityAnalysisModelRequestXPaths.ContainsKey(
+                                         entityAnalysisModelRequestXPath.Name)))
                     {
                         parser.EntityAnalysisModelRequestXPaths.Add(entityAnalysisModelRequestXPath.Name,
                             new EntityAnalysisModelRequestXPath
@@ -749,9 +796,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     foreach (var publicProperty in
                              entityAnalysisModel.Collections.EntityAnalysisModelInlineScripts
                                  .SelectMany(entityAnalysisModelInlineScript
-                                     => SyntaxTreeHelpers.GetPublicProperties(entityAnalysisModelInlineScript.InlineScriptCode, entityAnalysisModelInlineScript.LanguageId == 2)))
+                                     => SyntaxTreeHelpers.GetPublicProperties(
+                                         entityAnalysisModelInlineScript.InlineScriptCode,
+                                         entityAnalysisModelInlineScript.LanguageId == 2)))
                     {
-                        parser.EntityAnalysisModelInlineScriptProperties.TryAdd(publicProperty.Key, publicProperty.Value.DataTypeId);
+                        parser.EntityAnalysisModelInlineScriptProperties.TryAdd(publicProperty.Key,
+                            publicProperty.Value.DataTypeId);
                     }
 
                     if (context.Services.Log.IsDebugEnabled)
@@ -774,7 +824,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                         if (parsedRule.ErrorSpans.Count == 0)
                         {
-                            returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleScript = parsedRule.ParsedRuleText;
+                            returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleScript =
+                                parsedRule.ParsedRuleText;
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -796,7 +847,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                         if (parsedRule.ErrorSpans.Count == 0)
                         {
-                            returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleScript = parsedRule.ParsedRuleText;
+                            returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleScript =
+                                parsedRule.ParsedRuleText;
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -819,7 +871,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         "Public Shared Function Match(Data As DictionaryNoBoxing(Of String), List As Dictionary(Of String, List(Of String)),KVP As PooledDictionary(Of String, DictionaryNoBoxing(Of String)),Log As ILog) As Boolean\r\n");
                     gatewayRuleScript.Append("Dim Matched As Boolean\r\n");
                     gatewayRuleScript.Append("Try\r\n");
-                    gatewayRuleScript.Append(returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleScript + "\r\n");
+                    gatewayRuleScript.Append(
+                        returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleScript + "\r\n");
                     gatewayRuleScript.Append("Catch ex As Exception\r\n");
                     gatewayRuleScript.Append("Log.Info(ex.ToString)\r\n");
                     gatewayRuleScript.Append("End Try\r\n");
@@ -853,7 +906,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile =
                             value;
                         var classType =
-                            returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile.GetType("GatewayRule");
+                            returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile.GetType(
+                                "GatewayRule");
 
                         var methodInfo = classType?.GetMethod("Match");
                         if (methodInfo != null)
@@ -883,14 +937,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                         if (context.Services.Log.IsDebugEnabled)
                         {
-                            context.Services.Log.Debug($"Entity Model Sync: The code base path has been returned as {codeBase}.");
+                            context.Services.Log.Debug(
+                                $"Entity Model Sync: The code base path has been returned as {codeBase}.");
                         }
 
                         var strPathBinary = Path.GetDirectoryName(codeBase);
 
                         if (context.Services.Log.IsDebugEnabled)
                         {
-                            context.Services.Log.Debug($"Entity Model Sync: The code base path has been returned as {codeBase}.");
+                            context.Services.Log.Debug(
+                                $"Entity Model Sync: The code base path has been returned as {codeBase}.");
                         }
 
                         var compile = new Compile();
@@ -914,21 +970,25 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     $"Entity Reprocessing: Model {key} and Reprocessing Rule Model {returnTuple.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} has been hashed to {gatewayRuleScriptHash} has now been compiled without error,  a delegate will now be allocated.");
                             }
 
-                            returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile = compile.CompiledAssembly;
+                            returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile =
+                                compile.CompiledAssembly;
 
                             var classType =
-                                returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile.GetType("GatewayRule");
+                                returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile.GetType(
+                                    "GatewayRule");
                             var methodInfo = classType?.GetMethod("Match");
                             if (methodInfo != null)
                             {
-                                returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompileDelegate =
+                                returnTuple.EntityAnalysisModelRuleReprocessingInstance
+                                        .ReprocessingRuleCompileDelegate =
                                     (EntityAnalysisModelRuleReprocessingInstance.Match)Delegate.CreateDelegate(
                                         typeof(EntityAnalysisModelRuleReprocessingInstance.Match), methodInfo);
                             }
 
                             context.Caching.HashCacheAssembly.TryAdd(gatewayRuleScriptHash, compile.CompiledAssembly);
                             context.Caching.HashCacheAssemblyMetadata.TryAdd(gatewayRuleScriptHash,
-                                new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes, compile.CompiledAssemblyBinary, gatewayRuleScript.ToString()));
+                                new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
+                                    compile.CompiledAssemblyBinary, gatewayRuleScript.ToString()));
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -963,7 +1023,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     context.Services.Log.Debug(
                         $"Entity Reprocessing:  Has finished loading reprocessing instance {returnTuple.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId}.  Will now proceed to select the counts and date ranges.");
                 }
-
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {

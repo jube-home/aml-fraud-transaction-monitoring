@@ -45,10 +45,13 @@ namespace Jube.Data.Repository
                                                                      && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
-        public async Task<IEnumerable<TenantRegistry>> GetByFilterAsync(string filter, CancellationToken token = default)
+        public async Task<IEnumerable<TenantRegistry>> GetByFilterAsync(string filter,
+            CancellationToken token = default)
         {
-            return await dbContext.TenantRegistry.Where(w => w.Name.ToLower().Contains(filter)
-                                                             && (w.Deleted == 0 || w.Deleted == null)).ToListAsync(token);
+            var lowerFilter = filter.ToLower();
+            return await dbContext.TenantRegistry.Where(w => w.Name.ToLower().Contains(lowerFilter)
+                                                             && (w.Deleted == 0 || w.Deleted == null))
+                .ToListAsync(token);
         }
 
         public async Task<TenantRegistry> InsertAsync(TenantRegistry model, CancellationToken token = default)
@@ -73,17 +76,18 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
-            model.CreatedUser = userName;
-            model.CreatedDate = DateTime.UtcNow;
+            model.CreatedUser = existing.CreatedUser;
+            model.CreatedDate = existing.CreatedDate;
+
+            model.Landlord = existing.Landlord;
+            model.UpdatedUser = userName;
+            model.UpdatedDate = DateTime.UtcNow;
             model.Version = existing.Version + 1;
-            model.CreatedUser = userName;
 
             await dbContext.UpdateAsync(model, token: token);
 
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<TenantRegistry, TenantRegistryVersion>();
-            }, NullLoggerFactory.Instance));
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<TenantRegistry, TenantRegistryVersion>(); }, NullLoggerFactory.Instance));
 
             var audit = mapper.Map<TenantRegistryVersion>(existing);
             audit.TenantRegistryId = existing.Id;

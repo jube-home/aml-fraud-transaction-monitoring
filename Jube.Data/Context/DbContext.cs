@@ -39,9 +39,9 @@ namespace Jube.Data.Context
 
         public ITable<CaptureQueueHealth> CaptureQueueHealth => GetTable<CaptureQueueHealth>();
 
-        public ITable<HAProxyServerStatus> HaProxyServerStatus => GetTable<HAProxyServerStatus>();
+        public ITable<HaProxyServerStatus> HaProxyServerStatus => GetTable<HaProxyServerStatus>();
 
-        public ITable<HAProxyReachabilityProbe> HaProxyReachabilityProbe => GetTable<HAProxyReachabilityProbe>();
+        public ITable<HaProxyReachabilityProbe> HaProxyReachabilityProbe => GetTable<HaProxyReachabilityProbe>();
 
         public ITable<OverlayNetworkTaskDrift> OverlayNetworkTaskDrift => GetTable<OverlayNetworkTaskDrift>();
 
@@ -108,6 +108,7 @@ namespace Jube.Data.Context
         public ITable<CaseFile> CaseFile => GetTable<CaseFile>();
 
         public ITable<UserLogin> UserLogin => GetTable<UserLogin>();
+        public ITable<UserLogout> UserLogout => GetTable<UserLogout>();
 
         public ITable<CaseNote> CaseNote => GetTable<CaseNote>();
 

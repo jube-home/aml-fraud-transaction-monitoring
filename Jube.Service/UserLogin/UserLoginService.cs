@@ -51,7 +51,8 @@ namespace Jube.Service.UserLogin
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            repository = new UserLoginRepository(dbContext);
+            repository = new UserLoginRepository(dbContext, null,
+                permissionValidation.Landlord ? null : tenantRegistryId);
         }
 
         public static Task<UserLoginService> CreateAsync(DbContext dbContext, string? userName, ILog log,
@@ -102,7 +103,7 @@ namespace Jube.Service.UserLogin
                      "three schemes (Username/Password, Negotiate, OAuth/OpenID Connect) -- ordered per " +
                      "sortField/sortDirection (most recent first by default), capped at 'take' rows (max " +
                      "100000, default 100000). Each of from/to defaults independently to the last hour when " +
-                     "omitted. Not scoped to any Model or tenant. Optionally restrict to a date range (by " +
+                     "omitted. Scoped to the caller's own tenant's users; a landlord sees every tenant. Optionally restrict to a date range (by " +
                      "CreatedDate) and/or a case-insensitive substring search against CreatedUser, RemoteIp, " +
                      "UserAgent or FailureMessage. Optionally apply samplePercentage on top of every other " +
                      "filter to draw a random subset instead of the most recent rows. Statistics is always " +

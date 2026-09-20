@@ -42,6 +42,9 @@ namespace Jube.Data.Query
                 .Where(w =>
                     w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
                     && w.Active == 1
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null)
                     && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
                         .EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
                 .OrderByDescending(o => o.Id)
@@ -49,12 +52,24 @@ namespace Jube.Data.Query
 
             var errors = await dbContext.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
                 .Where(w =>
-                    w.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId)
+                    w.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId
+                    && (w.Deleted == 0 || w.Deleted == null))
                 .OrderBy(o => o.Id)
-                .Select(s => s.Actual.Value - s.Predicted.Value).ToArrayAsync(token);
+                .Select(s => new { s.Actual, s.Predicted }).ToListAsync(token);
+
+            var finiteErrors = errors
+                .Where(w => w.Actual.HasValue && w.Predicted.HasValue)
+                .Select(s => s.Actual.Value - s.Predicted.Value)
+                .Where(double.IsFinite)
+                .ToArray();
 
             var histogram = new Histogram();
-            histogram.Compute(errors, 10);
+            if (finiteErrors.Length == 0)
+            {
+                return new List<Dto>();
+            }
+
+            histogram.Compute(finiteErrors, 10);
 
             return histogram.Bins
                 .Select(s => new Dto

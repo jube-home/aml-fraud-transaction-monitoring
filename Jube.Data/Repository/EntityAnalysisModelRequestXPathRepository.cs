@@ -21,6 +21,7 @@ using AutoMapper;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
@@ -152,9 +153,12 @@ namespace Jube.Data.Repository
         public async Task<EntityAnalysisModelRequestXpath> InsertIncrementCacheIndexIdAsync(
             EntityAnalysisModelRequestXpath model, CancellationToken token = default)
         {
-            await using var transaction = await dbContext.BeginTransactionAsync(IsolationLevel.Serializable, token);
+            await using var transaction = await dbContext.BeginTransactionAsync(IsolationLevel.ReadCommitted, token);
             try
             {
+                await dbContext.ExecuteAsync("SELECT pg_advisory_xact_lock(@key)", token,
+                    new DataParameter("key", 0x5850415400000000L + model.EntityAnalysisModelId));
+
                 var cacheIndexId = await dbContext.EntityAnalysisModelRequestXpath
                     .Where(w => (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
                                  !tenantRegistryId.HasValue)
@@ -200,7 +204,10 @@ namespace Jube.Data.Repository
                     && (w.Deleted == 0 || w.Deleted == null)
                     && (w.Locked == 0 || w.Locked == null), token);
 
-            if (existing == null) throw new KeyNotFoundException();
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
 
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
@@ -235,7 +242,10 @@ namespace Jube.Data.Repository
                 .Set(s => s.DeletedUser, userName)
                 .UpdateAsync(token);
 
-            if (records == 0) throw new KeyNotFoundException();
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
         }
 
         public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,

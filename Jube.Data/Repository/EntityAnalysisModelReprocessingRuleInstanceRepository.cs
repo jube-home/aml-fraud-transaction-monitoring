@@ -13,12 +13,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Data;
 
 namespace Jube.Data.Repository
 {
@@ -85,24 +87,50 @@ namespace Jube.Data.Repository
         public async Task<EntityAnalysisModelReprocessingRuleInstance> InsertByExistingUpdateUncompletedAsync(
             EntityAnalysisModelReprocessingRuleInstance model, CancellationToken token = default)
         {
-            var existing = await dbContext.EntityAnalysisModelReprocessingRuleInstance
-                .FirstOrDefaultAsync(w =>
-                        (w.EntityAnalysisModelReprocessingRule.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
-                         || !tenantRegistryId.HasValue)
-                        && w.EntityAnalysisModelReprocessingRuleId
-                        == model.EntityAnalysisModelReprocessingRuleId
-                        && (w.Deleted == 0 || w.Deleted == null)
-                        && w.StatusId != 4
-                    , token);
+            await using var transaction =
+                await dbContext.BeginTransactionAsync(IsolationLevel.ReadCommitted, token);
+            try
+            {
+                await dbContext.ExecuteAsync("SELECT pg_advisory_xact_lock(@key)", token, new DataParameter("key",
+                    0x5250524900000000L + model.EntityAnalysisModelReprocessingRuleId.GetValueOrDefault()));
 
-            if (existing != null) throw new KeyNotFoundException();
+                var existing = await dbContext.EntityAnalysisModelReprocessingRuleInstance
+                    .FirstOrDefaultAsync(w =>
+                            (w.EntityAnalysisModelReprocessingRule.EntityAnalysisModel.TenantRegistryId ==
+                             tenantRegistryId
+                             || !tenantRegistryId.HasValue)
+                            && w.EntityAnalysisModelReprocessingRuleId
+                            == model.EntityAnalysisModelReprocessingRuleId
+                            && (w.Deleted == 0 || w.Deleted == null)
+                            && w.StatusId != 4
+                        , token);
 
-            model.CreatedUser = userName;
-            model.CreatedDate = DateTime.UtcNow;
-            model.Version = 1;
-            model.StatusId = 0;
-            model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
-            return model;
+                if (existing != null)
+                {
+                    throw new KeyNotFoundException();
+                }
+
+                model.CreatedUser = userName;
+                model.CreatedDate = DateTime.UtcNow;
+                model.Version = 1;
+                model.StatusId = 0;
+                model.AvailableCount = 0;
+                model.SampledCount = 0;
+                model.MatchedCount = 0;
+                model.ProcessedCount = 0;
+                model.ErrorCount = 0;
+                model.StartedDate = null;
+                model.CompletedDate = null;
+                model.ReferenceDate = null;
+                model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+                await transaction.CommitAsync(token);
+                return model;
+            }
+            catch
+            {
+                await transaction.RollbackAsync(token);
+                throw;
+            }
         }
 
         public async Task<EntityAnalysisModelReprocessingRuleInstance> UpdateCountsAsync
@@ -113,7 +141,10 @@ namespace Jube.Data.Repository
                 .FirstOrDefaultAsync(w => w.Id
                     == id && (w.Deleted == 0 || w.Deleted == null), token);
 
-            if (existing == null) throw new KeyNotFoundException();
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
 
             existing.SampledCount = sampledCount;
             existing.MatchedCount = matchedCount;
@@ -140,7 +171,10 @@ namespace Jube.Data.Repository
                                               || !tenantRegistryId.HasValue)
                                           && (w.Deleted == 0 || w.Deleted == null), token).ConfigureAwait(false);
 
-            if (existing == null) throw new KeyNotFoundException();
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
 
             model.Version = existing.Version + 1;
             model.CreatedUser = userName;
@@ -192,7 +226,10 @@ namespace Jube.Data.Repository
                 .Set(s => s.DeletedUser, userName)
                 .UpdateAsync(token);
 
-            if (records == 0) throw new KeyNotFoundException();
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
         }
     }
 }

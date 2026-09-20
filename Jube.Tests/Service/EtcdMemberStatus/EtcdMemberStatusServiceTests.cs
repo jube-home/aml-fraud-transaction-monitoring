@@ -103,7 +103,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             var firstId = await CreateEntryAsync(dbContext, endpoint);
             var secondId = await CreateEntryAsync(dbContext, endpoint);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Endpoint == endpoint).ToList();
@@ -117,7 +117,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -129,6 +129,15 @@ namespace Jube.Test.Service.EtcdMemberStatus
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -161,7 +170,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             await CreateEntryAsync(dbContext, $"{endpoint}Old", oldDate);
             await CreateEntryAsync(dbContext, $"{endpoint}New", newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Endpoint.StartsWith(endpoint)).ToList();
@@ -178,7 +187,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             await CreateEntryAsync(dbContext, uniqueEndpoint, alarmCount: 1, alarms: "NOSPACE");
             await CreateEntryAsync(dbContext, "OtherHost:2379");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: "NOSPACE");
 
             var mine = result.Rows.Where(r => r.Endpoint == uniqueEndpoint || r.Endpoint == "OtherHost:2379").ToList();
@@ -195,7 +204,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             await CreateEntryAsync(dbContext, endpoint);
             await CreateEntryAsync(dbContext, endpoint);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -209,7 +218,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             await CreateEntryAsync(dbContext, endpoint);
             await CreateEntryAsync(dbContext, endpoint);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -222,7 +231,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             var endpoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:2379";
             await CreateEntryAsync(dbContext, endpoint);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Endpoint == endpoint);
@@ -239,7 +248,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             await CreateEntryAsync(dbContext, $"{endpoint}Old", twoHoursAgo);
             await CreateEntryAsync(dbContext, $"{endpoint}New", justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint);
 
             var mine = result.Rows.Where(r => r.Endpoint.StartsWith(endpoint)).ToList();
@@ -256,7 +265,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             await CreateEntryAsync(dbContext, endpoint, dbSizeBytes: 1000);
             await CreateEntryAsync(dbContext, endpoint, dbSizeBytes: 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: endpoint, sortField: "dbSizeBytes",
                 sortDirection: "asc");
@@ -278,7 +287,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             await CreateEntryAsync(dbContext, endpoint, dbSizeBytes: 2000);
             await CreateEntryAsync(dbContext, endpoint, dbSizeBytes: 1000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, sortField: "dbSizeBytes",
                 sortDirection: ascendingKeyword);
 
@@ -293,7 +302,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             await CreateEntryAsync(dbContext, endpoint, dbSizeBytes: 1000);
             await CreateEntryAsync(dbContext, endpoint, dbSizeBytes: 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, sortField: "dbSizeBytes",
                 sortDirection: "banana");
 
@@ -308,7 +317,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             var firstId = await CreateEntryAsync(dbContext, endpoint, DateTime.UtcNow.AddMinutes(-30));
             var secondId = await CreateEntryAsync(dbContext, endpoint, DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -326,7 +335,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
                 await CreateEntryAsync(dbContext, endpoint);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: endpoint);
 
             result.Rows.Should().HaveCount(2);
@@ -344,7 +353,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
                 await CreateEntryAsync(dbContext, endpoint, dbSizeBytes: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint);
 
             var stats = result.Statistics.Columns["dbSizeBytes"];
@@ -363,7 +372,7 @@ namespace Jube.Test.Service.EtcdMemberStatus
             var endpoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:2379";
             await CreateEntryAsync(dbContext, endpoint);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: endpoint);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

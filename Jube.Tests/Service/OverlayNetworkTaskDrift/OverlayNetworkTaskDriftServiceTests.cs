@@ -97,7 +97,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             var firstId = await CreateEntryAsync(dbContext, instance);
             var secondId = await CreateEntryAsync(dbContext, instance);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var mine = result.Rows.Where(r => r.Instance == instance).ToList();
@@ -110,7 +110,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -122,6 +122,15 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -154,7 +163,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             await CreateEntryAsync(dbContext, $"{instance}Old", createdDate: oldDate);
             await CreateEntryAsync(dbContext, $"{instance}New", createdDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Instance.StartsWith(instance)).ToList();
@@ -169,7 +178,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, instance);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Instance == instance);
@@ -186,7 +195,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             await CreateEntryAsync(dbContext, $"{instance}Old", createdDate: twoHoursAgo);
             await CreateEntryAsync(dbContext, $"{instance}New", createdDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var mine = result.Rows.Where(r => r.Instance.StartsWith(instance)).ToList();
@@ -202,7 +211,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             var firstId = await CreateEntryAsync(dbContext, instance);
             var secondId = await CreateEntryAsync(dbContext, instance);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance, sortField: "id", sortDirection: "banana");
 
             result.Rows.Select(r => r.Id).Should().Equal(secondId, firstId);
@@ -216,7 +225,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             var firstId = await CreateEntryAsync(dbContext, instance, createdDate: DateTime.UtcNow.AddMinutes(-30));
             var secondId = await CreateEntryAsync(dbContext, instance, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -234,7 +243,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
                 await CreateEntryAsync(dbContext, instance);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: instance);
 
             result.Rows.Should().HaveCount(2);
@@ -248,7 +257,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, instance);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             result.Statistics.Columns.Should().BeEmpty();
@@ -261,7 +270,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, instance, false);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var row = result.Rows.Should().ContainSingle().Subject;
@@ -277,7 +286,7 @@ namespace Jube.Test.Service.OverlayNetworkTaskDrift
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, instance);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: instance);
 
             var row = result.Rows.Should().ContainSingle().Subject;

@@ -27,6 +27,8 @@ namespace Jube.Validations.EntityAnalysisModelDictionaryKvp
         public EntityAnalysisModelDictionaryKvpDtoValidator(EntityAnalysisModelDictionaryRepository parentRepository,
             IStringLocalizer localiser)
         {
+            Include(new FiniteNumberValidator<EntityAnalysisModelDictionaryKvpDto>());
+
             RuleFor(p => p.EntityAnalysisModelDictionaryId)
                 .GreaterThan(0)
                 .WithMessage(_ =>

@@ -6,7 +6,8 @@ parent: API
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # HTTP API Concepts
 
@@ -20,8 +21,8 @@ Which exposes the following landing page:
 
 Swagger is the central resource for API documentation. The exception to self documentation is the
 /Invoke/EntityAnalysisModel endpoint which does not map to an object directly, with that request body - which also needs
-to be JSON - being parsed manually given model definitions (i.e. Request XPath). It follows that except
-the /Invoke/EntityAnalysisModel, which is documented extensively elsewhere, API endpoints benefit from strong typing.
+to be JSON - being parsed manually given model definitions (i.e. Request XPath). It follows that except the
+/Invoke/EntityAnalysisModel, which is documented extensively elsewhere, API endpoints benefit from strong typing.
 
 The use of Swagger is outside the scope of this documentation, and it may be noted that an alternative HTTP request tool
 has been used throughout this documentation, however it is sufficed to say that in addition to the documentation of the
@@ -60,25 +61,28 @@ JWTKey=ExtraSuperDuperSecretKeyCreatedOnFirstStartup
 | JWTValidIssuer   | The server domain that issued the token.                                                                                                                                   |
 | JWTKey           | The encryption key for the JWT.  This key is created randomly on first startup of a Jube instance executable and stored in the Jube.environment file,  but can be changed. |
 
-Notwithstanding the stateless architecture, the token contains a single claim type of
-Name (http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name) which will contain the username (e.g. Administrator).
-It follows that in knowing the key values for the JSON Web Token, authentication can take place entirely out of band of
-the application.
+Notwithstanding the stateless architecture, the token contains a single claim type of Name
+(http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name) which will contain the username (e.g. Administrator). It
+follows that in knowing the key values for the JSON Web Token, authentication can take place entirely out of band of the
+application.
 
 The following HTTP status codes are implemented by the API:
 
-| Status Code | Implementation                                                                                                                                                                                                                                       |
-|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 401         | Not authenticated.  JSON Web Token is either missing or expired.                                                                                                                                                                                     |
-| 403         | Not authorised.  The authenticated user does not have access to the resource as configured in the permissions functionality.                                                                                                                         |
-| 400         | Bad Request.  The request has not passed validation.  Error messages will be returned indicating the source of the failure in the JSON response body                                                                                                 |
-| 204         | Key Not Found. In the case of PUT or DELETE methods,  the data was not found for modification.  This is often an indication of tenancy problems, where an attempt has been made to update data in a tenant which has not been allocated to the user. |
-| 500         | Internal Error.  An error fatal to the request.  The error messages will only be written to logs server side and not communicated to the end user                                                                                                    |
-| 404         | Not Found.  The resource has not been found.  There are very few programmatic uses of Not Found,  except in the case of the Invoke APIs,  hence the first step should be to check the URL.                                                           |
-| 408         | Timeout.  The resource has not been found in a timeout threshold.  In the case of the Invoke APIs callback on asynchronous processing.                                                                                                               |
+| Status Code | Implementation                                                                                                                                                                                                                                                                                                                                        |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 401         | Not authenticated.  JSON Web Token is either missing, expired or has been revoked (logout, password change or an administrator revoking the sessions).                                                                                                                                                                                                |
+| 403         | Not authorised.  The authenticated user does not have access to the resource as configured in the permissions functionality.  Also returned to a state changing request (POST, PUT, PATCH, DELETE) authenticated only by the cookie that is not provably same-origin (`CsrfOriginCheck`).                                                             |
+| 400         | Bad Request.  The request has not passed validation.  Error messages will be returned indicating the source of the failure in the JSON response body.  An empty, `null`, malformed or invalid UTF-8 JSON body, a NUL character, a number outside the range of a double and a value of the wrong type are all client errors and answered 400, not 500. |
+| 204         | Key Not Found. In the case of PUT or DELETE methods,  the data was not found for modification.  This is often an indication of tenancy problems, where an attempt has been made to update data in a tenant which has not been allocated to the user.                                                                                                  |
+| 500         | Internal Error.  An error fatal to the request.  The error messages will only be written to logs server side and not communicated to the end user                                                                                                                                                                                                     |
+| 404         | Not Found.  The resource has not been found.  There are very few programmatic uses of Not Found,  except in the case of the Invoke APIs,  hence the first step should be to check the URL.                                                                                                                                                            |
+| 408         | Timeout.  The resource has not been found in a timeout threshold.  In the case of the Invoke APIs callback on asynchronous processing.  A callback that belongs to another tenant is indistinguishable from one that never arrived, and also ends as a 408 after the same wait.                                                                       |
+| 413         | Payload Too Large.  A JSON request body larger than the inspected limit (4 MB) is refused before it is processed.                                                                                                                                                                                                                                     |
+| 503         | Service Unavailable.  On the Invoke APIs, the engine has not started, so nothing can be processed yet.                                                                                                                                                                                                                                                |
 
-Resources are almost entirely subject to JSON Web Token authentication and permission authorisation except endpoints that are intended for the purpose of gaining authentication or integration. Where an endpoint is outside of
-JSON Web Token Authentication, there may however be other configuration options available for security:
+Resources are almost entirely subject to JSON Web Token authentication and permission authorisation except endpoints
+that are intended for the purpose of gaining authentication or integration. Where an endpoint is outside of JSON Web
+Token Authentication, there may however be other configuration options available for security:
 
 | Status Code                                     | Implementation                                                                                                                                                                                     | Other Security                                                        |
 |-------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|

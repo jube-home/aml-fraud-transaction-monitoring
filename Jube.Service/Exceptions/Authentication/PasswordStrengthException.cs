@@ -14,7 +14,7 @@
 namespace Jube.Service.Exceptions.Authentication
 {
     public class PasswordStrengthException(List<string> errors)
-        : Exception(String.Join(", ", errors))
+        : Exception(string.Join(", ", errors))
     {
         public List<string> Errors { get; } = errors;
     }

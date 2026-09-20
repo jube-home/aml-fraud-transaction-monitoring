@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelActivationRuleSuppression;
 
 namespace Jube.Service.EntityAnalysisModelActivationRuleSuppression
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleSuppression
 
     internal static class EntityAnalysisModelActivationRuleSuppressionMapper
     {
+        [return: NotNullIfNotNull(nameof(suppression))]
         public static EntityAnalysisModelActivationRuleSuppressionDto? ToDto(ActivationRuleSuppressionPoco? suppression)
         {
             return suppression is null
@@ -42,7 +44,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleSuppression
         public static List<EntityAnalysisModelActivationRuleSuppressionDto> ToDto(
             IEnumerable<ActivationRuleSuppressionPoco>? source)
         {
-            return (source ?? Enumerable.Empty<ActivationRuleSuppressionPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<ActivationRuleSuppressionPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static ActivationRuleSuppressionPoco ToPoco(EntityAnalysisModelActivationRuleSuppressionDto dto)

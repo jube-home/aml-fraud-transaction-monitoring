@@ -25,7 +25,12 @@ namespace Jube.Data.Query
     using Newtonsoft.Json.Linq;
     using Reporting;
 
-    public class GetCaseJournalQuery(DbContext dbContext, string user, ILog log, bool parserAssertSelectOnly, string reportConnectionString = null)
+    public class GetCaseJournalQuery(
+        DbContext dbContext,
+        string user,
+        ILog log,
+        bool parserAssertSelectOnly,
+        string reportConnectionString = null)
     {
         public async Task<GetCaseJournalQueryResultDto> ExecuteAsync(string key, string keyValue, Guid caseWorkflowGuid,
             int limit,
@@ -63,11 +68,13 @@ namespace Jube.Data.Query
                 limit
             };
 
-            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log, parserAssertSelectOnly);
+            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log,
+                parserAssertSelectOnly);
 
             await postgres.PrepareAsync(sql, tokens, token).ConfigureAwait(false);
 
-            var records = (await postgres.ExecuteByOrderedParametersAsync(sql, tokens, token).ConfigureAwait(false)).ToList();
+            var records = (await postgres.ExecuteByOrderedParametersAsync(sql, tokens, token).ConfigureAwait(false))
+                .ToList();
 
             var schema = new Dictionary<string, string>
             {
@@ -119,7 +126,8 @@ namespace Jube.Data.Query
                         "Activation", DynamicResultSchema.NormaliseRecordValue(record["Activation"])
                     },
                     {
-                        "EntityAnalysisModelInstanceEntryGuid", DynamicResultSchema.NormaliseRecordValue(record["EntityAnalysisModelInstanceEntryGuid"])
+                        "EntityAnalysisModelInstanceEntryGuid",
+                        DynamicResultSchema.NormaliseRecordValue(record["EntityAnalysisModelInstanceEntryGuid"])
                     },
                     {
                         "ReferenceDate", DynamicResultSchema.NormaliseRecordValue(record["ReferenceDate"])
@@ -148,7 +156,7 @@ namespace Jube.Data.Query
                                 JTokenType.Float => jToken.Value<double>(),
                                 JTokenType.Boolean => jToken.Value<bool>(),
                                 JTokenType.Null => null,
-                                JTokenType.Date => new DateTimeOffset(jToken.Value<DateTime>().ToUniversalTime(), TimeSpan.Zero),
+                                JTokenType.Date => DynamicResultSchema.ToUtcOffset(jToken.Value<DateTime>()),
                                 _ => jToken.Value<string>()
                             };
 
@@ -231,18 +239,24 @@ namespace Jube.Data.Query
 
         private class GetCaseJournalQueryBoldLineDto
         {
+            // ReSharper disable UnusedAutoPropertyAccessor.Local
             public string BoldLineKey { get; set; }
             public string BoldLineFormatForeColor { get; set; }
+
             public string BoldLineFormatBackColor { get; set; }
+            // ReSharper restore UnusedAutoPropertyAccessor.Local
         }
 
         private class GetCaseJournalQueryCellFormatDto
         {
+            // ReSharper disable UnusedAutoPropertyAccessor.Local
             public string CellFormatKey { get; set; }
             public string CellFormatBackColor { get; set; }
             public string CellFormatForeColor { get; set; }
             public bool CellFormatForeRow { get; set; }
+
             public bool CellFormatBackRow { get; set; }
+            // ReSharper restore UnusedAutoPropertyAccessor.Local
         }
     }
 }

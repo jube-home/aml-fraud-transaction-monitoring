@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Helpers;
 using Jube.Data.Repository;
 using Jube.Dto.Payload;
 using Jube.Dto.RedisSentinelEvent;
@@ -30,7 +31,8 @@ namespace Jube.Service.RedisSentinelEvent
     public sealed class RedisSentinelEventService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -157,7 +159,7 @@ namespace Jube.Service.RedisSentinelEvent
                     sortField, sortDirection, token).ConfigureAwait(false);
 
                 var dtos = rows.Select(r => new RedisSentinelEventDto(
-                    r.Id, r.OccurredDate.GetValueOrDefault(), r.Channel, r.Message,
+                    r.Id, r.OccurredDate.GetValueOrDefault(), r.Channel, SensitiveTextRedactor.Redact(r.Message),
                     r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
 
                 var total = await repository.CountAsync(from, to, search, clampedSamplePercentage, token)
@@ -200,14 +202,14 @@ namespace Jube.Service.RedisSentinelEvent
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[RedisSentinelEventResources.PermissionDenied], permissions);

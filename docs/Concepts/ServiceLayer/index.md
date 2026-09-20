@@ -12,15 +12,14 @@ Jube's developer — real sovereignty, zero vendor lock-in.
 
 [Validation Patterns](../SoftwareValidations/index.html) describes Jube's original vertical slice: `Controller >
 Repository > Data Context (ORM) > Database`, with the DTO existing solely as the request/response serialisation contract
-for a single MVC controller. Jube is migrating this, endpoint by endpoint, to an additional layer:
+for a single MVC controller. The pattern is:
 `Endpoint (Minimal API) > Service > Repository > Data Context > Database`.
 
 The service layer is not just the controller's logic moved sideways. The DTO in front of it is doing considerably more
 work than it used to — it is the single declarative source that a generic, entity-agnostic UI and an Agentic AI tool
 host both read off directly, so that as little as possible of an entity's grouping, layout, validation, permission shape
-and AI-tool metadata has to be hand-written per entity ever again. This page explains that model. It is new — as of this
-writing `EntityAnalysisModel` is the first area migrated to it, with the rest of the platform following controller by
-controller.
+and AI-tool metadata has to be hand-written per entity ever again. This page explains that model. No MVC controllers
+exist: the repository, query, helper, authentication, mock and invoke areas are all minimal endpoints.
 
 ## Where the pieces live
 
@@ -117,14 +116,14 @@ of `ITreeChild`, since each row is a child of a Model (`EntityAnalysisModelId`, 
 `[FormKeys(Parent = nameof(EntityAnalysisModelId))]` rather than the interface itself).
 `EntityAnalysisModelInlineScriptDto` is a second `ITreeChild` adopter, and the first real use of `[Lookup]`: its
 `EntityAnalysisInlineScriptId` field is a reference picker against the `EntityAnalysisInlineScript` area (a read-only,
-non-tenant-scoped catalogue -- rows are created and compiled outside the API, by direct database entry picked up by
-the engine), an id-keyed lookup rather than the attribute's guid-keyed default —
+non-tenant-scoped catalogue -- rows are created and compiled outside the API, by direct database entry picked up by the
+engine), an id-keyed lookup rather than the attribute's guid-keyed default —
 `[Lookup("/api/EntityAnalysisInlineScript", TextField = "name", ValueField = "id")]`.
 `EntityAnalysisModelGatewayRuleDto` is a third `ITreeChild` adopter and the first real adopter of `IRuleBuilderJson`:
 its `BuilderRuleScript`/`Json` pair backs the same jQuery QueryBuilder widget the Abstraction and Activation Rule pages
 use, and both properties (plus the sibling `RuleScriptTypeId`/`CoderRuleScript` fields the interface doesn't cover) are
-marked `[Editor("RuleBuilder")]` so the generic form defers the whole group to the bespoke rule-authoring control
-rather than rendering individual inputs.
+marked `[Editor("RuleBuilder")]` so the generic form defers the whole group to the bespoke rule-authoring control rather
+than rendering individual inputs.
 `EntityAnalysisModelSanctionDto` is a fourth `ITreeChild` adopter and a second real `[Lookup]` use, but with a shape
 `[Lookup]` wasn't originally designed for: its `MultipartStringDataName` field is a value-and-label-are-the-same-string
 picker against the (still unmigrated) `GetEntityAnalysisPotentialMultiPartStringNames` query, so `TextField` and

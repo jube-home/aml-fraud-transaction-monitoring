@@ -13,10 +13,10 @@
 
 namespace Jube.Cache.Redis.Callback
 {
-
     public class Callback
     {
         public DateTime CreatedDate;
         public byte[] Payload;
+        public int TenantRegistryId;
     }
 }

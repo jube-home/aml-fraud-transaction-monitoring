@@ -33,9 +33,17 @@ namespace Jube.Data.Repository
         }
 
         private IQueryable<ModelInvokeWarning> BuildFilteredQuery(DateTime? from, DateTime? to,
-            Guid? entityAnalysisModelGuid, string search, double? samplePercentage)
+            Guid? entityAnalysisModelGuid, string search, double? samplePercentage,
+            int? restrictToTenantRegistryId = null)
         {
             var query = dbContext.ModelInvokeWarning.AsQueryable();
+
+            if (restrictToTenantRegistryId.HasValue)
+            {
+                var tenantRegistryId = restrictToTenantRegistryId.Value;
+                query = query.Where(w => !dbContext.EntityAnalysisModel.Any(m =>
+                    m.Guid == w.EntityAnalysisModelGuid && m.TenantRegistryId != tenantRegistryId));
+            }
 
             if (from.HasValue)
             {
@@ -88,9 +96,10 @@ namespace Jube.Data.Repository
 
         public async Task<IEnumerable<ModelInvokeWarning>> GetLastAsync(int take, DateTime? from, DateTime? to,
             Guid? entityAnalysisModelGuid, string search, double? samplePercentage, string sortField,
-            string sortDirection, CancellationToken token = default)
+            string sortDirection, int? restrictToTenantRegistryId = null, CancellationToken token = default)
         {
-            var query = BuildFilteredQuery(from, to, entityAnalysisModelGuid, search, samplePercentage);
+            var query = BuildFilteredQuery(from, to, entityAnalysisModelGuid, search, samplePercentage,
+                restrictToTenantRegistryId);
 
             return await ApplySort(query, sortField, sortDirection)
                 .Take(take)
@@ -98,17 +107,19 @@ namespace Jube.Data.Repository
         }
 
         public Task<int> CountAsync(DateTime? from, DateTime? to, Guid? entityAnalysisModelGuid, string search,
-            double? samplePercentage, CancellationToken token = default)
+            double? samplePercentage, int? restrictToTenantRegistryId = null, CancellationToken token = default)
         {
-            return BuildFilteredQuery(from, to, entityAnalysisModelGuid, search, samplePercentage)
+            return BuildFilteredQuery(from, to, entityAnalysisModelGuid, search, samplePercentage,
+                    restrictToTenantRegistryId)
                 .CountAsync(token);
         }
 
         public async Task<PayloadStatistics> GetStatisticsAsync(DateTime? from, DateTime? to,
             Guid? entityAnalysisModelGuid, string search, double? samplePercentage, int statisticsCap,
-            CancellationToken token = default)
+            int? restrictToTenantRegistryId = null, CancellationToken token = default)
         {
-            var query = BuildFilteredQuery(from, to, entityAnalysisModelGuid, search, samplePercentage)
+            var query = BuildFilteredQuery(from, to, entityAnalysisModelGuid, search, samplePercentage,
+                    restrictToTenantRegistryId)
                 .OrderByDescending(o => o.Id)
                 .Take(statisticsCap);
 

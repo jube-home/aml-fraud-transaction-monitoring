@@ -97,7 +97,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var secondId = await CreateCounterAsync(dbContext, CaseCreationStage.HttpEndpoint,
                 createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -112,7 +112,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -124,6 +124,15 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -154,7 +163,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var oldId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification, createdDate: oldDate);
             var newId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification, createdDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Id == oldId || r.Id == newId).ToList();
@@ -172,7 +181,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
                 createdDate: twoHoursAgo);
             var newId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification, createdDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Id == oldId || r.Id == newId).ToList();
@@ -187,7 +196,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var priorityId = await CreateCounterAsync(dbContext, CaseCreationStage.ExistingCasePriorityLookup);
             var httpId = await CreateCounterAsync(dbContext, CaseCreationStage.HttpEndpoint);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(stageId: (int)CaseCreationStage.ExistingCasePriorityLookup);
 
             var mine = result.Rows.Where(r => r.Id == priorityId || r.Id == httpId).ToList();
@@ -202,7 +211,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             await CreateCounterAsync(dbContext, CaseCreationStage.Notification);
             await CreateCounterAsync(dbContext, CaseCreationStage.Notification);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(stageId: (int)CaseCreationStage.Notification, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -215,7 +224,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var firstId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification);
             var secondId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(stageId: (int)CaseCreationStage.Notification,
                 samplePercentage: 100);
 
@@ -231,7 +240,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var id3 = await CreateCounterAsync(dbContext, CaseCreationStage.Notification, 2000);
             var ids = new HashSet<int> { id1, id2, id3 };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(stageId: (int)CaseCreationStage.Notification,
                 sortField: "totalMicroseconds", sortDirection: "asc");
@@ -255,7 +264,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var lowId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification);
             var ids = new HashSet<int> { highId, lowId };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(stageId: (int)CaseCreationStage.Notification,
                 sortField: "totalMicroseconds", sortDirection: ascendingKeyword);
 
@@ -270,7 +279,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var highId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification, 2000);
             var ids = new HashSet<int> { lowId, highId };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(stageId: (int)CaseCreationStage.Notification,
                 sortField: "totalMicroseconds", sortDirection: "banana");
 
@@ -286,7 +295,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             var secondId = await CreateCounterAsync(dbContext, CaseCreationStage.Notification,
                 createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -304,7 +313,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
                 await CreateCounterAsync(dbContext, CaseCreationStage.WorkflowStatusLookupAndPersist);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, stageId: (int)CaseCreationStage.WorkflowStatusLookupAndPersist,
                 from: from);
 
@@ -318,7 +327,7 @@ namespace Jube.Test.Service.CaseCreationStagePerformanceCounter
             await using var dbContext = fx.GetDbContext();
             await CreateCounterAsync(dbContext, CaseCreationStage.Notification);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

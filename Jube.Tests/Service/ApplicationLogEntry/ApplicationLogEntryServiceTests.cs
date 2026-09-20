@@ -94,7 +94,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "WARN", loggerName, "first message");
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "second message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.LoggerName == loggerName).ToList();
@@ -109,7 +109,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -121,6 +121,15 @@ namespace Jube.Test.Service.ApplicationLogEntry
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -153,7 +162,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "WARN", loggerName, "old message", oldDate);
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "new message", newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.LoggerName == loggerName).ToList();
@@ -171,7 +180,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "WARN", loggerName, uniqueMessage);
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "other message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueMessage[..14].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.LoggerName == loggerName).ToList();
@@ -187,7 +196,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "WARN", loggerName, "first message");
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "second message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: loggerName, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -201,7 +210,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "WARN", loggerName, "first message");
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "second message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: loggerName, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -214,7 +223,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             var loggerName = $"{DatabaseFixture.Prefix}Some.Class{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "cross-tenant visibility check");
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.LoggerName == loggerName);
@@ -231,7 +240,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "WARN", loggerName, "old message", twoHoursAgo);
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "new message", justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: loggerName);
 
             var mine = result.Rows.Where(r => r.LoggerName == loggerName).ToList();
@@ -248,7 +257,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "message");
             await CreateEntryAsync(dbContext, "FATAL", loggerName, "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: loggerName, sortField: "level",
                 sortDirection: "asc");
@@ -270,7 +279,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "WARN", loggerName, "message");
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: loggerName, sortField: "level",
                 sortDirection: ascendingKeyword);
 
@@ -285,7 +294,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "message");
             await CreateEntryAsync(dbContext, "WARN", loggerName, "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: loggerName, sortField: "level",
                 sortDirection: "banana");
 
@@ -301,7 +310,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
                 DateTime.UtcNow.AddMinutes(-30));
             await CreateEntryAsync(dbContext, "ERROR", loggerName, "second message", DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: loggerName, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.LoggerName == loggerName).ToList();
@@ -319,7 +328,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
                 await CreateEntryAsync(dbContext, "WARN", loggerName, "message");
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: loggerName);
 
             result.Rows.Should().HaveCount(2);
@@ -333,7 +342,7 @@ namespace Jube.Test.Service.ApplicationLogEntry
             var loggerName = $"{DatabaseFixture.Prefix}Some.Class{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, "WARN", loggerName, "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: loggerName);
 
             result.Statistics.Columns.Should().BeEmpty(

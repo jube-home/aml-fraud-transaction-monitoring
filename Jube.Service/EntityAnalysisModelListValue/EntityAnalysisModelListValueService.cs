@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using System.Globalization;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelListValue;
@@ -22,6 +23,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using Jube.Validations.EntityAnalysisModelListValue;
+using LinqToDB.Data;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -32,8 +34,12 @@ namespace Jube.Service.EntityAnalysisModelListValue
     public sealed class EntityAnalysisModelListValueService
     {
         private const int MaxListTake = 200;
+        private const int MaxListValueLength = 512;
         private static readonly int[] permissions = [3];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
+        private readonly EntityAnalysisModelListRepository parentRepository;
+        private readonly EntityAnalysisModelListValueCsvFileUploadRepository uploadRepository;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelListValueRepository repository;
@@ -47,6 +53,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
             IStringLocalizer strings)
         {
+            this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -55,6 +62,8 @@ namespace Jube.Service.EntityAnalysisModelListValue
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelListValueRepository(dbContext, userName);
+            parentRepository = new EntityAnalysisModelListRepository(dbContext, tenantRegistryId);
+            uploadRepository = new EntityAnalysisModelListValueCsvFileUploadRepository(dbContext, userName);
             validator = new EntityAnalysisModelListValueDtoValidator(new EntityAnalysisModelListRepository(dbContext,
                 userName), strings);
         }
@@ -76,7 +85,9 @@ namespace Jube.Service.EntityAnalysisModelListValue
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("EntityAnalysisModelListValue.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisModelListValueResources.NotAuthenticated]);
             }
@@ -87,8 +98,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn(
                         $"EntityAnalysisModelListValue.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(strings[EntityAnalysisModelListValueResources.NotAuthenticated]);
             }
@@ -106,7 +119,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
         {
             using var op = OperationScope.Start("EntityAnalysisModelListValue", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelListValue.List: entry user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelListValue.List: entry user={userName}");
+            }
 
             try
             {
@@ -115,7 +131,9 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelListValue.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -127,7 +145,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelListValue.List: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelListValue.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -151,8 +172,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
             using var op = OperationScope.Start("EntityAnalysisModelListValue", "ListByEntityAnalysisModelListId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelListValue.ListByEntityAnalysisModelListId: entry entityAnalysisModelListId={entityAnalysisModelListId} user={userName}");
+            }
 
             try
             {
@@ -162,8 +185,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelListValue.ListByEntityAnalysisModelListId: {dtos.Count} rows entityAnalysisModelListId={entityAnalysisModelListId} user={userName}");
+                }
 
                 return dtos;
             }
@@ -176,8 +201,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelListValue.ListByEntityAnalysisModelListId: cancelled entityAnalysisModelListId={entityAnalysisModelListId} user={userName}");
+                }
 
                 throw;
             }
@@ -203,7 +230,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
         {
             using var op = OperationScope.Start("EntityAnalysisModelListValue", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelListValue.Get: entry id={id} user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelListValue.Get: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -212,8 +242,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 if (listValue == null)
                 {
                     if (log.IsDebugEnabled)
+                    {
                         log.Debug(
                             $"EntityAnalysisModelListValue.Get: id={id} not found or not visible to tenant user={userName}");
+                    }
 
                     return null;
                 }
@@ -230,7 +262,9 @@ namespace Jube.Service.EntityAnalysisModelListValue
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelListValue.Get: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -256,8 +290,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelListValue.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -283,7 +319,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelListValue.ListPaged: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelListValue.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -306,7 +345,9 @@ namespace Jube.Service.EntityAnalysisModelListValue
             using var op = OperationScope.Start("EntityAnalysisModelListValue", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelListValue.Create: entry user={userName}");
+            }
 
             try
             {
@@ -317,8 +358,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelListValue.Create: validation failed user={userName} " +
                                  $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -331,7 +374,9 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelListValue.Create: created Id={saved.Id} user={userName}");
+                }
 
                 return saved;
             }
@@ -348,7 +393,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
-                if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelListValue.Create: cancelled user={userName}");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"EntityAnalysisModelListValue.Create: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -372,7 +420,9 @@ namespace Jube.Service.EntityAnalysisModelListValue
             using var op = OperationScope.Start("EntityAnalysisModelListValue", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelListValue.Update: entry id={model?.Id} user={userName}");
+            }
 
             try
             {
@@ -383,8 +433,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelListValue.Update: validation failed id={model.Id} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -398,8 +450,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelListValue.Update: id={model.Id} not found, deleted, expired, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The List Value was not found.", ex);
                 }
@@ -409,8 +463,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelListValue.Update: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
 
                 return saved;
             }
@@ -433,7 +489,9 @@ namespace Jube.Service.EntityAnalysisModelListValue
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelListValue.Update: cancelled id={model?.Id} user={userName}");
+                }
 
                 throw;
             }
@@ -457,7 +515,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
         {
             using var op = OperationScope.Start("EntityAnalysisModelListValue", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelListValue.Delete: entry id={id} user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelListValue.Delete: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -470,8 +531,10 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelListValue.Delete: id={id} not found, already deleted, expired, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The List Value was not found.", ex);
                 }
@@ -480,7 +543,9 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 op.Deleted();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelListValue.Delete: soft-deleted Id={id} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -496,7 +561,9 @@ namespace Jube.Service.EntityAnalysisModelListValue
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelListValue.Delete: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -508,12 +575,230 @@ namespace Jube.Service.EntityAnalysisModelListValue
             }
         }
 
+        [Description("Loads one or more CSV files of values into a List in the caller's tenant. Each line is one " +
+                     "value: the first comma-separated column is the value, the optional second column an " +
+                     "ISO 8601 round-trip delete expiry date (unparseable dates are ignored). All files are " +
+                     "loaded in one transaction; rows that fail individually are counted as errors on the upload " +
+                     "record and skipped, but a failure of the operation itself rolls everything back. An upload " +
+                     "record is written per file. Not idempotent -- calling twice loads the values twice.")]
+        [ServiceOperation("EntityAnalysisModelListValueUploadCsv", OperationKind.Write, Idempotent = false)]
+        public async Task<List<EntityAnalysisModelListValueCsvUploadResultDto>> UploadCsvAsync(
+            [Description("Numeric identifier of the parent List the values are loaded into.")]
+            int entityAnalysisModelListId,
+            [Description("The CSV files to load.")]
+            IReadOnlyList<EntityAnalysisModelListValueCsvFileDto>? files,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelListValue", "UploadCsv", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelListValue.UploadCsv: entry entityAnalysisModelListId={entityAnalysisModelListId} " +
+                    $"files={files?.Count ?? 0} user={userName}");
+            }
+
+            var inTransaction = false;
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelListValue.UploadCsv");
+
+                var parent = await parentRepository.GetByIdAsync(entityAnalysisModelListId, token)
+                    .ConfigureAwait(false);
+                if (parent == null)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"EntityAnalysisModelListValue.UploadCsv: entityAnalysisModelListId={entityAnalysisModelListId} " +
+                            $"not found, deleted, or not visible to tenant user={userName}");
+                    }
+
+                    throw new NotFoundException(strings[EntityAnalysisModelListValueResources.ListNotFound]);
+                }
+
+                var results = new List<EntityAnalysisModelListValueCsvUploadResultDto>();
+                if (files == null || files.Count == 0)
+                {
+                    return results;
+                }
+
+                await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
+                inTransaction = true;
+
+                foreach (var file in files)
+                {
+                    results.Add(await LoadFileAsync(entityAnalysisModelListId, file, token).ConfigureAwait(false));
+                }
+
+                await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);
+                inTransaction = false;
+
+                op.Entity(results[^1].Id);
+                op.Rows(results.Sum(s => s.Records));
+                op.Created();
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info(
+                        $"EntityAnalysisModelListValue.UploadCsv: files={results.Count} records={results.Sum(s => s.Records)} " +
+                        $"errors={results.Sum(s => s.Errors)} entityAnalysisModelListId={entityAnalysisModelListId} user={userName}");
+                }
+
+                return results;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                await RollbackAsync(inTransaction).ConfigureAwait(false);
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug(
+                        $"EntityAnalysisModelListValue.UploadCsv: cancelled entityAnalysisModelListId={entityAnalysisModelListId} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                await RollbackAsync(inTransaction).ConfigureAwait(false);
+                log.Error(
+                    $"EntityAnalysisModelListValue.UploadCsv: unexpected failure entityAnalysisModelListId={entityAnalysisModelListId} user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        private async Task<EntityAnalysisModelListValueCsvUploadResultDto> LoadFileAsync(int entityAnalysisModelListId,
+            EntityAnalysisModelListValueCsvFileDto file, CancellationToken token)
+        {
+            using var reader = new StreamReader(file.Content);
+
+            var records = 0;
+            var errors = 0;
+
+            while (reader.Peek() >= 0)
+            {
+                token.ThrowIfCancellationRequested();
+
+                var line = await reader.ReadLineAsync(token).ConfigureAwait(false);
+                var splits = line?.Split(",");
+
+                if (string.IsNullOrWhiteSpace(splits?[0]) || splits[0].Length > MaxListValueLength)
+                {
+                    errors++;
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"EntityAnalysisModelListValue.UploadCsv: rejected blank or over-long value " +
+                                 $"entityAnalysisModelListId={entityAnalysisModelListId} user={userName}");
+                    }
+
+                    continue;
+                }
+
+                await dbContext.ExecuteAsync("SAVEPOINT csv_row", token).ConfigureAwait(false);
+                try
+                {
+                    await repository.InsertAsync(new ListValuePoco
+                    {
+                        EntityAnalysisModelListId = entityAnalysisModelListId,
+                        ListValue = splits[0],
+                        DeleteExpiryDate = splits.Length > 1 ? ParseDeleteExpiryDate(splits[1]) : null
+                    }, token).ConfigureAwait(false);
+
+                    await dbContext.ExecuteAsync("RELEASE SAVEPOINT csv_row", token).ConfigureAwait(false);
+                    records += 1;
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    errors++;
+                    log.Error(e.ToString());
+                    await dbContext.ExecuteAsync("ROLLBACK TO SAVEPOINT csv_row", token).ConfigureAwait(false);
+                }
+            }
+
+            var saved = await uploadRepository.InsertAsync(new Data.Poco.EntityAnalysisModelListCsvFileUpload
+            {
+                FileName = SanitiseFileName(file.FileName),
+                Records = records,
+                Errors = errors,
+                Length = file.Length,
+                EntityAnalysisModelListId = entityAnalysisModelListId
+            }, token).ConfigureAwait(false);
+
+            return new EntityAnalysisModelListValueCsvUploadResultDto
+            {
+                Id = saved.InheritedId,
+                FileName = saved.FileName,
+                EntityAnalysisModelListId = entityAnalysisModelListId,
+                Records = records,
+                Errors = errors,
+                Length = file.Length
+            };
+        }
+
+        private async Task RollbackAsync(bool inTransaction)
+        {
+            if (!inTransaction)
+            {
+                return;
+            }
+
+            try
+            {
+                await dbContext.RollbackTransactionAsync(CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"EntityAnalysisModelListValue.UploadCsv: rollback failed user={userName}", ex);
+                }
+            }
+        }
+
+        private static string SanitiseFileName(string? fileName)
+        {
+            var leaf = (fileName ?? string.Empty).Split('/', '\\').Last();
+            var cleaned = new string(leaf.Where(c => !char.IsControl(c)).ToArray());
+            return cleaned.Length > 255 ? cleaned[..255] : cleaned;
+        }
+
+        private static DateTime? ParseDeleteExpiryDate(string value)
+        {
+            return !string.IsNullOrWhiteSpace(value) &&
+                   DateTime.TryParseExact(value, "O", CultureInfo.InvariantCulture,
+                       DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var parsed)
+                ? parsed
+                : null;
+        }
+
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions)) return;
+            if (permissionValidation.Validate(permissions))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+            }
 
             throw new ForbiddenException(strings[EntityAnalysisModelListValueResources.PermissionDenied],
                 permissions);

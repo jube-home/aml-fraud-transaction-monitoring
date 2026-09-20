@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelActivationRule;
 
 namespace Jube.Service.EntityAnalysisModelActivationRule
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
 
     internal static class EntityAnalysisModelActivationRuleMapper
     {
+        [return: NotNullIfNotNull(nameof(activationRule))]
         public static EntityAnalysisModelActivationRuleDto? ToDto(ActivationRulePoco? activationRule)
         {
             return activationRule is null
@@ -81,7 +83,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
 
         public static List<EntityAnalysisModelActivationRuleDto> ToDto(IEnumerable<ActivationRulePoco>? source)
         {
-            return (source ?? Enumerable.Empty<ActivationRulePoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<ActivationRulePoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static ActivationRulePoco ToPoco(EntityAnalysisModelActivationRuleDto dto)

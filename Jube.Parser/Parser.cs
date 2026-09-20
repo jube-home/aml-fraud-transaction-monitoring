@@ -250,10 +250,16 @@ namespace Jube.Parser
             }
         }
 
+        private static string NormaliseVisualBasicQuotes(string text)
+        {
+            return text.Replace('\u201C', '"').Replace('\u201D', '"').Replace('\uFF02', '"');
+        }
+
         public ParsedRule Parse(ParsedRule parsedRule)
         {
             try
             {
+                parsedRule.ParsedRuleText = NormaliseVisualBasicQuotes(parsedRule.ParsedRuleText);
                 var lines = parsedRule.ParsedRuleText.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
                 var softParseFailed = false;
                 var i = 0;
@@ -261,8 +267,7 @@ namespace Jube.Parser
                 {
                     if (!string.IsNullOrEmpty(line))
                     {
-                        //Remove strings as they are allowed to have special characters
-                        var matches = Regex.Matches(line, "\"(?:[^\"\\\\]|\\\\.)*\"");
+                        var matches = Regex.Matches(line, "\"(?:[^\"]|\"\")*\"");
 
                         string[] separator =
                             [",", " ", "(", ")", "=", ">", "<", ">=", "<=", "<>", ".", "_", "+", "-", "/", "*", "&"];
@@ -356,6 +361,12 @@ namespace Jube.Parser
                     log.Info(
                         $"Soft Parser: User code has failed a soft parse: {parsedRule.OriginalRuleText} and error {ex}");
                 }
+
+                parsedRule.ErrorSpans.Add(new ErrorSpan
+                {
+                    Line = 0,
+                    Message = "The rule text could not be parsed for restricted tokens and has been refused."
+                });
             }
 
             return parsedRule;
@@ -678,7 +689,8 @@ namespace Jube.Parser
         public ParsedRule TranslateFromDotNotation(ParsedRule parsedRule, bool showOnlyCacheForPayload = false)
         {
             var sb = new StringBuilder();
-            var lines = parsedRule.OriginalRuleText.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
+            var lines = NormaliseVisualBasicQuotes(parsedRule.OriginalRuleText)
+                .Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
             for (var i = 0; i < lines.Length; i++)
             {
                 var originalLine = lines[i];

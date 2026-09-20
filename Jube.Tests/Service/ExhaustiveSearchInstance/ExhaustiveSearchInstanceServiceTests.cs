@@ -499,7 +499,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             dto.Filter = true;
             dto.FilterJson = "[{\"condition\": \"AND\"}]";
             dto.FilterSql = "\"Tag\".\"Fraud\" = 1";
-            dto.FilterTokens = "{}";
+            dto.FilterTokens = "[1]";
 
             var saved = await service.InsertAsync(dto);
             createdIds.Add(saved.Id);

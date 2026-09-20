@@ -30,7 +30,8 @@ namespace Jube.Service.EntityAnalysisModelStagePerformanceCounter
     public sealed class EntityAnalysisModelStagePerformanceCounterService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -106,8 +107,7 @@ namespace Jube.Service.EntityAnalysisModelStagePerformanceCounter
                      "independently to the last hour when omitted. Each row is one invocation pipeline stage's " +
                      "aggregated compute time for a roughly one-minute interval. Optionally restrict to a date " +
                      "range (by CreatedDate) and/or an exact stageId match. " +
-                     "Landlord callers see rows for every tenant; other callers only see rows for Models in " +
-                     "their own tenant. Optionally apply samplePercentage on top of every other filter to " +
+                     "Landlord only: every other caller is refused with a 403 (permission denied). Optionally apply samplePercentage on top of every other filter to " +
                      "draw a random subset instead of the most recent rows -- useful for taking an unbiased " +
                      "baseline sample of activity to compare later, rather than only ever seeing the latest, " +
                      "potentially unrepresentative rows. The response also carries the true Total row count " +
@@ -214,14 +214,14 @@ namespace Jube.Service.EntityAnalysisModelStagePerformanceCounter
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[EntityAnalysisModelStagePerformanceCounterResources.PermissionDenied],

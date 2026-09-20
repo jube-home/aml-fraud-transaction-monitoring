@@ -36,10 +36,18 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
         public EntityAnalysisModelActivationRuleDtoValidator(EntityAnalysisModelActivationRuleRepository repository,
             IStringLocalizer localiser)
         {
+            Include(new FiniteNumberValidator<EntityAnalysisModelActivationRuleDto>());
+
             RuleFor(p => p.EntityAnalysisModelId)
                 .GreaterThan(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
+
+            RuleFor(p => p.EntityAnalysisModelId)
+                .MustAsync(repository.ParentModelVisibleAsync)
+                .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdNotFound")
+                .When(p => p.Id == 0 && p.EntityAnalysisModelId > 0);
 
             RuleFor(p => p.Name)
                 .NotEmpty()
@@ -67,7 +75,7 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 .Must(m => allowedRuleScriptTypeIds.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.RuleScriptTypeIdInvalid])
                 .WithErrorCode("RuleScriptTypeIdInvalid");
-            
+
             RuleFor(p => p.BuilderRuleScript)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.BuilderRuleScriptRequired])
@@ -79,11 +87,23 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 .WithErrorCode("BuilderRuleScriptMaximumLength")
                 .When(p => p.RuleScriptTypeId == 1);
 
+            RuleFor(p => p.BuilderRuleScript)
+                .MaximumLength(MaxRuleScriptLength)
+                .WithMessage(_ =>
+                    string.Format(localiser[EntityAnalysisModelActivationRuleResources.BuilderRuleScriptMaxLength],
+                        MaxRuleScriptLength))
+                .WithErrorCode("BuilderRuleScriptMaximumLength");
+
             RuleFor(p => p.Json)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.JsonRequired])
                 .WithErrorCode("JsonNotEmpty")
                 .When(p => p.RuleScriptTypeId == 1);
+
+            RuleFor(p => p.Json)
+                .Must(JsonText.IsAcceptable)
+                .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.JsonInvalid])
+                .WithErrorCode("JsonInvalid");
 
             RuleFor(p => p.CoderRuleScript)
                 .NotEmpty()
@@ -95,6 +115,13 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                         MaxRuleScriptLength))
                 .WithErrorCode("CoderRuleScriptMaximumLength")
                 .When(p => p.RuleScriptTypeId == 2);
+
+            RuleFor(p => p.CoderRuleScript)
+                .MaximumLength(MaxRuleScriptLength)
+                .WithMessage(_ =>
+                    string.Format(localiser[EntityAnalysisModelActivationRuleResources.CoderRuleScriptMaxLength],
+                        MaxRuleScriptLength))
+                .WithErrorCode("CoderRuleScriptMaximumLength");
 
             RuleFor(p => p.CaseWorkflowGuid)
                 .NotEmpty()

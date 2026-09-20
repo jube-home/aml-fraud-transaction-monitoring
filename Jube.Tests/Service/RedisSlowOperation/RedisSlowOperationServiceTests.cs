@@ -97,7 +97,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 1, command);
             await CreateEntryAsync(dbContext, 2, command);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Command == command).ToList();
@@ -110,7 +110,7 @@ namespace Jube.Test.Service.RedisSlowOperation
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -122,6 +122,15 @@ namespace Jube.Test.Service.RedisSlowOperation
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -154,7 +163,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 10, $"{command}Old", oldDate);
             await CreateEntryAsync(dbContext, 11, $"{command}New", newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Command.StartsWith(command)).ToList();
@@ -171,7 +180,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 20, uniqueCommand);
             await CreateEntryAsync(dbContext, 21, "OtherCommand");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueCommand[..14].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.Command == uniqueCommand || r.Command == "OtherCommand").ToList();
@@ -192,7 +201,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 31, "OtherCommand OtherKey", commandName: "OTHERCMD",
                 keyName: "OtherKey");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueCommandName);
 
             var mine = result.Rows.Where(r => r.Command == fullCommand || r.Command == "OtherCommand OtherKey")
@@ -216,7 +225,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 40, command);
             await CreateEntryAsync(dbContext, 41, command);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: command, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -230,7 +239,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 42, command);
             await CreateEntryAsync(dbContext, 43, command);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: command, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -243,7 +252,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             var command = $"{DatabaseFixture.Prefix}Command{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, 44, command);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var negative = await service.ListAsync(search: command, samplePercentage: -10);
             negative.Rows.Should().BeEmpty();
 
@@ -258,7 +267,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             var command = $"{DatabaseFixture.Prefix}Command{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, 3, command);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Command == command);
@@ -275,7 +284,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 100, $"{command}Old", twoHoursAgo);
             await CreateEntryAsync(dbContext, 101, $"{command}New", justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: command);
 
             var mine = result.Rows.Where(r => r.Command.StartsWith(command)).ToList();
@@ -292,7 +301,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 111, command, durationMicroseconds: 1000);
             await CreateEntryAsync(dbContext, 112, command, durationMicroseconds: 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: command, sortField: "durationMicroseconds",
                 sortDirection: "asc");
@@ -314,7 +323,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 120, command, durationMicroseconds: 2000);
             await CreateEntryAsync(dbContext, 121, command, durationMicroseconds: 1000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: command, sortField: "durationMicroseconds",
                 sortDirection: ascendingKeyword);
 
@@ -329,7 +338,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 130, command, durationMicroseconds: 1000);
             await CreateEntryAsync(dbContext, 131, command, durationMicroseconds: 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: command, sortField: "durationMicroseconds",
                 sortDirection: "banana");
 
@@ -344,7 +353,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 140, command, DateTime.UtcNow.AddMinutes(-30));
             await CreateEntryAsync(dbContext, 141, command, DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: command, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Command == command).ToList();
@@ -362,7 +371,7 @@ namespace Jube.Test.Service.RedisSlowOperation
                 await CreateEntryAsync(dbContext, 150 + i, command);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: command);
 
             result.Rows.Should().HaveCount(2);
@@ -381,7 +390,7 @@ namespace Jube.Test.Service.RedisSlowOperation
                 await CreateEntryAsync(dbContext, logId++, command, durationMicroseconds: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: command);
 
             var stats = result.Statistics.Columns["durationMicroseconds"];
@@ -400,7 +409,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             var command = $"{DatabaseFixture.Prefix}Command{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, 170, command);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: command);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo("durationMicroseconds");

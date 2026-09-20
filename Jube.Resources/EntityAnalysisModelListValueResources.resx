@@ -54,4 +54,7 @@
     <data name="DeleteExpiryDateMustBeFuture" xml:space="preserve">
     <value>Delete Expiry Date must be greater than the current date and time.</value>
   </data>
+    <data name="ListNotFound" xml:space="preserve">
+    <value>The List was not found.</value>
+  </data>
 </root>

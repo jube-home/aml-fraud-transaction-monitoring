@@ -44,18 +44,21 @@ namespace Jube.Data.Repository
             return dbContext.ActivationWatcher.OrderByDescending(s => s.Id).FirstOrDefaultAsync(token);
         }
 
-        public async Task<IEnumerable<ActivationWatcher>> GetAllSinceIdAsync(int id, int limit, CancellationToken token = default)
+        public async Task<IEnumerable<ActivationWatcher>> GetAllSinceIdAsync(int id, int limit,
+            CancellationToken token = default)
         {
             return await dbContext.ActivationWatcher
                 .Where(w => w.Id > id)
                 .OrderByDescending(s => s.Id).Take(limit).ToListAsync(token);
         }
 
-        public async Task<IEnumerable<ActivationWatcher>> GetByDateRangeAscendingAsync(DateTime? dateFrom, DateTime? dateTo, int limit, CancellationToken token = default)
+        public async Task<IEnumerable<ActivationWatcher>> GetByDateRangeAscendingAsync(DateTime? dateFrom,
+            DateTime? dateTo, int limit, CancellationToken token = default)
         {
             return await dbContext.ActivationWatcher
-                .Where(w => w.CreatedDate > dateFrom && w.CreatedDate <= dateTo
-                                                     && w.TenantRegistryId == tenantRegistryId)
+                .Where(w =>
+                    (dateFrom == null || w.CreatedDate > dateFrom) && (dateTo == null || w.CreatedDate <= dateTo)
+                                                                   && w.TenantRegistryId == tenantRegistryId)
                 .OrderBy(s => s.Id).Take(limit).ToListAsync(token);
         }
 

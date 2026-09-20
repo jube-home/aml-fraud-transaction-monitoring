@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Helpers;
 using Jube.Data.Repository;
 using Jube.Dto.PatroniClusterEvent;
 using Jube.Dto.Payload;
@@ -30,7 +31,8 @@ namespace Jube.Service.PatroniClusterEvent
     public sealed class PatroniClusterEventService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -165,8 +167,10 @@ namespace Jube.Service.PatroniClusterEvent
 
                 var dtos = rows.Select(r => new PatroniClusterEventDto(
                     r.Id, r.OccurredDate.GetValueOrDefault(), r.Scope, r.Name, r.EventTypeId.GetValueOrDefault(),
-                    DescribeEventType((PatroniClusterEventType)r.EventTypeId.GetValueOrDefault()), r.PreviousValue,
-                    r.NewValue, r.Reason, r.TimelineId, r.LsnBytes, r.CreatedDate.GetValueOrDefault(),
+                    DescribeEventType((PatroniClusterEventType)r.EventTypeId.GetValueOrDefault()),
+                    SensitiveTextRedactor.Redact(r.PreviousValue),
+                    SensitiveTextRedactor.Redact(r.NewValue), SensitiveTextRedactor.Redact(r.Reason), r.TimelineId,
+                    r.LsnBytes, r.CreatedDate.GetValueOrDefault(),
                     r.Instance)).ToList();
 
                 var total = await repository.CountAsync(from, to, eventTypeId, search, clampedSamplePercentage,
@@ -221,14 +225,14 @@ namespace Jube.Service.PatroniClusterEvent
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[PatroniClusterEventResources.PermissionDenied], permissions);

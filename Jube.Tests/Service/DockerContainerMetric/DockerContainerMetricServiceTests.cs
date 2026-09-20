@@ -112,7 +112,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             var firstId = await CreateEntryAsync(dbContext, name);
             var secondId = await CreateEntryAsync(dbContext, name);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Name == name).ToList();
@@ -125,7 +125,7 @@ namespace Jube.Test.Service.DockerContainerMetric
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -137,6 +137,15 @@ namespace Jube.Test.Service.DockerContainerMetric
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -169,7 +178,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             await CreateEntryAsync(dbContext, $"{name}Old", occurredDate: oldDate);
             await CreateEntryAsync(dbContext, $"{name}New", occurredDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Name.StartsWith(name)).ToList();
@@ -188,7 +197,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             await CreateEntryAsync(dbContext, $"{name}Old", occurredDate: twoHoursAgo);
             await CreateEntryAsync(dbContext, $"{name}New", occurredDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name);
 
             var mine = result.Rows.Where(r => r.Name.StartsWith(name)).ToList();
@@ -205,7 +214,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             await CreateEntryAsync(dbContext, uniqueName);
             await CreateEntryAsync(dbContext, "OtherContainer");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueName[..14].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.Name == uniqueName || r.Name == "OtherContainer").ToList();
@@ -223,7 +232,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             await CreateEntryAsync(dbContext, name, uniqueImage);
             await CreateEntryAsync(dbContext, $"{name}Other", "otherimage:latest");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueImage);
 
             var mine = result.Rows.Where(r => r.Name == name || r.Name == $"{name}Other").ToList();
@@ -239,7 +248,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             await CreateEntryAsync(dbContext, name);
             await CreateEntryAsync(dbContext, name);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -253,7 +262,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             await CreateEntryAsync(dbContext, name);
             await CreateEntryAsync(dbContext, name);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -266,7 +275,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             var name = $"{DatabaseFixture.Prefix}Container{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, name);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Name == name);
@@ -281,7 +290,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             await CreateEntryAsync(dbContext, name, memoryUsageBytes: 1000);
             await CreateEntryAsync(dbContext, name, memoryUsageBytes: 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: name, sortField: "memoryUsageBytes",
                 sortDirection: "asc");
@@ -303,7 +312,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             await CreateEntryAsync(dbContext, name, memoryUsageBytes: 2000);
             await CreateEntryAsync(dbContext, name, memoryUsageBytes: 1000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, sortField: "memoryUsageBytes",
                 sortDirection: ascendingKeyword);
 
@@ -318,7 +327,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             await CreateEntryAsync(dbContext, name, memoryUsageBytes: 1000);
             await CreateEntryAsync(dbContext, name, memoryUsageBytes: 2000);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, sortField: "memoryUsageBytes",
                 sortDirection: "banana");
 
@@ -333,7 +342,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             var firstId = await CreateEntryAsync(dbContext, name, occurredDate: DateTime.UtcNow.AddMinutes(-30));
             var secondId = await CreateEntryAsync(dbContext, name, occurredDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -351,7 +360,7 @@ namespace Jube.Test.Service.DockerContainerMetric
                 await CreateEntryAsync(dbContext, name);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: name);
 
             result.Rows.Should().HaveCount(2);
@@ -369,7 +378,7 @@ namespace Jube.Test.Service.DockerContainerMetric
                 await CreateEntryAsync(dbContext, name, memoryUsageBytes: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name);
 
             var stats = result.Statistics.Columns["memoryUsageBytes"];
@@ -388,7 +397,7 @@ namespace Jube.Test.Service.DockerContainerMetric
             var name = $"{DatabaseFixture.Prefix}Container{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, name);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

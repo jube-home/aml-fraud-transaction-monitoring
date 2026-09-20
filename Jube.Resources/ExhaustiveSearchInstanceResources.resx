@@ -66,4 +66,13 @@
     <data name="FilterTokensRequired" xml:space="preserve">
     <value>A training data filter is required.</value>
   </data>
+    <data name="FilterJsonInvalid" xml:space="preserve">
+    <value>The filter definition must be valid JSON of no more than 1 MB.</value>
+  </data>
+    <data name="FilterSqlInvalid" xml:space="preserve">
+    <value>The filter must be a plain boolean expression with no statements, comments, subqueries or unbalanced parentheses.</value>
+  </data>
+    <data name="FilterTokensInvalid" xml:space="preserve">
+    <value>The filter tokens must be a JSON array.</value>
+  </data>
 </root>

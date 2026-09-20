@@ -84,11 +84,17 @@ namespace Jube.Validations.EntityAnalysisModelActivationRuleSuppression
                 .WithErrorCode("EntityAnalysisModelActivationRuleNameMaximumLength")
                 .MustAsync(async (dto, name, cancellation) =>
                 {
-                    if (dto.EntityAnalysisModelGuid == Guid.Empty) return true;
+                    if (dto.EntityAnalysisModelGuid == Guid.Empty)
+                    {
+                        return true;
+                    }
 
                     var entityAnalysisModel = await entityAnalysisModelRepository
                         .GetByGuidAsync(dto.EntityAnalysisModelGuid, cancellation);
-                    if (entityAnalysisModel == null) return true;
+                    if (entityAnalysisModel == null)
+                    {
+                        return true;
+                    }
 
                     var entityAnalysisModelActivationRule = await entityAnalysisModelActivationRuleRepository
                         .GetByNameEntityAnalysisModelIdAsync(name, entityAnalysisModel.Id, cancellation);

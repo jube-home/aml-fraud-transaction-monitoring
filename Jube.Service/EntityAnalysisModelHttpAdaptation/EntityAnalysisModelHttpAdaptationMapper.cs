@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelHttpAdaptation;
 
 namespace Jube.Service.EntityAnalysisModelHttpAdaptation
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
 
     internal static class EntityAnalysisModelHttpAdaptationMapper
     {
+        [return: NotNullIfNotNull(nameof(httpAdaptation))]
         public static EntityAnalysisModelHttpAdaptationDto? ToDto(HttpAdaptationPoco? httpAdaptation)
         {
             return httpAdaptation is null
@@ -47,7 +49,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
 
         public static List<EntityAnalysisModelHttpAdaptationDto> ToDto(IEnumerable<HttpAdaptationPoco>? source)
         {
-            return (source ?? Enumerable.Empty<HttpAdaptationPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<HttpAdaptationPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static HttpAdaptationPoco ToPoco(EntityAnalysisModelHttpAdaptationDto dto)

@@ -39,4 +39,7 @@
     <data name="ListValueRequired" xml:space="preserve">
     <value>Veuillez saisir une valeur pour cette liste.</value>
   </data>
+    <data name="ListNotFound" xml:space="preserve">
+    <value>La liste est introuvable.</value>
+  </data>
 </root>

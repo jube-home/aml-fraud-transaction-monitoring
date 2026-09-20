@@ -30,7 +30,7 @@ namespace Jube.Service.PostgresActivity
 {
     public sealed class PostgresActivityService
     {
-        private static readonly int[] permissions = [27];
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly string connectionString;
         private readonly ILog log;
@@ -134,6 +134,7 @@ namespace Jube.Service.PostgresActivity
 
                 await using var repository = new PostgresActivityRepository(connectionString);
                 var rows = await repository.GetActivityAsync(token).ConfigureAwait(false);
+                rows = rows.Select(r => r with { Query = SensitiveTextRedactor.Redact(r.Query) }).ToList();
 
                 if (!string.IsNullOrWhiteSpace(search))
                 {
@@ -230,14 +231,14 @@ namespace Jube.Service.PostgresActivity
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[PostgresActivityResources.PermissionDenied], permissions);

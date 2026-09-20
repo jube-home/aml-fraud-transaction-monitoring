@@ -20,19 +20,58 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
     public static class EntityAnalysisModelInstanceEntryPayloadExtensions
     {
-        public static string ReplaceTokens(this EntityAnalysisModelInstanceEntryPayload entityAnalysisModelInstanceEntryPayload, string existing)
+        public static string ReplaceTokens(
+            this EntityAnalysisModelInstanceEntryPayload entityAnalysisModelInstanceEntryPayload, string existing,
+            Func<string, string> encode = null)
         {
             var lookup = new Dictionary<string, Func<string, string>>(StringComparer.OrdinalIgnoreCase)
             {
-                ["Payload"] = key => entityAnalysisModelInstanceEntryPayload.Payload.TryGetValue(key, out var v) ? v.ToString() : null,
-                ["Abstraction"] = key => entityAnalysisModelInstanceEntryPayload.Abstraction.TryGetValue(key, out var v) ? v.ToString(CultureInfo.InvariantCulture) : null,
-                ["Dictionary"] = key => entityAnalysisModelInstanceEntryPayload.Dictionary.TryGetValue(key, out var v) ? v.ToString(CultureInfo.InvariantCulture) : null,
-                ["TtlCounter"] = key => entityAnalysisModelInstanceEntryPayload.TtlCounter.TryGetValue(key, out var v) ? v.ToString(CultureInfo.InvariantCulture) : null,
-                ["Sanction"] = key => entityAnalysisModelInstanceEntryPayload.Sanction.TryGetValue(key, out var v) ? v.ToString(CultureInfo.InvariantCulture) : null,
-                ["HttpAdaptation"] = key => entityAnalysisModelInstanceEntryPayload.HttpAdaptation.TryGetValue(key, out var v) ? v.Value?.ToString(CultureInfo.InvariantCulture) : null,
-                ["ExhaustiveAdaptation"] = key => entityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation.TryGetValue(key, out var v) ? v.ToString(CultureInfo.InvariantCulture) : null,
-                ["Activation"] = key => entityAnalysisModelInstanceEntryPayload.Activation.ContainsKey(key) ? "true" : "false"
+                ["Payload"] = key =>
+                    entityAnalysisModelInstanceEntryPayload.Payload != null &&
+                    entityAnalysisModelInstanceEntryPayload.Payload.TryGetValue(key, out var v)
+                        ? v.ToString()
+                        : null,
+                ["Abstraction"] = key =>
+                    entityAnalysisModelInstanceEntryPayload.Abstraction != null &&
+                    entityAnalysisModelInstanceEntryPayload.Abstraction.TryGetValue(key, out var v)
+                        ? v.ToString(CultureInfo.InvariantCulture)
+                        : null,
+                ["Dictionary"] = key =>
+                    entityAnalysisModelInstanceEntryPayload.Dictionary != null &&
+                    entityAnalysisModelInstanceEntryPayload.Dictionary.TryGetValue(key, out var v)
+                        ? v.ToString(CultureInfo.InvariantCulture)
+                        : null,
+                ["TtlCounter"] = key =>
+                    entityAnalysisModelInstanceEntryPayload.TtlCounter != null &&
+                    entityAnalysisModelInstanceEntryPayload.TtlCounter.TryGetValue(key, out var v)
+                        ? v.ToString(CultureInfo.InvariantCulture)
+                        : null,
+                ["Sanction"] = key =>
+                    entityAnalysisModelInstanceEntryPayload.Sanction != null &&
+                    entityAnalysisModelInstanceEntryPayload.Sanction.TryGetValue(key, out var v)
+                        ? v.ToString(CultureInfo.InvariantCulture)
+                        : null,
+                ["HttpAdaptation"] = key =>
+                    entityAnalysisModelInstanceEntryPayload.HttpAdaptation != null &&
+                    entityAnalysisModelInstanceEntryPayload.HttpAdaptation.TryGetValue(key, out var v)
+                        ? v?.Value?.ToString(CultureInfo.InvariantCulture)
+                        : null,
+                ["ExhaustiveAdaptation"] = key =>
+                    entityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation != null &&
+                    entityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation.TryGetValue(key, out var v)
+                        ? v.ToString(CultureInfo.InvariantCulture)
+                        : null,
+                ["Activation"] = key =>
+                    entityAnalysisModelInstanceEntryPayload.Activation != null &&
+                    entityAnalysisModelInstanceEntryPayload.Activation.ContainsKey(key)
+                        ? "true"
+                        : "false"
             };
+
+            if (string.IsNullOrEmpty(existing))
+            {
+                return existing;
+            }
 
             var result = existing;
 
@@ -55,7 +94,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
                     continue;
                 }
 
-                result = result.Replace($"[@{token}@]", value);
+                result = result.Replace($"[@{token}@]", encode == null ? value : encode(value));
             }
 
             return result;

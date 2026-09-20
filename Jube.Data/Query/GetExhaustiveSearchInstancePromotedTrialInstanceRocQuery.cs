@@ -40,23 +40,43 @@ namespace Jube.Data.Query
                 .Where(w =>
                     w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Id == exhaustiveSearchInstanceId
                     && w.Active == 1
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null)
                     && w.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
                         .EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
                 .OrderByDescending(o => o.Id)
                 .Select(s => s.ExhaustiveSearchInstanceTrialInstanceId)
                 .FirstOrDefaultAsync(token);
 
-            return await dbContext.ExhaustiveSearchInstancePromotedTrialInstanceRoc
+            var points = await dbContext.ExhaustiveSearchInstancePromotedTrialInstanceRoc
                 .Where(w =>
-                    w.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId)
+                    w.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId
+                    && (w.Deleted == 0 || w.Deleted == null))
                 .OrderBy(o => o.Id)
-                .Select(s => new Dto
+                .Select(s => new
                 {
-                    Id = s.Id,
-                    Score = s.Score.Value,
-                    Fpr = (double)s.FalsePositive.Value / (s.FalsePositive.Value + s.TrueNegative.Value),
-                    Tpr = (double)s.TruePositive.Value / (s.TruePositive.Value + s.FalseNegative.Value)
+                    s.Id,
+                    s.Score,
+                    s.FalsePositive,
+                    s.TrueNegative,
+                    s.TruePositive,
+                    s.FalseNegative
                 }).ToListAsync(token);
+
+            return points.Select(s => new Dto
+            {
+                Id = s.Id,
+                Score = s.Score.GetValueOrDefault(),
+                Fpr = Rate(s.FalsePositive.GetValueOrDefault(), s.TrueNegative.GetValueOrDefault()),
+                Tpr = Rate(s.TruePositive.GetValueOrDefault(), s.FalseNegative.GetValueOrDefault())
+            }).ToList();
+        }
+
+        private static double Rate(int numerator, int other)
+        {
+            var denominator = (long)numerator + other;
+            return denominator == 0 ? 0d : (double)numerator / denominator;
         }
 
         public class Dto

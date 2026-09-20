@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelList;
 
 namespace Jube.Service.EntityAnalysisModelList
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelList
 
     internal static class EntityAnalysisModelListMapper
     {
+        [return: NotNullIfNotNull(nameof(list))]
         public static EntityAnalysisModelListDto? ToDto(ListPoco? list)
         {
             return list is null
@@ -42,7 +44,7 @@ namespace Jube.Service.EntityAnalysisModelList
 
         public static List<EntityAnalysisModelListDto> ToDto(IEnumerable<ListPoco>? source)
         {
-            return (source ?? Enumerable.Empty<ListPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<ListPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static ListPoco ToPoco(EntityAnalysisModelListDto dto)

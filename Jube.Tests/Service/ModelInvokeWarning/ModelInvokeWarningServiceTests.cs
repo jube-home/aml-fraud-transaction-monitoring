@@ -100,7 +100,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var secondId = await CreateWarningAsync(dbContext, modelGuid, "Second", 2000, 900,
                 DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid);
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -115,7 +115,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -127,6 +127,15 @@ namespace Jube.Test.Service.ModelInvokeWarning
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -158,7 +167,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var oldId = await CreateWarningAsync(dbContext, modelGuid, occurredDate: oldDate);
             var newId = await CreateWarningAsync(dbContext, modelGuid, occurredDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid, from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Id == oldId || r.Id == newId).ToList();
@@ -176,7 +185,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var oldId = await CreateWarningAsync(dbContext, modelGuid, occurredDate: twoHoursAgo);
             var newId = await CreateWarningAsync(dbContext, modelGuid, occurredDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid);
 
             var mine = result.Rows.Where(r => r.Id == oldId || r.Id == newId).ToList();
@@ -193,7 +202,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var matchingId = await CreateWarningAsync(dbContext, modelGuid);
             var otherId = await CreateWarningAsync(dbContext, otherModelGuid);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid);
 
             var mine = result.Rows.Where(r => r.Id == matchingId || r.Id == otherId).ToList();
@@ -210,7 +219,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var matchingId = await CreateWarningAsync(dbContext, modelGuid, uniqueMessage);
             var otherId = await CreateWarningAsync(dbContext, modelGuid, "Other message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid,
                 search: uniqueMessage.ToUpperInvariant());
 
@@ -227,7 +236,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             await CreateWarningAsync(dbContext, modelGuid);
             await CreateWarningAsync(dbContext, modelGuid);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -241,7 +250,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var id1 = await CreateWarningAsync(dbContext, modelGuid);
             var id2 = await CreateWarningAsync(dbContext, modelGuid);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid, samplePercentage: 100);
 
             result.Rows.Where(r => r.Id == id1 || r.Id == id2).Should().HaveCount(2);
@@ -257,7 +266,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var id3 = await CreateWarningAsync(dbContext, modelGuid, elapsedMicroseconds: 2000);
             var ids = new HashSet<int> { id1, id2, id3 };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(entityAnalysisModelGuid: modelGuid,
                 sortField: "elapsedMicroseconds", sortDirection: "asc");
@@ -282,7 +291,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var lowId = await CreateWarningAsync(dbContext, modelGuid, elapsedMicroseconds: 1000);
             var ids = new HashSet<int> { highId, lowId };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid,
                 sortField: "elapsedMicroseconds", sortDirection: ascendingKeyword);
 
@@ -299,7 +308,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var highId = await CreateWarningAsync(dbContext, modelGuid, elapsedMicroseconds: 2000);
             var ids = new HashSet<int> { lowId, highId };
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid,
                 sortField: "elapsedMicroseconds", sortDirection: "banana");
 
@@ -316,7 +325,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
                 occurredDate: DateTime.UtcNow.AddMinutes(-30));
             var secondId = await CreateWarningAsync(dbContext, modelGuid, occurredDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -334,7 +343,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
                 await CreateWarningAsync(dbContext, modelGuid);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, entityAnalysisModelGuid: modelGuid);
 
             result.Rows.Should().HaveCount(2);
@@ -352,7 +361,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
                 await CreateWarningAsync(dbContext, modelGuid, elapsedMicroseconds: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid);
 
             var stats = result.Statistics.Columns["elapsedMicroseconds"];
@@ -371,7 +380,7 @@ namespace Jube.Test.Service.ModelInvokeWarning
             var modelGuid = Guid.NewGuid();
             await CreateWarningAsync(dbContext, modelGuid);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(entityAnalysisModelGuid: modelGuid);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

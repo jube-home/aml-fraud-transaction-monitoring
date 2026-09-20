@@ -19,5 +19,6 @@ namespace Jube.Resources
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string NameRequired = nameof(NameRequired);
         public const string NameMaxLength = nameof(NameMaxLength);
+        public const string NameInvalidCharacters = nameof(NameInvalidCharacters);
     }
 }

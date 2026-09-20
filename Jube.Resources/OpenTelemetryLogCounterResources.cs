@@ -22,5 +22,6 @@ namespace Jube.Resources
         public const string NameInvalidCharacters = nameof(NameInvalidCharacters);
         public const string RegexRequired = nameof(RegexRequired);
         public const string RegexInvalid = nameof(RegexInvalid);
+        public const string RegexTooLong = nameof(RegexTooLong);
     }
 }

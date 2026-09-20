@@ -15,6 +15,7 @@ namespace Jube.Data.Query
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
@@ -29,17 +30,23 @@ namespace Jube.Data.Query
         bool parserAssertSelectOnly,
         string reportConnectionString = null)
     {
-        public async Task<List<IDictionary<string, object>>> ExecuteAsync(int id, Dictionary<string, object> parametersByName, CancellationToken token = default)
+        public async Task<List<IDictionary<string, object>>> ExecuteAsync(int id,
+            Dictionary<string, object> parametersByName, CancellationToken token = default)
         {
             var mergedParametersByName = parametersByName;
 
-            var visualisationRegistryDatasourceRepository = new VisualisationRegistryDatasourceRepository(dbContext, user);
-            var visualisationRegistryDatasource = await visualisationRegistryDatasourceRepository.GetByIdActiveOnlyAsync(id, token);
+            var visualisationRegistryDatasourceRepository =
+                new VisualisationRegistryDatasourceRepository(dbContext, user);
+            var visualisationRegistryDatasource =
+                await visualisationRegistryDatasourceRepository.GetByIdActiveOnlyAsync(id, token);
 
             if (visualisationRegistryDatasource.VisualisationRegistryId != null)
             {
-                var visualisationRegistryParameterRepository = new VisualisationRegistryParameterRepository(dbContext, user);
-                var visualisationRegistryParameters = await visualisationRegistryParameterRepository.GetByVisualisationRegistryIdOrderByIdAsync(visualisationRegistryDatasource.VisualisationRegistryId.Value, token);
+                var visualisationRegistryParameterRepository =
+                    new VisualisationRegistryParameterRepository(dbContext, user);
+                var visualisationRegistryParameters =
+                    await visualisationRegistryParameterRepository.GetByVisualisationRegistryIdOrderByIdAsync(
+                        visualisationRegistryDatasource.VisualisationRegistryId.Value, token);
 
                 foreach (var visualisationRegistryParameter in visualisationRegistryParameters)
                 {
@@ -56,7 +63,8 @@ namespace Jube.Data.Query
                             }
                             case 2:
                             {
-                                if (Int32.TryParse(defaultString, out var intValue))
+                                if (Int32.TryParse(defaultString, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                                        out var intValue))
                                 {
                                     mergedParametersByName.Add(cleanName, intValue);
                                 }
@@ -65,7 +73,8 @@ namespace Jube.Data.Query
                             }
                             case 3:
                             {
-                                if (Double.TryParse(defaultString, out var doubleValue))
+                                if (Double.TryParse(defaultString, NumberStyles.Float, CultureInfo.InvariantCulture,
+                                        out var doubleValue))
                                 {
                                     mergedParametersByName.Add(cleanName, doubleValue);
                                 }
@@ -74,29 +83,31 @@ namespace Jube.Data.Query
                             }
                             case 4:
                             {
-                                if (Boolean.TryParse(defaultString, out var dateTimeValue))
+                                if (Int32.TryParse(defaultString, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                                        out var days))
                                 {
-                                    mergedParametersByName.Add(cleanName, dateTimeValue);
+                                    mergedParametersByName.Add(cleanName, DateTime.UtcNow.AddDays(days * -1));
                                 }
 
                                 break;
                             }
                             case 5:
                             {
-                                if (DateTime.TryParse(defaultString, out var dateTimeValue))
+                                if (Byte.TryParse(defaultString, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                                        out var byteValue))
                                 {
-                                    mergedParametersByName.Add(cleanName, dateTimeValue);
+                                    mergedParametersByName.Add(cleanName, byteValue);
                                 }
 
                                 break;
                             }
                         }
-
                     }
                 }
             }
 
-            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log, parserAssertSelectOnly);
+            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log,
+                parserAssertSelectOnly, true);
             return await postgres.ExecuteByNamedParametersAsync(visualisationRegistryDatasource.Command,
                 mergedParametersByName, token).ConfigureAwait(false);
         }

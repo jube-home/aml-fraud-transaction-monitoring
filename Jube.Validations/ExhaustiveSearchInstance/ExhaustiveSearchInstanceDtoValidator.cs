@@ -26,10 +26,18 @@ namespace Jube.Validations.ExhaustiveSearchInstance
         public ExhaustiveSearchInstanceDtoValidator(ExhaustiveSearchInstanceRepository repository,
             IStringLocalizer localiser)
         {
+            Include(new FiniteNumberValidator<ExhaustiveSearchInstanceDto>());
+
             RuleFor(p => p.EntityAnalysisModelId)
                 .GreaterThan(0)
                 .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
+
+            RuleFor(p => p.EntityAnalysisModelId)
+                .MustAsync(repository.ParentModelVisibleAsync)
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.EntityAnalysisModelIdInvalid])
+                .WithErrorCode("EntityAnalysisModelIdNotFound")
+                .When(p => p.Id == 0 && p.EntityAnalysisModelId > 0);
 
             RuleFor(p => p.Name)
                 .NotEmpty()
@@ -60,17 +68,32 @@ namespace Jube.Validations.ExhaustiveSearchInstance
                 .WithErrorCode("FilterJsonNotEmpty")
                 .When(w => w.Filter);
 
+            RuleFor(p => p.FilterJson)
+                .Must(JsonText.IsAcceptable)
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.FilterJsonInvalid])
+                .WithErrorCode("FilterJsonInvalid");
+
             RuleFor(p => p.FilterSql)
                 .NotEmpty()
                 .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.FilterSqlRequired])
                 .WithErrorCode("FilterSqlNotEmpty")
                 .When(w => w.Filter);
 
+            RuleFor(p => p.FilterSql)
+                .Must(FilterSqlText.IsAcceptable)
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.FilterSqlInvalid])
+                .WithErrorCode("FilterSqlInvalid");
+
             RuleFor(p => p.FilterTokens)
                 .NotEmpty()
                 .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.FilterTokensRequired])
                 .WithErrorCode("FilterTokensNotEmpty")
                 .When(w => w.Filter);
+
+            RuleFor(p => p.FilterTokens)
+                .Must(FilterSqlText.IsAcceptableTokens)
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.FilterTokensInvalid])
+                .WithErrorCode("FilterTokensInvalid");
         }
     }
 }

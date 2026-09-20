@@ -6,7 +6,8 @@ parent: Sanctions
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # Sanction Searching
 
@@ -66,6 +67,14 @@ The Sanctions page takes two parameters as described in the following table:
 | Max Distance Ratio | Scales down the allowed distance in proportion to the shorter token being compared, so short tokens cannot match too loosely. Defaults to the server-wide SanctionsLevenshteinMaxDistanceRatio Environment Variable (0.3) if left at its default.                            | 0.3           |
 | Max Coverage Ratio | Rejects a candidate whose token count differs too greatly from the searched string's token count. Defaults to the server-wide SanctionsLevenshteinMaxCoverageRatio Environment Variable (2.0) if left at its default.                                                        | 2.0           |
 
+The values are validated, and a failure is a 400 with the standard validation body (the same structure the user
+interface shows for any form). The multipart string is required, no longer than 500 characters once trimmed, and may not
+contain a NUL character; Distance, where given, is a whole number from 0 to 50; Max Distance Ratio, where given, is a
+number from 0 to 1; and Max Coverage Ratio, where given, is a number from 0 to 100. Not a number, infinity and negative
+values are refused. An absent value takes its default. The endpoint answers 404 when `EnablePublicInvokeController` is
+False and 503 until the engine has finished starting. Sanction lists are reference data shared by every tenant, so a
+result is not scoped to a tenant.
+
 Complete the Sanctions page as the above parameters:
 
 ![Image](QuerySanctionsPage.png)
@@ -82,8 +91,8 @@ GET statement to the Jube Engine server side:
 (MaxDistanceRatio and MaxCoverageRatio query string parameters are added when the sliders above are moved from their
 defaults.)
 
-Returning the following response payload - a grand-total and per-source aggregation breakdown alongside the raw
-matches, rather than a bare array of matches as in earlier versions of this page:
+Returning the following response payload - a grand-total and per-source aggregation breakdown alongside the raw matches,
+rather than a bare array of matches as in earlier versions of this page:
 
 ``` json
 {
@@ -114,8 +123,8 @@ matches, rather than a bare array of matches as in earlier versions of this page
 ```
 
 Every aggregation mode is returned together on every search - see
-[Aggregation Type and Confidence](../SanctionModelInvocation/index.html#aggregation-type-and-confidence) for what
-each one means - rather than a single mode having to be pre-selected.
+[Aggregation Type and Confidence](../SanctionModelInvocation/index.html#aggregation-type-and-confidence) for what each
+one means - rather than a single mode having to be pre-selected.
 
 Of course presented in a manner friendly to the end user in three grids: the raw matches, a single-row grand total
 across every source, and a by-source breakdown, as follows:
@@ -145,8 +154,8 @@ character needs to be changed in order to achieve an exact match.
 ![Image](DistanceOneMatch.png)
 
 There are some additional processing beyond just the use of the Levenshtein Distance distance algorithm that are worth
-noting. The Sanctions functionality is an implementation of the Levenshtein Distance algorithm that compares strings (
-e.g. Richard vs Gichard) and returns an integer value specifying the number of characters that have to be changed in
+noting. The Sanctions functionality is an implementation of the Levenshtein Distance algorithm that compares strings
+(e.g. Richard vs Gichard) and returns an integer value specifying the number of characters that have to be changed in
 order for the two strings to be absolutely matched (e.g. 1 in this example). The purpose of fuzzy matching in the realm
 of Sanctions checking is to detect the scenario where names are subtly changed by error, deliberate action or cultural
 reasons (e.g. Mohammed has several possible spellings in practice). The Sanctions process will take the Multipart String
@@ -175,12 +184,12 @@ based on the following dictionary (currently hard coded):
 Accented characters are also normalised (diacritics stripped) and everything is lower-cased before comparison, so
 "Müller" and "Muller" tokenize identically.
 
-After splitting and cleaning, any token that is a single character, or that matches an entry in the server-wide
-**Stop Token** list, is dropped from both the searched string and every sanction entry before matching. Stop tokens
-are common honorific and religious/cultural titles (for example, titles equivalent to "Sheikh" or "Imam" that are
-common in some naming conventions), so that a name written with such a title compares correctly against a list entry
-that omits it, and vice versa, without the extra token itself counting against the match. Stop tokens are seeded via
-a database migration rather than being administrable from this page - see
+After splitting and cleaning, any token that is a single character, or that matches an entry in the server-wide **Stop
+Token** list, is dropped from both the searched string and every sanction entry before matching. Stop tokens are common
+honorific and religious/cultural titles (for example, titles equivalent to "Sheikh" or "Imam" that are common in some
+naming conventions), so that a name written with such a title compares correctly against a list entry that omits it, and
+vice versa, without the extra token itself counting against the match. Stop tokens are seeded via a database migration
+rather than being administrable from this page - see
 [Sanctions Loader](../SanctionsLoader/index.html#stop-tokens).
 
 The routine now has a list of strings that need to be matched against the sanctions loaded to memory, keeping in mind

@@ -105,7 +105,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             var firstId = await CreateEntryAsync(dbContext, 1001, applicationName);
             var secondId = await CreateEntryAsync(dbContext, 1002, applicationName);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.ApplicationName == applicationName).ToList();
@@ -119,7 +119,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -131,6 +131,15 @@ namespace Jube.Test.Service.PostgresReplicationStatus
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -163,7 +172,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 2001, $"{applicationName}Old", oldDate);
             await CreateEntryAsync(dbContext, 2002, $"{applicationName}New", newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.ApplicationName.StartsWith(applicationName)).ToList();
@@ -180,7 +189,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 3001, uniqueApplicationName);
             await CreateEntryAsync(dbContext, 3002, "OtherApp");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueApplicationName[..12].ToUpperInvariant());
 
             var mine = result.Rows
@@ -198,7 +207,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 5001, applicationName);
             await CreateEntryAsync(dbContext, 5002, applicationName);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: applicationName, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -212,7 +221,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 5003, applicationName);
             await CreateEntryAsync(dbContext, 5004, applicationName);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: applicationName, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -225,7 +234,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             var applicationName = $"{DatabaseFixture.Prefix}App{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, 4001, applicationName);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.ApplicationName == applicationName);
@@ -242,7 +251,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 6001, $"{applicationName}Old", twoHoursAgo);
             await CreateEntryAsync(dbContext, 6002, $"{applicationName}New", justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: applicationName);
 
             var mine = result.Rows.Where(r => r.ApplicationName.StartsWith(applicationName)).ToList();
@@ -259,7 +268,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 7002, applicationName, replayLagSeconds: 1);
             await CreateEntryAsync(dbContext, 7003, applicationName, replayLagSeconds: 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: applicationName, sortField: "replayLagSeconds",
                 sortDirection: "asc");
@@ -281,7 +290,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 7004, applicationName, replayLagSeconds: 2);
             await CreateEntryAsync(dbContext, 7005, applicationName, replayLagSeconds: 1);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: applicationName, sortField: "replayLagSeconds",
                 sortDirection: ascendingKeyword);
 
@@ -296,7 +305,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 7006, applicationName, replayLagSeconds: 1);
             await CreateEntryAsync(dbContext, 7007, applicationName, replayLagSeconds: 2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: applicationName, sortField: "replayLagSeconds",
                 sortDirection: "banana");
 
@@ -312,7 +321,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
                 DateTime.UtcNow.AddMinutes(-30));
             var secondId = await CreateEntryAsync(dbContext, 7009, applicationName, DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: applicationName, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -330,7 +339,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
                 await CreateEntryAsync(dbContext, 8000 + i, applicationName);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: applicationName);
 
             result.Rows.Should().HaveCount(2);
@@ -349,7 +358,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
                 await CreateEntryAsync(dbContext, pid++, applicationName, replayLagSeconds: value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: applicationName);
 
             var stats = result.Statistics.Columns["replayLagSeconds"];
@@ -368,7 +377,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             var applicationName = $"{DatabaseFixture.Prefix}App{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, 9500, applicationName);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: applicationName);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

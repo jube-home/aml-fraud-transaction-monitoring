@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Jube.Data.Helpers;
 using Jube.Data.Poco;
 using StackExchange.Redis;
 
@@ -186,9 +187,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                     RedisSlowLogId = id,
                     OccurredDate = DateTimeOffset.FromUnixTimeSeconds(timestampUnixSeconds).UtcDateTime,
                     DurationMicroseconds = durationMicroseconds,
-                    Command = string.Join(' ', arguments.Select(a => a.ToString())),
+                    Command = SensitiveTextRedactor.RedactRedisCommand(string.Join(' ',
+                        arguments.Select(a => a.ToString()))),
                     CommandName = arguments.Length > 0 ? arguments[0].ToString() : null,
-                    KeyName = arguments.Length > 1 ? arguments[1].ToString() : null,
+                    KeyName = arguments.Length > 1
+                        ? SensitiveTextRedactor.RedactRedisKeyName(arguments[0].ToString(), arguments[1].ToString())
+                        : null,
                     ClientAddress = fields.Length > 4 ? (string)fields[4] : null,
                     ClientName = fields.Length > 5 ? (string)fields[5] : null
                 });

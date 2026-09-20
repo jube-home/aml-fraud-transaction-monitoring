@@ -39,7 +39,7 @@ namespace Jube.Service.EntityAnalysisModel
     {
         private static readonly int[] listPermissions =
         [
-            6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 37, 27, 3, 4, 1
+            6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 37, 3, 4, 1, 40
         ];
 
         private static readonly int[] permissions = [6];
@@ -81,7 +81,7 @@ namespace Jube.Service.EntityAnalysisModel
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelResources));
 
-            if (String.IsNullOrWhiteSpace(userName))
+            if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
                 {
@@ -212,7 +212,7 @@ namespace Jube.Service.EntityAnalysisModel
                 throw;
             }
         }
-        
+
         [Description("Lists Models for the caller's tenant, ordered by id, capped at 'take' rows (max 200). If " +
                      "'more' is true, call again with 'afterId' set to the last returned Id to continue.")]
         [ServiceOperation("EntityAnalysisModelList", OperationKind.Read, Idempotent = true)]
@@ -269,7 +269,7 @@ namespace Jube.Service.EntityAnalysisModel
                 throw;
             }
         }
-        
+
         [Description("Creates a new Model in the caller's tenant. Not idempotent -- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelCreate", OperationKind.Write, Idempotent = false)]
         public async Task<ModelPoco> InsertAsync(
@@ -294,7 +294,7 @@ namespace Jube.Service.EntityAnalysisModel
                     if (log.IsWarnEnabled)
                     {
                         log.Warn($"EntityAnalysisModel.Create: validation failed user={userName} " +
-                                 $"props=[{String.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                                 $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
                     }
 
                     throw new DtoValidationException(results);
@@ -341,7 +341,7 @@ namespace Jube.Service.EntityAnalysisModel
                 throw;
             }
         }
-        
+
         [Description("Updates an existing Model in the caller's tenant, identified by its Id. Idempotent -- " +
                      "repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelUpdate", OperationKind.Write, Idempotent = true)]
@@ -369,7 +369,7 @@ namespace Jube.Service.EntityAnalysisModel
                     if (log.IsWarnEnabled)
                     {
                         log.Warn($"EntityAnalysisModel.Update: validation failed id={model.Id} user={userName} " +
-                                 $"props=[{String.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                                 $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
                     }
 
                     throw new DtoValidationException(results);
@@ -435,7 +435,7 @@ namespace Jube.Service.EntityAnalysisModel
                 throw;
             }
         }
-        
+
         [Description("Soft-deletes a Model in the caller's tenant by its Id. Reversible at the data level, but " +
                      "treat as destructive -- the model immediately stops being usable via the API.")]
         [ServiceOperation("EntityAnalysisModelDelete", OperationKind.Delete, Idempotent = true, Destructive = true)]
@@ -515,7 +515,7 @@ namespace Jube.Service.EntityAnalysisModel
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{String.Join(",", specs)}]");
+                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", specs)}]");
             }
 
             throw new ForbiddenException(strings[EntityAnalysisModelResources.PermissionDenied], specs);

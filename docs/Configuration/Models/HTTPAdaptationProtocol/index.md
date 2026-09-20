@@ -6,36 +6,36 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # HTTP Adaptation Protocol
 
-This page is the wire specification for HTTP Adaptation endpoints - R Plumber, Python Flask, or
-anything else that can receive a POST and return JSON. It documents what Jube actually sends, what
-Jube actually accepts back, and how the response is used once it is inside Jube. It supersedes the
-payload description on the [HTTP Adaptation](../HTTPAdaptation/index.html) configuration page, which
-covers how to create an adaptation in the UI rather than the shape of the request and response.
+This page is the wire specification for HTTP Adaptation endpoints - R Plumber, Python Flask, or anything else that can
+receive a POST and return JSON. It documents what Jube actually sends, what Jube actually accepts back, and how the
+response is used once it is inside Jube. It supersedes the payload description on
+the [HTTP Adaptation](../HTTPAdaptation/index.html) configuration page, which covers how to create an adaptation in the
+UI rather than the shape of the request and response.
 
-Version on the wire: `1.1`. There is no breaking change from the original bare-double contract: a
-bare JSON number remains a legal whole-body response, forever.
+Version on the wire: `1.1`. There is no breaking change from the original bare-double contract: a bare JSON number
+remains a legal whole-body response, forever.
 
 ## 1. Non-negotiables
 
 1. A bare JSON number is a legal whole-body response, forever.
 2. `Value` is the only required member of an `Adaptation` object.
-3. Vocabularies (`Family`, `Method`, `Space`, and so on) are open strings on the wire, documented as
-   constants in `ProtocolConstants`, never enums. An unrecognised value is archived, not thrown on.
+3. Vocabularies (`Family`, `Method`, `Space`, and so on) are open strings on the wire, documented as constants in
+   `ProtocolConstants`, never enums. An unrecognised value is archived, not thrown on.
 4. Unknown members are ignored on deserialisation.
 5. `Journey: null` is the correct answer for families with no journey, not a degradation.
 6. An error must never masquerade as a score: if `Error` is non-null, `Value` must be null.
 
 ## 2. Request: what Jube sends
 
-Jube POSTs the entire `EntityAnalysisModelInstanceEntryPayload` for the transaction - Payload,
-Abstraction, TTL Counters, Abstraction Calculations, Sanctions, any HTTP Adaptations already
-recalled earlier in the same invocation, and so on - as the JSON body, using the endpoint's
-configured URL. This is not a hand-picked subset: an adaptation can read anything already resolved
-about the transaction, including the `Value` of an adaptation with a lower Priority that has
+Jube POSTs the entire `EntityAnalysisModelInstanceEntryPayload` for the transaction - Payload, Abstraction, TTL
+Counters, Abstraction Calculations, Sanctions, any HTTP Adaptations already recalled earlier in the same invocation, and
+so on - as the JSON body, using the endpoint's configured URL. This is not a hand-picked subset: an adaptation can read
+anything already resolved about the transaction, including the `Value` of an adaptation with a lower Priority that has
 already run (see [§6.3](#63-execution-order-priority-and-boosting)).
 
 ```json
@@ -62,9 +62,8 @@ already run (see [§6.3](#63-execution-order-priority-and-boosting)).
 
 ## 3. Response: the `Adaptation` object
 
-A response body is either a bare JSON number (§3.1) or a JSON object matching the shape below. Every
-member other than `Value` is optional; omit what a family has nothing to say about rather than
-sending nulls for it.
+A response body is either a bare JSON number (§3.1) or a JSON object matching the shape below. Every member other than
+`Value` is optional; omit what a family has nothing to say about rather than sending nulls for it.
 
 ### 3.1 The bare-number floor
 
@@ -72,8 +71,8 @@ sending nulls for it.
 0.91
 ```
 
-Also accepted, for compatibility with jsonlite's default vector serialisation: a single number
-wrapped in an array, `[0.91]`. Both forms are equivalent to `{"Value": 0.91}`.
+Also accepted, for compatibility with jsonlite's default vector serialisation: a single number wrapped in an array,
+`[0.91]`. Both forms are equivalent to `{"Value": 0.91}`.
 
 ### 3.2 `Adaptation`
 
@@ -109,8 +108,8 @@ wrapped in an array, `[0.91]`. Both forms are equivalent to `{"Value": 0.91}`.
 | `WhitelistedArcs`, `BlacklistedArcs`              | integer                                            | Bayesian networks: counts of expert-constrained arcs.                                                                                                                                               |
 | `HiddenLayers`, `ProcessingElements`              | integer                                            | Populated for `NeuralNetwork`, omitted otherwise.                                                                                                                                                   |
 
-Omit the topology/weights fields entirely, rather than duplicating `ArtifactHash` into them, where a
-family has no meaningful topology/weights split.
+Omit the topology/weights fields entirely, rather than duplicating `ArtifactHash` into them, where a family has no
+meaningful topology/weights split.
 
 ### 3.4 `ResultDescriptor`
 
@@ -122,9 +121,8 @@ family has no meaningful topology/weights split.
 
 ### 3.5 `CalibrationDescriptor`
 
-Whether `Value` is a score that merely ranks, or a score that has been validated to mean something.
-Probabilistic narration of `Value` - "one in five", operational capacity planning - is only
-legitimate when `Calibrated` is true.
+Whether `Value` is a score that merely ranks, or a score that has been validated to mean something. Probabilistic
+narration of `Value` - "one in five", operational capacity planning - is only legitimate when `Calibrated` is true.
 
 | Member               | Type                                           | Notes                                                                                                                                                                                                                                                                                |
 |----------------------|------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -169,8 +167,8 @@ legitimate when `Calibrated` is true.
 
 ### 3.7 `JourneyDescriptor`
 
-The single fired path through a model that has one - a decision tree, a rule - structured
-sufficiently to transcribe into a Jube coder rule without ever touching HTTP serialisation again.
+The single fired path through a model that has one - a decision tree, a rule - structured sufficiently to transcribe
+into a Jube coder rule without ever touching HTTP serialisation again.
 `null` for families with no such path (a Bayesian network, an ensemble).
 
 | Member | Type                   |
@@ -190,8 +188,8 @@ sufficiently to transcribe into a Jube coder rule without ever touching HTTP ser
 
 ### 3.8 `ProtocolConstants` (open vocabularies)
 
-These are documented values, not a closed set. An endpoint may emit a value not listed here; Jube
-archives it rather than rejecting the response.
+These are documented values, not a closed set. An endpoint may emit a value not listed here; Jube archives it rather
+than rejecting the response.
 
 | Vocabulary           | Values                                                                                          |
 |----------------------|-------------------------------------------------------------------------------------------------|
@@ -207,67 +205,61 @@ archives it rather than rejecting the response.
 
 `Error` non-null forces `Value` to null, whatever the wire body literally says. The legacy shape
 `{"Value": 0.0, "Error": "..."}` is still parseable, but is now treated the same as
-`{"Value": null, "Error": "..."}`: suppressed. An endpoint author should send `Value` as `null` (or
-omit it) alongside a non-null `Error`; sending `0.0` alongside an `Error` is accepted for backward
-compatibility, not recommended.
+`{"Value": null, "Error": "..."}`: suppressed. An endpoint author should send `Value` as `null` (or omit it) alongside a
+non-null `Error`; sending `0.0` alongside an `Error` is accepted for backward compatibility, not recommended.
 
-A response body that is neither a bare number nor a parseable `Adaptation` object - malformed JSON,
-an empty body, a non-JSON error page - is treated identically to an explicit `Error`: `Value` is
-null and the failure reason is recorded.
+A response body that is neither a bare number nor a parseable `Adaptation` object - malformed JSON, an empty body, a
+non-JSON error page - is treated identically to an explicit `Error`: `Value` is null and the failure reason is recorded.
 
 ## 5. Consumption inside Jube
 
 ### 5.1 Payload storage
 
-`EntityAnalysisModelInstanceEntryPayload.HttpAdaptation` is a dictionary of adaptation name to the
-full `Adaptation` object - not just the score. This is the single stored copy: Model, Result,
-Calibration, Contribution and Journey travel with it, so the Case UI can build a model journey
-visualisation, and it is what gets archived (`ArchiveJson`) for the case record. There is no
-separate flattened copy kept alongside it.
+`EntityAnalysisModelInstanceEntryPayload.HttpAdaptation` is a dictionary of adaptation name to the full `Adaptation`
+object - not just the score. This is the single stored copy: Model, Result, Calibration, Contribution and Journey travel
+with it, so the Case UI can build a model journey visualisation, and it is what gets archived (`ArchiveJson`) for the
+case record. There is no separate flattened copy kept alongside it.
 
 Where `ReportTable` is enabled on the adaptation, `Value` is additionally written to a flat
-`ArchiveKey` row for SQL-level reporting, the same mechanism used for Abstraction, TTL Counters and
-every other reportable metric - a deliberate denormalisation for querying, not a second source of
-truth for `Value` itself.
+`ArchiveKey` row for SQL-level reporting, the same mechanism used for Abstraction, TTL Counters and every other
+reportable metric - a deliberate denormalisation for querying, not a second source of truth for `Value` itself.
 
 ### 5.2 Rule script access
 
 A rule authored (Builder or Coder) as `HttpAdaptation.Example` is compiled through to
-`HTTPAdaptation("Example").Value` - the Parser rewrites the dot-notation path automatically, so
-existing rule text does not need to be rewritten by hand. The path stays recognisable; only the
-compiled output changed.
+`HTTPAdaptation("Example").Value` - the Parser rewrites the dot-notation path automatically, so existing rule text does
+not need to be rewritten by hand. The path stays recognisable; only the compiled output changed.
 
-A suppressed adaptation's `Value` is `null`. A VB.NET expression that compares or does arithmetic on
-a null `Nullable(Of Double)` and assigns the (nullable) result to the rule's `Matched` boolean throws
-`InvalidOperationException` on that narrowing conversion; the exception is caught by the rule's own
-wrapper (every rule is compiled inside a `Try`/`Catch`), logged at Info level, and `Matched` defaults
-to `False`. In other words: a suppressed adaptation safely does not match, at the cost of a log line
-rather than a silent short-circuit.
+A suppressed adaptation's `Value` is `null`. A VB.NET expression that compares or does arithmetic on a null
+`Nullable(Of Double)` and assigns the (nullable) result to the rule's `Matched` boolean throws
+`InvalidOperationException` on that narrowing conversion; the exception is caught by the rule's own wrapper (every rule
+is compiled inside a `Try`/`Catch`), logged at Info level, and `Matched` defaults to `False`. In other words: a
+suppressed adaptation safely does not match, at the cost of a log line rather than a silent short-circuit.
 
-`Value` is registered as an always-allowed token in the Parser (alongside `HttpAdaptation` itself),
-so it does not need to be added to the `RuleScriptToken` table for existing or new rules to compile.
+`Value` is registered as an always-allowed token in the Parser (alongside `HttpAdaptation` itself), so it does not need
+to be added to the `RuleScriptToken` table for existing or new rules to compile.
 See [Rule Compilation Tokens and Extensions](../RuleCompilationAlgorithm/index.html).
 
 ### 5.3 Execution order: Priority and boosting
 
-Adaptations on a model run in ascending `Priority` order (a `double`, default `0`, editable on the
-HTTP Adaptation page). Because the POST body is the whole transaction payload (§2), a later
-adaptation can read an earlier one's result directly, e.g. as an input feature or as a
-`HttpAdaptation.EarlierModel.Value` term in the endpoint's own scoring logic - this is what makes
-boosting / model chaining possible. Ties, and the historic default of `0` for every adaptation, are
-broken by whatever order the database returns them in for that priority, which is not itself
-guaranteed - give adaptations distinct priorities if run order matters.
+Adaptations on a model run in ascending `Priority` order (a `double`, default `0`, editable on the HTTP Adaptation
+page). Because the POST body is the whole transaction payload (§2), a later adaptation can read an earlier one's result
+directly, e.g. as an input feature or as a
+`HttpAdaptation.EarlierModel.Value` term in the endpoint's own scoring logic - this is what makes boosting / model
+chaining possible. Ties, and the historic default of `0` for every adaptation, are broken by whatever order the database
+returns them in for that priority, which is not itself guaranteed - give adaptations distinct priorities if run order
+matters.
 
 ### 5.4 Reference and mock endpoints
 
-`Jube.App/Controllers/Mocks/MockHttpAdaptation.cs` exposes a series of unauthenticated endpoints
-under `/api/MockHttpAdaptation/*` - one per family and edge case (bare number, suppressed, the
-legacy error shape, malformed/empty bodies, a stale-calibration example, and so on) - so an
-`EntityAnalysisModelHttpAdaptation.HttpEndpoint` can be pointed at a worked example of the protocol
-without standing up an R/Python sandbox. `GET /api/MockHttpAdaptation` lists every scenario.
+`Jube.App/Endpoints/Mocks/MockHttpAdaptationEndpoints.cs` exposes a series of unauthenticated endpoints under
+`/api/MockHttpAdaptation/*` - one per family and edge case (bare number, suppressed, the legacy error shape,
+malformed/empty bodies, a stale-calibration example, and so on) - so an
+`EntityAnalysisModelHttpAdaptation.HttpEndpoint` can be pointed at a worked example of the protocol without standing up
+an R/Python sandbox. `GET /api/MockHttpAdaptation` lists every scenario.
 
 ## 6. Source of record
 
 The types in this document are a description of, not a substitute for, the C# records under
-`Jube.Engine/EntityAnalysisModelInvoke/Context/Extensions/HttpAdaptations/Protocol/`. Where this page
-and the code disagree, the code is correct and this page is stale.
+`Jube.Engine/EntityAnalysisModelInvoke/Context/Extensions/HttpAdaptations/Protocol/`. Where this page and the code
+disagree, the code is correct and this page is stale.

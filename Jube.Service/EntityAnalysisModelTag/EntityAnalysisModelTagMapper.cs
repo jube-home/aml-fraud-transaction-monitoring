@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelTag;
 
 namespace Jube.Service.EntityAnalysisModelTag
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelTag
 
     internal static class EntityAnalysisModelTagMapper
     {
+        [return: NotNullIfNotNull(nameof(tag))]
         public static EntityAnalysisModelTagDto? ToDto(TagPoco? tag)
         {
             return tag is null
@@ -42,7 +44,7 @@ namespace Jube.Service.EntityAnalysisModelTag
 
         public static List<EntityAnalysisModelTagDto> ToDto(IEnumerable<TagPoco>? source)
         {
-            return (source ?? Enumerable.Empty<TagPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<TagPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static TagPoco ToPoco(EntityAnalysisModelTagDto dto)

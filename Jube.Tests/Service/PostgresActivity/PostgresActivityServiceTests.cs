@@ -59,7 +59,7 @@ namespace Jube.Test.Service.PostgresActivity
         public async Task ListReturnsAtLeastOneLiveBackendAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync();
             result.Rows.Should().NotBeEmpty();
@@ -69,7 +69,7 @@ namespace Jube.Test.Service.PostgresActivity
         public async Task ListFiltersBySearchToNothingWhenNoMatchAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync($"no-such-value-{Guid.NewGuid():N}");
 
@@ -81,6 +81,15 @@ namespace Jube.Test.Service.PostgresActivity
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -106,8 +115,8 @@ namespace Jube.Test.Service.PostgresActivity
         public async Task ListIsNotTenantScopedAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var serviceA = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var serviceA = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var serviceB = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var resultA = await serviceA.ListAsync();
             var resultB = await serviceB.ListAsync();
@@ -120,7 +129,7 @@ namespace Jube.Test.Service.PostgresActivity
         public async Task ListSortsByPidAscendingAndDescendingAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(sortField: "pid", sortDirection: "asc");
             ascending.Rows.Select(r => r.Pid).Should().BeInAscendingOrder();
@@ -133,7 +142,7 @@ namespace Jube.Test.Service.PostgresActivity
         public async Task ListTotalReflectsRowCountAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync();
 
@@ -144,7 +153,7 @@ namespace Jube.Test.Service.PostgresActivity
         public async Task ListStatisticsIncludesEveryContinuousMeasuredColumnAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync();
 

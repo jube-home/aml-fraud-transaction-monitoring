@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas la permission d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un tenant pour effectuer cette action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>L'action du flux de travail n'a pas été trouvée.</value>
+  </data>
+    <data name="CaseWorkflowIdInvalid" xml:space="preserve">
+    <value>Un flux de travail parent valide est requis.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>Le flux de travail référencé n'a pas été trouvé dans votre tenant.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Le nom est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom ne peut pas dépasser {0} caractères.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="DescriptionMaxLength" xml:space="preserve">
+    <value>La description ne peut pas dépasser {0} caractères.</value>
+  </data>
+    <data name="HttpEndpointRequired" xml:space="preserve">
+    <value>Une URL de webhook est requise lorsque le point de terminaison HTTP est activé.</value>
+  </data>
+    <data name="HttpEndpointTypeIdInvalid" xml:space="preserve">
+    <value>Une méthode HTTP valide est requise lorsque le point de terminaison HTTP est activé.</value>
+  </data>
+    <data name="NotificationDestinationRequired" xml:space="preserve">
+    <value>Une destination de notification est requise lorsque la notification est activée.</value>
+  </data>
+    <data name="NotificationTypeIdInvalid" xml:space="preserve">
+    <value>Un type de notification valide est requis lorsque la notification est activée.</value>
+  </data>
+</root>

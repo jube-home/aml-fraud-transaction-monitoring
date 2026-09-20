@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using System.Globalization;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelDictionaryKvp;
@@ -28,15 +29,20 @@ using Microsoft.Extensions.Localization;
 namespace Jube.Service.EntityAnalysisModelDictionaryKvp
 {
     using DictionaryKvpPoco = Data.Poco.EntityAnalysisModelDictionaryKvp;
+    using CsvFileUploadPoco = Data.Poco.EntityAnalysisModelDictionaryCsvFileUpload;
 
     public sealed class EntityAnalysisModelDictionaryKvpService
     {
+        private const int MaxCsvKeyLength = 256;
+        private const int MaxCsvFileNameLength = 255;
         private const int MaxListTake = 200;
         private static readonly int[] permissions = [4];
         private readonly ILog auditLog;
+        private readonly EntityAnalysisModelDictionaryRepository dictionaryRepository;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelDictionaryKvpRepository repository;
+        private readonly EntityAnalysisModelDictionaryCsvFileUploadRepository uploadRepository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -55,6 +61,8 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelDictionaryKvpRepository(dbContext, userName);
+            dictionaryRepository = new EntityAnalysisModelDictionaryRepository(dbContext, userName);
+            uploadRepository = new EntityAnalysisModelDictionaryCsvFileUploadRepository(dbContext, userName);
             validator = new EntityAnalysisModelDictionaryKvpDtoValidator(
                 new EntityAnalysisModelDictionaryRepository(dbContext, userName), strings);
         }
@@ -76,7 +84,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             if (string.IsNullOrWhiteSpace(userName))
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn("EntityAnalysisModelDictionaryKvp.Create: no authenticated user; refusing.");
+                }
 
                 throw new NotAuthenticatedException(
                     strings[EntityAnalysisModelDictionaryKvpResources.NotAuthenticated]);
@@ -88,8 +98,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             if (resolvedTenantRegistryId is null)
             {
                 if (log.IsWarnEnabled)
+                {
                     log.Warn(
                         $"EntityAnalysisModelDictionaryKvp.Create: user '{userName}' resolves to no tenant; refusing.");
+                }
 
                 throw new NotAuthenticatedException(
                     strings[EntityAnalysisModelDictionaryKvpResources.NotAuthenticated]);
@@ -108,7 +120,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
         {
             using var op = OperationScope.Start("EntityAnalysisModelDictionaryKvp", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
-            if (log.IsDebugEnabled) log.Debug($"EntityAnalysisModelDictionaryKvp.List: entry user={userName}");
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelDictionaryKvp.List: entry user={userName}");
+            }
 
             try
             {
@@ -117,7 +132,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionaryKvp.List: {dtos.Count} rows user={userName}");
+                }
 
                 return dtos;
             }
@@ -130,7 +147,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionaryKvp.List: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -154,8 +173,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             using var op = OperationScope.Start("EntityAnalysisModelDictionaryKvp",
                 "ListByEntityAnalysisModelDictionaryId", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelDictionaryKvp.ListByEntityAnalysisModelDictionaryId: entry entityAnalysisModelDictionaryId={entityAnalysisModelDictionaryId} user={userName}");
+            }
 
             try
             {
@@ -165,8 +186,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelDictionaryKvp.ListByEntityAnalysisModelDictionaryId: {dtos.Count} rows entityAnalysisModelDictionaryId={entityAnalysisModelDictionaryId} user={userName}");
+                }
 
                 return dtos;
             }
@@ -179,8 +202,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug(
                         $"EntityAnalysisModelDictionaryKvp.ListByEntityAnalysisModelDictionaryId: cancelled entityAnalysisModelDictionaryId={entityAnalysisModelDictionaryId} user={userName}");
+                }
 
                 throw;
             }
@@ -207,7 +232,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             using var op = OperationScope.Start("EntityAnalysisModelDictionaryKvp", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelDictionaryKvp.Get: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -216,8 +243,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 if (dictionaryKvp == null)
                 {
                     if (log.IsDebugEnabled)
+                    {
                         log.Debug(
                             $"EntityAnalysisModelDictionaryKvp.Get: id={id} not found or not visible to tenant user={userName}");
+                    }
 
                     return null;
                 }
@@ -234,7 +263,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionaryKvp.Get: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -260,8 +291,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
             if (log.IsDebugEnabled)
+            {
                 log.Debug(
                     $"EntityAnalysisModelDictionaryKvp.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
+            }
 
             try
             {
@@ -288,7 +321,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionaryKvp.ListPaged: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -311,7 +346,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             using var op = OperationScope.Start("EntityAnalysisModelDictionaryKvp", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelDictionaryKvp.Create: entry user={userName}");
+            }
 
             try
             {
@@ -322,8 +359,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelDictionaryKvp.Create: validation failed user={userName} " +
                                  $"props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -337,7 +376,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 op.Created();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelDictionaryKvp.Create: created Id={saved.Id} user={userName}");
+                }
 
                 return saved;
             }
@@ -355,7 +396,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionaryKvp.Create: cancelled user={userName}");
+                }
 
                 throw;
             }
@@ -379,7 +422,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             using var op = OperationScope.Start("EntityAnalysisModelDictionaryKvp", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelDictionaryKvp.Update: entry id={model?.Id} user={userName}");
+            }
 
             try
             {
@@ -390,8 +435,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"EntityAnalysisModelDictionaryKvp.Update: validation failed id={model.Id} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
+                    }
 
                     throw new DtoValidationException(results);
                 }
@@ -406,8 +453,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelDictionaryKvp.Update: id={model.Id} not found, deleted, expired, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Key Value Pair was not found.", ex);
                 }
@@ -417,8 +466,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 op.Updated();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info(
                         $"EntityAnalysisModelDictionaryKvp.Update: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
 
                 return saved;
             }
@@ -441,7 +492,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionaryKvp.Update: cancelled id={model?.Id} user={userName}");
+                }
 
                 throw;
             }
@@ -468,7 +521,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             using var op = OperationScope.Start("EntityAnalysisModelDictionaryKvp", "Delete", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
+            {
                 log.Debug($"EntityAnalysisModelDictionaryKvp.Delete: entry id={id} user={userName}");
+            }
 
             try
             {
@@ -481,8 +536,10 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 catch (KeyNotFoundException ex)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn(
                             $"EntityAnalysisModelDictionaryKvp.Delete: id={id} not found, already deleted, expired, or not visible to tenant user={userName}");
+                    }
 
                     throw new NotFoundException("The Key Value Pair was not found.", ex);
                 }
@@ -491,7 +548,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 op.Deleted();
 
                 if (log.IsInfoEnabled)
+                {
                     log.Info($"EntityAnalysisModelDictionaryKvp.Delete: soft-deleted Id={id} user={userName}");
+                }
             }
             catch (ForbiddenException)
             {
@@ -507,7 +566,9 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             {
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
+                {
                     log.Debug($"EntityAnalysisModelDictionaryKvp.Delete: cancelled id={id} user={userName}");
+                }
 
                 throw;
             }
@@ -520,12 +581,228 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             }
         }
 
+        [Description("Imports one or more CSV files of 'key,value[,deleteExpiryDate]' lines into a Dictionary in " +
+                     "the caller's tenant. Existing keys are updated, new keys are inserted. Lines that fail are " +
+                     "logged and skipped; the import is not atomic. One upload record is written per file. Not " +
+                     "idempotent -- each call records new uploads.")]
+        [ServiceOperation("EntityAnalysisModelDictionaryKvpUploadCsv", OperationKind.Write, Idempotent = false)]
+        public async Task<List<EntityAnalysisModelDictionaryKvpCsvUploadResultDto>> UploadCsvAsync(
+            [Description("The CSV files to import.")]
+            IReadOnlyList<EntityAnalysisModelDictionaryKvpCsvUploadFileDto>? files,
+            [Description("Numeric identifier of the parent Dictionary.")]
+            int entityAnalysisModelDictionaryId,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelDictionaryKvp", "UploadCsv", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelDictionaryKvp.UploadCsv: entry entityAnalysisModelDictionaryId={entityAnalysisModelDictionaryId} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(files);
+                EnsurePermitted("EntityAnalysisModelDictionaryKvp.UploadCsv");
+
+                var dictionary = await dictionaryRepository.GetByIdAsync(entityAnalysisModelDictionaryId, token)
+                    .ConfigureAwait(false);
+                if (dictionary == null)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"EntityAnalysisModelDictionaryKvp.UploadCsv: dictionary {entityAnalysisModelDictionaryId} not found or not visible to tenant user={userName}");
+                    }
+
+                    throw new NotFoundException(strings[EntityAnalysisModelDictionaryKvpResources.DictionaryNotFound]);
+                }
+
+                var results = new List<EntityAnalysisModelDictionaryKvpCsvUploadResultDto>();
+                foreach (var file in files)
+                {
+                    results.Add(await ImportCsvFileAsync(file, entityAnalysisModelDictionaryId, token)
+                        .ConfigureAwait(false));
+                }
+
+                op.Rows(results.Sum(s => s.Records));
+                if (results.Count > 0)
+                {
+                    op.Entity(results[^1].Id);
+                    op.Created();
+                }
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info(
+                        $"EntityAnalysisModelDictionaryKvp.UploadCsv: {results.Count} files entityAnalysisModelDictionaryId={entityAnalysisModelDictionaryId} user={userName}");
+                }
+
+                return results;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug(
+                        $"EntityAnalysisModelDictionaryKvp.UploadCsv: cancelled entityAnalysisModelDictionaryId={entityAnalysisModelDictionaryId} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error(
+                    $"EntityAnalysisModelDictionaryKvp.UploadCsv: unexpected failure entityAnalysisModelDictionaryId={entityAnalysisModelDictionaryId} user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        private async Task<EntityAnalysisModelDictionaryKvpCsvUploadResultDto> ImportCsvFileAsync(
+            EntityAnalysisModelDictionaryKvpCsvUploadFileDto file, int entityAnalysisModelDictionaryId,
+            CancellationToken token)
+        {
+            ArgumentNullException.ThrowIfNull(file.Content);
+
+            using var reader = new StreamReader(file.Content);
+
+            var records = 0;
+            const int errors = 0;
+
+            while (reader.Peek() >= 0)
+            {
+                try
+                {
+                    var splits = (await reader.ReadLineAsync(token).ConfigureAwait(false))?.Split(",");
+                    if (splits != null)
+                    {
+                        if ((splits[0].Length == 0 && splits.Length > 1) || splits[0].Length > MaxCsvKeyLength ||
+                            splits[0].Any(char.IsControl))
+                        {
+                            throw new FormatException(
+                                "The dictionary key is empty, too long or has control characters.");
+                        }
+
+                        var existing = await repository
+                            .GetByIdKvpKeyAsync(entityAnalysisModelDictionaryId, splits[0], token)
+                            .ConfigureAwait(false);
+
+                        if (splits.Length > 1)
+                        {
+                            var deleteExpiryDateSpecified = splits.Length > 2;
+                            var deleteExpiryDate = deleteExpiryDateSpecified
+                                ? ParseDeleteExpiryDate(splits[2])
+                                : null;
+
+                            if (existing == null)
+                            {
+                                await repository.InsertAsync(new DictionaryKvpPoco
+                                {
+                                    EntityAnalysisModelDictionaryId = entityAnalysisModelDictionaryId,
+                                    KvpKey = splits[0],
+                                    KvpValue = ParseFiniteValue(splits[1]),
+                                    DeleteExpiryDate = deleteExpiryDate
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                existing.KvpValue = ParseFiniteValue(splits[1]);
+
+                                if (deleteExpiryDateSpecified)
+                                {
+                                    existing.DeleteExpiryDate = deleteExpiryDate;
+                                }
+
+                                await repository.UpdateAsync(existing, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+
+                    records += 1;
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    log.Error(e.ToString());
+                }
+            }
+
+            var saved = await uploadRepository.InsertAsync(new CsvFileUploadPoco
+            {
+                FileName = SanitiseFileName(file.FileName),
+                Records = records,
+                Errors = errors,
+                Length = file.Length,
+                EntityAnalysisModelDictionaryId = entityAnalysisModelDictionaryId
+            }, token).ConfigureAwait(false);
+
+            return new EntityAnalysisModelDictionaryKvpCsvUploadResultDto
+            {
+                Id = saved.InheritedId, FileName = saved.FileName, Records = records, Errors = errors
+            };
+        }
+
+        private static double ParseFiniteValue(string value)
+        {
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) ||
+                !double.IsFinite(parsed))
+            {
+                throw new FormatException("The dictionary value is not a finite number.");
+            }
+
+            return parsed;
+        }
+
+        private static string SanitiseFileName(string? fileName)
+        {
+            var name = fileName ?? string.Empty;
+            var separator = name.LastIndexOfAny(['/', '\\']);
+            if (separator >= 0)
+            {
+                name = name[(separator + 1)..];
+            }
+
+            name = new string(name.Where(c => !char.IsControl(c)).ToArray());
+            return name.Length > MaxCsvFileNameLength ? name[..MaxCsvFileNameLength] : name;
+        }
+
+        private static DateTime? ParseDeleteExpiryDate(string value)
+        {
+            return !string.IsNullOrWhiteSpace(value) &&
+                   DateTime.TryParseExact(value, "O", CultureInfo.InvariantCulture,
+                       DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var parsed)
+                ? parsed
+                : null;
+        }
+
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions)) return;
+            if (permissionValidation.Validate(permissions))
+            {
+                return;
+            }
 
             if (log.IsWarnEnabled)
+            {
                 log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+            }
 
             throw new ForbiddenException(strings[EntityAnalysisModelDictionaryKvpResources.PermissionDenied],
                 permissions);

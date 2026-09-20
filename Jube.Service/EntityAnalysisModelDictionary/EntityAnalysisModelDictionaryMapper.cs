@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelDictionary;
 
 namespace Jube.Service.EntityAnalysisModelDictionary
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelDictionary
 
     internal static class EntityAnalysisModelDictionaryMapper
     {
+        [return: NotNullIfNotNull(nameof(dictionary))]
         public static EntityAnalysisModelDictionaryDto? ToDto(DictionaryPoco? dictionary)
         {
             return dictionary is null
@@ -44,7 +46,7 @@ namespace Jube.Service.EntityAnalysisModelDictionary
 
         public static List<EntityAnalysisModelDictionaryDto> ToDto(IEnumerable<DictionaryPoco>? source)
         {
-            return (source ?? Enumerable.Empty<DictionaryPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<DictionaryPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static DictionaryPoco ToPoco(EntityAnalysisModelDictionaryDto dto)

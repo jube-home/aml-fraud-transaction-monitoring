@@ -30,7 +30,8 @@ namespace Jube.Service.CaseCreationWarning
     public sealed class CaseCreationWarningService
     {
         private const int MaxListTake = 100000;
-        private static readonly int[] permissions = [27];
+
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -104,8 +105,7 @@ namespace Jube.Service.CaseCreationWarning
                      "not just the aggregate stage stats. Only populated for stages exceeding " +
                      "CaseCreationWarnThresholdMilliseconds. Most recent first when no sort is given, capped " +
                      "at 'take' rows (max 100000, default 100000). Each of from/to defaults independently to " +
-                     "the last hour when omitted. Landlord callers see rows for every tenant; other callers " +
-                     "only see rows for their own tenant. Optionally restrict to a date range (by " +
+                     "the last hour when omitted. Landlord only: every other caller is refused with a 403 (permission denied). Optionally restrict to a date range (by " +
                      "OccurredDate), an exact stageId match, and/or a case-insensitive substring search " +
                      "against CaseKeyValue. Optionally apply samplePercentage on top of every other filter to " +
                      "draw a random subset instead of the most recent rows -- useful for taking an unbiased " +
@@ -165,7 +165,8 @@ namespace Jube.Service.CaseCreationWarning
                 var dtos = rows.Select(r => new CaseCreationWarningDto(
                         r.Id, r.OccurredDate.GetValueOrDefault(), r.EntityAnalysisModelInstanceEntryGuid,
                         r.CaseWorkflowGuid, r.CaseKey, r.CaseKeyValue, r.StageId.GetValueOrDefault(),
-                        ((CaseCreationStage)r.StageId.GetValueOrDefault()).Describe(), r.Destination,
+                        ((CaseCreationStage)r.StageId.GetValueOrDefault()).Describe(),
+                        LogTextRedactor.Redact(r.Destination),
                         r.DurationMicroseconds.GetValueOrDefault(), r.CreatedDate.GetValueOrDefault(), r.Instance))
                     .ToList();
 
@@ -212,14 +213,14 @@ namespace Jube.Service.CaseCreationWarning
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[CaseCreationWarningResources.PermissionDenied], permissions);

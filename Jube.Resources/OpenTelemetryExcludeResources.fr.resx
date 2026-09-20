@@ -48,4 +48,7 @@
     <data name="NameMaxLength" xml:space="preserve">
     <value>Le nom doit comporter {0} caractères ou moins.</value>
   </data>
+    <data name="NameInvalidCharacters" xml:space="preserve">
+    <value>Le nom ne doit pas contenir de caractères de contrôle.</value>
+  </data>
 </root>

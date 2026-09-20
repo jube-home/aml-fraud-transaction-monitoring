@@ -93,4 +93,7 @@
     <data name="OffsetValueRange" xml:space="preserve">
     <value>The offset value cannot be negative.</value>
   </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>The rule builder definition must be valid JSON of no more than 1 MB.</value>
+  </data>
 </root>

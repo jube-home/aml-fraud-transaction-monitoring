@@ -98,7 +98,7 @@ namespace Jube.Test.Service.RedisCallCounter
             var secondId = await CreateCounterAsync(dbContext, call, 7, 9000,
                 900, 1600);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Call == call).ToList();
@@ -115,7 +115,7 @@ namespace Jube.Test.Service.RedisCallCounter
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -127,6 +127,15 @@ namespace Jube.Test.Service.RedisCallCounter
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -159,7 +168,7 @@ namespace Jube.Test.Service.RedisCallCounter
             await CreateCounterAsync(dbContext, $"{call}Old", createdDate: oldDate);
             await CreateCounterAsync(dbContext, $"{call}New", createdDate: newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Call.StartsWith(call)).ToList();
@@ -178,7 +187,7 @@ namespace Jube.Test.Service.RedisCallCounter
             await CreateCounterAsync(dbContext, $"{call}Old", createdDate: twoHoursAgo);
             await CreateCounterAsync(dbContext, $"{call}New", createdDate: justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Call.StartsWith(call)).ToList();
@@ -195,7 +204,7 @@ namespace Jube.Test.Service.RedisCallCounter
             await CreateCounterAsync(dbContext, uniqueCall);
             await CreateCounterAsync(dbContext, "OtherRepository.InsertAsync");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueCall[..12].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.Call == uniqueCall || r.Call == "OtherRepository.InsertAsync")
@@ -212,7 +221,7 @@ namespace Jube.Test.Service.RedisCallCounter
             await CreateCounterAsync(dbContext, call);
             await CreateCounterAsync(dbContext, call);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: call, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -226,7 +235,7 @@ namespace Jube.Test.Service.RedisCallCounter
             await CreateCounterAsync(dbContext, call);
             await CreateCounterAsync(dbContext, call);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: call, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -239,7 +248,7 @@ namespace Jube.Test.Service.RedisCallCounter
             var call = $"{DatabaseFixture.Prefix}Repository{Guid.NewGuid():N}.Method";
             await CreateCounterAsync(dbContext, call);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Call == call);
@@ -255,7 +264,7 @@ namespace Jube.Test.Service.RedisCallCounter
             await CreateCounterAsync(dbContext, call, 10);
             await CreateCounterAsync(dbContext, call, 20);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: call, sortField: "count", sortDirection: "asc");
             ascending.Rows.Select(r => r.Count).Should().Equal(10, 20, 30);
@@ -276,7 +285,7 @@ namespace Jube.Test.Service.RedisCallCounter
             await CreateCounterAsync(dbContext, call, 20);
             await CreateCounterAsync(dbContext, call, 10);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: call, sortField: "count",
                 sortDirection: ascendingKeyword);
 
@@ -292,7 +301,7 @@ namespace Jube.Test.Service.RedisCallCounter
             await CreateCounterAsync(dbContext, call, 10);
             await CreateCounterAsync(dbContext, call, 20);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: call, sortField: "count", sortDirection: "banana");
 
             result.Rows.Select(r => r.Count).Should().Equal(20, 10);
@@ -307,7 +316,7 @@ namespace Jube.Test.Service.RedisCallCounter
             var firstId = await CreateCounterAsync(dbContext, call, createdDate: DateTime.UtcNow.AddMinutes(-30));
             var secondId = await CreateCounterAsync(dbContext, call, createdDate: DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: call, sortField: "notARealColumn");
 
             result.Rows.Select(r => r.Id).Should().Equal(secondId, firstId);
@@ -323,7 +332,7 @@ namespace Jube.Test.Service.RedisCallCounter
                 await CreateCounterAsync(dbContext, call);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: call);
 
             result.Rows.Should().HaveCount(2);
@@ -341,7 +350,7 @@ namespace Jube.Test.Service.RedisCallCounter
                 await CreateCounterAsync(dbContext, call, value);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: call);
 
             var stats = result.Statistics.Columns["count"];
@@ -360,7 +369,7 @@ namespace Jube.Test.Service.RedisCallCounter
             var call = $"{DatabaseFixture.Prefix}Repository{Guid.NewGuid():N}.Method";
             await CreateCounterAsync(dbContext, call);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: call);
 
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(

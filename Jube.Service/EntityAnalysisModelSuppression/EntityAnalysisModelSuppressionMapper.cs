@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelSuppression;
 
 namespace Jube.Service.EntityAnalysisModelSuppression
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelSuppression
 
     internal static class EntityAnalysisModelSuppressionMapper
     {
+        [return: NotNullIfNotNull(nameof(suppression))]
         public static EntityAnalysisModelSuppressionDto? ToDto(SuppressionPoco? suppression)
         {
             return suppression is null
@@ -40,7 +42,7 @@ namespace Jube.Service.EntityAnalysisModelSuppression
 
         public static List<EntityAnalysisModelSuppressionDto> ToDto(IEnumerable<SuppressionPoco>? source)
         {
-            return (source ?? Enumerable.Empty<SuppressionPoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<SuppressionPoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static SuppressionPoco ToPoco(EntityAnalysisModelSuppressionDto dto)

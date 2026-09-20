@@ -13,14 +13,57 @@
 
 namespace Jube.App.Code.signalr
 {
+    using System;
     using System.Threading.Tasks;
+    using Data.Context;
+    using Data.Security;
+    using DynamicEnvironment;
+    using Jube.Service.Exceptions.Query.RegisterSignalrConnection;
+    using Jube.Service.Query.RegisterSignalrConnection;
+    using Jube.Service.Reactivity.Interfaces;
+    using log4net;
     using Microsoft.AspNetCore.SignalR;
+    using Microsoft.Extensions.Localization;
 
-    public class WatcherHub : Hub
+    public class WatcherHub(
+        DynamicEnvironment dynamicEnvironment,
+        IStringLocalizerFactory stringLocalizerFactory,
+        IServiceChangeBus serviceChangeBus,
+        ILog log) : Hub
     {
-        public Task SendMessageAsync(string user, string message)
+        public override async Task OnConnectedAsync()
         {
-            return Clients.All.SendAsync("ReceiveMessage", user, message);
+            var userName = Context.User?.Identity?.Name;
+            WatcherConnectionRegistry.Instance.Track(Context.ConnectionId, userName, Context.Abort,
+                Context.User?.FindFirst(TokenValidity.IssuedMillisecondsClaim)?.Value);
+
+            if (!string.IsNullOrWhiteSpace(userName))
+            {
+                try
+                {
+                    await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                        dynamicEnvironment.AppSettings("ConnectionString"), log);
+                    var service = await RegisterSignalrConnectionService.CreateAsync(dbContext, userName,
+                        new SignalrGroupRegistrar(Groups, WatcherConnectionRegistry.Instance), log,
+                        stringLocalizerFactory, serviceChangeBus);
+                    await service.RegisterAsync(Context.ConnectionId);
+                }
+                catch (Exception ex) when (ex is NotAuthenticatedException or ForbiddenException)
+                {
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    log.Error($"WatcherHub.OnConnected: could not join tenant group user={userName}", ex);
+                }
+            }
+
+            await base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            WatcherConnectionRegistry.Instance.Remove(Context.ConnectionId);
+            return base.OnDisconnectedAsync(exception);
         }
     }
 }

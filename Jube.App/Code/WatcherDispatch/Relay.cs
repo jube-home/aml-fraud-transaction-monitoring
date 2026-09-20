@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jube.App.Code.signalr;
 using Jube.Cache;
+using Jube.Service.Reactivity;
 using Jube.TaskCancellation;
 using Jube.TaskCancellation.Interfaces;
 using log4net;
@@ -92,7 +93,14 @@ namespace Jube.App.Code.WatcherDispatch
                     log.Info("Activation Relay: String representation of body received is " + payload + " .");
                 }
 
-                await watcherHub.Clients.Group("Tenant_" + tenantRegistryId)
+                var groupName = TenantGroup.TryName(tenantRegistryId);
+                if (groupName is null)
+                {
+                    log.Warn($"Activation Relay: message dropped, no valid tenant registry id ('{tenantRegistryId}').");
+                    return;
+                }
+
+                await watcherHub.Clients.Group(groupName)
                     .SendAsync("ReceiveMessage", "RealTime", payload, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
@@ -121,7 +129,14 @@ namespace Jube.App.Code.WatcherDispatch
                 var json = JObject.Parse(bodyString);
                 var tenantRegistryId = (json.SelectToken("tenantRegistryId") ?? 0).Value<string>();
 
-                await watcherHub.Clients.Group("Tenant_" + tenantRegistryId)
+                var groupName = TenantGroup.TryName(tenantRegistryId);
+                if (groupName is null)
+                {
+                    log.Warn($"Activation Relay: message dropped, no valid tenant registry id ('{tenantRegistryId}').");
+                    return;
+                }
+
+                await watcherHub.Clients.Group(groupName)
                     .SendAsync("ReceiveMessage", "RealTime", bodyString, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
@@ -130,24 +145,27 @@ namespace Jube.App.Code.WatcherDispatch
             }
         }
 
-        private Task ConnectToRedisForActivationWatcherStreamingAsync(CancellationToken token = default)
+        private async Task ConnectToRedisForActivationWatcherStreamingAsync(CancellationToken token = default)
         {
             var subscriber = connectionMultiplexer.GetSubscriber();
             var redisChannel = RedisChannel.Pattern("ActivationWatcher*");
             token.Register(() => subscriber.Unsubscribe(redisChannel));
 
-#pragma warning disable VSTHRD100
-#pragma warning disable VSTHRD101
-#pragma warning disable AsyncFixer03
-            // ReSharper disable once AsyncVoidLambda
-            return subscriber.SubscribeAsync(redisChannel,
-                async (messageChannel, value) =>
-                {
-                    await EventHandlerRedisAsync(messageChannel.ToString().Split(':')[1], value, token);
-                });
-#pragma warning restore AsyncFixer03
-#pragma warning restore VSTHRD101
-#pragma warning restore VSTHRD100
+            var queue = await subscriber.SubscribeAsync(redisChannel).ConfigureAwait(false);
+            queue.OnMessage(message => RelayRedisMessageAsync(message, token));
+        }
+
+        private async Task RelayRedisMessageAsync(ChannelMessage message, CancellationToken token)
+        {
+            try
+            {
+                var tenantRegistryId = message.Channel.ToString().Split(':')[1];
+                await EventHandlerRedisAsync(tenantRegistryId, message.Message, token).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                log.Error($"Activation Relay: Redis message could not be relayed {ex}");
+            }
         }
 
         private Task ConnectToAmqpForActivationWatcherStreamingAsync(CancellationToken token = default)

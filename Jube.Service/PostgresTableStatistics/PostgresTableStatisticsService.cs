@@ -31,7 +31,7 @@ namespace Jube.Service.PostgresTableStatistics
 {
     public sealed class PostgresTableStatisticsService
     {
-        private static readonly int[] permissions = [27];
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -229,14 +229,14 @@ namespace Jube.Service.PostgresTableStatistics
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[PostgresTableStatisticsResources.PermissionDenied], permissions);

@@ -69,4 +69,10 @@
     <data name="FunctionScriptMaxLength" xml:space="preserve">
     <value>The function script must be {0} characters or fewer.</value>
   </data>
+    <data name="EntityAnalysisModelAbstractionNameLeftMaxLength" xml:space="preserve">
+    <value>The left abstraction name must be {0} characters or fewer.</value>
+  </data>
+    <data name="EntityAnalysisModelAbstractionNameRightMaxLength" xml:space="preserve">
+    <value>The right abstraction name must be {0} characters or fewer.</value>
+  </data>
 </root>

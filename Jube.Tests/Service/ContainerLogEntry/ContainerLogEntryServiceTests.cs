@@ -95,7 +95,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, "etcd", ContainerLogStreamType.Stdout, uniqueMessage);
             await CreateEntryAsync(dbContext, "patroni", ContainerLogStreamType.Stderr, uniqueMessage2);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: DatabaseFixture.Prefix);
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage || r.Message == uniqueMessage2).ToList();
@@ -111,7 +111,7 @@ namespace Jube.Test.Service.ContainerLogEntry
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -123,6 +123,15 @@ namespace Jube.Test.Service.ContainerLogEntry
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -156,7 +165,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, "redis", ContainerLogStreamType.Stdout, uniqueMessage, oldDate);
             await CreateEntryAsync(dbContext, "redis", ContainerLogStreamType.Stdout, uniqueMessage2, newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1), search: DatabaseFixture.Prefix);
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage || r.Message == uniqueMessage2).ToList();
@@ -173,7 +182,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, "redis-sentinel", ContainerLogStreamType.Stdout, uniqueMessage);
             await CreateEntryAsync(dbContext, "redis-sentinel", ContainerLogStreamType.Stdout, "other message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueMessage[..14].ToUpperInvariant());
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage).ToList();
@@ -189,7 +198,7 @@ namespace Jube.Test.Service.ContainerLogEntry
 
             await CreateEntryAsync(dbContext, uniqueContainerName, ContainerLogStreamType.Stdout, uniqueMessage);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueContainerName);
 
             result.Rows.Should().Contain(r => r.Message == uniqueMessage);
@@ -203,7 +212,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, "etcd", ContainerLogStreamType.Stdout, uniqueMessage);
             await CreateEntryAsync(dbContext, "etcd", ContainerLogStreamType.Stderr, uniqueMessage);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueMessage, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -217,7 +226,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, "etcd", ContainerLogStreamType.Stdout, uniqueMessage);
             await CreateEntryAsync(dbContext, "etcd", ContainerLogStreamType.Stderr, uniqueMessage);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: uniqueMessage, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -230,7 +239,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             var uniqueMessage = $"{DatabaseFixture.Prefix}crosstenant{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, "etcd", ContainerLogStreamType.Stdout, uniqueMessage);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync(search: uniqueMessage);
 
             otherTenantResult.Rows.Should().Contain(r => r.Message == uniqueMessage);
@@ -248,7 +257,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, "redis", ContainerLogStreamType.Stdout, uniqueMessage, twoHoursAgo);
             await CreateEntryAsync(dbContext, "redis", ContainerLogStreamType.Stdout, uniqueMessage2, justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: DatabaseFixture.Prefix);
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage || r.Message == uniqueMessage2).ToList();
@@ -265,7 +274,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, $"{prefix}A", ContainerLogStreamType.Stdout, "message");
             await CreateEntryAsync(dbContext, $"{prefix}B", ContainerLogStreamType.Stdout, "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: prefix, sortField: "containerName",
                 sortDirection: "asc");
@@ -287,7 +296,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, $"{prefix}B", ContainerLogStreamType.Stdout, "message");
             await CreateEntryAsync(dbContext, $"{prefix}A", ContainerLogStreamType.Stdout, "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: prefix, sortField: "containerName",
                 sortDirection: ascendingKeyword);
 
@@ -302,7 +311,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, $"{prefix}A", ContainerLogStreamType.Stdout, "message");
             await CreateEntryAsync(dbContext, $"{prefix}B", ContainerLogStreamType.Stdout, "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: prefix, sortField: "containerName",
                 sortDirection: "banana");
 
@@ -320,7 +329,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, "etcd", ContainerLogStreamType.Stdout, uniqueMessage2,
                 DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: DatabaseFixture.Prefix, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Message == uniqueMessage || r.Message == uniqueMessage2).ToList();
@@ -338,7 +347,7 @@ namespace Jube.Test.Service.ContainerLogEntry
                 await CreateEntryAsync(dbContext, prefix, ContainerLogStreamType.Stdout, "message");
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: prefix);
 
             result.Rows.Should().HaveCount(2);
@@ -352,7 +361,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             var prefix = $"{DatabaseFixture.Prefix}Cont{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, prefix, ContainerLogStreamType.Stdout, "message");
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: prefix);
 
             result.Statistics.Columns.Should().BeEmpty(

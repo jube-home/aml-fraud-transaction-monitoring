@@ -33,35 +33,45 @@ namespace Jube.Data.Query
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<string>> ExecuteAsync(Guid entityAnalysisModelGuid, CancellationToken token = default)
+        public async Task<IEnumerable<string>> ExecuteAsync(Guid entityAnalysisModelGuid,
+            CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelRequestXpath
                 .Where(w => w.EntityAnalysisModel.Guid == entityAnalysisModelGuid
                             && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                            && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)
                             && (w.Deleted == 0 || w.Deleted == null)
-                            && w.DataTypeId == 1)
+                            && w.DataTypeId == 1
+                            && w.Active == 1)
                 .Select(s => s.Name)
                 .Union(dbContext.EntityAnalysisModelInlineFunction
                     .Where(w => w.EntityAnalysisModel.Guid == entityAnalysisModelGuid
                                 && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                                && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)
                                 && (w.Deleted == 0 || w.Deleted == null)
-                                && w.ReturnDataTypeId == 1)
+                                && w.ReturnDataTypeId == 1
+                                && w.Active == 1)
                     .Select(s => s.Name)).OrderBy(s => s).ToListAsync(token);
         }
 
-        public async Task<IEnumerable<string>> ExecuteAsync(int entityAnalysisModelId, CancellationToken token = default)
+        public async Task<IEnumerable<string>> ExecuteAsync(int entityAnalysisModelId,
+            CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelRequestXpath
                 .Where(w => w.EntityAnalysisModelId == entityAnalysisModelId
                             && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                            && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)
                             && (w.Deleted == 0 || w.Deleted == null)
-                            && w.DataTypeId == 1)
+                            && w.DataTypeId == 1
+                            && w.Active == 1)
                 .Select(s => s.Name)
                 .Union(dbContext.EntityAnalysisModelInlineFunction
                     .Where(w => w.EntityAnalysisModelId == entityAnalysisModelId
                                 && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                                && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)
                                 && (w.Deleted == 0 || w.Deleted == null)
-                                && w.ReturnDataTypeId == 1)
+                                && w.ReturnDataTypeId == 1
+                                && w.Active == 1)
                     .Select(s => s.Name)).OrderBy(s => s).ToListAsync(token);
         }
     }

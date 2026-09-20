@@ -6,22 +6,28 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # Cases Workflow Status
-When a case is created,  it can be allocated a status, which is helpful for filtering.  Furthermore,  when a case is being worked, changing the status allows for the sub allocation of the record (for example to a money laundering officer for review).  Statuses are separate from the closed status (i.e. Open,  Closed etc).
 
-A common example for case status use is to escalate cases through a hierarchy in an money laundering team,  such as:
+When a case is created, it can be allocated a status, which is helpful for filtering. Furthermore, when a case is being
+worked, changing the status allows for the sub allocation of the record (for example to a money laundering officer for
+review). Statuses are separate from the closed status (i.e. Open, Closed etc).
+
+A common example for case status use is to escalate cases through a hierarchy in an money laundering team, such as:
 
 * Front Line Defence (FLD).
 * Deputy Anti Money Laundering Compliance Officer (DAMLCO).
 * Anti Money Laundering Compliance Officer (AMLCO).
 
-To begin the addition of Cases Workflow Status,  navigate to Administration >> Models >> Cases Workflows >> Cases Workflow Status:
+To begin the addition of Cases Workflow Status, navigate to Administration >> Models >> Cases Workflows >> Cases
+Workflow Status:
 
 ![Image](TopOfTreeForCasesWorkflows.png)
 
-Cases Workflows Status is a child of Cases Workflows, itself a Child of Models.  It follows that the tree to administer models and cases workflows is now of three levels deep.
+Cases Workflows Status is a child of Cases Workflows, itself a Child of Models. It follows that the tree to administer
+models and cases workflows is now of three levels deep.
 
 It is incumbent to expand upon the model to reveal the Cases Workflows entry:
 
@@ -45,7 +51,13 @@ The parameters are as follows:
 | Status Fore Colour | The colour of the text for this status.  The colour is used in the main bar on the status page.                                                                                                                             | #0000FF |
 | Status Back Colour | The colour of the background for this status,  the colour is the main bar on the status page.                                                                                                                               | #880808 |
 
-Notifications and HTTP Endpoint as common among the following section of Cases Workflow configuration, are documented separately and not covered in detail in this section, being common in several sections of the Cases Workflows configuration such as:
+Validation: Name is required (256 characters max) and must be unique within the parent Cases Workflow. Priority must be
+one of the five values above (Ultra High to Ultra Low). Status Fore Colour and Status Back Colour are required and must
+be a 6-digit hex colour code, e.g. `#0000FF`.
+
+Notifications and HTTP Endpoint as common among the following section of Cases Workflow configuration, are documented
+separately and not covered in detail in this section, being common in several sections of the Cases Workflows
+configuration such as:
 
 * Cases Workflow Form.
 * Cases Workflow Action.
@@ -59,12 +71,15 @@ Scroll down the page and click the Add button to create a version of the Cases W
 
 ![Image](VersionAddedCasesWorkflowStatus.png)
 
-The Cases Workflow Status are available for allocation on case creation or by the end user while navigating the case.  
+The Cases Workflow Status are available for allocation on case creation or by the end user while navigating the case.
 
-For confirmatory purposes, navigate to the Activation Rule definition for Volume1DayUSDForIPOver100 in the main menu, expand using the Cases switch,  and select the newly created Cases Workflow: 
+For confirmatory purposes, navigate to the Activation Rule definition for Volume1DayUSDForIPOver100 in the main menu,
+expand using the Cases switch, and select the newly created Cases Workflow:
 
 ![Image](CasesWorkflowsStatusNowAvailable.png)
 
-It can be seen that the newly created Cases Workflow Status is now available as a child of the newly created Cases Workflows.
+It can be seen that the newly created Cases Workflow Status is now available as a child of the newly created Cases
+Workflows.
 
-At this stage,  no case record has been created, but Cases Workflow Status are available for filtering via the Cases Workflow filter,  described separately.
+At this stage, no case record has been created, but Cases Workflow Status are available for filtering via the Cases
+Workflow filter, described separately.

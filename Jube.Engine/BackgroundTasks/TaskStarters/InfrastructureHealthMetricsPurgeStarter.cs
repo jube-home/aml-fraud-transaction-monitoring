@@ -141,9 +141,9 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     w => w.CreatedDate < cutoffUtc, w => w.Id, ids => w => ids.Contains(w.Id), chunkSize, token),
                 PurgeTableAsync<EntityAnalysisModelProcessingCounter>("EntityAnalysisModelProcessingCounter",
                     w => w.CreatedDate < cutoffUtc, w => w.Id, ids => w => ids.Contains(w.Id), chunkSize, token),
-                PurgeTableAsync<HAProxyServerStatus>("HAProxyServerStatus",
+                PurgeTableAsync<HaProxyServerStatus>("HAProxyServerStatus",
                     w => w.CreatedDate < cutoffUtc, w => w.Id, ids => w => ids.Contains(w.Id), chunkSize, token),
-                PurgeTableAsync<HAProxyReachabilityProbe>("HAProxyReachabilityProbe",
+                PurgeTableAsync<HaProxyReachabilityProbe>("HAProxyReachabilityProbe",
                     w => w.CreatedDate < cutoffUtc, w => w.Id, ids => w => ids.Contains(w.Id), chunkSize, token),
                 PurgeTableAsync<OverlayNetworkTaskDrift>("OverlayNetworkTaskDrift",
                     w => w.CreatedDate < cutoffUtc, w => w.Id, ids => w => ids.Contains(w.Id), chunkSize, token)

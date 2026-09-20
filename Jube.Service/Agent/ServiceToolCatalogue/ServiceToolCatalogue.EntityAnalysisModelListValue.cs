@@ -36,7 +36,11 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates a value in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelListValueDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a value in the caller's tenant by id.")
+                    "Soft-deletes a value in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelListValueUploadCsv", OperationKind.Write, false, false,
+                    "Loads one or more CSV files of values into a List in the caller's tenant in a single " +
+                    "transaction, recording an upload entry per file; calling twice loads the values twice.")
             ]);
         }
     }

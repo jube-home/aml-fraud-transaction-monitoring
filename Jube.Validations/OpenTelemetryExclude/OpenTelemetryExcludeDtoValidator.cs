@@ -31,7 +31,10 @@ namespace Jube.Validations.OpenTelemetryExclude
                 .MaximumLength(MaxNameLength)
                 .WithMessage(_ => string.Format(localiser[OpenTelemetryExcludeResources.NameMaxLength],
                     MaxNameLength))
-                .WithErrorCode("NameMaximumLength");
+                .WithErrorCode("NameMaximumLength")
+                .Must(name => name == null || !name.Any(char.IsControl))
+                .WithMessage(_ => localiser[OpenTelemetryExcludeResources.NameInvalidCharacters])
+                .WithErrorCode("NameInvalidCharacters");
         }
     }
 }

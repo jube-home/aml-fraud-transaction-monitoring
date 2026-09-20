@@ -12,12 +12,15 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Data;
 using Xunit;
+using Jube.Test.Infrastructure.DatabaseFixture.Models;
 
 namespace Jube.Test.Infrastructure.DatabaseFixture
 {
@@ -60,9 +63,47 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
         {
             await using var dbContext = GetDbContext();
 
+            var prefixedModelIds = dbContext.EntityAnalysisModel
+                .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
+                .Select(w => (int?)w.Id);
+
+            var prefixedCaseWorkflowGuids = dbContext.CaseWorkflow
+                .Where(w => (w.Name != null && w.Name.StartsWith(Prefix))
+                            || prefixedModelIds.Contains(w.EntityAnalysisModelId))
+                .Select(w => w.Guid);
+
+            var prefixedCaseWorkflowIds = dbContext.CaseWorkflow
+                .Where(c => (c.Name != null && c.Name.StartsWith(Prefix))
+                            || prefixedModelIds.Contains(c.EntityAnalysisModelId))
+                .Select(c => (int?)c.Id);
+
+            await dbContext.GetTable<CaseWorkflowVersion>()
+                .Where(w => w.CaseWorkflowId != null && prefixedCaseWorkflowIds.Contains(w.CaseWorkflowId))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<CaseWorkflowRole>()
+                .Where(w => prefixedCaseWorkflowGuids.Contains(w.CaseWorkflowGuid))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await CascadeDeleteChildrenAsync(dbContext, "CaseWorkflow",
+                "\"Name\" LIKE @prefix OR \"EntityAnalysisModelId\" IN " +
+                "(SELECT \"Id\" FROM \"EntityAnalysisModel\" WHERE \"Name\" LIKE @prefix)").ConfigureAwait(false);
+
+            await dbContext.CaseWorkflow
+                .Where(w => (w.Name != null && w.Name.StartsWith(Prefix))
+                            || prefixedModelIds.Contains(w.EntityAnalysisModelId))
+                .DeleteAsync().ConfigureAwait(false);
+
             await dbContext.GetTable<EntityAnalysisModelVersion>()
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
                 .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<EntityAnalysisModelRequestXpath>()
+                .Where(w => prefixedModelIds.Contains(w.EntityAnalysisModelId))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await CascadeDeleteChildrenAsync(dbContext, "EntityAnalysisModel", "\"Name\" LIKE @prefix")
+                .ConfigureAwait(false);
 
             await dbContext.EntityAnalysisModel
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
@@ -72,9 +113,18 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
                 .Where(r => r.Name != null && r.Name.StartsWith(Prefix))
                 .Select(r => (int?)r.Id);
 
+            await dbContext.GetTable<RoleRegistryPermissionVersion>()
+                .Where(w => prefixedRoleRegistryIds.Contains(w.RoleRegistryId))
+                .DeleteAsync().ConfigureAwait(false);
+
             await dbContext.RoleRegistryPermission
                 .Where(w => prefixedRoleRegistryIds.Contains(w.RoleRegistryId))
                 .DeleteAsync().ConfigureAwait(false);
+
+            await CascadeDeleteChildrenAsync(dbContext, "UserRegistry", "\"Name\" LIKE @prefix")
+                .ConfigureAwait(false);
+            await CascadeDeleteChildrenAsync(dbContext, "RoleRegistry", "\"Name\" LIKE @prefix")
+                .ConfigureAwait(false);
 
             await dbContext.RoleRegistry
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
@@ -88,9 +138,179 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
                 .DeleteAsync().ConfigureAwait(false);
 
+            var prefixedVisualisationRegistryIds = dbContext.GetTable<VisualisationRegistry>()
+                .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
+                .Select(w => (int?)w.Id);
+            var prefixedVisualisationRegistryGuids = dbContext.GetTable<VisualisationRegistry>()
+                .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
+                .Select(w => w.Guid);
+
+            var prefixedDatasourceIds = dbContext.GetTable<VisualisationRegistryDatasource>()
+                .Where(w => prefixedVisualisationRegistryIds.Contains(w.VisualisationRegistryId))
+                .Select(w => (int?)w.Id);
+            var prefixedDatasourceGuids = dbContext.GetTable<VisualisationRegistryDatasource>()
+                .Where(w => prefixedVisualisationRegistryIds.Contains(w.VisualisationRegistryId))
+                .Select(w => w.Guid);
+
+            var prefixedParameterIds = dbContext.GetTable<VisualisationRegistryParameter>()
+                .Where(w => prefixedVisualisationRegistryIds.Contains(w.VisualisationRegistryId))
+                .Select(w => (int?)w.Id);
+            var prefixedParameterGuids = dbContext.GetTable<VisualisationRegistryParameter>()
+                .Where(w => prefixedVisualisationRegistryIds.Contains(w.VisualisationRegistryId))
+                .Select(w => w.Guid);
+
+            await dbContext.GetTable<VisualisationRegistryDatasourceSeries>()
+                .Where(w => prefixedDatasourceIds.Contains(w.VisualisationRegistryDatasourceId))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<VisualisationRegistryDatasourceRole>()
+                .Where(w => prefixedDatasourceGuids.Contains(w.VisualisationRegistryDatasourceGuid))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<VisualisationRegistryParameterRole>()
+                .Where(w => prefixedParameterGuids.Contains(w.VisualisationRegistryParameterGuid))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<VisualisationRegistryDatasourceVersion>()
+                .Where(w => prefixedDatasourceIds.Contains(w.VisualisationRegistryDatasourceId))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<VisualisationRegistryParameterVersion>()
+                .Where(w => prefixedParameterIds.Contains(w.VisualisationRegistryParameterId))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<VisualisationRegistryDatasource>()
+                .Where(w => prefixedDatasourceIds.Contains(w.Id))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<VisualisationRegistryParameter>()
+                .Where(w => prefixedParameterIds.Contains(w.Id))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<VisualisationRegistryRole>()
+                .Where(w => prefixedVisualisationRegistryGuids.Contains(w.VisualisationRegistryGuid))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<VisualisationRegistryVersion>()
+                .Where(w => prefixedVisualisationRegistryIds.Contains(w.VisualisationRegistryId))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await CascadeDeleteChildrenAsync(dbContext, "VisualisationRegistry", "\"Name\" LIKE @prefix")
+                .ConfigureAwait(false);
+
+            await dbContext.GetTable<VisualisationRegistry>()
+                .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await CascadeDeleteChildrenAsync(dbContext, "TenantRegistry", "\"Name\" LIKE @prefix")
+                .ConfigureAwait(false);
+
             await dbContext.TenantRegistry
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
                 .DeleteAsync().ConfigureAwait(false);
+        }
+
+        private static readonly HashSet<string> cascadeRootTables = new(StringComparer.Ordinal)
+        {
+            "CaseWorkflow", "EntityAnalysisModel", "UserRegistry", "RoleRegistry", "VisualisationRegistry",
+            "TenantRegistry"
+        };
+
+        private const int CascadeMaxRows = 1_000_000;
+        private const int CascadeMaxDepth = 8;
+
+        private static string QuoteIdentifier(string identifier)
+        {
+            return "\"" + identifier.Replace("\"", "\"\"") + "\"";
+        }
+
+        private static async Task CascadeDeleteChildrenAsync(DbContext dbContext, string table, string whereSql)
+        {
+            if (!cascadeRootTables.Contains(table))
+            {
+                throw new ArgumentException(
+                    // ReSharper disable once LocalizableElement
+                    $"'{table}' is not an allowed cascade root ({string.Join(", ", cascadeRootTables)}).",
+                    nameof(table));
+            }
+
+            if (!whereSql.Contains("@prefix", StringComparison.Ordinal))
+            {
+                throw new ArgumentException(
+                    // ReSharper disable once LocalizableElement
+                    "The root filter of a cascade must be restricted by the test prefix (@prefix).", nameof(whereSql));
+            }
+
+            var deleted = new Dictionary<string, long>(StringComparer.Ordinal);
+            await dbContext.BeginTransactionAsync().ConfigureAwait(false);
+
+            try
+            {
+                await CascadeAsync(dbContext, table, whereSql, 0, deleted).ConfigureAwait(false);
+
+                var total = deleted.Values.Sum();
+                if (total > CascadeMaxRows)
+                {
+                    throw new InvalidOperationException(
+                        $"The fixture cascade from '{table}' would delete {total} rows (limit {CascadeMaxRows}); " +
+                        $"rolled back. Per table: {string.Join(", ", deleted.Select(d => $"{d.Key}={d.Value}"))}");
+                }
+
+                await dbContext.CommitTransactionAsync().ConfigureAwait(false);
+
+                if (total > 0)
+                {
+                    System.Diagnostics.Trace.WriteLine(
+                        $"DatabaseFixture cascade from {table}: deleted {total} row(s): " +
+                        string.Join(", ", deleted.Where(d => d.Value > 0).Select(d => $"{d.Key}={d.Value}")));
+                }
+            }
+            catch
+            {
+                await dbContext.RollbackTransactionAsync().ConfigureAwait(false);
+                throw;
+            }
+        }
+
+        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+        private static async Task CascadeAsync(DbContext dbContext, string table, string whereSql, int depth,
+            Dictionary<string, long> deleted)
+        {
+            if (depth > CascadeMaxDepth)
+            {
+                throw new InvalidOperationException(
+                    $"The fixture cascade from '{table}' is deeper than {CascadeMaxDepth} levels: a foreign key cycle?");
+            }
+
+            var children = await dbContext.QueryToListAsync<ForeignKeyRow>(
+                "SELECT cl.relname AS \"Child\", " +
+                "string_agg(quote_ident(a.attname), ', ' ORDER BY k.ord) AS \"ChildColumns\", " +
+                "string_agg(quote_ident(af.attname), ', ' ORDER BY k.ord) AS \"ParentColumns\" " +
+                "FROM pg_constraint c " +
+                "JOIN pg_class cl ON cl.oid = c.conrelid " +
+                "JOIN pg_namespace n ON n.oid = cl.relnamespace AND n.nspname = 'public' " +
+                "JOIN unnest(c.conkey, c.confkey) WITH ORDINALITY AS k(attnum, fattnum, ord) ON true " +
+                "JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = k.attnum " +
+                "JOIN pg_attribute af ON af.attrelid = c.confrelid AND af.attnum = k.fattnum " +
+                "WHERE c.contype = 'f' AND c.conrelid <> c.confrelid " +
+                "AND c.confrelid = (SELECT oid FROM pg_class WHERE relname = @parent " +
+                "AND relnamespace = 'public'::regnamespace) " +
+                "GROUP BY c.oid, cl.relname",
+                new DataParameter("parent", table)).ConfigureAwait(false);
+
+            foreach (var child in children)
+            {
+                var childWhere = $"({child.ChildColumns}) IN (SELECT {child.ParentColumns} " +
+                                 $"FROM {QuoteIdentifier(table)} WHERE {whereSql})";
+
+                await CascadeAsync(dbContext, child.Child, childWhere, depth + 1, deleted).ConfigureAwait(false);
+
+                var count = await dbContext.ExecuteAsync(
+                    $"DELETE FROM {QuoteIdentifier(child.Child)} WHERE {childWhere}",
+                    new DataParameter("prefix", Prefix + "%")).ConfigureAwait(false);
+
+                deleted[child.Child] = deleted.GetValueOrDefault(child.Child) + count;
+            }
         }
 
         public DbContext GetDbContext()
@@ -100,7 +320,11 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
 
         private static async Task<SeedData> SeedAsync(DbContext dbContext)
         {
-            int[] readWriteSpecs = [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 26, 27, 35, 37, 41, 42, 43];
+            int[] readWriteSpecs =
+            [
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28,
+                29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43
+            ];
             var readWriteSpecsNoApproveByReview = readWriteSpecs.Where(s => s != 41).ToArray();
 
             var suffix = Guid.NewGuid().ToString("N")[..8];

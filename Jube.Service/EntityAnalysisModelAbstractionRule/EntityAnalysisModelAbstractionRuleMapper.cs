@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.EntityAnalysisModelAbstractionRule;
 
 namespace Jube.Service.EntityAnalysisModelAbstractionRule
@@ -19,6 +20,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
 
     internal static class EntityAnalysisModelAbstractionRuleMapper
     {
+        [return: NotNullIfNotNull(nameof(abstractionRule))]
         public static EntityAnalysisModelAbstractionRuleDto? ToDto(AbstractionRulePoco? abstractionRule)
         {
             return abstractionRule is null
@@ -58,7 +60,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
 
         public static List<EntityAnalysisModelAbstractionRuleDto> ToDto(IEnumerable<AbstractionRulePoco>? source)
         {
-            return (source ?? Enumerable.Empty<AbstractionRulePoco>()).Select(p => ToDto(p)!).ToList();
+            return (source ?? Enumerable.Empty<AbstractionRulePoco>()).Select(p => ToDto(p)).ToList();
         }
 
         public static AbstractionRulePoco ToPoco(EntityAnalysisModelAbstractionRuleDto dto)

@@ -20,18 +20,65 @@ namespace Jube.App.Code
 
     public static class AuthenticationCookieIssuer
     {
+        public static void AppendCookies(HttpResponse response, DynamicEnvironment dynamicEnvironment, string token,
+            DateTime expiration)
+        {
+            var cookieExpiration = dynamicEnvironment.AppSettings("SessionCookie")
+                .Equals("True", StringComparison.OrdinalIgnoreCase)
+                ? (DateTime?)null
+                : expiration;
+
+            var tokenOptions = new CookieOptions
+                { Expires = cookieExpiration, HttpOnly = true, SameSite = SameSiteMode.Lax };
+
+            var expiryOptions = new CookieOptions
+                { Expires = cookieExpiration, HttpOnly = false, SameSite = SameSiteMode.Lax };
+
+            if (dynamicEnvironment.AppSettings("SecureHttpCookie").Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                tokenOptions.Secure = true;
+                tokenOptions.SameSite = SameSiteMode.Strict;
+                expiryOptions.Secure = true;
+                expiryOptions.SameSite = SameSiteMode.Strict;
+            }
+            else if (response.HttpContext.Request.IsHttps)
+            {
+                tokenOptions.Secure = true;
+                expiryOptions.Secure = true;
+            }
+
+            response.Cookies.Append("authentication-jwt", token, tokenOptions);
+            response.Cookies.Append("authentication-expiry", expiration.ToString("O"), expiryOptions);
+        }
+
+        public static void DeleteCookies(HttpResponse response, DynamicEnvironment dynamicEnvironment)
+        {
+            var secure = dynamicEnvironment.AppSettings("SecureHttpCookie")
+                .Equals("True", StringComparison.OrdinalIgnoreCase);
+            var sameSite = secure ? SameSiteMode.Strict : SameSiteMode.Lax;
+            var isSecure = secure || response.HttpContext.Request.IsHttps;
+
+            response.Cookies.Delete("authentication-jwt",
+                new CookieOptions { HttpOnly = true, SameSite = sameSite, Secure = isSecure });
+            response.Cookies.Delete("authentication-expiry",
+                new CookieOptions { HttpOnly = false, SameSite = sameSite, Secure = isSecure });
+        }
+
         public static AuthenticationResponseDto IssueAuthenticationCookies(
             HttpResponse response,
             DynamicEnvironment dynamicEnvironment,
-            string userName)
+            string userName,
+            TimeProvider timeProvider = null)
         {
+            var now = (timeProvider ?? TimeProvider.System).GetUtcNow().UtcDateTime;
             var token = Jwt.CreateToken(userName,
                 dynamicEnvironment.AppSettings("JWTKey"),
                 dynamicEnvironment.AppSettings("JWTValidIssuer"),
-                dynamicEnvironment.AppSettings("JWTValidAudience")
+                dynamicEnvironment.AppSettings("JWTValidAudience"),
+                now
             );
 
-            var expiration = DateTime.UtcNow.AddMinutes(15);
+            var expiration = now.AddMinutes(15);
 
             var authenticationDto = new AuthenticationResponseDto
             {
@@ -39,23 +86,7 @@ namespace Jube.App.Code
                 Expiration = expiration
             };
 
-            var cookieExpiration = dynamicEnvironment.AppSettings("SessionCookie")
-                .Equals("True", StringComparison.OrdinalIgnoreCase) ? (DateTime?)null : expiration;
-
-            var cookieOptions = new CookieOptions
-            {
-                Expires = cookieExpiration,
-                HttpOnly = false
-            };
-
-            if (dynamicEnvironment.AppSettings("SecureHttpCookie").Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
-                cookieOptions.Secure = true;
-                cookieOptions.SameSite = SameSiteMode.Strict;
-            }
-
-            response.Cookies.Append("authentication-jwt", authenticationDto.Token, cookieOptions);
-            response.Cookies.Append("authentication-expiry", expiration.ToString("O"), cookieOptions);
+            AppendCookies(response, dynamicEnvironment, authenticationDto.Token, expiration);
 
             return authenticationDto;
         }

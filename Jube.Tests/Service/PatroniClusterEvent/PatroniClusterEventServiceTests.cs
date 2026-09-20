@@ -101,7 +101,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
                 reason: "manual failover",
                 timelineId: 2, lsnBytes: 12345);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync();
 
             var mine = result.Rows.Where(r => r.Name == name).ToList();
@@ -118,7 +118,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
         public async Task ListClampsTakeToOneHundredThousandAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var result = await service.ListAsync(500000);
 
@@ -130,6 +130,15 @@ namespace Jube.Test.Service.PatroniClusterEvent
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+        }
+
+        [Fact]
+        public async Task NonLandlordHoldingEverySpecificationIsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
         }
@@ -162,7 +171,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             await CreateEntryAsync(dbContext, $"{name}Old", PatroniClusterEventType.RoleChanged, oldDate);
             await CreateEntryAsync(dbContext, $"{name}New", PatroniClusterEventType.RoleChanged, newDate);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1));
 
             var mine = result.Rows.Where(r => r.Name.StartsWith(name)).ToList();
@@ -180,7 +189,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
                 reason: "no recovery target specified");
             await CreateEntryAsync(dbContext, "OtherNode", PatroniClusterEventType.RoleChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: "recovery target");
 
             var mine = result.Rows.Where(r => r.Name == uniqueName || r.Name == "OtherNode").ToList();
@@ -196,7 +205,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             await CreateEntryAsync(dbContext, name, PatroniClusterEventType.RoleChanged);
             await CreateEntryAsync(dbContext, name, PatroniClusterEventType.StateChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, samplePercentage: 0);
 
             result.Rows.Should().BeEmpty();
@@ -210,7 +219,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             await CreateEntryAsync(dbContext, name, PatroniClusterEventType.RoleChanged);
             await CreateEntryAsync(dbContext, name, PatroniClusterEventType.StateChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, samplePercentage: 100);
 
             result.Rows.Should().HaveCount(2);
@@ -223,7 +232,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             var name = $"{DatabaseFixture.Prefix}Node{Guid.NewGuid():N}";
             await CreateEntryAsync(dbContext, name, PatroniClusterEventType.RoleChanged);
 
-            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+            var otherTenantService = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var otherTenantResult = await otherTenantService.ListAsync();
 
             otherTenantResult.Rows.Should().Contain(r => r.Name == name);
@@ -240,7 +249,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             await CreateEntryAsync(dbContext, $"{name}Old", PatroniClusterEventType.RoleChanged, twoHoursAgo);
             await CreateEntryAsync(dbContext, $"{name}New", PatroniClusterEventType.RoleChanged, justNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name);
 
             var mine = result.Rows.Where(r => r.Name.StartsWith(name)).ToList();
@@ -257,7 +266,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             await CreateEntryAsync(dbContext, $"{name}A", PatroniClusterEventType.RoleChanged);
             await CreateEntryAsync(dbContext, $"{name}B", PatroniClusterEventType.RoleChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
 
             var ascending = await service.ListAsync(search: name, sortField: "name", sortDirection: "asc");
             ascending.Rows.Select(r => r.Name).Should().Equal($"{name}A", $"{name}B", $"{name}C");
@@ -277,7 +286,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             await CreateEntryAsync(dbContext, $"{name}B", PatroniClusterEventType.RoleChanged);
             await CreateEntryAsync(dbContext, $"{name}A", PatroniClusterEventType.RoleChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, sortField: "name",
                 sortDirection: ascendingKeyword);
 
@@ -292,7 +301,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             await CreateEntryAsync(dbContext, $"{name}A", PatroniClusterEventType.RoleChanged);
             await CreateEntryAsync(dbContext, $"{name}B", PatroniClusterEventType.RoleChanged);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, sortField: "name", sortDirection: "banana");
 
             result.Rows.Select(r => r.Name).Should().Equal($"{name}B", $"{name}A");
@@ -308,7 +317,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             var secondId = await CreateEntryAsync(dbContext, name, PatroniClusterEventType.RoleChanged,
                 DateTime.UtcNow);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name, sortField: "notARealColumn");
 
             var mine = result.Rows.Where(r => r.Id == firstId || r.Id == secondId).ToList();
@@ -326,7 +335,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
                 await CreateEntryAsync(dbContext, name, PatroniClusterEventType.RoleChanged);
             }
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(2, search: name);
 
             result.Rows.Should().HaveCount(2);
@@ -341,7 +350,7 @@ namespace Jube.Test.Service.PatroniClusterEvent
             await CreateEntryAsync(dbContext, name, PatroniClusterEventType.Failover, timelineId: 2,
                 lsnBytes: 12345);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: name);
 
             result.Statistics.Columns.Should().BeEmpty(

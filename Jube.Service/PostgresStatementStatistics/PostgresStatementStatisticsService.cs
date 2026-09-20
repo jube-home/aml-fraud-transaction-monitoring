@@ -30,7 +30,7 @@ namespace Jube.Service.PostgresStatementStatistics
 {
     public sealed class PostgresStatementStatisticsService
     {
-        private static readonly int[] permissions = [27];
+        private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly string connectionString;
         private readonly ILog log;
@@ -145,7 +145,8 @@ namespace Jube.Service.PostgresStatementStatistics
                 }
 
                 var dtos = rows.Select(r => new PostgresStatementStatisticsDto(
-                    r.QueryId, r.DatabaseName, r.UserName, r.Query, r.Calls, r.Rows, r.TotalExecTimeMilliseconds,
+                    r.QueryId, r.DatabaseName, r.UserName, SensitiveTextRedactor.Redact(r.Query), r.Calls, r.Rows,
+                    r.TotalExecTimeMilliseconds,
                     r.MeanExecTimeMilliseconds, r.MinExecTimeMilliseconds, r.MaxExecTimeMilliseconds,
                     r.StddevExecTimeMilliseconds, r.SharedBlksHitBytes, r.SharedBlksReadBytes, r.TempBlksReadBytes,
                     r.TempBlksWrittenBytes, r.WalBytes)).ToList();
@@ -241,14 +242,14 @@ namespace Jube.Service.PostgresStatementStatistics
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.Landlord)
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
             }
 
             throw new ForbiddenException(strings[PostgresStatementStatisticsResources.PermissionDenied], permissions);

@@ -29,6 +29,8 @@ namespace Jube.Validations.EntityAnalysisModel
 
         public EntityAnalysisModelDtoValidator(EntityAnalysisModelRepository repository, IStringLocalizer localiser)
         {
+            Include(new FiniteNumberValidator<EntityAnalysisModelDto>());
+
             RuleFor(p => p.Name)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.NameRequired])
@@ -112,6 +114,12 @@ namespace Jube.Validations.EntityAnalysisModel
                 .WithErrorCode("MaxResponseElevationIntervalInvalid")
                 .When(p => p.EnableResponseElevationLimit);
 
+            RuleFor(p => p.MaxResponseElevationInterval)
+                .Must(m => m == '\0' || allowedIntervals.Contains(m))
+                .WithMessage(_ => localiser[EntityAnalysisModelResources.MaxResponseElevationIntervalInvalid])
+                .WithErrorCode("MaxResponseElevationIntervalInvalid")
+                .When(p => !p.EnableResponseElevationLimit);
+
             RuleFor(p => p.MaxResponseElevationValue)
                 .GreaterThanOrEqualTo(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.MaxResponseElevationValueRange])
@@ -129,6 +137,12 @@ namespace Jube.Validations.EntityAnalysisModel
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.MaxActivationWatcherIntervalInvalid])
                 .WithErrorCode("MaxActivationWatcherIntervalInvalid")
                 .When(p => p.EnableActivationWatcher);
+
+            RuleFor(p => p.MaxActivationWatcherInterval)
+                .Must(m => m == '\0' || allowedIntervals.Contains(m))
+                .WithMessage(_ => localiser[EntityAnalysisModelResources.MaxActivationWatcherIntervalInvalid])
+                .WithErrorCode("MaxActivationWatcherIntervalInvalid")
+                .When(p => !p.EnableActivationWatcher);
 
             RuleFor(p => p.MaxActivationWatcherValue)
                 .GreaterThanOrEqualTo(0)
