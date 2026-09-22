@@ -66,9 +66,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 var startBytes = GC.GetAllocatedBytesForCurrentThread();
                 try
                 {
-                    var calculationDouble = entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId == 5
-                        ? CalculationFromRule(context, entityAnalysisModelAbstractionCalculation)
-                        : CalculationFromConfigurationAndSwitches(context, entityAnalysisModelAbstractionCalculation);
+                    var calculationDouble = CalculationFromRule(context, entityAnalysisModelAbstractionCalculation);
 
                     context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.Add(
                         entityAnalysisModelAbstractionCalculation.Name, calculationDouble);
@@ -109,40 +107,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             }
         }
 
-        private static double CalculationFromConfigurationAndSwitches(Context context,
-            EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
-        {
-            double calculationDouble;
-
-            try
-            {
-                var leftDouble = GetLeftValue(context, entityAnalysisModelAbstractionCalculation);
-                var rightDouble = GetRightValue(context, entityAnalysisModelAbstractionCalculation);
-
-                calculationDouble = PerformCalculation(context, entityAnalysisModelAbstractionCalculation,
-                    leftDouble, rightDouble);
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                calculationDouble = 0;
-
-                context.TraceLog(
-                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} has produced an error in calculation and has been set to zero with exception message of {ex.Message}.");
-            }
-
-            if (!(double.IsNaN(calculationDouble) | double.IsInfinity(calculationDouble)))
-            {
-                return calculationDouble;
-            }
-
-            calculationDouble = 0;
-
-            context.TraceLog(
-                $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} has produced IsNaN or IsInfinity and has been set to zero.");
-
-            return calculationDouble;
-        }
-
         private static double CalculationFromRule(Context context,
             EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
         {
@@ -152,104 +116,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log);
 
             return calculationDouble;
-        }
-
-        private static double PerformCalculation(Context context,
-            EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation,
-            double leftDouble, double rightDouble)
-        {
-            double calculationDouble;
-
-            switch (entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId)
-            {
-                case 1:
-                    calculationDouble = leftDouble + rightDouble;
-
-                    context.TraceLog(
-                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} addition, produces value of {calculationDouble}.");
-
-                    break;
-                case 2:
-                    calculationDouble = leftDouble - rightDouble;
-
-                    context.TraceLog(
-                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} subtraction, produces value of {calculationDouble}.");
-
-                    break;
-                case 3:
-                    calculationDouble = leftDouble / rightDouble;
-
-                    context.TraceLog(
-                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} divide, produces value of {calculationDouble}.");
-
-                    break;
-                case 4:
-                    calculationDouble = leftDouble * rightDouble;
-
-                    context.TraceLog(
-                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} multiply, produces value of {calculationDouble}.");
-
-                    break;
-                default:
-                    calculationDouble = 0;
-
-                    context.TraceLog(
-                        $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} has an unrecognised AbstractionCalculationTypeId {entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId} and has been set to zero.");
-
-                    break;
-            }
-
-            return calculationDouble;
-        }
-
-        private static double GetRightValue(Context context,
-            EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
-        {
-            double value = 0;
-
-            var cleanAbstractionNameRight = entityAnalysisModelAbstractionCalculation
-                .EntityAnalysisModelAbstractionNameRight.Replace(" ", "_");
-
-            if (context.EntityAnalysisModelInstanceEntryPayload.Abstraction.TryGetValue(
-                    cleanAbstractionNameRight, out var valueRight))
-            {
-                value = valueRight;
-
-                context.TraceLog(
-                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and extracted right value of {value}.");
-            }
-            else
-            {
-                context.TraceLog(
-                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} but it does not contain a right value.");
-            }
-
-            return value;
-        }
-
-        private static double GetLeftValue(Context context,
-            EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
-        {
-            double value = 0;
-
-            var cleanAbstractionNameLeft = entityAnalysisModelAbstractionCalculation
-                .EntityAnalysisModelAbstractionNameLeft.Replace(" ", "_");
-
-            if (context.EntityAnalysisModelInstanceEntryPayload.Abstraction.TryGetValue(
-                    cleanAbstractionNameLeft, out var valueLeft))
-            {
-                value = valueLeft;
-
-                context.TraceLog(
-                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} and has extracted left value of {value}.");
-            }
-            else
-            {
-                context.TraceLog(
-                    $"evaluating abstraction calculation {entityAnalysisModelAbstractionCalculation.Id} but it does not contain a left value.");
-            }
-
-            return value;
         }
     }
 }

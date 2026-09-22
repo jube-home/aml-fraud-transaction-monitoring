@@ -4,28 +4,31 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string? Truncate(this string? @this, int maxLength)
+        extension(string? @this)
         {
-            const string suffix = "...";
-
-            if (@this == null || @this.Length <= maxLength)
+            public string? Truncate(int maxLength)
             {
-                return @this;
+                const string suffix = "...";
+
+                if (@this == null || @this.Length <= maxLength)
+                {
+                    return @this;
+                }
+
+                var strLength = maxLength - suffix.Length;
+                return @this.Substring(0, strLength) + suffix;
             }
 
-            var strLength = maxLength - suffix.Length;
-            return @this.Substring(0, strLength) + suffix;
-        }
-
-        public static string? Truncate(this string? @this, int maxLength, string suffix)
-        {
-            if (@this == null || @this.Length <= maxLength)
+            public string? Truncate(int maxLength, string suffix)
             {
-                return @this;
-            }
+                if (@this == null || @this.Length <= maxLength)
+                {
+                    return @this;
+                }
 
-            var strLength = maxLength - suffix.Length;
-            return @this.Substring(0, strLength) + suffix;
+                var strLength = maxLength - suffix.Length;
+                return @this.Substring(0, strLength) + suffix;
+            }
         }
     }
 }

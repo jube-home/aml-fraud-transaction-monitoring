@@ -10,25 +10,29 @@ namespace Jube.Dictionary.Extensions
     public static partial class Extensions
     {
 #if !NETSTANDARD
-        public static Color FromArgb(this Int32 argb)
+        extension(Int32 argb)
         {
-            return Color.FromArgb(argb);
+            public Color FromArgb()
+            {
+                return Color.FromArgb(argb);
+            }
+
+            public Color FromArgb(Int32 red, Int32 green, Int32 blue)
+            {
+                return Color.FromArgb(argb, red, green, blue);
+            }
+
+            public Color FromArgb(Color baseColor)
+            {
+                return Color.FromArgb(argb, baseColor);
+            }
+
+            public Color FromArgb(Int32 green, Int32 blue)
+            {
+                return Color.FromArgb(argb, green, blue);
+            }
         }
 
-        public static Color FromArgb(this Int32 argb, Int32 red, Int32 green, Int32 blue)
-        {
-            return Color.FromArgb(argb, red, green, blue);
-        }
-
-        public static Color FromArgb(this Int32 argb, Color baseColor)
-        {
-            return Color.FromArgb(argb, baseColor);
-        }
-
-        public static Color FromArgb(this Int32 argb, Int32 green, Int32 blue)
-        {
-            return Color.FromArgb(argb, green, blue);
-        }
 #endif
     }
 }

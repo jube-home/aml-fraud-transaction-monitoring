@@ -10,14 +10,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Boolean IsMatch(this String input, String pattern)
+        extension(String input)
         {
-            return Regex.IsMatch(input, pattern);
-        }
+            public Boolean IsMatch(String pattern)
+            {
+                return Regex.IsMatch(input, pattern);
+            }
 
-        public static Boolean IsMatch(this String input, String pattern, RegexOptions options)
-        {
-            return Regex.IsMatch(input, pattern, options);
+            public Boolean IsMatch(String pattern, RegexOptions options)
+            {
+                return Regex.IsMatch(input, pattern, options);
+            }
         }
     }
 }

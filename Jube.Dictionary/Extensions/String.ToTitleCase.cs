@@ -6,14 +6,17 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string ToTitleCase(this string @this)
+        extension(string @this)
         {
-            return new CultureInfo("en-US").TextInfo.ToTitleCase(@this);
-        }
+            public string ToTitleCase()
+            {
+                return new CultureInfo("en-US").TextInfo.ToTitleCase(@this);
+            }
 
-        public static string ToTitleCase(this string @this, CultureInfo cultureInfo)
-        {
-            return cultureInfo.TextInfo.ToTitleCase(@this);
+            public string ToTitleCase(CultureInfo cultureInfo)
+            {
+                return cultureInfo.TextInfo.ToTitleCase(@this);
+            }
         }
     }
 }

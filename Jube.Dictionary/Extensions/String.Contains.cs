@@ -4,14 +4,17 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool Contains(this string @this, string value)
+        extension(string @this)
         {
-            return @this.IndexOf(value, StringComparison.Ordinal) != -1;
-        }
+            public bool Contains(string value)
+            {
+                return @this.IndexOf(value, StringComparison.Ordinal) != -1;
+            }
 
-        public static bool Contains(this string @this, string value, StringComparison comparisonType)
-        {
-            return @this.IndexOf(value, comparisonType) != -1;
+            public bool Contains(string value, StringComparison comparisonType)
+            {
+                return @this.IndexOf(value, comparisonType) != -1;
+            }
         }
     }
 }

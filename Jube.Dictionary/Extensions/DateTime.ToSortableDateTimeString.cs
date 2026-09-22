@@ -8,19 +8,22 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static string ToSortableDateTimeString(this DateTime @this)
+        extension(DateTime @this)
         {
-            return @this.ToString("s", DateTimeFormatInfo.CurrentInfo);
-        }
+            public string ToSortableDateTimeString()
+            {
+                return @this.ToString("s", DateTimeFormatInfo.CurrentInfo);
+            }
 
-        public static string ToSortableDateTimeString(this DateTime @this, string culture)
-        {
-            return @this.ToString("s", new CultureInfo(culture));
-        }
+            public string ToSortableDateTimeString(string culture)
+            {
+                return @this.ToString("s", new CultureInfo(culture));
+            }
 
-        public static string ToSortableDateTimeString(this DateTime @this, CultureInfo culture)
-        {
-            return @this.ToString("s", culture);
+            public string ToSortableDateTimeString(CultureInfo culture)
+            {
+                return @this.ToString("s", culture);
+            }
         }
     }
 }

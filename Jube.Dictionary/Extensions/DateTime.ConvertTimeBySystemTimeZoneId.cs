@@ -8,15 +8,18 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static DateTime ConvertTimeBySystemTimeZoneId(this DateTime dateTime, String destinationTimeZoneId)
+        extension(DateTime dateTime)
         {
-            return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(dateTime, destinationTimeZoneId);
-        }
+            public DateTime ConvertTimeBySystemTimeZoneId(String destinationTimeZoneId)
+            {
+                return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(dateTime, destinationTimeZoneId);
+            }
 
-        public static DateTime ConvertTimeBySystemTimeZoneId(this DateTime dateTime, String sourceTimeZoneId,
-            String destinationTimeZoneId)
-        {
-            return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(dateTime, sourceTimeZoneId, destinationTimeZoneId);
+            public DateTime ConvertTimeBySystemTimeZoneId(String sourceTimeZoneId,
+                String destinationTimeZoneId)
+            {
+                return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(dateTime, sourceTimeZoneId, destinationTimeZoneId);
+            }
         }
     }
 }

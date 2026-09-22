@@ -10,14 +10,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static String UrlDecode(this String str)
+        extension(String str)
         {
-            return HttpUtility.UrlDecode(str);
-        }
+            public String UrlDecode()
+            {
+                return HttpUtility.UrlDecode(str);
+            }
 
-        public static String UrlDecode(this String str, Encoding e)
-        {
-            return HttpUtility.UrlDecode(str, e);
+            public String UrlDecode(Encoding e)
+            {
+                return HttpUtility.UrlDecode(str, e);
+            }
         }
     }
 }

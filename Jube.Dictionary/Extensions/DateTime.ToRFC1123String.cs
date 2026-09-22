@@ -8,19 +8,22 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static string ToRFC1123String(this DateTime @this)
+        extension(DateTime @this)
         {
-            return @this.ToString("r", DateTimeFormatInfo.CurrentInfo);
-        }
+            public string ToRFC1123String()
+            {
+                return @this.ToString("r", DateTimeFormatInfo.CurrentInfo);
+            }
 
-        public static string ToRFC1123String(this DateTime @this, string culture)
-        {
-            return @this.ToString("r", new CultureInfo(culture));
-        }
+            public string ToRFC1123String(string culture)
+            {
+                return @this.ToString("r", new CultureInfo(culture));
+            }
 
-        public static string ToRFC1123String(this DateTime @this, CultureInfo culture)
-        {
-            return @this.ToString("r", culture);
+            public string ToRFC1123String(CultureInfo culture)
+            {
+                return @this.ToString("r", culture);
+            }
         }
     }
 }

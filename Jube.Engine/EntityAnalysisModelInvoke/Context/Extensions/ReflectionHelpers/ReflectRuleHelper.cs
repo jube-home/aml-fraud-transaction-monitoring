@@ -53,6 +53,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
             var matched = functionRule.FunctionCalculationCompileDelegate(payload.Payload,
                 payload.TtlCounter, payload.Abstraction,
                 entityAnalysisModel.Dependencies.EntityAnalysisModelLists,
+                payload.AbstractionCalculation, payload.Sanction,
                 entityInstanceEntryDictionaryKvPs, log);
 
             return matched;

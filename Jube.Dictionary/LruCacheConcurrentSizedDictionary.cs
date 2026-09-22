@@ -21,9 +21,9 @@ namespace Jube.Dictionary
     public class LruCacheConcurrentSizedDictionary<TKey, TValue> : ISized, IDictionary<TKey, TValue>, ILruCacheConcurrentSizedDictionary<TKey, TValue> where TKey : notnull
     {
         private const int QueueBacklogSlack = 10_000;
-        private readonly ConcurrentDictionary<TKey, CacheEntry> dict = new ConcurrentDictionary<TKey, CacheEntry>();
+        private readonly ConcurrentDictionary<TKey, CacheEntry> dict = new();
         private readonly long evictionThreshold;
-        private readonly ConcurrentQueue<TKey> lruQueue = new ConcurrentQueue<TKey>();
+        private readonly ConcurrentQueue<TKey> lruQueue = new();
         private readonly long maxSizeBytes;
         private readonly Func<TValue, long> sizeEstimator;
         private long add;

@@ -54,25 +54,10 @@
     <data name="NameAlreadyExists" xml:space="preserve">
     <value>This name already exists.</value>
   </data>
-    <data name="AbstractionCalculationTypeIdInvalid" xml:space="preserve">
-    <value>The calculation type must be Add, Subtract, Divide, Multiply or Coder.</value>
-  </data>
-    <data name="EntityAnalysisModelAbstractionNameLeftRequired" xml:space="preserve">
-    <value>A left-hand Abstraction Rule is required unless the calculation type is Coder.</value>
-  </data>
-    <data name="EntityAnalysisModelAbstractionNameRightRequired" xml:space="preserve">
-    <value>A right-hand Abstraction Rule is required unless the calculation type is Coder.</value>
-  </data>
     <data name="FunctionScriptRequired" xml:space="preserve">
     <value>A function script is required when the calculation type is Coder.</value>
   </data>
     <data name="FunctionScriptMaxLength" xml:space="preserve">
     <value>The function script must be {0} characters or fewer.</value>
-  </data>
-    <data name="EntityAnalysisModelAbstractionNameLeftMaxLength" xml:space="preserve">
-    <value>The left abstraction name must be {0} characters or fewer.</value>
-  </data>
-    <data name="EntityAnalysisModelAbstractionNameRightMaxLength" xml:space="preserve">
-    <value>The right abstraction name must be {0} characters or fewer.</value>
   </data>
 </root>

@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using FluentAssertions;
 using Jube.Dictionary;
@@ -40,6 +41,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 EntityAnalysisModelInstanceEntryPayload = new EntityAnalysisModelInstanceEntryPayload
                 {
                     Payload = new DictionaryNoBoxing<string>(),
+                    TtlCounter = new PooledDictionary<string, double>(),
+                    Sanction = new PooledDictionary<string, double>(),
+                    Dictionary = new PooledDictionary<string, double>(),
                     Abstraction = new PooledDictionary<string, double>(),
                     AbstractionCalculation = new PooledDictionary<string, double>(),
                     ArchiveKeys = [],
@@ -52,96 +56,114 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             };
         }
 
-        private static EntityAnalysisModelAbstractionCalculation NewSwitchCalculation(string name, int typeId,
-            string left, string right, bool reportTable = false)
+        private static EntityAnalysisModelAbstractionCalculation NewCalculation(string name,
+            EntityAnalysisModelAbstractionCalculation.Match match, bool reportTable = false, int id = 1)
         {
             return new EntityAnalysisModelAbstractionCalculation
             {
-                Id = 1,
+                Id = id,
                 Name = name,
-                AbstractionCalculationTypeId = typeId,
-                EntityAnalysisModelAbstractionNameLeft = left,
-                EntityAnalysisModelAbstractionNameRight = right,
-                ReportTable = reportTable
+                ReportTable = reportTable,
+                FunctionCalculationCompileDelegate = match
             };
         }
 
-        [Theory]
-        [InlineData(1, 6)]
-        [InlineData(2, -2)]
-        [InlineData(3, 0.5)]
-        [InlineData(4, 8)]
-        public void AdditionSubtractionDivisionAndMultiplicationProduceTheExpectedResult(int typeId,
-            double expected)
+        [Fact]
+        public void TheRuleResultIsStoredUnderTheCalculationName()
         {
-            var calculation = NewSwitchCalculation("Result", typeId, "Left", "Right");
-            var context = NewContext(calculation);
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Left"] = 2;
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Right"] = 4;
+            var context = NewContext(NewCalculation("FromRule", (_, _, _, _, _, _, _, _) => 77));
 
             context.ExecuteAbstractionCalculations();
 
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Result"].Should().Be(expected);
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["FromRule"].Should().Be(77);
         }
 
         [Fact]
-        public void AnUnrecognisedCalculationTypeProducesZero()
+        public void TheRuleDelegateReceivesEveryUpstreamSource()
         {
-            var calculation = NewSwitchCalculation("Result", 99, "Left", "Right");
+            var received = new Dictionary<string, object?>();
+            var calculation = NewCalculation("FromRule", (data, ttl, abstraction, _, calculations, sanctions, kvp, _) =>
+            {
+                received["Data"] = data;
+                received["TTLCounter"] = ttl;
+                received["Abstraction"] = abstraction;
+                received["Calculation"] = calculations;
+                received["Sanctions"] = sanctions;
+                received["KVP"] = kvp;
+                return 1;
+            });
             var context = NewContext(calculation);
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Left"] = 2;
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Right"] = 4;
+            var payload = context.EntityAnalysisModelInstanceEntryPayload;
 
             context.ExecuteAbstractionCalculations();
 
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Result"].Should().Be(0);
+            received["Data"].Should().BeSameAs(payload.Payload);
+            received["TTLCounter"].Should().BeSameAs(payload.TtlCounter);
+            received["Abstraction"].Should().BeSameAs(payload.Abstraction);
+            received["Calculation"].Should().BeSameAs(payload.AbstractionCalculation);
+            received["Sanctions"].Should().BeSameAs(payload.Sanction);
+            received["KVP"].Should().BeSameAs(payload.Dictionary);
         }
 
         [Fact]
-        public void MissingLeftOrRightAbstractionValuesDefaultToZeroRatherThanThrowing()
+        public void ALaterCalculationCanReadAnEarlierOneInTheSameInvocation()
         {
-            var calculation = NewSwitchCalculation("Result", 1, "Missing1", "Missing2");
-            var context = NewContext(calculation);
-
-            var act = () => context.ExecuteAbstractionCalculations();
-
-            act.Should().NotThrow();
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Result"].Should().Be(0);
-        }
-
-        [Fact]
-        public void DivisionByZeroProducesZeroRatherThanInfinity()
-        {
-            var calculation = NewSwitchCalculation("Result", 3, "Left", "Right");
-            var context = NewContext(calculation);
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Left"] = 5;
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Right"] = 0;
+            var first = NewCalculation("First", (_, _, _, _, _, _, _, _) => 21, id: 1);
+            var second = NewCalculation("Second", (_, _, _, _, calculations, _, _, _) => calculations["First"] * 2,
+                id: 2);
+            var context = NewContext(first, second);
 
             context.ExecuteAbstractionCalculations();
 
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Result"].Should().Be(0);
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Second"].Should().Be(42);
         }
 
         [Fact]
-        public void AbstractionNamesWithSpacesAreLookedUpWithUnderscoresSubstituted()
+        public void CalculationsRunInTheOrderTheyAreConfigured()
         {
-            var calculation = NewSwitchCalculation("Result", 1, "Left Value", "Right Value");
-            var context = NewContext(calculation);
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Left_Value"] = 3;
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Right_Value"] = 4;
+            var order = new List<string>();
+            var first = NewCalculation("First", (_, _, _, _, _, _, _, _) =>
+            {
+                order.Add("First");
+                return 1;
+            }, id: 1);
+            var second = NewCalculation("Second", (_, _, _, _, _, _, _, _) =>
+            {
+                order.Add("Second");
+                return 2;
+            }, id: 2);
+            var context = NewContext(first, second);
 
             context.ExecuteAbstractionCalculations();
 
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Result"].Should().Be(7);
+            order.Should().Equal("First", "Second");
+        }
+
+        [Fact]
+        public void AFiniteNegativeResultIsStoredUnchanged()
+        {
+            var context = NewContext(NewCalculation("FromRule", (_, _, _, _, _, _, _, _) => -0.25));
+
+            context.ExecuteAbstractionCalculations();
+
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["FromRule"].Should().Be(-0.25);
+        }
+
+        [Fact]
+        public void AnUndefinedResultIsStoredAsReturnedSoARuleThatWantsZeroUsesZeroIfUndefined()
+        {
+            var context = NewContext(NewCalculation("FromRule", (_, _, _, _, _, _, _, _) => double.NaN));
+
+            context.ExecuteAbstractionCalculations();
+
+            double.IsNaN(context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["FromRule"])
+                .Should().BeTrue();
         }
 
         [Fact]
         public void ReportTableAddsAnArchiveKeyWithProcessingTypeSix()
         {
-            var calculation = NewSwitchCalculation("Result", 1, "Left", "Right", true);
-            var context = NewContext(calculation);
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Left"] = 1;
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Right"] = 1;
+            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _) => 2, true));
 
             context.ExecuteAbstractionCalculations();
 
@@ -155,8 +177,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WithoutReportTableNoArchiveKeyIsAdded()
         {
-            var calculation = NewSwitchCalculation("Result", 1, "Left", "Right");
-            var context = NewContext(calculation);
+            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _) => 2));
 
             context.ExecuteAbstractionCalculations();
 
@@ -164,51 +185,38 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         [Fact]
-        public void ATypeFiveCalculationDefersToTheCompiledRuleDelegate()
-        {
-            var calculation = new EntityAnalysisModelAbstractionCalculation
-            {
-                Id = 1,
-                Name = "FromRule",
-                AbstractionCalculationTypeId = 5,
-                FunctionCalculationCompileDelegate = (_, _, _, _, _, _) => 77
-            };
-            var context = NewContext(calculation);
-
-            context.ExecuteAbstractionCalculations();
-
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["FromRule"].Should().Be(77);
-        }
-
-        [Fact]
         public void AnExceptionThrownByTheRuleDelegateIsCaughtAndTheCalculationIsSkipped()
         {
-            var throwing = new EntityAnalysisModelAbstractionCalculation
-            {
-                Id = 1,
-                Name = "Throws",
-                AbstractionCalculationTypeId = 5,
-                FunctionCalculationCompileDelegate = (_, _, _, _, _, _) =>
-                    throw new InvalidOperationException("boom")
-            };
-            var second = NewSwitchCalculation("Second", 1, "Left", "Right");
+            var throwing = NewCalculation("Throws", (_, _, _, _, _, _, _, _) => throw new InvalidOperationException("boom"),
+                id: 1);
+            var second = NewCalculation("Second", (_, _, _, _, _, _, _, _) => 5, id: 2);
             var context = NewContext(throwing, second);
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Left"] = 1;
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Right"] = 1;
 
             var act = context.ExecuteAbstractionCalculations;
 
             act.Should().NotThrow();
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.ContainsKey("Throws")
-                .Should().BeFalse();
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Second"].Should().Be(2);
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.ContainsKey("Throws").Should().BeFalse();
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Second"].Should().Be(5);
+        }
+
+        [Fact]
+        public void AnEntryWithNoCompiledDelegateIsSkippedWithoutThrowing()
+        {
+            var noDelegate = new EntityAnalysisModelAbstractionCalculation { Id = 1, Name = "NoScript" };
+            var second = NewCalculation("Second", (_, _, _, _, _, _, _, _) => 5, id: 2);
+            var context = NewContext(noDelegate, second);
+
+            var act = context.ExecuteAbstractionCalculations;
+
+            act.Should().NotThrow();
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.ContainsKey("NoScript").Should().BeFalse();
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Second"].Should().Be(5);
         }
 
         [Fact]
         public void WhenSampledTheStageTimingRecordsOneItemPerCalculation()
         {
-            var calculation = NewSwitchCalculation("Result", 1, "Left", "Right");
-            var context = NewContext(calculation);
+            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _) => 1));
 
             context.ExecuteAbstractionCalculations();
 
@@ -221,11 +229,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WhenNotSampledNoStageTimingIsBuiltButBusinessLogicStillRuns()
         {
-            var calculation = NewSwitchCalculation("Result", 1, "Left", "Right");
-            var context = NewContext(calculation);
+            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _) => 10));
             context.LogSampled = false;
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Left"] = 5;
-            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Right"] = 5;
 
             context.ExecuteAbstractionCalculations();
 

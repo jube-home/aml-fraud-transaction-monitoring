@@ -33,12 +33,6 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                     Name = abstractionCalculation.Name,
                     Active = abstractionCalculation.Active == 1,
                     Locked = abstractionCalculation.Locked == 1,
-                    EntityAnalysisModelAbstractionNameLeft =
-                        abstractionCalculation.EntityAnalysisModelAbstractionNameLeft,
-                    EntityAnalysisModelAbstractionNameRight =
-                        abstractionCalculation.EntityAnalysisModelAbstractionNameRight,
-                    AbstractionCalculationTypeId =
-                        abstractionCalculation.AbstractionCalculationTypeId.GetValueOrDefault(),
                     ResponsePayload = abstractionCalculation.ResponsePayload == 1,
                     ReportTable = abstractionCalculation.ReportTable == 1,
                     FunctionScript = abstractionCalculation.FunctionScript,
@@ -67,9 +61,6 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 Name = dto.Name,
                 Active = (byte)(dto.Active ? 1 : 0),
                 Locked = (byte)(dto.Locked ? 1 : 0),
-                EntityAnalysisModelAbstractionNameLeft = dto.EntityAnalysisModelAbstractionNameLeft,
-                EntityAnalysisModelAbstractionNameRight = dto.EntityAnalysisModelAbstractionNameRight,
-                AbstractionCalculationTypeId = dto.AbstractionCalculationTypeId,
                 ResponsePayload = (byte)(dto.ResponsePayload ? 1 : 0),
                 ReportTable = (byte)(dto.ReportTable ? 1 : 0),
                 FunctionScript = dto.FunctionScript

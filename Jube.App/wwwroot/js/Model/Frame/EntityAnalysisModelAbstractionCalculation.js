@@ -15,82 +15,26 @@ var endpoint = "/api/EntityAnalysisModelAbstractionCalculation";
 var parentKeyName = "entityAnalysisModelId";
 var validationFail = "There is invalid data in the form. Please check fields and correct.";
 
-var abstractionLeft = $("#AbstractionLeft").kendoDropDownList({
-    dataTextField: "text",
-    dataValueField: "value"
-});
+if (typeof id === "undefined") {
+    initBuilderCoder(4, parentKey);
+    ReadyNew();
+} else {
+    $.get(endpoint + "/" + id,
+        function (data) {
+            const builderCoderData = {
+                ruleTextCoder: data.functionScript,
+                ruleType: 2
+            };
 
-var abstractionRight = $("#AbstractionRight").kendoDropDownList({
-    dataTextField: "text",
-    dataValueField: "value"
-});
+            initBuilderCoder(4, parentKey, builderCoderData);
 
-function setCalculationType() {
-    const $advanced = $("#Advanced");
-    const $basic = $("#Basic");
-    if ($("input[name='AbstractionCalculationTypeId']:checked").val() === '5') {
-        $advanced.show();
-        $basic.hide();
-    } else {
-        $advanced.hide();
-        $basic.show();
-    }
+            ReadyExisting(data);
+        });
 }
-
-$("input[name='AbstractionCalculationTypeId']").click(function () {
-    setCalculationType();
-});
-
-$.get("/api/TreeChildren/AbstractionRule?id=" + GetSelectedParentID(),
-    function (data) {
-        for (const value of data) {
-            abstractionLeft.getKendoDropDownList().dataSource.add({
-                "value": value.name,
-                "text": value.name
-            });
-
-            abstractionRight.getKendoDropDownList().dataSource.add({
-                "value": value.name,
-                "text": value.name
-            });
-        }
-
-        if (typeof id === "undefined") {
-            initBuilderCoder(4, parentKey);
-            setCalculationType();
-            ReadyNew();
-        } else {
-            $.get(endpoint + "/" + id,
-                function (data) {
-                    abstractionLeft.data("kendoDropDownList")
-                        .value(data.entityAnalysisModelAbstractionNameLeft);
-
-                    abstractionRight.data("kendoDropDownList")
-                        .value(data.entityAnalysisModelAbstractionNameRight);
-
-                    $("input[name=AbstractionCalculationTypeId][value=" + data.abstractionCalculationTypeId + "]")
-                        .prop('checked', true)
-
-                    const builderCoderData = {
-                        ruleTextCoder: data.functionScript,
-                        ruleType: 2
-                    };
-
-                    initBuilderCoder(4, parentKey, builderCoderData);
-                    setCalculationType();
-
-                    ReadyExisting(data);
-                });
-        }
-    }
-);
 
 function GetData() {
     const builderCoder = getBuilderCoder();
     return {
-        entityAnalysisModelAbstractionNameLeft: abstractionLeft.data("kendoDropDownList").value(),
-        entityAnalysisModelAbstractionNameRight: abstractionRight.data("kendoDropDownList").value(),
-        abstractionCalculationTypeId: $('input[name=AbstractionCalculationTypeId]:checked').val(),
         functionScript: builderCoder.ruleTextCoder
     };
 }

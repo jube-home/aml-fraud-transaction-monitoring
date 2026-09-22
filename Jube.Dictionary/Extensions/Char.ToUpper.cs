@@ -8,14 +8,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Char ToUpper(this Char c, CultureInfo culture)
+        extension(Char c)
         {
-            return char.ToUpper(c, culture);
-        }
+            public Char ToUpper(CultureInfo culture)
+            {
+                return char.ToUpper(c, culture);
+            }
 
-        public static Char ToUpper(this Char c)
-        {
-            return char.ToUpper(c);
+            public Char ToUpper()
+            {
+                return char.ToUpper(c);
+            }
         }
     }
 }

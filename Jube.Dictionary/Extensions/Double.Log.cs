@@ -7,14 +7,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Double Log(this Double d)
+        extension(Double d)
         {
-            return Math.Log(d);
-        }
+            public Double Log()
+            {
+                return Math.Log(d);
+            }
 
-        public static Double Log(this Double d, Double newBase)
-        {
-            return Math.Log(d, newBase);
+            public Double Log(Double newBase)
+            {
+                return Math.Log(d, newBase);
+            }
         }
     }
 }
