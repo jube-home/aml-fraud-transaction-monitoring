@@ -516,20 +516,20 @@ namespace Jube.Test.Dictionary.Extensions
         [Fact]
         public void StringTransformersAreNullSafeAndCultureInvariant()
         {
-            "  Abc ".Start().Trim().Value.Should().Be("Abc");
+            "  Abc ".Start().Trimmed().Value.Should().Be("Abc");
             "Abc".Start().Lower().Value.Should().Be("abc");
             "Abc".Start().Upper().Value.Should().Be("ABC");
-            "Abc".Start().Length().Value.Should().Be(3);
-            ((string?)null).Start().Trim().Value.Should().BeNull();
+            "Abc".Start().TextLength().Value.Should().Be(3);
+            ((string?)null).Start().Trimmed().Value.Should().BeNull();
             ((string?)null).Start().Lower().Value.Should().BeNull();
             ((string?)null).Start().Upper().Value.Should().BeNull();
-            ((string?)null).Start().Length().Value.Should().Be(0);
+            ((string?)null).Start().TextLength().Value.Should().Be(0);
         }
 
         [Fact]
         public void TransformerThenTestReadsLeftToRight()
         {
-            " GB ".Start().Trim().Lower().MatchEqual("gb").ToBoolean().Should().BeTrue();
+            " GB ".Start().Trimmed().Lower().MatchEqual("gb").ToBoolean().Should().BeTrue();
         }
 
         [Fact]
