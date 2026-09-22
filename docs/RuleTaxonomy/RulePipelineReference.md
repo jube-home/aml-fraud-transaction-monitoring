@@ -53,8 +53,11 @@ The steps that only make sense once a pipeline exists cannot begin one: `Against
 `RequireThat`, `EnsureThat` and the score decisions. Begin with a test step, or with `Start()`, for example
 `Payload.Amount.Start().AddScoreWhen(Payload.Amount > 100, 0.5)`.
 
-A chain may also begin with a transformer. `Lower`, `Upper`, the `Parse` steps, `HourOfDay` and `ToZone` begin a
-pipeline and are null safe.
+A chain may also begin with a transformer. `Lower`, `Upper`, `Trimmed`, `TextLength`, the `Parse` steps, `HourOfDay`
+and `ToZone` begin a pipeline and are null safe. Their names deliberately do not match a plain member of the value's own
+type -- `String.Trim` and `String.Length` are always available regardless of the rule token allow-list, so a step named
+the same would make an unrelated, unregistered name compile as a side effect of registering the step; the pipeline forms
+are therefore `Trimmed` and `TextLength`, not `Trim` and `Length`.
 `Plus`, `Minus`, `Times` and `DividedBy` on a plain number just return a number (`NaN` if it is undefined), and
 `ToDoubleOrNaN()` on text returns a number, `NaN` if it is not one, so they fit a rule that returns a number such as an
 Abstraction Calculation. A few transformer names are also plain methods, and on a plain value the plain method is used,
@@ -62,7 +65,6 @@ which returns an ordinary value that the next test step then begins from:
 
 | Name                                                  | On a plain value                    | Note                                                                                                                                                                          |
 |-------------------------------------------------------|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Trim`, `Length`                                      | The `String` member                 | `Trim` throws on null, which faults the rule so it does not match. Use `Payload.Name.Start().Trim()` to be null safe. `Length` is a property, so write `Payload.Name.Length`. |
 | `Abs`, `AgeInDays`                                    | The library method                  | Returns a plain number.                                                                                                                                                       |
 | `Round`                                               | The library method with no argument | `Round(digits)` on a plain `Double` is read by VB as the static `Double.Round`. Use `Payload.Amount.Start().Round(2)`.                                                        |
 | `FuzzyBestScore`, `FuzzyMatchCount`, `FuzzyBestMatch` | The library method                  | Returns a plain number or string.                                                                                                                                             |
@@ -98,8 +100,8 @@ These change the value being tested, and leave the outcome untouched.
 | Step                                                               | On                       | Description                                                                                                             |
 |--------------------------------------------------------------------|--------------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `ParseDouble()`, `ParseInteger()`, `ParseDate()`, `ParseBoolean()` | String                   | Read text as another type using the invariant culture. Text that is not valid errors the pipeline rather than throwing. |
-| `Trim()`, `Lower()`, `Upper()`                                     | String                   | Trim white space, or change case, invariant. Null stays null.                                                           |
-| `Length()`                                                         | String                   | The length as an integer, zero for null.                                                                                |
+| `Trimmed()`, `Lower()`, `Upper()`                                  | String                   | Trim white space, or change case, invariant. Null stays null.                                                           |
+| `TextLength()`                                                     | String                   | The length as an integer, zero for null.                                                                                |
 | `Abs()`, `Round(digits)`, `Plus(x)`, `Minus(x)`, `Times(x)`        | Double                   | Arithmetic on the value.                                                                                                |
 | `DividedBy(x)`                                                     | Double                   | Division. A zero divisor errors the pipeline.                                                                           |
 | `ToNumber()`                                                       | Double, Integer pipeline | The value as a plain number, `NaN` if the pipeline errored, for a rule that returns a number.                           |

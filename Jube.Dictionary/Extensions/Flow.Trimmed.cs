@@ -15,9 +15,14 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<int> Length(this Flow<string?> flow)
+        public static Flow<string?> Trimmed(this Flow<string?> flow)
         {
-            return flow.Carry(flow.Value?.Length ?? 0);
+            return flow.Carry(flow.Value?.Trim());
+        }
+
+        public static Flow<string?> Trimmed(this string? value)
+        {
+            return value.Start().Trimmed();
         }
     }
 }

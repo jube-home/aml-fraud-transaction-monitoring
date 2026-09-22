@@ -215,16 +215,43 @@ namespace Jube.Test.RuleParser
         [MemberData(nameof(AllContexts))]
         public void APlainTransformerCanBeTheFirstStepAndTheNextStepContinuesTheChain(Context context)
         {
-            Evaluate(context, "Matched = Payload.Name.Trim().MatchEqual(\"ABC\")").Should().BeTrue();
             Evaluate(context, "Matched = Payload.Amount.Abs().MatchGreater(100)").Should().BeTrue();
             Evaluate(context, "Matched = Payload.Amount.Round().MatchEqual(150)").Should().BeTrue();
         }
 
         [Theory]
         [MemberData(nameof(AllContexts))]
-        public void AStringLengthPropertyCanFeedAnIntegerStep(Context context)
+        public void ATextLengthStepCanFeedAnIntegerStep(Context context)
         {
-            Evaluate(context, "Matched = Payload.Narrative.Length.MatchEqual(9)").Should().BeTrue();
+            Evaluate(context, "Matched = Payload.Narrative.TextLength().MatchEqual(9)").Should().BeTrue();
+        }
+
+        [Fact]
+        public void TheBarePropertyNameLengthIsRefusedAtParseTimeSoItCannotBypassTheAllowList()
+        {
+            var parser = NewParser();
+            var rule = parser.TranslateFromDotNotation(new ParsedRule
+            {
+                ErrorSpans = [],
+                OriginalRuleText = "Matched = Payload.Narrative.Length.MatchEqual(9)",
+                ParsedRuleText = "Matched = Payload.Narrative.Length.MatchEqual(9)"
+            });
+
+            parser.Parse(rule).ErrorSpans.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public void TheBareMethodNameTrimIsRefusedAtParseTimeSoItCannotBypassTheAllowList()
+        {
+            var parser = NewParser();
+            var rule = parser.TranslateFromDotNotation(new ParsedRule
+            {
+                ErrorSpans = [],
+                OriginalRuleText = "Matched = Payload.Narrative.Trim().MatchEqual(\"Smith\")",
+                ParsedRuleText = "Matched = Payload.Narrative.Trim().MatchEqual(\"Smith\")"
+            });
+
+            parser.Parse(rule).ErrorSpans.Should().NotBeEmpty();
         }
 
         [Theory]

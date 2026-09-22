@@ -163,6 +163,8 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("ParseBoolean", typeof(string))]
         [InlineData("HourOfDay", typeof(DateTime))]
         [InlineData("ToZone", typeof(DateTime))]
+        [InlineData("TextLength", typeof(string))]
+        [InlineData("Trimmed", typeof(string))]
         public void EveryTransformerWithoutACollisionHasARawEntryOverloadReturningAFlow(string name, Type receiver)
         {
             var overload = Extension().SingleOrDefault(m => m.Name == name && m.GetParameters()[0].ParameterType == receiver);
@@ -209,12 +211,103 @@ namespace Jube.Test.Dictionary.Extensions
         }
 
         [Fact]
-        public void StringTrimAndLengthAreBclMembersSoTheFlowVersionsAreOnlyReachableAfterAFlowStep()
+        public void NoFlowMethodIsNamedAfterABareMemberOfStringSoTheRuleTokenAllowListStaysTight()
         {
             typeof(string).GetMember("Trim", BindingFlags.Public | BindingFlags.Instance).Should().NotBeEmpty();
             typeof(string).GetMember("Length", BindingFlags.Public | BindingFlags.Instance).Should().NotBeEmpty();
-            Extension().Where(m => m.Name == "Trim" && m.GetParameters()[0].ParameterType == typeof(string))
-                .Should().BeEmpty();
+            Extension().Select(m => m.Name).Should().NotContain(["Trim", "Length"]);
+            Extension().Select(m => m.Name).Should().Contain(["Trimmed", "TextLength"]);
+        }
+
+        private static readonly string[] ReviewedPreExistingCollisions =
+        [
+            "Abs",
+            "Acos",
+            "Asin",
+            "Atan",
+            "Atan2",
+            "BigMul",
+            "Ceiling",
+            "Clamp",
+            "CompareOrdinal",
+            "Concat",
+            "Contains",
+            "Cos",
+            "Cosh",
+            "DaysInMonth",
+            "DivRem",
+            "Exp",
+            "Floor",
+            "Format",
+            "FromOADate",
+            "Intern",
+            "IsDaylightSavingTime",
+            "IsInfinity",
+            "IsInterned",
+            "IsLeapYear",
+            "IsNaN",
+            "IsNegativeInfinity",
+            "IsNullOrEmpty",
+            "IsNullOrWhiteSpace",
+            "IsPositiveInfinity",
+            "Join",
+            "Lerp",
+            "Log",
+            "Log10",
+            "Max",
+            "Min",
+            "Pow",
+            "Replace",
+            "Round",
+            "Sign",
+            "Sin",
+            "Sinh",
+            "Split",
+            "Sqrt",
+            "Tan",
+            "Tanh",
+            "ToBinary",
+            "ToLongDateString",
+            "ToLongTimeString",
+            "ToLower",
+            "ToLowerInvariant",
+            "ToShortDateString",
+            "ToShortTimeString",
+            "ToString",
+            "ToUpper",
+            "ToUpperInvariant",
+            "Truncate"
+        ];
+
+        [Fact]
+        public void NoNewExtensionMethodNameCollidesWithAMemberOfAnyTypeARuleValueCanActuallyBe()
+        {
+            var ruleValueTypes = new[] { typeof(object), typeof(string), typeof(double), typeof(int), typeof(DateTime), typeof(bool) };
+            var reachableMemberNames = ruleValueTypes
+                .SelectMany(t => t.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+                .Select(m => m.Name)
+                .ToHashSet();
+
+            var collisions = Extension().Select(m => m.Name).Distinct()
+                .Where(reachableMemberNames.Contains)
+                .Except(ReviewedPreExistingCollisions)
+                .ToList();
+
+            collisions.Should().BeEmpty(
+                "any such name becomes an allowed rule token for every value of that member's type, " +
+                "not only the type the extension was written for, since the token allow-list is name-only -- " +
+                "a genuinely new collision needs its own review, either a rename or an addition to " +
+                nameof(ReviewedPreExistingCollisions));
+        }
+
+        [Fact]
+        public void EveryReviewedPreExistingCollisionIsStillActuallyPresent()
+        {
+            var extensionNames = Extension().Select(m => m.Name).ToHashSet();
+
+            extensionNames.Should().Contain(ReviewedPreExistingCollisions,
+                "a name kept here after it stopped being an extension method name would hide a real narrowing " +
+                "of " + nameof(NoNewExtensionMethodNameCollidesWithAMemberOfAnyTypeARuleValueCanActuallyBe));
         }
 
         [Fact]
@@ -297,6 +390,7 @@ namespace Jube.Test.Dictionary.Extensions
         {
             "ABC".Lower().MatchEqual("abc").ToBoolean().Should().BeTrue();
             "  abc ".Trim().MatchEqual("abc").ToBoolean().Should().BeTrue();
+            "abc".Start().TextLength().MatchEqual(3).ToBoolean().Should().BeTrue();
             "12".ParseDouble().MatchGreater(5).ToBoolean().Should().BeTrue();
             100d.Plus(5).MatchEqual(105).ToBoolean().Should().BeTrue();
             (-5d).Abs().MatchEqual(5).ToBoolean().Should().BeTrue();
