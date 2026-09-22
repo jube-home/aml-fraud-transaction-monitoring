@@ -7,47 +7,50 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static T? DeserializeJson<T>(this string? json)
+        extension(string? json)
         {
-            if (string.IsNullOrWhiteSpace(json))
+            public T? DeserializeJson<T>()
             {
-                return default;
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    return default;
+                }
+
+                try
+                {
+                    var serializer = new DataContractJsonSerializer(typeof(T));
+
+                    using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+                    var result = serializer.ReadObject(stream);
+                    return result is T typed ? typed : default;
+                }
+                catch
+                {
+                    return default;
+                }
             }
 
-            try
+            public T? DeserializeJson<T>(Encoding? encoding)
             {
-                var serializer = new DataContractJsonSerializer(typeof(T));
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    return default;
+                }
 
-                using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
-                var result = serializer.ReadObject(stream);
-                return result is T typed ? typed : default;
-            }
-            catch
-            {
-                return default;
-            }
-        }
+                encoding ??= Encoding.UTF8;
 
-        public static T? DeserializeJson<T>(this string? json, Encoding? encoding)
-        {
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                return default;
-            }
+                try
+                {
+                    var serializer = new DataContractJsonSerializer(typeof(T));
 
-            encoding ??= Encoding.UTF8;
-
-            try
-            {
-                var serializer = new DataContractJsonSerializer(typeof(T));
-
-                using var stream = new MemoryStream(encoding.GetBytes(json));
-                var result = serializer.ReadObject(stream);
-                return result is T typed ? typed : default;
-            }
-            catch
-            {
-                return default;
+                    using var stream = new MemoryStream(encoding.GetBytes(json));
+                    var result = serializer.ReadObject(stream);
+                    return result is T typed ? typed : default;
+                }
+                catch
+                {
+                    return default;
+                }
             }
         }
     }

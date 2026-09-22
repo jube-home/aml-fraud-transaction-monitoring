@@ -21,21 +21,12 @@ namespace Jube.Resources
         public const string NameRequired = nameof(NameRequired);
         public const string NameMaxLength = nameof(NameMaxLength);
         public const string NameAlreadyExists = nameof(NameAlreadyExists);
-        public const string AbstractionCalculationTypeIdInvalid = nameof(AbstractionCalculationTypeIdInvalid);
 
-        public const string EntityAnalysisModelAbstractionNameLeftRequired =
-            nameof(EntityAnalysisModelAbstractionNameLeftRequired);
 
-        public const string EntityAnalysisModelAbstractionNameRightRequired =
-            nameof(EntityAnalysisModelAbstractionNameRightRequired);
 
         public const string FunctionScriptRequired = nameof(FunctionScriptRequired);
         public const string FunctionScriptMaxLength = nameof(FunctionScriptMaxLength);
 
-        public const string EntityAnalysisModelAbstractionNameLeftMaxLength =
-            nameof(EntityAnalysisModelAbstractionNameLeftMaxLength);
 
-        public const string EntityAnalysisModelAbstractionNameRightMaxLength =
-            nameof(EntityAnalysisModelAbstractionNameRightMaxLength);
     }
 }

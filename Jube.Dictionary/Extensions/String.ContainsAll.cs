@@ -4,30 +4,33 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool ContainsAll(this string @this, params string[] values)
+        extension(string @this)
         {
-            foreach (var value in values)
+            public bool ContainsAll(params string[] values)
             {
-                if (@this.IndexOf(value, StringComparison.Ordinal) == -1)
+                foreach (var value in values)
                 {
-                    return false;
+                    if (@this.IndexOf(value, StringComparison.Ordinal) == -1)
+                    {
+                        return false;
+                    }
                 }
+
+                return true;
             }
 
-            return true;
-        }
-
-        public static bool ContainsAll(this string @this, StringComparison comparisonType, params string[] values)
-        {
-            foreach (var value in values)
+            public bool ContainsAll(StringComparison comparisonType, params string[] values)
             {
-                if (@this.IndexOf(value, comparisonType) == -1)
+                foreach (var value in values)
                 {
-                    return false;
+                    if (@this.IndexOf(value, comparisonType) == -1)
+                    {
+                        return false;
+                    }
                 }
-            }
 
-            return true;
+                return true;
+            }
         }
     }
 }

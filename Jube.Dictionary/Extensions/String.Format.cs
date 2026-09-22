@@ -6,24 +6,27 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static String Format(this String format, object arg0)
+        extension(String format)
         {
-            return string.Format(format, arg0);
-        }
+            public String Format(object arg0)
+            {
+                return string.Format(format, arg0);
+            }
 
-        public static String Format(this String format, object arg0, object arg1)
-        {
-            return string.Format(format, arg0, arg1);
-        }
+            public String Format(object arg0, object arg1)
+            {
+                return string.Format(format, arg0, arg1);
+            }
 
-        public static String Format(this String format, object arg0, object arg1, object arg2)
-        {
-            return string.Format(format, arg0, arg1, arg2);
-        }
+            public String Format(object arg0, object arg1, object arg2)
+            {
+                return string.Format(format, arg0, arg1, arg2);
+            }
 
-        public static String Format(this String format, object[] args)
-        {
-            return string.Format(format, args);
+            public String Format(object[] args)
+            {
+                return string.Format(format, args);
+            }
         }
     }
 }

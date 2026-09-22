@@ -328,7 +328,7 @@ namespace Jube.Data.Query
                     }));
             }
 
-            if (parserTypeId >= 5)
+            if (parserTypeId >= 4)
             {
                 var entityAnalysisModelAbstractionCalculationRepository =
                     new EntityAnalysisModelAbstractionCalculationRepository(dbContext, tenantRegistryId);
@@ -352,7 +352,10 @@ namespace Jube.Data.Query
                         Group = "Abstraction",
                         ProcessingTypeId = 7
                     }));
+            }
 
+            if (parserTypeId >= 5)
+            {
                 var entityAnalysisModelHttpAdaptationRepository =
                     new EntityAnalysisModelHttpAdaptationRepository(dbContext, tenantRegistryId);
 

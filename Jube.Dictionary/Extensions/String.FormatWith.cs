@@ -6,19 +6,22 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static String FormatWith(this String @this, object arg0)
+        extension(String @this)
         {
-            return string.Format(@this, arg0);
-        }
+            public String FormatWith(object arg0)
+            {
+                return string.Format(@this, arg0);
+            }
 
-        public static String FormatWith(this String @this, object arg0, object arg1)
-        {
-            return string.Format(@this, arg0, arg1);
-        }
+            public String FormatWith(object arg0, object arg1)
+            {
+                return string.Format(@this, arg0, arg1);
+            }
 
-        public static String FormatWith(this String @this, object arg0, object arg1, object arg2)
-        {
-            return string.Format(@this, arg0, arg1, arg2);
+            public String FormatWith(object arg0, object arg1, object arg2)
+            {
+                return string.Format(@this, arg0, arg1, arg2);
+            }
         }
 
         public static string FormatWith(this string @this, params object[] values)

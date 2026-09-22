@@ -238,6 +238,9 @@ suppressed adaptation safely does not match, at the cost of a log line rather th
 
 `Value` is registered as an always-allowed token in the Parser (alongside `HttpAdaptation` itself), so it does not need
 to be added to the `RuleScriptToken` table for existing or new rules to compile.
+
+To avoid the exception and the log line, read the value as a number with `HttpAdaptation.Example.Value.OrNaN()`, which is `NaN` for a suppressed adaptation, so
+the comparison fails and nothing is logged, or with `OrZero()` to read it as zero. `GetValueOrDefault` is not a permitted token.
 See [Rule Compilation Tokens and Extensions](../RuleCompilationAlgorithm/index.html).
 
 ### 5.3 Execution order: Priority and boosting

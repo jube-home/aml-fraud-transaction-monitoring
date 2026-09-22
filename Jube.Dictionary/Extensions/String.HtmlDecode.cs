@@ -9,14 +9,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static String HtmlDecode(this String s)
+        extension(String s)
         {
-            return HttpUtility.HtmlDecode(s);
-        }
+            public String HtmlDecode()
+            {
+                return HttpUtility.HtmlDecode(s);
+            }
 
-        public static void HtmlDecode(this String s, TextWriter output)
-        {
-            HttpUtility.HtmlDecode(s, output);
+            public void HtmlDecode(TextWriter output)
+            {
+                HttpUtility.HtmlDecode(s, output);
+            }
         }
     }
 }

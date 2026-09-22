@@ -9,14 +9,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static MatchCollection Matches(this String input, String pattern)
+        extension(String input)
         {
-            return Regex.Matches(input, pattern);
-        }
+            public MatchCollection Matches(String pattern)
+            {
+                return Regex.Matches(input, pattern);
+            }
 
-        public static MatchCollection Matches(this String input, String pattern, RegexOptions options)
-        {
-            return Regex.Matches(input, pattern, options);
+            public MatchCollection Matches(String pattern, RegexOptions options)
+            {
+                return Regex.Matches(input, pattern, options);
+            }
         }
     }
 }

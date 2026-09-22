@@ -10,14 +10,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static String JavaScriptStringEncode(this String value)
+        extension(String value)
         {
-            return HttpUtility.JavaScriptStringEncode(value);
-        }
+            public String JavaScriptStringEncode()
+            {
+                return HttpUtility.JavaScriptStringEncode(value);
+            }
 
-        public static String JavaScriptStringEncode(this String value, Boolean addDoubleQuotes)
-        {
-            return HttpUtility.JavaScriptStringEncode(value, addDoubleQuotes);
+            public String JavaScriptStringEncode(Boolean addDoubleQuotes)
+            {
+                return HttpUtility.JavaScriptStringEncode(value, addDoubleQuotes);
+            }
         }
     }
 }

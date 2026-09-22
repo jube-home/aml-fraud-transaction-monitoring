@@ -8,19 +8,22 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static string ToLongTimeString(this DateTime @this)
+        extension(DateTime @this)
         {
-            return @this.ToString("T", DateTimeFormatInfo.CurrentInfo);
-        }
+            public string ToLongTimeString()
+            {
+                return @this.ToString("T", DateTimeFormatInfo.CurrentInfo);
+            }
 
-        public static string ToLongTimeString(this DateTime @this, string culture)
-        {
-            return @this.ToString("T", new CultureInfo(culture));
-        }
+            public string ToLongTimeString(string culture)
+            {
+                return @this.ToString("T", new CultureInfo(culture));
+            }
 
-        public static string ToLongTimeString(this DateTime @this, CultureInfo culture)
-        {
-            return @this.ToString("T", culture);
+            public string ToLongTimeString(CultureInfo culture)
+            {
+                return @this.ToString("T", culture);
+            }
         }
     }
 }

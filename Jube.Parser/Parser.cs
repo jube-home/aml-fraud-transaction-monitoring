@@ -530,11 +530,11 @@ namespace Jube.Parser
             sb.AppendLine("Imports Jube.HttpAdaptationProtocol");
 
             countLine += 1;
-            sb.AppendLine("Public Class GatewayRule");
+            sb.AppendLine("Public Class ActivationRule");
 
             countLine += 1;
             sb.AppendLine(
-                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of String, Double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),List as PooledDictionary(Of String,List(Of String)),Deviation as PooledDictionary(Of String, Double),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean");
+                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of String, Double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean");
 
             countLine += 1;
             sb.AppendLine("Dim Matched as Boolean");
@@ -593,11 +593,11 @@ namespace Jube.Parser
             sb.AppendLine("Imports System");
 
             countLine += 1;
-            sb.AppendLine("Public Class GatewayRule");
+            sb.AppendLine("Public Class CalculationRule");
 
             countLine += 1;
             sb.AppendLine(
-                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Deviation as PooledDictionary(Of String, Double),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Log as ILog) As Double");
+                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Log as ILog) As Double");
 
             countLine += 1;
             sb.AppendLine("Dim Matched as Double");

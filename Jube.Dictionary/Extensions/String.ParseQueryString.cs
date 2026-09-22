@@ -11,14 +11,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static NameValueCollection ParseQueryString(this String query)
+        extension(String query)
         {
-            return HttpUtility.ParseQueryString(query);
-        }
+            public NameValueCollection ParseQueryString()
+            {
+                return HttpUtility.ParseQueryString(query);
+            }
 
-        public static NameValueCollection ParseQueryString(this String query, Encoding encoding)
-        {
-            return HttpUtility.ParseQueryString(query, encoding);
+            public NameValueCollection ParseQueryString(Encoding encoding)
+            {
+                return HttpUtility.ParseQueryString(query, encoding);
+            }
         }
     }
 }

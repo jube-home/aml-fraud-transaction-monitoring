@@ -4,28 +4,31 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string ReplaceLast(this string @this, string oldValue, string newValue)
+        extension(string @this)
         {
-            var startindex = @this.LastIndexOf(oldValue, StringComparison.Ordinal);
-
-            if (startindex == -1)
+            public string ReplaceLast(string oldValue, string newValue)
             {
-                return @this;
+                var startindex = @this.LastIndexOf(oldValue, StringComparison.Ordinal);
+
+                if (startindex == -1)
+                {
+                    return @this;
+                }
+
+                return @this.Remove(startindex, oldValue.Length).Insert(startindex, newValue);
             }
 
-            return @this.Remove(startindex, oldValue.Length).Insert(startindex, newValue);
-        }
+            public string ReplaceLast(int number, string oldValue, string newValue)
+            {
+                var list = @this.Split(oldValue).ToList();
+                var old = Math.Max(0, list.Count - number - 1);
+                var listStart = list.Take(old);
+                var listEnd = list.Skip(old);
 
-        public static string ReplaceLast(this string @this, int number, string oldValue, string newValue)
-        {
-            var list = @this.Split(oldValue).ToList();
-            var old = Math.Max(0, list.Count - number - 1);
-            var listStart = list.Take(old);
-            var listEnd = list.Skip(old);
-
-            return string.Join(oldValue, listStart) +
-                   (old > 0 ? oldValue : "") +
-                   string.Join(newValue, listEnd);
+                return string.Join(oldValue, listStart) +
+                       (old > 0 ? oldValue : "") +
+                       string.Join(newValue, listEnd);
+            }
         }
     }
 }

@@ -110,46 +110,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     }
                                 }
 
-                                if (record.EntityAnalysisModelAbstractionNameLeft != null)
-                                {
-                                    entityAnalysisModelAbstractionCalculation.EntityAnalysisModelAbstractionNameLeft =
-                                        record.EntityAnalysisModelAbstractionNameLeft;
-
-                                    if (context.Services.Log.IsDebugEnabled)
-                                    {
-                                        context.Services.Log.Debug(
-                                            $"Entity Start: Model {key} and Deviation {entityAnalysisModelAbstractionCalculation.Id} set Entity Analysis Model Abstraction Name Left as {entityAnalysisModelAbstractionCalculation.EntityAnalysisModelAbstractionNameLeft}.");
-                                    }
-                                }
-                                else
-                                {
-                                    if (context.Services.Log.IsDebugEnabled)
-                                    {
-                                        context.Services.Log.Debug(
-                                            $"Entity Start: Model {key} and Deviation {entityAnalysisModelAbstractionCalculation.Id} set DEFAULT,  missing, Entity Analysis Model Abstraction Name Left as {entityAnalysisModelAbstractionCalculation.EntityAnalysisModelAbstractionNameLeft}.");
-                                    }
-                                }
-
-                                if (record.EntityAnalysisModelAbstractionNameRight != null)
-                                {
-                                    entityAnalysisModelAbstractionCalculation.EntityAnalysisModelAbstractionNameRight =
-                                        record.EntityAnalysisModelAbstractionNameRight;
-
-                                    if (context.Services.Log.IsDebugEnabled)
-                                    {
-                                        context.Services.Log.Debug(
-                                            $"Entity Start: Model {key} and Deviation {entityAnalysisModelAbstractionCalculation.Id} set Entity Analysis Model Abstraction Name Right as {entityAnalysisModelAbstractionCalculation.EntityAnalysisModelAbstractionNameRight}.");
-                                    }
-                                }
-                                else
-                                {
-                                    if (context.Services.Log.IsDebugEnabled)
-                                    {
-                                        context.Services.Log.Debug(
-                                            $"Entity Start: Model {key} and Deviation {entityAnalysisModelAbstractionCalculation.Id} set DEFAULT,  missing, Entity Analysis Model Abstraction Name Right as {entityAnalysisModelAbstractionCalculation.EntityAnalysisModelAbstractionNameRight}.");
-                                    }
-                                }
-
                                 if (!record.ResponsePayload.HasValue)
                                 {
                                     entityAnalysisModelAbstractionCalculation.ResponsePayload = false;
@@ -193,28 +153,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     }
                                 }
 
-                                if (!record.AbstractionCalculationTypeId.HasValue)
-                                {
-                                    entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId = 1;
-
-                                    if (context.Services.Log.IsDebugEnabled)
-                                    {
-                                        context.Services.Log.Debug(
-                                            $"Entity Start: Model {key} and Deviation {entityAnalysisModelAbstractionCalculation.Id} set DEFAULT Calculation Type as {entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId}.");
-                                    }
-                                }
-                                else
-                                {
-                                    entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId =
-                                        record.AbstractionCalculationTypeId.Value;
-
-                                    if (context.Services.Log.IsDebugEnabled)
-                                    {
-                                        context.Services.Log.Debug(
-                                            $"Entity Start: Model {key} and Deviation {entityAnalysisModelAbstractionCalculation.Id} set Calculation Type as {entityAnalysisModelAbstractionCalculation.AbstractionCalculationTypeId}.");
-                                    }
-                                }
-
                                 context.Services.CancellationToken.ThrowIfCancellationRequested();
 
                                 var hasRuleScript = false;
@@ -244,28 +182,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                                 if (hasRuleScript)
                                 {
-                                    var activationRuleScript = new StringBuilder();
-                                    activationRuleScript.Append("Imports System.IO\r\n");
-                                    activationRuleScript.Append("Imports log4net\r\n");
-                                    activationRuleScript.Append("Imports System.Net\r\n");
-                                    activationRuleScript.Append("Imports System.Collections.Generic\r\n");
-                                    activationRuleScript.Append("Imports Jube.Dictionary\r\n");
-                                    activationRuleScript.Append("Imports Jube.Dictionary.Extensions\r\n");
-                                    activationRuleScript.Append("Imports System\r\n");
-                                    activationRuleScript.Append("Public Class CalculationRule\r\n");
-                                    activationRuleScript.Append(
-                                        "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of string,double),List as Dictionary(Of String,List(Of String)),KVP As PooledDictionary(Of String, Double),Log as ILog) As Double\r\n");
-                                    activationRuleScript.Append("Dim Matched as Double\r\n");
-                                    activationRuleScript.Append("Try\r\n");
-                                    activationRuleScript.Append(entityAnalysisModelAbstractionCalculation.FunctionScript +
-                                                                "\r\n");
-                                    activationRuleScript.Append("Catch ex As Exception\r\n");
-                                    activationRuleScript.Append("Log.Info(ex.ToString)\r\n");
-                                    activationRuleScript.Append("End Try\r\n");
-                                    activationRuleScript.Append("Return Matched\r\n");
-                                    activationRuleScript.Append("\r\n");
-                                    activationRuleScript.Append("End Function\r\n");
-                                    activationRuleScript.Append("End Class\r\n");
+                                    var wrappedRule = context.Services.Parser.WrapAbstractionCalculation(
+                                        new ParsedRule
+                                        {
+                                            OriginalRuleText = record.FunctionScript,
+                                            ParsedRuleText = entityAnalysisModelAbstractionCalculation.FunctionScript,
+                                            ErrorSpans = []
+                                        }, true);
+                                    var activationRuleScript = new StringBuilder(wrappedRule.ParsedRuleText);
 
                                     if (context.Services.Log.IsDebugEnabled)
                                     {
@@ -377,22 +301,35 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     }
                                 }
 
-                                shadowEntityAnalysisModelAbstractionCalculation.Add(
-                                    entityAnalysisModelAbstractionCalculation);
-
-                                if (context.Services.Log.IsDebugEnabled)
+                                if (entityAnalysisModelAbstractionCalculation.FunctionCalculationCompileDelegate == null)
                                 {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Model {key} and Calculation {entityAnalysisModelAbstractionCalculation.Id} has been added to a shadow list of Abstraction Calculations.");
+                                    await repository.UpdateCompileStatusAsync(
+                                        entityAnalysisModelAbstractionCalculation.Id, false,
+                                        "The Abstraction Calculation has no compiled function script. Arithmetic Abstraction Calculations are no longer supported; write the calculation as a Coder function.",
+                                        context.Services.CancellationToken).ConfigureAwait(false);
+
+                                    context.Services.Log.Warn(
+                                        $"Entity Start: Model {key} and Calculation {entityAnalysisModelAbstractionCalculation.Id} has no compiled function script and has not been added.");
                                 }
-
-                                context.Services.Parser.EntityAnalysisModelAbstractionCalculations.TryAdd(
-                                    entityAnalysisModelAbstractionCalculation.Name);
-
-                                if (context.Services.Log.IsDebugEnabled)
+                                else
                                 {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Model {key} and Calculation {entityAnalysisModelAbstractionCalculation.Id} has added {entityAnalysisModelAbstractionCalculation.Name} to context.Parser.");
+                                    shadowEntityAnalysisModelAbstractionCalculation.Add(
+                                        entityAnalysisModelAbstractionCalculation);
+
+                                    if (context.Services.Log.IsDebugEnabled)
+                                    {
+                                        context.Services.Log.Debug(
+                                            $"Entity Start: Model {key} and Calculation {entityAnalysisModelAbstractionCalculation.Id} has been added to a shadow list of Abstraction Calculations.");
+                                    }
+
+                                    context.Services.Parser.EntityAnalysisModelAbstractionCalculations.TryAdd(
+                                        entityAnalysisModelAbstractionCalculation.Name);
+
+                                    if (context.Services.Log.IsDebugEnabled)
+                                    {
+                                        context.Services.Log.Debug(
+                                            $"Entity Start: Model {key} and Calculation {entityAnalysisModelAbstractionCalculation.Id} has added {entityAnalysisModelAbstractionCalculation.Name} to context.Parser.");
+                                    }
                                 }
                             }
                             else

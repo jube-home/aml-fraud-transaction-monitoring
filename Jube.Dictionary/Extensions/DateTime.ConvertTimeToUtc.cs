@@ -7,14 +7,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static DateTime ConvertTimeToUtc(this DateTime dateTime)
+        extension(DateTime dateTime)
         {
-            return TimeZoneInfo.ConvertTimeToUtc(dateTime);
-        }
+            public DateTime ConvertTimeToUtc()
+            {
+                return TimeZoneInfo.ConvertTimeToUtc(dateTime);
+            }
 
-        public static DateTime ConvertTimeToUtc(this DateTime dateTime, TimeZoneInfo sourceTimeZone)
-        {
-            return TimeZoneInfo.ConvertTimeToUtc(dateTime, sourceTimeZone);
+            public DateTime ConvertTimeToUtc(TimeZoneInfo sourceTimeZone)
+            {
+                return TimeZoneInfo.ConvertTimeToUtc(dateTime, sourceTimeZone);
+            }
         }
     }
 }

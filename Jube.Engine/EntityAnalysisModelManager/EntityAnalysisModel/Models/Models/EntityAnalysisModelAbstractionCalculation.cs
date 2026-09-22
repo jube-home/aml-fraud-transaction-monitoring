@@ -22,15 +22,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
     {
         public delegate double Match(DictionaryNoBoxing<string> data, PooledDictionary<string, double> ttlCounter,
             PooledDictionary<string, double> abstraction,
-            Dictionary<string, List<string>> list, PooledDictionary<string, double> kvp,
+            Dictionary<string, List<string>> list, PooledDictionary<string, double> calculation,
+            PooledDictionary<string, double> sanctions, PooledDictionary<string, double> kvp,
             ILog log);
 
         public int Id { get; init; }
         public string Name { get; set; }
-        public string EntityAnalysisModelAbstractionNameLeft { get; set; }
-        public string EntityAnalysisModelAbstractionNameRight { get; set; }
         public bool ResponsePayload { get; set; }
-        public int AbstractionCalculationTypeId { get; set; }
         public bool ReportTable { get; set; }
         public string FunctionScript { get; set; }
         public Match FunctionCalculationCompileDelegate { get; set; }

@@ -10,10 +10,8 @@ namespace Jube.Dictionary.Extensions
         public static XDocument ToXDocument(this string @this)
         {
             Encoding encoding = Activator.CreateInstance<ASCIIEncoding>();
-            using (var ms = new MemoryStream(encoding.GetBytes(@this)))
-            {
-                return XDocument.Load(ms);
-            }
+            using var ms = new MemoryStream(encoding.GetBytes(@this));
+            return XDocument.Load(ms);
         }
     }
 }

@@ -7,14 +7,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Int32 CompareOrdinal(this String strA, String strB)
+        extension(String strA)
         {
-            return string.CompareOrdinal(strA, strB);
-        }
+            public Int32 CompareOrdinal(String strB)
+            {
+                return string.CompareOrdinal(strA, strB);
+            }
 
-        public static Int32 CompareOrdinal(this String strA, Int32 indexA, String strB, Int32 indexB, Int32 length)
-        {
-            return string.CompareOrdinal(strA, indexA, strB, indexB, length);
+            public Int32 CompareOrdinal(Int32 indexA, String strB, Int32 indexB, Int32 length)
+            {
+                return string.CompareOrdinal(strA, indexA, strB, indexB, length);
+            }
         }
     }
 }

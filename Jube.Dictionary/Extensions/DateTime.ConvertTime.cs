@@ -7,15 +7,18 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static DateTime ConvertTime(this DateTime dateTime, TimeZoneInfo destinationTimeZone)
+        extension(DateTime dateTime)
         {
-            return TimeZoneInfo.ConvertTime(dateTime, destinationTimeZone);
-        }
+            public DateTime ConvertTime(TimeZoneInfo destinationTimeZone)
+            {
+                return TimeZoneInfo.ConvertTime(dateTime, destinationTimeZone);
+            }
 
-        public static DateTime ConvertTime(this DateTime dateTime, TimeZoneInfo sourceTimeZone,
-            TimeZoneInfo destinationTimeZone)
-        {
-            return TimeZoneInfo.ConvertTime(dateTime, sourceTimeZone, destinationTimeZone);
+            public DateTime ConvertTime(TimeZoneInfo sourceTimeZone,
+                TimeZoneInfo destinationTimeZone)
+            {
+                return TimeZoneInfo.ConvertTime(dateTime, sourceTimeZone, destinationTimeZone);
+            }
         }
     }
 }

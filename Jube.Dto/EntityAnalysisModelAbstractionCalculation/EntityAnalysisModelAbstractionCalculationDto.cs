@@ -38,37 +38,11 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionCalculation
         [ListColumn(Order = 10, Title = "Name")]
         public string? Name { get; set; }
 
-        [Description("Which surface computes the result: 1 Add, 2 Subtract, 3 Divide, 4 Multiply (all four take " +
-                     "the Left and Right Abstraction Rule values), or 5 Coder (a hand-written VB.Net function " +
-                     "fragment supplied in FunctionScript). The arithmetic surfaces and the Coder surface are " +
-                     "mutually exclusive.")]
-        [FormField(Group = "Calculation", Order = 10, Widget = "radio")]
-        [NewDefault(3)]
-        public int AbstractionCalculationTypeId { get; set; }
-
-        [Description("The Abstraction Rule occupying the left-hand side of the arithmetic. Required unless " +
-                     "AbstractionCalculationTypeId is 5 (Coder).")]
-        [FormField(Group = "Calculation", Order = 20, Widget = "select")]
-        [VisibleWhen(nameof(AbstractionCalculationTypeId), 5, Op = ConditionOp.NotEquals)]
-        [RequiredWhen(nameof(AbstractionCalculationTypeId), 5, Op = ConditionOp.NotEquals)]
-        [Lookup("/api/TreeChildren/AbstractionRule", TextField = "name", ValueField = "name",
-            ParentField = nameof(EntityAnalysisModelId))]
-        public string? EntityAnalysisModelAbstractionNameLeft { get; set; }
-
-        [Description("The Abstraction Rule occupying the right-hand side of the arithmetic. Required unless " +
-                     "AbstractionCalculationTypeId is 5 (Coder).")]
-        [FormField(Group = "Calculation", Order = 30, Widget = "select")]
-        [VisibleWhen(nameof(AbstractionCalculationTypeId), 5, Op = ConditionOp.NotEquals)]
-        [RequiredWhen(nameof(AbstractionCalculationTypeId), 5, Op = ConditionOp.NotEquals)]
-        [Lookup("/api/TreeChildren/AbstractionRule", TextField = "name", ValueField = "name",
-            ParentField = nameof(EntityAnalysisModelId))]
-        public string? EntityAnalysisModelAbstractionNameRight { get; set; }
-
-        [Description("The hand-written VB.Net function fragment computing the result. Required when " +
-                     "AbstractionCalculationTypeId is 5 (Coder); not required for the arithmetic surfaces.")]
-        [FormField(Group = "Calculation", Order = 40)]
-        [VisibleWhen(nameof(AbstractionCalculationTypeId), 5)]
-        [RequiredWhen(nameof(AbstractionCalculationTypeId), 5)]
+        [Description("The hand-written VB.Net function fragment computing the result. The value it assigns to " +
+                     "Matched is the calculation. Every value upstream in the invocation is available: Payload " +
+                     "fields, Inline Script properties, Inline Functions, TTL Counters, Abstraction Rules, " +
+                     "Sanctions, Dictionaries and earlier Abstraction Calculations. Required.")]
+        [FormField(Group = "Calculation", Order = 10)]
         [Forms.Editor("RuleBuilder")]
         public string? FunctionScript { get; set; }
 

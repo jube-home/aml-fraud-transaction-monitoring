@@ -10,14 +10,17 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static byte[] UrlDecodeToBytes(this String str)
+        extension(String str)
         {
-            return HttpUtility.UrlDecodeToBytes(str);
-        }
+            public byte[] UrlDecodeToBytes()
+            {
+                return HttpUtility.UrlDecodeToBytes(str);
+            }
 
-        public static byte[] UrlDecodeToBytes(this String str, Encoding e)
-        {
-            return HttpUtility.UrlDecodeToBytes(str, e);
+            public byte[] UrlDecodeToBytes(Encoding e)
+            {
+                return HttpUtility.UrlDecodeToBytes(str, e);
+            }
         }
     }
 }

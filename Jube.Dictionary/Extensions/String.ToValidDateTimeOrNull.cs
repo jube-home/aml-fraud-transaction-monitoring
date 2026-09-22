@@ -8,9 +8,7 @@ namespace Jube.Dictionary.Extensions
     {
         public static DateTime? ToValidDateTimeOrNull(this string @this)
         {
-            DateTime date;
-
-            if (DateTime.TryParse(@this, out date))
+            if (DateTime.TryParse(@this, out var date))
             {
                 return date;
             }

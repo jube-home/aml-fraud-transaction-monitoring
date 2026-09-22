@@ -2152,8 +2152,12 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(1)] public int? EntityAnalysisModelAbstractionCalculationId { get; set; }
         [Column] [Nullable] [Key(2)] public int? EntityAnalysisModelId { get; set; }
         [Column] [Nullable] [Key(3)] public string Name { get; set; }
-        [Column] [Nullable] [Key(4)] public string EntityAnalysisModelAbstractionNameLeft { get; set; }
-        [Column] [Nullable] [Key(5)] public string EntityAnalysisModelAbstractionNameRight { get; set; }
+        // DEPRECATED: not mapped, the column remains in the database. Key(4) is reserved and available for reuse
+        // by another string property. Never renumber the keys that follow.
+        // [Column] [Nullable] [Key(4)] public string EntityAnalysisModelAbstractionNameLeft { get; set; }
+        // DEPRECATED: not mapped, the column remains in the database. Key(5) is reserved and available for reuse
+        // by another string property. Never renumber the keys that follow.
+        // [Column] [Nullable] [Key(5)] public string EntityAnalysisModelAbstractionNameRight { get; set; }
         [Column] [Nullable] [Key(6)] public byte? Locked { get; set; }
         [Column] [Nullable] [Key(7)] public byte? Active { get; set; }
         [Column] [Nullable] [Key(8)] public DateTime? CreatedDate { get; set; }
@@ -2164,7 +2168,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(13)] public int? Version { get; set; }
         [Column] [Nullable] [Key(14)] public int? InheritedId { get; set; }
         [Column] [Nullable] [Key(15)] public byte? ResponsePayload { get; set; }
-        [Column] [Nullable] [Key(16)] public int? AbstractionCalculationTypeId { get; set; }
+        // DEPRECATED: not mapped, the column remains in the database. Key(16) is reserved and available for reuse
+        // by another int? property. Never renumber the keys that follow.
+        // [Column] [Nullable] [Key(16)] public int? AbstractionCalculationTypeId { get; set; }
         [Column] [Nullable] [Key(17)] public byte? ReportTable { get; set; }
         [Column] [Nullable] [Key(18)] public string FunctionScript { get; set; }
         [Column] [Nullable] [Key(19)] public Guid Guid { get; set; }
@@ -2182,8 +2188,12 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(1)] public int? EntityAnalysisModelId { get; set; }
         [Column] [Nullable] [Key(2)] public string Name { get; set; }
-        [Column] [Nullable] [Key(3)] public string EntityAnalysisModelAbstractionNameLeft { get; set; }
-        [Column] [Nullable] [Key(4)] public string EntityAnalysisModelAbstractionNameRight { get; set; }
+        // DEPRECATED: not mapped, the column remains in the database. Key(3) is reserved and available for reuse
+        // by another string property. Never renumber the keys that follow.
+        // [Column] [Nullable] [Key(3)] public string EntityAnalysisModelAbstractionNameLeft { get; set; }
+        // DEPRECATED: not mapped, the column remains in the database. Key(4) is reserved and available for reuse
+        // by another string property. Never renumber the keys that follow.
+        // [Column] [Nullable] [Key(4)] public string EntityAnalysisModelAbstractionNameRight { get; set; }
         [Column] [Nullable] [Key(5)] public byte? Locked { get; set; }
         [Column] [Nullable] [Key(6)] public byte? Active { get; set; }
         [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
@@ -2194,7 +2204,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(12)] public int? Version { get; set; }
         [Column] [Nullable] [Key(13)] public int? InheritedId { get; set; }
         [Column] [Nullable] [Key(14)] public byte? ResponsePayload { get; set; }
-        [Column] [Nullable] [Key(15)] public int? AbstractionCalculationTypeId { get; set; }
+        // DEPRECATED: not mapped, the column remains in the database. Key(15) is reserved and available for reuse
+        // by another int? property. Never renumber the keys that follow.
+        // [Column] [Nullable] [Key(15)] public int? AbstractionCalculationTypeId { get; set; }
         [Column] [Nullable] [Key(16)] public byte? ReportTable { get; set; }
         [Column] [Nullable] [Key(17)] public string FunctionScript { get; set; }
 

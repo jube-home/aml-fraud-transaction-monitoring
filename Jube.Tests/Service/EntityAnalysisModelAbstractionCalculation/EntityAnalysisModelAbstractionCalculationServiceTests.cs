@@ -109,10 +109,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionCalculation
             {
                 EntityAnalysisModelId = entityAnalysisModelId,
                 Name = name,
-                AbstractionCalculationTypeId = 3,
-                EntityAnalysisModelAbstractionNameLeft = "Left",
-                EntityAnalysisModelAbstractionNameRight = "Right",
-                FunctionScript = null
+                FunctionScript = "Matched = 1"
             };
         }
 
@@ -187,12 +184,12 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionCalculation
 
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
-            dto.EntityAnalysisModelAbstractionNameLeft = "ChangedLeft";
+            dto.FunctionScript = "Matched = 2";
 
             var updated = await service.UpdateAsync(dto);
 
             updated.Version.Should().Be(2);
-            updated.EntityAnalysisModelAbstractionNameLeft.Should().Be("ChangedLeft");
+            updated.FunctionScript.Should().Be("Matched = 2");
             updated.Guid.Should().Be(saved.Guid);
 
             var auditRows = await dbContext.GetTable<EntityAnalysisModelAbstractionCalculationVersion>()
@@ -400,68 +397,12 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionCalculation
         }
 
         [Fact]
-        public async Task InvalidAbstractionCalculationTypeIdIsRejectedAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var dto = NewDto(modelId, UniqueName("BadType"));
-            dto.AbstractionCalculationTypeId = 99;
-
-            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
-            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "AbstractionCalculationTypeIdInvalid");
-        }
-
-        [Fact]
-        public async Task LeftAbstractionRequiredRejectsEmptyWhenArithmeticModeSelectedAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var dto = NewDto(modelId, UniqueName("NoLeft"));
-            dto.EntityAnalysisModelAbstractionNameLeft = "";
-
-            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
-            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "EntityAnalysisModelAbstractionNameLeftNotEmpty");
-        }
-
-        [Fact]
-        public async Task RightAbstractionRequiredRejectsEmptyWhenArithmeticModeSelectedAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var dto = NewDto(modelId, UniqueName("NoRight"));
-            dto.EntityAnalysisModelAbstractionNameRight = "";
-
-            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
-            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "EntityAnalysisModelAbstractionNameRightNotEmpty");
-        }
-
-        [Fact]
-        public async Task LeftAndRightNotRequiredWhenCoderModeSelectedAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var dto = NewDto(modelId, UniqueName("CoderNoLeftRight"));
-            dto.AbstractionCalculationTypeId = 5;
-            dto.EntityAnalysisModelAbstractionNameLeft = "";
-            dto.EntityAnalysisModelAbstractionNameRight = "";
-            dto.FunctionScript = "Return 1";
-
-            var saved = await service.InsertAsync(dto);
-            createdIds.Add(saved.Id);
-        }
-
-        [Fact]
-        public async Task FunctionScriptRequiredRejectsEmptyWhenCoderModeSelectedAsync()
+        public async Task FunctionScriptRequiredRejectsEmptyAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var dto = NewDto(modelId, UniqueName("NoFunctionScript"));
-            dto.AbstractionCalculationTypeId = 5;
             dto.FunctionScript = "";
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
@@ -469,27 +410,12 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionCalculation
         }
 
         [Fact]
-        public async Task FunctionScriptNotRequiredWhenArithmeticModeSelectedAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var dto = NewDto(modelId, UniqueName("ArithmeticNoScript"));
-            dto.AbstractionCalculationTypeId = 4;
-            dto.FunctionScript = null;
-
-            var saved = await service.InsertAsync(dto);
-            createdIds.Add(saved.Id);
-        }
-
-        [Fact]
-        public async Task FunctionScriptOverMaximumLengthIsRejectedWhenCoderModeSelectedAsync()
+        public async Task FunctionScriptOverMaximumLengthIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var dto = NewDto(modelId, UniqueName("HugeScript"));
-            dto.AbstractionCalculationTypeId = 5;
             dto.FunctionScript = new string('a', 65537);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
