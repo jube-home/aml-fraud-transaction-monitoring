@@ -22,6 +22,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "Submits a CaseWorkflowForm entry for a case; dispatches that form's notification/webhook if " +
                 "enabled."),
             new ServiceToolDescriptor(
+                "CaseWorkflowFormEntryValidate", OperationKind.Read, true, false,
+                "Validates a Case Workflow Form Entry without saving it and returns every failure."),
+            new ServiceToolDescriptor(
                 "CaseWorkflowFormEntryListByCaseKeyValue", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists case workflow form entries for a Case Key/Value pair, newest first, scoped to the caller's " +
                 "tenant and role grants.")

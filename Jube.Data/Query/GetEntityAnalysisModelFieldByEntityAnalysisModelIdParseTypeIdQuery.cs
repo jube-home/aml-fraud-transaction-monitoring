@@ -15,6 +15,7 @@ namespace Jube.Data.Query
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
@@ -81,49 +82,49 @@ namespace Jube.Data.Query
                     {
                         case 1:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelRequestXpath.Name}')";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelRequestXpath.Name)}')";
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "string";
                             getModelFieldByParserTypeIdDto.DataTypeId = 1;
 
                             break;
                         case 2:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelRequestXpath.Name}')::int";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelRequestXpath.Name)}')::int";
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "integer";
                             getModelFieldByParserTypeIdDto.DataTypeId = 2;
 
                             break;
                         case 3:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelRequestXpath.Name}')::double precision";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelRequestXpath.Name)}')::double precision";
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
                             getModelFieldByParserTypeIdDto.DataTypeId = 3;
 
                             break;
                         case 4:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelRequestXpath.Name}')::timestamp";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelRequestXpath.Name)}')::timestamp";
                             getModelFieldByParserTypeIdDto.DataTypeId = 4;
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "datetime";
 
                             break;
                         case 5:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelRequestXpath.Name}')::boolean";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelRequestXpath.Name)}')::boolean";
                             getModelFieldByParserTypeIdDto.DataTypeId = 5;
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "boolean";
 
                             break;
                         case 6:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelRequestXpath.Name}')::double precision";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelRequestXpath.Name)}')::double precision";
                             getModelFieldByParserTypeIdDto.DataTypeId = 6;
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
 
                             break;
                         case 7:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelRequestXpath.Name}')::double precision";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelRequestXpath.Name)}')::double precision";
                             getModelFieldByParserTypeIdDto.DataTypeId = 7;
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
 
@@ -184,49 +185,49 @@ namespace Jube.Data.Query
                     {
                         case 1:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelInlineFunction.Name}')";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelInlineFunction.Name)}')";
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "string";
                             getModelFieldByParserTypeIdDto.DataTypeId = 1;
 
                             break;
                         case 2:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelInlineFunction.Name}')::int";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelInlineFunction.Name)}')::int";
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "integer";
                             getModelFieldByParserTypeIdDto.DataTypeId = 2;
 
                             break;
                         case 3:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelInlineFunction.Name}')::double precision";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelInlineFunction.Name)}')::double precision";
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
                             getModelFieldByParserTypeIdDto.DataTypeId = 3;
 
                             break;
                         case 4:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelInlineFunction.Name}')::timestamp";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelInlineFunction.Name)}')::timestamp";
                             getModelFieldByParserTypeIdDto.DataTypeId = 4;
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "datetime";
 
                             break;
                         case 5:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelInlineFunction.Name}')::boolean";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelInlineFunction.Name)}')::boolean";
                             getModelFieldByParserTypeIdDto.DataTypeId = 5;
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "boolean";
 
                             break;
                         case 6:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelInlineFunction.Name}')::double precision";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelInlineFunction.Name)}')::double precision";
                             getModelFieldByParserTypeIdDto.DataTypeId = 6;
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
 
                             break;
                         case 7:
                             getModelFieldByParserTypeIdDto.ValueSqlPath
-                                = $"(\"Json\"-> 'payload' ->> '{entityAnalysisModelInlineFunction.Name}')::double precision";
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelInlineFunction.Name)}')::double precision";
                             getModelFieldByParserTypeIdDto.DataTypeId = 7;
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
 
@@ -254,7 +255,7 @@ namespace Jube.Data.Query
                     Name = $"Dictionary.{s.Name}",
                     Value = $"Dictionary.{s.Name}",
                     ValueJsonPath = $"kvp.{s.Name}",
-                    ValueSqlPath = $"(\"Json\"-> 'kvp' ->> '{s.Name}')::double precision",
+                    ValueSqlPath = $"(\"Json\"-> 'kvp' ->> '{SqlLiteral(s.Name)}')::double precision",
                     DataTypeId = 3,
                     JQueryBuilderDataType = "double",
                     Group = "Reference",
@@ -277,7 +278,7 @@ namespace Jube.Data.Query
                         Name = $"TTLCounter.{s.Name}",
                         Value = $"TTLCounter.{s.Name}",
                         ValueJsonPath = $"ttlCounter.{s.Name}",
-                        ValueSqlPath = $"(\"Json\"-> 'ttlCounter' ->> '{s.Name}')::double precision",
+                        ValueSqlPath = $"(\"Json\"-> 'ttlCounter' ->> '{SqlLiteral(s.Name)}')::double precision",
                         DataTypeId = 2,
                         JQueryBuilderDataType = "double",
                         Group = "TTLCounter",
@@ -297,7 +298,7 @@ namespace Jube.Data.Query
                         Name = $"Sanction.{s.Name}",
                         Value = $"Sanction.{s.Name}",
                         ValueJsonPath = $"sanction.{s.Name}",
-                        ValueSqlPath = $"(\"Json\"-> 'sanction' ->> '{s.Name}')::double precision",
+                        ValueSqlPath = $"(\"Json\"-> 'sanction' ->> '{SqlLiteral(s.Name)}')::double precision",
                         DataTypeId = 3,
                         JQueryBuilderDataType = "double",
                         Group = "Sanction",
@@ -320,7 +321,7 @@ namespace Jube.Data.Query
                         Name = $"Abstraction.{s.Name}",
                         Value = $"Abstraction.{s.Name}",
                         ValueJsonPath = $"abstraction.{s.Name}",
-                        ValueSqlPath = $"(\"Json\"-> 'abstraction' ->> '{s.Name}')::double precision",
+                        ValueSqlPath = $"(\"Json\"-> 'abstraction' ->> '{SqlLiteral(s.Name)}')::double precision",
                         DataTypeId = 3,
                         JQueryBuilderDataType = "double",
                         Group = "Abstraction",
@@ -346,7 +347,8 @@ namespace Jube.Data.Query
                         Name = $"AbstractionCalculation.{s.Name}",
                         Value = $"AbstractionCalculation.{s.Name}",
                         ValueJsonPath = $"abstractionCalculation.{s.Name}",
-                        ValueSqlPath = $"(\"Json\"-> 'abstractionCalculation' ->> '{s.Name}')::double precision",
+                        ValueSqlPath =
+                            $"(\"Json\"-> 'abstractionCalculation' ->> '{SqlLiteral(s.Name)}')::double precision",
                         DataTypeId = 3,
                         JQueryBuilderDataType = "double",
                         Group = "Abstraction",
@@ -369,7 +371,7 @@ namespace Jube.Data.Query
                         Name = $"HTTPAdaptation.{s.Name}",
                         Value = $"HTTPAdaptation.{s.Name}",
                         ValueJsonPath = $"HttpAdaptation.{s.Name}",
-                        ValueSqlPath = $"(\"Json\"-> 'httpAdaptation' ->> '{s.Name}')::double precision",
+                        ValueSqlPath = $"(\"Json\"-> 'httpAdaptation' ->> '{SqlLiteral(s.Name)}')::double precision",
                         DataTypeId = 3,
                         JQueryBuilderDataType = "double",
                         Group = "Adaptation",
@@ -389,7 +391,8 @@ namespace Jube.Data.Query
                         Name = $"ExhaustiveAdaptation.{s.Name}",
                         Value = $"ExhaustiveAdaptation.{s.Name}",
                         ValueJsonPath = $"ExhaustiveAdaptation.{s.Name}",
-                        ValueSqlPath = $"(\"Json\"-> 'exhaustiveAdaptation' ->> '{s.Name}')::double precision",
+                        ValueSqlPath =
+                            $"(\"Json\"-> 'exhaustiveAdaptation' ->> '{SqlLiteral(s.Name)}')::double precision",
                         DataTypeId = 3,
                         JQueryBuilderDataType = "double",
                         Group = "Adaptation",
@@ -410,7 +413,7 @@ namespace Jube.Data.Query
                         Name = $"Activation.{s.Name}",
                         Value = $"Activation.{s.Name}",
                         ValueJsonPath = $"activation.{s.Name}",
-                        ValueSqlPath = $"(\"Json\"-> 'activation' ->> '{s.Name}')::boolean",
+                        ValueSqlPath = $"(\"Json\"-> 'activation' ->> '{SqlLiteral(s.Name)}')::boolean",
                         DataTypeId = 5,
                         JQueryBuilderDataType = "boolean",
                         Group = "Activation"
@@ -433,7 +436,7 @@ namespace Jube.Data.Query
                         Value = $"Tag.{s.Name}",
                         ValueJsonPath = $"tag.{s.Name}",
                         ValueSqlPath =
-                            $"(case when (\"Json\"-> 'tag') @> '\"{s.Name}\"'::jsonb then 'True' else 'False' end)",
+                            $"(case when (\"Json\"-> 'tag') @> '{SqlJsonStringLiteral(s.Name)}'::jsonb then 'True' else 'False' end)",
                         DataTypeId = 7,
                         JQueryBuilderDataType = "boolean",
                         Group = "Tag"
@@ -458,7 +461,7 @@ namespace Jube.Data.Query
                     JQueryBuilderDataType = "list",
                     Group = "Reference",
                     ValueJsonPath = $"$.list.{s.Name}",
-                    ValueSqlPath = $"(\"Json\"-> 'list' ->> '{s.Name}')"
+                    ValueSqlPath = $"(\"Json\"-> 'list' ->> '{SqlLiteral(s.Name)}')"
                 }));
 
             return getModelFieldByParserTypeIdDtoList.OrderBy(o => o.Name);
@@ -483,49 +486,49 @@ namespace Jube.Data.Query
                 {
                     case 1:
                         getModelFieldByParserTypeIdDto.ValueSqlPath
-                            = $"(\"Json\"-> 'payload' ->> '{kvp.Key}')";
+                            = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(kvp.Key)}')";
                         getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "string";
                         getModelFieldByParserTypeIdDto.DataTypeId = 1;
 
                         break;
                     case 2:
                         getModelFieldByParserTypeIdDto.ValueSqlPath
-                            = $"(\"Json\"-> 'payload' ->> '{kvp.Key}')::int";
+                            = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(kvp.Key)}')::int";
                         getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "integer";
                         getModelFieldByParserTypeIdDto.DataTypeId = 2;
 
                         break;
                     case 3:
                         getModelFieldByParserTypeIdDto.ValueSqlPath
-                            = $"(\"Json\"-> 'payload' ->> '{kvp.Key}')::double precision";
+                            = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(kvp.Key)}')::double precision";
                         getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
                         getModelFieldByParserTypeIdDto.DataTypeId = 3;
 
                         break;
                     case 4:
                         getModelFieldByParserTypeIdDto.ValueSqlPath
-                            = $"(\"Json\"-> 'payload' ->> '{kvp.Key}')::timestamp";
+                            = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(kvp.Key)}')::timestamp";
                         getModelFieldByParserTypeIdDto.DataTypeId = 4;
                         getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "datetime";
 
                         break;
                     case 5:
                         getModelFieldByParserTypeIdDto.ValueSqlPath
-                            = $"(\"Json\"-> 'payload' ->> '{kvp.Key}')::boolean";
+                            = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(kvp.Key)}')::boolean";
                         getModelFieldByParserTypeIdDto.DataTypeId = 5;
                         getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "boolean";
 
                         break;
                     case 6:
                         getModelFieldByParserTypeIdDto.ValueSqlPath
-                            = $"(\"Json\"-> 'payload' ->> '{kvp.Key}')::double precision";
+                            = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(kvp.Key)}')::double precision";
                         getModelFieldByParserTypeIdDto.DataTypeId = 6;
                         getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
 
                         break;
                     case 7:
                         getModelFieldByParserTypeIdDto.ValueSqlPath
-                            = $"(\"Json\"-> 'payload' ->> '{kvp.Key}')::double precision";
+                            = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(kvp.Key)}')::double precision";
                         getModelFieldByParserTypeIdDto.DataTypeId = 7;
                         getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
 
@@ -536,6 +539,16 @@ namespace Jube.Data.Query
             }
 
             return listDto;
+        }
+
+        public static string SqlLiteral(string value)
+        {
+            return value?.Replace("'", "''");
+        }
+
+        public static string SqlJsonStringLiteral(string value)
+        {
+            return SqlLiteral(JsonSerializer.Serialize(value ?? string.Empty));
         }
 
         public class Dto

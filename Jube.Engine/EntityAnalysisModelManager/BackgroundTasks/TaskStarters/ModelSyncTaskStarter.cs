@@ -171,6 +171,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync()
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext.StartupModelAsync().ConfigureAwait(false);
+                                await entityAnalysisModelContext
+                                    .PersistEngineSnapshotAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
                                 context.EntityAnalysisModels.EntityModelsHasLoadedForStartup = true;
                             }
                             else

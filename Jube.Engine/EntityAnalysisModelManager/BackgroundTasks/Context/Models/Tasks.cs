@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Models
 {
     using System.Collections.Generic;
@@ -20,10 +22,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Models
     {
         // ReSharper disable once CollectionNeverQueried.Global
         public readonly List<Task> ArchiverTasks = [];
+
         // ReSharper disable once CollectionNeverQueried.Global
         public readonly List<Task> PersistToActivationWatcherPollingTasks = [];
+
         // ReSharper disable once CollectionNeverQueried.Global
         public readonly List<Task> ReprocessingAsyncTasks = [];
+
+        // ReSharper disable once CollectionNeverQueried.Global
+        public readonly List<Task> BacktestAsyncTasks = [];
         public Task ModelSyncTask { get; set; }
         public Task AbstractionRuleCachingTask { get; set; }
         public Task TtlCounterAdministrationTask { get; set; }

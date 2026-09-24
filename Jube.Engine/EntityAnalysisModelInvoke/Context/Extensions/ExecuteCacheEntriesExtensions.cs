@@ -29,6 +29,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         {
             var stopwatch = Stopwatch.StartNew();
 
+            if (context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId
+                .HasValue)
+            {
+                context.TraceLog($"is reprocessing, so the cache already holds this entry and is not written.");
+                return context;
+            }
+
             InsertOrReplaceCacheEntries(context, cacheService);
             UpsertCachePayloadLatest(context, cacheService, distinctSearchKeys);
 
@@ -74,35 +81,17 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             {
                 var reducedInternedPayload = ParseToReducedInternedPayload(context);
 
-                if (context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId
-                    .HasValue)
-                {
-                    context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
-                        TaskType.CachePayloadUpsertAsync, async () => await cacheService.CachePayloadRepository
-                            .UpsertAsync(
-                                context.EntityAnalysisModel.Instance.TenantRegistryId,
-                                context.EntityAnalysisModel.Instance.Guid,
-                                reducedInternedPayload,
-                                context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate,
-                                context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid)
-                            .ConfigureAwait(false), context.Log));
+                context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                    TaskType.CachePayloadInsertAsync, async () => await cacheService.CachePayloadRepository
+                        .InsertAsync(
+                            context.EntityAnalysisModel.Instance.TenantRegistryId,
+                            context.EntityAnalysisModel.Instance.Guid,
+                            reducedInternedPayload,
+                            context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate,
+                            context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid)
+                        .ConfigureAwait(false), context.Log));
 
-                    context.TraceLog($"has replaced the entity into the cache db serially.");
-                }
-                else
-                {
-                    context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
-                        TaskType.CachePayloadInsertAsync, async () => await cacheService.CachePayloadRepository
-                            .InsertAsync(
-                                context.EntityAnalysisModel.Instance.TenantRegistryId,
-                                context.EntityAnalysisModel.Instance.Guid,
-                                reducedInternedPayload,
-                                context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate,
-                                context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid)
-                            .ConfigureAwait(false), context.Log));
-
-                    context.TraceLog($"has inserted the entity into the cache db serially.");
-                }
+                context.TraceLog($"has inserted the entity into the cache db serially.");
             }
             else
             {

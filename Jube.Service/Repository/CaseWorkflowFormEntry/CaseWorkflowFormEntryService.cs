@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Validation;
 using Jube.Dto.Repository.CaseWorkflowFormEntry;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -295,6 +296,48 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
             {
                 op.Error(ex);
                 log.Error($"CaseWorkflowFormEntry.Insert: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates a Case Workflow Form Entry without saving it, running every check a create " +
+                     "would run, and returns each failure. Nothing is stored or changed.")]
+        [ServiceOperation("CaseWorkflowFormEntryValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Case Workflow Form Entry to validate.")]
+            CaseWorkflowFormEntryDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseWorkflowFormEntry", "Validate", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"CaseWorkflowFormEntry.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("CaseWorkflowFormEntry.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseWorkflowFormEntry.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }

@@ -109,7 +109,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionCalculation
             {
                 EntityAnalysisModelId = entityAnalysisModelId,
                 Name = name,
-                FunctionScript = "Matched = 1"
+                FunctionScript = "Return 1"
             };
         }
 
@@ -184,12 +184,12 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionCalculation
 
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
-            dto.FunctionScript = "Matched = 2";
+            dto.FunctionScript = "Return 2";
 
             var updated = await service.UpdateAsync(dto);
 
             updated.Version.Should().Be(2);
-            updated.FunctionScript.Should().Be("Matched = 2");
+            updated.FunctionScript.Should().Be("Return 2");
             updated.Guid.Should().Be(saved.Guid);
 
             var auditRows = await dbContext.GetTable<EntityAnalysisModelAbstractionCalculationVersion>()

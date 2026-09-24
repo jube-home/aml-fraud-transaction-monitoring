@@ -20,7 +20,7 @@ namespace Jube.Test.Dictionary.Fuzzy
     [Trait("Category", "Unit")]
     public sealed class FuzzyNormaliserTests
     {
-        private static readonly FuzzyNormalisation Default = FuzzyNormalisation.Default;
+        private static readonly FuzzyNormalisation @default = FuzzyNormalisation.Default;
 
         [Theory]
         [InlineData("John Smith", "john smith")]
@@ -37,7 +37,7 @@ namespace Jube.Test.Dictionary.Fuzzy
         [InlineData("Đorđe", "dorde")]
         public void DefaultNormalisationFoldsCaseDiacriticsAndPunctuation(string input, string expected)
         {
-            FuzzyNormaliser.Normalise(input, Default).Should().Be(expected);
+            FuzzyNormaliser.Normalise(input, @default).Should().Be(expected);
         }
 
         [Theory]
@@ -47,37 +47,37 @@ namespace Jube.Test.Dictionary.Fuzzy
         [InlineData("\t\n")]
         public void NullAndBlankInputNormaliseToEmpty(string? input)
         {
-            FuzzyNormaliser.Normalise(input, Default).Should().BeEmpty();
+            FuzzyNormaliser.Normalise(input, @default).Should().BeEmpty();
         }
 
         [Fact]
         public void PunctuationOnlyInputNormalisesToEmpty()
         {
-            FuzzyNormaliser.Normalise("-- .. //", Default).Should().BeEmpty();
+            FuzzyNormaliser.Normalise("-- .. //", @default).Should().BeEmpty();
         }
 
         [Fact]
         public void CaseCanBePreserved()
         {
-            FuzzyNormaliser.Normalise("John Smith", Default with { IgnoreCase = false }).Should().Be("John Smith");
+            FuzzyNormaliser.Normalise("John Smith", @default with { IgnoreCase = false }).Should().Be("John Smith");
         }
 
         [Fact]
         public void DiacriticsCanBePreserved()
         {
-            FuzzyNormaliser.Normalise("José", Default with { RemoveDiacritics = false }).Should().Be("josé");
+            FuzzyNormaliser.Normalise("José", @default with { RemoveDiacritics = false }).Should().Be("josé");
         }
 
         [Fact]
         public void PunctuationCanBePreserved()
         {
-            FuzzyNormaliser.Normalise("a-b.c", Default with { StripPunctuation = false }).Should().Be("a-b.c");
+            FuzzyNormaliser.Normalise("a-b.c", @default with { StripPunctuation = false }).Should().Be("a-b.c");
         }
 
         [Fact]
         public void SpacesCanBeRemovedEntirely()
         {
-            FuzzyNormaliser.Normalise("John  Smith", Default with { RemoveSpaces = true }).Should().Be("johnsmith");
+            FuzzyNormaliser.Normalise("John  Smith", @default with { RemoveSpaces = true }).Should().Be("johnsmith");
         }
 
         [Theory]
@@ -89,7 +89,7 @@ namespace Jube.Test.Dictionary.Fuzzy
         [InlineData("John Dr Smith", "john dr smith")]
         public void LeadingTitlesCanBeRemovedButNeverTheWholeName(string input, string expected)
         {
-            FuzzyNormaliser.Normalise(input, Default with { RemoveTitles = true }).Should().Be(expected);
+            FuzzyNormaliser.Normalise(input, @default with { RemoveTitles = true }).Should().Be(expected);
         }
 
         [Theory]
@@ -101,19 +101,19 @@ namespace Jube.Test.Dictionary.Fuzzy
         [InlineData("Acme GmbH", "acme")]
         public void TrailingCompanySuffixesCanBeRemovedButNeverTheWholeName(string input, string expected)
         {
-            FuzzyNormaliser.Normalise(input, Default with { RemoveCompanySuffixes = true }).Should().Be(expected);
+            FuzzyNormaliser.Normalise(input, @default with { RemoveCompanySuffixes = true }).Should().Be(expected);
         }
 
         [Fact]
         public void TitlesAndSuffixesAreNotRemovedUnlessAsked()
         {
-            FuzzyNormaliser.Normalise("Dr John Ltd", Default).Should().Be("dr john ltd");
+            FuzzyNormaliser.Normalise("Dr John Ltd", @default).Should().Be("dr john ltd");
         }
 
         [Fact]
         public void TitleRemovalIsCaseInsensitiveEvenWhenCaseIsPreserved()
         {
-            FuzzyNormaliser.Normalise("DR John", Default with { IgnoreCase = false, RemoveTitles = true })
+            FuzzyNormaliser.Normalise("DR John", @default with { IgnoreCase = false, RemoveTitles = true })
                 .Should().Be("John");
         }
 
@@ -122,13 +122,13 @@ namespace Jube.Test.Dictionary.Fuzzy
         {
             var signatures = new[]
             {
-                Default.Signature,
-                (Default with { IgnoreCase = false }).Signature,
-                (Default with { RemoveDiacritics = false }).Signature,
-                (Default with { StripPunctuation = false }).Signature,
-                (Default with { RemoveSpaces = true }).Signature,
-                (Default with { RemoveTitles = true }).Signature,
-                (Default with { RemoveCompanySuffixes = true }).Signature
+                @default.Signature,
+                (@default with { IgnoreCase = false }).Signature,
+                (@default with { RemoveDiacritics = false }).Signature,
+                (@default with { StripPunctuation = false }).Signature,
+                (@default with { RemoveSpaces = true }).Signature,
+                (@default with { RemoveTitles = true }).Signature,
+                (@default with { RemoveCompanySuffixes = true }).Signature
             };
 
             signatures.Should().OnlyHaveUniqueItems();
@@ -159,11 +159,11 @@ namespace Jube.Test.Dictionary.Fuzzy
         [Fact]
         public void NormalisationIsIdempotent()
         {
-            var once = FuzzyNormaliser.Normalise("  Dr. José O'Brien-Smith Ltd. ", Default with
+            var once = FuzzyNormaliser.Normalise("  Dr. José O'Brien-Smith Ltd. ", @default with
             {
                 RemoveTitles = true, RemoveCompanySuffixes = true
             });
-            var twice = FuzzyNormaliser.Normalise(once, Default with
+            var twice = FuzzyNormaliser.Normalise(once, @default with
             {
                 RemoveTitles = true, RemoveCompanySuffixes = true
             });

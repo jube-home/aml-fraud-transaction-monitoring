@@ -594,7 +594,7 @@ namespace Jube.Test.Engine.TtlCounter
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
             var batchExists = await dbContext.CacheTtlCounterEntryRemovalBatch
-                .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid, token: pumpCts.Token);
+                .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid, token: CancellationToken.None);
             batchExists.Should().BeFalse(
                 "the administration loop finds nothing expired for a Live Forever counter, so it never records " +
                 "a removal batch for it");
@@ -859,7 +859,7 @@ namespace Jube.Test.Engine.TtlCounter
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
             var batchExists = await dbContext.CacheTtlCounterEntryRemovalBatch
-                .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid, token: pumpCts.Token);
+                .AnyAsync(w => w.EntityAnalysisModelTtlCounterGuid == counter.Guid, token: CancellationToken.None);
             batchExists.Should().BeFalse("a model that was never started should never be processed at all");
         }
 

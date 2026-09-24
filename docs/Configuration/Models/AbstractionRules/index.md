@@ -6,26 +6,42 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
+🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
+Jube's developer — real sovereignty, zero vendor lock-in.
 
 # Abstraction Rules
-The Abstraction Rules page is where rules are created for the aggregation of data available in the cache database.  The Abstraction Rule functionality is one of the most intrinsic processes in the model invocation, being responsible for the creation of aggregate statistics based on the contents of the cache of transaction or event data retained. 
 
-The abstraction rules are grouped together by their search keys, which has the effect of only a single key value pair type query being looked up against the cache,  with compiled assemblies being executed for match against the in memory dataset.
+The Abstraction Rules page is where rules are created for the aggregation of data available in the cache database. The
+Abstraction Rule functionality is one of the most intrinsic processes in the model invocation, being responsible for the
+creation of aggregate statistics based on the contents of the cache of transaction or event data retained.
 
-A search key will be used as a predicate in retrieval of data for the subsequent execution of Abstraction rules that use roll up to that search key.  For example,  if a transaction is being processed through a model,  if an account identifier is configured to be a search key,  a selection of all records in the cache will be returned where that account identifier matches (put simply it will return all transactions for that customer account). Search Keys are defined in the Request XPath definition and there can be many search keys - thus cache database queries - per transaction being executed through the model.  The process is different when a Search Key is defined to be retrieved from a cache,  as these values are pre-calculated by the Search Key Cache thread.
+The abstraction rules are grouped together by their search keys, which has the effect of only a single key value pair
+type query being looked up against the cache, with compiled assemblies being executed for match against the in memory
+dataset.
 
-In the case of PostgresSQL being used as the cache for Abstraction Rule processing, only the columns that have been identified as being required in the Abstraction Rules definition (in both rule text and its aggregation key) will be selected from the database,  thus reducing casting and network IO.  The columns required and the SQL to be pushed down to the cache is compiled during model synchronisation for used in real-time processing.
+A search key will be used as a predicate in retrieval of data for the subsequent execution of Abstraction rules that use
+roll up to that search key. For example, if a transaction is being processed through a model, if an account identifier
+is configured to be a search key, a selection of all records in the cache will be returned where that account identifier
+matches (put simply it will return all transactions for that customer account). Search Keys are defined in the Request
+XPath definition and there can be many search keys - thus cache database queries - per transaction being executed
+through the model. The process is different when a Search Key is defined to be retrieved from a cache, as these values
+are pre-calculated by the Search Key Cache thread.
 
-Firstly,  Search Keys need to be set up - in this example IP - by revisiting the Request XPath page via Models >> References >> Request XPath:
+In the case of PostgresSQL being used as the cache for Abstraction Rule processing, only the columns that have been
+identified as being required in the Abstraction Rules definition (in both rule text and its aggregation key) will be
+selected from the database, thus reducing casting and network IO. The columns required and the SQL to be pushed down to
+the cache is compiled during model synchronisation for used in real-time processing.
+
+Firstly, Search Keys need to be set up - in this example IP - by revisiting the Request XPath page via Models >>
+References >> Request XPath:
 
 ![Image](TopOfTreeForRequestXPath.png)
 
-Expand on the model tree on the left hand side to expose all Request XPath for this model,  then click on IP:
+Expand on the model tree on the left hand side to expose all Request XPath for this model, then click on IP:
 
 ![Image](SelectedIPInRequestXPath.png)
 
-For the Request XPath,  toggle the switch titled Search Key:
+For the Request XPath, toggle the switch titled Search Key:
 
 ![Image](SwitchedSearchKeyOn.png)
 
@@ -33,7 +49,7 @@ Click the Update button towards the base of the page to update the version of th
 
 ![Image](UpdatedRequestXPathForIP.png)
 
-With a Search Key now being available for IP,  navigate through the menu as Models >> Abstraction >> Abstraction Rules:
+With a Search Key now being available for IP, navigate through the menu as Models >> Abstraction >> Abstraction Rules:
 
 ![Image](TopOfTreeForAbstractionRule.png)
 
@@ -41,14 +57,28 @@ Click on the model towards the left hand side to add an Abstraction Rule:
 
 ![Image](EmptyAbstractionRule.png)
 
-The Page exists to create Abstraction Rules which are VB.net code fragments that will be compiled by the engine.  Abstraction Rules accept data and TTL Counter objects and test the code fragment for equality,  returning a boolean flag to that effect. The name is required and limited to 256 characters, and must be unique within the Model. The Builder or Coder rule script (whichever surface is selected) is required and limited to 65,536 characters.
+The Page exists to create Abstraction Rules which are VB.net code fragments that will be compiled by the engine.
+Abstraction Rules accept data and TTL Counter objects and test the code fragment for equality, returning a boolean flag
+to that effect. The name is required and limited to 256 characters, and must be unique within the Model. The Builder or
+Coder rule script (whichever surface is selected) is required and limited to 65,536 characters.
+
+In the Builder, each condition is a field, an operator and its values. The operator drop-down lists every operator that
+suits the field's type, under headings: Basic (the builder's usual comparisons) first, then groups such as Text:
+validation, Text: model lists, Number: thresholds and limits, Date: calendar and Compare to another field, each in
+alphabetical order. Every test in the [Rule Pipeline Reference](../../../RuleTaxonomy/RulePipelineReference.html) is
+there, for example Is valid IBAN, In list, Starts with any in list, Is just below any threshold, Ratio of: above, Within
+hours of and Is weekend. Once an operator is chosen, the builder shows one box per value it takes, named after the
+value; a number or date value can also name a field, for example `TTLCounter.PerAccount`. The full list of operators and
+the rule text each produces is
+in [Rule and Code Builder](../../../Navigation/RuleBuilderAndCoder/index.html#builder-operators). The same operators are
+offered in every rule builder: Gateway, Abstraction, Activation and Reprocessing rules, and the backtest filters.
 
 The Builder and Coder exposes the following collections:
 
-| Value         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Payload       | The fields created in the Request XPath page, Inline Function and Inline Script (if registered).                                                                                                                                                                                                                                                                                                                                                                                       |
-| TTL Counters  | The TLL Counter and their current incremented values.                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Value        | Description                                                                                      |
+|--------------|--------------------------------------------------------------------------------------------------|
+| Payload      | The fields created in the Request XPath page, Inline Function and Inline Script (if registered). |
+| TTL Counters | The TLL Counter and their current incremented values.                                            |
 
 The available parameters are as follows:
 
@@ -63,9 +93,14 @@ The available parameters are as follows:
 | Function Type   | The process of aggregating the matches is different from the process of testing and matching the Abstraction Rules itself.  The process of aggregation takes place after all matching has take place and the transaction matches for the rule have been set aside.  The Function Type is the aggregation to perform and is extensively documented in the Abstraction Function Definitions of this document. For example,  if a Sum function is specified,  then the function will look to count up records using the Function Key field (e.g. Transaction Amount).                                                                                                                                                                  | Sum        |
 | Function Key    | The Function Key is available only on certain Function Types and represents the fields inside the transaction that are to be used for aggregation.  For example,  if the Sum Function Type is specified and the Function Key is specified as the Transaction Amount,  the aggregation will seek to create a Sum for all of the Transaction Amounts having matched.                                                                                                                                                                                                                                                                                                                                                                  | AmountUSD  |
 
-When Search is enabled, a Search Key, Search Interval (Seconds/Minutes/Hours/Days) and a recognised Function Type are required; the Function Key is additionally required unless the Function Type is Count. When Offset is enabled, the Offset Type must be one of First, Last, Skip First or Take Last, and the Offset Value cannot be negative.
+When Search is enabled, a Search Key, Search Interval (Seconds/Minutes/Hours/Days) and a recognised Function Type are
+required; the Function Key is additionally required unless the Function Type is Count. When Offset is enabled, the
+Offset Type must be one of First, Last, Skip First or Take Last, and the Offset Value cannot be negative.
 
-The first step of abstraction aggregation is to further filter the matches by the position (keeping in mind that the processing order will be ascending or earliest first).  The Skip and Fetch feature,  which is configured in the Abstraction Rules definition,  allows only a subsection of the matched records to be returned (e.g. only the last record or only the first record) to the array for which a function will be targeted.  The offsets types are as follows:
+The first step of abstraction aggregation is to further filter the matches by the position (keeping in mind that the
+processing order will be ascending or earliest first). The Skip and Fetch feature, which is configured in the
+Abstraction Rules definition, allows only a subsection of the matched records to be returned (e.g. only the last record
+or only the first record) to the array for which a function will be targeted. The offsets types are as follows:
 
 | Offset Type | Description                                                                                                                                                            | Skip                                                         | Fetch                                               |
 |-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|-----------------------------------------------------|
@@ -75,7 +110,10 @@ The first step of abstraction aggregation is to further filter the matches by th
 | Skip First  | All matches will be considered with the exception of the first (earliest) matches,  where the number of the oldest matches to exclude is the offset value.             | Matches Specified in the Offset Value.                       | All Matches with the exception of the Offset Value. |
 | Take Last   | All matches will be considered with the exception of the most recent (last or latest) matches,  where the number of the newest matches to exclude is the offset value. | All Matches with the exception of the Offset Value.          | Matches Specified in the Offset Value.              |
 
-With a final list of matches having been achieved,  potentially having been reduced by offsetting, the Abstraction Functions will be performed,  returning a single value from a variety of functions available. The model abstraction has many different types of calculation, that can be performed against abstraction rule matches. The following table details the aggregations available and describes its processing logic:
+With a final list of matches having been achieved, potentially having been reduced by offsetting, the Abstraction
+Functions will be performed, returning a single value from a variety of functions available. The model abstraction has
+many different types of calculation, that can be performed against abstraction rule matches. The following table details
+the aggregations available and describes its processing logic:
 
 | Value              | Description                                                                                                                                                                                                                                                                                                                                                                                                            |
 |--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -94,7 +132,8 @@ With a final list of matches having been achieved,  potentially having been redu
 | Min                | The smallest value observed in the offset matches taking a field value name for comparison.                                                                                                                                                                                                                                                                                                                            |
 | Since              | Taking the Interval Type,  the number of that interval between the most recent event and the first event observed in the matches.  The current date for reference is taken to be the most recent value observed in the matches.  The comparison is made against the earliest date observed. The value return depends upon the Interval Type specified in the function Second, Hours, Minutes and Days.                 |
 
-Complete the page with the parameters as prescribed above, setting a rule to match on everything as AmountUSD is greater than 0:
+Complete the page with the parameters as prescribed above, setting a rule to match on everything as AmountUSD is greater
+than 0:
 
 ![Image](ExampleValuesForVolumeRuleOnAmountUSD.png)
 
@@ -102,12 +141,30 @@ Click the Add button to create a version of this Abstraction Rule:
 
 ![Image](AddedAbstractionRuleForVolume.png)
 
-Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc) for response as follows:
+Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to
+endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
+for response as follows:
 
 ![Image](ResponsePayloadWithVolume.png)
 
-It can be seen that the sum of all events in the last day has been aggregated, and this will increase on each event,  in the following example:
+It can be seen that the sum of all events in the last day has been aggregated, and this will increase on each event, in
+the following example:
 
 ![Image](FurtherIncrement.png)
 
 This value is available for subsequent Activation Rules and crucially, as a variable for machine learning.
+
+## The search window
+
+The window an abstraction rule aggregates over ends at the Reference Date of the transaction being processed and
+reaches back by the Search Interval and Search Value. The Search Key's own TTL Interval, set on the Request XPath page,
+can shorten it: the window starts at the later of the rule's interval and the search key's TTL, counted back from the
+Reference Date. The engine does this silently, so a rule counting over the last 30 days on a search key whose history
+is kept for 7 days counts over 7 days. A search key with no TTL set keeps no history for the window, which collapses to
+the Reference Date itself. [Model Integrity](../ModelIntegrity/index.html) reports both cases.
+
+The history is fetched from the cache for the search key's value before the window is applied, up to the lower of the
+model's Cache Fetch Limit and the search key's Fetch Limit. When that limit is reached, older transactions that fall
+inside the window are not considered. The transaction being processed is added to the fetched history before the rule
+is tested, so it counts towards its own aggregation. A search key retrieved from a cache (Search Key: Cache) does not
+fetch history for each transaction; the value calculated in the background by the Search Key Cache thread is used.

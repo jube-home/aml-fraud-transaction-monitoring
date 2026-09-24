@@ -14,6 +14,8 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Filter;
+using Jube.Dto.Validation;
 using Jube.Dto.Repository.CaseWorkflowStatus;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -188,6 +190,145 @@ namespace Jube.Service.Repository.CaseWorkflowStatus
             {
                 op.Error(ex);
                 log.Error($"CaseWorkflowStatus.List: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Lists the fields a query builder JSON filter over Case Workflow Statuses " +
+                     "may use, with each field's type, the operators allowed for it and what it " +
+                     "means. Use them as rule ids in CaseWorkflowStatusFilter and " +
+                     "CaseWorkflowStatusCount.")]
+        [ServiceOperation("CaseWorkflowStatusFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseWorkflowStatus", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"CaseWorkflowStatus.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("CaseWorkflowStatus.FilterFields", permissions);
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<CaseWorkflowStatusDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseWorkflowStatus.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Case Workflow Statuses in the caller's tenant matching query " +
+                     "builder JSON (the same format as the rule builder, over the fields from " +
+                     "CaseWorkflowStatusFilterFields), ordered by id and capped at 'take' rows " +
+                     "(max 200). If 'more' is true, call again with 'afterId' set to the last " +
+                     "returned Id to continue. Invalid JSON is not an error: Valid is false and " +
+                     "Errors gives each problem with its JSON path.")]
+        [ServiceOperation("CaseWorkflowStatusFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<CaseWorkflowStatusDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Case Workflow Statuses, using the fields from CaseWorkflowStatusFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseWorkflowStatus", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"CaseWorkflowStatus.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("CaseWorkflowStatus.Filter", permissions);
+                var rows = CaseWorkflowStatusMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseWorkflowStatus.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Case Workflow Statuses in the caller's tenant matching query " +
+                     "builder JSON (over the fields from CaseWorkflowStatusFilterFields; empty " +
+                     "counts all), optionally broken down by the values of one field. Invalid " +
+                     "JSON is not an error: Valid is false and Errors gives each problem with " +
+                     "its JSON path.")]
+        [ServiceOperation("CaseWorkflowStatusCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Case Workflow Statuses, using the fields from CaseWorkflowStatusFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from CaseWorkflowStatusFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseWorkflowStatus", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"CaseWorkflowStatus.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("CaseWorkflowStatus.Count", permissions);
+                var rows = CaseWorkflowStatusMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseWorkflowStatus.Count: unexpected failure user={userName}", ex);
                 throw;
             }
         }
@@ -494,6 +635,49 @@ namespace Jube.Service.Repository.CaseWorkflowStatus
             {
                 op.Error(ex);
                 log.Error($"CaseWorkflowStatus.Insert: unexpected failure user={userName} name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates a Case Workflow Status without saving it, running every check a create (Id 0) " +
+                     "or an update (any other Id) would run, and returns each failure. Nothing is stored or " +
+                     "changed.")]
+        [ServiceOperation("CaseWorkflowStatusValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Case Workflow Status to validate.")]
+            CaseWorkflowStatusDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseWorkflowStatus", "Validate", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"CaseWorkflowStatus.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("CaseWorkflowStatus.Validate", permissions);
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseWorkflowStatus.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }

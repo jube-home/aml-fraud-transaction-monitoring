@@ -18,6 +18,7 @@ namespace Jube.Parser
     public class ParsedRule
     {
         public readonly Dictionary<string, SelectedPayloadData> SelectedPayloadData = [];
+        public readonly List<RuleReference> References = [];
         public int CharOffset;
         public List<ErrorSpan> ErrorSpans;
         public int LineOffset;

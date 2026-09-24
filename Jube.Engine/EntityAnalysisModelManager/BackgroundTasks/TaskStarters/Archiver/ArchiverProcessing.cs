@@ -111,7 +111,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
 
                 var archiveStopwatch = Stopwatch.StartNew();
 
-                if (payload.EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
+                if (payload.ReprocessingArchiveBatch != null)
+                {
+                    payload.ReprocessingArchiveBatch.Add(payload, jsonString);
+                }
+                else if (payload.EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
                 {
                     await ArchiverArchiveRepository
                         .UpdateArchiveAsync(payload, jsonString, dynamicEnvironment, log, token)
@@ -145,6 +149,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 log.Error($"Database Persist: General exception in processing {ex}.");
+
+                if (payload.EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
+                {
+                    throw;
+                }
             }
             finally
             {

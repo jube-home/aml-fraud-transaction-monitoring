@@ -22,7 +22,16 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisInlineScriptList", OperationKind.Read, true, false,
                     "Lists registered Inline Scripts from the system-wide catalogue, keyset-paged and capped. " +
-                    "Not tenant-scoped.")
+                    "Not tenant-scoped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisInlineScriptFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Entity Analysis Inline Scripts may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisInlineScriptFilter", OperationKind.Read, true, false,
+                    "Returns the Entity Analysis Inline Scripts matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisInlineScriptCount", OperationKind.Read, true, false,
+                    "Counts the Entity Analysis Inline Scripts matching query builder JSON, optionally grouped by a field.")
             ]);
         }
     }

@@ -17,12 +17,23 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
     {
         static partial void AddSanctionEntrySource(List<ServiceToolDescriptor> tools)
         {
-            tools.Add(
+            tools.AddRange(
+            [
                 new ServiceToolDescriptor(
                     "SanctionEntrySourceList", OperationKind.Read, true, false,
                     "Lists the configured Sanction Entry Sources (e.g. SDN, BOE, EU) the Sanctions Loader can poll " +
                     "or manually import from, each identified by Id and Name. Landlord-only. Capped at 'take' " +
-                    "rows (max 200); use 'afterId' to page."));
+                    "rows (max 200); use 'afterId' to page."),
+                new ServiceToolDescriptor(
+                    "SanctionEntrySourceFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Sanction Entry Sources may use."),
+                new ServiceToolDescriptor(
+                    "SanctionEntrySourceFilter", OperationKind.Read, true, false,
+                    "Returns the Sanction Entry Sources matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "SanctionEntrySourceCount", OperationKind.Read, true, false,
+                    "Counts the Sanction Entry Sources matching query builder JSON, optionally grouped by a field.")
+            ]);
         }
     }
 }

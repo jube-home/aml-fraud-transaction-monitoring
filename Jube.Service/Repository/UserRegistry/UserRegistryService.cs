@@ -14,6 +14,8 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Filter;
+using Jube.Dto.Validation;
 using Jube.Dto.Repository.UserRegistry;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -326,6 +328,143 @@ namespace Jube.Service.Repository.UserRegistry
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over User Registrys may use, " +
+                     "with each field's type, the operators allowed for it and what it means. " +
+                     "Use them as rule ids in UserRegistryFilter and UserRegistryCount.")]
+        [ServiceOperation("UserRegistryFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("UserRegistry", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"UserRegistry.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("UserRegistry.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<UserRegistryDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"UserRegistry.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the User Registrys in the caller's tenant matching query builder " +
+                     "JSON (the same format as the rule builder, over the fields from " +
+                     "UserRegistryFilterFields), ordered by id and capped at 'take' rows (max " +
+                     "200). If 'more' is true, call again with 'afterId' set to the last " +
+                     "returned Id to continue. Invalid JSON is not an error: Valid is false and " +
+                     "Errors gives each problem with its JSON path.")]
+        [ServiceOperation("UserRegistryFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<UserRegistryDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the User Registrys, using the fields from UserRegistryFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("UserRegistry", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"UserRegistry.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("UserRegistry.Filter");
+                var rows = UserRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"UserRegistry.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the User Registrys in the caller's tenant matching query builder " +
+                     "JSON (over the fields from UserRegistryFilterFields; empty counts all), " +
+                     "optionally broken down by the values of one field. Invalid JSON is not an " +
+                     "error: Valid is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("UserRegistryCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the User Registrys, using the fields from UserRegistryFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from UserRegistryFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("UserRegistry", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"UserRegistry.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("UserRegistry.Count");
+                var rows = UserRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"UserRegistry.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Registers a new user account under a Role Registry in the caller's tenant. Not idempotent " +
                      "-- calling twice creates two rows. The account has no usable password until a password " +
                      "reset is performed.")]
@@ -402,6 +541,48 @@ namespace Jube.Service.Repository.UserRegistry
             {
                 op.Error(ex);
                 log.Error($"UserRegistry.Create: unexpected failure user={userName} name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates an User Registry without saving it, running every check a create (Id 0) or an " +
+                     "update (any other Id) would run, and returns each failure. Nothing is stored or changed.")]
+        [ServiceOperation("UserRegistryValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The User Registry to validate.")]
+            UserRegistryDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("UserRegistry", "Validate", userName, tenantRegistryId, auditLog, log,
+                serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"UserRegistry.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("UserRegistry.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"UserRegistry.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }

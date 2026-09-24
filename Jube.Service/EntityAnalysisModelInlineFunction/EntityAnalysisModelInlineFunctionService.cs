@@ -12,8 +12,14 @@
  */
 
 using System.ComponentModel;
+using FluentValidation;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Parser;
+using Jube.Dto.Filter;
+using Jube.Dto.RuleExecution;
+using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelInlineFunction;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -21,7 +27,10 @@ using Jube.Service.Exceptions.EntityAnalysisModelInlineFunction;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using Jube.Parser.Dependency;
+using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelInlineFunction;
+using Jube.Validations.RuleScript;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -36,6 +45,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         private static readonly int[] readPermissions = [8];
         private static readonly int[] writePermissions = [8];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelInlineFunctionRepository repository;
@@ -43,12 +53,14 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelInlineFunctionDtoValidator validator;
 
         private EntityAnalysisModelInlineFunctionService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            IStringLocalizer strings, IStringLocalizer dependencyStrings)
         {
+            this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -58,7 +70,10 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelInlineFunctionRepository(dbContext, userName);
             validator = new EntityAnalysisModelInlineFunctionDtoValidator(repository, strings,
-                new EntityAnalysisModelRepository(dbContext, userName));
+                new EntityAnalysisModelRepository(dbContext, userName),
+                new RuleScriptParser(dbContext, tenantRegistryId));
+            deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
+                dependencyStrings);
         }
 
         public static Task<EntityAnalysisModelInlineFunctionService> CreateAsync(DbContext dbContext,
@@ -74,6 +89,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelInlineFunctionResources));
+            var dependencyStrings = stringLocalizerFactory.Create(typeof(ModelDependencyResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -105,7 +121,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelInlineFunctionService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, dependencyStrings);
         }
 
         [Description("Lists every Inline Function visible to the calling user's tenant. Unbounded -- intended for " +
@@ -327,6 +343,148 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Inline Functions may " +
+                     "use, with each field's type, the operators allowed for it and what it " +
+                     "means. Use them as rule ids in EntityAnalysisModelInlineFunctionFilter " +
+                     "and EntityAnalysisModelInlineFunctionCount.")]
+        [ServiceOperation("EntityAnalysisModelInlineFunctionFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineFunction.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelInlineFunction.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelInlineFunctionDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineFunction.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Inline Functions in the caller's tenant matching query " +
+                     "builder JSON (the same format as the rule builder, over the fields from " +
+                     "EntityAnalysisModelInlineFunctionFilterFields), ordered by id and capped " +
+                     "at 'take' rows (max 200). If 'more' is true, call again with 'afterId' " +
+                     "set to the last returned Id to continue. Invalid JSON is not an error: " +
+                     "Valid is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelInlineFunctionFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelInlineFunctionDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Inline Functions, using the fields from EntityAnalysisModelInlineFunctionFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelInlineFunction.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelInlineFunction.Filter");
+                var rows = EntityAnalysisModelInlineFunctionMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineFunction.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Inline Functions in the caller's tenant matching query builder " +
+                     "JSON (over the fields from EntityAnalysisModelInlineFunctionFilterFields; " +
+                     "empty counts all), optionally broken down by the values of one field. " +
+                     "Invalid JSON is not an error: Valid is false and Errors gives each " +
+                     "problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelInlineFunctionCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Inline Functions, using the fields from EntityAnalysisModelInlineFunctionFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelInlineFunctionFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineFunction.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelInlineFunction.Count");
+                var rows = EntityAnalysisModelInlineFunctionMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineFunction.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Creates a new Inline Function under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelInlineFunctionCreate", OperationKind.Write, Idempotent = false)]
@@ -399,6 +557,148 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelInlineFunction.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates an Inline Function without saving it, running every check a create (Id 0) or " +
+                     "an update (any other Id) would run, and returns each failure. Nothing is stored or " +
+                     "changed.")]
+        [ServiceOperation("EntityAnalysisModelInlineFunctionValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Inline Function to validate.")]
+            EntityAnalysisModelInlineFunctionDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineFunction.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelInlineFunction.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineFunction.Validate: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Parses and compiles the rule text of an Inline Function against its Entity Analysis Model " +
+                     "as the engine would, without saving anything, and returns each error with its line " +
+                     "and position in the rule text. Cheaper than a full validation; use it to iterate on " +
+                     "rule text.")]
+        [ServiceOperation("EntityAnalysisModelInlineFunctionParseRule", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ParseRuleAsync(
+            [Description(
+                "The Inline Function whose rule text is parsed; only the model id, the rule script type and the " +
+                "rule text are read.")]
+            EntityAnalysisModelInlineFunctionDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "ParseRule", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineFunction.ParseRule: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelInlineFunction.ParseRule");
+
+                var results = await validator.ValidateAsync(model,
+                    o => o.IncludeRuleSets(RuleScriptParser.RuleSetName), token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineFunction.ParseRule: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Runs an Inline Function against an invocation context exactly as the engine would compile and " +
+                     "call it, without saving the rule or storing anything, and returns the result, any runtime " +
+                     "error, how long it took and which names it read, flagging any the context leaves unset. " +
+                     "Build the context with the EntityAnalysisModelInvocationContext operations.")]
+        [ServiceOperation("EntityAnalysisModelInlineFunctionExecute", OperationKind.Read, Idempotent = true)]
+        public async Task<RuleExecutionResultDto> ExecuteAsync(
+            [Description(
+                "The Inline Function to run; only the model id, the rule script type and the rule text are read.")]
+            EntityAnalysisModelInlineFunctionDto? model,
+            [Description("The invocation context to run it against, built for the same model.")]
+            InvocationContextDto? context,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineFunction", "Execute", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineFunction.Execute: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                ArgumentNullException.ThrowIfNull(context);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelInlineFunction.Execute");
+
+                var result = await RuleExecutor.ExecuteAsync(dbContext, tenantRegistryId,
+                    model.EntityAnalysisModelId, RuleParse.InlineFunction,
+                    model.FunctionScript,
+                    "FunctionScript",
+                    null, false, context, token).ConfigureAwait(false);
+                op.Rows(result.Errors.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineFunction.Execute: unexpected failure user={userName}", ex);
                 throw;
             }
         }
@@ -523,6 +823,21 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
 
                 try
                 {
+                    var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+                    if (existing != null)
+                    {
+                        var dependents = await deleteValidator
+                            .ValidateAsync(
+                                new ModelEntityDelete(ModelEntityKind.InlineFunction, id,
+                                    existing.EntityAnalysisModelId),
+                                token)
+                            .ConfigureAwait(false);
+                        if (!dependents.IsValid)
+                        {
+                            throw new DtoValidationException(dependents);
+                        }
+                    }
+
                     await repository.DeleteAsync(id, token).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
@@ -547,6 +862,11 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
                 throw;
             }
             catch (NotFoundException)

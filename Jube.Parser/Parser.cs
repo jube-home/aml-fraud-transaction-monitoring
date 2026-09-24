@@ -26,6 +26,7 @@ namespace Jube.Parser
     {
         private readonly ILog log;
         private readonly List<string> ruleScriptTokens;
+        public IReadOnlyList<string> RuleScriptTokens => ruleScriptTokens;
         public List<string> EntityAnalysisModelAbstractionCalculations;
         public Dictionary<string, int> EntityAnalysisModelInlineScriptProperties;
         public Dictionary<string, EntityAnalysisModelRequestXPath> EntityAnalysisModelRequestXPaths;
@@ -119,6 +120,16 @@ namespace Jube.Parser
             if (!this.ruleScriptTokens.Contains("Contains"))
             {
                 this.ruleScriptTokens.Add("Contains");
+            }
+
+            if (!this.ruleScriptTokens.Contains("StartsWith"))
+            {
+                this.ruleScriptTokens.Add("StartsWith");
+            }
+
+            if (!this.ruleScriptTokens.Contains("EndsWith"))
+            {
+                this.ruleScriptTokens.Add("EndsWith");
             }
 
             if (!this.ruleScriptTokens.Contains("Sanctions"))
@@ -1120,6 +1131,8 @@ namespace Jube.Parser
                     {
                         continue;
                     }
+
+                    RuleReference.TryAdd(parsedRule.References, elements[0], elements[1], i);
 
                     if (!dictionaryFindReplace.ContainsKey(findString))
                     {

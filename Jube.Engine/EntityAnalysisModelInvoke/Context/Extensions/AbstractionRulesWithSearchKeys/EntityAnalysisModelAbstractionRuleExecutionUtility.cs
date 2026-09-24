@@ -23,7 +23,6 @@ using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelIn
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using log4net;
-using Microsoft.VisualBasic;
 using StackExchange.Redis;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys
@@ -146,18 +145,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
 
         private DateTime GetFromDate(EntityAnalysisModelAbstractionRule evaluateAbstractionRule)
         {
-            var fromDateModel = DateAndTime.DateAdd(
-                evaluateAbstractionRule.AbstractionRuleAggregationFunctionIntervalType,
-                evaluateAbstractionRule.AbstractionHistoryIntervalValue * -1,
-                EntityAnalysisModelInstanceEntryPayload.ReferenceDate);
-
-            var fromDatSearchKey = DateAndTime.DateAdd(
-                DistinctSearchKey.SearchKeyTtlInterval,
-                DistinctSearchKey.SearchKeyTtlIntervalValue * -1,
-                EntityAnalysisModelInstanceEntryPayload.ReferenceDate);
-
-            var fromDate = fromDatSearchKey > fromDateModel ? fromDatSearchKey : fromDateModel;
-            return fromDate;
+            return AbstractionWindow.FromDate(evaluateAbstractionRule.AbstractionRuleAggregationFunctionIntervalType,
+                evaluateAbstractionRule.AbstractionHistoryIntervalValue, DistinctSearchKey.SearchKeyTtlInterval,
+                DistinctSearchKey.SearchKeyTtlIntervalValue, EntityAnalysisModelInstanceEntryPayload.ReferenceDate);
         }
     }
 }

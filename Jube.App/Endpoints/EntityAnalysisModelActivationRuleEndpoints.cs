@@ -33,7 +33,7 @@ namespace Jube.App.Endpoints
     public static class EntityAnalysisModelActivationRuleEndpoints
     {
         private const string Base = "/api/EntityAnalysisModelActivationRule";
-        
+
         public static void MapEntityAnalysisModelActivationRuleEndpoints(this IEndpointRouteBuilder endpoints)
         {
             var group = endpoints.MapGroup(Base)
@@ -430,6 +430,15 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.Forbid();
             }
+            catch (DtoValidationException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"DELETE {Base}/{id}: 400 user={user} errors={ex.Result.Errors.Count}");
+                }
+
+                return TypedResults.BadRequest(ex.Result);
+            }
             catch (NotFoundException)
             {
                 if (log.IsWarnEnabled)
@@ -517,7 +526,7 @@ namespace Jube.App.Endpoints
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
-        
+
         private static IResult ApprovalDenied(ReviewStatusApprovalException ex)
         {
             return TypedResults.BadRequest(new

@@ -1243,6 +1243,12 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelSanctionEndpoints();
                     endpoints.MapEntityAnalysisModelTagEndpoints();
                     endpoints.MapEntityAnalysisModelStagePerformanceCounterEndpoints();
+                    endpoints.MapEntityAnalysisModelIntegrityEndpoints();
+                    endpoints.MapQueryBuilderEndpoints();
+                    endpoints.MapEntityAnalysisModelEngineStateEndpoints();
+                    endpoints.MapEntityAnalysisModelDependencyGraphEndpoints();
+                    endpoints.MapEntityAnalysisModelDependencyEndpoints();
+                    endpoints.MapEntityAnalysisModelBacktestEndpoints();
                     endpoints.MapEntityAnalysisModelResponseTimePipelineCounterEndpoints();
                     endpoints.MapEntityAnalysisModelTaskPerformanceCounterEndpoints();
                     endpoints.MapApplicationLogEntryEndpoints();

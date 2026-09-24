@@ -29,7 +29,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
     public static class TtlCounterExtensions
     {
-        internal static DateTime ApplyTtlCounterInterval(DateTime referenceDate, string interval, int intervalValue)
+        public static DateTime ApplyTtlCounterInterval(DateTime referenceDate, string interval, int intervalValue)
         {
             return interval switch
             {

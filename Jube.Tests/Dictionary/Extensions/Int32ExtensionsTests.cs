@@ -454,6 +454,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(123, 6)]
         [InlineData(-123, 6)]
         [InlineData(9999, 36)]
+        [InlineData(int.MinValue, 47)]
         public void DigitSumAddsTheAbsoluteDigits(int input, int expected)
         {
             input.DigitSum().Should().Be(expected);

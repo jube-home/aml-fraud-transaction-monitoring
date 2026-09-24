@@ -15,7 +15,9 @@ using System.Text.RegularExpressions;
 using FluentValidation;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelActivationRule;
+using Jube.Parser;
 using Jube.Resources;
+using Jube.Validations.RuleScript;
 using Microsoft.Extensions.Localization;
 
 namespace Jube.Validations.EntityAnalysisModelActivationRule
@@ -34,7 +36,8 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
         private static readonly char[] allowedBypassSuspendIntervals = ['n', 'h', 'd', 'm'];
 
         public EntityAnalysisModelActivationRuleDtoValidator(EntityAnalysisModelActivationRuleRepository repository,
-            IStringLocalizer localiser)
+            IStringLocalizer localiser,
+            RuleScriptParser? ruleScriptParser = null)
         {
             Include(new FiniteNumberValidator<EntityAnalysisModelActivationRuleDto>());
 
@@ -271,6 +274,18 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 .GreaterThanOrEqualTo(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.PriorityRange])
                 .WithErrorCode("PriorityRange");
+
+            if (ruleScriptParser != null)
+            {
+                RuleSet(RuleScriptParser.SaveRuleSets, () =>
+                {
+                    RuleFor(p => p).CustomAsync((dto, context, token) => ruleScriptParser.ValidateAsync(context,
+                        dto.EntityAnalysisModelId, RuleParse.ActivationRule,
+                        dto.RuleScriptTypeId == 1 ? dto.BuilderRuleScript : dto.CoderRuleScript,
+                        dto.RuleScriptTypeId == 1 ? "BuilderRuleScript" : "CoderRuleScript",
+                        null, token));
+                });
+            }
         }
 
         [GeneratedRegex("^#[0-9A-Fa-f]{6}$")]

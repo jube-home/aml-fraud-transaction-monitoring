@@ -284,8 +284,8 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(7)] public DateTime? KeyValueDate { get; set; }
         [Column] [Nullable] [Key(8)] public long? KeyValueLong { get; set; }
         [Column] [Nullable] [Key(9)] public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
-        [Key(10)] public int? Version { get; set; }
-        [Key(11)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
+        [Column] [Nullable] [Key(10)] public int? Version { get; set; }
+        [Column] [Nullable] [Key(11)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
         [Key(12)] public byte? Deleted { get; set; }
         [Key(13)] public DateTime? DeletedDate { get; set; }
     }
@@ -310,8 +310,8 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(8)] public DateTime? KeyValueDate { get; set; }
         [Column] [Nullable] [Key(9)] public long? KeyValueLong { get; set; }
         [Column] [Nullable] [Key(10)] public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
-        [Key(11)] public int? Version { get; set; }
-        [Key(12)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
+        [Column] [Nullable] [Key(11)] public int? Version { get; set; }
+        [Column] [Nullable] [Key(12)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
     }
 
     [Table]
@@ -2151,7 +2151,9 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(1)] public int? EntityAnalysisModelAbstractionCalculationId { get; set; }
         [Column] [Nullable] [Key(2)] public int? EntityAnalysisModelId { get; set; }
+
         [Column] [Nullable] [Key(3)] public string Name { get; set; }
+
         // DEPRECATED: not mapped, the column remains in the database. Key(4) is reserved and available for reuse
         // by another string property. Never renumber the keys that follow.
         // [Column] [Nullable] [Key(4)] public string EntityAnalysisModelAbstractionNameLeft { get; set; }
@@ -2167,7 +2169,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(12)] public string DeletedUser { get; set; }
         [Column] [Nullable] [Key(13)] public int? Version { get; set; }
         [Column] [Nullable] [Key(14)] public int? InheritedId { get; set; }
+
         [Column] [Nullable] [Key(15)] public byte? ResponsePayload { get; set; }
+
         // DEPRECATED: not mapped, the column remains in the database. Key(16) is reserved and available for reuse
         // by another int? property. Never renumber the keys that follow.
         // [Column] [Nullable] [Key(16)] public int? AbstractionCalculationTypeId { get; set; }
@@ -2187,7 +2191,9 @@ namespace Jube.Data.Poco
         public int Id { get; set; }
 
         [Column] [Nullable] [Key(1)] public int? EntityAnalysisModelId { get; set; }
+
         [Column] [Nullable] [Key(2)] public string Name { get; set; }
+
         // DEPRECATED: not mapped, the column remains in the database. Key(3) is reserved and available for reuse
         // by another string property. Never renumber the keys that follow.
         // [Column] [Nullable] [Key(3)] public string EntityAnalysisModelAbstractionNameLeft { get; set; }
@@ -2203,7 +2209,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(11)] public string DeletedUser { get; set; }
         [Column] [Nullable] [Key(12)] public int? Version { get; set; }
         [Column] [Nullable] [Key(13)] public int? InheritedId { get; set; }
+
         [Column] [Nullable] [Key(14)] public byte? ResponsePayload { get; set; }
+
         // DEPRECATED: not mapped, the column remains in the database. Key(15) is reserved and available for reuse
         // by another int? property. Never renumber the keys that follow.
         // [Column] [Nullable] [Key(15)] public int? AbstractionCalculationTypeId { get; set; }
@@ -3814,6 +3822,73 @@ namespace Jube.Data.Poco
 
     [Table]
     [MessagePackObject]
+    public class EntityAnalysisModelBacktestInstance
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Key(1)] public Guid Guid { get; set; }
+        [Column] [Key(2)] public int TenantRegistryId { get; set; }
+        [Column] [Key(3)] public int EntityAnalysisModelId { get; set; }
+        [Column] [Key(4)] public string RuleType { get; set; }
+        [Column] [Nullable] [Key(5)] public int? RuleId { get; set; }
+
+        [Column]
+        [DataType(DataType.BinaryJson)]
+        [Key(6)]
+        public string Request { get; set; }
+
+        [Column] [Key(7)] public short Status { get; set; }
+        [Column] [Key(8)] public long Scanned { get; set; }
+        [Column] [Key(9)] public long Evaluated { get; set; }
+        [Column] [Key(10)] public double Progress { get; set; }
+
+        [Column]
+        [DataType(DataType.BinaryJson)]
+        [Nullable]
+        [Key(11)]
+        public string Result { get; set; }
+
+        [Column] [Nullable] [Key(12)] public string Error { get; set; }
+        [Column] [Key(13)] public DateTime CreatedDate { get; set; }
+        [Column] [Nullable] [Key(14)] public string CreatedUser { get; set; }
+        [Column] [Nullable] [Key(15)] public DateTime? StartedDate { get; set; }
+        [Column] [Nullable] [Key(16)] public DateTime? CompletedDate { get; set; }
+        [Column] [Nullable] [Key(17)] public DateTime? HeartbeatDate { get; set; }
+        [Column] [Nullable] [Key(18)] public string ClaimedBy { get; set; }
+        [Column] [Nullable] [Key(19)] public DateTime? ClaimedDate { get; set; }
+        [Column] [Key(20)] public short Deleted { get; set; }
+        [Column] [Nullable] [Key(21)] public DateTime? DeletedDate { get; set; }
+        [Column] [Nullable] [Key(22)] public string DeletedUser { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class EntityAnalysisModelEngineSnapshot
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Key(1)] public string Instance { get; set; }
+        [Column] [Key(2)] public int TenantRegistryId { get; set; }
+        [Column] [Key(3)] public int EntityAnalysisModelId { get; set; }
+
+        [Column]
+        [DataType(DataType.BinaryJson)]
+        [Key(4)]
+        public string Json { get; set; }
+
+        [Column] [Key(5)] public DateTime CreatedDate { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
     public class EntityAnalysisModelSynchronisationSchedule
     {
         [Column]
@@ -4783,8 +4858,8 @@ namespace Jube.Data.Poco
         [Key(10)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 
-        [Key(11)] public int? Version { get; set; }
-        [Key(12)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
+        [Column] [Nullable] [Key(11)] public int? Version { get; set; }
+        [Column] [Nullable] [Key(12)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
     }
 
     [Table]
@@ -4818,8 +4893,8 @@ namespace Jube.Data.Poco
         [Key(11)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 
-        [Key(12)] public int? Version { get; set; }
-        [Key(13)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
+        [Column] [Nullable] [Key(12)] public int? Version { get; set; }
+        [Column] [Nullable] [Key(13)] public int? EntityAnalysisModelsReprocessingRuleInstanceId { get; set; }
     }
 
     [Table]
@@ -6128,7 +6203,12 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(1)] public DateTime? OccurredDate { get; set; }
         [Column] [Nullable] [Key(2)] public string Target { get; set; }
-        [Column(Name = "HAProxyAddress")] [Nullable] [Key(3)] public string HaProxyAddress { get; set; }
+
+        [Column(Name = "HAProxyAddress")]
+        [Nullable]
+        [Key(3)]
+        public string HaProxyAddress { get; set; }
+
         [Column] [Nullable] [Key(4)] public bool? Success { get; set; }
         [Column] [Nullable] [Key(5)] public long? ConnectMicroseconds { get; set; }
         [Column] [Nullable] [Key(6)] public int? HttpStatusCode { get; set; }

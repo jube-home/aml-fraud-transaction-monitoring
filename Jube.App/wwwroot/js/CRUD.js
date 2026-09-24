@@ -135,20 +135,19 @@ function AddTemplateElements(data, keyName, parentKeyName) {
     return data;
 }
 
-function DisplayServerValidationErrors(responseObject) {
+function DisplayServerValidationErrors(responseObject, title = "Validation Errors:", highlightFields = true) {
     const $errorContainer = components.errorMessage;
     $errorContainer.empty();
 
-    const $container = $(`
-        <div class="server-error-box">
-            <div class="server-error-title">Validation Errors:</div>
-        </div>
-    `);
+    const $container = $('<div class="server-error-box"></div>')
+        .append($('<div class="server-error-title"></div>').text(title));
 
     if (responseObject.errors) {
         Object.values(responseObject.errors).forEach(e => {
-            $container.append(`<div class="server-error-line">${e.errorMessage}</div>`);
-            highlightFieldError(e.propertyName, e.errorMessage);
+            $container.append($('<div class="server-error-line"></div>').text(e.errorMessage));
+            if (highlightFields) {
+                highlightFieldError(e.propertyName, e.errorMessage);
+            }
         });
     }
 
@@ -379,8 +378,16 @@ function Delete(endpoint, key) {
     return $.ajax({
         url: `${endpoint}/${key}`,
         type: "DELETE",
-        error: () => {
-            components.errorMessage.html(processingFailed);
+        error: (jqXHR) => {
+            if (jqXHR.status === 400) {
+                try {
+                    DisplayServerValidationErrors(JSON.parse(jqXHR.responseText), "Delete refused:", false);
+                } catch (e) {
+                    components.errorMessage.html(processingFailed);
+                }
+            } else {
+                components.errorMessage.html(processingFailed);
+            }
         },
         success: () => {
             if (typeof DeleteNode === "function") {

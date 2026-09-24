@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "VisualisationRegistryDatasourceList", OperationKind.Read, true, false,
                     "Lists Datasources for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Visualisation Registry Datasources may use."),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceFilter", OperationKind.Read, true, false,
+                    "Returns the Visualisation Registry Datasources matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceCount", OperationKind.Read, true, false,
+                    "Counts the Visualisation Registry Datasources matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceGet", OperationKind.Read, true, false,
                     "Returns one Datasource by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -36,6 +45,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceCreate", OperationKind.Write, false, false,
                     "Registers a Datasource under a Visualisation Registry in the caller's tenant, validating its SQL Command; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceValidate", OperationKind.Read, true, false,
+                    "Validates a Visualisation Registry Datasource without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceUpdate", OperationKind.Write, true, false,
                     "Updates a Datasource in the caller's tenant by id, re-validating its SQL Command."),

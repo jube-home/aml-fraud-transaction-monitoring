@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelDictionaryKvpList", OperationKind.Read, true, false,
                     "Lists Key Value Pairs for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryKvpFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Dictionary KVPs may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryKvpFilter", OperationKind.Read, true, false,
+                    "Returns the Dictionary KVPs matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryKvpCount", OperationKind.Read, true, false,
+                    "Counts the Dictionary KVPs matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpGet", OperationKind.Read, true, false,
                     "Returns one Key Value Pair, matched on the parent Dictionary's id, scoped to the caller's " +
                     "tenant."),
@@ -35,6 +44,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelDictionaryKvpCreate", OperationKind.Write, false, false,
                     "Registers a Key Value Pair under a Dictionary in the caller's tenant; calling twice creates " +
                     "two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryKvpValidate", OperationKind.Read, true, false,
+                    "Validates a Dictionary KVP without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryKvpUpdate", OperationKind.Write, true, false,
                     "Updates a Key Value Pair in the caller's tenant by id."),

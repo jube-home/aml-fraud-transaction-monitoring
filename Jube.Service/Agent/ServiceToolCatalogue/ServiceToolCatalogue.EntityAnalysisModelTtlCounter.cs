@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelTtlCounterList", OperationKind.Read, true, false,
                     "Lists TTL Counters for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelTtlCounterFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over TTL Counters may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTtlCounterFilter", OperationKind.Read, true, false,
+                    "Returns the TTL Counters matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTtlCounterCount", OperationKind.Read, true, false,
+                    "Counts the TTL Counters matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelTtlCounterGet", OperationKind.Read, true, false,
                     "Returns one TTL Counter by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -34,6 +43,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelTtlCounterCreate", OperationKind.Write, false, false,
                     "Registers a TTL Counter under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTtlCounterValidate", OperationKind.Read, true, false,
+                    "Validates a TTL Counter without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelTtlCounterUpdate", OperationKind.Write, true, false,
                     "Updates a TTL Counter in the caller's tenant by id."),

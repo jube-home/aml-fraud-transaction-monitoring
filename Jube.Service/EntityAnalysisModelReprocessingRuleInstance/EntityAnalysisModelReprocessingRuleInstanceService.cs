@@ -14,6 +14,8 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Filter;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelReprocessingRuleInstance;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -335,6 +337,156 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Reprocessing Rule " +
+                     "Instances may use, with each field's type, the operators allowed for it " +
+                     "and what it means. Use them as rule ids in " +
+                     "EntityAnalysisModelReprocessingRuleInstanceFilter and " +
+                     "EntityAnalysisModelReprocessingRuleInstanceCount.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceFilterFields", OperationKind.Read,
+            Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelReprocessingRuleInstance.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelReprocessingRuleInstanceDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error(
+                    $"EntityAnalysisModelReprocessingRuleInstance.FilterFields: unexpected failure user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Reprocessing Rule Instances in the caller's tenant matching " +
+                     "query builder JSON (the same format as the rule builder, over the fields " +
+                     "from EntityAnalysisModelReprocessingRuleInstanceFilterFields), ordered by " +
+                     "id and capped at 'take' rows (max 200). If 'more' is true, call again " +
+                     "with 'afterId' set to the last returned Id to continue. Invalid JSON is " +
+                     "not an error: Valid is false and Errors gives each problem with its JSON " +
+                     "path.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelReprocessingRuleInstanceDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Reprocessing Rule Instances, using the fields from EntityAnalysisModelReprocessingRuleInstanceFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelReprocessingRuleInstance.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Filter");
+                var rows = EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelReprocessingRuleInstance.Filter: unexpected failure user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Reprocessing Rule Instances in the caller's tenant matching " +
+                     "query builder JSON (over the fields from " +
+                     "EntityAnalysisModelReprocessingRuleInstanceFilterFields; empty counts " +
+                     "all), optionally broken down by the values of one field. Invalid JSON is " +
+                     "not an error: Valid is false and Errors gives each problem with its JSON " +
+                     "path.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Reprocessing Rule Instances, using the fields from EntityAnalysisModelReprocessingRuleInstanceFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelReprocessingRuleInstanceFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelReprocessingRuleInstance.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Count");
+                var rows = EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelReprocessingRuleInstance.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Registers a new Reprocessing Rule instance under a Reprocessing Rule in the caller's " +
                      "tenant. Not idempotent -- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceCreate", OperationKind.Write,
@@ -416,9 +568,54 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             }
         }
 
+        [Description("Validates a Reprocessing Rule Instance without saving it, running every check a create " +
+                     "(Id 0) or an update (any other Id) would run, and returns each failure. Nothing is " +
+                     "stored or changed.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Reprocessing Rule Instance to validate.")]
+            EntityAnalysisModelReprocessingRuleInstanceDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRuleInstance", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelReprocessingRuleInstance.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelReprocessingRuleInstance.Validate: unexpected failure user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
         [Description("Triggers a new reprocessing run for a Reprocessing Rule in the caller's tenant: creates a " +
                      "new instance at StatusId 0 (Not Allocated). Fails if the Reprocessing Rule already has an " +
-                     "uncompleted instance (StatusId not 4).")]
+                     "uncompleted instance (StatusId not 4 Completed or 5 Failed).")]
         [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceInsertByExistingUpdateUncompleted",
             OperationKind.Write, Idempotent = false)]
         public async Task<ReprocessingRuleInstancePoco> InsertByExistingUpdateUncompletedAsync(

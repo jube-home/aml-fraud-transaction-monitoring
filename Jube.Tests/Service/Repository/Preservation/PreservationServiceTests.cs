@@ -724,7 +724,8 @@ namespace Jube.Test.Service.Repository.Preservation
                 ImportAsync(tenant, bytes, token: cts.Token));
 
             await using var check = fx.GetDbContext();
-            (await check.EntityAnalysisModel.SingleAsync(w => w.Id == seeded.ModelId, token: cts.Token)).Deleted
+            (await check.EntityAnalysisModel.SingleAsync(w => w.Id == seeded.ModelId, token: CancellationToken.None))
+                .Deleted
                 .Should().Be(0);
         }
 

@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "VisualisationRegistryParameterList", OperationKind.Read, true, false,
                     "Lists Visualisation Registry Parameters for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "VisualisationRegistryParameterFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Visualisation Registry Parameters may use."),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryParameterFilter", OperationKind.Read, true, false,
+                    "Returns the Visualisation Registry Parameters matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryParameterCount", OperationKind.Read, true, false,
+                    "Counts the Visualisation Registry Parameters matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "VisualisationRegistryParameterGet", OperationKind.Read, true, false,
                     "Returns one Visualisation Registry Parameter by its id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -38,6 +47,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "VisualisationRegistryParameterCreate", OperationKind.Write, false, false,
                     "Registers a Parameter under a Visualisation Registry in the caller's tenant; calling twice " +
                     "creates two."),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryParameterValidate", OperationKind.Read, true, false,
+                    "Validates a Visualisation Registry Parameter without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "VisualisationRegistryParameterUpdate", OperationKind.Write, true, false,
                     "Updates a Parameter in the caller's tenant by id."),

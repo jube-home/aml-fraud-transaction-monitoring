@@ -22,6 +22,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "Adds a note to a case, filed against a CaseWorkflowAction; dispatches that action's " +
                 "notification/webhook if enabled. Notes are append-only."),
             new ServiceToolDescriptor(
+                "CaseNoteValidate", OperationKind.Read, true, false,
+                "Validates a Case Note without saving it and returns every failure."),
+            new ServiceToolDescriptor(
                 "CaseNoteListByCaseKeyValue", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists case notes for a Case Key/Value pair, newest first, scoped to the caller's tenant.")
         ]);

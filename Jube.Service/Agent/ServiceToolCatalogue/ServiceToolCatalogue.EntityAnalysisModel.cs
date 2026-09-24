@@ -21,11 +21,23 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "EntityAnalysisModelList", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists Models for the caller's tenant, keyset-paged and capped."),
             new ServiceToolDescriptor(
+                "EntityAnalysisModelFilterFields", OperationKind.Read, true, false,
+                "Lists the fields a query builder JSON filter over Entity Analysis Models may use."),
+            new ServiceToolDescriptor(
+                "EntityAnalysisModelFilter", OperationKind.Read, true, false,
+                "Returns the Entity Analysis Models matching query builder JSON, keyset-paged and capped."),
+            new ServiceToolDescriptor(
+                "EntityAnalysisModelCount", OperationKind.Read, true, false,
+                "Counts the Entity Analysis Models matching query builder JSON, optionally grouped by a field."),
+            new ServiceToolDescriptor(
                 "EntityAnalysisModelGet", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Returns one Model by id, scoped to the caller's tenant."),
             new ServiceToolDescriptor(
                 "EntityAnalysisModelCreate", OperationKind.Write, Idempotent: false, Destructive: false,
                 "Creates a Model in the caller's tenant; calling twice creates two."),
+            new ServiceToolDescriptor(
+                "EntityAnalysisModelValidate", OperationKind.Read, true, false,
+                "Validates an Entity Analysis Model without saving it and returns every failure."),
             new ServiceToolDescriptor(
                 "EntityAnalysisModelUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
                 "Updates a Model in the caller's tenant by id."),

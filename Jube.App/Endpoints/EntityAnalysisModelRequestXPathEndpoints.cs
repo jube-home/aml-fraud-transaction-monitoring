@@ -591,6 +591,15 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.Forbid();
             }
+            catch (DtoValidationException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"DELETE {Base}/{id}: 400 user={user} errors={ex.Result.Errors.Count}");
+                }
+
+                return TypedResults.BadRequest(ex.Result);
+            }
             catch (NotFoundException)
             {
                 if (log.IsWarnEnabled)

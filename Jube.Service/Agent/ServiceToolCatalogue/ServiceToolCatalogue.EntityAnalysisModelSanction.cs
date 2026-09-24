@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelSanctionList", OperationKind.Read, true, false,
                     "Lists Sanction checks for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelSanctionFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Sanctions may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSanctionFilter", OperationKind.Read, true, false,
+                    "Returns the Sanctions matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSanctionCount", OperationKind.Read, true, false,
+                    "Counts the Sanctions matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelSanctionGet", OperationKind.Read, true, false,
                     "Returns one Sanction check by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -32,6 +41,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelSanctionCreate", OperationKind.Write, false, false,
                     "Registers a Sanction check under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSanctionValidate", OperationKind.Read, true, false,
+                    "Validates a Sanction without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelSanctionUpdate", OperationKind.Write, true, false,
                     "Updates a Sanction check in the caller's tenant by id."),

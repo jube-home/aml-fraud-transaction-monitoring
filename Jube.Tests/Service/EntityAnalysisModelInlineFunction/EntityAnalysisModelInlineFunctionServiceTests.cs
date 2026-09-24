@@ -110,7 +110,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
                 EntityAnalysisModelId = entityAnalysisModelId,
                 Name = name,
                 ReturnDataTypeId = 1,
-                FunctionScript = "Return Payload.BillingFirstName & \" \" & Payload.BillingLastName",
+                FunctionScript = "Return \"x\"",
                 EncryptionId = 0
             };
         }

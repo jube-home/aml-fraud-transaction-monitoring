@@ -12,8 +12,6 @@
  */
 
 using System;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Jube.Data.Repository;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
@@ -228,34 +226,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
         private static string[] BuildDependencyArray(Context context, string dependencies)
         {
-            var baseArray = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
-                .Select(a => a.Location)
-                .ToArray();
-
-            var alwaysInclude = new[]
-            {
-                ResolveDependencyPath(context, "Jube.Cryptography.dll")
-            };
-
-            if (string.IsNullOrEmpty(dependencies))
-            {
-                return baseArray.Concat(alwaysInclude).ToArray();
-            }
-
-            var additionalDeps = dependencies.Split(",".ToCharArray())
-                .Select(file => ResolveDependencyPath(context, file))
-                .ToArray();
-
-            return baseArray.Concat(alwaysInclude).Concat(additionalDeps).ToArray();
-        }
-
-        private static string ResolveDependencyPath(Context context, string file)
-        {
-            var binaryPath = Path.Combine(context.Paths.BinaryPath, file);
-            return File.Exists(binaryPath)
-                ? binaryPath
-                : Path.Combine(context.Paths.FrameworkPath, file);
+            return InlineScriptCompilationExtensions.BuildDependencyArray(context.Paths.BinaryPath,
+                context.Paths.FrameworkPath, dependencies);
         }
     }
 }

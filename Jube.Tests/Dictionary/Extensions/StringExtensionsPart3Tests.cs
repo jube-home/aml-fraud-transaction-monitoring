@@ -14,7 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -235,18 +234,6 @@ namespace Jube.Test.Dictionary.Extensions
         }
 
         [Fact]
-        public void PathCombineJoinsThisAndTheSuppliedSegments()
-        {
-            "a".PathCombine("b", "c").Should().Be(Path.Combine("a", "b", "c"));
-        }
-
-        [Fact]
-        public void PathCombineWithNoAdditionalSegmentsReturnsTheOriginalValue()
-        {
-            "a".PathCombine().Should().Be("a");
-        }
-
-        [Fact]
         public void RemoveDiacriticsStripsAccentsButKeepsTheBaseLetters()
         {
             "café résumé".RemoveDiacritics().Should().Be("cafe resume");
@@ -409,56 +396,6 @@ namespace Jube.Test.Dictionary.Extensions
         public void RightSafeBehavesLikeRightWhenTheLengthIsWithinBounds()
         {
             "abcdef".RightSafe(3).Should().Be("def");
-        }
-
-        [Fact]
-        public void SaveAsWritesTheStringToTheGivenFileNameAndOverwritesByDefault()
-        {
-            var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            try
-            {
-                "first".SaveAs(path);
-                "second".SaveAs(path);
-
-                File.ReadAllText(path).Should().Be("second");
-            }
-            finally
-            {
-                File.Delete(path);
-            }
-        }
-
-        [Fact]
-        public void SaveAsWithAppendTrueAddsToExistingContentRatherThanOverwriting()
-        {
-            var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            try
-            {
-                "first".SaveAs(path);
-                "second".SaveAs(path, true);
-
-                File.ReadAllText(path).Should().Be("firstsecond");
-            }
-            finally
-            {
-                File.Delete(path);
-            }
-        }
-
-        [Fact]
-        public void SaveAsWithAFileInfoWritesTheStringToThatFile()
-        {
-            var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            try
-            {
-                "content".SaveAs(new FileInfo(path));
-
-                File.ReadAllText(path).Should().Be("content");
-            }
-            finally
-            {
-                File.Delete(path);
-            }
         }
 
         [Fact]

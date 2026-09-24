@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelActivationRuleSuppressionList", OperationKind.Read, true, false,
                     "Lists Activation-Rule-scoped Suppressions for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleSuppressionFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Activation Rule Suppressions may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleSuppressionFilter", OperationKind.Read, true, false,
+                    "Returns the Activation Rule Suppressions matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleSuppressionCount", OperationKind.Read, true, false,
+                    "Counts the Activation Rule Suppressions matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelActivationRuleSuppressionGet", OperationKind.Read, true, false,
                     "Returns one Activation-Rule-scoped Suppression by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -32,6 +41,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelActivationRuleSuppressionCreate", OperationKind.Write, false, false,
                     "Registers a Suppression against a Model/Activation Rule in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleSuppressionValidate", OperationKind.Read, true, false,
+                    "Validates an Activation Rule Suppression without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelActivationRuleSuppressionUpdate", OperationKind.Write, false, false,
                     "Toggles a Suppression on or off by row existence; NOT idempotent -- repeat calls flip state."),

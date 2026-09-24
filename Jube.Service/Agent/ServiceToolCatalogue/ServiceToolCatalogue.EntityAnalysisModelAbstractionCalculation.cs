@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelAbstractionCalculationList", OperationKind.Read, true, false,
                     "Lists Abstraction Calculations for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelAbstractionCalculationFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Abstraction Calculations may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelAbstractionCalculationFilter", OperationKind.Read, true, false,
+                    "Returns the Abstraction Calculations matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelAbstractionCalculationCount", OperationKind.Read, true, false,
+                    "Counts the Abstraction Calculations matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelAbstractionCalculationGet", OperationKind.Read, true, false,
                     "Returns one Abstraction Calculation by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -32,6 +41,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelAbstractionCalculationCreate", OperationKind.Write, false, false,
                     "Registers an Abstraction Calculation under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelAbstractionCalculationValidate", OperationKind.Read, true, false,
+                    "Validates an Abstraction Calculation without saving it and returns every failure."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelAbstractionCalculationParseRule", OperationKind.Read, true, false,
+                    "Parses and compiles an Abstraction Calculation's rule text as the engine would and returns each located error."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelAbstractionCalculationExecute", OperationKind.Read, true, false,
+                    "Runs an Abstraction Calculation against an invocation context as the engine would and returns the result."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelAbstractionCalculationUpdate", OperationKind.Write, true, false,
                     "Updates an Abstraction Calculation in the caller's tenant by id."),

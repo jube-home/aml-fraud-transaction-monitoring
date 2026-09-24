@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "ExhaustiveSearchInstanceList", OperationKind.Read, true, false,
                     "Lists Exhaustive Adaptations for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstanceFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Exhaustive Search Instances may use."),
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstanceFilter", OperationKind.Read, true, false,
+                    "Returns the Exhaustive Search Instances matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstanceCount", OperationKind.Read, true, false,
+                    "Counts the Exhaustive Search Instances matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "ExhaustiveSearchInstanceGet", OperationKind.Read, true, false,
                     "Returns one Exhaustive Adaptation by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -31,6 +40,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "ExhaustiveSearchInstanceCreate", OperationKind.Write, false, false,
                     "Registers an Exhaustive Adaptation under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstanceValidate", OperationKind.Read, true, false,
+                    "Validates an Exhaustive Search Instance without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "ExhaustiveSearchInstanceUpdate", OperationKind.Write, true, false,
                     "Updates an Exhaustive Adaptation in the caller's tenant by id, only while training has not started."),

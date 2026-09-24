@@ -19,7 +19,7 @@ namespace Jube.Dictionary.Extensions
         {
             var value = Math.Abs(@this);
 
-            if (value == 0)
+            if (value == 0 || !double.IsFinite(value))
             {
                 return 0;
             }

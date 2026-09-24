@@ -137,6 +137,12 @@ namespace Jube.Data.Context
             EntityAnalysisModelSynchronisationNodeStatusEntry =>
             GetTable<EntityAnalysisModelSynchronisationNodeStatusEntry>();
 
+        public ITable<EntityAnalysisModelEngineSnapshot> EntityAnalysisModelEngineSnapshot =>
+            GetTable<EntityAnalysisModelEngineSnapshot>();
+
+        public ITable<EntityAnalysisModelBacktestInstance> EntityAnalysisModelBacktestInstance =>
+            GetTable<EntityAnalysisModelBacktestInstance>();
+
         public ITable<EntityAnalysisModelSynchronisationSchedule> EntityAnalysisModelSynchronisationSchedule =>
             GetTable<EntityAnalysisModelSynchronisationSchedule>();
 

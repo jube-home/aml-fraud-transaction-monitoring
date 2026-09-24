@@ -27,7 +27,8 @@ namespace Jube.Test.Dictionary.Extensions
     {
         private static readonly Regex stepName = new("^(Match|Reject|Break|Require|Ensure)[A-Z]");
 
-        private static readonly Type[] rawTypes = [typeof(double), typeof(int), typeof(string), typeof(DateTime), typeof(bool)];
+        private static readonly Type[] rawTypes =
+            [typeof(double), typeof(int), typeof(string), typeof(DateTime), typeof(bool)];
 
         private static IEnumerable<MethodInfo> Extension()
         {
@@ -44,7 +45,8 @@ namespace Jube.Test.Dictionary.Extensions
         {
             return Extension().Where(m => !m.IsGenericMethodDefinition && stepName.IsMatch(m.Name) &&
                                           IsFlow(m.GetParameters()[0].ParameterType) &&
-                                          rawTypes.Contains(m.GetParameters()[0].ParameterType.GetGenericArguments()[0]));
+                                          rawTypes.Contains(m.GetParameters()[0].ParameterType
+                                              .GetGenericArguments()[0]));
         }
 
         private static IEnumerable<MethodInfo> RawSteps()
@@ -97,7 +99,8 @@ namespace Jube.Test.Dictionary.Extensions
         [Fact]
         public void EveryRawOverloadHasATypedFlowStepSoNoneIsOrphaned()
         {
-            var flow = TypedFlowSteps().Select(m => Signature(m, m.GetParameters()[0].ParameterType.GetGenericArguments()[0]))
+            var flow = TypedFlowSteps()
+                .Select(m => Signature(m, m.GetParameters()[0].ParameterType.GetGenericArguments()[0]))
                 .ToHashSet();
 
             var orphans = RawSteps().Select(m => Signature(m, m.GetParameters()[0].ParameterType))
@@ -167,7 +170,8 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("Trimmed", typeof(string))]
         public void EveryTransformerWithoutACollisionHasARawEntryOverloadReturningAFlow(string name, Type receiver)
         {
-            var overload = Extension().SingleOrDefault(m => m.Name == name && m.GetParameters()[0].ParameterType == receiver);
+            var overload = Extension()
+                .SingleOrDefault(m => m.Name == name && m.GetParameters()[0].ParameterType == receiver);
 
             overload.Should().NotBeNull();
             IsFlow(overload!.ReturnType).Should().BeTrue();
@@ -219,7 +223,7 @@ namespace Jube.Test.Dictionary.Extensions
             Extension().Select(m => m.Name).Should().Contain(["Trimmed", "TextLength"]);
         }
 
-        private static readonly string[] ReviewedPreExistingCollisions =
+        private static readonly string[] reviewedPreExistingCollisions =
         [
             "Abs",
             "Acos",
@@ -282,7 +286,8 @@ namespace Jube.Test.Dictionary.Extensions
         [Fact]
         public void NoNewExtensionMethodNameCollidesWithAMemberOfAnyTypeARuleValueCanActuallyBe()
         {
-            var ruleValueTypes = new[] { typeof(object), typeof(string), typeof(double), typeof(int), typeof(DateTime), typeof(bool) };
+            var ruleValueTypes = new[]
+                { typeof(object), typeof(string), typeof(double), typeof(int), typeof(DateTime), typeof(bool) };
             var reachableMemberNames = ruleValueTypes
                 .SelectMany(t => t.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
                 .Select(m => m.Name)
@@ -290,14 +295,14 @@ namespace Jube.Test.Dictionary.Extensions
 
             var collisions = Extension().Select(m => m.Name).Distinct()
                 .Where(reachableMemberNames.Contains)
-                .Except(ReviewedPreExistingCollisions)
+                .Except(reviewedPreExistingCollisions)
                 .ToList();
 
             collisions.Should().BeEmpty(
                 "any such name becomes an allowed rule token for every value of that member's type, " +
                 "not only the type the extension was written for, since the token allow-list is name-only -- " +
                 "a genuinely new collision needs its own review, either a rename or an addition to " +
-                nameof(ReviewedPreExistingCollisions));
+                nameof(reviewedPreExistingCollisions));
         }
 
         [Fact]
@@ -305,7 +310,7 @@ namespace Jube.Test.Dictionary.Extensions
         {
             var extensionNames = Extension().Select(m => m.Name).ToHashSet();
 
-            extensionNames.Should().Contain(ReviewedPreExistingCollisions,
+            extensionNames.Should().Contain(reviewedPreExistingCollisions,
                 "a name kept here after it stopped being an extension method name would hide a real narrowing " +
                 "of " + nameof(NoNewExtensionMethodNameCollidesWithAMemberOfAnyTypeARuleValueCanActuallyBe));
         }

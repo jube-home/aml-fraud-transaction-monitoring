@@ -21,6 +21,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "VisualisationRegistryList", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists Visualisation Registries visible to the caller's tenant, keyset-paged and capped."),
             new ServiceToolDescriptor(
+                "VisualisationRegistryFilterFields", OperationKind.Read, true, false,
+                "Lists the fields a query builder JSON filter over Visualisation Registrys may use."),
+            new ServiceToolDescriptor(
+                "VisualisationRegistryFilter", OperationKind.Read, true, false,
+                "Returns the Visualisation Registrys matching query builder JSON, keyset-paged and capped."),
+            new ServiceToolDescriptor(
+                "VisualisationRegistryCount", OperationKind.Read, true, false,
+                "Counts the Visualisation Registrys matching query builder JSON, optionally grouped by a field."),
+            new ServiceToolDescriptor(
                 "VisualisationRegistryGet", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Returns a single Visualisation Registry by Id."),
             new ServiceToolDescriptor(
@@ -34,6 +43,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             new ServiceToolDescriptor(
                 "VisualisationRegistryCreate", OperationKind.Write, Idempotent: false, Destructive: false,
                 "Creates a Visualisation Registry; calling twice creates two."),
+            new ServiceToolDescriptor(
+                "VisualisationRegistryValidate", OperationKind.Read, true, false,
+                "Validates a Visualisation Registry without saving it and returns every failure."),
             new ServiceToolDescriptor(
                 "VisualisationRegistryUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
                 "Updates a Visualisation Registry; overwrites, writes a version-audit row."),

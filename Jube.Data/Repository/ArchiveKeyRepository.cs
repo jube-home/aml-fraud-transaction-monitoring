@@ -25,55 +25,117 @@ namespace Jube.Data.Repository
 
     public class ArchiveKeyRepository(DbContext dbContext)
     {
-        public Task DeleteWhereNotInListAsync(List<ArchiveKey> archiveKeys, int? entityAnalysisModelsReprocessingRuleInstanceId)
+        public Task ReplaceAsync(Guid entityAnalysisModelInstanceEntryGuid, IReadOnlyList<ArchiveKey> archiveKeys,
+            int? entityAnalysisModelsReprocessingRuleInstanceId, CancellationToken token = default)
         {
-            return dbContext.ArchiveKey
-                .Where(d => !archiveKeys.Any(x =>
-                    x.ProcessingTypeId == d.ProcessingTypeId &&
-                    x.Key == d.Key &&
-                    x.EntityAnalysisModelInstanceEntryGuid == d.EntityAnalysisModelInstanceEntryGuid))
-                .Set(x => x.Deleted, (byte)1)
-                .Set(x => x.DeletedDate, DateTime.UtcNow)
-                .Set(x => x.EntityAnalysisModelsReprocessingRuleInstanceId, entityAnalysisModelsReprocessingRuleInstanceId)
-                .UpdateAsync();
+            return ReplaceBatchAsync([(entityAnalysisModelInstanceEntryGuid, archiveKeys)],
+                entityAnalysisModelsReprocessingRuleInstanceId, token);
         }
 
-        public async Task UpsertAsync(ArchiveKey model, CancellationToken token = default)
+        public async Task ReplaceBatchAsync(
+            IReadOnlyList<(Guid EntityAnalysisModelInstanceEntryGuid, IReadOnlyList<ArchiveKey> ArchiveKeys)> records,
+            int? entityAnalysisModelsReprocessingRuleInstanceId, CancellationToken token = default)
         {
-            var existing = await dbContext.ArchiveKey
-                .FirstOrDefaultAsync(f => f.EntityAnalysisModelInstanceEntryGuid == model.EntityAnalysisModelInstanceEntryGuid
-                                          && f.Key == model.Key
-                                          && f.ProcessingTypeId == model.ProcessingTypeId, token);
-
-            if (existing == null)
+            if (records.Count == 0)
             {
-                await dbContext.InsertAsync(model, token: token);
+                return;
             }
-            else
+
+            var guids = records.Select(r => r.EntityAnalysisModelInstanceEntryGuid).Distinct().ToList();
+            var existingByRecord = (await dbContext.ArchiveKey
+                    .Where(w => guids.Contains(w.EntityAnalysisModelInstanceEntryGuid))
+                    .ToListAsync(token).ConfigureAwait(false))
+                .GroupBy(k => k.EntityAnalysisModelInstanceEntryGuid)
+                .ToDictionary(g => g.Key, g => g.GroupBy(k => (k.ProcessingTypeId, k.Key))
+                    .ToDictionary(k => k.Key, k => k.OrderBy(x => x.Id).ToList()));
+
+            var inserts = new List<ArchiveKey>();
+            var changed = new List<(ArchiveKey Existing, ArchiveKey Replacement)>();
+            var stale = new List<long>();
+
+            foreach (var (guid, archiveKeys) in records)
             {
-                model.Version = existing.Version + 1;
-                model.Id = existing.Id;
+                var existing = existingByRecord.GetValueOrDefault(guid) ??
+                               new Dictionary<(byte?, string), List<ArchiveKey>>();
 
-                await dbContext.UpdateAsync(model, token: token);
-
-                var audit = new ArchiveKeyVersion
+                foreach (var archiveKey in archiveKeys
+                             .GroupBy(k => (k.ProcessingTypeId, k.Key))
+                             .Select(g => g.Last()))
                 {
-                    ArchiveKeyId = existing.Id,
-                    EntityAnalysisModelInstanceEntryGuid = existing.EntityAnalysisModelInstanceEntryGuid,
-                    ProcessingTypeId = existing.ProcessingTypeId,
-                    Key = existing.Key,
-                    KeyValueString = existing.KeyValueString,
-                    KeyValueInteger = existing.KeyValueInteger,
-                    KeyValueFloat = existing.KeyValueFloat,
-                    KeyValueBoolean = existing.KeyValueBoolean,
-                    KeyValueDate = existing.KeyValueDate,
-                    KeyValueLong = existing.KeyValueLong,
-                    Version = existing.Version,
-                    EntityAnalysisModelsReprocessingRuleInstanceId = existing.EntityAnalysisModelsReprocessingRuleInstanceId
-                };
+                    archiveKey.EntityAnalysisModelInstanceEntryGuid = guid;
+                    archiveKey.EntityAnalysisModelsReprocessingRuleInstanceId =
+                        entityAnalysisModelsReprocessingRuleInstanceId;
 
-                await dbContext.InsertAsync(audit, token: token);
+                    if (!existing.Remove((archiveKey.ProcessingTypeId, archiveKey.Key), out var matches))
+                    {
+                        archiveKey.Version = 1;
+                        inserts.Add(archiveKey);
+                        continue;
+                    }
+
+                    stale.AddRange(matches.Skip(1).Select(k => k.Id));
+
+                    if (!SameValue(matches[0], archiveKey))
+                    {
+                        changed.Add((matches[0], archiveKey));
+                    }
+                }
+
+                stale.AddRange(existing.Values.SelectMany(v => v).Select(k => k.Id));
             }
+
+            if (changed.Count > 0)
+            {
+                await dbContext.BulkCopyAsync(changed.Select(c => Version(c.Existing)), token).ConfigureAwait(false);
+
+                foreach (var (current, replacement) in changed)
+                {
+                    replacement.Id = current.Id;
+                    replacement.Version = current.Version.GetValueOrDefault() + 1;
+                    await dbContext.UpdateAsync(replacement, token: token).ConfigureAwait(false);
+                }
+            }
+
+            if (inserts.Count > 0)
+            {
+                await dbContext.BulkCopyAsync(inserts, token).ConfigureAwait(false);
+            }
+
+            if (stale.Count > 0)
+            {
+                await dbContext.ArchiveKeyVersion.Where(d => stale.Contains(d.ArchiveKeyId)).DeleteAsync(token)
+                    .ConfigureAwait(false);
+                await dbContext.ArchiveKey.Where(d => stale.Contains(d.Id)).DeleteAsync(token).ConfigureAwait(false);
+            }
+        }
+
+        private static bool SameValue(ArchiveKey current, ArchiveKey replacement)
+        {
+            return current.KeyValueString == replacement.KeyValueString
+                   && current.KeyValueInteger == replacement.KeyValueInteger
+                   && Nullable.Equals(current.KeyValueFloat, replacement.KeyValueFloat)
+                   && current.KeyValueBoolean == replacement.KeyValueBoolean
+                   && current.KeyValueDate == replacement.KeyValueDate
+                   && current.KeyValueLong == replacement.KeyValueLong;
+        }
+
+        private static ArchiveKeyVersion Version(ArchiveKey existing)
+        {
+            return new ArchiveKeyVersion
+            {
+                ArchiveKeyId = existing.Id,
+                EntityAnalysisModelInstanceEntryGuid = existing.EntityAnalysisModelInstanceEntryGuid,
+                ProcessingTypeId = existing.ProcessingTypeId,
+                Key = existing.Key,
+                KeyValueString = existing.KeyValueString,
+                KeyValueInteger = existing.KeyValueInteger,
+                KeyValueFloat = existing.KeyValueFloat,
+                KeyValueBoolean = existing.KeyValueBoolean,
+                KeyValueDate = existing.KeyValueDate,
+                KeyValueLong = existing.KeyValueLong,
+                Version = existing.Version,
+                EntityAnalysisModelsReprocessingRuleInstanceId = existing.EntityAnalysisModelsReprocessingRuleInstanceId
+            };
         }
 
         public Task BulkCopyAsync(List<ArchiveKey> models, CancellationToken token = default)

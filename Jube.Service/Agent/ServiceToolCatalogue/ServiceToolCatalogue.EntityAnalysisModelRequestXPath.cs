@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelRequestXPathList", OperationKind.Read, true, false,
                     "Lists Request XPaths for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelRequestXPathFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over RequestXPaths may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelRequestXPathFilter", OperationKind.Read, true, false,
+                    "Returns the RequestXPaths matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelRequestXPathCount", OperationKind.Read, true, false,
+                    "Counts the RequestXPaths matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelRequestXPathGet", OperationKind.Read, true, false,
                     "Returns one Request XPath by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -43,6 +52,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelRequestXPathCreate", OperationKind.Write, false, false,
                     "Creates a Request XPath under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelRequestXPathValidate", OperationKind.Read, true, false,
+                    "Validates a RequestXPath without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelRequestXPathUpdate", OperationKind.Write, true, false,
                     "Updates a Request XPath in the caller's tenant by id."),

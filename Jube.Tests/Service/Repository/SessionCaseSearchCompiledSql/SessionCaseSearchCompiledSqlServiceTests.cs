@@ -692,10 +692,12 @@ namespace Jube.Test.Service.Repository.SessionCaseSearchCompiledSql
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 service.InsertAsync(Request(seeded), cts.Token));
 
-            (await dbContext.SessionCaseSearchCompiledSql.CountAsync(r => r.CaseWorkflowGuid == seeded.WorkflowGuid, token: cts.Token))
+            (await dbContext.SessionCaseSearchCompiledSql.CountAsync(r => r.CaseWorkflowGuid == seeded.WorkflowGuid,
+                    token: CancellationToken.None))
                 .Should().Be(1);
             (await dbContext.GetTable<Data.Poco.SessionCaseSearchCompiledSqlExecution>()
-                .CountAsync(e => e.SessionCaseSearchCompiledSqlId == compiled.Id, token: cts.Token)).Should().Be(0);
+                    .CountAsync(e => e.SessionCaseSearchCompiledSqlId == compiled.Id, token: CancellationToken.None))
+                .Should().Be(0);
         }
 
         [Fact]

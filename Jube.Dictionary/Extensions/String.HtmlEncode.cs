@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 using System.Web;
 
 namespace Jube.Dictionary.Extensions
@@ -14,11 +15,6 @@ namespace Jube.Dictionary.Extensions
             public String HtmlEncode()
             {
                 return HttpUtility.HtmlEncode(s);
-            }
-
-            public void HtmlEncode(TextWriter output)
-            {
-                HttpUtility.HtmlEncode(s, output);
             }
         }
     }

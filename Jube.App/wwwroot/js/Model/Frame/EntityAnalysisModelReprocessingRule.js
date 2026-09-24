@@ -32,6 +32,9 @@ var values = [{
 }, {
     "value": 4,
     "text": "Completed"
+}, {
+    "value": 5,
+    "text": "Failed"
 }];
 
 var reprocessingValue = $("#ReprocessingValue").kendoNumericTextBox({

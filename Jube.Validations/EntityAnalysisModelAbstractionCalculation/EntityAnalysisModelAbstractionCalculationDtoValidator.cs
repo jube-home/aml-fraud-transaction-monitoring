@@ -14,7 +14,9 @@
 using FluentValidation;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelAbstractionCalculation;
+using Jube.Parser;
 using Jube.Resources;
+using Jube.Validations.RuleScript;
 using Microsoft.Extensions.Localization;
 
 namespace Jube.Validations.EntityAnalysisModelAbstractionCalculation
@@ -26,7 +28,8 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionCalculation
         private const int MaxFunctionScriptLength = 65536;
 
         public EntityAnalysisModelAbstractionCalculationDtoValidator(
-            EntityAnalysisModelAbstractionCalculationRepository repository, IStringLocalizer localiser)
+            EntityAnalysisModelAbstractionCalculationRepository repository, IStringLocalizer localiser,
+            RuleScriptParser? ruleScriptParser = null)
         {
             RuleFor(p => p.EntityAnalysisModelId)
                 .GreaterThan(0)
@@ -69,6 +72,17 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionCalculation
                         localiser[EntityAnalysisModelAbstractionCalculationResources.FunctionScriptMaxLength],
                         MaxFunctionScriptLength))
                 .WithErrorCode("FunctionScriptMaximumLength");
+
+            if (ruleScriptParser != null)
+            {
+                RuleSet(RuleScriptParser.SaveRuleSets, () =>
+                {
+                    RuleFor(p => p).CustomAsync((dto, context, token) => ruleScriptParser.ValidateAsync(context,
+                        dto.EntityAnalysisModelId, RuleParse.AbstractionCalculation,
+                        dto.FunctionScript,
+                        "FunctionScript", null, token));
+                });
+            }
         }
     }
 }

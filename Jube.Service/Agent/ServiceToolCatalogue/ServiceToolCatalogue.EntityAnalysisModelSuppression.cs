@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelSuppressionList", OperationKind.Read, true, false,
                     "Lists Suppressions for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelSuppressionFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Suppressions may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSuppressionFilter", OperationKind.Read, true, false,
+                    "Returns the Suppressions matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSuppressionCount", OperationKind.Read, true, false,
+                    "Counts the Suppressions matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelSuppressionGet", OperationKind.Read, true, false,
                     "Returns one Suppression by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -31,6 +40,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelSuppressionCreate", OperationKind.Write, false, false,
                     "Registers a Suppression against a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSuppressionValidate", OperationKind.Read, true, false,
+                    "Validates a Suppression without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelSuppressionUpdate", OperationKind.Write, false, false,
                     "Toggles a Suppression on or off by row existence; NOT idempotent -- repeat calls flip state."),

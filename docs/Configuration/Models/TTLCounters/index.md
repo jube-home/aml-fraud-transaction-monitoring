@@ -94,6 +94,16 @@ threshold unchanged. This differs from the read-time online-aggregation window, 
 unchanged for an unrecognised interval. In practice this divergence should not be reachable: the value is
 validated to one of the six units below at save time.
 
+The window a TTL Counter covers depends on its type. An Online Aggregation counter counts the increments whose
+Reference Date falls in the window ending at the Reference Date of the transaction being processed, both ends
+included, so its value is exact for that transaction. Months and years are calendar months and years, so a one month
+window ending on 31 March starts on 28 or 29 February. Any other counter keeps a running count, and each increment is
+taken off by the background thread once it is older than the interval (in steps of the Resolution Interval), so the
+count covers about the window rather than exactly. A counter that lives forever has no window and is never taken off.
+
+When TTL Counters are disabled for the model, no counter is incremented or read and rules see 0 for every counter;
+[Model Integrity](../ModelIntegrity/index.html) reports this when the model has active counters.
+
 ## Validation
 
 The following constraints are enforced when a TTL Counter is created or updated:

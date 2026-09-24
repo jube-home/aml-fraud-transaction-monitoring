@@ -14,6 +14,7 @@
 namespace Jube.Parser.Compiler
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -23,11 +24,10 @@ namespace Jube.Parser.Compiler
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Emit;
     using Microsoft.CodeAnalysis.VisualBasic;
-    using LanguageVersion=Microsoft.CodeAnalysis.VisualBasic.LanguageVersion;
+    using LanguageVersion = Microsoft.CodeAnalysis.VisualBasic.LanguageVersion;
 
     public class Compile
     {
-
         public enum Language
         {
             Vb,
@@ -38,18 +38,16 @@ namespace Jube.Parser.Compiler
         public Assembly CompiledAssembly { get; set; }
         public long CompiledAssemblyBytes { get; private set; }
         public byte[] CompiledAssemblyBinary { get; private set; }
+
         // ReSharper disable once MemberCanBePrivate.Global
         public IEnumerable<Diagnostic> Errors { get; set; }
 
         public string ErrorsSummary
         {
-            get
-            {
-                return Errors == null ? null : String.Join(Environment.NewLine, Errors.Select(e => e.GetMessage()));
-            }
+            get { return Errors == null ? null : String.Join(Environment.NewLine, Errors.Select(e => e.GetMessage())); }
         }
 
-        public void CompileCode(string code, ILog log, string[] refs, Language language)
+        public void CompileCode(string code, ILog log, string[] refs, Language language, bool load = true)
         {
             var assemblyGuid = Guid.NewGuid().ToString();
 
@@ -111,8 +109,29 @@ namespace Jube.Parser.Compiler
             else
             {
                 Success = true;
-                HandleCompile(log, peStream);
+                if (load)
+                {
+                    HandleCompile(log, peStream);
+                }
+                else
+                {
+                    CaptureBinary(peStream);
+                }
             }
+        }
+
+        private static readonly ConcurrentDictionary<string, MetadataReference> referenceCache = new();
+
+        private static MetadataReference CachedReference(string path)
+        {
+            return referenceCache.GetOrAdd(path, p => MetadataReference.CreateFromFile(p));
+        }
+
+        private void CaptureBinary(Stream peStream)
+        {
+            peStream.Position = 0;
+            CompiledAssemblyBytes = peStream.Length;
+            CompiledAssemblyBinary = ((MemoryStream)peStream).ToArray();
         }
 
         private void HandleCompile(ILog log, Stream peStream)
@@ -164,7 +183,8 @@ namespace Jube.Parser.Compiler
             IReadOnlyList<string> refs,
             string assemblyGuid)
         {
-            var parseOptions = CSharpParseOptions.Default.WithLanguageVersion(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest);
+            var parseOptions =
+                CSharpParseOptions.Default.WithLanguageVersion(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest);
             var compileOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                 optimizationLevel: OptimizationLevel.Release);
 
@@ -182,7 +202,7 @@ namespace Jube.Parser.Compiler
             int i;
             for (i = 0; i < refs.Count; i++)
             {
-                references[i] = MetadataReference.CreateFromFile(refs[i]);
+                references[i] = CachedReference(refs[i]);
 
                 if (log.IsInfoEnabled)
                 {
@@ -192,9 +212,9 @@ namespace Jube.Parser.Compiler
             }
 
             var directoryForDll = Path.GetDirectoryName(typeof(object).Assembly.Location);
-            references[i] = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);                    //Dummy
-            references[i + 1] = MetadataReference.CreateFromFile(Path.Join(directoryForDll, "System.Runtime.dll"));//Dummy
-            references[i + 2] = MetadataReference.CreateFromFile(Path.Join(directoryForDll, "netstandard.dll"));   //Dummy
+            references[i] = CachedReference(typeof(object).Assembly.Location); //Dummy
+            references[i + 1] = CachedReference(Path.Join(directoryForDll, "System.Runtime.dll")); //Dummy
+            references[i + 2] = CachedReference(Path.Join(directoryForDll, "netstandard.dll")); //Dummy
 
             if (log.IsInfoEnabled)
             {

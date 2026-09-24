@@ -120,7 +120,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
                 Active = 1,
                 Locked = 0,
                 RuleScriptTypeId = 1,
-                BuilderRuleScript = "If (Payload.CurrencyAmount > 0) Then\n   Return True\nEnd If",
+                BuilderRuleScript = "If (1 > 0) Then\n   Return True\nEnd If",
                 Json = "{\"valid\":true,\"condition\":\"AND\",\"rules\":[]}",
                 CoderRuleScript = "Return True",
                 ReprocessingSample = 100,

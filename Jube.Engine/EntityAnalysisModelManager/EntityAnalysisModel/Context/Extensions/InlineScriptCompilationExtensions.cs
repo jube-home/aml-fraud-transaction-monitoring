@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -31,6 +32,38 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 {
     public static class InlineScriptCompilationExtensions
     {
+        public static string[] BuildDependencyArray(string binaryPath, string frameworkPath, string dependencies)
+        {
+            var baseArray = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
+                .Select(a => a.Location)
+                .ToArray();
+
+            var alwaysInclude = new[]
+            {
+                ResolveDependencyPath(binaryPath, frameworkPath, "Jube.Cryptography.dll")
+            };
+
+            if (string.IsNullOrEmpty(dependencies))
+            {
+                return baseArray.Concat(alwaysInclude).ToArray();
+            }
+
+            var additionalDeps = dependencies.Split(",".ToCharArray())
+                .Select(file => ResolveDependencyPath(binaryPath, frameworkPath, file))
+                .ToArray();
+
+            return baseArray.Concat(alwaysInclude).Concat(additionalDeps).ToArray();
+        }
+
+        private static string ResolveDependencyPath(string binaryPath, string frameworkPath, string file)
+        {
+            var path = Path.Combine(binaryPath, file);
+            return File.Exists(path)
+                ? path
+                : Path.Combine(frameworkPath, file);
+        }
+
         public static Compile CompileAndConfigure(this EntityAnalysisModelInlineScript inlineScript,
             string[] dependencyArray, ILog log)
         {

@@ -14,7 +14,9 @@
 using FluentValidation;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelGatewayRule;
+using Jube.Parser;
 using Jube.Resources;
+using Jube.Validations.RuleScript;
 using Microsoft.Extensions.Localization;
 
 namespace Jube.Validations.EntityAnalysisModelGatewayRule
@@ -28,7 +30,8 @@ namespace Jube.Validations.EntityAnalysisModelGatewayRule
         private static readonly int[] allowedRuleScriptTypeIds = [1, 2];
 
         public EntityAnalysisModelGatewayRuleDtoValidator(EntityAnalysisModelGatewayRuleRepository repository,
-            IStringLocalizer localiser)
+            IStringLocalizer localiser,
+            RuleScriptParser? ruleScriptParser = null)
         {
             Include(new FiniteNumberValidator<EntityAnalysisModelGatewayRuleDto>());
 
@@ -59,7 +62,7 @@ namespace Jube.Validations.EntityAnalysisModelGatewayRule
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.NameAlreadyExists])
                 .WithErrorCode("NameDuplicate");
-            
+
             RuleFor(p => p.BuilderRuleScript)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.BuilderRuleScriptRequired])
@@ -126,6 +129,18 @@ namespace Jube.Validations.EntityAnalysisModelGatewayRule
                 .GreaterThanOrEqualTo(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelGatewayRuleResources.PriorityRange])
                 .WithErrorCode("PriorityRange");
+
+            if (ruleScriptParser != null)
+            {
+                RuleSet(RuleScriptParser.SaveRuleSets, () =>
+                {
+                    RuleFor(p => p).CustomAsync((dto, context, token) => ruleScriptParser.ValidateAsync(context,
+                        dto.EntityAnalysisModelId, RuleParse.GatewayRule,
+                        dto.RuleScriptTypeId == 1 ? dto.BuilderRuleScript : dto.CoderRuleScript,
+                        dto.RuleScriptTypeId == 1 ? "BuilderRuleScript" : "CoderRuleScript",
+                        null, token));
+                });
+            }
         }
     }
 }

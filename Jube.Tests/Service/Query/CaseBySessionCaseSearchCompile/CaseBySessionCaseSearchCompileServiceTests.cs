@@ -562,7 +562,8 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 service.GetAsync(seeded.CompiledGuid, cts.Token));
 
-            (await dbContext.Case.FirstAsync(c => c.Id == seeded.CaseId, token: cts.Token)).Locked.Should().Be(0);
+            (await dbContext.Case.FirstAsync(c => c.Id == seeded.CaseId, token: CancellationToken.None)).Locked.Should()
+                .Be(0);
         }
 
         [Fact]

@@ -21,11 +21,23 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "RoleRegistryPermissionList", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists Role Registry Permission grants visible to the caller's tenant, keyset-paged and capped."),
             new ServiceToolDescriptor(
+                "RoleRegistryPermissionFilterFields", OperationKind.Read, true, false,
+                "Lists the fields a query builder JSON filter over Role Registry Permissions may use."),
+            new ServiceToolDescriptor(
+                "RoleRegistryPermissionFilter", OperationKind.Read, true, false,
+                "Returns the Role Registry Permissions matching query builder JSON, keyset-paged and capped."),
+            new ServiceToolDescriptor(
+                "RoleRegistryPermissionCount", OperationKind.Read, true, false,
+                "Counts the Role Registry Permissions matching query builder JSON, optionally grouped by a field."),
+            new ServiceToolDescriptor(
                 "RoleRegistryPermissionGet", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Returns a single Role Registry Permission grant by Id."),
             new ServiceToolDescriptor(
                 "RoleRegistryPermissionCreate", OperationKind.Write, Idempotent: false, Destructive: false,
                 "Grants a Permission Specification to a Role Registry; calling twice creates two grants."),
+            new ServiceToolDescriptor(
+                "RoleRegistryPermissionValidate", OperationKind.Read, true, false,
+                "Validates a Role Registry Permission without saving it and returns every failure."),
             new ServiceToolDescriptor(
                 "RoleRegistryPermissionUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
                 "Updates a Role Registry Permission grant; writes a version-audit row."),

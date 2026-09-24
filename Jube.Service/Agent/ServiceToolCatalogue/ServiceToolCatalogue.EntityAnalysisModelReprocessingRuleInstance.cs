@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelReprocessingRuleInstanceList", OperationKind.Read, true, false,
                     "Lists Reprocessing Rule instances for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleInstanceFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Reprocessing Rule Instances may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleInstanceFilter", OperationKind.Read, true, false,
+                    "Returns the Reprocessing Rule Instances matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleInstanceCount", OperationKind.Read, true, false,
+                    "Counts the Reprocessing Rule Instances matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleInstanceGet", OperationKind.Read, true, false,
                     "Returns one Reprocessing Rule instance by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -32,6 +41,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleInstanceCreate", OperationKind.Write, false, false,
                     "Registers a Reprocessing Rule instance under a Reprocessing Rule in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleInstanceValidate", OperationKind.Read, true, false,
+                    "Validates a Reprocessing Rule Instance without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleInstanceInsertByExistingUpdateUncompleted",
                     OperationKind.Write, false, false,

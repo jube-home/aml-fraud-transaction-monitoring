@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelInlineFunctionList", OperationKind.Read, true, false,
                     "Lists Inline Functions for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineFunctionFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Inline Functions may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineFunctionFilter", OperationKind.Read, true, false,
+                    "Returns the Inline Functions matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineFunctionCount", OperationKind.Read, true, false,
+                    "Counts the Inline Functions matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionGet", OperationKind.Read, true, false,
                     "Returns one Inline Function by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -31,6 +40,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionCreate", OperationKind.Write, false, false,
                     "Creates an Inline Function under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineFunctionValidate", OperationKind.Read, true, false,
+                    "Validates an Inline Function without saving it and returns every failure."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineFunctionParseRule", OperationKind.Read, true, false,
+                    "Parses and compiles an Inline Function's rule text as the engine would and returns each located error."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineFunctionExecute", OperationKind.Read, true, false,
+                    "Runs an Inline Function against an invocation context as the engine would and returns the result."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionUpdate", OperationKind.Write, true, false,
                     "Updates an Inline Function in the caller's tenant by id."),

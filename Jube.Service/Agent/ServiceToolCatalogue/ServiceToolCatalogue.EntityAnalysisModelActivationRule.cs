@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelActivationRuleList", OperationKind.Read, true, false,
                     "Lists Activation Rules for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Activation Rules may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleFilter", OperationKind.Read, true, false,
+                    "Returns the Activation Rules matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleCount", OperationKind.Read, true, false,
+                    "Counts the Activation Rules matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelActivationRuleGet", OperationKind.Read, true, false,
                     "Returns one Activation Rule by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -32,6 +41,18 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelActivationRuleCreate", OperationKind.Write, false, false,
                     "Registers an Activation Rule under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleValidate", OperationKind.Read, true, false,
+                    "Validates an Activation Rule without saving it and returns every failure."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleParseRule", OperationKind.Read, true, false,
+                    "Parses and compiles an Activation Rule's rule text as the engine would and returns each located error."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleExecute", OperationKind.Read, true, false,
+                    "Runs an Activation Rule against an invocation context as the engine would and returns the result."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleBuildRuleFromBuilderJson", OperationKind.Read, true, false,
+                    "Turns query builder JSON into an Activation Rule's rule text as the browser builder would, and parses it."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelActivationRuleUpdate", OperationKind.Write, true, false,
                     "Updates an Activation Rule in the caller's tenant by id."),

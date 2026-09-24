@@ -21,6 +21,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "CaseWorkflowXPathList", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists Case Workflow XPath extractions visible to the caller's tenant, keyset-paged and capped."),
             new ServiceToolDescriptor(
+                "CaseWorkflowXPathFilterFields", OperationKind.Read, true, false,
+                "Lists the fields a query builder JSON filter over Case WorkflowXPaths may use."),
+            new ServiceToolDescriptor(
+                "CaseWorkflowXPathFilter", OperationKind.Read, true, false,
+                "Returns the Case WorkflowXPaths matching query builder JSON, keyset-paged and capped."),
+            new ServiceToolDescriptor(
+                "CaseWorkflowXPathCount", OperationKind.Read, true, false,
+                "Counts the Case WorkflowXPaths matching query builder JSON, optionally grouped by a field."),
+            new ServiceToolDescriptor(
                 "CaseWorkflowXPathListByWorkflowIdActiveDrillOnly", OperationKind.Read, Idempotent: true,
                 Destructive: false,
                 "Lists active, Drill-enabled Case Workflow XPath extractions for a parent Case Workflow that " +
@@ -36,6 +45,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             new ServiceToolDescriptor(
                 "CaseWorkflowXPathCreate", OperationKind.Write, Idempotent: false, Destructive: false,
                 "Creates a Case Workflow XPath extraction; calling twice creates two."),
+            new ServiceToolDescriptor(
+                "CaseWorkflowXPathValidate", OperationKind.Read, true, false,
+                "Validates a Case WorkflowXPath without saving it and returns every failure."),
             new ServiceToolDescriptor(
                 "CaseWorkflowXPathUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
                 "Updates a Case Workflow XPath extraction; overwrites, writes a version-audit row."),
