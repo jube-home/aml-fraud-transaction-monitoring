@@ -32,5 +32,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Re
         public string ReprocessingRuleScript { get; set; }
         public int RuleScriptTypeId { get; set; }
         public double ReprocessingSample { get; set; }
+        public string Failure { get; set; }
     }
 }

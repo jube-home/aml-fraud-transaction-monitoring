@@ -21,6 +21,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "CaseWorkflowList", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists Case Workflows visible to the caller's tenant, keyset-paged and capped."),
             new ServiceToolDescriptor(
+                "CaseWorkflowFilterFields", OperationKind.Read, true, false,
+                "Lists the fields a query builder JSON filter over Case Workflows may use."),
+            new ServiceToolDescriptor(
+                "CaseWorkflowFilter", OperationKind.Read, true, false,
+                "Returns the Case Workflows matching query builder JSON, keyset-paged and capped."),
+            new ServiceToolDescriptor(
+                "CaseWorkflowCount", OperationKind.Read, true, false,
+                "Counts the Case Workflows matching query builder JSON, optionally grouped by a field."),
+            new ServiceToolDescriptor(
                 "CaseWorkflowListByModelActiveOnly", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists active Case Workflows for a parent model that the caller holds a role grant on."),
             new ServiceToolDescriptor(
@@ -29,6 +38,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             new ServiceToolDescriptor(
                 "CaseWorkflowCreate", OperationKind.Write, Idempotent: false, Destructive: false,
                 "Creates a Case Workflow; calling twice creates two."),
+            new ServiceToolDescriptor(
+                "CaseWorkflowValidate", OperationKind.Read, true, false,
+                "Validates a Case Workflow without saving it and returns every failure."),
             new ServiceToolDescriptor(
                 "CaseWorkflowUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
                 "Updates a Case Workflow; overwrites, writes a version-audit row."),

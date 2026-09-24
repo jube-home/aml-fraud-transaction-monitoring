@@ -21,6 +21,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "CaseWorkflowMacroList", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists Case Workflow Macros visible to the caller's tenant, keyset-paged and capped."),
             new ServiceToolDescriptor(
+                "CaseWorkflowMacroFilterFields", OperationKind.Read, true, false,
+                "Lists the fields a query builder JSON filter over Case Workflow Macros may use."),
+            new ServiceToolDescriptor(
+                "CaseWorkflowMacroFilter", OperationKind.Read, true, false,
+                "Returns the Case Workflow Macros matching query builder JSON, keyset-paged and capped."),
+            new ServiceToolDescriptor(
+                "CaseWorkflowMacroCount", OperationKind.Read, true, false,
+                "Counts the Case Workflow Macros matching query builder JSON, optionally grouped by a field."),
+            new ServiceToolDescriptor(
                 "CaseWorkflowMacroListByWorkflowIdActiveOnly", OperationKind.Read, Idempotent: true,
                 Destructive: false,
                 "Lists active Case Workflow Macros for a parent Case Workflow that the caller holds a role " +
@@ -36,6 +45,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             new ServiceToolDescriptor(
                 "CaseWorkflowMacroCreate", OperationKind.Write, Idempotent: false, Destructive: false,
                 "Creates a Case Workflow Macro; calling twice creates two."),
+            new ServiceToolDescriptor(
+                "CaseWorkflowMacroValidate", OperationKind.Read, true, false,
+                "Validates a Case Workflow Macro without saving it and returns every failure."),
             new ServiceToolDescriptor(
                 "CaseWorkflowMacroUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
                 "Updates a Case Workflow Macro; overwrites, writes a version-audit row."),

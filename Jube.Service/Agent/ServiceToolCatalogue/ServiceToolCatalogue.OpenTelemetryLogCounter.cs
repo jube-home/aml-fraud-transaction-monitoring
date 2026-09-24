@@ -31,6 +31,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Registers a rule that increments an OpenTelemetry counter named Name whenever Regex " +
                     "matches an incoming unstructured log line; calling twice creates two rows."),
                 new ServiceToolDescriptor(
+                    "OpenTelemetryLogCounterValidate", OperationKind.Read, true, false,
+                    "Validates an Open Telemetry Log Counter without saving it and returns every failure."),
+                new ServiceToolDescriptor(
                     "OpenTelemetryLogCounterUpdate", OperationKind.Write, true, false,
                     "Updates an existing rule in place."),
                 new ServiceToolDescriptor(

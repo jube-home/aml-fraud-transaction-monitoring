@@ -27,9 +27,21 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     Destructive: false,
                     "Lists scheduled model-synchronisation rows for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelSynchronisationScheduleFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Synchronisation Schedules may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSynchronisationScheduleFilter", OperationKind.Read, true, false,
+                    "Returns the Synchronisation Schedules matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSynchronisationScheduleCount", OperationKind.Read, true, false,
+                    "Counts the Synchronisation Schedules matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelSynchronisationScheduleCreate", OperationKind.Write, Idempotent: false,
                     Destructive: false,
-                    "Schedules model synchronisation across the cluster; calling twice creates two rows.")
+                    "Schedules model synchronisation across the cluster; calling twice creates two rows."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSynchronisationScheduleValidate", OperationKind.Read, true, false,
+                    "Validates a Synchronisation Schedule without saving it and returns every failure.")
             ]);
     }
 }

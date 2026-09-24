@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelHttpAdaptationList", OperationKind.Read, true, false,
                     "Lists HTTP Adaptations for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelHttpAdaptationFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over HTTP Adaptations may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelHttpAdaptationFilter", OperationKind.Read, true, false,
+                    "Returns the HTTP Adaptations matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelHttpAdaptationCount", OperationKind.Read, true, false,
+                    "Counts the HTTP Adaptations matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationGet", OperationKind.Read, true, false,
                     "Returns one HTTP Adaptation by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -32,6 +41,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationCreate", OperationKind.Write, false, false,
                     "Registers an HTTP Adaptation under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelHttpAdaptationValidate", OperationKind.Read, true, false,
+                    "Validates a HTTP Adaptation without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationUpdate", OperationKind.Write, true, false,
                     "Updates an HTTP Adaptation in the caller's tenant by id."),

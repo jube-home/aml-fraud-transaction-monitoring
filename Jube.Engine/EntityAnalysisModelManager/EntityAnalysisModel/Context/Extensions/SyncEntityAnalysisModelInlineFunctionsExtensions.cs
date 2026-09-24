@@ -51,7 +51,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelInlineFunctionRepository.GetByEntityAnalysisModelId for entity model key of {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository
+                        .GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken)
+                        .ConfigureAwait(false);
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -232,28 +234,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                             if (hasRuleScript)
                             {
-                                var activationRuleScript = new StringBuilder();
-                                activationRuleScript.Append("Imports System.IO\r\n");
-                                activationRuleScript.Append("Imports log4net\r\n");
-                                activationRuleScript.Append("Imports System.Net\r\n");
-                                activationRuleScript.Append("Imports System.Collections.Generic\r\n");
-                                activationRuleScript.Append("Imports Jube.Dictionary\r\n");
-                                activationRuleScript.Append("Imports Jube.Dictionary.Extensions\r\n");
-                                activationRuleScript.Append("Imports System\r\n");
-                                activationRuleScript.Append("Public Class InlineFunction\r\n");
-                                activationRuleScript.Append(
-                                    "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List As Dictionary(Of String, List(Of String)),KVP As PooledDictionary(Of String, Double),Log as ILog) As Object\r\n");
-                                activationRuleScript.Append("Dim Matched as Object = Nothing");
-                                activationRuleScript.Append("\r\n");
-                                activationRuleScript.Append("Try\r\n");
-                                activationRuleScript.Append(entityAnalysisModelInlineFunction.FunctionScript + "\r\n");
-                                activationRuleScript.Append("Catch ex As Exception\r\n");
-                                activationRuleScript.Append("Log.Info(ex.ToString)\r\n");
-                                activationRuleScript.Append("End Try\r\n");
-                                activationRuleScript.Append("Return Matched\r\n");
-                                activationRuleScript.Append("\r\n");
-                                activationRuleScript.Append("End Function\r\n");
-                                activationRuleScript.Append("End Class\r\n");
+                                var activationRuleScript = new StringBuilder(
+                                    EngineRuleWrapper.InlineFunction(entityAnalysisModelInlineFunction.FunctionScript)
+                                        .Text);
 
                                 if (context.Services.Log.IsDebugEnabled)
                                 {
@@ -269,7 +252,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         $"Entity Start: {key} and Function {entityAnalysisModelInlineFunction.Id} has been hashed to {activationRuleScriptHash}, will now check if it is in the hash cache.");
                                 }
 
-                                if (context.Caching.HashCacheAssembly.TryGetValue(activationRuleScriptHash, out var valueHash))
+                                if (context.Caching.HashCacheAssembly.TryGetValue(activationRuleScriptHash,
+                                        out var valueHash))
                                 {
                                     if (context.Services.Log.IsDebugEnabled)
                                     {
@@ -312,7 +296,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     var compile = new Compile();
                                     compile.CompileCode(activationRuleScript.ToString(), context.Services.Log,
                                     [
-                                        Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(), "log4net.dll"),
+                                        Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),
+                                            "log4net.dll"),
                                         Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll")
                                     ], Compile.Language.Vb);
 
@@ -342,12 +327,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                                 typeof(EntityAnalysisModelInlineFunction.Match),
                                                 methodInfo);
 
-                                        context.Caching.HashCacheAssembly.TryAdd(activationRuleScriptHash, compile.CompiledAssembly);
+                                        context.Caching.HashCacheAssembly.TryAdd(activationRuleScriptHash,
+                                            compile.CompiledAssembly);
                                         context.Caching.HashCacheAssemblyMetadata.TryAdd(activationRuleScriptHash,
-                                            new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes, compile.CompiledAssemblyBinary, activationRuleScript.ToString()));
+                                            new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
+                                                compile.CompiledAssemblyBinary, activationRuleScript.ToString()));
                                         shadowEntityAnalysisModelInlineFunctions.Add(entityAnalysisModelInlineFunction);
 
-                                        await new EntityAnalysisModelInlineFunctionRepository(context.Services.DbContext)
+                                        await new EntityAnalysisModelInlineFunctionRepository(
+                                                context.Services.DbContext)
                                             .UpdateCompileStatusAsync(entityAnalysisModelInlineFunction.Id, true, null,
                                                 context.Services.CancellationToken).ConfigureAwait(false);
 
@@ -359,8 +347,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     }
                                     else
                                     {
-                                        await new EntityAnalysisModelInlineFunctionRepository(context.Services.DbContext)
-                                            .UpdateCompileStatusAsync(entityAnalysisModelInlineFunction.Id, false, compile.ErrorsSummary,
+                                        await new EntityAnalysisModelInlineFunctionRepository(
+                                                context.Services.DbContext)
+                                            .UpdateCompileStatusAsync(entityAnalysisModelInlineFunction.Id, false,
+                                                compile.ErrorsSummary,
                                                 context.Services.CancellationToken).ConfigureAwait(false);
 
                                         if (context.Services.Log.IsDebugEnabled)
@@ -389,7 +379,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                     }
 
-                    context.Services.Parser.EntityAnalysisModelsInlineFunctions = shadowEntityAnalysisModelsInlineFunctions;
+                    context.Services.Parser.EntityAnalysisModelsInlineFunctions =
+                        shadowEntityAnalysisModelsInlineFunctions;
                     value.Collections.EntityAnalysisModelInlineFunctions = shadowEntityAnalysisModelInlineFunctions;
                     value.References.PayloadInitialSize = DictionaryNoBoxingHelpers.CalculateInitialSize(value);
 
@@ -410,7 +401,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelInlineFunctionsAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.InlineFunctions, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.InlineFunctions, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

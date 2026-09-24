@@ -12,7 +12,6 @@
  */
 
 using System.Globalization;
-using System.IO;
 using System.Text.RegularExpressions;
 using FluentAssertions;
 using Jube.Dictionary.Extensions;
@@ -39,45 +38,15 @@ namespace Jube.Test.Dictionary.Extensions
         }
 
         [Fact]
-        public void HtmlAttributeEncodeWithATextWriterWritesToTheStreamInsteadOfReturning()
-        {
-            using var writer = new StringWriter();
-
-            "he said \"hi\"".HtmlAttributeEncode(writer);
-
-            writer.ToString().Should().Be("he said &quot;hi&quot;");
-        }
-
-        [Fact]
         public void HtmlEncodeEscapesAngleBracketsAndAmpersands()
         {
             "<b>a & b</b>".HtmlEncode().Should().Be("&lt;b&gt;a &amp; b&lt;/b&gt;");
         }
 
         [Fact]
-        public void HtmlEncodeWithATextWriterWritesToTheStreamInsteadOfReturning()
-        {
-            using var writer = new StringWriter();
-
-            "<b>x</b>".HtmlEncode(writer);
-
-            writer.ToString().Should().Be("&lt;b&gt;x&lt;/b&gt;");
-        }
-
-        [Fact]
         public void HtmlDecodeReversesHtmlEncode()
         {
             "&lt;b&gt;a &amp; b&lt;/b&gt;".HtmlDecode().Should().Be("<b>a & b</b>");
-        }
-
-        [Fact]
-        public void HtmlDecodeWithATextWriterWritesToTheStreamInsteadOfReturning()
-        {
-            using var writer = new StringWriter();
-
-            "&lt;b&gt;x&lt;/b&gt;".HtmlDecode(writer);
-
-            writer.ToString().Should().Be("<b>x</b>");
         }
 
         [Fact]
@@ -435,6 +404,7 @@ namespace Jube.Test.Dictionary.Extensions
         [Theory]
         [InlineData("user@example.com", true)]
         [InlineData("user.name@sub.example.com", true)]
+        [InlineData("user+tag@example.com", true)]
         [InlineData("not-an-email", false)]
         [InlineData("@example.com", false)]
         [InlineData("user@", false)]

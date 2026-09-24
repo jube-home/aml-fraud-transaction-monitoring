@@ -139,33 +139,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         private static Dictionary<string, DictionaryNoBoxing<string>> BuildParsedPayloadMap(Context context,
             Dictionary<string, DictionaryNoBoxing<int>> payloadMap)
         {
-            var parsedPayloadMap = new Dictionary<string, DictionaryNoBoxing<string>>(payloadMap.Count);
-            var parseIndexCache = context.EntityAnalysisModel.Collections.ParseIndexCache;
-
-            foreach (var (key, raw) in payloadMap)
-            {
-                var document = new DictionaryNoBoxing<string>(raw.Count);
-                foreach (var (i, value) in raw)
-                {
-                    switch (i)
-                    {
-                        case -1:
-                            document.AddUnchecked(context.EntityAnalysisModel.References.ReferenceDateName, value);
-                            continue;
-                        case < 0:
-                            continue;
-                    }
-
-                    if (parseIndexCache is not null && parseIndexCache.TryGetValue(i, out var name))
-                    {
-                        document.AddUnchecked(name, value);
-                    }
-                }
-
-                parsedPayloadMap[key] = document;
-            }
-
-            return parsedPayloadMap;
+            return CachedPayloadDecoder.Decode(payloadMap, context.EntityAnalysisModel.Collections.ParseIndexCache,
+                context.EntityAnalysisModel.References.ReferenceDateName);
         }
 
         private static async Task<Dictionary<string, DictionaryNoBoxing<int>>> FetchSortedSetKeysByGroupingKeyAsync(
@@ -193,17 +168,23 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                                 ? context.EntityAnalysisModel.Cache.CacheTtlLimit
                                 : value.SearchKeyFetchLimit;
 
-                            context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
-                                TaskType.CachePayloadInsertAsync, async () => await context.EntityAnalysisModel.Services
-                                    .CacheService.CachePayloadRepository
-                                    .InsertPayloadJournalAndLedgerAsync(
-                                        context.EntityAnalysisModel.Instance.TenantRegistryId,
-                                        context.EntityAnalysisModel.Instance.Guid,
-                                        key,
-                                        context.EntityAnalysisModelInstanceEntryPayload.Payload[key].AsString(),
-                                        context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate,
-                                        context.EntityAnalysisModelInstanceEntryPayload
-                                            .EntityAnalysisModelInstanceEntryGuid).ConfigureAwait(false), context.Log));
+                            if (!context.EntityAnalysisModelInstanceEntryPayload
+                                    .EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
+                            {
+                                context.PendingWriteTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                                    TaskType.CachePayloadInsertAsync, async () => await context.EntityAnalysisModel
+                                        .Services
+                                        .CacheService.CachePayloadRepository
+                                        .InsertPayloadJournalAndLedgerAsync(
+                                            context.EntityAnalysisModel.Instance.TenantRegistryId,
+                                            context.EntityAnalysisModel.Instance.Guid,
+                                            key,
+                                            context.EntityAnalysisModelInstanceEntryPayload.Payload[key].AsString(),
+                                            context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate,
+                                            context.EntityAnalysisModelInstanceEntryPayload
+                                                .EntityAnalysisModelInstanceEntryGuid).ConfigureAwait(false),
+                                    context.Log));
+                            }
 
                             sortedSetFetchTasks.Add(FetchSortedSetKeysAsync(key, limit));
 

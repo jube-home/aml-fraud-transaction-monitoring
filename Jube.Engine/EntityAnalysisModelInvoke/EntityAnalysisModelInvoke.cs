@@ -25,6 +25,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.Extraction;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.AsyncInvocationCallbackToken;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Archiver;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ResponseTimePipelineCounters;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.StagePerformanceCounters;
@@ -75,12 +76,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
         }
 
         public static Task InvokeAsync(EntityAnalysisModel entityAnalysisModel,
-            DictionaryNoBoxing<string> dictionaryNoBoxing, int entityAnalysisModelReprocessingRuleInstanceId)
+            DictionaryNoBoxing<string> dictionaryNoBoxing, int entityAnalysisModelReprocessingRuleInstanceId,
+            ReprocessingArchiveBatch reprocessingArchiveBatch = null)
         {
             var extractor = new EntityAnalysisModelDictionaryNoBoxingExtractor(entityAnalysisModel,
                 entityAnalysisModel.Dependencies.ActiveEntityAnalysisModels,
                 entityAnalysisModel.Services.JubeEnvironment, entityAnalysisModel.Services.Log);
             var context = extractor.CreateContext(dictionaryNoBoxing, entityAnalysisModelReprocessingRuleInstanceId);
+            context.EntityAnalysisModelInstanceEntryPayload.ReprocessingArchiveBatch = reprocessingArchiveBatch;
             DetermineSampled(context);
 
             if (context.LogSampled)
@@ -318,6 +321,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
             {
                 context.Log.Error(
                     $"Entity Invoke: {context.EntityAnalysisModel.Instance.Id} has created a general error as {ex}.");
+
+                if (context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId
+                    .HasValue)
+                {
+                    throw;
+                }
             }
         }
 

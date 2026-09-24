@@ -14,6 +14,8 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Filter;
+using Jube.Dto.Validation;
 using Jube.Dto.Repository.EntityAnalysisModelSynchronisationSchedule;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -222,6 +224,153 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Synchronisation " +
+                     "Schedules may use, with each field's type, the operators allowed for it " +
+                     "and what it means. Use them as rule ids in " +
+                     "EntityAnalysisModelSynchronisationScheduleFilter and " +
+                     "EntityAnalysisModelSynchronisationScheduleCount.")]
+        [ServiceOperation("EntityAnalysisModelSynchronisationScheduleFilterFields", OperationKind.Read,
+            Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSynchronisationSchedule.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelSynchronisationScheduleDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error(
+                    $"EntityAnalysisModelSynchronisationSchedule.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Synchronisation Schedules in the caller's tenant matching " +
+                     "query builder JSON (the same format as the rule builder, over the fields " +
+                     "from EntityAnalysisModelSynchronisationScheduleFilterFields), ordered by " +
+                     "id and capped at 'take' rows (max 200). If 'more' is true, call again " +
+                     "with 'afterId' set to the last returned Id to continue. Invalid JSON is " +
+                     "not an error: Valid is false and Errors gives each problem with its JSON " +
+                     "path.")]
+        [ServiceOperation("EntityAnalysisModelSynchronisationScheduleFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelSynchronisationScheduleDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Synchronisation Schedules, using the fields from EntityAnalysisModelSynchronisationScheduleFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelSynchronisationSchedule.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.Filter");
+                var rows = EntityAnalysisModelSynchronisationScheduleMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelSynchronisationSchedule.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Synchronisation Schedules in the caller's tenant matching " +
+                     "query builder JSON (over the fields from " +
+                     "EntityAnalysisModelSynchronisationScheduleFilterFields; empty counts " +
+                     "all), optionally broken down by the values of one field. Invalid JSON is " +
+                     "not an error: Valid is false and Errors gives each problem with its JSON " +
+                     "path.")]
+        [ServiceOperation("EntityAnalysisModelSynchronisationScheduleCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Synchronisation Schedules, using the fields from EntityAnalysisModelSynchronisationScheduleFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelSynchronisationScheduleFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSynchronisationSchedule.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.Count");
+                var rows = EntityAnalysisModelSynchronisationScheduleMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelSynchronisationSchedule.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Schedules model synchronisation across the cluster for the caller's tenant. When " +
                      "ScheduleDate is omitted, the server schedules it for the current time -- an immediate " +
                      "'Synchronise Now'. Not idempotent -- calling twice creates two rows.")]
@@ -296,6 +445,49 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
             {
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelSynchronisationSchedule.Create: unexpected failure user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        [Description("Validates a Synchronisation Schedule without saving it, running every check a create " +
+                     "would run, and returns each failure. Nothing is stored or changed.")]
+        [ServiceOperation("EntityAnalysisModelSynchronisationScheduleValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Synchronisation Schedule to validate.")]
+            EntityAnalysisModelSynchronisationScheduleDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelSynchronisationSchedule", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSynchronisationSchedule.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("EntityAnalysisModelSynchronisationSchedule.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelSynchronisationSchedule.Validate: unexpected failure user={userName}",
                     ex);
                 throw;
             }

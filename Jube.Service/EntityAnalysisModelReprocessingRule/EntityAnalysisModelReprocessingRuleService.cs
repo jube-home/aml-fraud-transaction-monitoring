@@ -12,8 +12,14 @@
  */
 
 using System.ComponentModel;
+using FluentValidation;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Parser;
+using Jube.Dto.Filter;
+using Jube.Dto.RuleExecution;
+using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelReprocessingRule;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -22,6 +28,7 @@ using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using Jube.Validations.EntityAnalysisModelReprocessingRule;
+using Jube.Validations.RuleScript;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -34,6 +41,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
         private const int MaxListTake = 200;
         private static readonly int[] permissions = [26];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelReprocessingRuleRepository repository;
@@ -47,6 +55,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
             int tenantRegistryId, PermissionValidation permissionValidation, ILog log, ILog auditLog,
             IServiceChangeBus serviceChangeBus, IStringLocalizer strings)
         {
+            this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -56,7 +65,8 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelReprocessingRuleRepository(dbContext, userName);
             validator = new EntityAnalysisModelReprocessingRuleDtoValidator(repository, strings,
-                new EntityAnalysisModelRepository(dbContext, userName));
+                new EntityAnalysisModelRepository(dbContext, userName),
+                new RuleScriptParser(dbContext, tenantRegistryId));
         }
 
         public static Task<EntityAnalysisModelReprocessingRuleService> CreateAsync(DbContext dbContext,
@@ -329,6 +339,148 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Reprocessing Rules may " +
+                     "use, with each field's type, the operators allowed for it and what it " +
+                     "means. Use them as rule ids in EntityAnalysisModelReprocessingRuleFilter " +
+                     "and EntityAnalysisModelReprocessingRuleCount.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRule", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelReprocessingRule.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelReprocessingRuleDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelReprocessingRule.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Reprocessing Rules in the caller's tenant matching query " +
+                     "builder JSON (the same format as the rule builder, over the fields from " +
+                     "EntityAnalysisModelReprocessingRuleFilterFields), ordered by id and " +
+                     "capped at 'take' rows (max 200). If 'more' is true, call again with " +
+                     "'afterId' set to the last returned Id to continue. Invalid JSON is not an " +
+                     "error: Valid is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelReprocessingRuleDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Reprocessing Rules, using the fields from EntityAnalysisModelReprocessingRuleFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRule", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelReprocessingRule.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.Filter");
+                var rows = EntityAnalysisModelReprocessingRuleMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelReprocessingRule.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Reprocessing Rules in the caller's tenant matching query " +
+                     "builder JSON (over the fields from " +
+                     "EntityAnalysisModelReprocessingRuleFilterFields; empty counts all), " +
+                     "optionally broken down by the values of one field. Invalid JSON is not an " +
+                     "error: Valid is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Reprocessing Rules, using the fields from EntityAnalysisModelReprocessingRuleFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelReprocessingRuleFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRule", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelReprocessingRule.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.Count");
+                var rows = EntityAnalysisModelReprocessingRuleMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelReprocessingRule.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Registers a new Reprocessing Rule under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelReprocessingRuleCreate", OperationKind.Write, Idempotent = false)]
@@ -405,6 +557,195 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelReprocessingRule.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates a Reprocessing Rule without saving it, running every check a create (Id 0) or " +
+                     "an update (any other Id) would run, and returns each failure. Nothing is stored or " +
+                     "changed.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Reprocessing Rule to validate.")]
+            EntityAnalysisModelReprocessingRuleDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRule", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelReprocessingRule.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelReprocessingRule.Validate: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Parses and compiles the rule text of a Reprocessing Rule against its Entity Analysis Model " +
+                     "as the engine would, without saving anything, and returns each error with its line " +
+                     "and position in the rule text. Cheaper than a full validation; use it to iterate on " +
+                     "rule text.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleParseRule", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ParseRuleAsync(
+            [Description(
+                "The Reprocessing Rule whose rule text is parsed; only the model id, the rule script type and the " +
+                "rule text are read.")]
+            EntityAnalysisModelReprocessingRuleDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRule", "ParseRule", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelReprocessingRule.ParseRule: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.ParseRule");
+
+                var results = await validator.ValidateAsync(model,
+                    o => o.IncludeRuleSets(RuleScriptParser.RuleSetName), token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelReprocessingRule.ParseRule: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Runs a Reprocessing Rule against an invocation context exactly as the engine would compile and " +
+                     "call it, without saving the rule or storing anything, and returns the result, any runtime " +
+                     "error, how long it took and which names it read, flagging any the context leaves unset. " +
+                     "Build the context with the EntityAnalysisModelInvocationContext operations.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleExecute", OperationKind.Read, Idempotent = true)]
+        public async Task<RuleExecutionResultDto> ExecuteAsync(
+            [Description(
+                "The Reprocessing Rule to run; only the model id, the rule script type and the rule text are read.")]
+            EntityAnalysisModelReprocessingRuleDto? model,
+            [Description("The invocation context to run it against, built for the same model.")]
+            InvocationContextDto? context,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRule", "Execute", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelReprocessingRule.Execute: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                ArgumentNullException.ThrowIfNull(context);
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.Execute");
+
+                var result = await RuleExecutor.ExecuteAsync(dbContext, tenantRegistryId,
+                    model.EntityAnalysisModelId, RuleParse.GatewayRule,
+                    model.RuleScriptTypeId == 1 ? model.BuilderRuleScript : model.CoderRuleScript,
+                    model.RuleScriptTypeId == 1 ? "BuilderRuleScript" : "CoderRuleScript",
+                    null, true, context, token).ConfigureAwait(false);
+                op.Rows(result.Errors.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelReprocessingRule.Execute: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Turns query builder JSON (the rule builder's own format: a group with condition AND or OR, " +
+                     "an optional not, and rules of id, operator and value) into the rule text the browser's rule " +
+                     "builder would produce for a Reprocessing Rule, and checks it parses and compiles against the model. " +
+                     "Field ids are completion names from CompletionsGetByEntityAnalysisModelIdParseTypeId with " +
+                     "parse type 2. Returns the rule text to save as BuilderRuleScript with the JSON as Json and " +
+                     "RuleScriptTypeId 1, or each problem with its JSON path. Nothing is saved.")]
+        [ServiceOperation("EntityAnalysisModelReprocessingRuleBuildRuleFromBuilderJson", OperationKind.Read,
+            Idempotent = true)]
+        public async Task<BuilderRuleResultDto> BuildRuleFromBuilderJsonAsync(
+            [Description("Id of the Entity Analysis Model the rule belongs to.")]
+            int entityAnalysisModelId,
+            [Description("The query builder JSON, e.g. {\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Amount\"," +
+                         "\"operator\":\"greater\",\"value\":100}]}.")]
+            string? builderJson,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelReprocessingRule", "BuildRuleFromBuilderJson",
+                userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.BuildRuleFromBuilderJson");
+                var result = await BuilderRuleComposer.ComposeAsync(dbContext, tenantRegistryId,
+                    entityAnalysisModelId, RuleParse.GatewayRule, builderJson, token).ConfigureAwait(false);
+                op.Rows(result.Errors.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error(
+                    $"EntityAnalysisModelReprocessingRule.BuildRuleFromBuilderJson: unexpected failure user={userName}",
+                    ex);
                 throw;
             }
         }

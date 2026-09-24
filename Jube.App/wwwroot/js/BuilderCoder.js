@@ -29,10 +29,35 @@ let tabStrip;
 let entityAnalysisModelId;
 let ruleParseType;
 let builderReady = false;
+let builderOperatorCatalogue = [];
+let builderOperatorsPromise;
+let builderFieldTypes = {};
 
 function loadScript(url) {
     return new Promise(function (resolve, reject) {
         $.getScript(url).done(resolve).fail(reject);
+    });
+}
+
+function loadBuilderOperators() {
+    if (!builderOperatorsPromise) {
+        builderOperatorsPromise = new Promise(function (resolve, reject) {
+            $.getJSON("/api/QueryBuilder/Operators")
+                .done(function (operators) {
+                    builderOperatorCatalogue = operators;
+                    resolve(operators);
+                })
+                .fail(reject);
+        });
+    }
+    return builderOperatorsPromise;
+}
+
+function builderOperatorsFor(dataType) {
+    return builderOperatorCatalogue.filter(function (o) {
+        return o.applyTo.indexOf(dataType) >= 0;
+    }).map(function (o) {
+        return o.type;
     });
 }
 
@@ -184,17 +209,7 @@ function setRuleType(denormIndex) {
 
 function createBuilderRuleText() {
     if (validateBuilder()) {
-        let sql = builder.queryBuilder('getSQL').sql;
-        sql = sql.split("['").join("");
-        sql = sql.split("']").join("");
-        sql = sql.split("= 'True'").join("= True");
-        sql = sql.split("= 'False'").join("= False");
-
-        let result = "If (" + sql + ") Then\n  Return True\nEnd If"
-        result = result.replace(/'/g, '"');
-        result = result.split(' .').join('.');
-        result = result.trim();
-        ruleTextBuilder = result;
+        ruleTextBuilder = builderRuleText(builder.queryBuilder('getRules'));
     } else {
         ruleTextBuilder = "Return False";
         builderInvalid = true;
@@ -211,6 +226,333 @@ function FilterExists(name, filters) {
     return false;
 }
 
+function builderFiltersFromCompletions(source) {
+    let filters = [];
+    let listSelects = {};
+
+    for (const completion of source) {
+        if (completion.dataType === "string") {
+            listSelects[completion.name] = completion.name;
+        }
+    }
+
+    for (const completion of source) {
+        if (FilterExists(completion.name, filters)) {
+            continue;
+        }
+
+        const operators = builderOperatorsFor(completion.dataType);
+        if (operators.length === 0) {
+            continue;
+        }
+
+        let filter = {
+            optgroup: completion.group,
+            id: completion.name,
+            name: completion.name,
+            operators: operators,
+            value_separator: ','
+        };
+
+        if (completion.dataType === "string") {
+            filter.type = 'string';
+        } else if (completion.dataType === "integer") {
+            filter.type = 'integer';
+        } else if (completion.dataType === "double") {
+            filter.type = 'double';
+        } else if (completion.dataType === "datetime") {
+            filter.type = 'datetime';
+        } else if (completion.dataType === "boolean") {
+            filter.type = 'string';
+            filter.input = "radio";
+            filter.default_value = "True";
+            filter.values = {'True': 'Yes', 'False': 'No'};
+        } else if (completion.dataType === "list") {
+            filter.type = 'string';
+            filter.input = "select";
+            filter.values = listSelects;
+        } else {
+            continue;
+        }
+
+        builderFieldTypes[completion.name] = completion.dataType;
+        filters.push(filter);
+    }
+
+    return filters;
+}
+
+function builderOptions(filters) {
+    const operatorLabels = {};
+    const groupLabels = {};
+    const operators = builderOperatorCatalogue.map(function (o) {
+        operatorLabels[o.type] = o.label;
+        groupLabels[o.group] = o.group;
+        return {
+            type: o.type,
+            nb_inputs: o.arguments.length,
+            multiple: false,
+            apply_to: ['string', 'number', 'datetime', 'boolean'],
+            optgroup: o.group
+        };
+    });
+
+    return {
+        plugins: [
+            'not-group'
+        ],
+        filters: filters,
+        operators: operators,
+        lang: {operators: operatorLabels, optgroups: groupLabels}
+    };
+}
+
+function builderOperator(type) {
+    return builderOperatorCatalogue.find(function (o) {
+        return o.type === type;
+    });
+}
+
+function builderArgumentKind(argument, dataType) {
+    if (argument.kind !== 'value') {
+        return argument.kind;
+    }
+    switch (dataType) {
+        case 'integer':
+            return 'integer';
+        case 'double':
+            return 'number';
+        case 'datetime':
+            return 'date';
+        case 'string':
+            return 'text';
+        case 'boolean':
+            return 'boolean';
+        default:
+            return 'field';
+    }
+}
+
+function builderReferable(kind, dataType) {
+    switch (kind) {
+        case 'list':
+            return ['list'];
+        case 'field':
+            return dataType === 'list' ? ['string'] : [dataType];
+        case 'number':
+            return ['double', 'integer'];
+        case 'integer':
+            return ['integer'];
+        case 'date':
+            return ['datetime'];
+        default:
+            return [];
+    }
+}
+
+function builderFieldsOf(types) {
+    return Object.keys(builderFieldTypes).filter(function (id) {
+        return types.indexOf(builderFieldTypes[id]) >= 0;
+    }).sort();
+}
+
+function builderIsCustomised(rule) {
+    const operator = rule.operator && builderOperator(rule.operator.type);
+    return !!operator && operator.arguments.length > 0 && rule.filter && rule.filter.input !== 'radio';
+}
+
+function builderInputHtml(rule, index) {
+    const dataType = builderFieldTypes[rule.filter.id];
+    const argument = builderOperator(rule.operator.type).arguments[index];
+    const kind = builderArgumentKind(argument, dataType);
+    const name = rule.id + '_value_' + index;
+    const referable = builderFieldsOf(builderReferable(kind, dataType));
+
+    if (kind === 'list' || kind === 'field') {
+        return '<select class="form-control" name="' + name + '" title="' + escapeBuilderHtml(argument.name) + '">' +
+            '<option value="">' + escapeBuilderHtml(argument.name) + '</option>' +
+            referable.map(function (id) {
+                return '<option value="' + escapeBuilderHtml(id) + '">' + escapeBuilderHtml(id) + '</option>';
+            }).join('') + '</select>';
+    }
+
+    let placeholder = argument.name + (argument.many ? ', separated by commas' : '');
+    if (kind === 'date') {
+        placeholder += ' (2026-01-31T00:00:00)';
+    }
+    const listId = referable.length > 0 ? name + '_fields' : null;
+    return '<input class="form-control" type="text" name="' + name + '" placeholder="' +
+        escapeBuilderHtml(placeholder) + '" title="' + escapeBuilderHtml(placeholder +
+            (referable.length > 0 ? ', or a field' : '')) + '"' + (listId ? ' list="' + listId + '"' : '') + '>' +
+        (listId ? '<datalist id="' + listId + '">' + referable.map(function (id) {
+            return '<option value="' + escapeBuilderHtml(id) + '">';
+        }).join('') + '</datalist>' : '');
+}
+
+function escapeBuilderHtml(text) {
+    return String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function builderItems(argument, value) {
+    if (!argument.many) {
+        return [value];
+    }
+    return (Array.isArray(value) ? value : String(value === undefined || value === null ? '' : value).split(','))
+        .map(function (item) {
+            return String(item).trim();
+        }).filter(function (item) {
+            return item.length > 0;
+        });
+}
+
+function builderIsoDate(text) {
+    const trimmed = String(text).trim();
+    const zoned = /([zZ]|[+-]\d\d:?\d\d)$/.test(trimmed) || !/\d[T ]\d/.test(trimmed) ? trimmed : trimmed + 'Z';
+    const date = new Date(/[T ]/.test(zoned) || /[zZ]$/.test(zoned) ? zoned : zoned + 'T00:00:00Z');
+    if (isNaN(date.getTime())) {
+        return null;
+    }
+    return date.toISOString().replace(/\.000Z$/, 'Z').replace(/(\.\d*?)0+Z$/, '$1Z');
+}
+
+function builderItemError(kind, dataType, item) {
+    const text = String(item === undefined || item === null ? '' : item).trim();
+    if (text.length === 0) {
+        return 'A value is needed.';
+    }
+    if (builderFieldsOf(builderReferable(kind, dataType)).indexOf(text) >= 0) {
+        return null;
+    }
+    switch (kind) {
+        case 'integer':
+            return /^[+-]?\d+$/.test(text) ? null : 'A whole number is needed.';
+        case 'number':
+            return isFinite(Number(text)) ? null : 'A number is needed.';
+        case 'date':
+            return builderIsoDate(text) ? null : 'A date and time such as 2026-01-31T00:00:00 is needed.';
+        case 'list':
+            return 'Choose a list.';
+        case 'field':
+            return 'Choose a field.';
+        case 'text':
+            return /[\u0000-\u001f\u007f]/.test(text) ? 'Line breaks and control characters cannot be used.' : null;
+        default:
+            return null;
+    }
+}
+
+function bindBuilderInputs($element) {
+    $element.off('.builderInputs')
+        .on('getRuleInput.queryBuilder.filter.builderInputs', function (e, rule, name) {
+            if (builderIsCustomised(rule)) {
+                e.value = builderInputHtml(rule, Number(name.substring(name.lastIndexOf('_') + 1)));
+            }
+        })
+        .on('getRuleValue.queryBuilder.filter.builderInputs', function (e, rule) {
+            if (!builderIsCustomised(rule)) {
+                return;
+            }
+            const container = rule.$el.find('.rule-value-container');
+            const values = [];
+            for (let i = 0; i < rule.operator.nb_inputs; i++) {
+                values.push(container.find('[name="' + rule.id + '_value_' + i + '"]').val());
+            }
+            e.value = values.length === 1 ? values[0] : values;
+        })
+        .on('validateValue.queryBuilder.filter.builderInputs', function (e, value, rule) {
+            if (!builderIsCustomised(rule)) {
+                return;
+            }
+            const operator = builderOperator(rule.operator.type);
+            const dataType = builderFieldTypes[rule.filter.id];
+            const inputs = operator.arguments.length === 1 ? [value] : value;
+            for (let i = 0; i < operator.arguments.length; i++) {
+                const argument = operator.arguments[i];
+                const kind = builderArgumentKind(argument, dataType);
+                const items = builderItems(argument, inputs[i]);
+                if (items.length === 0) {
+                    e.value = [argument.name + ': a value is needed.'];
+                    return;
+                }
+                for (const item of items) {
+                    const error = builderItemError(kind, dataType, item);
+                    if (error) {
+                        e.value = [argument.name + ': ' + error];
+                        return;
+                    }
+                }
+            }
+            e.value = true;
+        });
+}
+
+function builderQuote(text) {
+    return '"' + String(text).split('"').join('""') + '"';
+}
+
+function builderLiteral(kind, dataType, item) {
+    const text = String(item).trim();
+    if (builderFieldsOf(builderReferable(kind, dataType)).indexOf(text) >= 0) {
+        return text;
+    }
+    switch (kind) {
+        case 'integer':
+            return String(parseInt(text, 10));
+        case 'number':
+            return String(Number(text));
+        case 'date':
+            return builderQuote(builderIsoDate(text)) + '.ToIsoDateTime()';
+        case 'boolean':
+            return text === 'True' ? 'True' : 'False';
+        case 'list':
+        case 'field':
+            return text;
+        default:
+            return builderQuote(item);
+    }
+}
+
+function builderRuleExpression(rule) {
+    const operator = builderOperator(rule.operator);
+    const dataType = builderFieldTypes[rule.id];
+    const inputs = operator.arguments.length === 1 ? [rule.value] : (rule.value || []);
+    const rendered = operator.arguments.map(function (argument, i) {
+        const kind = builderArgumentKind(argument, dataType);
+        return builderItems(argument, inputs[i]).map(function (item) {
+            return builderLiteral(kind, dataType, item);
+        }).join(', ');
+    }).join(', ');
+    return rule.id + operator.template.split('?').join(rendered);
+}
+
+function builderGroupExpression(group) {
+    const parts = group.rules.map(function (node) {
+        return node.rules ? '( ' + builderGroupExpression(node) + ' ) ' : builderRuleExpression(node);
+    });
+    const expression = parts.join(' ' + group.condition + ' ');
+    return group.not ? 'NOT ( ' + expression + ' )' : expression;
+}
+
+function builderRuleText(rules) {
+    return 'If (' + builderGroupExpression(rules) + ') Then\n  Return True\nEnd If';
+}
+
+function createQueryBuilder(selector, filters, rules) {
+    const settings = builderOptions(filters);
+    settings.allow_empty = true;
+    settings.rules = {condition: 'AND', rules: []};
+    bindBuilderInputs($(selector));
+    const instance = $(selector).queryBuilder(settings);
+    if (rules && rules.rules && rules.rules.length > 0) {
+        try {
+            instance.queryBuilder('setRules', rules);
+        } catch (e) {
+            console.warn('Could not restore builder rules:', e.message);
+        }
+    }
+    return instance;
+}
+
 function initBuilder(data) {
     if (!completions || completions.length === 0) {
         console.warn('initBuilder called with no completions — aborting.');
@@ -222,94 +564,10 @@ function initBuilder(data) {
         rules = data.ruleJsonBuilder;
     }
 
-    let filters = [];
-    let listSelects = {};
+    let filters = builderFiltersFromCompletions(completions);
 
-    for (const completion of completions) {
-        if (!FilterExists(completion.name, filters)) {
-            if (completion.dataType === "string") {
-                let filter = {
-                    optgroup: completion.group,
-                    id: completion.name,
-                    name: completion.name,
-                    type: completion.dataType
-                };
-                filters.push(filter);
-                listSelects[completion.name] = completion.name;
-            } else if (completion.dataType === "integer") {
-                let filter = {
-                    optgroup: completion.group,
-                    id: completion.name,
-                    name: completion.name,
-                    type: 'integer'
-                };
-                filters.push(filter);
-            } else if (completion.dataType === "double") {
-                let filter = {
-                    optgroup: completion.group,
-                    id: completion.name,
-                    name: completion.name,
-                    type: 'double'
-                };
-                filters.push(filter);
-            } else if (completion.dataType === "boolean") {
-                let filter = {
-                    optgroup: completion.group,
-                    id: completion.name,
-                    name: completion.name,
-                    type: 'string',
-                    input: "radio",
-                    default_value: "True",
-                    values: {
-                        'True': 'Yes',
-                        'False': 'No'
-                    },
-                    operators: ['equal']
-                };
-                filters.push(filter);
-            } else if (completion.dataType === "list") {
-                let filter = {
-                    optgroup: completion.group,
-                    id: completion.name,
-                    name: completion.name,
-                    type: 'string',
-                    input: "select",
-                    default_value: "True",
-                    values: listSelects,
-                    operators: ['has']
-                };
-                filters.push(filter);
-            }
-        }
-    }
-
-    builder = $('#Builder').queryBuilder({
-        plugins: [
-            'not-group'
-        ],
-        filters: filters,
-        operators: [
-            {type: 'equal', optgroup: 'basic'},
-            {type: 'less', optgroup: 'basic'},
-            {type: 'less_or_equal', optgroup: 'basic'},
-            {type: 'greater', optgroup: 'basic'},
-            {type: 'begins_with', optgroup: 'basic'},
-            {type: 'contains', optgroup: 'basic'},
-            {type: 'ends_with', optgroup: 'basic'},
-            {type: 'has', optgroup: 'custom', nb_inputs: 1, multiple: false, apply_to: ['lists']}
-        ],
-        sqlOperators: {
-            equal: {op: '= ?'},
-            less: {op: '< ?'},
-            less_or_equal: {op: '<= ?'},
-            greater: {op: '> ?'},
-            greater_or_equal: {op: '>= ?'},
-            begins_with: {op: '.StartsWith(?)'},
-            contains: {op: '.Contains(?)'},
-            ends_with: {op: '.EndsWith(?)'},
-            has: {op: '.contains([?])'}
-        }
-    });
+    bindBuilderInputs($('#Builder'));
+    builder = $('#Builder').queryBuilder(builderOptions(filters));
 
     if (rules) {
         const dropped = [];
@@ -470,6 +728,10 @@ function initBuilderCoder(parseType, modelId, data) {
                 }).appendTo('head');
             })
         );
+    }
+
+    if (showBuilder) {
+        scriptPromises.push(loadBuilderOperators());
     }
 
     Promise.all([loadCompletions(), ...scriptPromises])

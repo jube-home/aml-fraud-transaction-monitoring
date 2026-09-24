@@ -26,7 +26,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
         {
             try
             {
-                context.Services.Parser.EntityAnalysisModelRequestXPaths = new Dictionary<string, EntityAnalysisModelRequestXPath>();
+                context.Services.Parser.EntityAnalysisModelRequestXPaths =
+                    new Dictionary<string, EntityAnalysisModelRequestXPath>();
 
                 foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
                 {
@@ -47,9 +48,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     }
 
                     var records = await
-                        repository.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                        repository.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken)
+                            .ConfigureAwait(false);
 
-                    var shadowEntityAnalysisModelRequestXPath = new List<Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelRequestXPath>();
+                    var shadowEntityAnalysisModelRequestXPath =
+                        new List<Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.
+                            EntityAnalysisModelRequestXPath>();
                     var archivePayloadSqlSelect = "select a.\"EntityAnalysisModelInstanceEntryGuid\"," +
                                                   "a.\"CreatedDate\"," +
                                                   $"a.\"ReferenceDate\" AS \"{value.References.ReferenceDateName}\"";
@@ -77,10 +81,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     $"Entity Start: XPath ID {record.Id} returned for model {key} is active.");
                             }
 
-                            var entityAnalysisModelRequestXPath = new Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelRequestXPath
-                            {
-                                Id = record.Id
-                            };
+                            var entityAnalysisModelRequestXPath =
+                                new Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.
+                                    EntityAnalysisModelRequestXPath
+                                    {
+                                        Id = record.Id
+                                    };
 
                             if (record.Name == null)
                             {
@@ -598,10 +604,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     $"Entity Start: XPath ID {entityAnalysisModelRequestXPath.Id} added to shadow list for model {key}.");
                             }
 
-                            if (!context.Services.Parser.EntityAnalysisModelRequestXPaths.ContainsKey(entityAnalysisModelRequestXPath
-                                    .Name))
+                            if (!context.Services.Parser.EntityAnalysisModelRequestXPaths.ContainsKey(
+                                    entityAnalysisModelRequestXPath
+                                        .Name))
                             {
-                                context.Services.Parser.EntityAnalysisModelRequestXPaths.Add(entityAnalysisModelRequestXPath.Name,
+                                context.Services.Parser.EntityAnalysisModelRequestXPaths.Add(
+                                    entityAnalysisModelRequestXPath.Name,
                                     new EntityAnalysisModelRequestXPath
                                     {
                                         DataTypeId = entityAnalysisModelRequestXPath.DataTypeId,
@@ -627,8 +635,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     value.References.ArchivePayloadSqlBody = " From \"Archive\" a" +
                                                              " inner join \"EntityAnalysisModel\" m on a.\"EntityAnalysisModelId\" = m.\"Id\"  where "
                                                              + "m.\"Guid\" = '" + value.Instance.Guid + "'::uuid"
-                                                             + " and \"ReferenceDate\" >= (@adjustedStartDate) " +
-                                                             "order by m.\"Id\" asc limit (@limit) offset (@skip);";
+                                                             + " and a.\"ReferenceDate\" >= (@adjustedStartDate)"
+                                                             + " and a.\"ReferenceDate\" <= (@lastReferenceDate)"
+                                                             + " and (a.\"CreatedDate\" is null or a.\"CreatedDate\" <= (@snapshotDate))"
+                                                             + " and (a.\"ReferenceDate\", a.\"EntityAnalysisModelInstanceEntryGuid\") > ((@afterReferenceDate), (@afterEntityAnalysisModelInstanceEntryGuid))"
+                                                             + " order by a.\"ReferenceDate\" asc, a.\"EntityAnalysisModelInstanceEntryGuid\" asc limit (@limit);";
 
                     value.Collections.EntityAnalysisModelRequestXPaths = shadowEntityAnalysisModelRequestXPath;
                     value.References.PayloadInitialSize = DictionaryNoBoxingHelpers.CalculateInitialSize(value);
@@ -650,7 +661,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelRequestXPathAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.RequestXPath, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.RequestXPath, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
         }

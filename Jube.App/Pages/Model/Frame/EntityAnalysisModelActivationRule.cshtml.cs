@@ -24,6 +24,10 @@ namespace Jube.App.Pages.Model.Frame
     [Authorize]
     public class EntityAnalysisModelActivationRule : PageModel
     {
+        private const int PagePermission = 17;
+        private const int IntegrityPermission = 60;
+        private const int BacktestPermission = 61;
+
         private readonly PermissionValidation permissionValidation;
         private readonly string userName;
 
@@ -35,19 +39,26 @@ namespace Jube.App.Pages.Model.Frame
                 userName = httpContextAccessor.HttpContext.User.Identity.Name;
             }
 
-            permissionValidation = new PermissionValidation(dynamicEnvironment.AppSettings("ConnectionString"), userName, log);
+            permissionValidation =
+                new PermissionValidation(dynamicEnvironment.AppSettings("ConnectionString"), userName, log);
         }
+
+        public bool CanBacktest { get; private set; }
+
+        public bool CanCheckIntegrity { get; private set; }
 
         public ActionResult OnGet()
         {
             if (!permissionValidation.Validate(new[]
                 {
-                    17
+                    PagePermission
                 }))
             {
                 return Forbid();
             }
 
+            CanBacktest = permissionValidation.Validate([BacktestPermission]);
+            CanCheckIntegrity = permissionValidation.Validate([IntegrityPermission]);
             return new PageResult();
         }
     }

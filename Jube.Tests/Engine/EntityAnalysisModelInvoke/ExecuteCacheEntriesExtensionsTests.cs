@@ -102,22 +102,20 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         [Fact]
-        public async Task InsertOrReplaceCacheEntriesQueuesAnUpsertToTheSamePayloadKeyWhenReprocessingAsync()
+        public async Task ExecuteCacheDbStorageWritesNothingWhenReprocessingAsync()
         {
             var context = NewContext(reprocessingRuleInstanceId: 4);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "ACC-1");
             var cacheService = TestCacheService.Create(out var redis);
 
-            ExecuteCacheEntriesExtensions.InsertOrReplaceCacheEntries(context, cacheService);
-            context.PendingWriteTasks.Should().ContainSingle();
-            await Task.WhenAll(context.PendingWriteTasks);
+            context.ExecuteCacheDbStorage(cacheService,
+                new Dictionary<string, DistinctSearchKey> { ["AccountId"] = new() });
 
-            var payloadKey =
-                $"Payload:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{context.EntityAnalysisModel.Instance.Guid:N}";
-            var field = $"{context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid:N}";
-            var raw = await redis.HashGetAsync(payloadKey, field);
-
-            raw.HasValue.Should().BeTrue(
-                "UpsertAsync (the reprocessing path) must reach the same Payload key/field as InsertAsync");
+            context.PendingWriteTasks.Should().BeEmpty();
+            var tenant = context.EntityAnalysisModel.Instance.TenantRegistryId;
+            var model = context.EntityAnalysisModel.Instance.Guid;
+            (await redis.HashLengthAsync($"Payload:{tenant}:{model:N}")).Should().Be(0);
+            (await redis.HashLengthAsync($"PayloadLatest:{tenant}:{model:N}:AccountId")).Should().Be(0);
         }
 
         [Fact]

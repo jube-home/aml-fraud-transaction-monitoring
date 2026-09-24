@@ -355,7 +355,8 @@ namespace Jube.Test.Service.Repository.SessionCaseJournal
             var act = () => service.CreateAsync(new SessionCaseJournalDto { CaseWorkflowGuid = guid, Json = "{}" },
                 token);
             await act.Should().ThrowAsync<OperationCanceledException>();
-            (await dbContext.SessionCaseJournal.CountAsync(w => w.CaseWorkflowGuid == guid, token: token)).Should()
+            (await dbContext.SessionCaseJournal.CountAsync(w => w.CaseWorkflowGuid == guid,
+                    token: CancellationToken.None)).Should()
                 .Be(0);
         }
 

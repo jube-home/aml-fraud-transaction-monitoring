@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Validation;
 using Jube.Dto.OpenTelemetryLogCounter;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -248,6 +249,49 @@ namespace Jube.Service.OpenTelemetryLogCounter
             {
                 op.Error(ex);
                 log.Error($"OpenTelemetryLogCounter.Create: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates an Open Telemetry Log Counter without saving it, running every check a create " +
+                     "(Id 0) or an update (any other Id) would run, and returns each failure. Nothing is " +
+                     "stored or changed.")]
+        [ServiceOperation("OpenTelemetryLogCounterValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Open Telemetry Log Counter to validate.")]
+            OpenTelemetryLogCounterDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("OpenTelemetryLogCounter", "Validate", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"OpenTelemetryLogCounter.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("OpenTelemetryLogCounter.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"OpenTelemetryLogCounter.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }

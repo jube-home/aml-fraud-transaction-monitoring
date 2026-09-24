@@ -15,7 +15,9 @@ using System.Text.Json;
 using FluentValidation;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelReprocessingRule;
+using Jube.Parser;
 using Jube.Resources;
+using Jube.Validations.RuleScript;
 using Microsoft.Extensions.Localization;
 
 namespace Jube.Validations.EntityAnalysisModelReprocessingRule
@@ -31,7 +33,8 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
 
         public EntityAnalysisModelReprocessingRuleDtoValidator(
             EntityAnalysisModelReprocessingRuleRepository repository, IStringLocalizer localiser,
-            EntityAnalysisModelRepository entityAnalysisModelRepository)
+            EntityAnalysisModelRepository entityAnalysisModelRepository,
+            RuleScriptParser? ruleScriptParser = null)
         {
             RuleFor(p => p.EntityAnalysisModelId)
                 .Cascade(CascadeMode.Stop)
@@ -119,6 +122,18 @@ namespace Jube.Validations.EntityAnalysisModelReprocessingRule
                 .Must(m => allowedReprocessingIntervals.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelReprocessingRuleResources.ReprocessingIntervalInvalid])
                 .WithErrorCode("ReprocessingIntervalInvalid");
+
+            if (ruleScriptParser != null)
+            {
+                RuleSet(RuleScriptParser.SaveRuleSets, () =>
+                {
+                    RuleFor(p => p).CustomAsync((dto, context, token) => ruleScriptParser.ValidateAsync(context,
+                        dto.EntityAnalysisModelId, RuleParse.GatewayRule,
+                        dto.RuleScriptTypeId == 1 ? dto.BuilderRuleScript : dto.CoderRuleScript,
+                        dto.RuleScriptTypeId == 1 ? "BuilderRuleScript" : "CoderRuleScript",
+                        null, token));
+                });
+            }
         }
 
         private static bool BeJson(string? value)

@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 using System.Text.RegularExpressions;
 
 namespace Jube.Dictionary.Extensions
@@ -17,7 +18,7 @@ namespace Jube.Dictionary.Extensions
                 .Replace(@"\*", ".*")
                 .Replace(@"\#", @"\d");
 
-            return Regex.IsMatch(@this, regexPattern);
+            return Regex.IsMatch(@this, regexPattern, RegexOptions.None, RegexSupport.MatchTimeout);
         }
     }
 }

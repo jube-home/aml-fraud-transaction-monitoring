@@ -1,0 +1,292 @@
+.ruleToolsSection {
+    margin: 1em 0;
+    border: 1px solid #d5d5d5;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.ruleToolsSection > summary {
+    cursor: pointer;
+    padding: .6em .8em;
+    font-weight: 600;
+    background: #f4f5f7;
+}
+
+.ruleToolsBody {
+    padding: .8em;
+}
+
+.ruleToolsBody h4 {
+    margin: 1em 0 .4em;
+    font-size: 1em;
+}
+
+.ruleToolsHint {
+    color: #666;
+}
+
+.ruleToolsSmall {
+    color: #666;
+    font-size: .85em;
+}
+
+.ruleToolsError {
+    color: #b00020;
+}
+
+.ruleToolsMessage {
+    margin: .5em 0;
+    min-height: 1.2em;
+}
+
+.ruleToolsControls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    align-items: center;
+    margin: 1em 0;
+}
+
+.ruleToolsControls input[type=number] {
+    width: 7em;
+}
+
+.ruleToolsTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin: .5em 0;
+    font-size: .9em;
+}
+
+.ruleToolsTable th, .ruleToolsTable td {
+    border-bottom: 1px solid #e5e5e5;
+    padding: .35em .5em;
+    text-align: left;
+    vertical-align: top;
+}
+
+.ruleToolsRun, .ruleToolsExample {
+    cursor: pointer;
+}
+
+.ruleToolsRun:hover, .ruleToolsExample:hover {
+    background: #f0f6ff;
+}
+
+.ruleToolsSelected {
+    background: #e3efff;
+}
+
+.ruleToolsMissing td {
+    color: #b00020;
+}
+
+.ruleToolsBadge {
+    display: inline-block;
+    padding: .1em .5em;
+    border-radius: 1em;
+    font-size: .8em;
+    background: #eee;
+}
+
+.ruleToolsStatusSucceeded, .ruleToolsYes {
+    background: #d8f3dc;
+    color: #1b5e20;
+}
+
+.ruleToolsStatusFailed, .ruleToolsNo, .ruleToolsSeverityError {
+    background: #fde2e1;
+    color: #8a1c1c;
+}
+
+.ruleToolsStatusRunning, .ruleToolsStatusPending, .ruleToolsSeverityWarning {
+    background: #fff3cd;
+    color: #7a5b00;
+}
+
+.ruleToolsStatusCancelled, .ruleToolsStatusCancelling, .ruleToolsSeverityInfo {
+    background: #e8eaed;
+    color: #444;
+}
+
+.ruleToolsProgress {
+    height: 6px;
+    background: #eee;
+    border-radius: 3px;
+    margin-top: .3em;
+    width: 8em;
+}
+
+.ruleToolsProgress > div {
+    height: 100%;
+    background: #2f80ed;
+    border-radius: 3px;
+}
+
+.ruleToolsResult {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin: 1em 0;
+}
+
+.ruleToolsPanel {
+    flex: 1 1 22em;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: .6em .8em;
+}
+
+.ruleToolsPanel h4 {
+    margin-top: 0;
+}
+
+.ruleToolsBarRow {
+    display: flex;
+    align-items: center;
+    gap: .5em;
+    margin: .3em 0;
+}
+
+.ruleToolsBarLabel {
+    flex: 0 0 10em;
+    font-size: .9em;
+}
+
+.ruleToolsBar {
+    flex: 1 1 auto;
+    height: 14px;
+    background: #f0f0f0;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.ruleToolsBar > span {
+    display: block;
+    height: 100%;
+    border-radius: 7px;
+}
+
+.ruleToolsBarValue {
+    flex: 0 0 9em;
+    text-align: right;
+    font-size: .85em;
+}
+
+.ruleToolsNeutral {
+    background: #8fa8c8;
+}
+
+.ruleToolsFired {
+    background: #2f80ed;
+}
+
+.ruleToolsPositive {
+    background: #9b51e0;
+}
+
+.ruleToolsErrorBar {
+    background: #eb5757;
+}
+
+.ruleToolsTag {
+    background: #56ccf2;
+}
+
+.ruleToolsGauge {
+    background: linear-gradient(90deg, #f2994a, #27ae60);
+}
+
+.ruleToolsMatrix {
+    border-collapse: separate;
+    border-spacing: 4px;
+    width: 100%;
+}
+
+.ruleToolsMatrix th {
+    font-weight: 600;
+    font-size: .85em;
+    text-align: center;
+}
+
+.ruleToolsCell {
+    text-align: center;
+    padding: .7em;
+    border-radius: 4px;
+    color: #111;
+}
+
+.ruleToolsCellLabel {
+    font-size: .8em;
+}
+
+.ruleToolsCellValue {
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+.ruleToolsTp {
+    background: rgba(39, 174, 96, var(--share));
+}
+
+.ruleToolsFp {
+    background: rgba(242, 153, 74, var(--share));
+}
+
+.ruleToolsFn {
+    background: rgba(235, 87, 87, var(--share));
+}
+
+.ruleToolsTn {
+    background: rgba(130, 130, 130, var(--share));
+}
+
+.ruleToolsExamples {
+    margin: .6em 0;
+}
+
+.ruleToolsExamples > summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.ruleToolsExplanation td {
+    background: #fafbfc;
+}
+
+.integrityTooltip {
+    position: absolute;
+    z-index: 20000;
+    max-width: 380px;
+    padding: .5em .7em;
+    background: #fff;
+    border: 1px solid #c8c8c8;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    font-size: .85em;
+    pointer-events: none;
+}
+
+.integrityTooltip ul {
+    margin: .2em 0 .4em;
+    padding-left: 1.1em;
+}
+
+.integrityTooltipKind {
+    color: #777;
+    font-size: .9em;
+}
+
+.integrityTooltipHead {
+    font-weight: 600;
+    margin-bottom: .2em;
+}
+
+.integrityTooltipTitle {
+    margin-top: .3em;
+    font-weight: 600;
+}
+
+.integrityTooltipHow {
+    color: #777;
+}

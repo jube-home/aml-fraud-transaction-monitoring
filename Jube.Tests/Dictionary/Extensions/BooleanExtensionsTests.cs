@@ -20,46 +20,6 @@ namespace Jube.Test.Dictionary.Extensions
     [Trait("Category", "Unit")]
     public sealed class BooleanExtensionsTests
     {
-        [Fact]
-        public void IfTrueInvokesTheActionWhenTheValueIsTrue()
-        {
-            var invoked = false;
-
-            true.IfTrue(() => invoked = true);
-
-            invoked.Should().BeTrue();
-        }
-
-        [Fact]
-        public void IfTrueDoesNotInvokeTheActionWhenTheValueIsFalse()
-        {
-            var invoked = false;
-
-            false.IfTrue(() => invoked = true);
-
-            invoked.Should().BeFalse();
-        }
-
-        [Fact]
-        public void IfFalseInvokesTheActionWhenTheValueIsFalse()
-        {
-            var invoked = false;
-
-            false.IfFalse(() => invoked = true);
-
-            invoked.Should().BeTrue();
-        }
-
-        [Fact]
-        public void IfFalseDoesNotInvokeTheActionWhenTheValueIsTrue()
-        {
-            var invoked = false;
-
-            true.IfFalse(() => invoked = true);
-
-            invoked.Should().BeFalse();
-        }
-
         [Theory]
         [InlineData(true, 1)]
         [InlineData(false, 0)]

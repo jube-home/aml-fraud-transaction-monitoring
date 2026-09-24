@@ -575,6 +575,9 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(-0.0089, 8)]
         [InlineData(0d, 0)]
         [InlineData(9.999, 9)]
+        [InlineData(double.PositiveInfinity, 0)]
+        [InlineData(double.NegativeInfinity, 0)]
+        [InlineData(double.NaN, 0)]
         public void LeadingSignificantDigitExtractsTheFirstNonZeroDigit(double input, int expected)
         {
             input.LeadingSignificantDigit().Should().Be(expected);

@@ -21,11 +21,23 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "RoleRegistryList", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists Roles visible to the caller's tenant, keyset-paged and capped."),
             new ServiceToolDescriptor(
+                "RoleRegistryFilterFields", OperationKind.Read, true, false,
+                "Lists the fields a query builder JSON filter over Role Registrys may use."),
+            new ServiceToolDescriptor(
+                "RoleRegistryFilter", OperationKind.Read, true, false,
+                "Returns the Role Registrys matching query builder JSON, keyset-paged and capped."),
+            new ServiceToolDescriptor(
+                "RoleRegistryCount", OperationKind.Read, true, false,
+                "Counts the Role Registrys matching query builder JSON, optionally grouped by a field."),
+            new ServiceToolDescriptor(
                 "RoleRegistryGet", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Returns a single Role by Id."),
             new ServiceToolDescriptor(
                 "RoleRegistryCreate", OperationKind.Write, Idempotent: false, Destructive: false,
                 "Creates a Role; calling twice creates two."),
+            new ServiceToolDescriptor(
+                "RoleRegistryValidate", OperationKind.Read, true, false,
+                "Validates a Role Registry without saving it and returns every failure."),
             new ServiceToolDescriptor(
                 "RoleRegistryUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
                 "Updates a Role; overwrites, writes a version-audit row."),

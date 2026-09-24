@@ -51,7 +51,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelGatewayRuleRepository.GetByEntityAnalysisModelIdOrderByPriorityAsync for entity model key of {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdOrderByPriorityAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository
+                        .GetByEntityAnalysisModelIdOrderByPriorityAsync(key, context.Services.CancellationToken)
+                        .ConfigureAwait(false);
 
                     var shadowEntityModelGatewayRule = new List<EntityModelGatewayRule>();
                     foreach (var record in records)
@@ -241,27 +243,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 continue;
                             }
 
-                            var gatewayRuleScript = new StringBuilder();
-                            gatewayRuleScript.Append("Imports System.IO\r\n");
-                            gatewayRuleScript.Append("Imports log4net\r\n");
-                            gatewayRuleScript.Append("Imports System.Net\r\n");
-                            gatewayRuleScript.Append("Imports System.Collections.Generic\r\n");
-                            gatewayRuleScript.Append("Imports Jube.Dictionary\r\n");
-                            gatewayRuleScript.Append("Imports Jube.Dictionary.Extensions\r\n");
-                            gatewayRuleScript.Append("Imports System\r\n");
-                            gatewayRuleScript.Append("Public Class GatewayRule\r\n");
-                            gatewayRuleScript.Append(
-                                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List As Dictionary(Of String, List(Of String)),KVP As PooledDictionary(Of String, Double),Log as ILog) As Boolean\r\n");
-                            gatewayRuleScript.Append("Dim Matched as Boolean\r\n");
-                            gatewayRuleScript.Append("Try\r\n");
-                            gatewayRuleScript.Append(modelGatewayRule.GatewayRuleScript + "\r\n");
-                            gatewayRuleScript.Append("Catch ex As Exception\r\n");
-                            gatewayRuleScript.Append("Log.Info(ex.ToString)\r\n");
-                            gatewayRuleScript.Append("End Try\r\n");
-                            gatewayRuleScript.Append("Return Matched\r\n");
-                            gatewayRuleScript.Append("\r\n");
-                            gatewayRuleScript.Append("End Function\r\n");
-                            gatewayRuleScript.Append("End Class\r\n");
+                            var gatewayRuleScript = new StringBuilder(
+                                EngineRuleWrapper.GatewayRule(modelGatewayRule.GatewayRuleScript).Text);
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -315,7 +298,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 var compile = new Compile();
                                 compile.CompileCode(gatewayRuleScript.ToString(), context.Services.Log,
                                 [
-                                    Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(), "log4net.dll"),
+                                    Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),
+                                        "log4net.dll"),
                                     Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll")
                                 ], Compile.Language.Vb);
 
@@ -341,9 +325,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         (EntityModelGatewayRule.Match)Delegate.CreateDelegate(
                                             typeof(EntityModelGatewayRule.Match), methodInfo);
                                     shadowEntityModelGatewayRule.Add(modelGatewayRule);
-                                    context.Caching.HashCacheAssembly.TryAdd(gatewayRuleScriptHash, compile.CompiledAssembly);
+                                    context.Caching.HashCacheAssembly.TryAdd(gatewayRuleScriptHash,
+                                        compile.CompiledAssembly);
                                     context.Caching.HashCacheAssemblyMetadata.TryAdd(gatewayRuleScriptHash,
-                                        new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes, compile.CompiledAssemblyBinary, gatewayRuleScript.ToString()));
+                                        new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
+                                            compile.CompiledAssemblyBinary, gatewayRuleScript.ToString()));
 
                                     await repository.UpdateCompileStatusAsync(record.Id, true, null,
                                         context.Services.CancellationToken).ConfigureAwait(false);
@@ -404,7 +390,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
-                        context.Services.Log.Debug($"Entity Start: {key} replaced Gateway Rule List with shadow gateway rules.");
+                        context.Services.Log.Debug(
+                            $"Entity Start: {key} replaced Gateway Rule List with shadow gateway rules.");
                     }
                 }
 
@@ -418,7 +405,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelGatewayRulesAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.GatewayRules, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.GatewayRules, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

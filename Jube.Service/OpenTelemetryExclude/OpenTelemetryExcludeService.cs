@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Validation;
 using Jube.Dto.OpenTelemetryExclude;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -246,6 +247,49 @@ namespace Jube.Service.OpenTelemetryExclude
             {
                 op.Error(ex);
                 log.Error($"OpenTelemetryExclude.Create: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates an Open Telemetry Exclude without saving it, running every check a create (Id " +
+                     "0) or an update (any other Id) would run, and returns each failure. Nothing is stored or " +
+                     "changed.")]
+        [ServiceOperation("OpenTelemetryExcludeValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Open Telemetry Exclude to validate.")]
+            OpenTelemetryExcludeDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("OpenTelemetryExclude", "Validate", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"OpenTelemetryExclude.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("OpenTelemetryExclude.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"OpenTelemetryExclude.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }

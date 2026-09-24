@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelGatewayRuleList", OperationKind.Read, true, false,
                     "Lists Gateway Rules for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelGatewayRuleFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Gateway Rules may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelGatewayRuleFilter", OperationKind.Read, true, false,
+                    "Returns the Gateway Rules matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelGatewayRuleCount", OperationKind.Read, true, false,
+                    "Counts the Gateway Rules matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelGatewayRuleGet", OperationKind.Read, true, false,
                     "Returns one Gateway Rule by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -32,6 +41,18 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelGatewayRuleCreate", OperationKind.Write, false, false,
                     "Registers a Gateway Rule under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelGatewayRuleValidate", OperationKind.Read, true, false,
+                    "Validates a Gateway Rule without saving it and returns every failure."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelGatewayRuleParseRule", OperationKind.Read, true, false,
+                    "Parses and compiles a Gateway Rule's rule text as the engine would and returns each located error."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelGatewayRuleExecute", OperationKind.Read, true, false,
+                    "Runs a Gateway Rule against an invocation context as the engine would and returns the result."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelGatewayRuleBuildRuleFromBuilderJson", OperationKind.Read, true, false,
+                    "Turns query builder JSON into a Gateway Rule's rule text as the browser builder would, and parses it."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelGatewayRuleUpdate", OperationKind.Write, true, false,
                     "Updates a Gateway Rule in the caller's tenant by id."),

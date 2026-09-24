@@ -724,7 +724,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 service.ExecuteAsync(Opts(modelGuid), cts.Token));
             (await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
-                    .CountAsync(w => w.EntityAnalysisModelId == modelId, token: cts.Token))
+                    .CountAsync(w => w.EntityAnalysisModelId == modelId, token: CancellationToken.None))
                 .Should().Be(0);
         }
 

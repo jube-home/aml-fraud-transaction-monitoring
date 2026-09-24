@@ -52,7 +52,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelActivationRuleRepository.GetByEntityAnalysisModelIdInPriorityOrder for entity model key of {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdInPriorityOrderAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository
+                        .GetByEntityAnalysisModelIdInPriorityOrderAsync(key, context.Services.CancellationToken)
+                        .ConfigureAwait(false);
 
                     var shadowEntityModelActivationRule = new List<EntityAnalysisModelActivationRule>();
                     foreach (var record in records)
@@ -639,7 +641,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             }
                             else
                             {
-                                modelActivationRule.ResponseElevationRedirect = value.Flags.FallbackResponseElevationRedirect;
+                                modelActivationRule.ResponseElevationRedirect =
+                                    value.Flags.FallbackResponseElevationRedirect;
 
                                 if (context.Services.Log.IsDebugEnabled)
                                 {
@@ -904,28 +907,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 continue;
                             }
 
-                            var activationRuleScript = new StringBuilder();
-                            activationRuleScript.Append("Imports System.IO\r\n");
-                            activationRuleScript.Append("Imports log4net\r\n");
-                            activationRuleScript.Append("Imports System.Net\r\n");
-                            activationRuleScript.Append("Imports System.Collections.Generic\r\n");
-                            activationRuleScript.Append("Imports Jube.Dictionary\r\n");
-                            activationRuleScript.Append("Imports Jube.Dictionary.Extensions\r\n");
-                            activationRuleScript.Append("Imports System\r\n");
-                            activationRuleScript.Append("Imports Jube.HttpAdaptationProtocol\r\n");
-                            activationRuleScript.Append("Public Class ActivationRule\r\n");
-                            activationRuleScript.Append(
-                                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of string,double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean\r\n");
-                            activationRuleScript.Append("Dim Matched as Boolean\r\n");
-                            activationRuleScript.Append("Try\r\n");
-                            activationRuleScript.Append(modelActivationRule.ActivationRuleScript + "\r\n");
-                            activationRuleScript.Append("Catch ex As Exception\r\n");
-                            activationRuleScript.Append("Log.Info(ex.ToString)\r\n");
-                            activationRuleScript.Append("End Try\r\n");
-                            activationRuleScript.Append("Return Matched\r\n");
-                            activationRuleScript.Append("\r\n");
-                            activationRuleScript.Append("End Function\r\n");
-                            activationRuleScript.Append("End Class\r\n");
+                            var activationRuleScript = new StringBuilder(
+                                EngineRuleWrapper.ActivationRule(modelActivationRule.ActivationRuleScript).Text);
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -941,7 +924,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     $"Entity Start: {key} and Activation Rule Model {modelActivationRule.Id} has been hashed to {activationRuleScriptHash}, will now check if it is in the hash cache.");
                             }
 
-                            if (context.Caching.HashCacheAssembly.TryGetValue(activationRuleScriptHash, out var valueHash))
+                            if (context.Caching.HashCacheAssembly.TryGetValue(activationRuleScriptHash,
+                                    out var valueHash))
                             {
                                 if (context.Services.Log.IsDebugEnabled)
                                 {
@@ -980,7 +964,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 var compile = new Compile();
                                 compile.CompileCode(activationRuleScript.ToString(), context.Services.Log,
                                 [
-                                    Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(), "log4net.dll"),
+                                    Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),
+                                        "log4net.dll"),
                                     Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll"),
                                     Path.Combine(context.Paths.BinaryPath, "Jube.HttpAdaptationProtocol.dll")
                                 ], Compile.Language.Vb);
@@ -1008,9 +993,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         (EntityAnalysisModelActivationRule.Match)Delegate.CreateDelegate(
                                             typeof(EntityAnalysisModelActivationRule.Match), methodInfo);
                                     shadowEntityModelActivationRule.Add(modelActivationRule);
-                                    context.Caching.HashCacheAssembly.TryAdd(activationRuleScriptHash, compile.CompiledAssembly);
+                                    context.Caching.HashCacheAssembly.TryAdd(activationRuleScriptHash,
+                                        compile.CompiledAssembly);
                                     context.Caching.HashCacheAssemblyMetadata.TryAdd(activationRuleScriptHash,
-                                        new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes, compile.CompiledAssemblyBinary, activationRuleScript.ToString()));
+                                        new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
+                                            compile.CompiledAssemblyBinary, activationRuleScript.ToString()));
 
                                     await repository.UpdateCompileStatusAsync(modelActivationRule.Id, true, null,
                                         context.Services.CancellationToken).ConfigureAwait(false);
@@ -1023,7 +1010,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                                 else
                                 {
-                                    await repository.UpdateCompileStatusAsync(modelActivationRule.Id, false, compile.ErrorsSummary,
+                                    await repository.UpdateCompileStatusAsync(modelActivationRule.Id, false,
+                                        compile.ErrorsSummary,
                                         context.Services.CancellationToken).ConfigureAwait(false);
 
                                     if (context.Services.Log.IsDebugEnabled)
@@ -1046,13 +1034,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
-                        context.Services.Log.Debug($"Entity Start: {key} replaced Activation Rule List with shadow activation rules.");
+                        context.Services.Log.Debug(
+                            $"Entity Start: {key} replaced Activation Rule List with shadow activation rules.");
                     }
 
                     var previousActivationRulesById = value.Collections.ModelActivationRules.ToDictionary(r => r.Id);
                     foreach (var newActivationRule in shadowEntityModelActivationRule)
                     {
-                        if (!previousActivationRulesById.TryGetValue(newActivationRule.Id, out var previousActivationRule))
+                        if (!previousActivationRulesById.TryGetValue(newActivationRule.Id,
+                                out var previousActivationRule))
                         {
                             continue;
                         }
@@ -1068,7 +1058,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
-                        context.Services.Log.Debug($"Entity Start: {key} finished updating the counters for the Activation Rules.");
+                        context.Services.Log.Debug(
+                            $"Entity Start: {key} finished updating the counters for the Activation Rules.");
                     }
                 }
 
@@ -1082,7 +1073,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelActivationRulesAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.ActivationRules, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.ActivationRules, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

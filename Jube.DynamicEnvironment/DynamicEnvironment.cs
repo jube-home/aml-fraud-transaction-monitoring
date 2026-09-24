@@ -163,6 +163,33 @@ namespace Jube.DynamicEnvironment
                     "EnableDynamicEval", "False"
                 },
                 {
+                    "EnableInlineScriptExecution", "False"
+                },
+                {
+                    "EnableBacktest", "True"
+                },
+                {
+                    "BacktestThreads", "1"
+                },
+                {
+                    "BacktestMaxRows", "1000000"
+                },
+                {
+                    "BacktestOnlineMaxRows", "10000"
+                },
+                {
+                    "BacktestPageSize", "5000"
+                },
+                {
+                    "BacktestMaxRunSeconds", "3600"
+                },
+                {
+                    "BacktestStaleSeconds", "120"
+                },
+                {
+                    "BacktestMaxConcurrentRunsPerTenant", "1"
+                },
+                {
                     "ActivationWatcherAllowPersist", "True"
                 },
                 {

@@ -21,11 +21,23 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "TenantRegistryList", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Lists registered Tenants, Id-ascending, keyset-paged and capped. Landlord-only."),
             new ServiceToolDescriptor(
+                "TenantRegistryFilterFields", OperationKind.Read, true, false,
+                "Lists the fields a query builder JSON filter over Tenant Registrys may use."),
+            new ServiceToolDescriptor(
+                "TenantRegistryFilter", OperationKind.Read, true, false,
+                "Returns the Tenant Registrys matching query builder JSON, keyset-paged and capped."),
+            new ServiceToolDescriptor(
+                "TenantRegistryCount", OperationKind.Read, true, false,
+                "Counts the Tenant Registrys matching query builder JSON, optionally grouped by a field."),
+            new ServiceToolDescriptor(
                 "TenantRegistryGet", OperationKind.Read, Idempotent: true, Destructive: false,
                 "Returns a single Tenant by Id. Landlord-only."),
             new ServiceToolDescriptor(
                 "TenantRegistryCreate", OperationKind.Write, Idempotent: false, Destructive: false,
                 "Creates a Tenant; calling twice creates two. Landlord-only."),
+            new ServiceToolDescriptor(
+                "TenantRegistryValidate", OperationKind.Read, true, false,
+                "Validates a Tenant Registry without saving it and returns every failure."),
             new ServiceToolDescriptor(
                 "TenantRegistryUpdate", OperationKind.Write, Idempotent: true, Destructive: false,
                 "Updates a Tenant; overwrites, writes a version-audit row. Landlord-only."),

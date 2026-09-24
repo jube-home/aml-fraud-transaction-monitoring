@@ -30,6 +30,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Registers an OpenTelemetry instrument/counter name to stop exporting; calling twice " +
                     "creates two rows."),
                 new ServiceToolDescriptor(
+                    "OpenTelemetryExcludeValidate", OperationKind.Read, true, false,
+                    "Validates an Open Telemetry Exclude without saving it and returns every failure."),
+                new ServiceToolDescriptor(
                     "OpenTelemetryExcludeUpdate", OperationKind.Write, true, false,
                     "Updates an existing exclusion row in place."),
                 new ServiceToolDescriptor(

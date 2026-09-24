@@ -14,7 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using Jube.Cryptography;
@@ -26,7 +25,6 @@ using Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using log4net;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
@@ -91,10 +89,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             }
 
             inputStream.Position = 0;
-            var json = JObject.Load(new JsonTextReader(new StreamReader(inputStream, Encoding.UTF8))
-            {
-                DateParseHandling = DateParseHandling.None
-            });
+            var json = RequestFieldExtraction.Parse(new StreamReader(inputStream, Encoding.UTF8));
 
             log.Info(
                 $"Json to Context Extractor: GUID payload {payload.EntityAnalysisModelInstanceEntryGuid} model id is {model.Instance.Id} JSON parsed successfully.");
@@ -129,29 +124,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
             try
             {
-                switch (model.References.ReferenceDatePayloadLocationTypeId)
-                {
-                    case 3:
-                        referenceDateValue = DateTime.UtcNow;
-                        break;
-
-                    default:
-                        jToken = json?.SelectToken(model.References.ReferenceDateXpath);
-                        if (jToken != null)
-                        {
-                            referenceDateValue = DateTimeOffset.TryParse(jToken.Value<string>(),
-                                CultureInfo.InvariantCulture,
-                                environment.AppSettings("AssumeLocalDateInPayloadExtraction")
-                                    .Equals("True", StringComparison.CurrentCultureIgnoreCase)
-                                    ? DateTimeStyles.AssumeLocal
-                                    : DateTimeStyles.AssumeUniversal,
-                                out var dto)
-                                ? dto.UtcDateTime
-                                : DateTime.UtcNow;
-                        }
-
-                        break;
-                }
+                referenceDateValue = RequestFieldExtraction.ReferenceDate(json,
+                    model.References.ReferenceDatePayloadLocationTypeId, model.References.ReferenceDateXpath,
+                    AssumeLocalDates(), DateTime.UtcNow);
 
                 log.Info(
                     $"Json to Context Extractor: Entity {model.Instance.Id}: extracted reference date {referenceDateValue}");
@@ -206,43 +181,15 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                             $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} evaluating {xPath.Name} with path {xPath.XPath}.");
                     }
 
-                    string value = null;
-                    var defaultFallback = false;
+                    var selection = RequestFieldExtraction.Select(json, xPath.XPath, xPath.DefaultValue);
+                    var value = selection.Value;
+                    var defaultFallback = selection.DefaultFallback;
 
-                    try
+                    if (selection.Error != null && log.IsInfoEnabled)
                     {
-                        value = json.SelectToken(xPath.XPath)?.ToString();
-
-                        if (value == null)
-                        {
-                            if (!string.IsNullOrEmpty(xPath.DefaultValue))
-                            {
-                                value = xPath.DefaultValue;
-                                defaultFallback = true;
-                            }
-                        }
-                    }
-                    catch (Exception ex) when (ex is not OperationCanceledException)
-                    {
-                        if (!string.IsNullOrEmpty(xPath.DefaultValue))
-                        {
-                            value = xPath.DefaultValue;
-                            defaultFallback = true;
-
-                            if (log.IsInfoEnabled)
-                            {
-                                log.Info(
-                                    $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} failed: {ex.Message}. Using default {xPath.DefaultValue}.");
-                            }
-                        }
-                        else
-                        {
-                            if (log.IsInfoEnabled)
-                            {
-                                log.Info(
-                                    $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} failed: {ex.Message}. Default value is null and will be skipped.");
-                            }
-                        }
+                        log.Info(defaultFallback
+                            ? $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} failed: {selection.Error.Message}. Using default {xPath.DefaultValue}."
+                            : $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} failed: {selection.Error.Message}. Default value is null and will be skipped.");
                     }
 
                     if (value == null)
@@ -264,6 +211,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                         $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} unhandled error processing {xPath.Name}: {ex}");
                 }
             }
+        }
+
+        private bool AssumeLocalDates()
+        {
+            return environment.AppSettings("AssumeLocalDateInPayloadExtraction")
+                .Equals("True", StringComparison.CurrentCultureIgnoreCase);
         }
 
         private void ProcessTypedInsertion(
@@ -298,11 +251,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
                         break;
                     case 2:
-                        if (int.TryParse(value, out var intVal))
+                        if (RequestFieldExtraction.TryConvert(2, value, defaultFallback, xPath.DefaultValue,
+                                AssumeLocalDates(), DateTime.UtcNow, out var intConverted))
                         {
+                            var intVal = (int)intConverted;
                             payload.TryAdd(xPath.Name, intVal);
                             reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
-                                valueInt: int.Parse(value), isReprocess: isReprocess);
+                                valueInt: intVal, isReprocess: isReprocess);
 
                             log.Info(
                                 $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as integer {(defaultFallback ? "is default" : string.Empty)}.");
@@ -315,22 +270,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
                         break;
                     case 4:
-                        DateTime dateValue;
-                        if (defaultFallback && int.TryParse(xPath.DefaultValue, out var daysBack))
-                        {
-                            dateValue = DateTime.UtcNow.AddDays(-daysBack);
-                        }
-                        else
-                        {
-                            dateValue = DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture,
-                                environment.AppSettings("AssumeLocalDateInPayloadExtraction")
-                                    .Equals("True", StringComparison.CurrentCultureIgnoreCase)
-                                    ? DateTimeStyles.AssumeLocal
-                                    : DateTimeStyles.AssumeUniversal,
-                                out var dto)
-                                ? dto.UtcDateTime
-                                : DateTime.UtcNow;
-                        }
+                        var dateValue = RequestFieldExtraction.ConvertDate(value, defaultFallback, xPath.DefaultValue,
+                            AssumeLocalDates(), DateTime.UtcNow);
 
                         payload.TryAdd(xPath.Name, dateValue);
                         reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
@@ -341,7 +282,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
                         break;
                     case 5:
-                        var boolVal = value.Equals("true", StringComparison.OrdinalIgnoreCase) || value == "1";
+                        RequestFieldExtraction.TryConvert(5, value, defaultFallback, xPath.DefaultValue,
+                            AssumeLocalDates(), DateTime.UtcNow, out var boolConverted);
+                        var boolVal = (bool)boolConverted;
                         payload.TryAdd(xPath.Name, boolVal);
                         reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
                             valueBool: boolVal, isReprocess: isReprocess);
@@ -353,11 +296,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     case 6:
                     case 7:
                     case 3:
-                        if (double.TryParse(value, out var dblVal))
+                        if (RequestFieldExtraction.TryConvert(3, value, defaultFallback, xPath.DefaultValue,
+                                AssumeLocalDates(), DateTime.UtcNow, out var dblConverted))
                         {
+                            var dblVal = (double)dblConverted;
                             payload.TryAdd(xPath.Name, dblVal);
                             reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload,
-                                valueFloat: double.Parse(value), isReprocess: isReprocess);
+                                valueFloat: dblVal, isReprocess: isReprocess);
 
                             log.Info(
                                 $"Json to Context Extractor: GUID payload {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} XPath {xPath.XPath} value {value} as double {(defaultFallback ? "is default" : string.Empty)}.");

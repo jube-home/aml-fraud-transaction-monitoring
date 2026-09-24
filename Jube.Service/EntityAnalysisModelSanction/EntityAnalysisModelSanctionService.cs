@@ -14,6 +14,8 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Filter;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelSanction;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -21,6 +23,8 @@ using Jube.Service.Exceptions.EntityAnalysisModelSanction;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using Jube.Parser.Dependency;
+using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelSanction;
 using log4net;
 using Microsoft.Extensions.Localization;
@@ -43,11 +47,12 @@ namespace Jube.Service.EntityAnalysisModelSanction
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelSanctionDtoValidator validator;
 
         private EntityAnalysisModelSanctionService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            IStringLocalizer strings, IStringLocalizer dependencyStrings)
         {
             this.log = log;
             this.auditLog = auditLog;
@@ -59,6 +64,8 @@ namespace Jube.Service.EntityAnalysisModelSanction
             repository = new EntityAnalysisModelSanctionRepository(dbContext, userName);
             validator = new EntityAnalysisModelSanctionDtoValidator(repository, strings,
                 new EntityAnalysisModelRepository(dbContext, userName));
+            deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
+                dependencyStrings);
         }
 
         public static Task<EntityAnalysisModelSanctionService> CreateAsync(DbContext dbContext,
@@ -74,6 +81,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
             IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelSanctionResources));
+            var dependencyStrings = stringLocalizerFactory.Create(typeof(ModelDependencyResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -103,7 +111,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelSanctionService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, dependencyStrings);
         }
 
         [Description("Lists every Sanction check visible to the calling user's tenant. Unbounded -- intended for " +
@@ -324,6 +332,147 @@ namespace Jube.Service.EntityAnalysisModelSanction
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Sanctions may use, with " +
+                     "each field's type, the operators allowed for it and what it means. Use " +
+                     "them as rule ids in EntityAnalysisModelSanctionFilter and " +
+                     "EntityAnalysisModelSanctionCount.")]
+        [ServiceOperation("EntityAnalysisModelSanctionFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelSanction", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSanction.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelSanction.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelSanctionDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelSanction.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Sanctions in the caller's tenant matching query builder JSON " +
+                     "(the same format as the rule builder, over the fields from " +
+                     "EntityAnalysisModelSanctionFilterFields), ordered by id and capped at " +
+                     "'take' rows (max 200). If 'more' is true, call again with 'afterId' set " +
+                     "to the last returned Id to continue. Invalid JSON is not an error: Valid " +
+                     "is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelSanctionFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelSanctionDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Sanctions, using the fields from EntityAnalysisModelSanctionFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelSanction", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSanction.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelSanction.Filter");
+                var rows = EntityAnalysisModelSanctionMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelSanction.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Sanctions in the caller's tenant matching query builder JSON " +
+                     "(over the fields from EntityAnalysisModelSanctionFilterFields; empty " +
+                     "counts all), optionally broken down by the values of one field. Invalid " +
+                     "JSON is not an error: Valid is false and Errors gives each problem with " +
+                     "its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelSanctionCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Sanctions, using the fields from EntityAnalysisModelSanctionFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelSanctionFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelSanction", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSanction.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelSanction.Count");
+                var rows = EntityAnalysisModelSanctionMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelSanction.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Registers a new Sanction check under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelSanctionCreate", OperationKind.Write, Idempotent = false)]
@@ -396,6 +545,48 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelSanction.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates a Sanction without saving it, running every check a create (Id 0) or an update " +
+                     "(any other Id) would run, and returns each failure. Nothing is stored or changed.")]
+        [ServiceOperation("EntityAnalysisModelSanctionValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Sanction to validate.")]
+            EntityAnalysisModelSanctionDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelSanction", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelSanction.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelSanction.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelSanction.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }
@@ -520,6 +711,20 @@ namespace Jube.Service.EntityAnalysisModelSanction
 
                 try
                 {
+                    var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+                    if (existing != null)
+                    {
+                        var dependents = await deleteValidator
+                            .ValidateAsync(
+                                new ModelEntityDelete(ModelEntityKind.Sanction, id, existing.EntityAnalysisModelId),
+                                token)
+                            .ConfigureAwait(false);
+                        if (!dependents.IsValid)
+                        {
+                            throw new DtoValidationException(dependents);
+                        }
+                    }
+
                     await repository.DeleteAsync(id, token).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
@@ -544,6 +749,11 @@ namespace Jube.Service.EntityAnalysisModelSanction
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
                 throw;
             }
             catch (NotFoundException)

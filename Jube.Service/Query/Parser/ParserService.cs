@@ -12,11 +12,10 @@
  */
 
 using System.ComponentModel;
-using System.Reflection;
-using System.Text;
 using Jube.Data.Context;
+using Jube.Data.Query;
 using Jube.Data.Repository;
-using Jube.Data.SyntaxTree;
+using Jube.Parser;
 using Jube.Dto.Query.Parser;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -29,12 +28,8 @@ using Microsoft.Extensions.Localization;
 
 namespace Jube.Service.Query.Parser
 {
-    using RuleParser = global::Jube.Parser.Parser;
-    using Compile = global::Jube.Parser.Compiler.Compile;
-
     public sealed class ParserService
     {
-        private const int MaximumRuleTextLength = 65536;
         private static readonly int[] permissions = [8, 10, 13, 14, 16, 17, 25, 26];
 
         private readonly ILog auditLog;
@@ -146,237 +141,22 @@ namespace Jube.Service.Query.Parser
 
         private async Task<ParseRuleResultDto> ParseCoreAsync(ParseRuleRequestDto request, CancellationToken token)
         {
-            if (request.RuleText is { Length: > MaximumRuleTextLength })
+            if (request.RuleText is { Length: > RuleParse.MaximumRuleTextLength })
             {
                 return new ParseRuleResultDto { Message = "Error" };
             }
 
-            var modelId = request.EntityAnalysisModelId;
-            var tokens = dbContext.RuleScriptToken.Select(s => s.Token).ToList();
+            var environment = await new GetRuleParseEnvironmentQuery(dbContext, tenantRegistryId)
+                .ExecuteAsync(request.EntityAnalysisModelId, request.RuleParseType, token).ConfigureAwait(false);
 
-            var xPaths = await XPathsAsync(modelId, token).ConfigureAwait(false);
-            var inlineScriptProperties = await InlineScriptPropertiesAsync(modelId, token).ConfigureAwait(false);
-            var inlineFunctions = await InlineFunctionPropertiesAsync(modelId, token).ConfigureAwait(false);
-            var lists = (await new EntityAnalysisModelListRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(modelId, token).ConfigureAwait(false))
-                .Select(s => s.Name).ToList();
-            var dictionaries = (await new EntityAnalysisModelDictionaryRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(modelId, token).ConfigureAwait(false))
-                .Select(s => s.Name).ToList();
+            var result = RuleParse.Execute(request.RuleText, request.RuleParseType, environment, log,
+                RuleParse.DefaultReferences());
 
-            List<string>? ttlCounters = null;
-            List<string>? abstractionRules = null;
-            List<string>? sanctions = null;
-
-            if (request.RuleParseType > 3)
+            return new ParseRuleResultDto
             {
-                ttlCounters = (await new EntityAnalysisModelTtlCounterRepository(dbContext, userName)
-                        .GetByEntityAnalysisModelIdOrderByIdAsync(modelId, token).ConfigureAwait(false))
-                    .Select(s => s.Name).ToList();
-                abstractionRules = (await new EntityAnalysisModelAbstractionRuleRepository(dbContext, userName)
-                        .GetByEntityAnalysisModelIdOrderByIdDescAsync(modelId, token).ConfigureAwait(false))
-                    .Select(s => s.Name).ToList();
-                sanctions = (await new EntityAnalysisModelSanctionRepository(dbContext, userName)
-                        .GetByEntityAnalysisModelIdOrderByIdAsync(modelId, token).ConfigureAwait(false))
-                    .Select(s => s.Name).ToList();
-            }
-
-            List<string>? abstractionCalculations = null;
-            List<string>? httpAdaptations = null;
-            List<string>? exhaustiveAdaptations = null;
-            List<string>? activationRules = null;
-
-            if (request.RuleParseType > 4)
-            {
-                abstractionCalculations = (await new EntityAnalysisModelAbstractionCalculationRepository(dbContext,
-                            userName)
-                        .GetByEntityAnalysisModelIdOrderByIdDescAsync(modelId, token).ConfigureAwait(false))
-                    .Select(s => s.Name).ToList();
-                httpAdaptations = (await new EntityAnalysisModelHttpAdaptationRepository(dbContext, userName)
-                        .GetByEntityAnalysisModelIdOrderByIdAsync(modelId, token).ConfigureAwait(false))
-                    .Select(s => s.Name).ToList();
-                exhaustiveAdaptations = (await new ExhaustiveSearchInstanceRepository(dbContext, userName)
-                        .GetByEntityAnalysisModelIdOrderByIdAsync(modelId, token).ConfigureAwait(false))
-                    .Select(s => s.Name).ToList();
-            }
-
-            if (request.RuleParseType >= 5)
-            {
-                activationRules = (await new EntityAnalysisModelActivationRuleRepository(dbContext, userName)
-                        .GetByEntityAnalysisModelIdOrderByIdDescAsync(modelId, token).ConfigureAwait(false))
-                    .Select(s => s.Name).ToList();
-            }
-
-            var parser = new RuleParser(log, tokens)
-            {
-                EntityAnalysisModelRequestXPaths = xPaths,
-                EntityAnalysisModelInlineScriptProperties = inlineScriptProperties,
-                EntityAnalysisModelAbstractionCalculations = abstractionCalculations,
-                EntityAnalysisModelsAbstractionRule = abstractionRules,
-                EntityAnalysisModelsTtlCounters = ttlCounters,
-                EntityAnalysisModelsSanctions = sanctions,
-                EntityAnalysisModelsLists = lists,
-                EntityAnalysisModelsDictionaries = dictionaries,
-                EntityAnalysisModelsHttpAdaptations = httpAdaptations,
-                EntityAnalysisModelsExhaustiveAdaptations = exhaustiveAdaptations,
-                EntityAnalysisModelsActivationRules = activationRules,
-                EntityAnalysisModelsInlineFunctions = inlineFunctions
+                Message = result.Message,
+                ErrorSpans = result.ErrorSpans.Count > 0 ? ParserMapper.ToDto(result.ErrorSpans) : null
             };
-
-            var errorSpans = new List<global::Jube.Parser.ErrorSpan>();
-            var parsedRule = new global::Jube.Parser.ParsedRule
-            {
-                ErrorSpans = errorSpans,
-                OriginalRuleText = request.RuleText
-            };
-            parsedRule = parser.TranslateFromDotNotation(parsedRule, request.RuleParseType == 3);
-            parsedRule = parser.Parse(parsedRule);
-
-            var sb = new StringBuilder();
-            foreach (var softParseErrorSpan in parsedRule.ErrorSpans)
-            {
-                sb.AppendLine(softParseErrorSpan.Message);
-            }
-
-            var response = new ParseRuleResultDto { ErrorSpans = ParserMapper.ToDto(errorSpans) };
-
-            parsedRule = request.RuleParseType switch
-            {
-                1 => parser.WrapInlineFunction(parsedRule, false),
-                2 => parser.WrapGatewayRule(parsedRule, false),
-                3 => parser.WrapAbstractionRule(parsedRule, false),
-                4 => parser.WrapAbstractionCalculation(parsedRule, false),
-                5 => parser.WrapActivationRule(parsedRule, false),
-                _ => parsedRule
-            };
-
-            var codeBase = Assembly.GetExecutingAssembly().Location;
-            var strPathBinary = Path.GetDirectoryName(codeBase);
-            var strPathFramework = Path.GetDirectoryName(typeof(object).Assembly.Location);
-
-            if (strPathFramework != null && strPathBinary != null)
-            {
-                var refs = new[]
-                {
-                    Path.Combine(strPathFramework, "mscorlib.dll"), Path.Combine(strPathFramework, "System.dll"),
-                    Path.Combine(strPathFramework, "Microsoft.VisualBasic.dll"),
-                    Path.Combine(strPathFramework, "System.Xml.dll"), Path.Combine(strPathBinary, "log4net.dll"),
-                    Path.Combine(strPathBinary, "Jube.Dictionary.dll"),
-                    Path.Combine(strPathFramework, "System.Collections.dll"),
-                    Path.Combine(strPathBinary, "Jube.HttpAdaptationProtocol.dll")
-                };
-
-                var compile = new Compile();
-                compile.CompileCode(parsedRule.ParsedRuleText, log, refs, Compile.Language.Vb);
-
-                if (!compile.Success)
-                {
-                    foreach (var err in compile.Errors)
-                    {
-                        var line = err.Location.GetLineSpan().StartLinePosition.Line - parsedRule.LineOffset;
-                        var message = $"Line {line + 1}: {err.GetMessage()}";
-                        sb.AppendLine(message);
-
-                        errorSpans.Add(new global::Jube.Parser.ErrorSpan
-                        {
-                            Message = message,
-                            Start = err.Location.SourceSpan.Start - parsedRule.CharOffset,
-                            Length = err.Location.SourceSpan.Length,
-                            Line = line
-                        });
-                    }
-
-                    response.Message = sb.ToString();
-                    response.ErrorSpans = ParserMapper.ToDto(errorSpans);
-
-                    return response;
-                }
-            }
-
-            if (errorSpans.Count > 0)
-            {
-                return new ParseRuleResultDto
-                {
-                    Message = "Error",
-                    ErrorSpans = ParserMapper.ToDto(errorSpans)
-                };
-            }
-
-            return new ParseRuleResultDto { Message = "Compiled" };
-        }
-
-        private async Task<Dictionary<string, int>> InlineScriptPropertiesAsync(int entityAnalysisModelId,
-            CancellationToken token)
-        {
-            var value = new Dictionary<string, int>();
-            var modelInlineScripts = await new EntityAnalysisModelInlineScriptRepository(dbContext, userName)
-                .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false);
-            var inlineScriptRepository = new EntityAnalysisInlineScriptRepository(dbContext);
-
-            foreach (var modelInlineScript in modelInlineScripts)
-            {
-                if (!modelInlineScript.EntityAnalysisInlineScriptId.HasValue)
-                {
-                    continue;
-                }
-
-                var inlineScript = await inlineScriptRepository
-                    .GetByIdAsync(modelInlineScript.EntityAnalysisInlineScriptId.Value, token)
-                    .ConfigureAwait(false);
-                foreach (var publicProperty in SyntaxTreeHelpers.GetPublicProperties(inlineScript.Code,
-                             inlineScript.LanguageId == 2))
-                {
-                    value.Add(publicProperty.Key, publicProperty.Value.DataTypeId);
-                }
-            }
-
-            return value;
-        }
-
-        private async Task<Dictionary<string, int>> InlineFunctionPropertiesAsync(int entityAnalysisModelId,
-            CancellationToken token)
-        {
-            var values = new Dictionary<string, int>();
-            var functions = await new EntityAnalysisModelInlineFunctionRepository(dbContext, userName)
-                .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false);
-
-            foreach (var function in functions)
-            {
-                if (values.ContainsKey(function.Name))
-                {
-                    continue;
-                }
-
-                if (function.ReturnDataTypeId != null)
-                {
-                    values.Add(function.Name, function.ReturnDataTypeId.Value);
-                }
-            }
-
-            return values;
-        }
-
-        private async Task<Dictionary<string, global::Jube.Parser.EntityAnalysisModelRequestXPath>> XPathsAsync(
-            int entityAnalysisModelId, CancellationToken token)
-        {
-            var values = new Dictionary<string, global::Jube.Parser.EntityAnalysisModelRequestXPath>();
-            foreach (var xPath in await new EntityAnalysisModelRequestXPathRepository(dbContext, userName)
-                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token)
-                         .ConfigureAwait(false))
-            {
-                if (!values.ContainsKey(xPath.Name))
-                {
-                    values.Add(xPath.Name,
-                        new global::Jube.Parser.EntityAnalysisModelRequestXPath
-                        {
-                            DataTypeId = xPath.DataTypeId ?? 1,
-                            DefaultValue = xPath.DefaultValue,
-                            Cache = xPath.Cache == 1
-                        });
-                }
-            }
-
-            return values;
         }
 
         private void EnsurePermitted(string op)

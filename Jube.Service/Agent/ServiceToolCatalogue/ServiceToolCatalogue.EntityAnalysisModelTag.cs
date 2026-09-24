@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelTagList", OperationKind.Read, true, false,
                     "Lists Tags for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelTagFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Tags may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTagFilter", OperationKind.Read, true, false,
+                    "Returns the Tags matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTagCount", OperationKind.Read, true, false,
+                    "Counts the Tags matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelTagGet", OperationKind.Read, true, false,
                     "Returns one Tag by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -31,6 +40,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelTagCreate", OperationKind.Write, false, false,
                     "Registers a Tag under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTagValidate", OperationKind.Read, true, false,
+                    "Validates a Tag without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelTagUpdate", OperationKind.Write, true, false,
                     "Updates a Tag in the caller's tenant by id."),

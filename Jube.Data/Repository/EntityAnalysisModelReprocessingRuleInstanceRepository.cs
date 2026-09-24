@@ -103,6 +103,7 @@ namespace Jube.Data.Repository
                             == model.EntityAnalysisModelReprocessingRuleId
                             && (w.Deleted == 0 || w.Deleted == null)
                             && w.StatusId != 4
+                            && w.StatusId != 5
                         , token);
 
                 if (existing != null)
@@ -133,30 +134,25 @@ namespace Jube.Data.Repository
             }
         }
 
-        public async Task<EntityAnalysisModelReprocessingRuleInstance> UpdateCountsAsync
+        public async Task UpdateCountsAsync
         (int id, int sampledCount, int matchedCount, int processedCount, int errorCount, DateTime referenceDate,
             CancellationToken token = default)
         {
-            var existing = await dbContext.EntityAnalysisModelReprocessingRuleInstance
-                .FirstOrDefaultAsync(w => w.Id
-                    == id && (w.Deleted == 0 || w.Deleted == null), token);
+            var updated = await dbContext.EntityAnalysisModelReprocessingRuleInstance
+                .Where(w => w.Id == id && (w.Deleted == 0 || w.Deleted == null))
+                .Set(s => s.SampledCount, sampledCount)
+                .Set(s => s.MatchedCount, matchedCount)
+                .Set(s => s.ProcessedCount, processedCount)
+                .Set(s => s.ErrorCount, errorCount)
+                .Set(s => s.ReferenceDate, referenceDate)
+                .Set(s => s.UpdatedDate, DateTime.UtcNow)
+                .Set(s => s.StatusId, (byte)3)
+                .UpdateAsync(token).ConfigureAwait(false);
 
-            if (existing == null)
+            if (updated == 0)
             {
                 throw new KeyNotFoundException();
             }
-
-            existing.SampledCount = sampledCount;
-            existing.MatchedCount = matchedCount;
-            existing.ProcessedCount = processedCount;
-            existing.ErrorCount = errorCount;
-            existing.ReferenceDate = referenceDate;
-            existing.UpdatedDate = DateTime.UtcNow;
-            existing.StatusId = 3;
-
-            await dbContext.UpdateAsync(existing, token: token);
-
-            return existing;
         }
 
         public async Task<EntityAnalysisModelReprocessingRuleInstance> UpdateAsync(
@@ -207,9 +203,19 @@ namespace Jube.Data.Repository
         {
             return dbContext.EntityAnalysisModelReprocessingRuleInstance
                 .Where(d =>
-                    d.Id == id)
+                    d.Id == id && (d.Deleted == 0 || d.Deleted == null))
                 .Set(s => s.CompletedDate, DateTime.UtcNow)
                 .Set(s => s.StatusId, (byte)4)
+                .UpdateAsync(token);
+        }
+
+        public Task UpdateFailedAsync(int id, CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelReprocessingRuleInstance
+                .Where(d =>
+                    d.Id == id && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.CompletedDate, DateTime.UtcNow)
+                .Set(s => s.StatusId, (byte)5)
                 .UpdateAsync(token);
         }
 

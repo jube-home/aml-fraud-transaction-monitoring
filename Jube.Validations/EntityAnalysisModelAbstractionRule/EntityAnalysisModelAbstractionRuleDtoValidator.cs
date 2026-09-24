@@ -14,7 +14,9 @@
 using FluentValidation;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelAbstractionRule;
+using Jube.Parser;
 using Jube.Resources;
+using Jube.Validations.RuleScript;
 using Microsoft.Extensions.Localization;
 
 namespace Jube.Validations.EntityAnalysisModelAbstractionRule
@@ -33,7 +35,8 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
             [1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16];
 
         public EntityAnalysisModelAbstractionRuleDtoValidator(EntityAnalysisModelAbstractionRuleRepository repository,
-            IStringLocalizer localiser)
+            IStringLocalizer localiser,
+            RuleScriptParser? ruleScriptParser = null)
         {
             Include(new FiniteNumberValidator<EntityAnalysisModelAbstractionRuleDto>());
 
@@ -65,7 +68,7 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.NameAlreadyExists])
                 .WithErrorCode("NameDuplicate");
-            
+
             RuleFor(p => p.RuleScriptTypeId)
                 .Must(m => allowedRuleScriptTypeIds.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.RuleScriptTypeIdInvalid])
@@ -159,6 +162,18 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.OffsetValueRange])
                 .WithErrorCode("OffsetValueRange")
                 .When(w => w.Search && w.Offset);
+
+            if (ruleScriptParser != null)
+            {
+                RuleSet(RuleScriptParser.SaveRuleSets, () =>
+                {
+                    RuleFor(p => p).CustomAsync((dto, context, token) => ruleScriptParser.ValidateAsync(context,
+                        dto.EntityAnalysisModelId, RuleParse.AbstractionRule,
+                        dto.RuleScriptTypeId == 1 ? dto.BuilderRuleScript : dto.CoderRuleScript,
+                        dto.RuleScriptTypeId == 1 ? "BuilderRuleScript" : "CoderRuleScript",
+                        dto.RuleScriptTypeId == 1, token));
+                });
+            }
         }
     }
 }

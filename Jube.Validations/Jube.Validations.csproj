@@ -22,12 +22,13 @@
     <ItemGroup>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
         <ProjectReference Include="..\Jube.Dto\Jube.Dto.csproj"/>
+        <ProjectReference Include="..\Jube.Parser\Jube.Parser.csproj"/>
         <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj"/>
         <ProjectReference Include="..\Jube.Resources\Jube.Resources.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="15.1.3" />
+        <PackageReference Include="AutoMapper" Version="15.1.3"/>
         <Compile Update="Resources\Resources.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>

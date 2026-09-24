@@ -12,8 +12,14 @@
  */
 
 using System.ComponentModel;
+using FluentValidation;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Parser;
+using Jube.Dto.Filter;
+using Jube.Dto.RuleExecution;
+using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelAbstractionCalculation;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -21,7 +27,10 @@ using Jube.Service.Exceptions.EntityAnalysisModelAbstractionCalculation;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using Jube.Parser.Dependency;
+using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelAbstractionCalculation;
+using Jube.Validations.RuleScript;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -36,6 +45,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
         private static readonly int[] readPermissions = [14];
         private static readonly int[] writePermissions = [14];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelAbstractionCalculationRepository repository;
@@ -43,12 +53,14 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelAbstractionCalculationDtoValidator validator;
 
         private EntityAnalysisModelAbstractionCalculationService(DbContext dbContext, string userName,
             int tenantRegistryId, PermissionValidation permissionValidation, ILog log, ILog auditLog,
-            IServiceChangeBus serviceChangeBus, IStringLocalizer strings)
+            IServiceChangeBus serviceChangeBus, IStringLocalizer strings, IStringLocalizer dependencyStrings)
         {
+            this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -57,7 +69,10 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelAbstractionCalculationRepository(dbContext, userName);
-            validator = new EntityAnalysisModelAbstractionCalculationDtoValidator(repository, strings);
+            validator = new EntityAnalysisModelAbstractionCalculationDtoValidator(repository, strings,
+                new RuleScriptParser(dbContext, tenantRegistryId));
+            deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
+                dependencyStrings);
         }
 
         public static Task<EntityAnalysisModelAbstractionCalculationService> CreateAsync(DbContext dbContext,
@@ -73,6 +88,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelAbstractionCalculationResources));
+            var dependencyStrings = stringLocalizerFactory.Create(typeof(ModelDependencyResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -104,7 +120,8 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelAbstractionCalculationService(dbContext, userName,
-                resolvedTenantRegistryId.Value, permissionValidation, log, auditLog, serviceChangeBus, strings);
+                resolvedTenantRegistryId.Value, permissionValidation, log, auditLog, serviceChangeBus, strings,
+                dependencyStrings);
         }
 
         [Description("Lists every Abstraction Calculation visible to the calling user's tenant. Unbounded -- " +
@@ -332,6 +349,152 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Abstraction " +
+                     "Calculations may use, with each field's type, the operators allowed for " +
+                     "it and what it means. Use them as rule ids in " +
+                     "EntityAnalysisModelAbstractionCalculationFilter and " +
+                     "EntityAnalysisModelAbstractionCalculationCount.")]
+        [ServiceOperation("EntityAnalysisModelAbstractionCalculationFilterFields", OperationKind.Read,
+            Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelAbstractionCalculation.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelAbstractionCalculation.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelAbstractionCalculationDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelAbstractionCalculation.FilterFields: unexpected failure user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Abstraction Calculations in the caller's tenant matching " +
+                     "query builder JSON (the same format as the rule builder, over the fields " +
+                     "from EntityAnalysisModelAbstractionCalculationFilterFields), ordered by " +
+                     "id and capped at 'take' rows (max 200). If 'more' is true, call again " +
+                     "with 'afterId' set to the last returned Id to continue. Invalid JSON is " +
+                     "not an error: Valid is false and Errors gives each problem with its JSON " +
+                     "path.")]
+        [ServiceOperation("EntityAnalysisModelAbstractionCalculationFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelAbstractionCalculationDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Abstraction Calculations, using the fields from EntityAnalysisModelAbstractionCalculationFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelAbstractionCalculation.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelAbstractionCalculation.Filter");
+                var rows = EntityAnalysisModelAbstractionCalculationMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelAbstractionCalculation.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Abstraction Calculations in the caller's tenant matching query " +
+                     "builder JSON (over the fields from " +
+                     "EntityAnalysisModelAbstractionCalculationFilterFields; empty counts all), " +
+                     "optionally broken down by the values of one field. Invalid JSON is not an " +
+                     "error: Valid is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelAbstractionCalculationCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Abstraction Calculations, using the fields from EntityAnalysisModelAbstractionCalculationFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelAbstractionCalculationFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelAbstractionCalculation.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelAbstractionCalculation.Count");
+                var rows = EntityAnalysisModelAbstractionCalculationMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelAbstractionCalculation.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Registers a new Abstraction Calculation under a Model in the caller's tenant. Not " +
                      "idempotent -- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelAbstractionCalculationCreate", OperationKind.Write, Idempotent = false)]
@@ -409,6 +572,152 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelAbstractionCalculation.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates an Abstraction Calculation without saving it, running every check a create (Id " +
+                     "0) or an update (any other Id) would run, and returns each failure. Nothing is stored or " +
+                     "changed.")]
+        [ServiceOperation("EntityAnalysisModelAbstractionCalculationValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Abstraction Calculation to validate.")]
+            EntityAnalysisModelAbstractionCalculationDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelAbstractionCalculation.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelAbstractionCalculation.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelAbstractionCalculation.Validate: unexpected failure user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        [Description(
+            "Parses and compiles the rule text of an Abstraction Calculation against its Entity Analysis Model " +
+            "as the engine would, without saving anything, and returns each error with its line " +
+            "and position in the rule text. Cheaper than a full validation; use it to iterate on " +
+            "rule text.")]
+        [ServiceOperation("EntityAnalysisModelAbstractionCalculationParseRule", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ParseRuleAsync(
+            [Description(
+                "The Abstraction Calculation whose rule text is parsed; only the model id, the rule script type and the " +
+                "rule text are read.")]
+            EntityAnalysisModelAbstractionCalculationDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "ParseRule", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelAbstractionCalculation.ParseRule: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelAbstractionCalculation.ParseRule");
+
+                var results = await validator.ValidateAsync(model,
+                    o => o.IncludeRuleSets(RuleScriptParser.RuleSetName), token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelAbstractionCalculation.ParseRule: unexpected failure user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        [Description(
+            "Runs an Abstraction Calculation against an invocation context exactly as the engine would compile and " +
+            "call it, without saving the rule or storing anything, and returns the result, any runtime " +
+            "error, how long it took and which names it read, flagging any the context leaves unset. " +
+            "Build the context with the EntityAnalysisModelInvocationContext operations.")]
+        [ServiceOperation("EntityAnalysisModelAbstractionCalculationExecute", OperationKind.Read, Idempotent = true)]
+        public async Task<RuleExecutionResultDto> ExecuteAsync(
+            [Description(
+                "The Abstraction Calculation to run; only the model id, the rule script type and the rule text are read.")]
+            EntityAnalysisModelAbstractionCalculationDto? model,
+            [Description("The invocation context to run it against, built for the same model.")]
+            InvocationContextDto? context,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelAbstractionCalculation", "Execute", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelAbstractionCalculation.Execute: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                ArgumentNullException.ThrowIfNull(context);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelAbstractionCalculation.Execute");
+
+                var result = await RuleExecutor.ExecuteAsync(dbContext, tenantRegistryId,
+                    model.EntityAnalysisModelId, RuleParse.AbstractionCalculation,
+                    model.FunctionScript,
+                    "FunctionScript",
+                    null, false, context, token).ConfigureAwait(false);
+                op.Rows(result.Errors.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelAbstractionCalculation.Execute: unexpected failure user={userName}", ex);
                 throw;
             }
         }
@@ -536,6 +845,21 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
 
                 try
                 {
+                    var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+                    if (existing != null)
+                    {
+                        var dependents = await deleteValidator
+                            .ValidateAsync(
+                                new ModelEntityDelete(ModelEntityKind.AbstractionCalculation, id,
+                                    existing.EntityAnalysisModelId),
+                                token)
+                            .ConfigureAwait(false);
+                        if (!dependents.IsValid)
+                        {
+                            throw new DtoValidationException(dependents);
+                        }
+                    }
+
                     await repository.DeleteAsync(id, token).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
@@ -560,6 +884,11 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
                 throw;
             }
             catch (NotFoundException)

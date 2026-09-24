@@ -14,6 +14,8 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Filter;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelHttpAdaptation;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -21,6 +23,8 @@ using Jube.Service.Exceptions.EntityAnalysisModelHttpAdaptation;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using Jube.Parser.Dependency;
+using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelHttpAdaptation;
 using log4net;
 using Microsoft.Extensions.Localization;
@@ -43,11 +47,12 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelHttpAdaptationDtoValidator validator;
 
         private EntityAnalysisModelHttpAdaptationService(DbContext dbContext, string userName,
             int tenantRegistryId, PermissionValidation permissionValidation, ILog log, ILog auditLog,
-            IServiceChangeBus serviceChangeBus, IStringLocalizer strings)
+            IServiceChangeBus serviceChangeBus, IStringLocalizer strings, IStringLocalizer dependencyStrings)
         {
             this.log = log;
             this.auditLog = auditLog;
@@ -58,6 +63,8 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelHttpAdaptationRepository(dbContext, userName);
             validator = new EntityAnalysisModelHttpAdaptationDtoValidator(repository, strings);
+            deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
+                dependencyStrings);
         }
 
         public static Task<EntityAnalysisModelHttpAdaptationService> CreateAsync(DbContext dbContext,
@@ -73,6 +80,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
             IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelHttpAdaptationResources));
+            var dependencyStrings = stringLocalizerFactory.Create(typeof(ModelDependencyResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -104,7 +112,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelHttpAdaptationService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, dependencyStrings);
         }
 
         [Description("Lists every HTTP Adaptation visible to the calling user's tenant. Unbounded -- intended " +
@@ -328,6 +336,148 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over HTTP Adaptations may " +
+                     "use, with each field's type, the operators allowed for it and what it " +
+                     "means. Use them as rule ids in EntityAnalysisModelHttpAdaptationFilter " +
+                     "and EntityAnalysisModelHttpAdaptationCount.")]
+        [ServiceOperation("EntityAnalysisModelHttpAdaptationFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelHttpAdaptation", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelHttpAdaptation.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelHttpAdaptation.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelHttpAdaptationDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelHttpAdaptation.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the HTTP Adaptations in the caller's tenant matching query " +
+                     "builder JSON (the same format as the rule builder, over the fields from " +
+                     "EntityAnalysisModelHttpAdaptationFilterFields), ordered by id and capped " +
+                     "at 'take' rows (max 200). If 'more' is true, call again with 'afterId' " +
+                     "set to the last returned Id to continue. Invalid JSON is not an error: " +
+                     "Valid is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelHttpAdaptationFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelHttpAdaptationDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the HTTP Adaptations, using the fields from EntityAnalysisModelHttpAdaptationFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelHttpAdaptation", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelHttpAdaptation.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelHttpAdaptation.Filter");
+                var rows = EntityAnalysisModelHttpAdaptationMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelHttpAdaptation.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the HTTP Adaptations in the caller's tenant matching query builder " +
+                     "JSON (over the fields from EntityAnalysisModelHttpAdaptationFilterFields; " +
+                     "empty counts all), optionally broken down by the values of one field. " +
+                     "Invalid JSON is not an error: Valid is false and Errors gives each " +
+                     "problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelHttpAdaptationCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the HTTP Adaptations, using the fields from EntityAnalysisModelHttpAdaptationFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelHttpAdaptationFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelHttpAdaptation", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelHttpAdaptation.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelHttpAdaptation.Count");
+                var rows = EntityAnalysisModelHttpAdaptationMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelHttpAdaptation.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Registers a new HTTP Adaptation under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelHttpAdaptationCreate", OperationKind.Write, Idempotent = false)]
@@ -403,6 +553,48 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelHttpAdaptation.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates a HTTP Adaptation without saving it, running every check a create (Id 0) or an " +
+                     "update (any other Id) would run, and returns each failure. Nothing is stored or changed.")]
+        [ServiceOperation("EntityAnalysisModelHttpAdaptationValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The HTTP Adaptation to validate.")]
+            EntityAnalysisModelHttpAdaptationDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelHttpAdaptation", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelHttpAdaptation.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelHttpAdaptation.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelHttpAdaptation.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }
@@ -528,6 +720,21 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
 
                 try
                 {
+                    var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+                    if (existing != null)
+                    {
+                        var dependents = await deleteValidator
+                            .ValidateAsync(
+                                new ModelEntityDelete(ModelEntityKind.HttpAdaptation, id,
+                                    existing.EntityAnalysisModelId),
+                                token)
+                            .ConfigureAwait(false);
+                        if (!dependents.IsValid)
+                        {
+                            throw new DtoValidationException(dependents);
+                        }
+                    }
+
                     await repository.DeleteAsync(id, token).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
@@ -552,6 +759,11 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
                 throw;
             }
             catch (NotFoundException)

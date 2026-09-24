@@ -15,12 +15,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using Archiver;
     using Context;
     using Data.Context;
     using Data.Query;
@@ -38,276 +40,38 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
     public class ReprocessingTaskStarter(Context context)
     {
+        private readonly Random random = new(Environment.TickCount ^ Guid.NewGuid().GetHashCode());
+        public TimeSpan ProgressInterval { get; init; } = TimeSpan.FromSeconds(10);
+        public Action<ReprocessingPageTiming> PageCompleted { get; init; }
+
         public async Task StartAsync()
         {
             try
             {
-                var lastUpdated = default(DateTime);
-                var random = new Random(Environment.TickCount ^ Guid.NewGuid().GetHashCode());
-
                 while (!context.Services.TaskCoordinator.CancellationToken.IsCancellationRequested)
                 {
                     var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                         context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
                     try
                     {
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug("Entity Reprocessing:  About to make a database connection.");
-                        }
-
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                "Entity Reprocessing:  Has made a database connection.  Will now proceed to loop around the models and see if there are any reprocessing requests.");
-                        }
-
                         foreach (var modelKvp in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
                         {
                             context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
 
+                            if (!modelKvp.Value.Started)
+                            {
+                                continue;
+                            }
+
                             try
                             {
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Reprocessing:  Has found model id {modelKvp.Key}.  Will now check to see if the model has been started.");
-                                }
-
-                                if (!modelKvp.Value.Started)
-                                {
-                                    continue;
-                                }
-
-                                var entityAnalysisModelRuleReprocessing =
-                                    await GetEntityAnalysisModelRuleReprocessingInstanceAsync(dbContext, modelKvp,
-                                        context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-
-                                if (!entityAnalysisModelRuleReprocessing.FoundInstance)
-                                {
-                                    continue;
-                                }
-
-                                if (context.Services.Log.IsInfoEnabled)
-                                {
-                                    context.Services.Log.Info(
-                                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} using created date.");
-                                }
-
-                                var documentsInitialCounts =
-                                    await GetInitialCountsAsync(dbContext, modelKvp.Value.Instance.Guid,
-                                        context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-
-                                if (documentsInitialCounts != null)
-                                {
-                                    var dateRangeAndCount = EstablishProcessingDateRange(
-                                        entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance,
-                                        documentsInitialCounts);
-
-                                    await UpdateEntityAnalysisModelsReprocessingRuleInstanceReferenceDateCountAsync(
-                                        dbContext,
-                                        entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance,
-                                        modelKvp.Value.Instance.Guid, dateRangeAndCount.adjustedStartDate,
-                                        context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-
-                                    var limit = Int32.Parse(
-                                        context.Services.DynamicEnvironment.AppSettings("ReprocessingBulkLimit"));
-
-                                    if (context.Services.Log.IsInfoEnabled)
-                                    {
-                                        context.Services.Log.Info(
-                                            $"Entity Reprocessing:  Is about to build up the cache filter for instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} reprocessing bulk limit has been set to {limit}.");
-                                    }
-
-                                    if (context.Services.Log.IsInfoEnabled)
-                                    {
-                                        context.Services.Log.Info(
-                                            $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} has created a filter between {dateRangeAndCount.adjustedStartDate} and {dateRangeAndCount.lastReferenceDate}.");
-                                    }
-
-                                    var sampled = 0;
-                                    var matched = 0;
-                                    var processed = 0;
-                                    var errors = 0;
-                                    // ReSharper disable once RedundantAssignment
-                                    var deleted = false;
-
-                                    using var archiveDatabase = new Postgres(
-                                        context.Services.ReportConnectionString ??
-                                        dbContext.Connection.ConnectionString,
-                                        context.Services.Log,
-                                        context.Services.DynamicEnvironment.ParserAssertSelectOnly());
-                                    do
-                                    {
-                                        if (context.Services.Log.IsInfoEnabled)
-                                        {
-                                            context.Services.Log.Info(
-                                                $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is about to run a query on cache to bring back all document for filter,  skipping {processed} and limiting {limit}.");
-                                        }
-
-                                        var archivePayloadSelectAndBody =
-                                            modelKvp.Value.References.ArchivePayloadSqlSelect + " " +
-                                            modelKvp.Value.References.ArchivePayloadSqlBody;
-
-                                        var documents =
-                                            await archiveDatabase.ExecuteReturnPayloadFromArchiveWithSkipLimitAsync(
-                                                    archivePayloadSelectAndBody, dateRangeAndCount.adjustedStartDate,
-                                                    processed,
-                                                    limit, context.Services.TaskCoordinator.CancellationToken)
-                                                .ConfigureAwait(false);
-
-                                        if (documents.Count == 0)
-                                        {
-                                            break;
-                                        }
-
-                                        foreach (var entry in documents)
-                                        {
-                                            context.Services.TaskCoordinator.CancellationToken
-                                                .ThrowIfCancellationRequested();
-
-                                            try
-                                            {
-                                                if (context.Services.Log.IsInfoEnabled)
-                                                {
-                                                    context.Services.Log.Info(
-                                                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is about to process document {processed}.");
-                                                }
-
-                                                if (entityAnalysisModelRuleReprocessing
-                                                        .EntityAnalysisModelRuleReprocessingInstance
-                                                        .ReprocessingSample >= random.NextDouble())
-                                                {
-                                                    if (context.Services.Log.IsInfoEnabled)
-                                                    {
-                                                        context.Services.Log.Info(
-                                                            $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is processing {processed} and it has passed a random sample.  Will now test the rule.");
-                                                    }
-
-                                                    sampled += 1;
-
-                                                    var entityInstanceEntryDictionaryKvPs =
-                                                        new PooledDictionary<string, DictionaryNoBoxing<string>>();
-
-                                                    if (entityAnalysisModelRuleReprocessing
-                                                        .EntityAnalysisModelRuleReprocessingInstance
-                                                        .ReprocessingRuleCompileDelegate(entry,
-                                                            modelKvp.Value.Dependencies.EntityAnalysisModelLists,
-                                                            entityInstanceEntryDictionaryKvPs, context.Services.Log))
-                                                    {
-                                                        dateRangeAndCount.lastReferenceDate =
-                                                            entry[modelKvp.Value.References.ReferenceDateName];
-
-                                                        await InvokeReprocessingForDocumentAsync(modelKvp.Value,
-                                                            entityAnalysisModelRuleReprocessing
-                                                                .EntityAnalysisModelRuleReprocessingInstance, processed,
-                                                            entry).ConfigureAwait(false);
-
-                                                        matched += 1;
-                                                    }
-                                                    else
-                                                    {
-                                                        if (context.Services.Log.IsInfoEnabled)
-                                                        {
-                                                            context.Services.Log.Info(
-                                                                $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is processing {processed} but it has not passed the rule.");
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (context.Services.Log.IsInfoEnabled)
-                                                    {
-                                                        context.Services.Log.Info(
-                                                            $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is processing {processed} but it has failed to obtain a random digit and as been sampled out.");
-                                                    }
-                                                }
-                                            }
-                                            catch (Exception ex) when (ex is not OperationCanceledException)
-                                            {
-                                                errors += 1;
-
-                                                if (context.Services.Log.IsInfoEnabled)
-                                                {
-                                                    context.Services.Log.Info(
-                                                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is processing {processed} and has had an error {ex}.");
-                                                }
-                                            }
-                                            finally
-                                            {
-                                                if (context.Services.Log.IsInfoEnabled)
-                                                {
-                                                    context.Services.Log.Info(
-                                                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} has finished processing {processed}.");
-                                                }
-
-                                                processed += 1;
-                                            }
-
-                                            if (lastUpdated <= DateTime.UtcNow.AddSeconds(-10))
-                                            {
-                                                if (await LogAndGetTerminateAsync(dbContext,
-                                                            entityAnalysisModelRuleReprocessing
-                                                                .EntityAnalysisModelRuleReprocessingInstance,
-                                                            processed, sampled, matched, errors,
-                                                            dateRangeAndCount.lastReferenceDate,
-                                                            context.Services.TaskCoordinator.CancellationToken)
-                                                        .ConfigureAwait(false))
-                                                {
-                                                    if (context.Services.Log.IsInfoEnabled)
-                                                    {
-                                                        context.Services.Log.Info(
-                                                            $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} has been removed, stopping process.");
-                                                    }
-
-                                                    // ReSharper disable once RedundantAssignment
-                                                    deleted = true;
-
-                                                    break;
-                                                }
-
-                                                lastUpdated = DateTime.UtcNow;
-                                            }
-                                            else
-                                            {
-                                                if (context.Services.Log.IsInfoEnabled)
-                                                {
-                                                    context.Services.Log.Info(
-                                                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} not updated database as time interval not passed.");
-                                                }
-                                            }
-                                        }
-
-                                        deleted = await LogAndGetTerminateAsync(dbContext,
-                                            entityAnalysisModelRuleReprocessing
-                                                .EntityAnalysisModelRuleReprocessingInstance,
-                                            processed, sampled, matched, errors, dateRangeAndCount.lastReferenceDate,
-                                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                                    } while (!deleted);
-
-                                    await FinishReprocessBatchChunkAsync(dbContext,
-                                        entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance,
-                                        context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                                }
-                                else
-                                {
-                                    if (context.Services.Log.IsInfoEnabled)
-                                    {
-                                        context.Services.Log.Info(
-                                            $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessing.EntityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} there are no initial counts for model {modelKvp.Key}.");
-                                    }
-                                }
+                                await RunNextAsync(dbContext, modelKvp,
+                                    context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                             }
                             catch (Exception ex) when (ex is not OperationCanceledException)
                             {
                                 context.Services.Log.Error($"Entity Reprocessing: {ex}");
                             }
-                        }
-
-                        if (context.Services.Log.IsInfoEnabled)
-                        {
-                            context.Services.Log.Info(
-                                "Entity Reprocessing: Has finished a cycle and will now sleep for 20 seconds,  the database connection to Database will also be closed.");
                         }
 
                         await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
@@ -351,288 +115,232 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
         }
 
-        private async Task<bool> LogAndGetTerminateAsync(DbContext dbContext,
-            EntityAnalysisModelRuleReprocessingInstance entityAnalysisModelRuleReprocessingInstance, int processed,
-            int sampled, int matched, int errors, DateTime referenceDate, CancellationToken token = default)
+        public async Task<ReprocessingRunResult> RunNextAsync(DbContext dbContext,
+            KeyValuePair<int, EntityAnalysisModel> modelKvp, CancellationToken token = default)
         {
-            var deleted = false;
-            try
+            var (instance, found) = await GetEntityAnalysisModelRuleReprocessingInstanceAsync(dbContext, modelKvp,
+                token).ConfigureAwait(false);
+
+            if (instance.EntityAnalysisModelsReprocessingRuleInstanceId == 0)
             {
-                if (context.Services.Log.IsInfoEnabled)
+                return null;
+            }
+
+            var instanceId = instance.EntityAnalysisModelsReprocessingRuleInstanceId;
+            var repository = new EntityAnalysisModelReprocessingRuleInstanceRepository(dbContext);
+
+            if (!found)
+            {
+                var failure = instance.Failure ?? "The reprocessing rule could not be loaded.";
+                await repository.UpdateFailedAsync(instanceId, token).ConfigureAwait(false);
+
+                context.Services.Log.Error(
+                    $"Entity Reprocessing: Reprocessing instance {instanceId} has failed as {failure}");
+
+                return new ReprocessingRunResult(instanceId, ReprocessingRunOutcome.Failed, 0, 0, 0, 0, 0, failure);
+            }
+
+            var model = modelKvp.Value;
+            var ranges = await new GetArchiveRangeAndCountsQuery(dbContext)
+                .ExecuteAsync(model.Instance.Guid, token).ConfigureAwait(false);
+
+            if (ranges?.Max == null)
+            {
+                await repository.UpdateReferenceDateCountAsync(instanceId, 0, DateTime.UtcNow, token)
+                    .ConfigureAwait(false);
+
+                await repository.UpdateCompletedAsync(instanceId, token).ConfigureAwait(false);
+                return new ReprocessingRunResult(instanceId, ReprocessingRunOutcome.Completed, 0, 0, 0, 0, 0, null);
+            }
+
+            var snapshotDate = DateTime.UtcNow;
+            var lastReferenceDate = DateTime.SpecifyKind(ranges.Max.Value, DateTimeKind.Unspecified);
+            var startDate = ReprocessingDateRange.StartDate(lastReferenceDate, instance.ReprocessingIntervalType,
+                instance.ReprocessingIntervalValue);
+
+            if (startDate == null)
+            {
+                var failure =
+                    $"The interval {instance.ReprocessingIntervalValue}{instance.ReprocessingIntervalType} is not valid.";
+                await repository.UpdateFailedAsync(instanceId, token).ConfigureAwait(false);
+
+                context.Services.Log.Error(
+                    $"Entity Reprocessing: Reprocessing instance {instanceId} has failed as {failure}");
+
+                return new ReprocessingRunResult(instanceId, ReprocessingRunOutcome.Failed, 0, 0, 0, 0, 0, failure);
+            }
+
+            var availableCount = await new ArchiveRepository(dbContext)
+                .GetCountsByReferenceDateAsync(model.Instance.Guid, startDate.Value, token).ConfigureAwait(false);
+
+            await repository.UpdateReferenceDateCountAsync(instanceId, availableCount, startDate.Value, token)
+                .ConfigureAwait(false);
+
+            var limit = int.Parse(context.Services.DynamicEnvironment.AppSettings("ReprocessingBulkLimit"));
+
+            if (context.Services.Log.IsInfoEnabled)
+            {
+                context.Services.Log.Info(
+                    $"Entity Reprocessing: Reprocessing instance {instanceId} will process {availableCount} documents between {startDate} and {lastReferenceDate} created before {snapshotDate}, {limit} at a time.");
+            }
+
+            var sampled = 0;
+            var matched = 0;
+            var processed = 0;
+            var errors = 0;
+            var pages = 0;
+            var stopped = false;
+            var progressDate = startDate.Value;
+            var afterReferenceDate = startDate.Value;
+            var afterGuid = Guid.Empty;
+            var lastProgress = DateTime.UtcNow;
+            var sql = model.References.ArchivePayloadSqlSelect + " " + model.References.ArchivePayloadSqlBody;
+
+            using var archiveDatabase = new Postgres(
+                context.Services.ReportConnectionString ?? dbContext.Connection.ConnectionString,
+                context.Services.Log,
+                context.Services.DynamicEnvironment.ParserAssertSelectOnly());
+
+            while (!stopped)
+            {
+                var fetchStarted = Stopwatch.GetTimestamp();
+                var documents = await archiveDatabase.ExecuteReturnPayloadFromArchiveAfterAsync(sql,
+                    startDate.Value, lastReferenceDate, snapshotDate, afterReferenceDate, afterGuid, limit,
+                    token).ConfigureAwait(false);
+                var fetch = Stopwatch.GetElapsedTime(fetchStarted);
+
+                if (documents.Count == 0)
                 {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is about to report back status to the database.");
+                    break;
                 }
 
+                pages += 1;
+                var processStarted = Stopwatch.GetTimestamp();
+                var batch = new ReprocessingArchiveBatch(instanceId);
+
+                foreach (var entry in documents)
+                {
+                    token.ThrowIfCancellationRequested();
+
+                    try
+                    {
+                        if (ReprocessingDateRange.Sampled(instance.ReprocessingSample, random.NextDouble()))
+                        {
+                            sampled += 1;
+
+                            if (instance.ReprocessingRuleCompileDelegate(entry,
+                                    model.Dependencies.EntityAnalysisModelLists,
+                                    new PooledDictionary<string, DictionaryNoBoxing<string>>(),
+                                    context.Services.Log))
+                            {
+                                await EntityAnalysisModelInvoke.InvokeAsync(model, entry, instanceId, batch)
+                                    .ConfigureAwait(false);
+
+                                matched += 1;
+                            }
+                        }
+                    }
+                    catch (Exception ex) when (ex is not OperationCanceledException)
+                    {
+                        errors += 1;
+
+                        context.Services.Log.Error(
+                            $"Entity Reprocessing: Reprocessing instance {instanceId} has had an error on document {processed} as {ex}.");
+                    }
+
+                    processed += 1;
+                    progressDate = entry[model.References.ReferenceDateName];
+
+                    if (DateTime.UtcNow - lastProgress < ProgressInterval)
+                    {
+                        continue;
+                    }
+
+                    stopped = await ReportProgressAsync(repository, instanceId, processed, sampled, matched, errors,
+                        progressDate, token).ConfigureAwait(false);
+                    lastProgress = DateTime.UtcNow;
+
+                    if (stopped)
+                    {
+                        break;
+                    }
+                }
+
+                var written = batch.Count;
                 try
                 {
-                    var repository = new EntityAnalysisModelReprocessingRuleInstanceRepository(dbContext);
-
-                    await repository.UpdateCountsAsync(
-                        entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId,
-                        sampled, matched, processed, errors, referenceDate, token).ConfigureAwait(false);
+                    var missing = await batch.FlushAsync(dbContext, token).ConfigureAwait(false);
+                    matched -= missing;
+                    errors += missing;
                 }
-                catch
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    deleted = true;
+                    matched -= written;
+                    errors += written;
+
+                    context.Services.Log.Error(
+                        $"Entity Reprocessing: Reprocessing instance {instanceId} could not write page {pages} to the archive as {ex}.");
                 }
 
+                PageCompleted?.Invoke(new ReprocessingPageTiming(pages, documents.Count, fetch,
+                    Stopwatch.GetElapsedTime(processStarted)));
+
+                var last = documents[^1];
+                afterReferenceDate = last[model.References.ReferenceDateName];
+                afterGuid = last["EntityAnalysisModelInstanceEntryGuid"];
+            }
+
+            if (!stopped)
+            {
+                stopped = await ReportProgressAsync(repository, instanceId, processed, sampled, matched, errors,
+                    progressDate, token).ConfigureAwait(false);
+            }
+
+            if (stopped)
+            {
                 if (context.Services.Log.IsInfoEnabled)
                 {
                     context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} has updated database with processed {processed}, Sampled {sampled}, Matched {matched}, Errors{errors}.");
+                        $"Entity Reprocessing: Reprocessing instance {instanceId} has been removed, stopping process.");
                 }
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                context.Services.Log.Error($"LogAndGetTerminate: has produced an error {ex}");
+
+                return new ReprocessingRunResult(instanceId, ReprocessingRunOutcome.Stopped, processed, sampled,
+                    matched, errors, pages, null);
             }
 
-            return deleted;
+            await repository.UpdateCompletedAsync(instanceId, token).ConfigureAwait(false);
+
+            if (context.Services.Log.IsInfoEnabled)
+            {
+                context.Services.Log.Info(
+                    $"Entity Reprocessing: Reprocessing instance {instanceId} has completed with processed {processed}, sampled {sampled}, matched {matched} and errors {errors}.");
+            }
+
+            return new ReprocessingRunResult(instanceId, ReprocessingRunOutcome.Completed, processed, sampled,
+                matched, errors, pages, null);
         }
 
-        private async Task InvokeReprocessingForDocumentAsync(EntityAnalysisModel entityAnalysisModel,
-            EntityAnalysisModelRuleReprocessingInstance entityAnalysisModelRuleReprocessingInstance, int processed,
-            DictionaryNoBoxing<string> entry)
+        private async Task<bool> ReportProgressAsync(EntityAnalysisModelReprocessingRuleInstanceRepository repository,
+            int instanceId, int processed, int sampled, int matched, int errors, DateTime referenceDate,
+            CancellationToken token)
         {
             try
             {
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is processing {processed} and matched the rule and will now invoke.");
-                }
-
-                await EntityAnalysisModelInvoke.InvokeAsync(entityAnalysisModel, entry,
-                        entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId)
-                    .ConfigureAwait(false);
-
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} has completed the invoke.");
-                }
+                await repository.UpdateCountsAsync(instanceId, sampled, matched, processed, errors, referenceDate,
+                    token).ConfigureAwait(false);
+                return false;
             }
-            catch (Exception ex) when (ex is not OperationCanceledException)
+            catch (KeyNotFoundException)
             {
-                context.Services.Log.Error($"InvokeReprocessingForDocumentAsync: has produced an error {ex}");
-            }
-        }
-
-        private async Task FinishReprocessBatchChunkAsync(DbContext dbContext,
-            EntityAnalysisModelRuleReprocessingInstance entityAnalysisModelRuleReprocessingInstance,
-            CancellationToken token = default)
-        {
-            try
-            {
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} no documents returned so the work is done.  Is about to update the database to show that the process has completed.");
-                }
-
-                var repository = new EntityAnalysisModelReprocessingRuleInstanceRepository(dbContext);
-
-                await repository.UpdateCompletedAsync(entityAnalysisModelRuleReprocessingInstance
-                    .EntityAnalysisModelsReprocessingRuleInstanceId, token).ConfigureAwait(false);
-
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} processing completed and database updated.");
-                }
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                context.Services.Log.Error($"FinishReprocessBatchChunk: has produced an error {ex}");
-            }
-        }
-
-        private async Task UpdateEntityAnalysisModelsReprocessingRuleInstanceReferenceDateCountAsync(
-            DbContext dbContext,
-            EntityAnalysisModelRuleReprocessingInstance entityAnalysisModelRuleReprocessingInstance,
-            Guid entityAnalysisModelGuid, DateTime lastReferenceDate, CancellationToken token = default)
-        {
-            try
-            {
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is about to make initial counts for monitoring as Reference_Date {lastReferenceDate}.");
-                }
-
-                var archiveRepository = new ArchiveRepository(dbContext);
-                var allCount = await archiveRepository
-                    .GetCountsByReferenceDateAsync(entityAnalysisModelGuid, lastReferenceDate, token)
-                    .ConfigureAwait(false);
-
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} has returned initial counts of {allCount} for monitoring as Reference_Date {lastReferenceDate} and Available_Count {allCount}.");
-                }
-
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} is about to update initial counts for monitoring as Reference_Date {lastReferenceDate} and Available_Count {allCount}.");
-                }
-
-                var repository = new EntityAnalysisModelReprocessingRuleInstanceRepository(dbContext);
-
-                await repository.UpdateReferenceDateCountAsync(
-                    entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId,
-                    allCount, lastReferenceDate, token).ConfigureAwait(false);
-
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} has updated initial counts for monitoring as Reference Date {lastReferenceDate} and Available Count {allCount}.");
-                }
+                return true;
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 context.Services.Log.Error(
-                    $"UpdateEntityAnalysisModelsReprocessingRuleInstanceReferenceDateCount: has produced an error {ex}");
+                    $"Entity Reprocessing: Reprocessing instance {instanceId} could not report progress as {ex}.");
+
+                return false;
             }
-        }
-
-        private (DateTime lastReferenceDate, long allCount, DateTime adjustedStartDate) EstablishProcessingDateRange(
-            EntityAnalysisModelRuleReprocessingInstance entityAnalysisModelRuleReprocessingInstance,
-            GetArchiveRangeAndCountsQuery.Dto ranges)
-        {
-            var lastReferenceDate = DateTime.SpecifyKind(ranges.Max.GetValueOrDefault(), DateTimeKind.Utc);
-            var allCount = 0l;
-            DateTime adjustedStartDate = default;
-
-            try
-            {
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Has found a last reference date of {lastReferenceDate}.");
-                }
-
-                var firstReferenceDate = DateTime.SpecifyKind(ranges.Min.GetValueOrDefault(), DateTimeKind.Utc);
-
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Has found a first reference date of {firstReferenceDate}.");
-                }
-
-                allCount = ranges.Count;
-
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Has found counts of  {allCount}.  Will now proceed to adjust the date to create a between range.");
-                }
-
-                switch (entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalType)
-                {
-                    case "d":
-                        adjustedStartDate =
-                            lastReferenceDate.AddDays(entityAnalysisModelRuleReprocessingInstance
-                                .ReprocessingIntervalValue * -1);
-
-                        if (context.Services.Log.IsInfoEnabled)
-                        {
-                            context.Services.Log.Info(
-                                $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Is switched d as is specified as {entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalType}{entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalValue}.  Lower Date for range is {adjustedStartDate}.");
-                        }
-
-                        break;
-                    case "h":
-                        adjustedStartDate =
-                            lastReferenceDate.AddHours(entityAnalysisModelRuleReprocessingInstance
-                                .ReprocessingIntervalValue * -1);
-
-                        if (context.Services.Log.IsInfoEnabled)
-                        {
-                            context.Services.Log.Info(
-                                $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Is switched h as is specified as {entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalType}{entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalValue}.  Lower Date for range is {adjustedStartDate}.");
-                        }
-
-                        break;
-                    case "n":
-                        adjustedStartDate = lastReferenceDate.AddMinutes(entityAnalysisModelRuleReprocessingInstance
-                            .ReprocessingIntervalValue * -1);
-
-                        if (context.Services.Log.IsInfoEnabled)
-                        {
-                            context.Services.Log.Info(
-                                $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Is switched n as is specified as {entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalType}{entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalValue}.  Lower Date for range is {adjustedStartDate}.");
-                        }
-
-                        break;
-                    case "s":
-                        adjustedStartDate = lastReferenceDate.AddSeconds(entityAnalysisModelRuleReprocessingInstance
-                            .ReprocessingIntervalValue * -1);
-
-                        if (context.Services.Log.IsInfoEnabled)
-                        {
-                            context.Services.Log.Info(
-                                $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Is switched s as is specified as {entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalType}{entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalValue}.  Lower Date for range is {adjustedStartDate}.");
-                        }
-
-                        break;
-                    case "m":
-                        adjustedStartDate =
-                            lastReferenceDate.AddMonths(entityAnalysisModelRuleReprocessingInstance
-                                .ReprocessingIntervalValue * -1);
-
-                        if (context.Services.Log.IsInfoEnabled)
-                        {
-                            context.Services.Log.Info(
-                                $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Is switched m as is specified as {entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalType}{entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalValue}.  Lower Date for range is {adjustedStartDate}.");
-                        }
-
-                        break;
-                    case "y":
-                        adjustedStartDate =
-                            lastReferenceDate.AddYears(entityAnalysisModelRuleReprocessingInstance
-                                .ReprocessingIntervalValue * -1);
-
-                        if (context.Services.Log.IsInfoEnabled)
-                        {
-                            context.Services.Log.Info(
-                                $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Is switched y as is specified as {entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalType}{entityAnalysisModelRuleReprocessingInstance.ReprocessingIntervalValue}.  Lower Date for range is {adjustedStartDate}.");
-                        }
-
-                        break;
-                }
-
-                if (context.Services.Log.IsInfoEnabled)
-                {
-                    context.Services.Log.Info(
-                        $"Entity Reprocessing: Reprocessing instance {entityAnalysisModelRuleReprocessingInstance.EntityAnalysisModelsReprocessingRuleInstanceId} Lower Date for range is {adjustedStartDate}.  Finished getting initial counts.");
-                }
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                context.Services.Log.Error($"EstablishProcessingDateRange: has produced an error {ex}");
-            }
-
-            return (lastReferenceDate, allCount, adjustedStartDate);
-        }
-
-        private async Task<GetArchiveRangeAndCountsQuery.Dto> GetInitialCountsAsync(DbContext dbContext,
-            Guid entityAnalysisModelGuid, CancellationToken token = default)
-        {
-            var value = default(GetArchiveRangeAndCountsQuery.Dto);
-            try
-            {
-                var getArchiveRangeAndCountsQuery = new GetArchiveRangeAndCountsQuery(dbContext);
-                value = await getArchiveRangeAndCountsQuery.ExecuteAsync(entityAnalysisModelGuid, token)
-                    .ConfigureAwait(false);
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                context.Services.Log.Error($"GetInitialCountsAsync: has produced an error {ex}");
-            }
-
-            return value;
         }
 
         private async
@@ -858,28 +566,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         }
                     }
 
-                    var gatewayRuleScript = new StringBuilder();
-                    gatewayRuleScript.Append("Imports System.IO\r\n");
-                    gatewayRuleScript.Append("Imports log4net\r\n");
-                    gatewayRuleScript.Append("Imports System.Net\r\n");
-                    gatewayRuleScript.Append("Imports System.Collections.Generic\r\n");
-                    gatewayRuleScript.Append("Imports Jube.Dictionary\r\n");
-                    gatewayRuleScript.Append("Imports Jube.Dictionary.Extensions\r\n");
-                    gatewayRuleScript.Append("Imports System\r\n");
-                    gatewayRuleScript.Append("Public Class GatewayRule\r\n");
-                    gatewayRuleScript.Append(
-                        "Public Shared Function Match(Data As DictionaryNoBoxing(Of String), List As Dictionary(Of String, List(Of String)),KVP As PooledDictionary(Of String, DictionaryNoBoxing(Of String)),Log As ILog) As Boolean\r\n");
-                    gatewayRuleScript.Append("Dim Matched As Boolean\r\n");
-                    gatewayRuleScript.Append("Try\r\n");
-                    gatewayRuleScript.Append(
-                        returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleScript + "\r\n");
-                    gatewayRuleScript.Append("Catch ex As Exception\r\n");
-                    gatewayRuleScript.Append("Log.Info(ex.ToString)\r\n");
-                    gatewayRuleScript.Append("End Try\r\n");
-                    gatewayRuleScript.Append("Return Matched\r\n");
-                    gatewayRuleScript.Append("\r\n");
-                    gatewayRuleScript.Append("End Function\r\n");
-                    gatewayRuleScript.Append("End Class\r\n");
+                    if (returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleScript == null)
+                    {
+                        returnTuple.EntityAnalysisModelRuleReprocessingInstance.Failure =
+                            "The reprocessing rule is empty or does not parse.";
+                        return returnTuple;
+                    }
+
+                    var gatewayRuleScript = new StringBuilder(
+                        EngineRuleWrapper.ReprocessingRule(returnTuple.EntityAnalysisModelRuleReprocessingInstance
+                            .ReprocessingRuleScript).Text);
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -1000,6 +696,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         }
                         else
                         {
+                            returnTuple.EntityAnalysisModelRuleReprocessingInstance.Failure =
+                                "The reprocessing rule does not compile: " + string.Join("; ",
+                                    compile.Errors.Select(e => e.GetMessage()));
+
                             foreach (var compileError in compile.Errors)
                             {
                                 if (context.Services.Log.IsInfoEnabled)
@@ -1026,7 +726,17 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
+                returnTuple.FoundInstance = false;
+                returnTuple.EntityAnalysisModelRuleReprocessingInstance.Failure = ex.Message;
                 context.Services.Log.Error($"EntityAnalysisModelRuleReprocessingInstance: has produced an error {ex}");
+            }
+
+            if (returnTuple.FoundInstance &&
+                returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompileDelegate == null)
+            {
+                returnTuple.FoundInstance = false;
+                returnTuple.EntityAnalysisModelRuleReprocessingInstance.Failure =
+                    "The compiled reprocessing rule does not expose a Match function.";
             }
 
             return returnTuple;

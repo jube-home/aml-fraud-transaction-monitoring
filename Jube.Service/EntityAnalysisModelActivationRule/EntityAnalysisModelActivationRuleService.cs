@@ -12,8 +12,14 @@
  */
 
 using System.ComponentModel;
+using FluentValidation;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Parser;
+using Jube.Dto.Filter;
+using Jube.Dto.RuleExecution;
+using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelActivationRule;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -21,7 +27,10 @@ using Jube.Service.Exceptions.EntityAnalysisModelActivationRule;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using Jube.Parser.Dependency;
+using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelActivationRule;
+using Jube.Validations.RuleScript;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -38,6 +47,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
         private static readonly int[] writePermissions = [17];
         private static readonly int[] approveByReviewPermissions = [41];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelActivationRuleRepository repository;
@@ -45,12 +55,14 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelActivationRuleDtoValidator validator;
 
         private EntityAnalysisModelActivationRuleService(DbContext dbContext, string userName,
             int tenantRegistryId, PermissionValidation permissionValidation, ILog log, ILog auditLog,
-            IServiceChangeBus serviceChangeBus, IStringLocalizer strings)
+            IServiceChangeBus serviceChangeBus, IStringLocalizer strings, IStringLocalizer dependencyStrings)
         {
+            this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -59,7 +71,10 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelActivationRuleRepository(dbContext, userName);
-            validator = new EntityAnalysisModelActivationRuleDtoValidator(repository, strings);
+            validator = new EntityAnalysisModelActivationRuleDtoValidator(repository, strings,
+                new RuleScriptParser(dbContext, tenantRegistryId));
+            deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
+                dependencyStrings);
         }
 
         public static Task<EntityAnalysisModelActivationRuleService> CreateAsync(DbContext dbContext,
@@ -75,6 +90,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
             IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelActivationRuleResources));
+            var dependencyStrings = stringLocalizerFactory.Create(typeof(ModelDependencyResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -106,7 +122,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelActivationRuleService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, dependencyStrings);
         }
 
         [Description("Lists every Activation Rule visible to the calling user's tenant. Unbounded -- intended " +
@@ -330,6 +346,148 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Activation Rules may " +
+                     "use, with each field's type, the operators allowed for it and what it " +
+                     "means. Use them as rule ids in EntityAnalysisModelActivationRuleFilter " +
+                     "and EntityAnalysisModelActivationRuleCount.")]
+        [ServiceOperation("EntityAnalysisModelActivationRuleFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelActivationRule", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelActivationRule.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelActivationRule.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelActivationRuleDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelActivationRule.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Activation Rules in the caller's tenant matching query " +
+                     "builder JSON (the same format as the rule builder, over the fields from " +
+                     "EntityAnalysisModelActivationRuleFilterFields), ordered by id and capped " +
+                     "at 'take' rows (max 200). If 'more' is true, call again with 'afterId' " +
+                     "set to the last returned Id to continue. Invalid JSON is not an error: " +
+                     "Valid is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelActivationRuleFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelActivationRuleDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Activation Rules, using the fields from EntityAnalysisModelActivationRuleFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelActivationRule", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelActivationRule.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelActivationRule.Filter");
+                var rows = EntityAnalysisModelActivationRuleMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelActivationRule.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Activation Rules in the caller's tenant matching query builder " +
+                     "JSON (over the fields from EntityAnalysisModelActivationRuleFilterFields; " +
+                     "empty counts all), optionally broken down by the values of one field. " +
+                     "Invalid JSON is not an error: Valid is false and Errors gives each " +
+                     "problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelActivationRuleCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Activation Rules, using the fields from EntityAnalysisModelActivationRuleFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelActivationRuleFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelActivationRule", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelActivationRule.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelActivationRule.Count");
+                var rows = EntityAnalysisModelActivationRuleMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelActivationRule.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Registers a new Activation Rule under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows. Setting ReviewStatusId to 4 (Approved by Review) requires " +
                      "the caller to additionally hold the Allow Approved By Review permission.")]
@@ -412,6 +570,196 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelActivationRule.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates an Activation Rule without saving it, running every check a create (Id 0) or " +
+                     "an update (any other Id) would run, and returns each failure. Nothing is stored or " +
+                     "changed.")]
+        [ServiceOperation("EntityAnalysisModelActivationRuleValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Activation Rule to validate.")]
+            EntityAnalysisModelActivationRuleDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelActivationRule", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelActivationRule.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelActivationRule.Validate");
+                EnsureApprovedByReviewPermitted(model, "EntityAnalysisModelActivationRule.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelActivationRule.Validate: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Parses and compiles the rule text of an Activation Rule against its Entity Analysis Model " +
+                     "as the engine would, without saving anything, and returns each error with its line " +
+                     "and position in the rule text. Cheaper than a full validation; use it to iterate on " +
+                     "rule text.")]
+        [ServiceOperation("EntityAnalysisModelActivationRuleParseRule", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ParseRuleAsync(
+            [Description(
+                "The Activation Rule whose rule text is parsed; only the model id, the rule script type and the " +
+                "rule text are read.")]
+            EntityAnalysisModelActivationRuleDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelActivationRule", "ParseRule", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelActivationRule.ParseRule: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelActivationRule.ParseRule");
+
+                var results = await validator.ValidateAsync(model,
+                    o => o.IncludeRuleSets(RuleScriptParser.RuleSetName), token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelActivationRule.ParseRule: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Runs an Activation Rule against an invocation context exactly as the engine would compile and " +
+                     "call it, without saving the rule or storing anything, and returns the result, any runtime " +
+                     "error, how long it took and which names it read, flagging any the context leaves unset. " +
+                     "Build the context with the EntityAnalysisModelInvocationContext operations.")]
+        [ServiceOperation("EntityAnalysisModelActivationRuleExecute", OperationKind.Read, Idempotent = true)]
+        public async Task<RuleExecutionResultDto> ExecuteAsync(
+            [Description(
+                "The Activation Rule to run; only the model id, the rule script type and the rule text are read.")]
+            EntityAnalysisModelActivationRuleDto? model,
+            [Description("The invocation context to run it against, built for the same model.")]
+            InvocationContextDto? context,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelActivationRule", "Execute", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelActivationRule.Execute: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                ArgumentNullException.ThrowIfNull(context);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelActivationRule.Execute");
+
+                var result = await RuleExecutor.ExecuteAsync(dbContext, tenantRegistryId,
+                    model.EntityAnalysisModelId, RuleParse.ActivationRule,
+                    model.RuleScriptTypeId == 1 ? model.BuilderRuleScript : model.CoderRuleScript,
+                    model.RuleScriptTypeId == 1 ? "BuilderRuleScript" : "CoderRuleScript",
+                    null, false, context, token).ConfigureAwait(false);
+                op.Rows(result.Errors.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelActivationRule.Execute: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Turns query builder JSON (the rule builder's own format: a group with condition AND or OR, " +
+                     "an optional not, and rules of id, operator and value) into the rule text the browser's rule " +
+                     "builder would produce for an Activation Rule, and checks it parses and compiles against the model. " +
+                     "Field ids are completion names from CompletionsGetByEntityAnalysisModelIdParseTypeId with " +
+                     "parse type 5. Returns the rule text to save as BuilderRuleScript with the JSON as Json and " +
+                     "RuleScriptTypeId 1, or each problem with its JSON path. Nothing is saved.")]
+        [ServiceOperation("EntityAnalysisModelActivationRuleBuildRuleFromBuilderJson", OperationKind.Read,
+            Idempotent = true)]
+        public async Task<BuilderRuleResultDto> BuildRuleFromBuilderJsonAsync(
+            [Description("Id of the Entity Analysis Model the rule belongs to.")]
+            int entityAnalysisModelId,
+            [Description("The query builder JSON, e.g. {\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Amount\"," +
+                         "\"operator\":\"greater\",\"value\":100}]}.")]
+            string? builderJson,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelActivationRule", "BuildRuleFromBuilderJson",
+                userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            try
+            {
+                EnsurePermitted(writePermissions, "EntityAnalysisModelActivationRule.BuildRuleFromBuilderJson");
+                var result = await BuilderRuleComposer.ComposeAsync(dbContext, tenantRegistryId,
+                    entityAnalysisModelId, RuleParse.ActivationRule, builderJson, token).ConfigureAwait(false);
+                op.Rows(result.Errors.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error(
+                    $"EntityAnalysisModelActivationRule.BuildRuleFromBuilderJson: unexpected failure user={userName}",
+                    ex);
                 throw;
             }
         }
@@ -545,6 +893,21 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
 
                 try
                 {
+                    var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+                    if (existing != null)
+                    {
+                        var dependents = await deleteValidator
+                            .ValidateAsync(
+                                new ModelEntityDelete(ModelEntityKind.ActivationRule, id,
+                                    existing.EntityAnalysisModelId),
+                                token)
+                            .ConfigureAwait(false);
+                        if (!dependents.IsValid)
+                        {
+                            throw new DtoValidationException(dependents);
+                        }
+                    }
+
                     await repository.DeleteAsync(id, token).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
@@ -569,6 +932,11 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
                 throw;
             }
             catch (NotFoundException)

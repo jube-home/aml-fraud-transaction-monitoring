@@ -19,12 +19,12 @@ namespace Jube.Dictionary.Extensions
     {
         public static Int32 DigitSum(this Int32 @this)
         {
-            var value = Math.Abs(@this);
+            var value = Math.Abs((long)@this);
             var sum = 0;
 
             while (value > 0)
             {
-                sum += value % 10;
+                sum += (Int32)(value % 10);
                 value /= 10;
             }
 

@@ -10,6 +10,9 @@ parent: Rule Taxonomy
 The complete list of pipeline steps. For what a pipeline is and when to use one, read
 [Rule Authoring Methodology](RuleAuthoringMethodology.html) first.
 
+Every test below that can be called on a plain value is also an operator in the rule builder, under the builder's
+grouped operator list; see [Rule and Code Builder](../Navigation/RuleBuilderAndCoder/index.html#builder-operators).
+
 ## The step grammar
 
 Every test in the tables below is available in five forms, by prefixing its name:
@@ -63,11 +66,11 @@ are therefore `Trimmed` and `TextLength`, not `Trim` and `Length`.
 Abstraction Calculation. A few transformer names are also plain methods, and on a plain value the plain method is used,
 which returns an ordinary value that the next test step then begins from:
 
-| Name                                                  | On a plain value                    | Note                                                                                                                                                                          |
-|-------------------------------------------------------|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Abs`, `AgeInDays`                                    | The library method                  | Returns a plain number.                                                                                                                                                       |
-| `Round`                                               | The library method with no argument | `Round(digits)` on a plain `Double` is read by VB as the static `Double.Round`. Use `Payload.Amount.Start().Round(2)`.                                                        |
-| `FuzzyBestScore`, `FuzzyMatchCount`, `FuzzyBestMatch` | The library method                  | Returns a plain number or string.                                                                                                                                             |
+| Name                                                  | On a plain value                    | Note                                                                                                                   |
+|-------------------------------------------------------|-------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| `Abs`, `AgeInDays`                                    | The library method                  | Returns a plain number.                                                                                                |
+| `Round`                                               | The library method with no argument | `Round(digits)` on a plain `Double` is read by VB as the static `Double.Round`. Use `Payload.Amount.Start().Round(2)`. |
+| `FuzzyBestScore`, `FuzzyMatchCount`, `FuzzyBestMatch` | The library method                  | Returns a plain number or string.                                                                                      |
 
 ## Control steps
 

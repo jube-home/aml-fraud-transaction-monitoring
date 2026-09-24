@@ -14,6 +14,8 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Filter;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelList;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -21,6 +23,8 @@ using Jube.Service.Exceptions.EntityAnalysisModelList;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using Jube.Parser.Dependency;
+using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelList;
 using log4net;
 using Microsoft.Extensions.Localization;
@@ -41,11 +45,12 @@ namespace Jube.Service.EntityAnalysisModelList
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelListDtoValidator validator;
 
         private EntityAnalysisModelListService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            IStringLocalizer strings, IStringLocalizer dependencyStrings)
         {
             this.log = log;
             this.auditLog = auditLog;
@@ -57,6 +62,8 @@ namespace Jube.Service.EntityAnalysisModelList
             repository = new EntityAnalysisModelListRepository(dbContext, userName);
             validator = new EntityAnalysisModelListDtoValidator(repository, strings,
                 new EntityAnalysisModelRepository(dbContext, userName));
+            deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
+                dependencyStrings);
         }
 
         public static Task<EntityAnalysisModelListService> CreateAsync(DbContext dbContext,
@@ -72,6 +79,7 @@ namespace Jube.Service.EntityAnalysisModelList
             IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelListResources));
+            var dependencyStrings = stringLocalizerFactory.Create(typeof(ModelDependencyResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -100,7 +108,7 @@ namespace Jube.Service.EntityAnalysisModelList
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelListService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, dependencyStrings);
         }
 
         [Description("Lists every List visible to the calling user's tenant. Unbounded -- intended for the " +
@@ -320,6 +328,144 @@ namespace Jube.Service.EntityAnalysisModelList
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Lists may use, with " +
+                     "each field's type, the operators allowed for it and what it means. Use " +
+                     "them as rule ids in EntityAnalysisModelListFilter and " +
+                     "EntityAnalysisModelListCount.")]
+        [ServiceOperation("EntityAnalysisModelListFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelList", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelList.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelList.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelListDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelList.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Lists in the caller's tenant matching query builder JSON (the " +
+                     "same format as the rule builder, over the fields from " +
+                     "EntityAnalysisModelListFilterFields), ordered by id and capped at 'take' " +
+                     "rows (max 200). If 'more' is true, call again with 'afterId' set to the " +
+                     "last returned Id to continue. Invalid JSON is not an error: Valid is " +
+                     "false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelListFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelListDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Lists, using the fields from EntityAnalysisModelListFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelList", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelList.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelList.Filter");
+                var rows = EntityAnalysisModelListMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelList.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Lists in the caller's tenant matching query builder JSON (over " +
+                     "the fields from EntityAnalysisModelListFilterFields; empty counts all), " +
+                     "optionally broken down by the values of one field. Invalid JSON is not an " +
+                     "error: Valid is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelListCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Lists, using the fields from EntityAnalysisModelListFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelListFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelList", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelList.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelList.Count");
+                var rows = EntityAnalysisModelListMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelList.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Registers a new List under a Model in the caller's tenant. Not idempotent -- calling " +
                      "twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelListCreate", OperationKind.Write, Idempotent = false)]
@@ -391,6 +537,47 @@ namespace Jube.Service.EntityAnalysisModelList
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelList.Create: unexpected failure user={userName} name={model?.Name}",
                     ex);
+                throw;
+            }
+        }
+
+        [Description("Validates a List without saving it, running every check a create (Id 0) or an update " +
+                     "(any other Id) would run, and returns each failure. Nothing is stored or changed.")]
+        [ServiceOperation("EntityAnalysisModelListValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The List to validate.")] EntityAnalysisModelListDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelList", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelList.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("EntityAnalysisModelList.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelList.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }
@@ -512,6 +699,20 @@ namespace Jube.Service.EntityAnalysisModelList
 
                 try
                 {
+                    var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+                    if (existing != null)
+                    {
+                        var dependents = await deleteValidator
+                            .ValidateAsync(
+                                new ModelEntityDelete(ModelEntityKind.List, id, null, existing.EntityAnalysisModelGuid),
+                                token)
+                            .ConfigureAwait(false);
+                        if (!dependents.IsValid)
+                        {
+                            throw new DtoValidationException(dependents);
+                        }
+                    }
+
                     await repository.DeleteAsync(id, token).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
@@ -536,6 +737,11 @@ namespace Jube.Service.EntityAnalysisModelList
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
                 throw;
             }
             catch (NotFoundException)

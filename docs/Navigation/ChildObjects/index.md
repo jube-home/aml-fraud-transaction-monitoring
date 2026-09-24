@@ -106,3 +106,22 @@ Order By "Id" desc
 It can be seen that a full copy of the record was taken before it was updated.
 
 Irrespective of the manner in which the history of the record is maintained, it should be noted that there is record for each update maintained in the database for the purposes of audit.
+
+## Deleting an entity that is in use
+
+The entities of a model use each other: a rule names fields, TTL counters, abstractions, lists and other rules in its
+text, and settings name entities too, such as an abstraction rule's search key, a TTL counter's data name, or the case
+workflow and TTL counter an activation rule uses. A delete is refused while anything in the model still uses the
+entity, and nothing is deleted. The refusal names each entity that uses it and how, either the name in its rule text
+(such as `List.HighRisk`) or the setting (such as `TtlCounterDataName`). The page shows each of these reasons under
+**Delete refused**, so the entities using it can be changed first.
+
+This applies to Request XPath, Inline Functions, Inline Scripts (through their properties), Abstraction Rules,
+Abstraction Calculations, Activation Rules, TTL Counters, Sanctions, Lists, Dictionaries, HTTP Adaptations, Exhaustive
+adaptations and Case Workflows. Entities that have been deleted no longer count as using anything, and an entity that
+refers to itself does not block its own delete.
+
+Renaming or deactivating an entity is not checked in this way. A rule that names a renamed entity no longer compiles,
+and an active entity that uses an inactive one may not work as intended. To see what uses an entity before changing
+it, use the **Dependencies** tab of [Model Integrity](../../Configuration/Models/ModelIntegrity/index.html), which also
+lists names that no longer resolve and active entities that use inactive ones.

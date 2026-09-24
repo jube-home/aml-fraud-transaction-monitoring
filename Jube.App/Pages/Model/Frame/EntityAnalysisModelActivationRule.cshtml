@@ -20,6 +20,8 @@
 <script src="/js/BuilderCoder.js"></script>
 <script src="/js/CRUD.js"></script>
 <script src="/js/Model/Frame/EntityAnalysisModelActivationRule.js"></script>
+<script src="/js/Model/Frame/RuleTools.js"></script>
+<link rel="stylesheet" href="/styles/RuleTools.css"/>
 
 <form id="Form" class="k-form">
     <body>
@@ -425,3 +427,23 @@
     </div>
     </body>
 </form>
+<div id="RuleTools"></div>
+<script>
+    $(function () {
+        RuleTools.init({
+            ruleType: "ActivationRule",
+            canBacktest: @(Model.CanBacktest ? "true" : "false"),
+            canCheckIntegrity: @(Model.CanCheckIntegrity ? "true" : "false"),
+            modelId: function () {
+                return parentKey;
+            },
+            ruleId: function () {
+                return typeof id === "undefined" ? null : Number(id);
+            },
+            ruleText: function () {
+                const builderCoder = getBuilderCoder();
+                return builderCoder.ruleType === 1 ? builderCoder.ruleTextBuilder : builderCoder.ruleTextCoder;
+            }
+        });
+    });
+</script>

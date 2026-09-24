@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.Filter;
+using Jube.Dto.Validation;
 using Jube.Service.Reactivity.Interfaces;
 
 namespace Jube.Service.EntityAnalysisModel
@@ -270,6 +272,145 @@ namespace Jube.Service.EntityAnalysisModel
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Entity Analysis Models " +
+                     "may use, with each field's type, the operators allowed for it and what it " +
+                     "means. Use them as rule ids in EntityAnalysisModelFilter and " +
+                     "EntityAnalysisModelCount.")]
+        [ServiceOperation("EntityAnalysisModelFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModel", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModel.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModel.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModel.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Entity Analysis Models in the caller's tenant matching query " +
+                     "builder JSON (the same format as the rule builder, over the fields from " +
+                     "EntityAnalysisModelFilterFields), ordered by id and capped at 'take' rows " +
+                     "(max 200). If 'more' is true, call again with 'afterId' set to the last " +
+                     "returned Id to continue. Invalid JSON is not an error: Valid is false and " +
+                     "Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Entity Analysis Models, using the fields from EntityAnalysisModelFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModel", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModel.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModel.Filter");
+                var rows = EntityAnalysisModelMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModel.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Entity Analysis Models in the caller's tenant matching query " +
+                     "builder JSON (over the fields from EntityAnalysisModelFilterFields; empty " +
+                     "counts all), optionally broken down by the values of one field. Invalid " +
+                     "JSON is not an error: Valid is false and Errors gives each problem with " +
+                     "its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Entity Analysis Models, using the fields from EntityAnalysisModelFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModel", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModel.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModel.Count");
+                var rows = EntityAnalysisModelMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModel.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Creates a new Model in the caller's tenant. Not idempotent -- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelCreate", OperationKind.Write, Idempotent = false)]
         public async Task<ModelPoco> InsertAsync(
@@ -338,6 +479,49 @@ namespace Jube.Service.EntityAnalysisModel
             {
                 op.Error(ex);
                 log.Error($"EntityAnalysisModel.Create: unexpected failure user={userName} name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates an Entity Analysis Model without saving it, running every check a create (Id " +
+                     "0) or an update (any other Id) would run, and returns each failure. Nothing is stored or " +
+                     "changed.")]
+        [ServiceOperation("EntityAnalysisModelValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Entity Analysis Model to validate.")]
+            EntityAnalysisModelDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModel", "Validate", userName, tenantRegistryId, auditLog,
+                log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModel.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(permissions, "EntityAnalysisModel.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModel.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }

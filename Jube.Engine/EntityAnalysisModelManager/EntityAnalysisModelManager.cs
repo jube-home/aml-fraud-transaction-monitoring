@@ -63,6 +63,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
             StartAbstractionRuleCaching();
             StartTtlCounterServer();
             StartReprocessing();
+            StartBacktest();
             StartCachePrune();
             StartLruJournalPrune();
             StartHashCacheAssemblyObservability();
@@ -128,6 +129,38 @@ namespace Jube.Engine.EntityAnalysisModelManager
                 {
                     Context.Services.Log.Debug("Entity Start: Has not started reprocessing as it is disabled.");
                 }
+            }
+        }
+
+        private void StartBacktest()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableBacktest")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                if (Context.Services.Log.IsDebugEnabled)
+                {
+                    Context.Services.Log.Debug("Entity Start: Has not started backtesting as it is disabled.");
+                }
+
+                return;
+            }
+
+            var threadCount = int.TryParse(Context.Services.DynamicEnvironment.AppSettings("BacktestThreads"),
+                out var configured)
+                ? configured
+                : 1;
+
+            for (var i = 1; i <= threadCount; i++)
+            {
+                if (Context.Services.Log.IsDebugEnabled)
+                {
+                    Context.Services.Log.Debug($"Entity Start: Starting Backtest routine for thread {i}.");
+                }
+
+                var backtestTaskStarter = new BacktestTaskStarter(Context, i);
+                Context.Tasks.BacktestAsyncTasks.Add(
+                    Context.Services.TaskCoordinator.RunAsync("EntityBacktestTask",
+                        _ => backtestTaskStarter.StartAsync()));
             }
         }
 

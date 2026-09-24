@@ -109,7 +109,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             {
                 EntityAnalysisModelId = entityAnalysisModelId,
                 Name = name,
-                BuilderRuleScript = "If (Payload.CurrencyAmount > 0) Then\n   Return True\nEnd If",
+                BuilderRuleScript = "If (1 > 0) Then\n   Return True\nEnd If",
                 Json = "{\"valid\":true,\"condition\":\"AND\",\"rules\":[]}",
                 CoderRuleScript = "Return True",
                 RuleScriptTypeId = 1,

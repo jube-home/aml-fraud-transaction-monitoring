@@ -14,7 +14,9 @@
 using FluentValidation;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelInlineFunction;
+using Jube.Parser;
 using Jube.Resources;
+using Jube.Validations.RuleScript;
 using Microsoft.Extensions.Localization;
 
 namespace Jube.Validations.EntityAnalysisModelInlineFunction
@@ -30,7 +32,8 @@ namespace Jube.Validations.EntityAnalysisModelInlineFunction
 
         public EntityAnalysisModelInlineFunctionDtoValidator(
             EntityAnalysisModelInlineFunctionRepository repository, IStringLocalizer localiser,
-            EntityAnalysisModelRepository entityAnalysisModelRepository)
+            EntityAnalysisModelRepository entityAnalysisModelRepository,
+            RuleScriptParser? ruleScriptParser = null)
         {
             RuleFor(p => p.EntityAnalysisModelId)
                 .Cascade(CascadeMode.Stop)
@@ -78,6 +81,17 @@ namespace Jube.Validations.EntityAnalysisModelInlineFunction
                 .Must(m => allowedEncryptionIds.Contains(m))
                 .WithMessage(_ => localiser[EntityAnalysisModelInlineFunctionResources.EncryptionIdInvalid])
                 .WithErrorCode("EncryptionIdInvalid");
+
+            if (ruleScriptParser != null)
+            {
+                RuleSet(RuleScriptParser.SaveRuleSets, () =>
+                {
+                    RuleFor(p => p).CustomAsync((dto, context, token) => ruleScriptParser.ValidateAsync(context,
+                        dto.EntityAnalysisModelId, RuleParse.InlineFunction,
+                        dto.FunctionScript,
+                        "FunctionScript", null, token));
+                });
+            }
         }
     }
 }

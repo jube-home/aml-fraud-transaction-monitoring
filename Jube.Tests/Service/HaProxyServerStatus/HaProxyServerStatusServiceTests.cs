@@ -17,7 +17,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Data.Poco;
 using Jube.Service.Exceptions.HaProxyServerStatus;
 using Jube.Service.HaProxyServerStatus;
 using Jube.Service.Reactivity;

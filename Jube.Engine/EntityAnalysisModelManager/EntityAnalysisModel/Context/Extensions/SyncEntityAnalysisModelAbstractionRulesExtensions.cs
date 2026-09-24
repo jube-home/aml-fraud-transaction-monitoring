@@ -52,7 +52,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelAbstractionRuleRepository.GetByEntityAnalysisModelId for entity model key of {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdOrderByIdDescAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository
+                        .GetByEntityAnalysisModelIdOrderByIdDescAsync(key, context.Services.CancellationToken)
+                        .ConfigureAwait(false);
 
                     var shadowEntityModelAbstractionRule = new List<EntityAnalysisModelAbstractionRule>();
                     var shadowDistinctSearchKeys = value.Collections.DistinctSearchKeys;
@@ -555,27 +557,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 continue;
                             }
 
-                            var abstractionRuleScript = new StringBuilder();
-                            abstractionRuleScript.Append("Imports System.IO\r\n");
-                            abstractionRuleScript.Append("Imports log4net\r\n");
-                            abstractionRuleScript.Append("Imports System.Net\r\n");
-                            abstractionRuleScript.Append("Imports System.Collections.Generic\r\n");
-                            abstractionRuleScript.Append("Imports Jube.Dictionary\r\n");
-                            abstractionRuleScript.Append("Imports Jube.Dictionary.Extensions\r\n");
-                            abstractionRuleScript.Append("Imports System\r\n");
-                            abstractionRuleScript.Append("Public Class AbstractionRule\r\n");
-                            abstractionRuleScript.Append(
-                                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List as Dictionary(Of String,List(Of String)),KVP as PooledDictionary(of String,Double),Log as ILog) As Boolean\r\n");
-                            abstractionRuleScript.Append("Dim Matched as Boolean\r\n");
-                            abstractionRuleScript.Append("Try\r\n");
-                            abstractionRuleScript.Append(modelAbstractionRule.AbstractionRuleScript + "\r\n");
-                            abstractionRuleScript.Append("Catch ex As Exception\r\n");
-                            abstractionRuleScript.Append("Log.Info(ex.ToString)\r\n");
-                            abstractionRuleScript.Append("End Try\r\n");
-                            abstractionRuleScript.Append("Return Matched\r\n");
-                            abstractionRuleScript.Append("\r\n");
-                            abstractionRuleScript.Append("End Function\r\n");
-                            abstractionRuleScript.Append("End Class\r\n");
+                            var abstractionRuleScript = new StringBuilder(
+                                EngineRuleWrapper.AbstractionRule(modelAbstractionRule.AbstractionRuleScript).Text);
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -591,7 +574,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     $"Entity Start: Entity Model {key} and Abstraction Rule Model {modelAbstractionRule.Id} calculated hash as {abstractionRuleScriptHash}.  Checking if in hash cache.");
                             }
 
-                            if (context.Caching.HashCacheAssembly.TryGetValue(abstractionRuleScriptHash, out var valueHash))
+                            if (context.Caching.HashCacheAssembly.TryGetValue(abstractionRuleScriptHash,
+                                    out var valueHash))
                             {
                                 if (context.Services.Log.IsDebugEnabled)
                                 {
@@ -629,7 +613,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 var compile = new Compile();
                                 compile.CompileCode(abstractionRuleScript.ToString(), context.Services.Log,
                                 [
-                                    Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(), "log4net.dll"),
+                                    Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),
+                                        "log4net.dll"),
                                     Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll")
                                 ], Compile.Language.Vb);
 
@@ -651,15 +636,19 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                                     var classType =
                                         modelAbstractionRule.AbstractionRuleCompile.GetType("AbstractionRule");
+
                                     var methodInfo = classType.GetMethod("Match");
 
                                     modelAbstractionRule.AbstractionRuleCompileDelegate =
                                         (EntityAnalysisModelAbstractionRule.Match)Delegate.CreateDelegate(
                                             typeof(EntityAnalysisModelAbstractionRule.Match), methodInfo);
 
-                                    context.Caching.HashCacheAssembly.TryAdd(abstractionRuleScriptHash, compile.CompiledAssembly);
+                                    context.Caching.HashCacheAssembly.TryAdd(abstractionRuleScriptHash,
+                                        compile.CompiledAssembly);
+
                                     context.Caching.HashCacheAssemblyMetadata.TryAdd(abstractionRuleScriptHash,
-                                        new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes, compile.CompiledAssemblyBinary, abstractionRuleScript.ToString()));
+                                        new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
+                                            compile.CompiledAssemblyBinary, abstractionRuleScript.ToString()));
 
                                     if (context.Services.Log.IsDebugEnabled)
                                     {
@@ -680,7 +669,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                                 else
                                 {
-                                    await repository.UpdateCompileStatusAsync(modelAbstractionRule.Id, false, compile.ErrorsSummary,
+                                    await repository.UpdateCompileStatusAsync(modelAbstractionRule.Id, false,
+                                        compile.ErrorsSummary,
                                         context.Services.CancellationToken).ConfigureAwait(false);
 
                                     if (context.Services.Log.IsDebugEnabled)
@@ -700,7 +690,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     $"Entity Start: Entity Model {key} and Abstraction Rule Model {modelAbstractionRule.Id} hash {modelAbstractionRule.LogicHash} has been attached to the rule to avoid duplication in execution of abstraction rules.");
                             }
 
-                            context.Services.Parser.EntityAnalysisModelsAbstractionRule.TryAdd(modelAbstractionRule.Name);
+                            context.Services.Parser.EntityAnalysisModelsAbstractionRule.TryAdd(
+                                modelAbstractionRule.Name);
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -763,7 +754,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelAbstractionRulesAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.AbstractionRules, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.AbstractionRules, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

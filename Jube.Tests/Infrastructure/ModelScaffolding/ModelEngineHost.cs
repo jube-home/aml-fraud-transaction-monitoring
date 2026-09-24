@@ -44,12 +44,15 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
 
         public global::Jube.Engine.Engine Engine { get; }
 
+        public static string RedisConnectionString { get; } =
+            System.Environment.GetEnvironmentVariable("JubeTestRedisConnectionString") ?? "localhost";
+
         private static Dictionary<string, string> DefaultSettings() => new()
         {
             ["ConnectionString"] = ModelScaffold.ConnectionString,
             ["ReportConnectionString"] = ModelScaffold.ConnectionString,
             ["JWTKey"] = "an-adequately-long-unit-test-signing-key-0123456789",
-            ["RedisConnectionString"] = "localhost",
+            ["RedisConnectionString"] = RedisConnectionString,
             ["AMQP"] = "False",
             ["EnableEngine"] = "True",
             ["EnablePublicInvokeController"] = "True",
@@ -99,7 +102,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             var cancellation = new CancellationTokenProvider();
             var taskCoordinator = new TaskCoordinator(cancellation, log);
 
-            var cacheService = new CacheService("localhost", ModelScaffold.ConnectionString, callbacks,
+            var cacheService = new CacheService(RedisConnectionString, ModelScaffold.ConnectionString, callbacks,
                 int.Parse(environment.AppSettings("CallbackTimeout")), true, false, 50_000_000, false, false, false,
                 false, TimeSpan.FromDays(1), false, log);
             cacheService.InstantiateRepositoriesTask = taskCoordinator.RunAsync("InstantiateRepositoriesAsync",

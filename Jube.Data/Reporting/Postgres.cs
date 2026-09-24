@@ -27,6 +27,8 @@ namespace Jube.Data.Reporting
     using log4net;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Npgsql;
+    using NpgsqlTypes;
     using ResilientNpgsqlConnection;
     using ResilientNpgsqlConnection.Extensions.Jube.ResilientNpgsqlConnection;
 
@@ -48,7 +50,7 @@ namespace Jube.Data.Reporting
                 return connectionString;
             }
 
-            var builder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);
+            var builder = new NpgsqlConnectionStringBuilder(connectionString);
             var settings =
                 $"-c default_transaction_read_only=on -c statement_timeout={StatementTimeoutSeconds * 1000} -c lock_timeout=5000";
             builder.Options = string.IsNullOrWhiteSpace(builder.Options) ? settings : builder.Options + " " + settings;
@@ -268,10 +270,13 @@ namespace Jube.Data.Reporting
             return value;
         }
 
-        public async Task<List<DictionaryNoBoxing<string>>> ExecuteReturnPayloadFromArchiveWithSkipLimitAsync(
+        public async Task<List<DictionaryNoBoxing<string>>> ExecuteReturnPayloadFromArchiveAfterAsync(
             string sql,
             DateTime adjustedStartDate,
-            int skip,
+            DateTime lastReferenceDate,
+            DateTime snapshotDate,
+            DateTime afterReferenceDate,
+            Guid afterEntityAnalysisModelInstanceEntryGuid,
             int limit,
             CancellationToken token = default)
         {
@@ -285,9 +290,17 @@ namespace Jube.Data.Reporting
             await using var command = new ResilientNpgsqlCommand(connection, sql);
             command.CommandTimeout = StatementTimeoutSeconds + 5;
 
-            command.Parameters.AddWithValue("adjustedStartDate", adjustedStartDate);
+            command.Parameters.Add(new NpgsqlParameter("adjustedStartDate", NpgsqlDbType.Timestamp)
+                { Value = DateTime.SpecifyKind(adjustedStartDate, DateTimeKind.Unspecified) });
+            command.Parameters.Add(new NpgsqlParameter("lastReferenceDate", NpgsqlDbType.Timestamp)
+                { Value = DateTime.SpecifyKind(lastReferenceDate, DateTimeKind.Unspecified) });
+            command.Parameters.Add(new NpgsqlParameter("snapshotDate", NpgsqlDbType.Timestamp)
+                { Value = DateTime.SpecifyKind(snapshotDate, DateTimeKind.Unspecified) });
+            command.Parameters.Add(new NpgsqlParameter("afterReferenceDate", NpgsqlDbType.Timestamp)
+                { Value = DateTime.SpecifyKind(afterReferenceDate, DateTimeKind.Unspecified) });
+            command.Parameters.Add(new NpgsqlParameter("afterEntityAnalysisModelInstanceEntryGuid", NpgsqlDbType.Uuid)
+                { Value = afterEntityAnalysisModelInstanceEntryGuid });
             command.Parameters.AddWithValue("limit", limit);
-            command.Parameters.AddWithValue("skip", skip);
 
             await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
 

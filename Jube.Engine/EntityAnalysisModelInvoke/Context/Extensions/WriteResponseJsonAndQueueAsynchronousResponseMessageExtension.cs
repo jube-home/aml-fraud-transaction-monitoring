@@ -33,11 +33,15 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 context.EntityAnalysisModelInstanceEntryPayload,
                 context.EntityAnalysisModel.JsonSerializationHelper.ArchiveJsonSerializer);
 
-            await context.EntityAnalysisModel.Services.CacheService.CacheWalRepository.InsertAsync(
-                context.EntityAnalysisModelInstanceEntryPayload.TenantRegistryId,
-                context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelGuid,
-                context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid, Dns.GetHostName(),
-                context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson);
+            if (!context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId
+                    .HasValue)
+            {
+                await context.EntityAnalysisModel.Services.CacheService.CacheWalRepository.InsertAsync(
+                    context.EntityAnalysisModelInstanceEntryPayload.TenantRegistryId,
+                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelGuid,
+                    context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid,
+                    Dns.GetHostName(), context.EntityAnalysisModelInstanceEntryPayload.ArchiveJson);
+            }
 
             if (context.Environment.AppSettings("PartialResponseMessageSerialisation")
                 .Equals("True", StringComparison.CurrentCultureIgnoreCase))

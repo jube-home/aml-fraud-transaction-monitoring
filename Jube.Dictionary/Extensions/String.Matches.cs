@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 using System.Text.RegularExpressions;
 
 namespace Jube.Dictionary.Extensions
@@ -13,12 +14,12 @@ namespace Jube.Dictionary.Extensions
         {
             public MatchCollection Matches(String pattern)
             {
-                return Regex.Matches(input, pattern);
+                return Regex.Matches(input, pattern, RegexOptions.None, RegexSupport.MatchTimeout);
             }
 
             public MatchCollection Matches(String pattern, RegexOptions options)
             {
-                return Regex.Matches(input, pattern, options);
+                return Regex.Matches(input, pattern, options, RegexSupport.MatchTimeout);
             }
         }
     }

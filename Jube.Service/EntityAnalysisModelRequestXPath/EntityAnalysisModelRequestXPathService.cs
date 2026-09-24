@@ -15,6 +15,8 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Dto.Filter;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelRequestXPath;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -22,6 +24,8 @@ using Jube.Service.Exceptions.EntityAnalysisModelRequestXPath;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using Jube.Parser.Dependency;
+using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelRequestXPath;
 using log4net;
 using Microsoft.Extensions.Localization;
@@ -48,11 +52,12 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelRequestXPathDtoValidator validator;
 
         private EntityAnalysisModelRequestXPathService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            IStringLocalizer strings, IStringLocalizer dependencyStrings)
         {
             this.log = log;
             this.auditLog = auditLog;
@@ -64,6 +69,8 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             repository = new RequestXPathRepository(dbContext, userName);
             validator = new EntityAnalysisModelRequestXPathDtoValidator(repository, strings,
                 new EntityAnalysisModelRepository(dbContext, userName));
+            deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
+                dependencyStrings);
         }
 
         public static Task<EntityAnalysisModelRequestXPathService> CreateAsync(DbContext dbContext, string? userName,
@@ -79,6 +86,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelRequestXPathResources));
+            var dependencyStrings = stringLocalizerFactory.Create(typeof(ModelDependencyResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -108,7 +116,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelRequestXPathService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, dependencyStrings);
         }
 
         [Description("Lists every Request XPath visible to the calling user's tenant. Unbounded -- intended for " +
@@ -501,6 +509,148 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over RequestXPaths may use, " +
+                     "with each field's type, the operators allowed for it and what it means. " +
+                     "Use them as rule ids in EntityAnalysisModelRequestXPathFilter and " +
+                     "EntityAnalysisModelRequestXPathCount.")]
+        [ServiceOperation("EntityAnalysisModelRequestXPathFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelRequestXPath.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelRequestXPath.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelRequestXPathDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelRequestXPath.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the RequestXPaths in the caller's tenant matching query builder " +
+                     "JSON (the same format as the rule builder, over the fields from " +
+                     "EntityAnalysisModelRequestXPathFilterFields), ordered by id and capped at " +
+                     "'take' rows (max 200). If 'more' is true, call again with 'afterId' set " +
+                     "to the last returned Id to continue. Invalid JSON is not an error: Valid " +
+                     "is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelRequestXPathFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelRequestXPathDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the RequestXPaths, using the fields from EntityAnalysisModelRequestXPathFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelRequestXPath.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelRequestXPath.Filter");
+                var rows = EntityAnalysisModelRequestXPathMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelRequestXPath.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the RequestXPaths in the caller's tenant matching query builder " +
+                     "JSON (over the fields from EntityAnalysisModelRequestXPathFilterFields; " +
+                     "empty counts all), optionally broken down by the values of one field. " +
+                     "Invalid JSON is not an error: Valid is false and Errors gives each " +
+                     "problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelRequestXPathCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the RequestXPaths, using the fields from EntityAnalysisModelRequestXPathFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelRequestXPathFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelRequestXPath.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelRequestXPath.Count");
+                var rows = EntityAnalysisModelRequestXPathMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelRequestXPath.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Creates a new Request XPath under a Model in the caller's tenant. Not idempotent -- calling " +
                      "twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelRequestXPathCreate", OperationKind.Write, Idempotent = false)]
@@ -574,6 +724,48 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                 op.Error(ex);
                 log.Error($"EntityAnalysisModelRequestXPath.Create: unexpected failure user={userName} " +
                           $"name={model?.Name}", ex);
+                throw;
+            }
+        }
+
+        [Description("Validates a RequestXPath without saving it, running every check a create (Id 0) or an " +
+                     "update (any other Id) would run, and returns each failure. Nothing is stored or changed.")]
+        [ServiceOperation("EntityAnalysisModelRequestXPathValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The RequestXPath to validate.")]
+            EntityAnalysisModelRequestXPathDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelRequestXPath.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelRequestXPath.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelRequestXPath.Validate: unexpected failure user={userName}", ex);
                 throw;
             }
         }
@@ -697,6 +889,20 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
 
                 try
                 {
+                    var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+                    if (existing != null)
+                    {
+                        var dependents = await deleteValidator
+                            .ValidateAsync(
+                                new ModelEntityDelete(ModelEntityKind.RequestXPath, id, existing.EntityAnalysisModelId),
+                                token)
+                            .ConfigureAwait(false);
+                        if (!dependents.IsValid)
+                        {
+                            throw new DtoValidationException(dependents);
+                        }
+                    }
+
                     await repository.DeleteAsync(id, token).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
@@ -721,6 +927,11 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
                 throw;
             }
             catch (NotFoundException)

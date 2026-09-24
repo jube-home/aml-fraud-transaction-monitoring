@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>Le modèle d'analyse d'entité est introuvable.</value>
+  </data>
+    <data name="TtlCounterNotFound" xml:space="preserve">
+    <value>Le compteur TTL est introuvable dans ce modèle d'analyse d'entité.</value>
+  </data>
+    <data name="ContextModelMismatch" xml:space="preserve">
+    <value>Le contexte appartient à un autre modèle ; construisez le contexte pour le même modèle.</value>
+  </data>
+    <data name="NotASearchRule" xml:space="preserve">
+    <value>La règle d'abstraction ne recherche pas d'historique, il n'y a donc rien à agréger ; exécutez-la plutôt avec l'opération Execute de la règle d'abstraction.</value>
+  </data>
+    <data name="SearchKeyNotFound" xml:space="preserve">
+    <value>La clé de recherche {0} n'est pas un XPath de requête de ce modèle.</value>
+  </data>
+    <data name="ValueUnset" xml:space="preserve">
+    <value>{0} n'a pas de valeur dans le contexte ; définissez-la avec l'opération Overlay.</value>
+  </data>
+    <data name="CacheUnavailable" xml:space="preserve">
+    <value>Le cache n'est pas disponible pour ce service, l'historique ne peut donc pas être lu.</value>
+  </data>
+    <data name="TtlCountersDisabled" xml:space="preserve">
+    <value>Les compteurs TTL ne sont pas activés pour ce modèle, le moteur n'en lit donc aucun.</value>
+  </data>
+</root>

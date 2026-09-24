@@ -14,7 +14,6 @@
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Archiver
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Net;
@@ -30,8 +29,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
 
     public static class ArchiverArchiveRepository
     {
-        public static async Task BulkCopyArchiveBufferAsync(int tenantRegistryId, Guid entityAnalysisModelGuid, ArchiveBuffer bulkInsertMessageBuffer,
-            DynamicEnvironment dynamicEnvironment, CacheService cacheService, ILog log, CancellationToken token = default)
+        public static async Task BulkCopyArchiveBufferAsync(int tenantRegistryId, Guid entityAnalysisModelGuid,
+            ArchiveBuffer bulkInsertMessageBuffer,
+            DynamicEnvironment dynamicEnvironment, CacheService cacheService, ILog log,
+            CancellationToken token = default)
         {
             try
             {
@@ -45,7 +46,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                 }
 
                 var dbContext =
-                    DataConnectionDbContext.GetResilientDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"), log);
+                    DataConnectionDbContext.GetResilientDbContextDataConnection(
+                        dynamicEnvironment.AppSettings("ConnectionString"), log);
                 dbContext.CommandTimeout = 0;
 
                 if (log.IsInfoEnabled)
@@ -59,7 +61,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                     await repositoryArchive.BulkCopyAsync(bulkInsertMessageBuffer.Archive, token).ConfigureAwait(false);
 
                     await cacheService.CacheWalRepository.FlushWalAsync(tenantRegistryId, entityAnalysisModelGuid,
-                        Dns.GetHostName(), bulkInsertMessageBuffer.Archive.Select(s => s.EntityAnalysisModelInstanceEntryGuid).ToArray());
+                        Dns.GetHostName(),
+                        bulkInsertMessageBuffer.Archive.Select(s => s.EntityAnalysisModelInstanceEntryGuid).ToArray());
 
                     bulkInsertMessageBuffer.Archive.Clear();
                 }
@@ -73,9 +76,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                 try
                 {
                     // ReSharper disable once MethodSupportsCancellation
- #pragma warning disable CA2016
-                    await repositoryArchiveKeys.BulkCopyAsync(bulkInsertMessageBuffer.ArchiveKeys).ConfigureAwait(false);
- #pragma warning restore CA2016
+#pragma warning disable CA2016
+                    await repositoryArchiveKeys.BulkCopyAsync(bulkInsertMessageBuffer.ArchiveKeys)
+                        .ConfigureAwait(false);
+#pragma warning restore CA2016
 
                     bulkInsertMessageBuffer.ArchiveKeys.Clear();
                 }
@@ -108,10 +112,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                     $"Database Persist: Database Persist message is valid for storage with Entry GUID of {payload.EntityAnalysisModelInstanceEntryGuid}.  This is being sent for update as it is reprocess.");
             }
 
-            var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(dynamicEnvironment.AppSettings("ConnectionString"), log);
-            
+            var dbContext =
+                DataConnectionDbContext.GetResilientDbContextDataConnection(
+                    dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
+                await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
+
                 var archiveRepository = new ArchiveRepository(dbContext);
 
                 var model = new Archive
@@ -122,27 +130,25 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                     EntityAnalysisModelActivationRuleId = payload.PrevailingEntityAnalysisModelActivationRuleId,
                     ActivationRuleCount = payload.EntityAnalysisModelActivationRuleCount,
                     EntryKeyValue = payload.EntityInstanceEntryId,
-                    EntityAnalysisModelsReprocessingRuleInstanceId = payload.EntityAnalysisModelReprocessingRuleInstanceId
+                    EntityAnalysisModelsReprocessingRuleInstanceId =
+                        payload.EntityAnalysisModelReprocessingRuleInstanceId
                 };
 
                 await archiveRepository.UpdateAsync(model, token).ConfigureAwait(false);
 
-                var archiveKeyRepository = new ArchiveKeyRepository(dbContext);
-                var currentArchiveKeyList = new List<ArchiveKey>();
-                foreach (var archiveKey in payload.ArchiveKeys)
-                {
-                    currentArchiveKeyList.Add(archiveKey);
-                    archiveKey.EntityAnalysisModelsReprocessingRuleInstanceId = payload.EntityAnalysisModelReprocessingRuleInstanceId;
-                    await archiveKeyRepository.UpsertAsync(archiveKey, token).ConfigureAwait(false);
-                }
-                await archiveKeyRepository.DeleteWhereNotInListAsync(currentArchiveKeyList, payload.EntityAnalysisModelReprocessingRuleInstanceId).ConfigureAwait(false);
+                await new ArchiveKeyRepository(dbContext).ReplaceAsync(payload.EntityAnalysisModelInstanceEntryGuid,
+                        payload.ArchiveKeys ?? [], payload.EntityAnalysisModelReprocessingRuleInstanceId, token)
+                    .ConfigureAwait(false);
+
+                await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                if (log.IsInfoEnabled)
-                {
-                    log.Error($"Database Persist: error processing payload as {ex}.");
-                }
+                await dbContext.RollbackTransactionAsync(token).ConfigureAwait(false);
+
+                log.Error($"Database Persist: error processing payload as {ex}.");
+
+                throw;
             }
             finally
             {

@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelReprocessingRuleList", OperationKind.Read, true, false,
                     "Lists Reprocessing Rules for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Reprocessing Rules may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleFilter", OperationKind.Read, true, false,
+                    "Returns the Reprocessing Rules matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleCount", OperationKind.Read, true, false,
+                    "Counts the Reprocessing Rules matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleGet", OperationKind.Read, true, false,
                     "Returns one Reprocessing Rule by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -32,6 +41,18 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleCreate", OperationKind.Write, false, false,
                     "Registers a Reprocessing Rule under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleValidate", OperationKind.Read, true, false,
+                    "Validates a Reprocessing Rule without saving it and returns every failure."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleParseRule", OperationKind.Read, true, false,
+                    "Parses and compiles a Reprocessing Rule's rule text as the engine would and returns each located error."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleExecute", OperationKind.Read, true, false,
+                    "Runs a Reprocessing Rule against an invocation context as the engine would and returns the result."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelReprocessingRuleBuildRuleFromBuilderJson", OperationKind.Read, true, false,
+                    "Turns query builder JSON into a Reprocessing Rule's rule text as the browser builder would, and parses it."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleUpdate", OperationKind.Write, false, false,
                     "Supersedes a Reprocessing Rule in the caller's tenant by id, assigning it a new id."),

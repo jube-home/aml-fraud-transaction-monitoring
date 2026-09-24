@@ -322,7 +322,8 @@ namespace Jube.Test.Engine.TtlCounter
 
             cancellationTokenProvider.Cancel();
             await pumpCts.CancelAsync();
-            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask), Task.Delay(TimeSpan.FromSeconds(5), pumpCts.Token));
+            await Task.WhenAny(Task.WhenAll(loopTask, pumpTask),
+                Task.Delay(TimeSpan.FromSeconds(5), CancellationToken.None));
 
             var remaining = await model.Services.CacheService.CacheTtlCounterRepository
                 .GetByNameDataNameDataValueAsync(tenant, model.Instance.Guid, syncedCounter.Guid, dataName,
@@ -334,7 +335,7 @@ namespace Jube.Test.Engine.TtlCounter
             var batch = await dbContext.CacheTtlCounterEntryRemovalBatch
                 .Where(w => w.EntityAnalysisModelTtlCounterGuid == syncedCounter.Guid)
                 .OrderByDescending(o => o.Id)
-                .FirstOrDefaultAsync(token: pumpCts.Token);
+                .FirstOrDefaultAsync(token: CancellationToken.None);
             batch.Should().NotBeNull("the removal batch audit table must reflect the synced counter's Guid");
             batch!.FinishedDate.Should().NotBeNull();
         }

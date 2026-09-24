@@ -165,6 +165,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddCompletions(tools);
                 AddIcons(tools);
                 AddParser(tools);
+                AddEntityAnalysisModelInvocationContext(tools);
+                AddEntityAnalysisModelHistorySimulation(tools);
+                AddEntityAnalysisModelIntegrity(tools);
+                AddRuleVocabulary(tools);
+                AddEntityAnalysisModelTimeWindow(tools);
+                AddEntityAnalysisModelDependency(tools);
+                AddEntityAnalysisModelBacktest(tools);
                 AddCaseWorkflowDisplayExecution(tools);
                 AddCaseWorkflowMacroExecution(tools);
                 AddRegisterSignalrConnection(tools);
@@ -174,6 +181,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             }
         }
 
+        static partial void AddEntityAnalysisModelInvocationContext(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelHistorySimulation(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelIntegrity(List<ServiceToolDescriptor> tools);
+        static partial void AddRuleVocabulary(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelTimeWindow(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelDependency(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelBacktest(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModel(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelRequestXPath(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelInlineFunction(List<ServiceToolDescriptor> tools);

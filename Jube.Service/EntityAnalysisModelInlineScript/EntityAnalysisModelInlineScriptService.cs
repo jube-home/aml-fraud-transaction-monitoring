@@ -12,8 +12,15 @@
  */
 
 using System.ComponentModel;
+using Jube.Service.Query.EntityAnalysisModelInvocationContext;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Dto.Filter;
+using Jube.Dto.RuleExecution;
+using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
+using Jube.Data.Query;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Validation;
 using Jube.Dto.EntityAnalysisModelInlineScript;
 using Jube.Resources;
 using Jube.Service.Agent;
@@ -21,6 +28,8 @@ using Jube.Service.Exceptions.EntityAnalysisModelInlineScript;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using Jube.Parser.Dependency;
+using Jube.Validations.Dependency;
 using Jube.Validations.EntityAnalysisModelInlineScript;
 using log4net;
 using Microsoft.Extensions.Localization;
@@ -36,6 +45,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
         private static readonly int[] readPermissions = [9];
         private static readonly int[] writePermissions = [9];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly EntityAnalysisModelInlineScriptRepository repository;
@@ -43,12 +53,14 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
         private readonly string userName;
+        private readonly ModelEntityDeleteValidator deleteValidator;
         private readonly EntityAnalysisModelInlineScriptDtoValidator validator;
 
         private EntityAnalysisModelInlineScriptService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            IStringLocalizer strings, IStringLocalizer dependencyStrings)
         {
+            this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -60,6 +72,8 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             validator = new EntityAnalysisModelInlineScriptDtoValidator(repository,
                 new EntityAnalysisInlineScriptRepository(dbContext), strings,
                 new EntityAnalysisModelRepository(dbContext, userName));
+            deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
+                dependencyStrings);
         }
 
         public static Task<EntityAnalysisModelInlineScriptService> CreateAsync(DbContext dbContext,
@@ -75,6 +89,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(EntityAnalysisModelInlineScriptResources));
+            var dependencyStrings = stringLocalizerFactory.Create(typeof(ModelDependencyResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -106,7 +121,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 .ConfigureAwait(false);
 
             return new EntityAnalysisModelInlineScriptService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, dependencyStrings);
         }
 
         [Description("Lists every Inline Script registration visible to the calling user's tenant. Unbounded -- " +
@@ -329,6 +344,148 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             }
         }
 
+        [Description("Lists the fields a query builder JSON filter over Inline Scripts may use, " +
+                     "with each field's type, the operators allowed for it and what it means. " +
+                     "Use them as rule ids in EntityAnalysisModelInlineScriptFilter and " +
+                     "EntityAnalysisModelInlineScriptCount.")]
+        [ServiceOperation("EntityAnalysisModelInlineScriptFilterFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<FilterFieldDto>> FilterFieldsAsync(
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "FilterFields", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineScript.FilterFields: entry user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelInlineScript.FilterFields");
+                await Task.CompletedTask.ConfigureAwait(false);
+                var result = DtoFilter.Fields<EntityAnalysisModelInlineScriptDto>();
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineScript.FilterFields: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns the Inline Scripts in the caller's tenant matching query builder " +
+                     "JSON (the same format as the rule builder, over the fields from " +
+                     "EntityAnalysisModelInlineScriptFilterFields), ordered by id and capped at " +
+                     "'take' rows (max 200). If 'more' is true, call again with 'afterId' set " +
+                     "to the last returned Id to continue. Invalid JSON is not an error: Valid " +
+                     "is false and Errors gives each problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelInlineScriptFilter", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterResultDto<EntityAnalysisModelInlineScriptDto>> FilterAsync(
+            [Description(
+                "Query builder JSON selecting the Inline Scripts, using the fields from EntityAnalysisModelInlineScriptFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description("Maximum number of rows to return; clamped to 200.")]
+            int take = 50,
+            [Description("When set, only rows with an Id greater than this value are returned (keyset paging).")]
+            int? afterId = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "Filter", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug(
+                    $"EntityAnalysisModelInlineScript.Filter: entry take={take} afterId={afterId} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelInlineScript.Filter");
+                var rows = EntityAnalysisModelInlineScriptMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
+                op.Rows(result.Items.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineScript.Filter: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Counts the Inline Scripts in the caller's tenant matching query builder " +
+                     "JSON (over the fields from EntityAnalysisModelInlineScriptFilterFields; " +
+                     "empty counts all), optionally broken down by the values of one field. " +
+                     "Invalid JSON is not an error: Valid is false and Errors gives each " +
+                     "problem with its JSON path.")]
+        [ServiceOperation("EntityAnalysisModelInlineScriptCount", OperationKind.Read, Idempotent = true)]
+        public async Task<FilterCountResultDto> CountAsync(
+            [Description(
+                "Query builder JSON selecting the Inline Scripts, using the fields from EntityAnalysisModelInlineScriptFilterFields; empty selects all.")]
+            string? builderJson = null,
+            [Description(
+                "A field from EntityAnalysisModelInlineScriptFilterFields to count the matching rows by, e.g. Active; empty for a single total.")]
+            string? groupBy = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "Count", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineScript.Count: entry groupBy={groupBy} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(listPermissions, "EntityAnalysisModelInlineScript.Count");
+                var rows = EntityAnalysisModelInlineScriptMapper.ToDto(await repository.GetAsync(token)
+                    .ConfigureAwait(false));
+                var result = DtoFilter.Count(rows, builderJson, groupBy);
+                op.Rows(result.Count);
+                return result;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineScript.Count: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Registers a new Inline Script invocation under a Model in the caller's tenant. Not " +
                      "idempotent -- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelInlineScriptCreate", OperationKind.Write, Idempotent = false)]
@@ -403,6 +560,176 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                           $"name={model?.Name}", ex);
                 throw;
             }
+        }
+
+        [Description("Validates an Inline Script without saving it, running every check a create (Id 0) or an " +
+                     "update (any other Id) would run, and returns each failure. Nothing is stored or changed.")]
+        [ServiceOperation("EntityAnalysisModelInlineScriptValidate", OperationKind.Read, Idempotent = true)]
+        public async Task<ValidationResultDto> ValidateAsync(
+            [Description("The Inline Script to validate.")]
+            EntityAnalysisModelInlineScriptDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "Validate", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineScript.Validate: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelInlineScript.Validate");
+
+                var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                op.Rows(results.Errors.Count);
+                return ValidationResultMapper.ToDto(results);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineScript.Validate: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Runs a model's inline script against an invocation context outside the engine, without " +
+                     "storing anything, and returns the public properties the engine would add to the payload as " +
+                     "completion names ready for the context Overlay operation. Disabled unless the " +
+                     "EnableInlineScriptExecution setting is True, because inline scripts are not restricted by the " +
+                     "rule token allow-list and could call out or have side effects.")]
+        [ServiceOperation("EntityAnalysisModelInlineScriptExecute", OperationKind.Read, Idempotent = true)]
+        public async Task<InlineScriptExecutionResultDto> ExecuteAsync(
+            [Description("The model's inline script to run; only the model id and the inline script id are read.")]
+            EntityAnalysisModelInlineScriptDto? model,
+            [Description("The invocation context to run it against, built for the same model.")]
+            InvocationContextDto? context,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelInlineScript", "Execute", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelInlineScript.Execute: entry id={model?.Id} user={userName}");
+            }
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                ArgumentNullException.ThrowIfNull(context);
+                EnsurePermitted(writePermissions, "EntityAnalysisModelInlineScript.Execute");
+
+                if (!InlineScriptExecutionEnabled())
+                {
+                    return InlineScriptRefused("InlineScriptExecutionDisabled",
+                        "Running inline scripts is disabled; set EnableInlineScriptExecution to True to allow it.");
+                }
+
+                if (context.EntityAnalysisModelId != model.EntityAnalysisModelId)
+                {
+                    return InlineScriptRefused(RuleExecutor.ContextModelMismatch,
+                        "The context belongs to a different model; build the context for the script's model.");
+                }
+
+                if (!await EntityAnalysisModelParentGuard
+                        .IsVisibleAsync(dbContext, tenantRegistryId, model.EntityAnalysisModelId, token)
+                        .ConfigureAwait(false))
+                {
+                    return InlineScriptRefused("EntityAnalysisModelIdNotFound", "The model was not found.");
+                }
+
+                var script = await new EntityAnalysisInlineScriptRepository(dbContext)
+                    .GetByIdAsync(model.EntityAnalysisInlineScriptId, token).ConfigureAwait(false);
+                if (script == null)
+                {
+                    return InlineScriptRefused("EntityAnalysisInlineScriptIdNotFound",
+                        "The inline script was not found.");
+                }
+
+                var lists = await new GetModelListsQuery(dbContext, tenantRegistryId)
+                    .ExecuteAsync(model.EntityAnalysisModelId, token).ConfigureAwait(false);
+                var inputs = RuleRunner.ToInputs(EntityAnalysisModelInvocationContextMapper.ToContext(context), lists);
+                var binaryPath = Path.GetDirectoryName(typeof(InlineScriptRunner).Assembly.Location) ?? string.Empty;
+                var frameworkPath = Path.GetDirectoryName(typeof(object).Assembly.Location) ?? string.Empty;
+                var run = await InlineScriptRunner.RunAsync(script.Code, script.LanguageId ?? 1, script.Dependency,
+                        binaryPath, frameworkPath, inputs, context.ReferenceDate, TimeSpan.FromSeconds(5), log, token)
+                    .ConfigureAwait(false);
+
+                op.Rows(run.Properties.Count);
+                return new InlineScriptExecutionResultDto
+                {
+                    Compiled = run.Compiled,
+                    Errors = run.Compiled
+                        ? []
+                        :
+                        [
+                            new()
+                            {
+                                PropertyName = "Code", ErrorCode = "InlineScriptInvalid", Message = run.CompileErrors
+                            }
+                        ],
+                    Succeeded = run.Succeeded,
+                    Properties = run.Properties.Select(p => new InvocationContextValueDto
+                    {
+                        Name = "Payload." + p.Key,
+                        Group = "Payload",
+                        DataType = p.Value switch
+                        {
+                            int => "integer", double => "double", DateTime => "datetime", bool => "boolean",
+                            _ => "string"
+                        },
+                        Value = InvocationContextBuilder.FormatValue(p.Value),
+                        Origin = "Computed"
+                    }).ToList(),
+                    RuntimeError = run.Error == null ? null : $"{run.Error.GetType().Name}: {run.Error.Message}",
+                    TimedOut = run.TimedOut,
+                    DurationMicroseconds = run.DurationMicroseconds,
+                    EngineBehaviour = run.Error != null || (run.Compiled && !run.Succeeded)
+                        ? "The engine catches this, logs it and adds none of the script's properties to the payload."
+                        : null
+                };
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelInlineScript.Execute: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        private static bool InlineScriptExecutionEnabled()
+        {
+            return string.Equals(Environment.GetEnvironmentVariable("EnableInlineScriptExecution"), "True",
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static InlineScriptExecutionResultDto InlineScriptRefused(string errorCode, string message)
+        {
+            return new InlineScriptExecutionResultDto
+            {
+                Errors = [new() { PropertyName = "Id", ErrorCode = errorCode, Message = message }]
+            };
         }
 
         [Description("Updates an existing Inline Script registration in the caller's tenant, identified by its " +
@@ -527,6 +854,21 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
 
                 try
                 {
+                    var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+                    if (existing != null)
+                    {
+                        var dependents = await deleteValidator
+                            .ValidateAsync(
+                                new ModelEntityDelete(ModelEntityKind.InlineScriptProperty, id,
+                                    existing.EntityAnalysisModelId),
+                                token)
+                            .ConfigureAwait(false);
+                        if (!dependents.IsValid)
+                        {
+                            throw new DtoValidationException(dependents);
+                        }
+                    }
+
                     await repository.DeleteAsync(id, token).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
@@ -551,6 +893,11 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (DtoValidationException)
+            {
+                op.Outcome("invalid");
                 throw;
             }
             catch (NotFoundException)

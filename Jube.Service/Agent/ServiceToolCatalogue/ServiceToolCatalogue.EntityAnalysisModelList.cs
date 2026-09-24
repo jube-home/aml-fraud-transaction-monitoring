@@ -23,6 +23,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelListList", OperationKind.Read, true, false,
                     "Lists Lists for the caller's tenant, keyset-paged and capped."),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelListFilterFields", OperationKind.Read, true, false,
+                    "Lists the fields a query builder JSON filter over Lists may use."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelListFilter", OperationKind.Read, true, false,
+                    "Returns the Lists matching query builder JSON, keyset-paged and capped."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelListCount", OperationKind.Read, true, false,
+                    "Counts the Lists matching query builder JSON, optionally grouped by a field."),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelListGet", OperationKind.Read, true, false,
                     "Returns one List by id, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
@@ -31,6 +40,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelListCreate", OperationKind.Write, false, false,
                     "Registers a List under a Model in the caller's tenant; calling twice creates two."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelListValidate", OperationKind.Read, true, false,
+                    "Validates a List without saving it and returns every failure."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelListUpdate", OperationKind.Write, true, false,
                     "Updates a List in the caller's tenant by id."),

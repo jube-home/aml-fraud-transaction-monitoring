@@ -492,14 +492,15 @@ namespace Jube.Test.Service.Invoke
                        e.Level == "ERROR" && e.Message.Contains("Callback Fetch") &&
                        e.Message.Contains("TaskCanceledException")))
             {
-                await Task.Delay(100, cts.Token);
+                await Task.Delay(100, CancellationToken.None);
             }
 
             Assert.Contains(fixture.Engine.Log.Entries, e => e.Level == "ERROR" &&
                                                              e.Message.Contains("Callback Fetch") &&
                                                              e.Message.Contains("TaskCanceledException"));
 
-            Assert.Equal(200, (await Api.InvokeAsync(Model, Payloads.Example(), cancellationToken: cts.Token)).Status);
+            Assert.Equal(200,
+                (await Api.InvokeAsync(Model, Payloads.Example(), cancellationToken: CancellationToken.None)).Status);
         }
 
         [Theory]
