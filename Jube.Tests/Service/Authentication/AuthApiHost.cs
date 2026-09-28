@@ -18,6 +18,8 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Jube.App.Code.ServiceChange;
+using Jube.App.Code.Watcher;
 using Jube.App.Endpoints;
 using Jube.App.Middlewares;
 using Jube.App.Middlewares.Models;
@@ -83,6 +85,9 @@ public sealed class AuthApiHost : IAsyncDisposable
         builder.Services.AddSingleton(dynamicEnvironment);
         builder.Services.AddSingleton(clock);
         builder.Services.AddSingleton(hash);
+        builder.Services.AddSingleton<LoginSourceIpThrottle>();
+        builder.Services.AddSingleton<WatcherStreamRegistry>();
+        builder.Services.AddSingleton<ServiceChangeStreamRegistry>();
         if (mfa != null)
         {
             builder.Services.AddSingleton(mfa);

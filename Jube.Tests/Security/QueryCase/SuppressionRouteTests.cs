@@ -169,7 +169,7 @@ public abstract class SuppressionRouteTests(DatabaseFixture fx, ITestOutputHelpe
                 BlindBound);
             if (response.Status != 200)
             {
-                run.Expect(response.Status is 400 or 404 or 414 or 431, response, "STATUS");
+                run.Expect(response.Status is 400 or 403 or 404 or 414 or 431, response, "STATUS");
                 return;
             }
 
@@ -240,7 +240,7 @@ public abstract class SuppressionRouteTests(DatabaseFixture fx, ITestOutputHelpe
             }
             else
             {
-                run.Expect(response.Status is 400 or 404 or 414 or 431, response, "STATUS");
+                run.Expect(response.Status is 400 or 403 or 404 or 414 or 431, response, "STATUS");
             }
         });
         run.AssertClean(Output);

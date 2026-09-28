@@ -63,7 +63,8 @@ namespace Jube.Service.Authentication
         }
 
         public async Task AuthenticateByNegotiateAsync(string userName, string? localIp,
-            string? userAgent, bool mfa, CancellationToken token = default, string? remoteIp = null)
+            string? userAgent, bool mfa, CancellationToken token = default, string? remoteIp = null,
+            TimeSpan? lockoutWindow = null, bool enablePasswordLockoutReset = true)
         {
             const int authenticationMethod = 2;
 
@@ -90,6 +91,9 @@ namespace Jube.Service.Authentication
                 throw new NotActiveException();
             }
 
+            await AutoUnlockIfExpiredAsync(userRegistryRepository, userRegistry, enablePasswordLockoutReset,
+                lockoutWindow, token);
+
             if (userRegistry.PasswordLocked == 1)
             {
                 await LogLoginFailedAsync(userLogin, userRegistry.Name, 3, authenticationMethod, token);
@@ -99,13 +103,30 @@ namespace Jube.Service.Authentication
             await LogLoginSuccessAsync(userLogin, userRegistry.Name, authenticationMethod, token);
         }
 
+        private static async Task AutoUnlockIfExpiredAsync(UserRegistryRepository userRegistryRepository,
+            UserRegistry userRegistry, bool enablePasswordLockoutReset, TimeSpan? lockoutWindow,
+            CancellationToken token)
+        {
+            var window = lockoutWindow ?? TimeSpan.FromMinutes(30);
+            if (!enablePasswordLockoutReset || userRegistry.PasswordLocked != 1 || window <= TimeSpan.Zero)
+            {
+                return;
+            }
+
+            if (await userRegistryRepository.AutoUnlockIfExpiredAsync(userRegistry.Id, window, token))
+            {
+                userRegistry.PasswordLocked = 0;
+                userRegistry.FailedPasswordCount = 0;
+            }
+        }
+
         public const string DummyPassword = "not-a-real-password-dummy-work-only";
         private const int MfaFailureType = 7;
         private static readonly ConcurrentDictionary<(Type, string), string> dummyHashes = new();
 
         public async Task AuthenticateByUserNamePasswordAsync(AuthenticationRequestDto authenticationRequestDto,
             string? passwordHashingKey, int lockPasswordAfter = 3, CancellationToken token = default,
-            bool mfaPending = false)
+            bool mfaPending = false, TimeSpan? lockoutWindow = null, bool enablePasswordLockoutReset = true)
         {
             const int authenticationMethod = 1;
             var userRegistryRepository = new UserRegistryRepository(dbContext);
@@ -132,6 +153,9 @@ namespace Jube.Service.Authentication
                 await LogLoginFailedAsync(userLogin, userRegistry.Name, 2, authenticationMethod, token);
                 throw new NotActiveException();
             }
+
+            await AutoUnlockIfExpiredAsync(userRegistryRepository, userRegistry, enablePasswordLockoutReset,
+                lockoutWindow, token);
 
             if (userRegistry.PasswordLocked == 1)
             {

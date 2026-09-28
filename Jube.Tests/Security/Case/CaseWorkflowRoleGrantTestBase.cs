@@ -252,7 +252,8 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
             {
                 var r = run.Check(await SendRawAsync(PenTestUser.WithPermission, "POST", Route + "/", body),
                     TimeSpan.FromSeconds(4));
-                run.Expect(r.Status is 400 or 415 or 422, r, "BOUNDARY", "a malformed reference was not refused");
+                run.Expect(r.Status is 400 or 403 or 415 or 422, r, "BOUNDARY",
+                    "a malformed reference was not refused");
             }
         }, 6);
 
@@ -301,11 +302,11 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
             var get = run.Check(
                 await As(PenTestUser.WithPermission).GetAsync($"{Route}/{ListTemplate.Replace("{guid}", Enc(value))}"),
                 TimeSpan.FromSeconds(4));
-            run.Expect(get.Status is 200 or 400 or 404 or 405 or 414 or 431, get, "STATUS", "unexpected status");
+            run.Expect(get.Status is 200 or 400 or 403 or 404 or 405 or 414 or 431, get, "STATUS", "unexpected status");
             ExpectNoForeign(run, PenTestUser.WithPermission, get);
             var delete = run.Check(await As(PenTestUser.WithPermission).SendAsync("DELETE", $"{Route}/{Enc(value)}"),
                 TimeSpan.FromSeconds(4));
-            run.Expect(delete.Status is 200 or 204 or 400 or 404 or 405 or 414 or 431, delete, "STATUS",
+            run.Expect(delete.Status is 200 or 204 or 400 or 403 or 404 or 405 or 414 or 431, delete, "STATUS",
                 "unexpected status");
         }, 6);
         run.Expect(await StateAsync() == before, new PenTestResponse { Request = "state" }, "SIDE-EFFECT",

@@ -62,7 +62,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
                 new ConcurrentDictionary<Guid,
                     TaskCompletionSource<global::Jube.Cache.Redis.Callback.Callback>>(), 3000, false, false,
                 50_000_000, false, false, false, false, TimeSpan.FromDays(1), false, TestLog.NoOp);
-            return cache.StartAsync(coordinator);
+            return cache.StartAsync(coordinator, static (_, _) => { });
         }
 
         public async Task DisposeAsync()

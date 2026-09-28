@@ -18,6 +18,7 @@
 
 # Local docker-compose secrets -- machine-specific, never committed
 .env
+Jube.Cluster/secrets.txt
 
 # User-specific files
 *.rsuser

@@ -25,6 +25,7 @@ namespace Jube.Data.Reporting
     public static class PostgresSqlValidator
     {
         private const int MaximumSqlLength = 65536;
+        private const int MaximumNestingDepth = 64;
 
         private static readonly (Regex Pattern, string Replacement)[] normalisationRules =
         [
@@ -104,6 +105,11 @@ namespace Jube.Data.Reporting
                 throw new InvalidOperationException("The SQL statement is too large.");
             }
 
+            if (ExceedsNestingDepth(sql))
+            {
+                throw new InvalidOperationException("The SQL statement nests expressions too deeply.");
+            }
+
             var normalizedSql = normalisationRules.Aggregate(sql,
                 (current, rule) => rule.Pattern.Replace(current, rule.Replacement));
             var result = Parser.Parse(normalizedSql);
@@ -134,6 +140,130 @@ namespace Jube.Data.Reporting
             }
 
             AssertTreeIsReadOnly(rawStmt.Stmt.SelectStmt, blockProtectedRelations);
+        }
+
+        private static bool ExceedsNestingDepth(string sql)
+        {
+            if (string.IsNullOrEmpty(sql))
+            {
+                return false;
+            }
+
+            var parenDepth = 0;
+            var i = 0;
+            while (i < sql.Length)
+            {
+                var c = sql[i];
+
+                if (c == '\'')
+                {
+                    i++;
+                    while (i < sql.Length)
+                    {
+                        if (sql[i] == '\'')
+                        {
+                            if (i + 1 < sql.Length && sql[i + 1] == '\'')
+                            {
+                                i += 2;
+                                continue;
+                            }
+
+                            break;
+                        }
+
+                        i++;
+                    }
+
+                    i++;
+                    continue;
+                }
+
+                if (c == '"')
+                {
+                    i++;
+                    while (i < sql.Length)
+                    {
+                        if (sql[i] == '"')
+                        {
+                            if (i + 1 < sql.Length && sql[i + 1] == '"')
+                            {
+                                i += 2;
+                                continue;
+                            }
+
+                            break;
+                        }
+
+                        i++;
+                    }
+
+                    i++;
+                    continue;
+                }
+
+                if (c == '-' && i + 1 < sql.Length && sql[i + 1] == '-')
+                {
+                    i += 2;
+                    while (i < sql.Length && sql[i] != '\n')
+                    {
+                        i++;
+                    }
+
+                    continue;
+                }
+
+                if (c == '/' && i + 1 < sql.Length && sql[i + 1] == '*')
+                {
+                    var blockDepth = 1;
+                    i += 2;
+                    while (i < sql.Length && blockDepth > 0)
+                    {
+                        if (sql[i] == '/' && i + 1 < sql.Length && sql[i + 1] == '*')
+                        {
+                            blockDepth++;
+                            i += 2;
+                        }
+                        else if (sql[i] == '*' && i + 1 < sql.Length && sql[i + 1] == '/')
+                        {
+                            blockDepth--;
+                            i += 2;
+                        }
+                        else
+                        {
+                            i++;
+                        }
+                    }
+
+                    continue;
+                }
+
+                if (c == '(')
+                {
+                    parenDepth++;
+                    if (parenDepth > MaximumNestingDepth)
+                    {
+                        return true;
+                    }
+
+                    i++;
+                    continue;
+                }
+
+                if (c == ')')
+                {
+                    if (parenDepth > 0)
+                    {
+                        parenDepth--;
+                    }
+
+                    i++;
+                    continue;
+                }
+
+                i++;
+            }
+
+            return false;
         }
 
         private static void AssertTreeIsReadOnly(IMessage root, bool blockProtectedRelations)

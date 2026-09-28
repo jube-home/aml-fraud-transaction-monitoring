@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -25,7 +26,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 {
-    public sealed class EtcdMetricSampler : IDisposable
+    public sealed class EtcdMetricSampler(string username = null, string password = null) : IDisposable
     {
         private readonly HttpClient httpClient = new()
         {
@@ -35,9 +36,39 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         private readonly Dictionary<string, (string LeaderId, string Alarms, bool? HealthOk)> lastSeenByEndpoint =
             new();
 
+        private string cachedToken;
+
         public void Dispose()
         {
             httpClient.Dispose();
+        }
+
+        private async Task<string> AuthenticateAsync(string baseUrl, CancellationToken token)
+        {
+            var body = $"{{\"name\":\"{username}\",\"password\":\"{password}\"}}";
+            using var content = new StringContent(body, Encoding.UTF8, "application/json");
+            using var response = await httpClient.PostAsync($"{baseUrl}/v3/auth/authenticate", content, token)
+                .ConfigureAwait(false);
+            var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
+            return (string)JObject.Parse(text)["token"];
+        }
+
+        private async Task<HttpRequestMessage> AuthorisedRequestAsync(HttpMethod method, string baseUrl, string url,
+            CancellationToken token)
+        {
+            var request = new HttpRequestMessage(method, url);
+            if (string.IsNullOrEmpty(username))
+            {
+                return request;
+            }
+
+            cachedToken ??= await AuthenticateAsync(baseUrl, token).ConfigureAwait(false);
+            if (cachedToken != null)
+            {
+                request.Headers.TryAddWithoutValidation("Authorization", cachedToken);
+            }
+
+            return request;
         }
 
         public async Task<(EtcdMemberStatus Status, List<EtcdClusterEvent> Events)> SampleAsync(string endpoint,
@@ -49,11 +80,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 
                 var versionJson = await GetJsonAsync($"{baseUrl}/version", token).ConfigureAwait(false);
                 var healthJson = await GetJsonAsync($"{baseUrl}/health", token).ConfigureAwait(false);
-                var statusJson = await PostJsonAsync($"{baseUrl}/v3/maintenance/status", "{}", token)
+                var statusJson = await PostJsonAsync(baseUrl, $"{baseUrl}/v3/maintenance/status", "{}", token)
                     .ConfigureAwait(false);
-                var memberListJson = await PostJsonAsync($"{baseUrl}/v3/cluster/member/list", "{}", token)
+                var memberListJson = await PostJsonAsync(baseUrl, $"{baseUrl}/v3/cluster/member/list", "{}", token)
                     .ConfigureAwait(false);
-                var alarmJson = await PostJsonAsync($"{baseUrl}/v3/maintenance/alarm", "{\"action\":\"GET\"}", token)
+                var alarmJson = await PostJsonAsync(baseUrl, $"{baseUrl}/v3/maintenance/alarm",
+                        "{\"action\":\"GET\"}", token)
                     .ConfigureAwait(false);
                 var metricsText = await GetTextAsync($"{baseUrl}/metrics", token).ConfigureAwait(false);
 
@@ -232,12 +264,23 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             }
         }
 
-        private async Task<JObject> PostJsonAsync(string url, string body, CancellationToken token)
+        private async Task<JObject> PostJsonAsync(string baseUrl, string url, string body, CancellationToken token,
+            bool retryOnUnauthorized = true)
         {
             try
             {
-                using var content = new StringContent(body, Encoding.UTF8, "application/json");
-                using var response = await httpClient.PostAsync(url, content, token).ConfigureAwait(false);
+                using var request = await AuthorisedRequestAsync(HttpMethod.Post, baseUrl, url, token)
+                    .ConfigureAwait(false);
+                request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                using var response = await httpClient.SendAsync(request, token).ConfigureAwait(false);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized && retryOnUnauthorized)
+                {
+                    cachedToken = null;
+                    return await PostJsonAsync(baseUrl, url, body, token, retryOnUnauthorized: false)
+                        .ConfigureAwait(false);
+                }
+
                 var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
                 return JObject.Parse(text);
             }

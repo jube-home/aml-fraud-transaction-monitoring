@@ -1,9 +1,12 @@
 services:
   etcd1:
     hostname: etcd1
-    image: quay.io/coreos/etcd:v3.5.3
+    image: ${ETCD_IMAGE}
     environment:
       - ETCDCTL_API=3
+    secrets:
+      - ETCD_ROOT_PASSWORD
+      - PATRONI_ETCD3_PASSWORD
     # etcd is Patroni's consensus/leader-election store. Five nodes, deliberately odd (see the
     # CRITICAL_HOST_TIEBREAKER zone on etcd5 below) - etcd is a quorum/majority-vote system, and an odd node
     # count avoids the tied vote a same-sized even count can produce during a network partition.
@@ -44,9 +47,12 @@ services:
 
   etcd2:
     hostname: etcd2
-    image: quay.io/coreos/etcd:v3.5.3
+    image: ${ETCD_IMAGE}
     environment:
       - ETCDCTL_API=3
+    secrets:
+      - ETCD_ROOT_PASSWORD
+      - PATRONI_ETCD3_PASSWORD
     command: >
       etcd
       -name etcd2
@@ -77,9 +83,12 @@ services:
 
   etcd3:
     hostname: etcd3
-    image: quay.io/coreos/etcd:v3.5.3
+    image: ${ETCD_IMAGE}
     environment:
       - ETCDCTL_API=3
+    secrets:
+      - ETCD_ROOT_PASSWORD
+      - PATRONI_ETCD3_PASSWORD
     command: >
       etcd
       -name etcd3
@@ -110,9 +119,12 @@ services:
   
   etcd4:
     hostname: etcd4
-    image: quay.io/coreos/etcd:v3.5.3
+    image: ${ETCD_IMAGE}
     environment:
       - ETCDCTL_API=3
+    secrets:
+      - ETCD_ROOT_PASSWORD
+      - PATRONI_ETCD3_PASSWORD
     command: >
       etcd
       -name etcd4
@@ -143,9 +155,12 @@ services:
 
   etcd5:
     hostname: etcd5
-    image: quay.io/coreos/etcd:v3.5.3
+    image: ${ETCD_IMAGE}
     environment:
       - ETCDCTL_API=3
+    secrets:
+      - ETCD_ROOT_PASSWORD
+      - PATRONI_ETCD3_PASSWORD
     command: >
       etcd
       -name etcd5
@@ -180,6 +195,12 @@ services:
       - PATRONI_REPLICATION_PASSWORD
       - PATRONI_SUPERUSER_PASSWORD
       - PATRONI_ADMIN_PASSWORD
+      - PATRONI_ETCD3_PASSWORD
+      # Mounted here (and nowhere else) purely so database.sh can read them back out of a
+      # running container instead of ever writing them to a plaintext file - see database.sh.
+      - JUBE_APP_PASSWORD
+      - JUBE_REPORTING_PASSWORD
+      - JUBE_MIGRATION_PASSWORD
     env_file:
       - .env
     hostname: patroni1
@@ -188,6 +209,7 @@ services:
       - PATRONI_NAME=patroni1
       - PATRONI_SCOPE=postgres-cluster
       - PATRONI_ETCD3_HOSTS=etcd1:2379,etcd2:2379,etcd3:2379,etcd4:2379,etcd5:2379
+      - PATRONI_ETCD3_USERNAME=patroni
     volumes:
       - patroni1_data:/var/lib/postgresql/data
       - ./patroni/patroni1.yml:/etc/patroni.yml:ro
@@ -219,6 +241,7 @@ services:
       - PATRONI_REPLICATION_PASSWORD
       - PATRONI_SUPERUSER_PASSWORD
       - PATRONI_ADMIN_PASSWORD
+      - PATRONI_ETCD3_PASSWORD
     env_file:
       - .env
     hostname: patroni2
@@ -227,6 +250,7 @@ services:
       - PATRONI_NAME=patroni2
       - PATRONI_SCOPE=postgres-cluster
       - PATRONI_ETCD3_HOSTS=etcd1:2379,etcd2:2379,etcd3:2379,etcd4:2379,etcd5:2379
+      - PATRONI_ETCD3_USERNAME=patroni
     volumes:
       - patroni2_data:/var/lib/postgresql/data
       - ./patroni/patroni2.yml:/etc/patroni.yml:ro
@@ -257,6 +281,7 @@ services:
       - PATRONI_REPLICATION_PASSWORD
       - PATRONI_SUPERUSER_PASSWORD
       - PATRONI_ADMIN_PASSWORD
+      - PATRONI_ETCD3_PASSWORD
     env_file:
       - .env
     hostname: patroni3
@@ -265,6 +290,7 @@ services:
       - PATRONI_NAME=patroni3
       - PATRONI_SCOPE=postgres-cluster
       - PATRONI_ETCD3_HOSTS=etcd1:2379,etcd2:2379,etcd3:2379,etcd4:2379,etcd5:2379
+      - PATRONI_ETCD3_USERNAME=patroni
     volumes:
       - patroni3_data:/var/lib/postgresql/data
       - ./patroni/patroni3.yml:/etc/patroni.yml:ro
@@ -295,6 +321,7 @@ services:
       - PATRONI_REPLICATION_PASSWORD
       - PATRONI_SUPERUSER_PASSWORD
       - PATRONI_ADMIN_PASSWORD
+      - PATRONI_ETCD3_PASSWORD
     env_file:
       - .env
     hostname: patroni4
@@ -303,6 +330,7 @@ services:
       - PATRONI_NAME=patroni4
       - PATRONI_SCOPE=postgres-cluster
       - PATRONI_ETCD3_HOSTS=etcd1:2379,etcd2:2379,etcd3:2379,etcd4:2379,etcd5:2379
+      - PATRONI_ETCD3_USERNAME=patroni
     volumes:
       - patroni4_data:/var/lib/postgresql/data
       - ./patroni/patroni4.yml:/etc/patroni.yml:ro
@@ -330,17 +358,8 @@ services:
   haproxy:
     hostname: haproxy
     image: haproxy:2.8
-    secrets:
-      - HAPROXY_COOKIE_SECRET
     volumes:
-      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg.tpl:ro
-    # haproxy.cfg's dynamic-cookie-key has no file-reading support of its own (verified against the real
-    # haproxy:2.8 image - it takes a single literal argument), so the Docker secret has to be templated into
-    # the config before haproxy parses it. This substitutes the [@HAPROXY_COOKIE_SECRET@] token - the same
-    # [@Key@] convention Jube's own DynamicEnvironment tokenisation uses - with the mounted secret's contents
-    # into a writable copy, then hands off to haproxy the same way the image's own entrypoint would (-W -db,
-    # matching docker-entrypoint.sh's behaviour for a bare "haproxy" command).
-    command: ["sh", "-c", "sed \"s#\\[@HAPROXY_COOKIE_SECRET@\\]#$(cat /run/secrets/HAPROXY_COOKIE_SECRET)#\" /usr/local/etc/haproxy/haproxy.cfg.tpl > /tmp/haproxy.cfg && exec haproxy -W -db -f /tmp/haproxy.cfg"]
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:
       - target: 7000
         published: 7000
@@ -955,8 +974,14 @@ services:
       - PASSWORD_HASHING_KEY
       - REDIS_PASSWORD
       - ENCRYPTION_KEY
+      - PATRONI_ETCD3_PASSWORD
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5001
+      # Reuses the same scoped credential Patroni authenticates to etcd with (see etcd1's secrets
+      # above) - this is the only other etcd client in the stack, polling member/health status and
+      # Patroni's DCS history key for the Infrastructure Health Metrics pages.
+      - EtcdClientUsername=patroni
+      - EtcdClientPassword=[@PATRONI_ETCD3_PASSWORD@]
       - ConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_app;Password=[@JUBE_APP_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
       - ReportConnectionString=Host=haproxy;Port=5433;Database=postgres;Username=jube_reporting;Password=[@JUBE_REPORTING_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
       - MigrationConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_migration;Password=[@JUBE_MIGRATION_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
@@ -1151,6 +1176,10 @@ secrets:
     external: true
   PATRONI_ADMIN_PASSWORD:
     external: true
+  ETCD_ROOT_PASSWORD:
+    external: true
+  PATRONI_ETCD3_PASSWORD:
+    external: true
   JUBE_APP_PASSWORD:
     external: true
   JUBE_REPORTING_PASSWORD:
@@ -1168,8 +1197,6 @@ secrets:
   ENCRYPTION_KEY:
     external: true
   PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY:
-    external: true
-  HAPROXY_COOKIE_SECRET:
     external: true
 
 networks:

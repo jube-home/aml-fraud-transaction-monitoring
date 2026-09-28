@@ -60,7 +60,6 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
             this.dynamicEnvironment = dynamicEnvironment;
             query = new global::Jube.Data.Query.GetByVisualisationRegistryDatasourceCommandExecutionQuery(dbContext,
                 userName, log,
-                dynamicEnvironment.ParserAssertSelectOnly(),
                 dynamicEnvironment.AppSettings("ReportConnectionString") ??
                 dynamicEnvironment.AppSettings("ConnectionString"));
         }
@@ -162,7 +161,8 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                 }
 
                 var parametersByParsedId = parameters.ToDictionary(
-                    parameter => (int)(parameter.SelectToken("id") ?? throw new ArgumentException("A parameter has no id.")),
+                    parameter =>
+                        (int)(parameter.SelectToken("id") ?? throw new ArgumentException("A parameter has no id.")),
                     parameter => parameter.SelectToken("value"));
                 var parametersByName = await ParametersByNameAsync(id, parametersByParsedId, token)
                     .ConfigureAwait(false);

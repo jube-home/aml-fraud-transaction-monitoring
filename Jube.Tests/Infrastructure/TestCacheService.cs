@@ -41,6 +41,9 @@ namespace Jube.Test.Infrastructure
             cacheService.CacheTtlCounterIdempotencyRepository = new CacheTtlCounterIdempotencyRepository(redis, log);
             cacheService.CacheTtlCounterEntryRepository = new CacheTtlCounterEntryRepository(redis, log);
             cacheService.CacheTtlCounterRepository = new CacheTtlCounterRepository(redis, log);
+            cacheService.CacheRateLimitRepository = new CacheRateLimitRepository(redis, log);
+            cacheService.CacheActivationWatcherPublishSubscribe =
+                new CacheActivationWatcherPublishSubscribe(redis, log);
             cacheService.CacheSanctionRepository = new CacheSanctionRepository(redis, log);
             cacheService.CacheReferenceDateRepository = new CacheReferenceDateRepository(redis, log);
             cacheService.CachePayloadLatestRepository =

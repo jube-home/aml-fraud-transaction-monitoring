@@ -30,18 +30,17 @@ namespace Jube.Data.Query.CaseQuery
     {
         private readonly DbContext dbContext;
         private readonly ILog log;
-        private readonly bool parserAssertSelectOnly;
         private readonly ProcessCaseQuery processCaseQuery;
         private readonly string reportConnectionString;
         private readonly string userName;
 
-        public GetCaseBySessionCaseSearchCompileQuery(DbContext dbContext, string user, ILog log, bool parserAssertSelectOnly, string reportConnectionString = null)
+        public GetCaseBySessionCaseSearchCompileQuery(DbContext dbContext, string user, ILog log,
+            string reportConnectionString = null)
         {
             this.dbContext = dbContext;
             userName = user;
             this.reportConnectionString = reportConnectionString ?? dbContext.Connection.ConnectionString;
             this.log = log;
-            this.parserAssertSelectOnly = parserAssertSelectOnly;
             processCaseQuery = new ProcessCaseQuery(this.dbContext, userName);
         }
 
@@ -62,7 +61,7 @@ namespace Jube.Data.Query.CaseQuery
             var sw = new Stopwatch();
             sw.Start();
 
-            using var postgres = new Postgres(reportConnectionString, log, parserAssertSelectOnly);
+            using var postgres = new Postgres(reportConnectionString, log);
 
             var caseId = await
                 postgres.ExecuteScalarIdAsync("select \"Case\".\"Id\""
@@ -70,9 +69,11 @@ namespace Jube.Data.Query.CaseQuery
                                               + modelCompiled.WhereSql
                                               + " and ((\"Case\".\"Locked\" = 0 or \"Case\".\"Locked\" is null)" +
                                               " or (\"Case\".\"Locked\" = 1 and \"Case\".\"LockedUser\" = (@3)))"
-                                              + " " + modelCompiled.OrderSql + " limit 1", tokens, token).ConfigureAwait(false);
+                                              + " " + modelCompiled.OrderSql + " limit 1", tokens, token)
+                    .ConfigureAwait(false);
 
-            var sessionCaseSearchCompiledSqlExecutionRepository = new SessionCaseSearchCompiledSqlExecutionRepository(dbContext, userName);
+            var sessionCaseSearchCompiledSqlExecutionRepository =
+                new SessionCaseSearchCompiledSqlExecutionRepository(dbContext, userName);
 
             if (caseId == null)
             {

@@ -47,7 +47,9 @@ namespace Jube.Data.Repository
         {
             return dbContext.UserRegistryApiKey
                 .Where(w => (w.Deleted == 0 || w.Deleted == null)
-                            && (w.UserRegistry.RoleRegistry.Deleted == 0 || w.UserRegistry.RoleRegistry.Deleted == null))
+                            && (w.UserRegistry.RoleRegistry.Deleted == 0 || w.UserRegistry.RoleRegistry.Deleted == null)
+                            && w.UserRegistry.Active == 1
+                            && (w.UserRegistry.Deleted == 0 || w.UserRegistry.Deleted == null))
                 .ToListAsync(token);
         }
 
@@ -58,7 +60,8 @@ namespace Jube.Data.Repository
                 .FirstOrDefaultAsync(token);
         }
 
-        public Task<List<UserRegistryApiKey>> GetByUserRegistryIdAsync(int userRegistryId, CancellationToken token = default)
+        public Task<List<UserRegistryApiKey>> GetByUserRegistryIdAsync(int userRegistryId,
+            CancellationToken token = default)
         {
             return dbContext.UserRegistryApiKey
                 .Where(w =>

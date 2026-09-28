@@ -15,7 +15,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
 {
     using FluentMigrator;
 
-    [Migration(20263005083400)]
+    [Migration(20260928065900)]
     public class HttpResponseHeaders : Migration
     {
         public override void Up()
@@ -28,7 +28,6 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
 
         public override void Down()
         {
-
         }
     }
 }

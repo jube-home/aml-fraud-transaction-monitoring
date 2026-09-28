@@ -106,7 +106,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 int.Parse(environment.AppSettings("CallbackTimeout")), true, false, 50_000_000, false, false, false,
                 false, TimeSpan.FromDays(1), false, log);
             cacheService.InstantiateRepositoriesTask = taskCoordinator.RunAsync("InstantiateRepositoriesAsync",
-                _ => cacheService.StartAsync(taskCoordinator));
+                _ => cacheService.StartAsync(taskCoordinator, static (_, _) => { }));
 
             var engine = new global::Jube.Engine.Engine(environment, log, null, cacheService,
                 new JsonSerializationHelper(), taskCoordinator, new ImplicitAsyncInvocationTracker(log),

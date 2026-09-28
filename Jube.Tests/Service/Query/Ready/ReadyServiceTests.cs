@@ -33,11 +33,11 @@ namespace Jube.Test.Service.Query.Ready
         [InlineData(false, false, true, true, false, false)]
         [InlineData(false, false, true, true, true, true)]
         public void IsReady_MatchesLegacyDecision(bool stopping, bool engineEnabled, bool engineReady,
-            bool relayEnabled, bool relayReady, bool expected)
+            bool watcherStreamEnabled, bool watcherStreamReady, bool expected)
         {
-            var signals = new FakeSignals(stopping, engineReady, relayReady);
+            var signals = new FakeSignals(stopping, engineReady, watcherStreamReady);
 
-            Assert.Equal(expected, new ReadyService(signals, engineEnabled, relayEnabled).IsReady());
+            Assert.Equal(expected, new ReadyService(signals, engineEnabled, watcherStreamEnabled).IsReady());
         }
 
         [Fact]
@@ -50,31 +50,31 @@ namespace Jube.Test.Service.Query.Ready
         }
 
         [Fact]
-        public void IsReady_RelayDisabled_DoesNotConsultRelay()
+        public void IsReady_WatcherStreamDisabled_DoesNotConsultWatcherStream()
         {
             var signals = new FakeSignals(false, true, false);
 
             Assert.True(new ReadyService(signals, true, false).IsReady());
-            Assert.Equal(0, signals.RelayReads);
+            Assert.Equal(0, signals.WatcherStreamReads);
         }
 
         [Fact]
-        public void IsReady_Stopping_ShortCircuitsBeforeEngineAndRelay()
+        public void IsReady_Stopping_ShortCircuitsBeforeEngineAndWatcherStream()
         {
             var signals = new FakeSignals(true, true, true);
 
             Assert.False(new ReadyService(signals, true, true).IsReady());
             Assert.Equal(0, signals.EngineReads);
-            Assert.Equal(0, signals.RelayReads);
+            Assert.Equal(0, signals.WatcherStreamReads);
         }
 
         [Fact]
-        public void IsReady_EngineNotReady_ShortCircuitsBeforeRelay()
+        public void IsReady_EngineNotReady_ShortCircuitsBeforeWatcherStream()
         {
             var signals = new FakeSignals(false, false, true);
 
             Assert.False(new ReadyService(signals, true, true).IsReady());
-            Assert.Equal(0, signals.RelayReads);
+            Assert.Equal(0, signals.WatcherStreamReads);
         }
     }
 }

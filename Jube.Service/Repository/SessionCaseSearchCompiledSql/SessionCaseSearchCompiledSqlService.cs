@@ -39,7 +39,6 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
         private readonly DbContext dbContext;
         private readonly SessionCaseSearchCompiledSqlExecutionRepository executionRepository;
         private readonly ILog log;
-        private readonly bool parserAssertSelectOnly;
         private readonly PermissionValidation permissionValidation;
         private readonly string reportConnectionString;
         private readonly SessionCaseSearchCompiledSqlRepository repository;
@@ -65,9 +64,6 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
             executionRepository = new SessionCaseSearchCompiledSqlExecutionRepository(dbContext, userName);
             validator = new SessionCaseSearchCompiledSqlDtoValidator(strings);
 
-            var assertSelectOnlySetting = dynamicEnvironment.AppSettings("ParserAssertSelectOnly");
-            parserAssertSelectOnly = assertSelectOnlySetting == null ||
-                                     assertSelectOnlySetting.Equals("True", StringComparison.OrdinalIgnoreCase);
             reportConnectionString = dynamicEnvironment.AppSettings("ReportConnectionString")
                                      ?? dbContext.Connection.ConnectionString;
         }
@@ -148,7 +144,7 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
 
                 model = await CheckRebuildAsync(model, token).ConfigureAwait(false);
 
-                using var postgres = new Postgres(reportConnectionString, log, parserAssertSelectOnly);
+                using var postgres = new Postgres(reportConnectionString, log);
 
                 var tokens = JsonConvert.DeserializeObject<List<object>>(model.FilterTokens ?? "[]");
 
@@ -278,7 +274,7 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
 
                 var saved = await SessionCaseSearchCompiler.CompileAsync(dbContext, model.CaseWorkflowGuid,
                     model.CaseWorkflowFilterGuid, model.SelectJson, model.FilterJson, userName, log,
-                    parserAssertSelectOnly, reportConnectionString, token).ConfigureAwait(false);
+                    reportConnectionString, token).ConfigureAwait(false);
                 op.Entity(saved.Id);
 
                 return SessionCaseSearchCompiledSqlMapper.ToDto(saved);
@@ -316,7 +312,7 @@ namespace Jube.Service.Repository.SessionCaseSearchCompiledSql
 
             var rebuilt = await SessionCaseSearchCompiler.CompileAsync(dbContext, model.CaseWorkflowGuid,
                 model.CaseWorkflowFilterGuid, model.SelectJson, model.FilterJson, userName, log,
-                parserAssertSelectOnly, reportConnectionString, token, false).ConfigureAwait(false);
+                reportConnectionString, token, false).ConfigureAwait(false);
 
             model.FilterTokens = rebuilt.FilterTokens;
             model.FilterSql = rebuilt.FilterSql;

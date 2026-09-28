@@ -15,8 +15,8 @@ Every container image, package and runtime version that makes up the `Jube.Clust
 `Jube.Cluster/docker-compose.yml` and the Dockerfiles it builds from. Useful for an upgrade, a security audit, or just
 confirming what is actually running before raising a support ticket.
 
-Two kinds of image make up the stack: pulled straight off the shelf (etcd, Redis, HAProxy, the two dashboards) and built
-in-repo from a Dockerfile (Patroni, Jube itself). For the former, the version below is whatever tag
+Two kinds of image make up the stack: pulled straight off the shelf (Redis, HAProxy, the two dashboards) and built
+in-repo from a Dockerfile (etcd, Patroni, Jube itself). For the former, the version below is whatever tag
 `docker-compose.yml` pins; for the latter, it's whatever the Dockerfile installs at build time. **Unpinned** means the
 compose file or Dockerfile doesn't fix a version - it floats to whatever is current when the image is built or pulled,
 and is worth locking down deliberately before a production build.
@@ -27,7 +27,7 @@ and is worth locking down deliberately before a production build.
 |------------|----------|
 | PostgreSQL | 17       |
 | Patroni    | 3.3.2    |
-| etcd       | v3.5.3   |
+| etcd       | v3.5.34  |
 | Redis      | 7-alpine |
 | HAProxy    | 2.8      |
 | .NET       | 10.0     |
@@ -38,9 +38,15 @@ and is worth locking down deliberately before a production build.
 etcd is Patroni's leader-election store - five nodes, deliberately odd, so a network partition can't produce a tied vote
 (see [Architecture Overview](../DeploymentRunbook/index.html#architecture-overview)).
 
-| Service           | Image                 | Version  | Notes                                            |
-|-------------------|-----------------------|----------|--------------------------------------------------|
-| `etcd1` … `etcd5` | `quay.io/coreos/etcd` | `v3.5.3` | Pinned in `docker-compose.yml`. `ETCDCTL_API=3`. |
+Built from `Jube.Cluster/etcd/Dockerfile` - the stock `quay.io/coreos/etcd:v3.5.34` binaries (statically linked, so any
+base image can run them) copied onto Alpine, with an entrypoint that bootstraps etcd's username/password auth once,
+idempotently, on every node's own startup (creates a `root` user and a `patroni` user scoped to Patroni's DCS key
+prefix, then enables auth - a no-op on every later restart once auth is already on). Tagged and referenced as
+`${ETCD_IMAGE}` in the compose file, same convention as `${PATRONI_IMAGE}` below.
+
+| Service           | Image           | Version  | Notes                                                                  |
+|-------------------|-----------------|----------|-------------------------------------------------------------------------|
+| `etcd1` … `etcd5` | `${ETCD_IMAGE}` | `v3.5.34`| Built, not pulled - see above. `ETCDCTL_API=3`. Client auth mandatory. |
 
 ## Database & backup
 
@@ -118,23 +124,24 @@ best-effort summary of every request to console; not a spec-compliant collector)
 
 ## Image tags resolved outside the repo
 
-`${PATRONI_IMAGE}`, `${JUBE_IMAGE}`, `${JUBE_MONITORING_IMAGE}` and `${JUBE_OTEL_LISTENER_IMAGE}` aren't hardcoded
-anywhere in `docker-compose.yml` - they come from a `.env` file created at deploy time (not committed), following the
-build-tag-load workflow in the
+`${ETCD_IMAGE}`, `${PATRONI_IMAGE}`, `${JUBE_IMAGE}`, `${JUBE_MONITORING_IMAGE}` and `${JUBE_OTEL_LISTENER_IMAGE}`
+aren't hardcoded anywhere in `docker-compose.yml` - they come from a `.env` file created at deploy time (not
+committed), following the build-tag-load workflow in the
 [Deployment Runbook](../DeploymentRunbook/index.html#building-and-distributing-images):
 
 ```bash
+docker build --no-cache -f Jube.Cluster/etcd/Dockerfile -t jube.etcd:<sha> Jube.Cluster/etcd
 docker build --no-cache -f Jube.Cluster/patroni/Dockerfile -t jube.patroni:<sha> .
 docker build --no-cache -f Jube.App/Dockerfile -t jube.app:<sha> .
 docker build --no-cache -f Jube.Monitoring/Dockerfile -t jube.monitoring:<sha> .
 docker build --no-cache -f Jube.OpenTelemetryListener/Dockerfile -t jube.opentelemetrylistener:<sha> .
 ```
 
-`Jube.Cluster/build-images.sh` automates the first three of these (not the OpenTelemetry listener), tagging with
-git HEAD's short SHA rather than `<date>` and updating `Jube.Cluster/.env` directly.
+`Jube.Cluster/build-images.sh` automates all five of these, tagging with git HEAD's short SHA and updating
+`Jube.Cluster/.env` directly.
 
-`.env` then sets `PATRONI_IMAGE=jube.patroni:<date>`, `JUBE_IMAGE=jube.app:<date>`,
-`JUBE_MONITORING_IMAGE=jube.monitoring:<date>` and `JUBE_OTEL_LISTENER_IMAGE=jube.opentelemetrylistener:<date>`.
+`.env` then sets `ETCD_IMAGE=jube.etcd:<sha>`, `PATRONI_IMAGE=jube.patroni:<sha>`, `JUBE_IMAGE=jube.app:<sha>`,
+`JUBE_MONITORING_IMAGE=jube.monitoring:<sha>` and `JUBE_OTEL_LISTENER_IMAGE=jube.opentelemetrylistener:<sha>`.
 
 Images are distributed as tar files (`docker save` / `docker load`) rather than pulled from a registry - the standard
 pattern for an air-gapped or tightly firewalled on-premises deployment, which this cluster is designed for. Whatever

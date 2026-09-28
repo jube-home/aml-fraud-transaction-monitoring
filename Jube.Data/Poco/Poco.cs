@@ -6452,4 +6452,76 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(10)] public DateTime? CreatedDate { get; set; }
         [Column] [Nullable] [Key(11)] public string Instance { get; set; }
     }
+
+    [Table]
+    [MessagePackObject]
+    public class WafSignature
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public string Name { get; set; }
+        [Column] [Nullable] [Key(2)] public string Category { get; set; }
+        [Column] [Nullable] [Key(3)] public string Description { get; set; }
+        [Column] [Nullable] [Key(4)] public string Pattern { get; set; }
+        [Column] [Nullable] [Key(5)] public int? TargetScope { get; set; }
+        [Column] [Nullable] [Key(6)] public int? MatchTimeoutMilliseconds { get; set; }
+        [Column] [Nullable] [Key(7)] public byte? Drop { get; set; }
+        [Column] [Nullable] [Key(8)] public byte? Active { get; set; }
+        [Column] [Nullable] [Key(9)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(10)] public string CreatedUser { get; set; }
+        [Column] [Nullable] [Key(11)] public DateTime? UpdatedDate { get; set; }
+        [Column] [Nullable] [Key(12)] public string UpdatedUser { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class WafException
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public string Name { get; set; }
+        [Column] [Nullable] [Key(2)] public string RouteRegex { get; set; }
+        [Column] [Nullable] [Key(3)] public string FieldRegex { get; set; }
+        [Column] [Nullable] [Key(4)] public int? WafSignatureId { get; set; }
+        [Column] [Nullable] [Key(5)] public string Note { get; set; }
+        [Column] [Nullable] [Key(6)] public byte? Active { get; set; }
+        [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(8)] public string CreatedUser { get; set; }
+        [Column] [Nullable] [Key(9)] public DateTime? UpdatedDate { get; set; }
+        [Column] [Nullable] [Key(10)] public string UpdatedUser { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class WafAttack
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public long Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(2)] public string Transport { get; set; }
+        [Column] [Nullable] [Key(3)] public string Route { get; set; }
+        [Column] [Nullable] [Key(4)] public string Method { get; set; }
+        [Column] [Nullable] [Key(5)] public string RemoteIp { get; set; }
+        [Column] [Nullable] [Key(6)] public string UserName { get; set; }
+        [Column] [Nullable] [Key(7)] public int? WafSignatureId { get; set; }
+        [Column] [Nullable] [Key(8)] public string SignatureName { get; set; }
+        [Column] [Nullable] [Key(9)] public string Category { get; set; }
+        [Column] [Nullable] [Key(10)] public string MatchedField { get; set; }
+        [Column] [Nullable] [Key(11)] public string MatchedValue { get; set; }
+        [Column] [Nullable] [Key(12)] public string Action { get; set; }
+        [Column] [Nullable] [Key(13)] public string CorrelationId { get; set; }
+        [Column] [Nullable] [Key(14)] public string Instance { get; set; }
+    }
 }

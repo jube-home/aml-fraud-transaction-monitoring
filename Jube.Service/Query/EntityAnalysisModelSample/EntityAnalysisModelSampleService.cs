@@ -178,8 +178,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
                                            ?? dynamicEnvironment.AppSettings("ConnectionString");
 
                     List<JObject> jsonObjects;
-                    using (var postgres = new Postgres(connectionString, log,
-                               dynamicEnvironment.ParserAssertSelectOnly()))
+                    using (var postgres = new Postgres(connectionString, log))
                     {
                         jsonObjects = await postgres.ExecuteReturnOnlyJsonFromArchiveSampleAsync(
                                 entityAnalysisModel.Id, model.Sample, model.DateFrom?.UtcDateTime,

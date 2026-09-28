@@ -394,4 +394,43 @@ public sealed class AuthenticationCookieTests
         jwt.Audiences.Should().Equal(Audience);
         jwt.SignatureAlgorithm.Should().Be("HS256");
     }
+
+    [Fact]
+    public async Task AnApiKeyAuthenticatedRequest_IsNeverIssuedARefreshedSessionCookieAsync()
+    {
+        var env = Env();
+        var context = new DefaultHttpContext();
+        var unsignedJwtShapedCookie =
+            $"{B64("{\"alg\":\"none\",\"typ\":\"JWT\"}")}.{B64("{\"sub\":\"someone\"}")}.";
+        context.Request.Headers.Cookie = $"authentication-jwt={unsignedJwtShapedCookie}";
+        context.User = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim(ClaimTypes.Name, "service-account"),
+            new Claim(ClaimTypes.AuthenticationMethod, "ApiHmacKey")
+        ], "Hybrid"));
+
+        var middleware = new TokenRefreshMiddleware(_ => Task.CompletedTask, env);
+        await middleware.InvokeAsync(context);
+
+        context.Response.Headers.SetCookie.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task AJwtCookieAuthenticatedRequest_StillGetsARefreshedSessionCookieAsync()
+    {
+        var env = Env();
+        var context = new DefaultHttpContext();
+        var unsignedJwtShapedCookie =
+            $"{B64("{\"alg\":\"none\",\"typ\":\"JWT\"}")}.{B64("{\"sub\":\"someone\"}")}.";
+        context.Request.Headers.Cookie = $"authentication-jwt={unsignedJwtShapedCookie}";
+        context.User = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim(ClaimTypes.Name, "alice")
+        ], "Hybrid"));
+
+        var middleware = new TokenRefreshMiddleware(_ => Task.CompletedTask, env);
+        await middleware.InvokeAsync(context);
+
+        context.Response.Headers.SetCookie.Should().NotBeEmpty();
+    }
 }

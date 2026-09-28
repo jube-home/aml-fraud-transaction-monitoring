@@ -54,12 +54,8 @@ namespace Jube.Service.Query.CaseBySessionCaseSearchCompile
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
 
-            var assertSelectOnlySetting = dynamicEnvironment.AppSettings("ParserAssertSelectOnly");
-            var parserAssertSelectOnly = assertSelectOnlySetting == null ||
-                                         assertSelectOnlySetting.Equals("True", StringComparison.OrdinalIgnoreCase);
-
             query = new global::Jube.Data.Query.CaseQuery.GetCaseBySessionCaseSearchCompileQuery(dbContext, userName,
-                log, parserAssertSelectOnly,
+                log,
                 dynamicEnvironment.AppSettings("ReportConnectionString") ?? dbContext.Connection.ConnectionString);
             caseEventRepository = new CaseEventRepository(dbContext, userName);
             caseRepository = new CaseRepository(dbContext, userName);

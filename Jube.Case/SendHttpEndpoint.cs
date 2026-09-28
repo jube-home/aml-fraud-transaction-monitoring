@@ -18,6 +18,11 @@ namespace Jube.Case
 
     public static class SendHttpEndpoint
     {
+        private static string SafeHost(string httpEndpoint)
+        {
+            return Uri.TryCreate(httpEndpoint, UriKind.Absolute, out var uri) ? uri.Host : "unparseable-endpoint";
+        }
+
         public static async Task PostAsync(string httpEndpoint, string body, ILog log)
         {
             if (String.IsNullOrEmpty(httpEndpoint))
@@ -26,10 +31,12 @@ namespace Jube.Case
             }
 
             using var client = new HttpClient();
+            var correlationId = Guid.NewGuid();
 
             try
             {
                 using var content = new StringContent(body, Encoding.UTF8, "application/json");
+                content.Headers.Add("X-Correlation-Id", correlationId.ToString());
                 using var response = await client.PostAsync(httpEndpoint, content).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
@@ -37,7 +44,8 @@ namespace Jube.Case
             }
             catch (Exception ex)
             {
-                log.Error($"Failed to dispatch to {httpEndpoint} for verb POST with payload {body} with {ex}");
+                log.Error(
+                    $"Failed to dispatch to host {SafeHost(httpEndpoint)} for verb POST, correlationId={correlationId}: {ex.GetType().Name}: {ex.Message}");
             }
         }
 
@@ -49,17 +57,21 @@ namespace Jube.Case
             }
 
             using var client = new HttpClient();
+            var correlationId = Guid.NewGuid();
 
             try
             {
-                using var response = await client.GetAsync(httpEndpoint).ConfigureAwait(false);
+                using var request = new HttpRequestMessage(HttpMethod.Get, httpEndpoint);
+                request.Headers.Add("X-Correlation-Id", correlationId.ToString());
+                using var response = await client.SendAsync(request).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
                 await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                log.Error($"Failed to dispatch to {httpEndpoint} for verb GET with {ex}");
+                log.Error(
+                    $"Failed to dispatch to host {SafeHost(httpEndpoint)} for verb GET, correlationId={correlationId}: {ex.GetType().Name}: {ex.Message}");
             }
         }
     }

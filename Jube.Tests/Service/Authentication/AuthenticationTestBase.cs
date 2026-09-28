@@ -204,4 +204,14 @@ public abstract class AuthenticationTestBase(DatabaseFixture fx) : IAsyncLifetim
     {
         return ("PasswordAttempts", n.ToString());
     }
+
+    protected static (string Key, string Value)[] LockoutMinutes(int n)
+    {
+        return [("PasswordLockoutInterval", "n"), ("PasswordLockoutIntervalValue", n.ToString())];
+    }
+
+    protected static (string Key, string Value) EnableLockoutReset(bool enabled)
+    {
+        return ("EnablePasswordLockoutReset", enabled.ToString());
+    }
 }

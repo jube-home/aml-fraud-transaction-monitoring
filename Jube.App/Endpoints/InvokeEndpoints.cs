@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Dto.Invoke;
 using Jube.Dto.Repository.Archive;
+using Jube.Engine.EntityAnalysisModelInvoke.Exceptions;
 using Jube.Resources;
 using Jube.Service.Exceptions.Invoke;
 using Jube.Service.Invoke;
@@ -153,8 +154,31 @@ namespace Jube.App.Endpoints
                 return Results.StatusCode(StatusCodes.Status415UnsupportedMediaType);
             }
 
-            var model = await ReadBodyAsModelAsync<ArchiveTagDto>(httpContext).ConfigureAwait(false);
+            var maxBytes = MaxInvokeControllerRequestBytes(httpContext);
+            ArchiveTagDto model;
+            try
+            {
+                model = await ReadBodyAsModelAsync<ArchiveTagDto>(httpContext, maxBytes).ConfigureAwait(false);
+            }
+            catch (ExceededBytesException)
+            {
+                return Write(httpContext,
+                    InvokeResult.Json(StatusCodes.Status400BadRequest,
+                        "Exceeded the maximum allowed bytes in POST body."));
+            }
+            catch (ZeroBytesException)
+            {
+                return Write(httpContext, InvokeResult.Json(StatusCodes.Status400BadRequest, "Empty POST body."));
+            }
+
             return Write(httpContext, CreateService(httpContext).Tag(model));
+        }
+
+        private static int MaxInvokeControllerRequestBytes(HttpContext httpContext)
+        {
+            var dynamicEnvironment = httpContext.RequestServices
+                .GetRequiredService<global::Jube.DynamicEnvironment.DynamicEnvironment>();
+            return int.Parse(dynamicEnvironment.AppSettings("MaxInvokeControllerRequestBytes"));
         }
 
         private static async Task<IResult> EntityAnalysisModelAsync(HttpContext httpContext)
@@ -164,7 +188,8 @@ namespace Jube.App.Endpoints
             var async = routeValues.TryGetValue("async", out var value) ? value?.ToString() ?? string.Empty : null;
 
             var result = await CreateService(httpContext)
-                .InvokeModelAsync(guid, async, () => ReadBodyAsync(httpContext),
+                .InvokeModelAsync(guid, async,
+                    maxBytes => ReadBodyBoundedAsync(httpContext, maxBytes),
                     httpContext.Request.ContentLength != null)
                 .ConfigureAwait(false);
             return Write(httpContext, result);
@@ -174,30 +199,45 @@ namespace Jube.App.Endpoints
         {
             var guid = httpContext.Request.RouteValues["guid"]?.ToString();
             var result = await CreateService(httpContext)
-                .ExhaustiveSearchInstanceAsync(guid, () => ReadBodyAsync(httpContext))
+                .ExhaustiveSearchInstanceAsync(guid, maxBytes => ReadBodyBoundedAsync(httpContext, maxBytes))
                 .ConfigureAwait(false);
             return Write(httpContext, result);
         }
 
-        private static async Task<MemoryStream> ReadBodyAsync(HttpContext httpContext)
+        private static async Task<MemoryStream> ReadBodyBoundedAsync(HttpContext httpContext, int maxBytes)
         {
             var ms = new MemoryStream();
+            var buffer = new byte[8192];
             try
             {
-                await httpContext.Request.Body.CopyToAsync(ms).ConfigureAwait(false);
+                int read;
+                while ((read = await httpContext.Request.Body.ReadAsync(buffer).ConfigureAwait(false)) > 0)
+                {
+                    if (ms.Length + read > maxBytes)
+                    {
+                        throw new ExceededBytesException();
+                    }
+
+                    await ms.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
+                }
             }
             catch (BadHttpRequestException ex)
             {
                 throw new ClientRequestException(ex.StatusCode, ex.Message);
             }
 
+            if (ms.Length == 0)
+            {
+                throw new ZeroBytesException();
+            }
+
+            ms.Position = 0;
             return ms;
         }
 
-        private static async Task<T> ReadBodyAsModelAsync<T>(HttpContext httpContext) where T : class
+        private static async Task<T> ReadBodyAsModelAsync<T>(HttpContext httpContext, int maxBytes) where T : class
         {
-            using var ms = new MemoryStream();
-            await httpContext.Request.Body.CopyToAsync(ms).ConfigureAwait(false);
+            using var ms = await ReadBodyBoundedAsync(httpContext, maxBytes).ConfigureAwait(false);
 
             try
             {

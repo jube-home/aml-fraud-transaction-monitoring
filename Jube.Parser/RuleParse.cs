@@ -29,8 +29,8 @@ namespace Jube.Parser
         public const int AbstractionRule = 3;
         public const int AbstractionCalculation = 4;
         public const int ActivationRule = 5;
-
         public const int MaximumRuleTextLength = 65536;
+        private const int MaximumNestingDepth = 64;
 
         public static string ClassName(int ruleParseType)
         {
@@ -128,6 +128,22 @@ namespace Jube.Parser
             if (ruleText is { Length: > MaximumRuleTextLength })
             {
                 return new RuleParseResult { Message = "Error" };
+            }
+
+            if (ExceedsNestingDepth(ruleText))
+            {
+                return new RuleParseResult
+                {
+                    Message = "Error",
+                    ErrorSpans =
+                    [
+                        new ErrorSpan
+                        {
+                            Line = 0,
+                            Message = "The rule nests expressions too deeply and has been refused."
+                        }
+                    ]
+                };
             }
 
             var parser = new Parser(log, [.. environment.Tokens])
@@ -241,6 +257,132 @@ namespace Jube.Parser
                 CompiledBinary = compiledBinary,
                 References = Distinct(parsedRule.References)
             };
+        }
+
+        private static bool ExceedsNestingDepth(string ruleText)
+        {
+            if (string.IsNullOrEmpty(ruleText))
+            {
+                return false;
+            }
+
+            var parenDepth = 0;
+            var unaryRun = 0;
+            var i = 0;
+            while (i < ruleText.Length)
+            {
+                var c = ruleText[i];
+
+                if (c == '"')
+                {
+                    i++;
+                    while (i < ruleText.Length)
+                    {
+                        if (ruleText[i] == '"')
+                        {
+                            if (i + 1 < ruleText.Length && ruleText[i + 1] == '"')
+                            {
+                                i += 2;
+                                continue;
+                            }
+
+                            break;
+                        }
+
+                        i++;
+                    }
+
+                    unaryRun = 0;
+                    i++;
+                    continue;
+                }
+
+                if (c == '(')
+                {
+                    parenDepth++;
+                    if (parenDepth > MaximumNestingDepth)
+                    {
+                        return true;
+                    }
+
+                    i++;
+                    continue;
+                }
+
+                if (c == ')')
+                {
+                    if (parenDepth > 0)
+                    {
+                        parenDepth--;
+                    }
+
+                    i++;
+                    continue;
+                }
+
+                if (c == '-')
+                {
+                    unaryRun++;
+                    if (unaryRun > MaximumNestingDepth)
+                    {
+                        return true;
+                    }
+
+                    i++;
+                    continue;
+                }
+
+                if (char.IsWhiteSpace(c))
+                {
+                    i++;
+                    continue;
+                }
+
+                if ((c == 'N' || c == 'n') && IsNotKeyword(ruleText, i))
+                {
+                    unaryRun++;
+                    if (unaryRun > MaximumNestingDepth)
+                    {
+                        return true;
+                    }
+
+                    i += 3;
+                    continue;
+                }
+
+                unaryRun = 0;
+                i++;
+            }
+
+            return false;
+        }
+
+        private static bool IsNotKeyword(string ruleText, int index)
+        {
+            if (index + 3 > ruleText.Length)
+            {
+                return false;
+            }
+
+            if ((ruleText[index] != 'N' && ruleText[index] != 'n')
+                || (ruleText[index + 1] != 'O' && ruleText[index + 1] != 'o')
+                || (ruleText[index + 2] != 'T' && ruleText[index + 2] != 't'))
+            {
+                return false;
+            }
+
+            if (index > 0 && (char.IsLetterOrDigit(ruleText[index - 1]) || ruleText[index - 1] == '_'))
+            {
+                return false;
+            }
+
+            var after = index + 3;
+            if (after < ruleText.Length && (char.IsLetterOrDigit(ruleText[after]) || ruleText[after] == '_'))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static List<RuleReference> Distinct(IEnumerable<RuleReference> references)

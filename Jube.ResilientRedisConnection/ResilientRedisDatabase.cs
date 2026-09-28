@@ -58,6 +58,13 @@ namespace Jube.ResilientRedisConnection
             return KeyRenameAsync(key, newKey, when, flags).GetAwaiter().GetResult();
         }
 
+        public Task<bool> KeyExpireAsync(RedisKey key, TimeSpan? expiry, CommandFlags flags = CommandFlags.None)
+        {
+            return idempotentPolicy.ExecuteAsync(_ =>
+                    UnderlyingDatabase.KeyExpireAsync(key, expiry, flags),
+                new Context());
+        }
+
         public Task<bool> HashSetAsync(RedisKey key, RedisValue field, RedisValue value,
             When when = When.Always, CommandFlags flags = CommandFlags.None)
         {

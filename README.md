@@ -1,5 +1,7 @@
 ![Image](logo.png)
 
+[![Pull Request](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/dotnet.yml/badge.svg)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/dotnet.yml)
+
 Jube is an **open source AML software** and **open source fraud detection software** platform for real-time detection of
 suspicious transactions, AML case management, and fraud prevention.
 

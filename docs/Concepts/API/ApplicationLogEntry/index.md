@@ -82,3 +82,7 @@ that probability, so `samplePercentage=10` returns roughly a random one-tenth of
 tenth. This is not exposed in the UI toolbar; it exists for an agent to draw an unbiased random baseline sample of
 logged problems early on and compare it against recent activity later, which the endpoint's normal most-recent-first
 ordering can't provide by itself.
+
+For a related log of a different kind of event -- a [Web Application Firewall](../../WebApplicationFirewall/index.html)
+signature match rather than a WARN/ERROR/FATAL -- see [Waf Attack Log](../WafAttack/index.html), which is the same
+shape and sits in the same place in the UI.

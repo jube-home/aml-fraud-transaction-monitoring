@@ -37,6 +37,7 @@ namespace Jube.App.Middlewares
                 || context.Request.Path.StartsWithSegments("/api/Authentication/Logout",
                     StringComparison.OrdinalIgnoreCase)
                 || context.User.Identity?.IsAuthenticated != true
+                || context.User.FindFirstValue(ClaimTypes.AuthenticationMethod) == "ApiHmacKey"
                 || !context.Request.Cookies.TryGetValue("authentication-jwt", out var accessToken)
                 || String.IsNullOrEmpty(accessToken))
             {

@@ -21,6 +21,8 @@ namespace Jube.ResilientRedisConnection
         Task<bool> KeyExistsAsync(RedisKey key, CommandFlags flags = CommandFlags.None);
         bool KeyRename(RedisKey key, RedisKey newKey, When when = When.Always, CommandFlags flags = CommandFlags.None);
 
+        Task<bool> KeyExpireAsync(RedisKey key, TimeSpan? expiry, CommandFlags flags = CommandFlags.None);
+
         Task<bool> HashSetAsync(RedisKey key, RedisValue field, RedisValue value, When when = When.Always,
             CommandFlags flags = CommandFlags.None);
 

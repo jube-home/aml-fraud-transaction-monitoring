@@ -12,7 +12,7 @@
  */
 
 using System;
-using Jube.App.Code.WatcherDispatch;
+using Jube.Cache;
 using Jube.Service.Query.Ready;
 using log4net;
 using Microsoft.AspNetCore.Builder;
@@ -42,10 +42,10 @@ namespace Jube.App.Endpoints.Query
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
             var engine = httpContext.RequestServices.GetService<Jube.Engine.Engine>();
-            var relay = httpContext.RequestServices.GetService<Relay>();
+            var cacheService = httpContext.RequestServices.GetService<CacheService>();
 
             var service = new ReadyService(
-                new RuntimeReadinessSignals(lifetime, engine, relay),
+                new RuntimeReadinessSignals(lifetime, engine, cacheService),
                 dynamicEnvironment.AppSettings("EnableEngine").Equals("True", StringComparison.OrdinalIgnoreCase),
                 dynamicEnvironment.AppSettings("StreamingActivationWatcher")
                     .Equals("True", StringComparison.OrdinalIgnoreCase));

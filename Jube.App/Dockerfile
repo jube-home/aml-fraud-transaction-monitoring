@@ -2,6 +2,7 @@
 
 USER root
 RUN apt-get update \
+    && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
        libkrb5-3 \
        libgssapi-krb5-2 \

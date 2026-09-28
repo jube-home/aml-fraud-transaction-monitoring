@@ -60,8 +60,7 @@ namespace Jube.Test.Service.Repository.SessionCaseSearchCompiledSql
             new Dictionary<string, string>
             {
                 ["ConnectionString"] = connectionString,
-                ["ReportConnectionString"] = connectionString,
-                ["ParserAssertSelectOnly"] = "True"
+                ["ReportConnectionString"] = connectionString
             });
 
         private readonly List<int> createdCaseIds = [];
@@ -534,8 +533,7 @@ namespace Jube.Test.Service.Repository.SessionCaseSearchCompiledSql
             {
                 ["ConnectionString"] = connectionString,
                 ["ReportConnectionString"] =
-                    "Host=localhost;Port=1;Database=postgres;Username=postgres;Password=postgres;Timeout=2;CommandTimeout=2;",
-                ["ParserAssertSelectOnly"] = "True"
+                    "Host=localhost;Port=1;Database=postgres;Username=postgres;Password=postgres;Timeout=2;CommandTimeout=2;"
             });
             var failingService = await SessionCaseSearchCompiledSqlService.CreateAsync(dbContext, user, TestLog.NoOp,
                 localizers, new NullServiceChangeBus(), unreachable, TestLog.NoOp);

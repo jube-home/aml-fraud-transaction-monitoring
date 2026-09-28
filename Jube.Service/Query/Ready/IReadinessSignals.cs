@@ -17,6 +17,6 @@ namespace Jube.Service.Query.Ready
     {
         bool StoppingRequested { get; }
         bool EngineReady { get; }
-        bool RelayReady { get; }
+        bool WatcherStreamReady { get; }
     }
 }

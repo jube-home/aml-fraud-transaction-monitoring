@@ -33,6 +33,7 @@ namespace Jube.Test.Infrastructure
         private readonly ConcurrentDictionary<RedisKey, RedisValue> strings = new();
 
         public ConcurrentQueue<(RedisChannel Channel, RedisValue Message)> PublishedMessages { get; } = new();
+        public ConcurrentQueue<(RedisKey Key, TimeSpan? Expiry)> KeyExpirations { get; } = new();
         public string? ThrowOnMethod { get; set; }
         public Exception? ThrowOnMethodException { get; set; }
 
@@ -83,6 +84,13 @@ namespace Jube.Test.Infrastructure
 
             strings[newKey] = v;
             return true;
+        }
+
+        public Task<bool> KeyExpireAsync(RedisKey key, TimeSpan? expiry, CommandFlags flags = CommandFlags.None)
+        {
+            MaybeThrow();
+            KeyExpirations.Enqueue((key, expiry));
+            return Task.FromResult(true);
         }
 
         public Task<bool> HashSetAsync(RedisKey key, RedisValue field, RedisValue value, When when = When.Always,

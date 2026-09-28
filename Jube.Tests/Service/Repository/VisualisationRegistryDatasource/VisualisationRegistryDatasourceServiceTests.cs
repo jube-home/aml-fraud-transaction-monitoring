@@ -748,8 +748,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             var (tenantId, userName) =
                 await CreateTenantWithPermissionAsync(dbContext, "DeleteSql", [DatasourcePermissionSpec]);
             var registryId = await CreateParentVisualisationRegistryAsync(dbContext, tenantId, userName);
-            var service = await BuildServiceAsync(dbContext, userName,
-                environmentOverrides: new Dictionary<string, string> { ["ParserAssertSelectOnly"] = "True" });
+            var service = await BuildServiceAsync(dbContext, userName);
 
             var dto = NewDto(registryId, UniqueName("DeleteSql"));
             dto.Command = "DELETE FROM \"TenantRegistry\"";

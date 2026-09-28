@@ -100,14 +100,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 Limit = Math.Min(specification.Limit, Setting("BacktestMaxRows", 1_000_000))
             };
 
-            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(Setting("BacktestMaxRunSeconds",
-                3600)));
+            using var timeout = new CancellationTokenSource(
+                SettingWindow("BacktestMaxRunInterval", "BacktestMaxRunIntervalValue", 3600));
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(shutdown, timeout.Token);
             var runToken = linked.Token;
 
             await using var archive = NewReportDbContext();
             await using var heartbeat = new BacktestHeartbeat(NewDbContext, instanceId,
-                BacktestHeartbeat.IntervalFor(TimeSpan.FromSeconds(Setting("BacktestStaleSeconds", 120))),
+                BacktestHeartbeat.IntervalFor(SettingWindow("BacktestStaleInterval", "BacktestStaleIntervalValue",
+                    120)),
                 context.Services.Log);
             try
             {
@@ -185,7 +186,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
         {
             await using var dbContext = NewDbContext();
             var recovered = await EntityAnalysisModelBacktestInstanceRepository.RecoverStaleAsync(dbContext,
-                TimeSpan.FromSeconds(Setting("BacktestStaleSeconds", 120)), token).ConfigureAwait(false);
+                    SettingWindow("BacktestStaleInterval", "BacktestStaleIntervalValue", 120), token)
+                .ConfigureAwait(false);
             if (recovered > 0 && context.Services.Log.IsWarnEnabled)
             {
                 context.Services.Log.Warn($"Entity Backtest: {recovered} stale backtest instances were closed.");
@@ -211,6 +213,20 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             return int.TryParse(context.Services.DynamicEnvironment.AppSettings(key), out var value) && value > 0
                 ? value
                 : fallback;
+        }
+
+        private TimeSpan SettingWindow(string intervalKey, string intervalValueKey, int fallbackValue)
+        {
+            var interval = context.Services.DynamicEnvironment.AppSettings(intervalKey) ?? "s";
+            var value = Setting(intervalValueKey, fallbackValue);
+
+            return interval switch
+            {
+                "s" => TimeSpan.FromSeconds(value),
+                "n" => TimeSpan.FromMinutes(value),
+                "h" => TimeSpan.FromHours(value),
+                _ => TimeSpan.FromDays(value)
+            };
         }
     }
 }

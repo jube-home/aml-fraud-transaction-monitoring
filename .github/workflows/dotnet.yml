@@ -1,7 +1,14 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# Proof gate: builds the real Docker images from docker-compose.yml (the same stack a developer runs locally),
+# waits for the jube container's own health check to report healthy (its startup applies migrations, so
+# "healthy" means the schema is ready), then runs the entire Unit/Service/PenTest suite against it - this is the
+# one gate we actually rely on before shipping.
+#
+# Runs on every PR into master (and on a direct push to master, as a safety net for anything merged without a
+# PR) - a solo-maintained, public repo with a low commit volume has no reason to split this into a fast partial
+# check plus a deferred full run: Actions minutes are free on a public repo, and catching a problem before merge
+# beats catching it after.
 
-name: .NET
+name: Build and Tests
 
 on:
   push:
@@ -10,19 +17,118 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
-
+  end-to-end:
     runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    env:
+      DockerComposePostgresPassword: ${{ secrets.DOCKER_COMPOSE_POSTGRES_PASSWORD }}
+      DockerComposeJWTKey: ${{ secrets.DOCKER_COMPOSE_JWT_KEY }}
+      DockerComposeApiHmacKey: ${{ secrets.DOCKER_COMPOSE_API_HMAC_KEY }}
+      DockerComposePasswordHashingKey: ${{ secrets.DOCKER_COMPOSE_PASSWORD_HASHING_KEY }}
+      DockerComposeElementSymmetricEncryptionKey: ${{ secrets.DOCKER_COMPOSE_ELEMENT_SYMMETRIC_ENCRYPTION_KEY }}
+      JubeTestConnectionString: "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=${{ secrets.DOCKER_COMPOSE_POSTGRES_PASSWORD }};Pooling=true;Minimum Pool Size=0;Maximum Pool Size=20;"
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    #- name: Test
-      #run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Start the docker-compose stack
+        run: docker compose up -d --build
+
+      - name: Wait for jube to become healthy
+        run: |
+          for i in $(seq 1 60); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' jube 2>/dev/null || echo "starting")
+            echo "attempt $i: $status"
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "jube did not become healthy in time"
+          docker compose logs
+          exit 1
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Run full test suite
+        id: first_run
+        continue-on-error: true
+        run: >
+          dotnet test --no-build -c Release
+          --logger "trx;LogFileName=first-run.trx"
+          --results-directory ./TestResults
+
+      - name: Extract failed test names
+        if: steps.first_run.outcome == 'failure'
+        id: failures
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+
+          # Resolve each failed result's *class + method* via TestDefinitions rather than parsing the
+          # display name directly - an xUnit Theory's display name has its data row appended in a shape
+          # ("Method(value: \"x\")") that a --filter FullyQualifiedName= expression can't safely embed.
+          # Falling back to the bare method here reruns every row of a flaky Theory, not just the one
+          # row that failed, which is a fine trade for reliability.
+          ns = {"t": "http://microsoft.com/schemas/VisualStudio/TeamTest/2010"}
+          tree = ET.parse("TestResults/first-run.trx")
+          root = tree.getroot()
+
+          methods_by_id = {}
+          for unit_test in root.findall(".//t:TestDefinitions/t:UnitTest", ns):
+              test_method = unit_test.find("t:TestMethod", ns)
+              if test_method is None:
+                  continue
+              class_name = test_method.get("className")
+              method_name = test_method.get("name")
+              if class_name and method_name:
+                  methods_by_id[unit_test.get("id")] = f"{class_name}.{method_name}"
+
+          names = sorted({
+              methods_by_id[r.get("testId")]
+              for r in root.findall(".//t:UnitTestResult", ns)
+              if r.get("outcome") == "Failed" and r.get("testId") in methods_by_id
+          })
+          with open("failed_tests.txt", "w") as f:
+              f.write("\n".join(names))
+          print(f"{len(names)} failed test method(s) on the first run.")
+          PY
+          echo "failed_count=$(wc -l < failed_tests.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Retry only the tests that failed
+        if: steps.first_run.outcome == 'failure' && steps.failures.outputs.failed_count != '0'
+        run: |
+          filter=$(awk 'NR>1{printf "|"} {printf "FullyQualifiedName=%s", $0}' failed_tests.txt)
+          echo "Retrying: $filter"
+          dotnet test --no-build -c Release --filter "$filter" \
+            --logger "trx;LogFileName=retry-run.trx" --results-directory ./TestResults
+
+      - name: Fail the build if the first run failed for a reason other than a listed test failure
+        if: steps.first_run.outcome == 'failure' && steps.failures.outputs.failed_count == '0'
+        run: exit 1
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults/*.trx
+          retention-days: 14
+
+      - name: Show docker-compose logs
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop the docker-compose stack
+        if: always()
+        run: docker compose down -v

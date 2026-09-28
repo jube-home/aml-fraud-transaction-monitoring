@@ -42,6 +42,8 @@ trap - EXIT
 PATRONI_SUPERUSER_PASSWORD=$(genkey 16)
 PATRONI_REPLICATION_PASSWORD=$(genkey 16)
 PATRONI_ADMIN_PASSWORD=$(genkey 16)
+ETCD_ROOT_PASSWORD=$(genkey 24)
+PATRONI_ETCD3_PASSWORD=$(genkey 24)
 JUBE_APP_PASSWORD=$(genkey 16)
 JUBE_REPORTING_PASSWORD=$(genkey 16)
 JUBE_MIGRATION_PASSWORD=$(genkey 16)
@@ -50,11 +52,12 @@ API_HMAC_KEY=$(genkey 32)
 JWT_KEY=$(genkey 32)
 PASSWORD_HASHING_KEY=$(genkey 32)
 ENCRYPTION_KEY=$(genkey 32)
-HAPROXY_COOKIE_SECRET=$(genkey 32)
 
 create_secret PATRONI_SUPERUSER_PASSWORD                 "$PATRONI_SUPERUSER_PASSWORD"
 create_secret PATRONI_REPLICATION_PASSWORD               "$PATRONI_REPLICATION_PASSWORD"
 create_secret PATRONI_ADMIN_PASSWORD                     "$PATRONI_ADMIN_PASSWORD"
+create_secret ETCD_ROOT_PASSWORD                         "$ETCD_ROOT_PASSWORD"
+create_secret PATRONI_ETCD3_PASSWORD                     "$PATRONI_ETCD3_PASSWORD"
 create_secret JUBE_APP_PASSWORD                          "$JUBE_APP_PASSWORD"
 create_secret JUBE_REPORTING_PASSWORD                    "$JUBE_REPORTING_PASSWORD"
 create_secret JUBE_MIGRATION_PASSWORD                    "$JUBE_MIGRATION_PASSWORD"
@@ -64,11 +67,19 @@ create_secret JWT_KEY                                    "$JWT_KEY"
 create_secret PASSWORD_HASHING_KEY                       "$PASSWORD_HASHING_KEY"
 create_secret PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY "$PRIVATE_KEY_B64"
 create_secret ENCRYPTION_KEY "$ENCRYPTION_KEY"
-create_secret HAPROXY_COOKIE_SECRET "$HAPROXY_COOKIE_SECRET"
 
-echo "PATRONI_SUPERUSER_PASSWORD=$PATRONI_SUPERUSER_PASSWORD
+cat <<EOF
+
+All secrets are now created in Docker Swarm's own secret store, which cannot be read back once created - this
+terminal is your only chance to capture the values below into your password manager or vault. Nothing is written
+to disk by this script; database.sh reads the handful it needs back out of a running container's /run/secrets/
+mount instead of from a file.
+
+PATRONI_SUPERUSER_PASSWORD=$PATRONI_SUPERUSER_PASSWORD
 PATRONI_REPLICATION_PASSWORD=$PATRONI_REPLICATION_PASSWORD
 PATRONI_ADMIN_PASSWORD=$PATRONI_ADMIN_PASSWORD
+ETCD_ROOT_PASSWORD=$ETCD_ROOT_PASSWORD
+PATRONI_ETCD3_PASSWORD=$PATRONI_ETCD3_PASSWORD
 JUBE_APP_PASSWORD=$JUBE_APP_PASSWORD
 JUBE_REPORTING_PASSWORD=$JUBE_REPORTING_PASSWORD
 JUBE_MIGRATION_PASSWORD=$JUBE_MIGRATION_PASSWORD
@@ -79,10 +90,9 @@ PASSWORD_HASHING_KEY=$PASSWORD_HASHING_KEY
 PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY=$PRIVATE_KEY_B64
 PASSWORD_ASYMMETRIC_ENCRYPTION_PUBLIC_KEY=$PUBLIC_KEY_B64
 ENCRYPTION_KEY=$ENCRYPTION_KEY
-HAPROXY_COOKIE_SECRET=$HAPROXY_COOKIE_SECRET" > secrets.txt
 
-echo ""
-echo "Public key (PASSWORD_ASYMMETRIC_ENCRYPTION_PUBLIC_KEY - base64):"
-echo "$PUBLIC_KEY_B64"
-echo ""
-echo "Secrets file created (secrets.txt) which contains all infrastructure passwords and keys. IMPORTANT: Please be certain to remove this file once it has been stored securely."
+Store the block above securely now, then clear your scrollback (most terminals: Ctrl+L then the "clear scrollback"
+shortcut, or just close this window/tab) so it doesn't linger in terminal history either. If you redirect this
+script's output to a file yourself (e.g. "./secrets-init.sh | tee somewhere"), that file is your responsibility to
+encrypt or delete - the script itself will never create one.
+EOF

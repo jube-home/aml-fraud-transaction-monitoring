@@ -414,7 +414,6 @@ namespace Jube.Test.Service.Invoke
         [InlineData("123")]
         [InlineData("null")]
         [InlineData("{\"Amount\":")]
-        [InlineData("")]
         public async Task Exhaustive_NotAJsonObject_Returns400WithAPlainMessageAsync(string body)
         {
             var response = await WithExhaustiveInstanceAsync(guid => Api.SendAsync("POST",
@@ -423,6 +422,16 @@ namespace Jube.Test.Service.Invoke
             Assert.Equal(400, response.Status);
             Assert.Equal("\"Malformed JSON in POST body.\"", response.Body);
             Assert.DoesNotContain("Newtonsoft", response.Body, StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public async Task Exhaustive_EmptyBody_Returns400AsEmptyRatherThanMalformedAsync()
+        {
+            var response = await WithExhaustiveInstanceAsync(guid => Api.SendAsync("POST",
+                "/api/Invoke/ExhaustiveSearchInstance/" + guid, User, Bytes(""), Json));
+
+            Assert.Equal(400, response.Status);
+            Assert.Equal("\"Empty POST body.\"", response.Body);
         }
 
         [Fact]
@@ -840,6 +849,19 @@ namespace Jube.Test.Service.Invoke
             Assert.Equal(400,
                 (await Api.SendAsync("PUT", "/api/Invoke/Archive/Tag", User, Bytes("null"), Json)).Status);
             Assert.Equal(400, (await Api.SendAsync("PUT", "/api/Invoke/Archive/Tag", User, Bytes("{no"), Json)).Status);
+        }
+
+        [Fact]
+        public async Task Tag_BodyOverTheConfiguredMaximum_Returns400WithoutBufferingItAllAsync()
+        {
+            var body = Bytes(
+                $"{{\"entityAnalysisModelInstanceEntryGuid\":\"{Guid.NewGuid()}\",\"padding\":\"{new string('x', 25_000)}\"}}");
+            Assert.True(body.Length > 20_000);
+
+            var response = await Api.SendAsync("PUT", "/api/Invoke/Archive/Tag", User, body, Json);
+
+            Assert.Equal(400, response.Status);
+            Assert.Equal("\"Exceeded the maximum allowed bytes in POST body.\"", response.Body);
         }
 
         [Theory]

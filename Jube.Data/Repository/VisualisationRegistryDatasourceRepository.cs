@@ -164,7 +164,7 @@ namespace Jube.Data.Repository
 
         public async Task<VisualisationRegistryDatasource> InsertWithValidationAsync(
             VisualisationRegistryDatasource model, ILog log, string interpolationConnectionString,
-            bool parserAssertSelectOnly, CancellationToken token = default)
+            CancellationToken token = default)
         {
             if (model.VisualisationRegistryId == null)
             {
@@ -175,7 +175,7 @@ namespace Jube.Data.Repository
             try
             {
                 columns = await ValidateSeriesAsync(model.VisualisationRegistryId.Value, model.Command,
-                    interpolationConnectionString, log, parserAssertSelectOnly).ConfigureAwait(false);
+                    interpolationConnectionString, log).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -196,7 +196,7 @@ namespace Jube.Data.Repository
 
         public async Task<VisualisationRegistryDatasource> UpdateWithValidationAsync(
             VisualisationRegistryDatasource model, ILog log, string interpolationConnectionString,
-            bool parserAssertSelectOnly, CancellationToken token = default)
+            CancellationToken token = default)
         {
             if (model.VisualisationRegistryId == null)
             {
@@ -207,7 +207,7 @@ namespace Jube.Data.Repository
             try
             {
                 columns = await ValidateSeriesAsync(model.VisualisationRegistryId.Value, model.Command,
-                    interpolationConnectionString, log, parserAssertSelectOnly).ConfigureAwait(false);
+                    interpolationConnectionString, log).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -327,7 +327,7 @@ namespace Jube.Data.Repository
         }
 
         private async Task<Dictionary<string, string>> ValidateSeriesAsync(int visualisationRegistryId, string sql,
-            string interpolationConnectionString, ILog log, bool parserAssertSelectOnly)
+            string interpolationConnectionString, ILog log)
         {
             var visualisationRegistryParameterRepository = new VisualisationRegistryParameterRepository(dbContext);
             var parameters =
@@ -350,7 +350,7 @@ namespace Jube.Data.Repository
                 parametersDefaultValues.Add(parameter.Name.Replace(" ", "_"), defaultValue);
             }
 
-            using var postgres = new Postgres(interpolationConnectionString, log, parserAssertSelectOnly, true);
+            using var postgres = new Postgres(interpolationConnectionString, log, true);
             return await postgres.IntrospectAsync(sql, parametersDefaultValues).ConfigureAwait(false);
         }
 

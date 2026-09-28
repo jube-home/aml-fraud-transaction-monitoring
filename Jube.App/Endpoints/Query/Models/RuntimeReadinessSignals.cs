@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.App.Code.WatcherDispatch;
+using Jube.Cache;
 using Jube.Service.Query.Ready;
 using Microsoft.Extensions.Hosting;
 
@@ -20,12 +20,12 @@ namespace Jube.App.Endpoints.Query.Models
     internal sealed class RuntimeReadinessSignals(
         IHostApplicationLifetime lifetime,
         Jube.Engine.Engine engine,
-        Relay relay) : IReadinessSignals
+        CacheService cacheService) : IReadinessSignals
     {
         public bool StoppingRequested => lifetime.ApplicationStopping.IsCancellationRequested;
 
         public bool EngineReady => engine.Context is { Ready: true };
 
-        public bool RelayReady => relay is { Ready: true };
+        public bool WatcherStreamReady => cacheService?.CacheActivationWatcherPublishSubscribe is { Ready: true };
     }
 }

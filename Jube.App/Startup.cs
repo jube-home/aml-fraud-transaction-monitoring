@@ -18,13 +18,14 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentMigrator.Runner;
 using Jube.App.Code;
 using Jube.App.Code.ServiceChange;
-using Jube.App.Code.signalr;
-using Jube.App.Code.WatcherDispatch;
+using Jube.App.Code.Waf;
+using Jube.App.Code.Watcher;
 using Jube.App.Endpoints;
 using Jube.App.Endpoints.Mocks;
 using Jube.App.Endpoints.Query;
@@ -45,6 +46,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
 using Jube.Engine.Helpers;
 using Jube.Engine.Observability;
+using Jube.Service.Authentication;
 using Jube.HttpHeaders;
 using Jube.Migrations.Baseline;
 using Jube.Service.Observability;
@@ -97,10 +99,12 @@ namespace Jube.App
             ValidateConnectionToPostgres(dynamicEnvironment.AppSettings("ConnectionString"), log);
 
             var callbacks = AddSingletonForCallbacks(services);
+            var watcherStreamRegistry = AddSingletonForWatcherStreamRegistry(services, log);
+            var serviceChangeStreamRegistry = AddSingletonForServiceChangeStreamRegistry(services, log);
 
             var cacheService = AddSingletonForCacheService(services, callbacks,
                 int.Parse(dynamicEnvironment.AppSettings("CallbackTimeout") ?? "10000"),
-                taskCoordinator, dynamicEnvironment, log);
+                taskCoordinator, dynamicEnvironment, log, watcherStreamRegistry);
 
             AddSingletonForTokensCache(services, log, dynamicEnvironment, cacheService, taskCoordinator);
 
@@ -117,12 +121,13 @@ namespace Jube.App
                 taskCoordinator, implicitAsyncInvocationTracker, openTelemetryExcludeCache, logCounterRuleCache);
 
             AddSingletonForIdentity(services);
+            AddSingletonForLoginSourceIpThrottle(services);
+            AddSingletonForGlobalHttpRequestSourceIpThrottle(services);
             ConfigureAuthentication(services, dynamicEnvironment, log);
-            AddGenericServicesRequired(services, dynamicEnvironment);
+            AddGenericServicesRequired(services, watcherStreamRegistry, serviceChangeStreamRegistry);
             AddDataProtection(services, dynamicEnvironment);
             AddSwagger(services);
-            AddSingletonRelayToBeInstantiatedInConfigureServices(services, dynamicEnvironment);
-            AddSingletonForServiceChangeBus(services, dynamicEnvironment, cacheService);
+            AddSingletonForServiceChangeBus(services, dynamicEnvironment, cacheService, serviceChangeStreamRegistry);
 
             AddOpenTelemetry(services, dynamicEnvironment, cacheService, openTelemetryExcludeCache, log,
                 taskCoordinator);
@@ -147,7 +152,8 @@ namespace Jube.App
         }
 
         private static void AddSingletonForServiceChangeBus(IServiceCollection services,
-            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, CacheService cacheService)
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, CacheService cacheService,
+            ServiceChangeStreamRegistry serviceChangeStreamRegistry)
         {
             if (!dynamicEnvironment.AppSettings("EnableServiceChangeStream")
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
@@ -156,16 +162,19 @@ namespace Jube.App
                 return;
             }
 
-            if (dynamicEnvironment.AppSettings("RedisBackplane").Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
-                services.AddSingleton<IServiceChangeBus>(new RedisServiceChangeBus(cacheService.ConnectionMultiplexer));
-            }
-            else
-            {
-                services.AddSingleton<IServiceChangeBus, InProcessServiceChangeBus>();
-            }
+            IServiceChangeBus serviceChangeBus =
+                dynamicEnvironment.AppSettings("RedisBackplane").Equals("True", StringComparison.OrdinalIgnoreCase)
+                    ? new RedisServiceChangeBus(cacheService.ConnectionMultiplexer)
+                    : new InProcessServiceChangeBus();
 
-            services.AddSingleton<ServiceChangeRelay>();
+            serviceChangeBus.Subscribe(change =>
+            {
+                var payload = JsonSerializer.Serialize(change);
+                serviceChangeStreamRegistry.Dispatch(change.TenantRegistryId, payload);
+                return Task.CompletedTask;
+            });
+
+            services.AddSingleton(serviceChangeBus);
         }
 
         private static Uri BuildOtlpEndpoint(string backendEndpoint, string path)
@@ -394,26 +403,24 @@ namespace Jube.App
             Console.WriteLine();
         }
 
-        private static void AddSingletonRelayToBeInstantiatedInConfigureServices(IServiceCollection services,
-            DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
-        {
-            if (!dynamicEnvironment.AppSettings("StreamingActivationWatcher")
-                    .Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
-            services.AddSingleton<Relay>();
-        }
-
         private static void AddGenericServicesRequired(IServiceCollection services,
-            DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+            WatcherStreamRegistry watcherStreamRegistry, ServiceChangeStreamRegistry serviceChangeStreamRegistry)
         {
+            services.AddHsts(options =>
+            {
+                options.MaxAge = TimeSpan.FromDays(365);
+                options.IncludeSubDomains = true;
+            });
             services.AddAuthorization();
             services.AddLocalization();
             services.AddRazorPages();
-            services.AddSingleton(WatcherConnectionRegistry.Instance);
-            services.AddHostedService<WatcherConnectionSweeper>();
+            services.AddSingleton<IRevocableConnectionRegistry>(watcherStreamRegistry);
+            services.AddSingleton<IRevocableConnectionRegistry>(serviceChangeStreamRegistry);
+            services.AddHostedService<RevokedSessionSweeper>();
+            services.AddSingleton<WafRegistry>();
+            services.AddSingleton<WafInspector>();
+            services.AddHostedService<WafRegistryRefreshService>();
+            services.AddHostedService<WafAttackFlushService>();
             services.AddHttpContextAccessor();
             services.AddControllers().AddNewtonsoftJson(options =>
             {
@@ -423,15 +430,6 @@ namespace Jube.App
                 };
             });
             services.AddMvc();
-
-            if (dynamicEnvironment.AppSettings("RedisBackplane").Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
-                services.AddSignalR().AddStackExchangeRedis(dynamicEnvironment.AppSettings("RedisConnectionString"));
-            }
-            else
-            {
-                services.AddSignalR();
-            }
 
             services.AddEndpointsApiExplorer();
         }
@@ -458,6 +456,29 @@ namespace Jube.App
             services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
             services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
             services.AddIdentity<ApplicationUser, ApplicationRole>().AddDefaultTokenProviders();
+        }
+
+        private static void AddSingletonForLoginSourceIpThrottle(IServiceCollection services)
+        {
+            services.AddSingleton<LoginSourceIpThrottle>();
+        }
+
+        private static void AddSingletonForGlobalHttpRequestSourceIpThrottle(IServiceCollection services)
+        {
+            services.AddSingleton<GlobalHttpRequestSourceIpThrottle>();
+        }
+
+        private static TimeSpan ComputeWindow(string interval, string intervalValue)
+        {
+            var parsedValue = double.TryParse(intervalValue, out var value) ? value : 60;
+
+            return interval switch
+            {
+                "s" => TimeSpan.FromSeconds(parsedValue),
+                "n" => TimeSpan.FromMinutes(parsedValue),
+                "h" => TimeSpan.FromHours(parsedValue),
+                _ => TimeSpan.FromDays(parsedValue)
+            };
         }
 
         private static void AddSwagger(IServiceCollection services)
@@ -828,7 +849,8 @@ namespace Jube.App
             if (dynamicEnvironment.AppSettings("AMQP").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 rabbitMqConnection = ConnectToRabbitMqChannel(services, log, dynamicEnvironment.AppSettings("AMQPUri"),
-                    int.Parse(dynamicEnvironment.AppSettings("AMQPHeartbeatSeconds") ?? "30"));
+                    ComputeWindow(dynamicEnvironment.AppSettings("AMQPHeartbeatInterval"),
+                        dynamicEnvironment.AppSettings("AMQPHeartbeatIntervalValue")));
             }
             else
             {
@@ -851,9 +873,26 @@ namespace Jube.App
             return callbacks;
         }
 
+        private static ServiceChangeStreamRegistry AddSingletonForServiceChangeStreamRegistry(
+            IServiceCollection services, ILog log)
+        {
+            var serviceChangeStreamRegistry = new ServiceChangeStreamRegistry(log);
+            services.AddSingleton(serviceChangeStreamRegistry);
+            return serviceChangeStreamRegistry;
+        }
+
+        private static WatcherStreamRegistry AddSingletonForWatcherStreamRegistry(IServiceCollection services,
+            ILog log)
+        {
+            var watcherStreamRegistry = new WatcherStreamRegistry(log);
+            services.AddSingleton(watcherStreamRegistry);
+            return watcherStreamRegistry;
+        }
+
         private static CacheService AddSingletonForCacheService(IServiceCollection services,
             ConcurrentDictionary<Guid, TaskCompletionSource<Callback>> callbacks, int callbackTimeout,
-            TaskCoordinator taskCoordinator, DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
+            TaskCoordinator taskCoordinator, DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log,
+            WatcherStreamRegistry watcherStreamRegistry)
         {
             var lruJournalMaxAgeInterval = dynamicEnvironment.AppSettings("LruJournalMaxAgeInterval");
             var lruJournalMaxAgeValue = dynamicEnvironment.AppSettings("LruJournalMaxAgeValue");
@@ -908,7 +947,7 @@ namespace Jube.App
             }
 
             cacheService.InstantiateRepositoriesTask = taskCoordinator.RunAsync("InstantiateRepositoriesAsync",
-                _ => cacheService.StartAsync(taskCoordinator));
+                _ => cacheService.StartAsync(taskCoordinator, watcherStreamRegistry.Dispatch));
 
             services.AddSingleton(cacheService);
 
@@ -976,7 +1015,7 @@ namespace Jube.App
         }
 
         private static IConnection ConnectToRabbitMqChannel(IServiceCollection services, ILog log,
-            string amqpUrl, int heartbeat)
+            string amqpUrl, TimeSpan heartbeat)
         {
             const int retryRabbitMqConnection = 10;
             for (var i = 0; i < retryRabbitMqConnection; i++)
@@ -993,7 +1032,7 @@ namespace Jube.App
                     var rabbitMqConnectionFactory = new ConnectionFactory
                     {
                         Uri = uri,
-                        RequestedHeartbeat = TimeSpan.FromSeconds(heartbeat)
+                        RequestedHeartbeat = heartbeat
                     };
                     var rabbitMqConnection = rabbitMqConnectionFactory.CreateConnection();
                     services.AddSingleton(rabbitMqConnection);
@@ -1148,6 +1187,13 @@ namespace Jube.App
                 app.UseAuthentication();
                 app.UseAuthorization();
                 app.UseMiddleware<EmptyBodyGuardMiddleware>();
+                app.UseMiddleware<WafMiddleware>();
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseMiddleware<GlobalHttpRateLimitMiddleware>()
+                );
 
                 app.UseWhen(
                     httpContext =>
@@ -1160,11 +1206,13 @@ namespace Jube.App
                                        lifetime.ApplicationStopping.IsCancellationRequested,
                     branch => branch.UseConditionalConnectionCloseWhenStopping());
 
-                app.UseWhen(context => context.Request.Path.StartsWithSegments("/Account/Login"), appBuilder =>
+                app.UseWhen(context => context.Request.Path.StartsWithSegments("/Account"), appBuilder =>
                 {
                     appBuilder.Use(async (context, next) =>
                     {
                         context.Response.Headers.Append("Content-Security-Policy", "frame-ancestors 'none'");
+                        context.Response.Headers.Append("Cache-Control", "no-store");
+                        context.Response.Headers.Append("Referrer-Policy", "no-referrer");
                         await next.Invoke();
                     });
                 });
@@ -1218,6 +1266,16 @@ namespace Jube.App
                 );
 
                 app.UseWhen(
+                    httpContext => httpContext.Request.Path.Equals("/swagger/swagger-initializer.js",
+                        StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.Run(context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status404NotFound;
+                        return Task.CompletedTask;
+                    })
+                );
+
+                app.UseWhen(
                     httpContext =>
                         !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
                     appBuilder => appBuilder.UseSwagger()
@@ -1226,15 +1284,16 @@ namespace Jube.App
                 app.UseWhen(
                     httpContext =>
                         !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseSwaggerUI()
+                    appBuilder => appBuilder.UseSwaggerUI(c =>
+                    {
+                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Jube API v1");
+                    })
                 );
 
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapRazorPages();
                     endpoints.MapControllers();
-                    endpoints.MapHub<WatcherHub>("/watcherHub").RequireAuthorization();
-                    endpoints.MapHub<ServiceChangeHub>("/serviceChangeHub").RequireAuthorization();
                     endpoints.MapEntityAnalysisModelEndpoints();
                     endpoints.MapEntityAnalysisModelRequestXPathEndpoints();
                     endpoints.MapEntityAnalysisModelInlineFunctionEndpoints();
@@ -1252,6 +1311,7 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelResponseTimePipelineCounterEndpoints();
                     endpoints.MapEntityAnalysisModelTaskPerformanceCounterEndpoints();
                     endpoints.MapApplicationLogEntryEndpoints();
+                    endpoints.MapWafAttackEndpoints();
                     endpoints.MapDotNetRuntimeMetricEndpoints();
                     endpoints.MapPostgresMetricEndpoints();
                     endpoints.MapRedisMetricEndpoints();
@@ -1289,6 +1349,8 @@ namespace Jube.App
                     endpoints.MapUserLoginEndpoints();
                     endpoints.MapUserLogoutEndpoints();
                     endpoints.MapActivationWatcherEndpoints();
+                    endpoints.MapWatcherStreamEndpoints();
+                    endpoints.MapServiceChangeStreamEndpoints();
                     endpoints.MapPostgresActivityEndpoints();
                     endpoints.MapPostgresStatementStatisticsEndpoints();
                     endpoints.MapEntityAnalysisModelAbstractionRuleEndpoints();
@@ -1389,11 +1451,8 @@ namespace Jube.App
                     endpoints.MapParserEndpoints();
                     endpoints.MapCaseWorkflowDisplayExecutionEndpoints();
                     endpoints.MapCaseWorkflowMacroExecutionEndpoints();
-                    endpoints.MapRegisterSignalrConnectionEndpoints();
                 });
 
-                await app.StartRelayAsync().ConfigureAwait(false);
-                await app.StartServiceChangeRelayAsync().ConfigureAwait(false);
                 await app.StartEngineAsync().ConfigureAwait(false);
             }
             catch (Exception ex)

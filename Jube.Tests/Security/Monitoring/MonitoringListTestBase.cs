@@ -249,7 +249,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
             }
 
             var r = run.Check(await client.GetAsync(area.Route + query), Bound);
-            run.Expect(r.Status is 200 or 400 || (r.Status == 414 && query.Length > 4000), r, "STATUS",
+            run.Expect(r.Status is 200 or 400 or 403 || (r.Status == 414 && query.Length > 4000), r, "STATUS",
                 $"{item.Param}={Trim(item.Value)} must be 200 or 400");
             if (r.Status == 200)
             {

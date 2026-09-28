@@ -29,11 +29,16 @@ namespace Jube.Service.Authentication
         IMfaVerifier mfaVerifier,
         IPasswordHashScheme? passwordHashScheme = null,
         TimeProvider? timeProvider = null,
-        ILog? auditLog = null)
+        ILog? auditLog = null,
+        LoginSourceIpThrottle? loginSourceIpThrottle = null)
     {
         private const string Area = "Authentication";
 
         private readonly ILog auditLog = auditLog ?? LogManager.GetLogger("Jube.Audit");
+        private readonly TimeProvider clock = timeProvider ?? TimeProvider.System;
+
+        private readonly LoginSourceIpThrottle loginSourceIpThrottle =
+            loginSourceIpThrottle ?? new LoginSourceIpThrottle();
 
         private readonly Authentication service = new(dbContext,
             dynamicEnvironment.AppSettings("PasswordAsymmetricEncryption")
@@ -106,7 +111,11 @@ namespace Jube.Service.Authentication
                     }
 
                     await service.AuthenticateByNegotiateAsync(name, context.LocalIp, context.UserAgent, true, token,
-                            context.RemoteIp)
+                            context.RemoteIp,
+                            ComputeWindow(dynamicEnvironment.AppSettings("PasswordLockoutInterval"),
+                                dynamicEnvironment.AppSettings("PasswordLockoutIntervalValue")),
+                            dynamicEnvironment.AppSettings("EnablePasswordLockoutReset")
+                                .Equals("True", StringComparison.OrdinalIgnoreCase))
                         .ConfigureAwait(false);
                 }
                 else
@@ -169,7 +178,11 @@ namespace Jube.Service.Authentication
                 if (name != null)
                 {
                     await service.AuthenticateByNegotiateAsync(name, model.LocalIp, model.UserAgent, true, token,
-                            model.RemoteIp)
+                            model.RemoteIp,
+                            ComputeWindow(dynamicEnvironment.AppSettings("PasswordLockoutInterval"),
+                                dynamicEnvironment.AppSettings("PasswordLockoutIntervalValue")),
+                            dynamicEnvironment.AppSettings("EnablePasswordLockoutReset")
+                                .Equals("True", StringComparison.OrdinalIgnoreCase))
                         .ConfigureAwait(false);
                 }
                 else
@@ -225,6 +238,17 @@ namespace Jube.Service.Authentication
                 return AuthenticationOutcome.NotFound();
             }
 
+            var loginIpRateLimitWindow = ComputeWindow(dynamicEnvironment.AppSettings("LoginIpRateLimitInterval"),
+                dynamicEnvironment.AppSettings("LoginIpRateLimitIntervalValue"));
+
+            if (loginSourceIpThrottle.IsExceeded(context.RemoteIp,
+                    int.Parse(dynamicEnvironment.AppSettings("LoginIpRateLimitAttempts")), loginIpRateLimitWindow,
+                    clock))
+            {
+                op.Outcome("rate-limited");
+                return AuthenticationOutcome.Unauthorized();
+            }
+
             if (model == null)
             {
                 op.Outcome("bad-request");
@@ -247,7 +271,11 @@ namespace Jube.Service.Authentication
 
                 await service.AuthenticateByUserNamePasswordAsync(model,
                         dynamicEnvironment.AppSettings("PasswordHashingKey"),
-                        int.Parse(dynamicEnvironment.AppSettings("PasswordAttempts")), token, MfaEnabled)
+                        int.Parse(dynamicEnvironment.AppSettings("PasswordAttempts")), token, MfaEnabled,
+                        ComputeWindow(dynamicEnvironment.AppSettings("PasswordLockoutInterval"),
+                            dynamicEnvironment.AppSettings("PasswordLockoutIntervalValue")),
+                        dynamicEnvironment.AppSettings("EnablePasswordLockoutReset")
+                            .Equals("True", StringComparison.OrdinalIgnoreCase))
                     .ConfigureAwait(false);
             }
             catch (PasswordExpiredException)
@@ -267,6 +295,7 @@ namespace Jube.Service.Authentication
             }
             catch (Exception)
             {
+                loginSourceIpThrottle.RecordFailedAttempt(context.RemoteIp, loginIpRateLimitWindow, clock);
                 op.Outcome("unauthorized");
                 return AuthenticationOutcome.Unauthorized();
             }
@@ -394,6 +423,19 @@ namespace Jube.Service.Authentication
                     span[i] = char.IsControl(v[i]) ? '?' : v[i];
                 }
             });
+        }
+
+        private static TimeSpan ComputeWindow(string interval, string intervalValue)
+        {
+            var parsedValue = double.TryParse(intervalValue, out var value) ? value : 60;
+
+            return interval switch
+            {
+                "s" => TimeSpan.FromSeconds(parsedValue),
+                "n" => TimeSpan.FromMinutes(parsedValue),
+                "h" => TimeSpan.FromHours(parsedValue),
+                _ => TimeSpan.FromDays(parsedValue)
+            };
         }
     }
 }

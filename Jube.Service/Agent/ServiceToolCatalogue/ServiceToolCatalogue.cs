@@ -54,6 +54,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddEntityAnalysisModelResponseTimePipelineCounter(tools);
                 AddEntityAnalysisModelTaskPerformanceCounter(tools);
                 AddApplicationLogEntry(tools);
+                AddWafAttack(tools);
                 AddDotNetRuntimeMetric(tools);
                 AddPostgresMetric(tools);
                 AddRedisMetric(tools);
@@ -174,7 +175,6 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddEntityAnalysisModelBacktest(tools);
                 AddCaseWorkflowDisplayExecution(tools);
                 AddCaseWorkflowMacroExecution(tools);
-                AddRegisterSignalrConnection(tools);
                 all = tools;
 
                 return all;
@@ -214,6 +214,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddEntityAnalysisModelResponseTimePipelineCounter(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelTaskPerformanceCounter(List<ServiceToolDescriptor> tools);
         static partial void AddApplicationLogEntry(List<ServiceToolDescriptor> tools);
+        static partial void AddWafAttack(List<ServiceToolDescriptor> tools);
         static partial void AddDotNetRuntimeMetric(List<ServiceToolDescriptor> tools);
         static partial void AddPostgresMetric(List<ServiceToolDescriptor> tools);
         static partial void AddRedisMetric(List<ServiceToolDescriptor> tools);
@@ -341,6 +342,5 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddParser(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowDisplayExecution(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowMacroExecution(List<ServiceToolDescriptor> tools);
-        static partial void AddRegisterSignalrConnection(List<ServiceToolDescriptor> tools);
     }
 }
