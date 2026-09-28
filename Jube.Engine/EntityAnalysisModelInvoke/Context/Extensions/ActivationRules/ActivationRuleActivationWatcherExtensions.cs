@@ -13,14 +13,11 @@
 
 using System;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.Cache;
 using Jube.Data.Poco;
-using Jube.ResilientRedisConnection;
 using Newtonsoft.Json;
-using RabbitMQ.Client;
-using StackExchange.Redis;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules
 {
@@ -31,7 +28,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
     {
         public static async Task ActivationRuleActivationWatcherAsync(this Context context,
             EntityAnalysisModelActivationRule evaluateActivationRule,
-            bool suppressed, IModel rabbitMqChannel, IHybridResilientRedisDatabase resilientRedisDatabase)
+            bool suppressed, CacheService cacheService)
         {
             if (!evaluateActivationRule.SendToActivationWatcher || suppressed || context
                     .EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId.HasValue ||
@@ -60,8 +57,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 var jsonString = JsonConvert.SerializeObject(activationWatcher,
                     context.EntityAnalysisModel.JsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
 
-                var bodyBytes = Encoding.UTF8.GetBytes(jsonString);
-
                 context.TraceLog($"has serialized the Activation Watcher Object to be dispatched.");
 
                 if (context.Environment.AppSettings("ActivationWatcherAllowPersist")
@@ -82,9 +77,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 if (context.Environment.AppSettings("StreamingActivationWatcher")
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
                 {
-                    await resilientRedisDatabase
-                        .PublishAsync($"ActivationWatcher:{context.EntityAnalysisModel.Instance.TenantRegistryId}",
-                            bodyBytes, CommandFlags.FireAndForget);
+                    await cacheService.CacheActivationWatcherPublishSubscribe.PublishAsync(
+                        context.EntityAnalysisModel.Instance.TenantRegistryId, jsonString);
                     Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ActivationWatcherCount);
 
                     context.TraceLog(
@@ -94,19 +88,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 {
                     context.TraceLog(
                         $"streaming is not allowed so it has not been sent to the database as a notification in the activation channel. {context.EntityAnalysisModel.Counters.ActivationWatcherCount}.");
-                }
-
-                if (context.Environment.AppSettings("AMQP").Equals("True", StringComparison.OrdinalIgnoreCase))
-                {
-                    var properties = rabbitMqChannel.CreateBasicProperties();
-
-                    rabbitMqChannel.BasicPublish("jubeActivations", "", properties, bodyBytes);
-
-                    context.TraceLog($"AMQP is allowed so it has been published to the RabbitMQ.");
-                }
-                else
-                {
-                    context.TraceLog($"AMQP is not allowed, so publish has been stepped over.");
                 }
 
                 context.TraceLog(

@@ -19,7 +19,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Jube.App.Middlewares
 {
-    public class RequestHardeningMiddleware(RequestDelegate next, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+    public class RequestHardeningMiddleware(
+        RequestDelegate next,
+        DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
     {
         public async Task InvokeAsync(HttpContext context)
         {
@@ -91,7 +93,8 @@ namespace Jube.App.Middlewares
 
         private static readonly string[] sideEffectingGetPrefixes =
         [
-            "/api/ActivationWatcher/Replay", "/api/RegisterSignalrConnection", "/api/GetCaseByIdQuery",
+            "/api/ActivationWatcher/Replay", "/api/Watcher/Stream", "/api/ServiceChange/Stream",
+            "/api/GetCaseByIdQuery",
             "/api/GetCaseBySessionCaseSearchCompileQuery", "/api/SessionCaseSearchCompiledSql",
             "/api/Invoke/EntityAnalysisModel/Callback"
         ];

@@ -36,20 +36,14 @@ namespace Jube.Data.Reporting
     {
         private readonly ResilientNpgsqlConnection connection;
         private readonly bool blockProtectedRelations;
-        private readonly bool parserAssertSelectOnly;
         private bool disposed;
 
         public static int StatementTimeoutSeconds { get; set; } = 30;
 
         public const int MaximumRows = 100000;
 
-        private static string GuardedConnectionString(string connectionString, bool guarded)
+        private static string GuardedConnectionString(string connectionString)
         {
-            if (!guarded)
-            {
-                return connectionString;
-            }
-
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
             var settings =
                 $"-c default_transaction_read_only=on -c statement_timeout={StatementTimeoutSeconds * 1000} -c lock_timeout=5000";
@@ -59,11 +53,6 @@ namespace Jube.Data.Reporting
 
         private async Task<GuardScope> BeginGuardAsync(CancellationToken token)
         {
-            if (!parserAssertSelectOnly)
-            {
-                return new GuardScope(null);
-            }
-
             await using (var begin = new ResilientNpgsqlCommand(connection,
                              $"BEGIN READ ONLY; SET LOCAL statement_timeout = {StatementTimeoutSeconds * 1000}; SET LOCAL lock_timeout = 5000"))
             {
@@ -73,13 +62,10 @@ namespace Jube.Data.Reporting
             return new GuardScope(connection);
         }
 
-        public Postgres(string connectionString, ILog log, bool parserAssertSelectOnly,
-            bool blockProtectedRelations = false)
+        public Postgres(string connectionString, ILog log, bool blockProtectedRelations = false)
         {
-            this.parserAssertSelectOnly = parserAssertSelectOnly;
             this.blockProtectedRelations = blockProtectedRelations;
-            connection =
-                new ResilientNpgsqlConnection(GuardedConnectionString(connectionString, parserAssertSelectOnly), log);
+            connection = new ResilientNpgsqlConnection(GuardedConnectionString(connectionString), log);
             try
             {
                 connection.Open();
@@ -108,10 +94,7 @@ namespace Jube.Data.Reporting
             var values = new Dictionary<string, string>();
             var wrapSql = $"SELECT * FROM ({sql}) b LIMIT 0";
 
-            if (parserAssertSelectOnly)
-            {
-                PostgresSqlValidator.AssertSelectOnly(wrapSql, blockProtectedRelations);
-            }
+            PostgresSqlValidator.AssertSelectOnly(wrapSql, blockProtectedRelations);
 
             await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
 
@@ -141,10 +124,7 @@ namespace Jube.Data.Reporting
             var values = new Dictionary<string, string>();
             var wrapSql = $"SELECT * FROM ({sql}) b LIMIT 0";
 
-            if (parserAssertSelectOnly)
-            {
-                PostgresSqlValidator.AssertSelectOnly(wrapSql, blockProtectedRelations);
-            }
+            PostgresSqlValidator.AssertSelectOnly(wrapSql, blockProtectedRelations);
 
             await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
 
@@ -170,10 +150,7 @@ namespace Jube.Data.Reporting
 
         public async Task PrepareAsync(string sql, List<object> parameters, CancellationToken token = default)
         {
-            if (parserAssertSelectOnly)
-            {
-                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
-            }
+            PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
 
             await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
 
@@ -206,10 +183,7 @@ namespace Jube.Data.Reporting
                 + " and (" + sql + ")"
                 + $" order by \"EntityAnalysisModelInstanceEntryGuid\" limit (@{tokens.Count})";
 
-            if (parserAssertSelectOnly)
-            {
-                PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql, blockProtectedRelations);
-            }
+            PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql, blockProtectedRelations);
 
             await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
 
@@ -246,10 +220,7 @@ namespace Jube.Data.Reporting
                                   LIMIT 100000
                                   """;
 
-            if (parserAssertSelectOnly)
-            {
-                PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql, blockProtectedRelations);
-            }
+            PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql, blockProtectedRelations);
 
             await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
 
@@ -280,10 +251,7 @@ namespace Jube.Data.Reporting
             int limit,
             CancellationToken token = default)
         {
-            if (parserAssertSelectOnly)
-            {
-                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
-            }
+            PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
 
             await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
 
@@ -359,10 +327,7 @@ namespace Jube.Data.Reporting
         public async Task<List<IDictionary<string, object>>> ExecuteByNamedParametersAsync(string sql,
             Dictionary<string, object> parameters, CancellationToken token = default)
         {
-            if (parserAssertSelectOnly)
-            {
-                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
-            }
+            PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
 
             await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
 
@@ -402,10 +367,7 @@ namespace Jube.Data.Reporting
         public async Task<List<IDictionary<string, object>>> ExecuteByOrderedParametersAsync(string sql,
             List<object> parameters, CancellationToken token = default)
         {
-            if (parserAssertSelectOnly)
-            {
-                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
-            }
+            PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
 
             await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
 
@@ -445,10 +407,7 @@ namespace Jube.Data.Reporting
         public async Task<int?> ExecuteScalarIdAsync(string sql,
             List<object> parameters, CancellationToken token = default)
         {
-            if (parserAssertSelectOnly)
-            {
-                PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
-            }
+            PostgresSqlValidator.AssertSelectOnly(sql, blockProtectedRelations);
 
             await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
 

@@ -13,7 +13,7 @@
 
 namespace Jube.Service.Query.Ready
 {
-    public class ReadyService(IReadinessSignals signals, bool engineEnabled, bool relayEnabled)
+    public class ReadyService(IReadinessSignals signals, bool engineEnabled, bool watcherStreamEnabled)
     {
         public bool IsReady()
         {
@@ -27,7 +27,7 @@ namespace Jube.Service.Query.Ready
                 return false;
             }
 
-            return !relayEnabled || signals.RelayReady;
+            return !watcherStreamEnabled || signals.WatcherStreamReady;
         }
     }
 }

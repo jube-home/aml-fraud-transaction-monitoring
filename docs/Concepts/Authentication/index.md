@@ -209,7 +209,8 @@ closing.
 
 The JWT issued at login (and carried in the `authentication-jwt` cookie) is valid for 15 minutes. Each authenticated
 request made through the user interface replaces it with a fresh 15 minute token, so an active session slides forward. A
-session is never extended beyond `SessionAbsoluteLifetimeMinutes` (default 720, twelve hours) counted from the original
+session is never extended beyond `SessionAbsoluteLifetimeInterval`/`SessionAbsoluteLifetimeIntervalValue` (default
+`n`/720, twelve hours) counted from the original
 login, because every refreshed token carries the instant the session began: after that age the user must log in again,
 however active they were.
 
@@ -219,8 +220,9 @@ effect on every node at once without any shared cache. The instant is set when t
 password is changed, and when an administrator presses **Revoke Sessions** on the user's page (Administration >>>
 Security >>> Users, permission Read Write Security User, `POST /api/UserRegistry/RevokeTokens/{id}`, which answers 204
 and only reaches users of the caller's own tenant). API Keys are not affected by any of this: they are validated
-separately, on every request, against the key list, and are revoked from the API key list of the user. Open SignalR
-connections are re-checked against the same rules every `HubRevocationCheckSeconds` (default 30) and closed when their
+separately, on every request, against the key list, and are revoked from the API key list of the user. Open streaming
+connections (Watcher, Service Change) are re-checked against the same rules every
+`RevokedSessionCheckInterval`/`RevokedSessionCheckIntervalValue` (default `s`/30) and closed when their
 session has ended.
 
 Logging out is `POST /api/Authentication/Logout`, which is anonymous by design and fails closed: whatever the state of
@@ -284,7 +286,7 @@ failure, or any other unexpected exception) now records a `UserLogin` row with `
 Logging out is `POST /api/Authentication/Logout`. It is anonymous by design and **fails closed**: whatever the state of
 the credential presented (none, expired, garbage, already revoked), the response expires both authentication cookies and
 answers `200`. When a valid session is presented, every token the user has been issued so far is revoked in the database
-(so it is honoured on every node) and the user's open SignalR connections are closed. API keys are not touched, and a
+(so it is honoured on every node) and the user's open streaming connections are closed. API keys are not touched, and a
 request that carries an `X-API-KEY` header is not treated as a browser session. If the revocation cannot be written the
 browser is still logged out; the response carries an `X-Jube-Logout-Warning: revocation-failed` header and the reason is
 in the application log at `ERROR`, because a copied token then stays valid until it expires.

@@ -584,7 +584,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                                 VisualisationRegistryDatasourceMapper.ToPoco(model), log,
                                 dynamicEnvironment.AppSettings("ReportConnectionString") ??
                                 dbContext.Connection.ConnectionString,
-                                dynamicEnvironment.ParserAssertSelectOnly(), token),
+                                token),
                             r => new DtoValidationException(r),
                             strings[VisualisationRegistryDatasourceResources.NameAlreadyExists])
                         .ConfigureAwait(false);
@@ -731,7 +731,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                     saved = await UniqueViolation.GuardAsync(() => repository.UpdateWithValidationAsync(poco, log,
                                 dynamicEnvironment.AppSettings("ReportConnectionString") ??
                                 dbContext.Connection.ConnectionString,
-                                dynamicEnvironment.ParserAssertSelectOnly(), token),
+                                token),
                             r => new DtoValidationException(r),
                             strings[VisualisationRegistryDatasourceResources.NameAlreadyExists])
                         .ConfigureAwait(false);

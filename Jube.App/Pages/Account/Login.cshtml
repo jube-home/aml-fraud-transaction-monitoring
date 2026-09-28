@@ -21,19 +21,25 @@
 
 <script>
     const negotiateAuthentication = @(DynamicEnvironment.AppSettings("NegotiateAuthentication")
-                                      .Equals("True", StringComparison.OrdinalIgnoreCase) ? "true" : "false");
+                                        .Equals("True", StringComparison.OrdinalIgnoreCase)
+                                        ? "true"
+                                        : "false");
 
     const mfa = @(DynamicEnvironment.AppSettings("EnableMultifactorAuthentication")
-                  .Equals("True", StringComparison.OrdinalIgnoreCase) ? "true" : "false");
+                    .Equals("True", StringComparison.OrdinalIgnoreCase)
+                    ? "true"
+                    : "false");
 
     const passwordAsymmetricEncryption = @(DynamicEnvironment.AppSettings("PasswordAsymmetricEncryption")
-                                           .Equals("True", StringComparison.OrdinalIgnoreCase) ? "true" : "false");
+                                             .Equals("True", StringComparison.OrdinalIgnoreCase)
+                                             ? "true"
+                                             : "false");
 
     const passwordAsymmetricEncryptionPublicKey = "@DynamicEnvironment.AppSettings("PasswordAsymmetricEncryptionPublicKey")";
 </script>
 
 <br/>
-<form id="FormAuthenticate" style="display:none;">
+<form id="FormAuthenticate" method="post" action="/Account/Login" style="display:none;" asp-antiforgery="false">
     <table id="AuthenticationTable" class="tTStyle">
         <tr>
             <td>
@@ -69,7 +75,7 @@
 </div>
 <template id="PasswordResetTemplate">
     <div id="PasswordResetDiv">
-        <form id="FormChange">
+        <form id="FormChange" method="post" action="/Account/Login" asp-antiforgery="false">
             <br/>
             <table id="PasswordResetTable" class="tTStyle">
                 <tr>

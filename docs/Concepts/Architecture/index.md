@@ -156,22 +156,26 @@ Notwithstanding a stateless architecture, the token contains a single claim type
 
 ### Custom HTTP Response Headers
 
-Arbitrary HTTP response headers (for example security headers such as HSTS or a Content Security Policy) can be injected
-into every response by inserting rows directly into the `HttpResponseHeader` table (Header, Value columns). There is no
-administrative page for this - rows are read once into an in-memory dictionary at startup and applied to every response
-by middleware, so a change to the table requires a restart of the instance to take effect.
+Arbitrary HTTP response headers can be injected into every response by inserting rows directly into the
+`HttpResponseHeader` table (Header, Value columns). There is no administrative page for this - rows are read once into
+an in-memory dictionary at startup and applied to every response by middleware, so a change to the table requires a
+restart of the instance to take effect.
 
-Example headers are:
+A baseline set - `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Resource-Policy` and a
+`Content-Security-Policy` (currently `'self'` plus `'unsafe-inline'` for script/style, since a handful of Razor pages
+still use inline scripts and styles) - is seeded by a FluentMigrator migration
+(`Jube.Migrations.Branches.PenTestGbkRemediation.SeedDefaultHttpResponseHeaders`), so a fresh instance already carries
+them out of the box. `X-Content-Type-Options: nosniff` is set unconditionally by `RequestHardeningMiddleware` and
+`Strict-Transport-Security` by `UseHsts()`/`AddHsts()` (365 days, `IncludeSubDomains`) - neither needs a row in this
+table.
+
+Anything beyond the baseline - a stricter `Content-Security-Policy` once the remaining inline script/style usage is
+removed, or a header specific to one deployment - is still just an insert, for example:
 
 ````sql
 INSERT INTO public."HttpResponseHeader" ("Header", "Value")
-VALUES ('Strict-Transport-Security', 'max-age=31536000; includeSubDomains'),
-       ('X-Content-Type-Options', 'nosniff'),
-       ('X-Frame-Options', 'SAMEORIGIN'),
-       ('Referrer-Policy', 'no-referrer-when-downgrade'),
-       ('Content-Security-Policy',
-        'default-src ''self''; script-src ''self'' ''unsafe-inline'' ''unsafe-eval''; style-src ''self'' ''unsafe-inline''; img-src ''self'' data:'),
-       ('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+VALUES ('Content-Security-Policy',
+        'default-src ''self''; script-src ''self''; style-src ''self''; img-src ''self'' data:');
 ````
 
 To the extent that it is thought by the technical end user that Containerisation differs from lightweight Linux Virtual

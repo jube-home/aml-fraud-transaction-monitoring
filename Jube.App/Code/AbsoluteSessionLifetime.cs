@@ -18,20 +18,32 @@ namespace Jube.App.Code
 {
     public static class AbsoluteSessionLifetime
     {
-        private const int DefaultMinutes = 720;
+        private const int DefaultIntervalValue = 720;
 
         public static TimeSpan? From(DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
-            if (!int.TryParse(dynamicEnvironment.AppSettings("SessionAbsoluteLifetimeMinutes"), NumberStyles.Integer,
-                    CultureInfo.InvariantCulture, out var minutes))
+            if (!int.TryParse(dynamicEnvironment.AppSettings("SessionAbsoluteLifetimeIntervalValue"),
+                    NumberStyles.Integer, CultureInfo.InvariantCulture, out var intervalValue))
             {
-                minutes = DefaultMinutes;
+                intervalValue = DefaultIntervalValue;
             }
 
-            return minutes > 0 ? TimeSpan.FromMinutes(minutes) : null;
+            if (intervalValue <= 0)
+            {
+                return null;
+            }
+
+            return dynamicEnvironment.AppSettings("SessionAbsoluteLifetimeInterval") switch
+            {
+                "s" => TimeSpan.FromSeconds(intervalValue),
+                "n" => TimeSpan.FromMinutes(intervalValue),
+                "h" => TimeSpan.FromHours(intervalValue),
+                _ => TimeSpan.FromDays(intervalValue)
+            };
         }
 
-        public static bool IsExpired(DynamicEnvironment.DynamicEnvironment dynamicEnvironment, string sessionStartMilliseconds,
+        public static bool IsExpired(DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            string sessionStartMilliseconds,
             DateTimeOffset now)
         {
             var lifetime = From(dynamicEnvironment);

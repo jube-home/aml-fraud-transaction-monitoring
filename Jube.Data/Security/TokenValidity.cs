@@ -12,7 +12,9 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
@@ -70,6 +72,34 @@ namespace Jube.Data.Security
                 : null;
 
             return (validFrom, row?.Blocked == 1);
+        }
+
+        public static async Task<Dictionary<string, (long? ValidFromMilliseconds, bool Blocked)>>
+            GetSessionStatesAsync(DbContext dbContext, IReadOnlyCollection<string> userNames)
+        {
+            var result = new Dictionary<string, (long?, bool)>(StringComparer.Ordinal);
+            if (userNames.Count == 0)
+            {
+                return result;
+            }
+
+            var rows = await dbContext.QueryToListAsync<SessionState>(
+                "SELECT \"Name\", max(\"TokensValidFrom\") AS \"ValidFrom\", " +
+                "min(CASE WHEN COALESCE(\"PasswordLocked\", 0) = 1 OR COALESCE(\"Active\", 0) <> 1 " +
+                "OR COALESCE(\"Deleted\", 0) = 1 THEN 1 ELSE 0 END) AS \"Blocked\" " +
+                "FROM \"UserRegistry\" WHERE \"Name\" = ANY(@names) GROUP BY \"Name\"",
+                new DataParameter("names", userNames.ToArray())).ConfigureAwait(false);
+
+            foreach (var row in rows)
+            {
+                long? validFrom = row.ValidFrom.HasValue
+                    ? new DateTimeOffset(DateTime.SpecifyKind(row.ValidFrom.Value, DateTimeKind.Utc))
+                        .ToUnixTimeMilliseconds()
+                    : null;
+                result[row.Name] = (validFrom, row.Blocked == 1);
+            }
+
+            return result;
         }
 
         public static async Task<bool> IsRevokedAsync(DbContext dbContext, string userName, string issuedMilliseconds,

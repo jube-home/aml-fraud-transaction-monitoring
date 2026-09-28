@@ -218,7 +218,7 @@ namespace Jube.Engine.Exhaustive
                     exhaustiveSearchInstance.EntityAnalysisModelId,
                     exhaustiveSearchInstance.FilterJson,
                     exhaustiveSearchInstance.FilterTokens,
-                    mockData, log, environment.ParserAssertSelectOnly(),
+                    mockData, log,
                     environment.AppSettings("ReportConnectionString"), token).ConfigureAwait(false);
 
                 variables = getSampleDataResponse.Item1;
@@ -389,7 +389,7 @@ namespace Jube.Engine.Exhaustive
                         exhaustiveSearchInstance.FilterSql,
                         exhaustiveSearchInstance.FilterTokens,
                         variables,
-                        mockData, log, environment.ParserAssertSelectOnly(),
+                        mockData, log,
                         environment.AppSettings("ReportConnectionString"), token).ConfigureAwait(false);
 
                 var repositoryExhaustiveSearchInstanceVariablesClassification =

@@ -83,7 +83,6 @@ namespace Jube.App.Endpoints.Query
             {
                 var service = await CaseJournalService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus,
-                    dynamicEnvironment.ParserAssertSelectOnly(),
                     dynamicEnvironment.AppSettings("ReportConnectionString"), token);
                 var result = await service.GetAsync(drillName, drillValue, caseWorkflowGuid.GetValueOrDefault(), limit,
                     activationsOnly,

@@ -270,6 +270,22 @@ namespace Jube.Data.Repository
             return records > 0;
         }
 
+        public async Task<bool> AutoUnlockIfExpiredAsync(int id, TimeSpan lockoutWindow,
+            CancellationToken token = default)
+        {
+            var expiredBefore = DateTime.UtcNow - lockoutWindow;
+            var records = await dbContext.UserRegistry
+                .Where(d => d.Id == id && (d.Deleted == 0 || d.Deleted == null)
+                                       && d.PasswordLocked == 1
+                                       && d.PasswordLockedDate != null
+                                       && d.PasswordLockedDate < expiredBefore)
+                .Set(s => s.PasswordLocked, (byte)0)
+                .Set(s => s.FailedPasswordCount, 0)
+                .UpdateAsync(token);
+
+            return records > 0;
+        }
+
         public Task IncrementFailedPasswordAsync(int id, CancellationToken token = default)
         {
             var existing = dbContext.UserRegistry

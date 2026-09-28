@@ -15,34 +15,21 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.App.Code.signalr;
 using Jube.Data.Context;
 using Jube.Service.Exceptions.Repository.ActivationWatcher;
-using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Repository.ActivationWatcher;
 using log4net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Localization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Jube.App.Endpoints.Repository
 {
     public static class ActivationWatcherEndpoints
     {
         private const string Base = "/api/ActivationWatcher";
-
-        private static readonly JsonSerializerSettings replaySerializerSettings = new()
-        {
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            }
-        };
 
         public static void MapActivationWatcherEndpoints(this IEndpointRouteBuilder endpoints)
         {
@@ -58,7 +45,7 @@ namespace Jube.App.Endpoints.Repository
             DateTimeOffset? dateFrom, DateTimeOffset? dateTo, HttpContext httpContext,
             ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            IHubContext<WatcherHub> watcherHub, CancellationToken token)
+            CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
             if (log.IsDebugEnabled)
@@ -74,20 +61,7 @@ namespace Jube.App.Endpoints.Repository
                     stringLocalizerFactory, serviceChangeBus, token);
                 var rows = await service.ReplayAsync(dateFrom, dateTo, token);
 
-                foreach (var row in rows)
-                {
-                    var stringRepresentationOfObj = JsonConvert.SerializeObject(row, replaySerializerSettings);
-
-                    if (TenantGroup.TryName(row.TenantRegistryId) is not { } groupName)
-                    {
-                        continue;
-                    }
-
-                    await watcherHub.Clients.Group(groupName)
-                        .SendAsync("ReceiveMessage", "Replay", stringRepresentationOfObj, token);
-                }
-
-                return TypedResults.Ok();
+                return TypedResults.Ok(rows);
             }
             catch (NotAuthenticatedException)
             {

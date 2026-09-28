@@ -1,6 +1,11 @@
 #!/bin/bash
-# Builds the four jube-cluster images (Patroni, App, Monitoring, OpenTelemetry Listener) from
+# Builds the five jube-cluster images (etcd, Patroni, App, Monitoring, OpenTelemetry Listener) from
 # the current git HEAD and tags each with its short commit SHA, e.g. jube.patroni:801ac72.
+#
+# jube-etcd wraps the stock quay.io/coreos/etcd binaries (copied in statically, so any base
+# image works) with an entrypoint that bootstraps etcd's own username/password auth once,
+# idempotently, on every node - see Jube.Cluster/etcd/entrypoint.sh. It replaces the previously
+# pulled-and-saved quay.io/coreos/etcd image so that auth bootstrap ships with the image itself.
 #
 # jube-otel-listener is included even though it's only a throwaway local OTLP receiver for
 # manual testing, because docker-compose.yml deploys it unconditionally (replicas: 1, not
@@ -52,10 +57,18 @@ fi
 SHA="$(git rev-parse --short "$REF")"
 echo "Building images from $REF ($SHA)..."
 
+ETCD_IMAGE="jube.etcd:${SHA}"
 PATRONI_IMAGE="jube.patroni:${SHA}"
 JUBE_IMAGE="jube.app:${SHA}"
 JUBE_MONITORING_IMAGE="jube.monitoring:${SHA}"
 JUBE_OTEL_LISTENER_IMAGE="jube.opentelemetrylistener:${SHA}"
+
+echo
+echo "==> Building ${ETCD_IMAGE} (context: Jube.Cluster/etcd)"
+docker build --no-cache \
+    -f "$REPO_ROOT/Jube.Cluster/etcd/Dockerfile" \
+    -t "$ETCD_IMAGE" \
+    "$REPO_ROOT/Jube.Cluster/etcd"
 
 echo
 echo "==> Building ${PATRONI_IMAGE} (context: Jube.Cluster/patroni)"
@@ -87,6 +100,7 @@ docker build --no-cache \
 
 echo
 echo "Built:"
+echo "  ETCD_IMAGE=${ETCD_IMAGE}"
 echo "  PATRONI_IMAGE=${PATRONI_IMAGE}"
 echo "  JUBE_IMAGE=${JUBE_IMAGE}"
 echo "  JUBE_MONITORING_IMAGE=${JUBE_MONITORING_IMAGE}"
@@ -96,7 +110,7 @@ if [ "$SAVE_IMAGES" -eq 1 ]; then
     IMAGES_DIR="$SCRIPT_DIR/Images"
     mkdir -p "$IMAGES_DIR"
     echo
-    for IMAGE in "$PATRONI_IMAGE" "$JUBE_IMAGE" "$JUBE_MONITORING_IMAGE" "$JUBE_OTEL_LISTENER_IMAGE"; do
+    for IMAGE in "$ETCD_IMAGE" "$PATRONI_IMAGE" "$JUBE_IMAGE" "$JUBE_MONITORING_IMAGE" "$JUBE_OTEL_LISTENER_IMAGE"; do
         TAR_FILE="$IMAGES_DIR/${IMAGE}.tar"
         echo "==> Saving ${IMAGE} -> ${TAR_FILE}"
         docker save -o "$TAR_FILE" "$IMAGE"
@@ -108,7 +122,7 @@ fi
 if [ "$UPDATE_ENV" -eq 1 ]; then
     ENV_FILE="$SCRIPT_DIR/.env"
     if [ -f "$ENV_FILE" ]; then
-        for VAR in PATRONI_IMAGE JUBE_IMAGE JUBE_MONITORING_IMAGE JUBE_OTEL_LISTENER_IMAGE; do
+        for VAR in ETCD_IMAGE PATRONI_IMAGE JUBE_IMAGE JUBE_MONITORING_IMAGE JUBE_OTEL_LISTENER_IMAGE; do
             VALUE="${!VAR}"
             if grep -q "^${VAR}=" "$ENV_FILE"; then
                 sed -i "s#^${VAR}=.*#${VAR}=${VALUE}#" "$ENV_FILE"
@@ -123,6 +137,7 @@ if [ "$UPDATE_ENV" -eq 1 ]; then
         echo "NOTE: $ENV_FILE not found - not writing it (it also needs CRITICAL_HOST_* zone" \
              "assignments this script has no way to know). Set these manually or via the" \
              "Deployment Runbook's .env step:"
+        echo "  ETCD_IMAGE=${ETCD_IMAGE}"
         echo "  PATRONI_IMAGE=${PATRONI_IMAGE}"
         echo "  JUBE_IMAGE=${JUBE_IMAGE}"
         echo "  JUBE_MONITORING_IMAGE=${JUBE_MONITORING_IMAGE}"

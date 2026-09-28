@@ -180,9 +180,7 @@ namespace Jube.App.Middlewares
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
         {
-            if (Request.Path.StartsWithSegments("/api")
-                || Request.Path.StartsWithSegments("/watcherHub")
-                || Request.Path.StartsWithSegments("/serviceChangeHub"))
+            if (Request.Path.StartsWithSegments("/api"))
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return Task.CompletedTask;

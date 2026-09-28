@@ -27,7 +27,7 @@ namespace Jube.Test.Service.Security
         [Theory]
         [InlineData("/Account/Logout")]
         [InlineData("/api/Case")]
-        [InlineData("/api/RegisterSignalrConnection/abc")]
+        [InlineData("/api/Watcher/Stream")]
         [InlineData("/Administration/Frame/UserRegistry")]
         [InlineData("//evil.example/x.png")]
         [InlineData("/\\evil.example/x.png")]

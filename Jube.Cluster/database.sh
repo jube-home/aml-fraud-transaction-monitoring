@@ -1,16 +1,18 @@
 #!/bin/bash
 # psql-leader.sh — finds the Patroni leader and runs SQL
 
-ENV_FILE="$(dirname "$0")/secrets.txt"
+# Secrets never touch disk in plaintext: read them straight out of patroni1's own
+# /run/secrets/ mount (Docker secrets are exposed there to any service that references them —
+# patroni1 already references PATRONI_SUPERUSER_PASSWORD, and JUBE_APP_PASSWORD /
+# JUBE_REPORTING_PASSWORD / JUBE_MIGRATION_PASSWORD are mounted there too, for exactly this).
+read_secret() {
+    docker exec "$(docker ps -q -f name=patroni1)" cat "/run/secrets/$1"
+}
 
-if [ ! -f "$ENV_FILE" ]; then
-    echo "ERROR: .env file not found at $ENV_FILE — aborting."
-    exit 1
-fi
-
-set -a
-source "$ENV_FILE"
-set +a
+PATRONI_SUPERUSER_PASSWORD="$(read_secret PATRONI_SUPERUSER_PASSWORD)"
+JUBE_APP_PASSWORD="$(read_secret JUBE_APP_PASSWORD)"
+JUBE_REPORTING_PASSWORD="$(read_secret JUBE_REPORTING_PASSWORD)"
+JUBE_MIGRATION_PASSWORD="$(read_secret JUBE_MIGRATION_PASSWORD)"
 
 # Find the leader node name from patronictl
 LEADER=$(docker exec $(docker ps -q -f name=patroni1) \

@@ -346,7 +346,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         await run.ForEachAsync(targets, async target =>
         {
             var response = run.Check(await user.GetAsync(target), TimeSpan.FromSeconds(4));
-            run.Expect(response.Status is 200 or 400 or 404 or 405 or 414 or 431, response, "BOUNDARY-STATUS",
+            run.Expect(response.Status is 200 or 400 or 403 or 404 or 405 or 414 or 431, response, "BOUNDARY-STATUS",
                 $"unexpected status {response.Status}");
             run.Expect(!response.Body.Contains(forbiddenA, StringComparison.Ordinal), response,
                 "BOUNDARY-FOREIGN-DATA");

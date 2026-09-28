@@ -92,7 +92,7 @@ namespace Jube.Test.Service.Query.CaseJournal
             IServiceChangeBus? serviceChangeBus = null)
         {
             return CaseJournalService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp, localizers,
-                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp, false,
+                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp,
                 Environment.GetEnvironmentVariable("JubeTestConnectionString"));
         }
 
@@ -239,7 +239,7 @@ namespace Jube.Test.Service.Query.CaseJournal
 
             var ex = await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 CaseJournalService.CreateAsync(dbContext, userName, log, localizers, new NullServiceChangeBus(),
-                    TestLog.NoOp, false, null));
+                    TestLog.NoOp, null));
 
             ex.Code.Should().Be("NotAuthenticated");
             log.Entries.Should().Contain(e => e.Level == "WARN");

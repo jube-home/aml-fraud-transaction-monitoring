@@ -88,8 +88,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
             var rule = NewRule(false);
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, null);
 
             context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Should().BeEmpty();
         }
@@ -100,8 +99,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
             var rule = NewRule();
 
-            await context.ActivationRuleActivationWatcherAsync(rule, true, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, true, null);
 
             context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Should().BeEmpty();
         }
@@ -113,8 +111,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId = 3;
             var rule = NewRule();
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, null);
 
             context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Should().BeEmpty();
         }
@@ -126,8 +123,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModel.Flags.EnableActivationWatcher = false;
             var rule = NewRule();
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, null);
 
             context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Should().BeEmpty();
         }
@@ -140,8 +136,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModel.Counters.ActivationWatcherCount = 1;
             var rule = NewRule();
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, null);
 
             context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Should().BeEmpty();
         }
@@ -153,8 +148,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModel.Counters.ActivationWatcherSample = 0.1;
             var rule = NewRule();
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, null);
 
             context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Should().BeEmpty();
         }
@@ -169,8 +163,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             });
             var rule = NewRule();
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, null);
 
             var watcher = context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Single();
             watcher.ActivationRuleSummary.Should().Be("HighValueTransaction");
@@ -191,8 +184,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             });
             var rule = NewRule();
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, null);
 
             context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Should().BeEmpty();
         }
@@ -208,8 +200,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "Test5");
             var rule = NewRule();
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, null);
 
             var watcher = context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Single();
             watcher.Key.Should().Be("AccountId");
@@ -226,8 +217,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             });
             var rule = NewRule();
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null,
-                null);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, null);
 
             var watcher = context.EntityAnalysisModel.ConcurrentQueues.PersistToActivationWatcherAsync.Single();
             watcher.Key.Should().Be("AccountId");
@@ -243,9 +233,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ["StreamingActivationWatcher"] = "True"
             });
             var rule = NewRule();
-            var redis = new FakeHybridResilientRedisDatabase();
+            var cacheService = TestCacheService.Create(out var redis);
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null, redis);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, cacheService);
 
             redis.PublishedMessages.Should().ContainSingle();
             redis.PublishedMessages.Single().Channel.ToString().Should().Be("ActivationWatcher:7");
@@ -261,32 +251,16 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ["StreamingActivationWatcher"] = "False"
             });
             var rule = NewRule();
-            var redis = new FakeHybridResilientRedisDatabase();
+            var cacheService = TestCacheService.Create(out var redis);
 
-            await context.ActivationRuleActivationWatcherAsync(rule, false, null, redis);
+            await context.ActivationRuleActivationWatcherAsync(rule, false, cacheService);
 
             redis.PublishedMessages.Should().BeEmpty();
             context.EntityAnalysisModel.Counters.ActivationWatcherCount.Should().Be(0);
         }
 
         [Fact]
-        public Task DoesNotThrowWhenAmqpIsDisabledAndTheRabbitMqChannelIsNullAsync()
-        {
-            var context = NewContext(environmentOverrides: new Dictionary<string, string>
-            {
-                ["ActivationWatcherAllowPersist"] = "False",
-                ["StreamingActivationWatcher"] = "False"
-            });
-            var rule = NewRule();
-
-            var act = async () => await context.ActivationRuleActivationWatcherAsync(rule, false,
-                null, null);
-
-            return act.Should().NotThrowAsync();
-        }
-
-        [Fact]
-        public async Task SwallowsExceptionsAndLogsRatherThanThrowingAsync()
+        public async Task ARedisFailureIsSwallowedInsideTheCacheRepositorySoTheCounterStillIncrementsAsync()
         {
             var context = NewContext(environmentOverrides: new Dictionary<string, string>
             {
@@ -294,16 +268,16 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ["StreamingActivationWatcher"] = "True"
             });
             var rule = NewRule();
-            var redis = new FakeHybridResilientRedisDatabase
-            {
-                ThrowOnMethod = "PublishAsync"
-            };
+            var cacheService = TestCacheService.Create(out var redis);
+            redis.ThrowOnMethod = "PublishAsync";
 
             var act = async () => await context.ActivationRuleActivationWatcherAsync(rule, false,
-                null, redis);
+                cacheService);
 
             await act.Should().NotThrowAsync();
-            context.EntityAnalysisModel.Counters.ActivationWatcherCount.Should().Be(0);
+            context.EntityAnalysisModel.Counters.ActivationWatcherCount.Should().Be(1,
+                "CacheActivationWatcherPublishSubscribe.PublishAsync swallows and logs Redis failures like every " +
+                "other Jube.Cache repository, so the engine never sees the exception and the counter still moves");
         }
 
         private sealed class FixedRandom(double fixedNextDouble) : Random

@@ -203,7 +203,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
                     timing.ActivationWatcher = await TimeAsync(() =>
                             context.ActivationRuleActivationWatcherAsync(evaluateActivationRule, suppressed,
-                                rabbitMqChannel, cacheService.ResilientRedisResilientRedisDatabase))
+                                cacheService))
                         .ConfigureAwait(false);
 
                     if (createCase == null)

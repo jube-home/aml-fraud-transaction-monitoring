@@ -99,7 +99,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             foreach (var user in new[] { PenTestUser.WithPermission, PenTestUser.TenantB })
             {
                 var response = run.Check(await As(user).GetAsync(Target(pair.Key, pair.Value)));
-                run.Expect(Empty(response) || response.Status is 400 or 414 or 431, response, "NOT-EXACT",
+                run.Expect(Empty(response) || response.Status is 400 or 403 or 414 or 431, response, "NOT-EXACT",
                     $"{user}: near miss key='{pair.Key[..Math.Min(20, pair.Key.Length)]}' matched");
             }
         });
@@ -184,7 +184,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
         async Task ProbeAsync(string probeKey, string probeValue, string what)
         {
             var response = run.Check(await client.GetAsync(Target(probeKey, probeValue)), BlindBound);
-            var ok = Empty(response) || response.Status is 400 or 414 or 431 or 404;
+            var ok = Empty(response) || response.Status is 400 or 403 or 414 or 431 or 404;
             run.Expect(ok, response, "INJECTION", $"{what}: expected [] (exact match), got {response.Status}");
         }
 

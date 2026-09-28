@@ -16,7 +16,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.App.Code;
-using Jube.App.Code.signalr;
+using Jube.App.Code.ServiceChange;
+using Jube.App.Code.Watcher;
 using Jube.Data.Context;
 using Jube.Data.Security;
 using Jube.Dto.Authentication;
@@ -77,7 +78,8 @@ namespace Jube.App.Endpoints
         }
 
         private static async Task<IResult> LogoutAsync(HttpContext httpContext, ILog log,
-            DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            WatcherStreamRegistry watcherStreamRegistry, ServiceChangeStreamRegistry serviceChangeStreamRegistry)
         {
             AuthenticationCookieIssuer.DeleteCookies(httpContext.Response, dynamicEnvironment);
 
@@ -103,7 +105,11 @@ namespace Jube.App.Endpoints
                 var service = new AuthenticationLogoutService(
                     () => DataConnectionDbContext.GetResilientDbContextDataConnection(
                         dynamicEnvironment.AppSettings("ConnectionString"), log),
-                    log, WatcherConnectionRegistry.Instance.AbortUser, timeProvider);
+                    log, userName =>
+                    {
+                        watcherStreamRegistry.AbortUser(userName);
+                        serviceChangeStreamRegistry.AbortUser(userName);
+                    }, timeProvider);
 
                 var outcome = await service.LogoutAsync(new AuthenticationLogoutRequest(presented,
                     httpContext.Connection.RemoteIpAddress?.ToString(),
@@ -193,7 +199,8 @@ namespace Jube.App.Endpoints
                 var service = new AuthenticationLoginService(dbContext, dynamicEnvironment, log,
                     new HttpAuthenticationCookieIssuer(httpContext.Response, dynamicEnvironment, timeProvider),
                     services.GetService<IMfaVerifier>() ?? new RsaMfaVerifier(dynamicEnvironment, log),
-                    services.GetService<IPasswordHashScheme>(), timeProvider);
+                    services.GetService<IPasswordHashScheme>(), timeProvider,
+                    loginSourceIpThrottle: services.GetRequiredService<LoginSourceIpThrottle>());
 
                 var identity = httpContext.User.Identity;
                 var callerIdentityApplies = operation is "ByNegotiate" or "ByNegotiateMfa" or "ChangePassword";

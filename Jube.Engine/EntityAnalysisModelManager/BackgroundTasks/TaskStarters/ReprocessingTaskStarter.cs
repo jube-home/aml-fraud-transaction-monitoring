@@ -198,8 +198,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
             using var archiveDatabase = new Postgres(
                 context.Services.ReportConnectionString ?? dbContext.Connection.ConnectionString,
-                context.Services.Log,
-                context.Services.DynamicEnvironment.ParserAssertSelectOnly());
+                context.Services.Log);
 
             while (!stopped)
             {

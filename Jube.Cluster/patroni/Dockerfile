@@ -1,6 +1,6 @@
 FROM alpine:3.21 AS builder
 
-RUN apk add --no-cache \
+RUN apk upgrade --no-cache && apk add --no-cache \
     postgresql17-dev \
     python3 \
     python3-dev \
@@ -16,12 +16,13 @@ RUN apk add --no-cache \
 
 RUN python3 -m venv /opt/patroni \
  && /opt/patroni/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
- && /opt/patroni/bin/pip install --no-cache-dir "patroni[etcd3]==3.3.2" psycopg2==2.9.9
+ && /opt/patroni/bin/pip install --no-cache-dir "patroni[etcd3]==3.3.2" psycopg2==2.9.9 \
+ && /opt/patroni/bin/pip install --no-cache-dir --upgrade msgpack cryptography
 
 
 FROM alpine:3.21
 
-RUN apk add --no-cache \
+RUN apk upgrade --no-cache && apk add --no-cache \
     postgresql17 \
     postgresql17-client \
     postgresql17-contrib \
@@ -149,6 +150,7 @@ fi
 load_secret "PATRONI_SUPERUSER_PASSWORD"
 load_secret "PATRONI_REPLICATION_PASSWORD"
 load_secret "PATRONI_ADMIN_PASSWORD"
+load_secret "PATRONI_ETCD3_PASSWORD"
 
 exec su-exec postgres patroni "$@"
 EOF

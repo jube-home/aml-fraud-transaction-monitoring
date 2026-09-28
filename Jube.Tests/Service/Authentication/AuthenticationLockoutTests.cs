@@ -102,23 +102,101 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
         Cookies.Issued.Should().BeEmpty();
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(30)]
-    [InlineData(400)]
-    public async Task Weakness_ALockoutNeverExpires_NoMatterHowMuchTimePassesAsync(int days)
+    [Fact]
+    public async Task ALockoutDoesNotExpireBeforeTheConfiguredWindowAsync()
     {
-        var user = await AddUserAsync("NoExpiryLock", u => u.PasswordLocked = 1);
+        var user = await AddUserAsync("NotYetExpiredLock", u => u.PasswordLocked = 1);
         await using (var db = Fx.GetDbContext())
         {
             await db.UserRegistry.Where(w => w.Id == user.Id)
-                .Set(s => s.PasswordLockedDate, DateTime.UtcNow.AddDays(-days))
+                .Set(s => s.PasswordLockedDate, DateTime.UtcNow.AddMinutes(-10))
                 .UpdateAsync();
         }
 
-        Clock.Advance(TimeSpan.FromDays(days));
+        AssertPlainOutcome(await LoginAsync(user.Name, user.Password, env: [.. LockoutMinutes(30)]),
+            AuthenticationOutcomeKind.Unauthorized);
+        (await ReloadAsync(user)).PasswordLocked.Should().Be(1);
+    }
 
-        AssertPlainOutcome(await LoginAsync(user.Name, user.Password), AuthenticationOutcomeKind.Unauthorized);
+    [Fact]
+    public async Task ALockoutAutomaticallyExpiresAfterTheConfiguredWindowAsync()
+    {
+        var user = await AddUserAsync("ExpiredLock", u => u.PasswordLocked = 1);
+        await using (var db = Fx.GetDbContext())
+        {
+            await db.UserRegistry.Where(w => w.Id == user.Id)
+                .Set(s => s.PasswordLockedDate, DateTime.UtcNow.AddMinutes(-31))
+                .UpdateAsync();
+        }
+
+        (await LoginAsync(user.Name, user.Password, env: [.. LockoutMinutes(30)])).Kind.Should()
+            .Be(AuthenticationOutcomeKind.Ok);
+
+        var reloaded = await ReloadAsync(user);
+        reloaded.PasswordLocked.Should().Be(0);
+        reloaded.FailedPasswordCount.Should().Be(0);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public async Task ANonPositiveLockoutMinutes_NeverAutoExpiresNoMatterHowOldTheLockIsAsync(int lockoutMinutes)
+    {
+        var user = await AddUserAsync("PermanentLock", u => u.PasswordLocked = 1);
+        await using (var db = Fx.GetDbContext())
+        {
+            await db.UserRegistry.Where(w => w.Id == user.Id)
+                .Set(s => s.PasswordLockedDate, DateTime.UtcNow.AddYears(-1))
+                .UpdateAsync();
+        }
+
+        AssertPlainOutcome(await LoginAsync(user.Name, user.Password, env: [.. LockoutMinutes(lockoutMinutes)]),
+            AuthenticationOutcomeKind.Unauthorized);
+
+        (await ReloadAsync(user)).PasswordLocked.Should().Be(1,
+            "PasswordLockoutIntervalValue<=0 must keep the per-user database lock in place indefinitely, " +
+            "for operators who choose that over the rate-limited-source-IP mitigation of the account-enumeration DoS");
+    }
+
+    [Fact]
+    public async Task EnablePasswordLockoutResetFalse_NeverAutoExpiresEvenWithAPositiveWindowAsync()
+    {
+        var user = await AddUserAsync("SwitchedOffLock", u => u.PasswordLocked = 1);
+        await using (var db = Fx.GetDbContext())
+        {
+            await db.UserRegistry.Where(w => w.Id == user.Id)
+                .Set(s => s.PasswordLockedDate, DateTime.UtcNow.AddYears(-1))
+                .UpdateAsync();
+        }
+
+        AssertPlainOutcome(
+            await LoginAsync(user.Name, user.Password,
+                env: [.. LockoutMinutes(30), EnableLockoutReset(false)]),
+            AuthenticationOutcomeKind.Unauthorized);
+
+        (await ReloadAsync(user)).PasswordLocked.Should().Be(1,
+            "EnablePasswordLockoutReset=False is the explicit, deliberate switch for a permanent " +
+            "database lockout and must win over any PasswordLockoutIntervalValue value");
+    }
+
+    [Fact]
+    public async Task EnablePasswordLockoutResetTrue_StillAutoExpiresAfterTheConfiguredWindowAsync()
+    {
+        var user = await AddUserAsync("SwitchedOnLock", u => u.PasswordLocked = 1);
+        await using (var db = Fx.GetDbContext())
+        {
+            await db.UserRegistry.Where(w => w.Id == user.Id)
+                .Set(s => s.PasswordLockedDate, DateTime.UtcNow.AddMinutes(-31))
+                .UpdateAsync();
+        }
+
+        (await LoginAsync(user.Name, user.Password,
+                env: [.. LockoutMinutes(30), EnableLockoutReset(true)])).Kind.Should()
+            .Be(AuthenticationOutcomeKind.Ok);
+
+        var reloaded = await ReloadAsync(user);
+        reloaded.PasswordLocked.Should().Be(0);
+        reloaded.FailedPasswordCount.Should().Be(0);
     }
 
     [Fact]

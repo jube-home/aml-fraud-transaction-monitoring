@@ -99,7 +99,7 @@ namespace Jube.Service.Repository.ActivationWatcher
 
         [Description("Replays ActivationWatcher rows (live activation events shown on the map/watcher UI) created " +
                      "within the given date range, scoped to the caller's tenant, ordered ascending and capped at " +
-                     "1000 rows. Read-only; also re-broadcasts each row over SignalR to the tenant's watcher group.")]
+                     "1000 rows. Read-only; returns the rows directly in the response.")]
         [ServiceOperation("ActivationWatcherReplay", OperationKind.Read, Idempotent = true)]
         public async Task<IReadOnlyList<ActivationWatcherDto>> ReplayAsync(
             [Description("Inclusive lower bound on CreatedDate; null means no lower bound.")]

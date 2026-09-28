@@ -169,7 +169,7 @@ stateless, horizontally-scaled request handlers.
 
 ## Building and Distributing Images
 
-`Jube.Cluster/build-images.sh` automates the four builds below, tagging each image with the current git HEAD's
+`Jube.Cluster/build-images.sh` automates the five builds below, tagging each image with the current git HEAD's
 short SHA automatically (rather than you filling in `<sha>` by hand) and writing the tags straight into
 `Jube.Cluster/.env` (if it already exists). Run it from anywhere - it locates the repo root itself:
 
@@ -177,7 +177,7 @@ short SHA automatically (rather than you filling in `<sha>` by hand) and writing
 Jube.Cluster/build-images.sh
 ```
 
-Pass `--save` to also `docker save` each of the four images straight after building, collected under
+Pass `--save` to also `docker save` each of the five images straight after building, collected under
 `Jube.Cluster/Images/` (gitignored - the tarballs are too large to push to git) as `<image>:<sha>.tar`, matching the
 tags just written to `.env`:
 
@@ -185,7 +185,7 @@ tags just written to `.env`:
 Jube.Cluster/build-images.sh --save
 ```
 
-`jube-otel-listener` is one of the four despite being only a throwaway local OTLP receiver for manual testing,
+`jube-otel-listener` is one of the five despite being only a throwaway local OTLP receiver for manual testing,
 because `docker-compose.yml` deploys it unconditionally (`replicas: 1`, not gated behind any `EnableOpenTelemetry`
 flag) - without its image, that service has nothing to run and sits failing in `docker service ls`.
 
@@ -193,10 +193,16 @@ flag) - without its image, that service has nothing to run and sits failing in `
 > `docker-compose.yml` entirely rather than building and distributing an image you'll never point anything at - and
 > then dropping it from the manual commands below.
 
+`jube.etcd` wraps the stock `quay.io/coreos/etcd` binaries with an entrypoint that bootstraps etcd's own
+username/password auth once, idempotently, on every node's own startup - see
+[Software Inventory](../SoftwareInventory/index.html#consensus--coordination). Its build context is
+`Jube.Cluster/etcd`, not the repo root, since it doesn't need to `COPY` any Jube project files.
+
 To build manually instead, from the root of the repository (`Jube.Cluster/patroni/Dockerfile` has no `-f`-implied
-default, so it needs one just like the other three):
+default, so it needs one just like the others):
 
 ```bash
+docker build --no-cache -f Jube.Cluster/etcd/Dockerfile -t jube.etcd:<sha> Jube.Cluster/etcd
 docker build --no-cache -f Jube.Cluster/patroni/Dockerfile -t jube.patroni:<sha> .
 docker build --no-cache -f Jube.App/Dockerfile -t jube.app:<sha> .
 docker build --no-cache -f Jube.Monitoring/Dockerfile -t jube.monitoring:<sha> .
@@ -207,17 +213,17 @@ Save each image to a tar file, collected under `Jube.Cluster/Images/` (the same 
 uses, and gitignored for the same reason - the tarballs are too large to push to git):
 
 ```bash
+docker save -o Jube.Cluster/Images/jube.etcd:<sha>.tar jube.etcd:<sha>
 docker save -o Jube.Cluster/Images/jube.patroni:<sha>.tar jube.patroni:<sha>
 docker save -o Jube.Cluster/Images/jube.app:<sha>.tar jube.app:<sha>
 docker save -o Jube.Cluster/Images/jube.monitoring:<sha>.tar jube.monitoring:<sha>
 docker save -o Jube.Cluster/Images/jube.opentelemetrylistener:<sha>.tar jube.opentelemetrylistener:<sha>
 docker save -o Jube.Cluster/Images/redis.tar redis:7-alpine
-docker save -o Jube.Cluster/Images/etcd.tar quay.io/coreos/etcd:v3.5.3
 docker save -o Jube.Cluster/Images/haproxy.tar haproxy:2.8
 ```
 
-`build-images.sh --save` only covers the four images it builds; `redis`, `etcd` and `haproxy` are pulled, not built,
-so they always need saving manually like this regardless of which path you took above.
+`build-images.sh --save` covers the five images it builds; `redis` and `haproxy` are still pulled, not built, so
+they always need saving manually like this regardless of which path you took above.
 
 Zip the whole `Jube.Cluster/Images/` directory (after resetting permissions - see [File System](#file-system) below,
 and removing any `.git`/IDE directories) with a date, name or version in the archive name, and distribute it to every
@@ -299,8 +305,9 @@ deployment, rather than something edited ad hoc on a host.
 ### Creating Secrets
 
 Every credential the cluster needs - Postgres passwords, the Redis password, `JWTKey`, `PasswordHashingKey`,
-`ApiHmacKey`, `ElementSymmetricEncryptionKey`, the RSA keypair for `PasswordAsymmetricEncryption`, and
-`HAPROXY_COOKIE_SECRET` - is generated locally and loaded into Docker Swarm's own secret store (`docker secret
+`ApiHmacKey`, `ElementSymmetricEncryptionKey`, the RSA keypair for `PasswordAsymmetricEncryption`,
+and etcd's own `ETCD_ROOT_PASSWORD`/`PATRONI_ETCD3_PASSWORD` - is generated locally and
+loaded into Docker Swarm's own secret store (`docker secret
 create`), never written into `docker-compose.yml` or an Environment Variable directly. For the Jube application
 services, Jube's own `[@Key@]` tokenisation (
 see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html))
@@ -312,15 +319,18 @@ Variables](../../../Concepts/EnvironmentVariables/index.html)), so wiring in an 
 Variable is just adding it to the `secrets:` block below, mounting it on the relevant service, and referencing
 `[@ITS_NAME@]` from that variable's value - no code change involved.
 
-`HAPROXY_COOKIE_SECRET` is the one exception to *how* that resolution happens, since it configures HAProxy rather
-than Jube: HAProxy's `dynamic-cookie-key` directive (used for `jube_ui`'s session-affinity cookie, `SRV_ID`) only
-accepts a literal string in the config file itself and has no built-in equivalent of Jube's `[@Key@]` resolution -
-confirmed against the real `haproxy:2.8` image that it never opens a mounted secret file directly, regardless of
-what's written after the directive. `haproxy.cfg` still uses the same `[@HAPROXY_COOKIE_SECRET@]` token convention
-for consistency, but the `haproxy` service's `command:` in `docker-compose.yml` has to resolve it itself - a `sed`
-substitution replaces `[@HAPROXY_COOKIE_SECRET@]` with the mounted secret file's contents into a writable copy of
-the config before handing off to HAProxy. The secret is still never written to disk unencrypted outside of Swarm's
-own secret store, but it does briefly exist in the rendered config passed to the HAProxy process.
+`haproxy.cfg` itself needs no secret at all - `jube_ui` and `jube_api` are both plain load-balanced backends with
+no session affinity, since the Watcher live feed (Server-Sent Events, fanned out to every node via Redis pub/sub)
+no longer needs a client pinned to one node the way its old SignalR hub connection did, so there is no
+`dynamic-cookie-key` or equivalent left to template a secret into.
+
+`ETCD_ROOT_PASSWORD` and `PATRONI_ETCD3_PASSWORD` are a second pattern again, since neither etcd nor Patroni is a
+Jube .NET process and so neither can use `[@Key@]` tokenisation either. Both the `jube.etcd` and `jube.patroni`
+images bake in their own small bash `load_secret` function in their Dockerfile-generated entrypoint scripts, which
+reads `/run/secrets/<NAME>` directly and `export`s it as a plain environment variable before handing off to the real
+process - Patroni auto-maps `PATRONI_ETCD3_PASSWORD` onto its own `etcd3.password` config the same way it already
+does for `PATRONI_ETCD3_HOSTS`, and etcd's entrypoint reads `ETCD_ROOT_PASSWORD`/`PATRONI_ETCD3_PASSWORD` directly to
+bootstrap its own auth (see [Software Inventory](../SoftwareInventory/index.html#consensus--coordination)).
 
 Any secret created outside this process - for example, a client-provided key received over email or another channel
 that isn't end-to-end secure - should still be rotated into `docker secret create` rather than left as a plain
@@ -333,12 +343,12 @@ From the cluster directory (`Jube.Cluster/`, where the distributed archive's `Im
 **on every host**:
 
 ```bash
+docker load -i Images/jube.etcd:<sha>.tar
 docker load -i Images/jube.patroni:<sha>.tar
 docker load -i Images/jube.app:<sha>.tar
 docker load -i Images/jube.monitoring:<sha>.tar
 docker load -i Images/jube.opentelemetrylistener:<sha>.tar
 docker load -i Images/redis.tar
-docker load -i Images/etcd.tar
 docker load -i Images/haproxy.tar
 ```
 
@@ -448,27 +458,27 @@ sudo chmod +x secrets-init.sh
 ```
 
 `secrets-init.sh` is destructive by design - it prompts for confirmation, then recreates every secret from scratch
-(random passwords, a random `ENCRYPTION_KEY` for `ElementSymmetricEncryptionKey`, a random `HAPROXY_COOKIE_SECRET`
-for HAProxy's session-affinity cookie, plus a fresh 4096-bit RSA keypair for
-`PasswordAsymmetricEncryptionPrivateKey`/`PasswordAsymmetricEncryptionPublicKey`) and loads them into Docker Swarm.
-It also writes everything it generated to `secrets.txt` as a one-time bootstrap record, since Swarm secrets
-themselves can't be read back out once created.
+(random passwords, a random `ENCRYPTION_KEY` for `ElementSymmetricEncryptionKey`, plus a fresh 4096-bit RSA keypair
+for `PasswordAsymmetricEncryptionPrivateKey`/`PasswordAsymmetricEncryptionPublicKey`) and loads them into Docker
+Swarm.
+Nothing it generates is written to disk in plaintext - every credential goes straight into a Docker secret, and
+`database.sh` (below) reads back the handful it needs from a running container's `/run/secrets/` mount rather than
+from a bootstrap record on disk. Because a Docker secret can never be read back out of the Swarm store once created,
+`secrets-init.sh` prints every generated value to the console in one labelled block at the end of the run - this is
+the only opportunity to capture them into a password manager or vault, so do that now, then clear the terminal's
+scrollback so the values don't linger in shell history either.
 
-**`secrets.txt` must be moved to secure storage and then deleted from the deployment directory immediately** - it is
-the only place the generated credentials exist in the clear, and this workflow assumes it does not persist on disk
-past the initial setup. The public half of the RSA keypair is printed to the console separately and also written to
-`secrets.txt`, and needs to be copied into the `PasswordAsymmetricEncryptionPublicKey` Environment Variable for
+The public half of the RSA keypair is printed in that same block (it is not itself sensitive - only the private key
+needs to stay secret, and that travels through Swarm secrets/tokenisation automatically) and needs to be copied
+into the `PasswordAsymmetricEncryptionPublicKey` Environment Variable for
 `jube-api`/`jube-ui` in `docker-compose.yml` (the `CHANGE-ME-paste-public-key-printed-by-secrets-init.sh`
-placeholder) before the first deploy - only the private key travels through Swarm secrets/tokenisation
-automatically; the public key is not itself sensitive, but does need this one manual step. Without it,
+placeholder) before the first deploy - this is the one manual step. Without it,
 `PasswordAsymmetricEncryption=True` (set by default in the compose file for `jube-api`/`jube-ui`) will fail to
 start, since [Jube refuses to start with RSA password encryption enabled and either key
 missing](../../../Concepts/EnvironmentVariables/index.html). `ENCRYPTION_KEY` and `PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY`
 require no such manual step - both flow into `jube-api`/`jube-jobs`/`jube-ui` automatically via the `[@Key@]` Docker
 Secrets tokenisation pattern (see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)), the same
-as the passwords and `JWT_KEY`/`API_HMAC_KEY` above. `HAPROXY_COOKIE_SECRET` also requires no manual step, but flows
-in differently - see the note on it under [Creating Secrets](#creating-secrets) above, since HAProxy's config file
-has no equivalent of Jube's `[@Key@]` tokenisation.
+as the passwords and `JWT_KEY`/`API_HMAC_KEY` above.
 
 ## Every Deploy (Fresh or After Full Reset)
 
@@ -620,15 +630,8 @@ docker exec -it <container-id> ps aux | grep pgbackrest
 
 Browse the NAS separately to confirm Redis AOF/RDB files are landing there too.
 
-Finally, clear the bootstrap secrets from the shell and disk:
-
-```bash
-unset PATRONI_SUPERUSER_PASSWORD PATRONI_REPLICATION_PASSWORD PATRONI_ADMIN_PASSWORD \
-      JUBE_APP_PASSWORD JUBE_REPORTING_PASSWORD JUBE_MIGRATION_PASSWORD REDIS_PASSWORD \
-      API_HMAC_KEY JWT_KEY PASSWORD_HASHING_KEY ENCRYPTION_KEY HAPROXY_COOKIE_SECRET
-
-rm secrets.txt   # only after it's safely stored elsewhere
-```
+Nothing further to clean up here - `secrets-init.sh` never wrote credentials to disk, so there is no bootstrap
+record to shred.
 
 ## Forcing a Compose Change to Apply
 
@@ -752,7 +755,7 @@ known management IPs, before exposing the cluster more broadly.
 
 | Port    | Service           | Reason                                                                                                |
 |---------|-------------------|-------------------------------------------------------------------------------------------------------|
-| `2379`  | etcd client API   | Cluster consensus - no external access needed                                                         |
+| `2379`  | etcd client API   | Cluster consensus - no external access needed; client auth is mandatory regardless (see above)         |
 | `2380`  | etcd peer traffic | etcd-to-etcd peering only                                                                             |
 | `5432`  | Patroni direct    | Application traffic must flow through HAProxy                                                         |
 | `8008`  | Patroni REST API  | HAProxy health checks only                                                                            |

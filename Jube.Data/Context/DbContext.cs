@@ -50,6 +50,12 @@ namespace Jube.Data.Context
 
         public ITable<ApplicationLogEntry> ApplicationLogEntry => GetTable<ApplicationLogEntry>();
 
+        public ITable<WafSignature> WafSignature => GetTable<WafSignature>();
+
+        public ITable<WafException> WafException => GetTable<WafException>();
+
+        public ITable<WafAttack> WafAttack => GetTable<WafAttack>();
+
         public ITable<DotNetRuntimeMetric> DotNetRuntimeMetric => GetTable<DotNetRuntimeMetric>();
 
         public ITable<PostgresMetric> PostgresMetric => GetTable<PostgresMetric>();

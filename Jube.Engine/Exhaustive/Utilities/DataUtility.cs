@@ -37,13 +37,12 @@ namespace Jube.Engine.Exhaustive.Utilities
             Dictionary<int, Variable> variables,
             bool mockData,
             ILog log,
-            bool parserAssertSelectOnly,
             string reportConnectionString = null,
             CancellationToken token = default)
         {
             var dataList = new List<double[]>();
             var outputsList = new List<double>();
-            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log, parserAssertSelectOnly);
+            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log);
 
             foreach (var json in
                      await postgres.ExecuteReturnOnlyJsonFromArchiveSampleAsync(entityAnalysisModelId, filterSql,
@@ -87,17 +86,23 @@ namespace Jube.Engine.Exhaustive.Utilities
             {
                 var mockArchiveRepository = new MockArchiveRepository(dbContext);
                 var jsonList =
-                    await mockArchiveRepository.GetJsonByEntityAnalysisModelIdRandomLimitAsync(entityAnalysisModelId, 10000, token).ConfigureAwait(false);
+                    await mockArchiveRepository
+                        .GetJsonByEntityAnalysisModelIdRandomLimitAsync(entityAnalysisModelId, 10000, token)
+                        .ConfigureAwait(false);
 
-                return await ProcessJsonAsync(dbContext, tenantRegistryId, entityAnalysisModelId, true, jsonList, token).ConfigureAwait(false);
+                return await ProcessJsonAsync(dbContext, tenantRegistryId, entityAnalysisModelId, true, jsonList, token)
+                    .ConfigureAwait(false);
             }
             else
             {
                 var archiveRepository = new ArchiveRepository(dbContext);
                 var jsonList =
-                    await archiveRepository.GetJsonByEntityAnalysisModelIdRandomLimitAsync(entityAnalysisModelId, 10000, token).ConfigureAwait(false);
+                    await archiveRepository
+                        .GetJsonByEntityAnalysisModelIdRandomLimitAsync(entityAnalysisModelId, 10000, token)
+                        .ConfigureAwait(false);
 
-                return await ProcessJsonAsync(dbContext, tenantRegistryId, entityAnalysisModelId, false, jsonList, token).ConfigureAwait(false);
+                return await ProcessJsonAsync(dbContext, tenantRegistryId, entityAnalysisModelId, false, jsonList,
+                    token).ConfigureAwait(false);
             }
         }
 
@@ -108,22 +113,25 @@ namespace Jube.Engine.Exhaustive.Utilities
             string filterTokens,
             bool mockData,
             ILog log,
-            bool parserAssertSelectOnly,
             string reportConnectionString = null,
             CancellationToken token = default)
         {
             var filterJsonRule = JsonConvert.DeserializeObject<Rule>(filterJson);
-            var filterRule = await ParserJsonToSqlEntityAnalysisModel.CreateAsync(filterJsonRule, dbContext, tenantRegistryId, entityAnalysisModelId, token).ConfigureAwait(false);
+            var filterRule = await ParserJsonToSqlEntityAnalysisModel
+                .CreateAsync(filterJsonRule, dbContext, tenantRegistryId, entityAnalysisModelId, token)
+                .ConfigureAwait(false);
 
-            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log, parserAssertSelectOnly);
+            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log);
             var jsonList = await postgres.ExecuteReturnOnlyJsonFromArchiveSampleAsync(entityAnalysisModelId,
                 "NOT (" + filterRule.Sql + ")",
                 filterTokens, 10000, mockData, token).ConfigureAwait(false);
 
-            return await ProcessJsonAsync(dbContext, tenantRegistryId, entityAnalysisModelId, mockData, jsonList, token).ConfigureAwait(false);
+            return await ProcessJsonAsync(dbContext, tenantRegistryId, entityAnalysisModelId, mockData, jsonList, token)
+                .ConfigureAwait(false);
         }
 
-        private static async Task<Tuple<Dictionary<int, Variable>, double[][]>> ProcessJsonAsync(DbContext dbContext, int tenantRegistryId, int entityAnalysisModelId,
+        private static async Task<Tuple<Dictionary<int, Variable>, double[][]>> ProcessJsonAsync(DbContext dbContext,
+            int tenantRegistryId, int entityAnalysisModelId,
             bool mockData, IEnumerable<string> jsonList, CancellationToken token = default)
         {
             var variables = new Dictionary<int, Variable>();

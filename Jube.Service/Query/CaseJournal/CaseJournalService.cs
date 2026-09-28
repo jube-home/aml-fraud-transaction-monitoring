@@ -41,7 +41,7 @@ namespace Jube.Service.Query.CaseJournal
 
         private CaseJournalService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings, bool parserAssertSelectOnly, string? reportConnectionString)
+            IStringLocalizer strings, string? reportConnectionString)
         {
             this.log = log;
             this.auditLog = auditLog;
@@ -50,21 +50,21 @@ namespace Jube.Service.Query.CaseJournal
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetCaseJournalQuery(dbContext, userName, log, parserAssertSelectOnly,
+            query = new global::Jube.Data.Query.GetCaseJournalQuery(dbContext, userName, log,
                 reportConnectionString ?? dbContext.Connection.ConnectionString);
         }
 
         public static Task<CaseJournalService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            bool parserAssertSelectOnly, string? reportConnectionString, CancellationToken token = default)
+            string? reportConnectionString, CancellationToken token = default)
         {
             return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
-                LogManager.GetLogger("Jube.Audit"), parserAssertSelectOnly, reportConnectionString, token);
+                LogManager.GetLogger("Jube.Audit"), reportConnectionString, token);
         }
 
         internal static async Task<CaseJournalService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, ILog auditLog, bool parserAssertSelectOnly,
+            IServiceChangeBus serviceChangeBus, ILog auditLog,
             string? reportConnectionString, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(CaseJournalResources));
@@ -96,7 +96,7 @@ namespace Jube.Service.Query.CaseJournal
                 .ConfigureAwait(false);
 
             return new CaseJournalService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings, parserAssertSelectOnly,
+                permissionValidation, log, auditLog, serviceChangeBus, strings,
                 reportConnectionString);
         }
 

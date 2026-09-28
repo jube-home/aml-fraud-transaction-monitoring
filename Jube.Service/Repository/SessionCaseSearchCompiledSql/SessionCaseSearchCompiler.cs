@@ -28,7 +28,6 @@ internal static class SessionCaseSearchCompiler
         string? filterJson,
         string userName,
         ILog log,
-        bool parserAssertSelectOnly,
         string? reportConnectionString = null,
         CancellationToken token = default,
         bool persist = true)
@@ -158,8 +157,7 @@ internal static class SessionCaseSearchCompiler
 
         try
         {
-            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log,
-                parserAssertSelectOnly);
+            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log);
             await postgres.IntrospectAsync(model.SelectSqlSearch + " " + model.WhereSql + " " + model.OrderSql,
                 filterRule.Tokens, token).ConfigureAwait(false);
             model.Prepared = 1;

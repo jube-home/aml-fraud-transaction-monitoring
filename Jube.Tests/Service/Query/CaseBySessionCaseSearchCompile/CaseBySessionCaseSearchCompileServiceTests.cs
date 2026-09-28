@@ -63,7 +63,6 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
             {
                 ["ConnectionString"] = connectionString,
                 ["ReportConnectionString"] = connectionString,
-                ["ParserAssertSelectOnly"] = "True",
             });
 
         private readonly List<int> createdCaseIds = [];

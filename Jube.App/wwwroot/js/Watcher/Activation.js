@@ -184,7 +184,9 @@ $(document).ready(function () {
                 dateTo: dateToControl.value()?.toISOString() ?? null
             },
             success: function (data) {
-                //Not implemented.
+                for (let i = 0; i < data.length; i++) {
+                    PendingJSONObjects.push(data[i]);
+                }
             }
         });
     });
@@ -241,20 +243,15 @@ $(document).ready(function () {
 });
 
 $(function () {
-        const connection = new signalR.HubConnectionBuilder().withUrl("/watcherHub").withAutomaticReconnect().build();
+    const source = new EventSource("../api/Watcher/Stream");
 
-        connection.on("ReceiveMessage", function (name, message) {
-            if (($("#Active").prop('checked') && name === 'RealTime') || name === 'Replay') {
-                const jsonObject = JSON.parse(message);
-                PendingJSONObjects.push(jsonObject);
-            }
-        });
+    source.addEventListener("activation", function (e) {
+        if ($("#Active").prop('checked')) {
+            PendingJSONObjects.push(JSON.parse(e.data));
+        }
+    });
 
-        connection.start().then(function () {
-            $.ajax({
-                url: "../api/RegisterSignalRConnection/" +
-                    connection.connection.connectionId
-            });
-        });
-    }
-);
+    source.addEventListener("revoked", function () {
+        source.close();
+    });
+});

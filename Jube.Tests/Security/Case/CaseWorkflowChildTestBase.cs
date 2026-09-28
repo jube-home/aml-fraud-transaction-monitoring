@@ -326,7 +326,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
 
                 var r = run.Check(await SendJsonAsync(PenTestUser.WithPermission, "POST", Route + "/", body),
                     TimeSpan.FromSeconds(4));
-                run.Expect(r.Status is 200 or 400, r, "INJECTION", $"{field}: unexpected status");
+                run.Expect(r.Status is 200 or 400 or 403, r, "INJECTION", $"{field}: unexpected status");
                 if (r.Status != 200)
                 {
                     return;
@@ -460,7 +460,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
             var r = run.Check(
                 await SendRawAsync(PenTestUser.WithPermission, "POST", Route + "/", Raw(c.Item1, c.Item2)),
                 TimeSpan.FromSeconds(4));
-            run.Expect(r.Status is 200 or 400 or 415 or 422, r, "BOUNDARY", $"{c.Item1}={c.Item2}");
+            run.Expect(r.Status is 200 or 400 or 403 or 415 or 422, r, "BOUNDARY", $"{c.Item1}={c.Item2}");
         }, 4);
 
         foreach (var method in new[] { "POST", "PUT" })
@@ -516,14 +516,14 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
                          $"{Route}/{l.Template.Replace("{id}", Enc(value)).Replace("{guid}", Enc(value))}")))
             {
                 var r = run.Check(await As(PenTestUser.WithPermission).GetAsync(target), TimeSpan.FromSeconds(4));
-                run.Expect(r.Status is 200 or 400 or 404 or 405 or 414 or 431, r, "STATUS",
+                run.Expect(r.Status is 200 or 400 or 403 or 404 or 405 or 414 or 431, r, "STATUS",
                     "route value produced an unexpected status");
                 ExpectNoForeign(run, PenTestUser.WithPermission, r);
             }
 
             var d = run.Check(await As(PenTestUser.WithPermission).SendAsync("DELETE", $"{Route}/{Enc(value)}"),
                 TimeSpan.FromSeconds(4));
-            run.Expect(d.Status is 200 or 204 or 400 or 404 or 405 or 414 or 431, d, "STATUS",
+            run.Expect(d.Status is 200 or 204 or 400 or 403 or 404 or 405 or 414 or 431, d, "STATUS",
                 "delete route value produced an unexpected status");
         }, 6);
         run.Expect(await StateAsync() == before, new PenTestResponse { Request = "state" }, "SIDE-EFFECT",

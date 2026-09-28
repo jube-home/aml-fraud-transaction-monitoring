@@ -15,10 +15,10 @@ using Jube.Service.Query.Ready;
 
 namespace Jube.Test.Service.Query.Ready.Models
 {
-    internal sealed class FakeSignals(bool stopping, bool engineReady, bool relayReady) : IReadinessSignals
+    internal sealed class FakeSignals(bool stopping, bool engineReady, bool watcherStreamReady) : IReadinessSignals
     {
         public int EngineReads;
-        public int RelayReads;
+        public int WatcherStreamReads;
 
         public bool StoppingRequested => stopping;
 
@@ -31,12 +31,12 @@ namespace Jube.Test.Service.Query.Ready.Models
             }
         }
 
-        public bool RelayReady
+        public bool WatcherStreamReady
         {
             get
             {
-                RelayReads++;
-                return relayReady;
+                WatcherStreamReads++;
+                return watcherStreamReady;
             }
         }
     }

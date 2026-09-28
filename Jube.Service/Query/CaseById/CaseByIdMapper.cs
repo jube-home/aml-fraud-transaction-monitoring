@@ -14,6 +14,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Jube.Dto.Query.CaseById;
 using Jube.Data.Query.CaseQuery.Dto;
+using Jube.Service.Security;
 
 namespace Jube.Service.Query.CaseById
 {
@@ -49,7 +50,7 @@ namespace Jube.Service.Query.CaseById
                 FormattedPayload = source.FormattedPayload?.Select(entry => new CaseByIdFieldEntryDto
                 {
                     Name = entry.Name,
-                    Value = entry.Value,
+                    Value = HtmlSanitiser.Sanitise(entry.Value),
                     CellFormatForeColor = entry.CellFormatForeColor,
                     CellFormatForeRow = entry.CellFormatForeRow,
                     CellFormatBackColor = entry.CellFormatBackColor,

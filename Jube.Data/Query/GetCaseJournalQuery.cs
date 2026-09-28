@@ -29,7 +29,6 @@ namespace Jube.Data.Query
         DbContext dbContext,
         string user,
         ILog log,
-        bool parserAssertSelectOnly,
         string reportConnectionString = null)
     {
         public async Task<GetCaseJournalQueryResultDto> ExecuteAsync(string key, string keyValue, Guid caseWorkflowGuid,
@@ -68,8 +67,7 @@ namespace Jube.Data.Query
                 limit
             };
 
-            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log,
-                parserAssertSelectOnly);
+            using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log);
 
             await postgres.PrepareAsync(sql, tokens, token).ConfigureAwait(false);
 

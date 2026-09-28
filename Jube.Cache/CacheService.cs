@@ -105,6 +105,7 @@ namespace Jube.Cache
             CacheTtlCounterEntryRepository =
                 new CacheTtlCounterEntryRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheTtlCounterRepository = new CacheTtlCounterRepository(ResilientRedisResilientRedisDatabase, Log);
+            CacheRateLimitRepository = new CacheRateLimitRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheWalRepository = new CacheWalRepository(ResilientRedisResilientRedisDatabase, Log);
             CacheUserRegistryApiKeyRepository = new CacheUserRegistryApiKeyRepository(ConnectionMultiplexer,
                 ResilientRedisResilientRedisDatabase, Log);
@@ -129,7 +130,9 @@ namespace Jube.Cache
         public CacheSanctionRepository CacheSanctionRepository { get; set; }
         public CacheTtlCounterEntryRepository CacheTtlCounterEntryRepository { get; set; }
         public CacheTtlCounterRepository CacheTtlCounterRepository { get; set; }
+        public CacheRateLimitRepository CacheRateLimitRepository { get; set; }
         public CacheCallbackPublishSubscribe CacheCallbackPublishSubscribe { get; set; }
+        public CacheActivationWatcherPublishSubscribe CacheActivationWatcherPublishSubscribe { get; set; }
         public CacheWalRepository CacheWalRepository { get; set; }
         public CacheUserRegistryApiKeyRepository CacheUserRegistryApiKeyRepository { get; set; }
         public CacheTtlCounterIdempotencyRepository CacheTtlCounterIdempotencyRepository { get; set; }
@@ -145,7 +148,7 @@ namespace Jube.Cache
 
         private ILog Log { get; }
 
-        public async Task StartAsync(TaskCoordinator taskCoordinator)
+        public async Task StartAsync(TaskCoordinator taskCoordinator, Action<int, string> onActivationWatcherMessage)
         {
             CachePayloadRepository = await CachePayloadRepository.CreateAsync(ConnectionMultiplexer,
                 ResilientRedisResilientRedisDatabase,
@@ -156,6 +159,9 @@ namespace Jube.Cache
 
             CacheCallbackPublishSubscribe = new CacheCallbackPublishSubscribe(ConnectionMultiplexer,
                 ResilientRedisResilientRedisDatabase, callbacks, callbackTimeout, Log, taskCoordinator);
+
+            CacheActivationWatcherPublishSubscribe = new CacheActivationWatcherPublishSubscribe(ConnectionMultiplexer,
+                ResilientRedisResilientRedisDatabase, Log, taskCoordinator, onActivationWatcherMessage);
 
             Ready = true;
         }

@@ -181,10 +181,16 @@ namespace Jube.DynamicEnvironment
                     "BacktestPageSize", "5000"
                 },
                 {
-                    "BacktestMaxRunSeconds", "3600"
+                    "BacktestMaxRunInterval", "s"
                 },
                 {
-                    "BacktestStaleSeconds", "120"
+                    "BacktestMaxRunIntervalValue", "3600"
+                },
+                {
+                    "BacktestStaleInterval", "s"
+                },
+                {
+                    "BacktestStaleIntervalValue", "120"
                 },
                 {
                     "BacktestMaxConcurrentRunsPerTenant", "1"
@@ -277,6 +283,9 @@ namespace Jube.DynamicEnvironment
                     "StreamingActivationWatcher", "True"
                 },
                 {
+                    "WatcherStreamHeartbeatIntervalSeconds", "15"
+                },
+                {
                     "WaitPollFromActivationWatcherTable", "5000"
                 },
                 {
@@ -361,7 +370,10 @@ namespace Jube.DynamicEnvironment
                     "SearchKeyCacheServerIntervalValue", "1"
                 },
                 {
-                    "AMQPHeartbeatSeconds", "30"
+                    "AMQPHeartbeatInterval", "s"
+                },
+                {
+                    "AMQPHeartbeatIntervalValue", "30"
                 },
                 {
                     "CaseCreationThreads", "4"
@@ -391,22 +403,46 @@ namespace Jube.DynamicEnvironment
                     "SecureHttpCookie", "False"
                 },
                 {
-                    "SessionAbsoluteLifetimeMinutes", "720"
+                    "SessionAbsoluteLifetimeInterval", "n"
+                },
+                {
+                    "SessionAbsoluteLifetimeIntervalValue", "720"
                 },
                 {
                     "MaxConcurrentConnections", "10000"
                 },
                 {
-                    "HubRevocationCheckSeconds", "30"
+                    "RevokedSessionCheckInterval", "s"
+                },
+                {
+                    "RevokedSessionCheckIntervalValue", "30"
+                },
+                {
+                    "WafEnabled", "True"
+                },
+                {
+                    "WafRefreshInterval", "s"
+                },
+                {
+                    "WafRefreshIntervalValue", "30"
+                },
+                {
+                    "WafFlushInterval", "s"
+                },
+                {
+                    "WafFlushIntervalValue", "10"
+                },
+                {
+                    "WafMaxInspectBytes", "262144"
+                },
+                {
+                    "WafMaxRegexTimeoutMilliseconds", "100"
                 },
                 {
                     "CsrfOriginCheck", "True"
                 },
                 {
                     "ElementSymmetricEncryptionKey", "SuperSecretEncryptionKeyGoesHere"
-                },
-                {
-                    "ParserAssertSelectOnly", "True"
                 },
                 {
                     "EnableMultifactorAuthentication", "False"
@@ -422,6 +458,39 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "PasswordAttempts", "3"
+                },
+                {
+                    "EnablePasswordLockoutReset", "True"
+                },
+                {
+                    "PasswordLockoutInterval", "n"
+                },
+                {
+                    "PasswordLockoutIntervalValue", "30"
+                },
+                {
+                    "LoginIpRateLimitAttempts", "1000"
+                },
+                {
+                    "LoginIpRateLimitInterval", "s"
+                },
+                {
+                    "LoginIpRateLimitIntervalValue", "60"
+                },
+                {
+                    "EnableGlobalHttpRateLimit", "False"
+                },
+                {
+                    "GlobalHttpRateLimitAttempts", "2000"
+                },
+                {
+                    "GlobalHttpRateLimitInterval", "s"
+                },
+                {
+                    "GlobalHttpRateLimitIntervalValue", "60"
+                },
+                {
+                    "RateLimitBackplane", "True"
                 },
                 {
                     "CacheTtlDeleteLimit", "1000"
@@ -524,6 +593,12 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "EtcdClientPort", "2379"
+                },
+                {
+                    "EtcdClientUsername", null
+                },
+                {
+                    "EtcdClientPassword", null
                 },
                 {
                     "PatroniApiPort", "8008"
@@ -843,12 +918,6 @@ namespace Jube.DynamicEnvironment
         public string AppSettings(string[] keys)
         {
             return keys.Select(AppSettings).FirstOrDefault(value => value != null);
-        }
-
-        public bool ParserAssertSelectOnly()
-        {
-            var setting = AppSettings("ParserAssertSelectOnly");
-            return setting == null || setting.Equals("True", StringComparison.OrdinalIgnoreCase);
         }
 
         public string AppSettings(string key)

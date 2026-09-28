@@ -84,15 +84,16 @@ them is not valid, each problem is reported against the part it is in, and nothi
 
 A backtest runs on the backtest threads of whichever engine node claims it first, so any number of threads and nodes
 share the queue. Tenants are served in turn, and `BacktestMaxConcurrentRunsPerTenant` limits how many of one tenant's
-backtests run at once. While a backtest runs, it sends a heartbeat on a timer, a quarter of `BacktestStaleSeconds` and
-at most every 10 seconds, however long a page takes. Each heartbeat records progress and checks for a stop.
+backtests run at once. While a backtest runs, it sends a heartbeat on a timer, a quarter of `BacktestStaleInterval`/
+`BacktestStaleIntervalValue` and at most every 10 seconds, however long a page takes. Each heartbeat records progress
+and checks for a stop.
 
-| Status     | Meaning                                                                                                                                                               |
-|------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Pending    | Waiting for a backtest thread. **Stop** cancels it at once.                                                                                                           |
-| Running    | Being run. **Stop** stops it after the current page.                                                                                                                  |
-| Succeeded  | Finished; click it to see the results.                                                                                                                                |
-| Failed     | Could not run, ran longer than `BacktestMaxRunSeconds`, or stopped reporting progress for longer than `BacktestStaleSeconds`, for example because its engine stopped. |
+| Status     | Meaning                                                                                                                                                                                             |
+|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Pending    | Waiting for a backtest thread. **Stop** cancels it at once.                                                                                                                                       |
+| Running    | Being run. **Stop** stops it after the current page.                                                                                                                                              |
+| Succeeded  | Finished; click it to see the results.                                                                                                                                                            |
+| Failed     | Could not run, ran longer than `BacktestMaxRunInterval`/`BacktestMaxRunIntervalValue`, or stopped reporting progress for longer than `BacktestStaleInterval`/`BacktestStaleIntervalValue`, for example because its engine stopped. |
 | Cancelling | A stop was requested and the instance is finishing its current page.                                                                                                  |
 | Cancelled  | Stopped, or its engine shut down while it ran.                                                                                                                        |
 

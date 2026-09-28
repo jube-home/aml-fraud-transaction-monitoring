@@ -33,12 +33,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         private const int SampleIntervalMilliseconds = 60000;
         private const int GroupTimeoutMilliseconds = 45000;
         private readonly DotNetRuntimeMetricSampler dotNetRuntimeMetricSampler = new();
-        private readonly EtcdMetricSampler etcdMetricSampler = new();
         private readonly EtcdPatroniDiscovery etcdPatroniDiscovery = new();
-        private readonly PatroniMetricSampler patroniMetricSampler = new();
         private readonly RedisConnectionMultiplexerMetricSampler redisConnectionMultiplexerMetricSampler = new();
         private readonly RedisSentinelStatusSampler redisSentinelStatusSampler = new();
+        private EtcdMetricSampler etcdMetricSampler;
         private bool postgresLogEntryLoggingCollectorWarningLogged;
+        private PatroniMetricSampler patroniMetricSampler;
         private PostgresLogSampler postgresLogSampler;
         private PostgresMetricSampler postgresMetricSampler;
         private RedisMetricSampler redisMetricSampler;
@@ -55,6 +55,11 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                 redisMetricSampler =
                     new RedisMetricSampler(context.Services.DynamicEnvironment.AppSettings("RedisConnectionString"));
+
+                var etcdUsername = context.Services.DynamicEnvironment.AppSettings("EtcdClientUsername");
+                var etcdPassword = context.Services.DynamicEnvironment.AppSettings("EtcdClientPassword");
+                etcdMetricSampler = new EtcdMetricSampler(etcdUsername, etcdPassword);
+                patroniMetricSampler = new PatroniMetricSampler(etcdUsername, etcdPassword);
 
                 while (!context.Services.TaskCoordinator.CancellationToken.IsCancellationRequested)
                 {

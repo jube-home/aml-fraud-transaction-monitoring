@@ -24,6 +24,10 @@
     <link rel="stylesheet" href="/styles/bootstrap.min.css"/>
     <link rel="stylesheet" href="/styles/site.css"/>
     <link rel="stylesheet" href="/styles/jube.css"/>
+    <link rel="stylesheet" href="/kendo/styles/kendo.common.min.css"/>
+    <link rel="stylesheet" href="/kendo/styles/kendo.silver.min.css"/>
+    <script src="/kendo/js/jquery.min.js"></script>
+    <script src="/kendo/js/kendo.all.min.js"></script>
 </head>
 <body>
 <header>
@@ -47,7 +51,8 @@
                 Do you want to log out?
             </p>
             <p>
-                <button type="button" id="LogoutButton" class="btn btn-primary">Log out</button>
+                <button type="button" id="StayLoggedInButton">Stay logged in</button>
+                <button type="button" id="LogoutButton">Log out</button>
             </p>
             <p id="LogoutError" class="text-danger" style="display: none;"></p>
         }

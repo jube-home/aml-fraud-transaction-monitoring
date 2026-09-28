@@ -34,7 +34,6 @@ nav_order: 6
 - Microsoft.AspNetCore.DataProtection.StackExchangeRedis — 9.0.13 — NuGet
 - Microsoft.AspNetCore.Mvc.NewtonsoftJson — 9.0.11 — NuGet
 - Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation — 3.1.10 — NuGet
-- Microsoft.AspNetCore.SignalR.StackExchangeRedis — 9.0.13 — NuGet
 - Microsoft.CodeAnalysis — 4.10.0 — NuGet
 - Microsoft.CodeAnalysis.Common — 4.10.0 — NuGet
 - Microsoft.CodeAnalysis.CSharp — 4.10.0 — NuGet
@@ -89,7 +88,6 @@ nav_order: 6
 - AngularJS (bundled inside Kendo examples) — 1.7.2 — Vendored JS library — `kendo/examples/` demo content only, not used by the app
 - WiX Toolset (bundled inside Kendo, build-time only) — 3.8.1128.0 — Vendored MS-RL component — Kendo installer tooling, not runtime
 - Ace Editor — 1.4.13 — Vendored JS library — `js/ace/`
-- SignalR JS client — 6.0.4 — Vendored JS library — `js/signalr/signalr.js`
 - JSZip (app-level, separate from Kendo's internal copy) — 3.10.0 — Vendored JS library — `js/jszip/jszip.min.js`
 - jQuery Bar Rating — version not embedded in the minified source — Vendored JS library (jQuery plugin) — `js/barrating/`
 - jQuery QueryBuilder — 2.6.2 — Vendored JS/CSS library — `js/builder/query-builder.standalone.min.js`, `styles/query-builder.default.min.css`

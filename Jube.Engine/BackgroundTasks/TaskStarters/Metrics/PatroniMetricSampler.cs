@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -26,7 +27,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 {
-    public sealed class PatroniMetricSampler : IDisposable
+    public sealed class PatroniMetricSampler(string etcdUsername = null, string etcdPassword = null) : IDisposable
     {
         private const int MaxSeenHistoryKeys = 5000;
 
@@ -38,9 +39,21 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         private readonly Dictionary<string, (string Role, string State, int? TimelineId)> lastSeenByName = new();
         private readonly HashSet<string> seenHistoryKeys = [];
 
+        private string cachedEtcdToken;
+
         public void Dispose()
         {
             httpClient.Dispose();
+        }
+
+        private async Task<string> AuthenticateEtcdAsync(string baseUrl, CancellationToken token)
+        {
+            var body = $"{{\"name\":\"{etcdUsername}\",\"password\":\"{etcdPassword}\"}}";
+            using var content = new StringContent(body, Encoding.UTF8, "application/json");
+            using var response = await httpClient.PostAsync($"{baseUrl}/v3/auth/authenticate", content, token)
+                .ConfigureAwait(false);
+            var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
+            return (string)JObject.Parse(text)["token"];
         }
 
         public async Task<(List<PatroniMemberStatus> Statuses, List<PatroniClusterEvent> Events)> SampleAsync(
@@ -185,7 +198,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             JArray history = null;
             foreach (var etcdEndpoint in etcdEndpoints)
             {
-                var rangeResult = await PostJsonAsync($"http://{etcdEndpoint}/v3/kv/range",
+                var rangeResult = await PostJsonAsync($"http://{etcdEndpoint}", $"http://{etcdEndpoint}/v3/kv/range",
                     $"{{\"key\":\"{keyBase64}\"}}", token).ConfigureAwait(false);
                 var valueBase64 = (string)rangeResult?["kvs"]?[0]?["value"];
                 if (valueBase64 == null)
@@ -316,12 +329,31 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             }
         }
 
-        private async Task<JObject> PostJsonAsync(string url, string body, CancellationToken token)
+        private async Task<JObject> PostJsonAsync(string baseUrl, string url, string body, CancellationToken token,
+            bool retryOnUnauthorized = true)
         {
             try
             {
-                using var content = new StringContent(body, Encoding.UTF8, "application/json");
-                using var response = await httpClient.PostAsync(url, content, token).ConfigureAwait(false);
+                using var request = new HttpRequestMessage(HttpMethod.Post, url);
+                if (!string.IsNullOrEmpty(etcdUsername))
+                {
+                    cachedEtcdToken ??= await AuthenticateEtcdAsync(baseUrl, token).ConfigureAwait(false);
+                    if (cachedEtcdToken != null)
+                    {
+                        request.Headers.TryAddWithoutValidation("Authorization", cachedEtcdToken);
+                    }
+                }
+
+                request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                using var response = await httpClient.SendAsync(request, token).ConfigureAwait(false);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized && retryOnUnauthorized)
+                {
+                    cachedEtcdToken = null;
+                    return await PostJsonAsync(baseUrl, url, body, token, retryOnUnauthorized: false)
+                        .ConfigureAwait(false);
+                }
+
                 var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
                 return JObject.Parse(text);
             }

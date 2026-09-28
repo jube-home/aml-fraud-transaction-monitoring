@@ -344,7 +344,7 @@ namespace Jube.Service.Invoke
         }
 
         public async Task<InvokeResult> InvokeModelAsync(string? guidRouteValue, string? asyncRouteValue,
-            Func<Task<MemoryStream>> readBodyAsync, bool hasContentLength)
+            Func<int, Task<MemoryStream>> readBodyAsync, bool hasContentLength)
         {
             try
             {
@@ -360,7 +360,21 @@ namespace Jube.Service.Invoke
 
                 Interlocked.Increment(ref engine.Context.Counters.HttpCounterModel);
 
-                var ms = await readBodyAsync().ConfigureAwait(false);
+                var maxRequestBytes = int.Parse(dynamicEnvironment.AppSettings("MaxInvokeControllerRequestBytes"));
+
+                MemoryStream ms;
+                try
+                {
+                    ms = await readBodyAsync(maxRequestBytes).ConfigureAwait(false);
+                }
+                catch (ExceededBytesException)
+                {
+                    return InvokeResult.Json(400, "Exceeded the maximum allowed bytes in POST body.");
+                }
+                catch (ZeroBytesException)
+                {
+                    return InvokeResult.Json(400, "Empty POST body.");
+                }
 
                 try
                 {
@@ -413,7 +427,7 @@ namespace Jube.Service.Invoke
                                     .EntityAnalysisModelInvoke.InvokeAsync(
                                         value,
                                         ms,
-                                        int.Parse(dynamicEnvironment.AppSettings("MaxInvokeControllerRequestBytes")),
+                                        maxRequestBytes,
                                         async).ConfigureAwait(false);
 
                                 var bytes = context.ImplicitAsyncTimedOut
@@ -539,7 +553,7 @@ namespace Jube.Service.Invoke
         }
 
         public async Task<InvokeResult> ExhaustiveSearchInstanceAsync(string? guidRouteValue,
-            Func<Task<MemoryStream>> readBodyAsync)
+            Func<int, Task<MemoryStream>> readBodyAsync)
         {
             try
             {
@@ -555,7 +569,21 @@ namespace Jube.Service.Invoke
 
                 Interlocked.Increment(ref engine.Context.Counters.HttpCounterExhaustive);
 
-                var ms = await readBodyAsync().ConfigureAwait(false);
+                MemoryStream ms;
+                try
+                {
+                    ms = await readBodyAsync(
+                        int.Parse(dynamicEnvironment.AppSettings("MaxInvokeControllerRequestBytes"))
+                    ).ConfigureAwait(false);
+                }
+                catch (ExceededBytesException)
+                {
+                    return InvokeResult.Json(400, "Exceeded the maximum allowed bytes in POST body.");
+                }
+                catch (ZeroBytesException)
+                {
+                    return InvokeResult.Json(400, "Empty POST body.");
+                }
 
                 if (!Guid.TryParse(guidRouteValue, out var guid))
                 {
