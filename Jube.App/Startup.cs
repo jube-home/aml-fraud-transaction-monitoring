@@ -46,6 +46,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
 using Jube.Engine.Helpers;
 using Jube.Engine.Observability;
+using Jube.ResilientNpgsqlConnection;
 using Jube.Service.Authentication;
 using Jube.HttpHeaders;
 using Jube.Migrations.Baseline;
@@ -959,6 +960,9 @@ namespace Jube.App
         {
             var dynamicEnvironment = new DynamicEnvironment.DynamicEnvironment();
             log = dynamicEnvironment.Log;
+
+            PoolClearGate.ConfigureShared(TimeSpan.FromMilliseconds(
+                int.Parse(dynamicEnvironment.AppSettings("PgPoolClearDebounceMilliseconds"))));
 
             services.AddSingleton(log);
             services.AddSingleton(dynamicEnvironment);

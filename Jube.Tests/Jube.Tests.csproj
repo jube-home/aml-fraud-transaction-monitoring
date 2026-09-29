@@ -43,6 +43,7 @@
         <ProjectReference Include="..\Jube.HttpAdaptationProtocol\Jube.HttpAdaptationProtocol.csproj"/>
         <ProjectReference Include="..\Jube.Monitoring\Jube.Monitoring.csproj"/>
         <ProjectReference Include="..\Jube.OpenTelemetryListener\Jube.OpenTelemetryListener.csproj"/>
+        <ProjectReference Include="..\Jube.ResilientNpgsql\Jube.ResilientNpgsql.csproj"/>
         <ProjectReference Include="..\Jube.ResilientRedisConnection\Jube.ResilientRedisConnection.csproj"/>
         <ProjectReference Include="..\Jube.Resources\Jube.Resources.csproj"/>
         <ProjectReference Include="..\Jube.Service\Jube.Service.csproj"/>

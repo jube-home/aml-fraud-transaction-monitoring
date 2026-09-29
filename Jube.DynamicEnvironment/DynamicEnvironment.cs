@@ -55,6 +55,9 @@ namespace Jube.DynamicEnvironment
                     "MigrationConnectionString", null
                 },
                 {
+                    "PgPoolClearDebounceMilliseconds", "5000"
+                },
+                {
                     "EnableSearchKeyCache", "True"
                 },
                 {

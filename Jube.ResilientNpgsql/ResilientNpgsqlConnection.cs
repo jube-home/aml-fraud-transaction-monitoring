@@ -33,11 +33,7 @@ namespace Jube.ResilientNpgsqlConnection
                 .Or<InvalidOperationException>(ex =>
                     ex.Message.Contains("Connection is not open") ||
                     UnderlyingConnection.State != ConnectionState.Open)
-                .Or<PostgresException>(ex =>
-                    ex.SqlState.StartsWith("08") ||
-                    ex.SqlState.StartsWith("53") ||
-                    ex.SqlState is "57P01" or "57P02" or "57P03" or "40001" or "40P01" or "55P03"
-                )
+                .Or<PostgresException>(PostgresErrorClassification.IsRetryable)
                 .Or<SocketException>()
                 .Or<TimeoutException>()
                 .WaitAndRetryAsync(
@@ -47,22 +43,25 @@ namespace Jube.ResilientNpgsqlConnection
                             ? TimeSpan.FromMilliseconds(Random.Shared.Next(50, 500) * attempt)
                             : TimeSpan.FromSeconds(Math.Min(Math.Pow(2, attempt), 30))
                               + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 1_000)),
-                    (innerEx, _, count, _) =>
+                    async (innerEx, _, count, _) =>
                     {
-                        var shouldClearPool = innerEx is not PostgresException pg
-                                              || !pg.SqlState.StartsWith("53")
-                                              && pg.SqlState is not "55P03" and not "40001" and not "40P01";
-
-                        if (shouldClearPool)
+                        if (PostgresErrorClassification.WarrantsPoolClear(innerEx)
+                            && PoolClearGate.Shared.TryEnter(UnderlyingConnection.ConnectionString))
                         {
                             NpgsqlConnection.ClearPool(UnderlyingConnection);
                         }
 
                         try
                         {
+                            if (PostgresErrorClassification.WarrantsConnectionRecycle(innerEx)
+                                && UnderlyingConnection.State != ConnectionState.Closed)
+                            {
+                                await UnderlyingConnection.CloseAsync().ConfigureAwait(false);
+                            }
+
                             if (UnderlyingConnection.State != ConnectionState.Open)
                             {
-                                UnderlyingConnection.Open();
+                                await UnderlyingConnection.OpenAsync().ConfigureAwait(false);
                             }
                         }
                         catch (Exception outerEx)
@@ -78,60 +77,37 @@ namespace Jube.ResilientNpgsqlConnection
                         {
                             log.Warn($"Pg Retry: {count}/{maxRetries}. {innerEx.Message}");
                         }
-
-                        return Task.CompletedTask;
                     });
         }
 
         internal IAsyncPolicy FailoverPolicy { get; }
-        public NpgsqlConnection UnderlyingConnection
-        {
-            get;
-        }
+        public NpgsqlConnection UnderlyingConnection { get; }
 
         [AllowNull]
         public override string ConnectionString
         {
-            get
-            {
-                return UnderlyingConnection.ConnectionString;
-            }
-            set
-            {
-                UnderlyingConnection.ConnectionString = value;
-            }
+            get { return UnderlyingConnection.ConnectionString; }
+            set { UnderlyingConnection.ConnectionString = value; }
         }
 
         public override string Database
         {
-            get
-            {
-                return UnderlyingConnection.Database;
-            }
+            get { return UnderlyingConnection.Database; }
         }
 
         public override string DataSource
         {
-            get
-            {
-                return UnderlyingConnection.DataSource;
-            }
+            get { return UnderlyingConnection.DataSource; }
         }
 
         public override string ServerVersion
         {
-            get
-            {
-                return UnderlyingConnection.ServerVersion;
-            }
+            get { return UnderlyingConnection.ServerVersion; }
         }
 
         public override ConnectionState State
         {
-            get
-            {
-                return UnderlyingConnection.State;
-            }
+            get { return UnderlyingConnection.State; }
         }
 
         public override async Task OpenAsync(CancellationToken cancellationToken)
@@ -147,7 +123,6 @@ namespace Jube.ResilientNpgsqlConnection
                 {
                     await UnderlyingConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
                 }
-
             }).ConfigureAwait(false);
         }
 
@@ -193,6 +168,7 @@ namespace Jube.ResilientNpgsqlConnection
             {
                 UnderlyingConnection.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
