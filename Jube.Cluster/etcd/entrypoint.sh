@@ -4,6 +4,7 @@ set -e
 PATRONI_DCS_PREFIX="/service/postgres-cluster"
 ETCD_ROOT_PASSWORD_FILE="/run/secrets/ETCD_ROOT_PASSWORD"
 PATRONI_ETCD3_PASSWORD_FILE="/run/secrets/PATRONI_ETCD3_PASSWORD"
+BOOTSTRAP_AUTH_MAX_WAIT_SECONDS=300
 
 "$@" &
 etcd_pid=$!
@@ -18,8 +19,17 @@ bootstrap_auth() {
         return 0
     fi
 
+    export ETCDCTL_USER="root:$(cat "$ETCD_ROOT_PASSWORD_FILE")"
+
+    waited=0
     until etcdctl endpoint health >/dev/null 2>&1; do
+        if [ "$waited" -ge "$BOOTSTRAP_AUTH_MAX_WAIT_SECONDS" ]; then
+            echo "etcd auth bootstrap: endpoint did not become healthy within" \
+                 "${BOOTSTRAP_AUTH_MAX_WAIT_SECONDS}s - giving up rather than polling forever." >&2
+            return 1
+        fi
         sleep 3
+        waited=$((waited + 3))
     done
 
     if etcdctl auth status 2>/dev/null | grep -q "Authentication Status: true"; then

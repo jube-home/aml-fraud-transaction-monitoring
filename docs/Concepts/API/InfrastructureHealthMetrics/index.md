@@ -212,6 +212,41 @@ Re-run every one-minute cycle rather than cached, so a cluster that grows a memb
 A hostname that never resolves is simply never sampled -- neither table is populated at all when etcd/Patroni aren't in
 use.
 
+### Authentication
+
+Patroni's REST API is unauthenticated in the deployments this samples, so `PatroniMemberStatus` needs no credential for
+the Patroni hop itself. etcd is different: an etcd cluster with `auth enable` set rejects every v3 call that arrives
+without a token, including the `cluster/member/list` and `maintenance/status` calls both samplers make. Set
+`EtcdClientUsername` and `EtcdClientPassword` and each sampler authenticates once
+(`POST /v3/auth/authenticate`) and caches the token across all of the endpoints it polls -- etcd's authentication
+request is itself replicated through raft, so a token issued by one member is accepted by every other member -- then
+re-authenticates on a `401`, which is what a member that has restarted and lost its in-memory tokens returns. Left
+unset, the calls go out unauthenticated -- correct only against an etcd cluster with auth disabled.
+
+Note what this does *not* need a token for: `/version`, `/health` and `/metrics` are plain HTTP handlers on the client
+port rather than v3 RPCs, and answer unauthenticated even with auth on. Because `EtcdMemberStatus` is assembled from a
+mix of those three handlers and the authenticated v3 RPCs, a wrong or missing credential is a *partial* failure, and it
+used to be an invisible one: the sampler parsed etcd's JSON error body without first checking the response status, so a
+refusal was read as though it were a reply with no fields in it, and a row was still written -- `Version`,
+`ClusterVersion`, `HealthOk` and every Prometheus-derived column correct, `MemberId`, `LeaderId`, `DbSizeBytes`,
+`RaftIndex`, `RaftTerm` and `RaftAppliedIndex` all null, and `AlarmCount` reading `0`, which asserts "no etcd alarms"
+rather than "alarms unknown".
+
+`EtcdApiResponse.TryRead` now gates every v3 response on its status code, and rejects an etcd error envelope
+(`{"error":..., "code":...}`) even if one arrives with a success status. A rejected call yields no payload rather than
+an empty one, so no half-populated row is written at all, and the reason -- etcd's own message, verbatim, with the
+endpoint that produced it -- is carried on the sampler's `LastError` and logged by
+`InfrastructureHealthMetricsStarter` whenever a sampling pass ends up with nothing to write, along with a pointer at
+`EtcdClientUsername`/`EtcdClientPassword`. The same applies to the `kv/range` read of Patroni's DCS history key, where
+an empty result is otherwise indistinguishable from a cluster that simply has no failover history yet.
+
+Rows already in the table from before that change are still worth reading the old way: an `EtcdMemberStatus` row
+carrying a version but a null `RaftIndex` was a credential problem on the polling service, not an etcd problem. Check
+it per `Instance` -- one service missing the credential looks very much like etcd being half-broken.
+
+The samplers run wherever the engine runs (`EnableEngine=True`), so every such service needs the credential, not just
+the one nominally responsible for background jobs.
+
 ### `EtcdMemberStatus`
 
 One row per etcd cluster member per one-minute sample, polled directly over each member's own HTTP API (`GET /version`,

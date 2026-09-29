@@ -16,7 +16,7 @@ RUN apk upgrade --no-cache && apk add --no-cache \
 
 RUN python3 -m venv /opt/patroni \
  && /opt/patroni/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
- && /opt/patroni/bin/pip install --no-cache-dir "patroni[etcd3]==3.3.2" psycopg2==2.9.9 \
+ && /opt/patroni/bin/pip install --no-cache-dir "patroni[etcd3]==4.1.5" psycopg2==2.9.9 \
  && /opt/patroni/bin/pip install --no-cache-dir --upgrade msgpack cryptography
 
 

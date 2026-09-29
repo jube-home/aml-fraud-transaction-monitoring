@@ -855,8 +855,17 @@ services:
       - API_HMAC_KEY
       - ENCRYPTION_KEY
       - PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY
+      - PATRONI_ETCD3_PASSWORD
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5001
+      # Reuses the same scoped credential Patroni authenticates to etcd with (see etcd1's secrets
+      # above). Needed on every service running the engine (EnableEngine=True below), since that is
+      # what polls etcd member/health status and Patroni's DCS history key for the Infrastructure
+      # Health Metrics pages - jube-jobs below carries the same pair for the same reason. Without it
+      # those two samplers poll unauthenticated and, since etcd client auth is mandatory here, simply
+      # record nothing.
+      - EtcdClientUsername=patroni
+      - EtcdClientPassword=[@PATRONI_ETCD3_PASSWORD@]
       - ConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_app;Password=[@JUBE_APP_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
       # Port 5433, not 5432 - HAProxy's postgres_replicas backend (see haproxy.cfg), routing reporting/read
       # queries to a Patroni replica instead of the primary.
@@ -978,8 +987,8 @@ services:
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5001
       # Reuses the same scoped credential Patroni authenticates to etcd with (see etcd1's secrets
-      # above) - this is the only other etcd client in the stack, polling member/health status and
-      # Patroni's DCS history key for the Infrastructure Health Metrics pages.
+      # above), polling member/health status and Patroni's DCS history key for the Infrastructure
+      # Health Metrics pages - the same pair jube-api above needs, and for the same reason.
       - EtcdClientUsername=patroni
       - EtcdClientPassword=[@PATRONI_ETCD3_PASSWORD@]
       - ConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_app;Password=[@JUBE_APP_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
