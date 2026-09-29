@@ -85,7 +85,7 @@ jobs:
 
       - name: Upload ${{ matrix.name }} SARIF
         if: ${{ !cancelled() && hashFiles(format('trivy-{0}.sarif', matrix.name)) != '' }}
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-${{ matrix.name }}.sarif
           category: trivy-${{ matrix.name }}
