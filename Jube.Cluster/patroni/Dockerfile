@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM alpine:3.21 AS builder
 
 RUN apk upgrade --no-cache && apk add --no-cache \
