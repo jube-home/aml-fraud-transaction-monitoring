@@ -32,12 +32,12 @@ namespace Jube.Test.Cluster
         private static string ComposePath()
         {
             var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            while (directory != null && !Directory.Exists(Path.Combine(directory.FullName, "Jube.Cluster")))
+            while (directory != null && !Directory.Exists(Path.Join(directory.FullName, "Jube.Cluster")))
             {
                 directory = directory.Parent;
             }
 
-            return Path.Combine(directory.Required().FullName, "Jube.Cluster", "docker-compose.yml");
+            return Path.Join(directory.Required().FullName, "Jube.Cluster", "docker-compose.yml");
         }
 
         private static ComposeFile Compose()

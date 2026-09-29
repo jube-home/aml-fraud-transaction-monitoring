@@ -11,8 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Net;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
@@ -36,7 +36,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             {
                 parsed = JObject.Parse(body);
             }
-            catch (Exception)
+            catch (JsonException)
             {
                 error = $"{status} with a response body that is not a JSON object";
                 return false;
