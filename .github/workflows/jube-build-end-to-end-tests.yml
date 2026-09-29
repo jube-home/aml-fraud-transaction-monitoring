@@ -9,7 +9,7 @@
 # on-demand run (e.g. to verify this workflow file itself, or to re-check master immediately after a fix)
 # and always executes regardless of whether master has moved.
 
-name: Jube Build and End-to-End Test
+name: Jube Build and End-to-End Tests
 
 on:
   schedule:
