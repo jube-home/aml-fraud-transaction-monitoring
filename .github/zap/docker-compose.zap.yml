@@ -1,0 +1,6 @@
+services:
+  jube:
+    environment:
+      - WafEnabled=False
+      - EnableGlobalHttpRateLimit=False
+      - LoginIpRateLimitAttempts=100000

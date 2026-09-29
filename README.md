@@ -1,6 +1,10 @@
 ![Image](logo.png)
 
-[![Pull Request](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/dotnet.yml/badge.svg)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/dotnet.yml)
+[![Jube Build and Unit Tests](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/jube-build-unit-test.yml/badge.svg?branch=master)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/jube-build-unit-test.yml)
+[![Jube Build and End-to-End Test](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/jube-build-end-to-end-test.yml/badge.svg?branch=master)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/jube-build-end-to-end-test.yml)
+[![CodeQL](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/github-code-scanning/codeql)
+[![Trivy Container Scan](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/trivy.yml/badge.svg?branch=master)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/trivy.yml)
+[![OWASP ZAP API Scan](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/zap.yml/badge.svg?branch=master)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/zap.yml)
 
 Jube is an **open source AML software** and **open source fraud detection software** platform for real-time detection of
 suspicious transactions, AML case management, and fraud prevention.

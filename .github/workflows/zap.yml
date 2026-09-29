@@ -1,0 +1,163 @@
+name: OWASP ZAP API Scan
+
+on:
+  schedule:
+    - cron: '30 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  check-for-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - name: Check whether master has moved since the last successful run
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual run - always executing regardless of whether master has moved."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          last_sha=$(gh api "repos/${{ github.repository }}/actions/workflows/zap.yml/runs?branch=master&status=success&per_page=1" \
+            --jq '.workflow_runs[0].head_sha // ""')
+          echo "Last successful run was at commit ${last_sha:-<none>}; current master HEAD is ${{ github.sha }}"
+
+          if [ "$last_sha" = "${{ github.sha }}" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  dast-zap:
+    needs: check-for-changes
+    if: needs.check-for-changes.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    env:
+      DockerComposePostgresPassword: ${{ secrets.DOCKER_COMPOSE_POSTGRES_PASSWORD }}
+      DockerComposeJWTKey: ${{ secrets.DOCKER_COMPOSE_JWT_KEY }}
+      DockerComposeApiHmacKey: ${{ secrets.DOCKER_COMPOSE_API_HMAC_KEY }}
+      DockerComposePasswordHashingKey: ${{ secrets.DOCKER_COMPOSE_PASSWORD_HASHING_KEY }}
+      DockerComposeElementSymmetricEncryptionKey: ${{ secrets.DOCKER_COMPOSE_ELEMENT_SYMMETRIC_ENCRYPTION_KEY }}
+      BaseUrl: http://localhost:5001
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start the docker-compose stack
+        run: docker compose -f docker-compose.yml -f .github/zap/docker-compose.zap.yml up -d --build
+
+      - name: Wait for jube to become healthy
+        run: |
+          for i in $(seq 1 60); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' jube 2>/dev/null || echo "starting")
+            echo "attempt $i: $status"
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "jube did not become healthy in time"
+          docker compose logs
+          exit 1
+
+      - name: Authenticate as the seeded administrator
+        run: |
+          set -euo pipefail
+
+          new_password=""
+          for _ in $(seq 1 20); do
+            candidate="Zap!$(openssl rand -hex 8)Aa9"
+            if ! printf '%s' "$candidate" | grep -qE '(.)\1{2,}'; then
+              new_password="$candidate"
+              break
+            fi
+          done
+          if [ -z "$new_password" ]; then
+            echo "Could not generate a password satisfying the strength rules"
+            exit 1
+          fi
+          echo "::add-mask::$new_password"
+
+          code=$(curl -sS -o login.json -w '%{http_code}' -c cookies.txt \
+            -H 'Content-Type: application/json' \
+            -X POST "$BaseUrl/api/Authentication/ByUserNamePassword" \
+            -d "{\"UserName\":\"Administrator\",\"Password\":\"Administrator\",\"NewPassword\":\"$new_password\",\"RepeatNewPassword\":\"$new_password\"}")
+
+          if [ "$code" != "200" ]; then
+            echo "Login returned HTTP $code"
+            cat login.json
+            exit 1
+          fi
+
+          jwt=$(awk '$6 == "authentication-jwt" { print $7 }' cookies.txt)
+          if [ -z "$jwt" ]; then
+            echo "Login succeeded but no authentication-jwt cookie was issued"
+            exit 1
+          fi
+          echo "::add-mask::$jwt"
+
+          {
+            echo "ZAP_AUTH_HEADER=Cookie"
+            echo "ZAP_AUTH_HEADER_VALUE=authentication-jwt=$jwt"
+            echo "ZAP_AUTH_HEADER_SITE=localhost:5001"
+          } >> "$GITHUB_ENV"
+
+      - name: Build the scan definition from the live OpenAPI document
+        run: |
+          set -euo pipefail
+
+          curl -sS -f -b cookies.txt -o swagger.json "$BaseUrl/swagger/v1/swagger.json"
+
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+
+          excluded_prefix = "/api/Authentication"
+
+          with open("swagger.json") as handle:
+              document = json.load(handle)
+
+          paths = document.get("paths", {})
+          if not paths:
+              print("The OpenAPI document declares no paths - nothing to scan.")
+              sys.exit(1)
+
+          kept = {p: v for p, v in paths.items() if not p.startswith(excluded_prefix)}
+          dropped = sorted(set(paths) - set(kept))
+
+          document["paths"] = kept
+          document["servers"] = [{"url": os.environ["BaseUrl"]}]
+
+          with open("zap-openapi.json", "w") as handle:
+              json.dump(document, handle)
+
+          print(f"Scanning {len(kept)} paths; excluded {len(dropped)}: {', '.join(dropped) or 'none'}")
+          PY
+
+      - name: ZAP API scan
+        uses: zaproxy/action-api-scan@v0.10.0
+        with:
+          target: zap-openapi.json
+          format: openapi
+          allow_issue_writing: false
+          fail_action: false
+          artifact_name: zap-api-scan-report
+
+      - name: Show docker-compose logs
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop the docker-compose stack
+        if: always()
+        run: docker compose -f docker-compose.yml -f .github/zap/docker-compose.zap.yml down -v
