@@ -3,21 +3,53 @@
 # "healthy" means the schema is ready), then runs the entire Unit/Service/PenTest suite against it - this is the
 # one gate we actually rely on before shipping.
 #
-# Runs on every PR into master (and on a direct push to master, as a safety net for anything merged without a
-# PR) - a solo-maintained, public repo with a low commit volume has no reason to split this into a fast partial
-# check plus a deferred full run: Actions minutes are free on a public repo, and catching a problem before merge
-# beats catching it after.
+# The full suite now takes hours (the PenTest battery alone is thousands of requests per area), which is too
+# slow to gate a PR on. Instead this runs nightly against master, guarded by check-for-changes so a quiet night
+# doesn't burn hours re-testing a commit that's already been proven green. workflow_dispatch is there for an
+# on-demand run (e.g. to verify this workflow file itself, or to re-check master immediately after a fix)
+# and always executes regardless of whether master has moved.
 
-name: Build and Tests
+name: End-to-End Tests
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
 
 jobs:
+  check-for-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - name: Check whether master has moved since the last successful run
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual run - always executing regardless of whether master has moved."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          last_sha=$(gh api "repos/${{ github.repository }}/actions/workflows/master.yml/runs?branch=master&status=success&per_page=1" \
+            --jq '.workflow_runs[0].head_sha // ""')
+          echo "Last successful nightly run was at commit ${last_sha:-<none>}; current master HEAD is ${{ github.sha }}"
+
+          if [ "$last_sha" = "${{ github.sha }}" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
   end-to-end:
+    needs: check-for-changes
+    if: needs.check-for-changes.outputs.changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 180
 

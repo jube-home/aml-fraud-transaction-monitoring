@@ -11,11 +11,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using FluentAssertions;
 using Jube.App.Code.Waf;
 using Jube.App.Code.Waf.Models;
 using Jube.Data.Poco;
+using Jube.Test.Infrastructure;
 using Xunit;
 
 namespace Jube.Test.Waf
@@ -70,7 +73,7 @@ namespace Jube.Test.Waf
         [MemberData(nameof(AttackPayloads))]
         public void AnAttackPayloadIsMatchedAndDropped(string expectedSignature, string payload)
         {
-            var inspector = new WafInspector(WafTestRuleSets.SeededRegistry());
+            var inspector = new WafInspector(WafTestRuleSets.SeededRegistry(), TestDynamicEnvironment.Create());
 
             var result = inspector.Inspect(Request("/api/Test", Body(payload)));
 
@@ -82,7 +85,7 @@ namespace Jube.Test.Waf
         [MemberData(nameof(BenignPayloads))]
         public void ABenignPayloadIsNotMatched(string payload)
         {
-            var inspector = new WafInspector(WafTestRuleSets.SeededRegistry());
+            var inspector = new WafInspector(WafTestRuleSets.SeededRegistry(), TestDynamicEnvironment.Create());
 
             var result = inspector.Inspect(Request("/api/Test", Body(payload)));
 
@@ -93,7 +96,7 @@ namespace Jube.Test.Waf
         [Fact]
         public void AnEmptyRuleSetBlocksNothing()
         {
-            var inspector = new WafInspector(new WafRegistry());
+            var inspector = new WafInspector(new WafRegistry(), TestDynamicEnvironment.Create());
 
             inspector.Inspect(Request("/api/Test", Body("<script>alert(1)</script>"))).Blocked.Should().BeFalse();
         }
@@ -109,7 +112,7 @@ namespace Jube.Test.Waf
                     TargetScope = 7, MatchTimeoutMilliseconds = 50, Drop = 0, Active = 1
                 }
             ], []);
-            var inspector = new WafInspector(registry);
+            var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
 
             var result = inspector.Inspect(Request("/api/Test", Body("<script>alert(1)</script>")));
 
@@ -131,7 +134,7 @@ namespace Jube.Test.Waf
                 [
                     new WafException { Id = 1, Name = "trusted", RouteRegex = "^/api/Trusted", Active = 1 }
                 ]);
-            var inspector = new WafInspector(registry);
+            var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
             var attack = Body("<script>alert(1)</script>");
 
             inspector.Inspect(Request("/api/Trusted/Import", attack)).Blocked.Should().BeFalse();
@@ -156,7 +159,7 @@ namespace Jube.Test.Waf
                         FieldRegex = @"\.narrative$", Active = 1
                     }
                 ]);
-            var inspector = new WafInspector(registry);
+            var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
             var attack = "<script>alert(1)</script>";
 
             inspector.Inspect(Request("/api/Case",
@@ -182,7 +185,7 @@ namespace Jube.Test.Waf
                         Id = 1, Name = "wrong-signature", RouteRegex = "^/api/Test", WafSignatureId = 999, Active = 1
                     }
                 ]);
-            var inspector = new WafInspector(registry);
+            var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
 
             inspector.Inspect(Request("/api/Test", Body("<script>alert(1)</script>"))).Blocked.Should().BeTrue();
         }
@@ -198,13 +201,42 @@ namespace Jube.Test.Waf
                     TargetScope = (int)WafTargetScope.Body, MatchTimeoutMilliseconds = 50, Drop = 1, Active = 1
                 }
             ], []);
-            var inspector = new WafInspector(registry);
+            var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
             const string attack = "<script>alert(1)</script>";
 
             inspector.Inspect(Request("/api/Test",
                 new WafFieldValue("$query.q", attack, WafTargetScope.Query))).Blocked.Should().BeFalse();
             inspector.Inspect(Request("/api/Test",
                 new WafFieldValue("$.field", attack, WafTargetScope.Body))).Blocked.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ManySlowSignaturesTogetherStayWithinTheOverallInspectionBudget()
+        {
+            var signatures = new List<WafSignature>();
+            for (var id = 1; id <= 40; id++)
+            {
+                signatures.Add(new WafSignature
+                {
+                    Id = id, Name = $"REDOS-{id}", Category = "test", Pattern = "^(a+)+$", TargetScope = 7,
+                    MatchTimeoutMilliseconds = 50, Drop = 0, Active = 1
+                });
+            }
+
+            var registry = WafTestRuleSets.RegistryFor(signatures, []);
+            var environment = TestDynamicEnvironment.Create(new Dictionary<string, string>
+            {
+                ["WafMaxInspectionMilliseconds"] = "200"
+            });
+            var inspector = new WafInspector(registry, environment);
+            var evilInput = new string('a', 40) + "!";
+
+            var stopwatch = Stopwatch.StartNew();
+            inspector.Inspect(Request("/api/Test", Body(evilInput)));
+            stopwatch.Stop();
+
+            stopwatch.Elapsed.Should().BeLessThan(TimeSpan.FromMilliseconds(500),
+                "40 signatures each nearing their own 50ms timeout would otherwise add up to ~2s without an overall budget");
         }
     }
 }
