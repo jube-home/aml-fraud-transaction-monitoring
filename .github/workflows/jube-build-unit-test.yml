@@ -3,7 +3,7 @@
 # well under a minute. This is the one signal a PR gets; the full Unit/Service/PenTest battery (which needs the
 # real docker-compose stack and takes hours) runs nightly against master instead - see master.yml.
 
-name: Unit Tests
+name: Jube Build and Unit Tests
 
 permissions:
   contents: read
