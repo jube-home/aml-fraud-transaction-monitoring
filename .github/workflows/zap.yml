@@ -70,6 +70,20 @@ jobs:
           docker compose logs
           exit 1
 
+      - name: Confirm the pinned ZAP proxy ports are free
+        run: |
+          set -euo pipefail
+
+          for port in 8090 8091 8092 8093; do
+            if ss -Hltn "sport = :$port" | grep -q .; then
+              echo "Port $port is already bound on the runner, and ZAP runs with --network=host, so its proxy could not bind:"
+              ss -ltnp "sport = :$port" || true
+              exit 1
+            fi
+          done
+
+          echo "Ports 8090-8093 are free, so each pass can pin its proxy outside the ephemeral range."
+
       - name: Authenticate as the seeded administrator
         run: |
           set -euo pipefail
@@ -204,7 +218,9 @@ jobs:
           PY
 
       - name: ZAP API scan, pass 1 of 4 - application surface
+        id: scan-1
         if: steps.passes.outputs.pass1 == 'true'
+        continue-on-error: true
         uses: zaproxy/action-api-scan@v0.10.0
         with:
           target: zap-openapi-1-application.json
@@ -212,10 +228,12 @@ jobs:
           allow_issue_writing: false
           fail_action: false
           artifact_name: zap-api-scan-report-1-application
-          cmd_options: '-z "-configfile /zap/wrk/zap-auth.conf"'
+          cmd_options: '-P 8090 -z "-configfile /zap/wrk/zap-auth.conf"'
 
       - name: ZAP API scan, pass 2 of 4 - user and credential administration
+        id: scan-2
         if: steps.passes.outputs.pass2 == 'true'
+        continue-on-error: true
         uses: zaproxy/action-api-scan@v0.10.0
         with:
           target: zap-openapi-2-administration.json
@@ -223,7 +241,7 @@ jobs:
           allow_issue_writing: false
           fail_action: false
           artifact_name: zap-api-scan-report-2-administration
-          cmd_options: '-z "-configfile /zap/wrk/zap-auth.conf"'
+          cmd_options: '-P 8091 -z "-configfile /zap/wrk/zap-auth.conf"'
 
       - name: Report whether the scan credential survived pass 2
         if: always() && steps.passes.outputs.pass2 == 'true'
@@ -241,7 +259,9 @@ jobs:
           fi
 
       - name: ZAP API scan, pass 3 of 4 - authentication surface, API key credential
+        id: scan-3
         if: steps.passes.outputs.pass3 == 'true'
+        continue-on-error: true
         uses: zaproxy/action-api-scan@v0.10.0
         with:
           target: zap-openapi-3-authentication.json
@@ -249,7 +269,7 @@ jobs:
           allow_issue_writing: false
           fail_action: false
           artifact_name: zap-api-scan-report-3-authentication-apikey
-          cmd_options: '-z "-configfile /zap/wrk/zap-auth.conf"'
+          cmd_options: '-P 8092 -z "-configfile /zap/wrk/zap-auth.conf"'
 
       - name: Mint a fresh session cookie for the browser-facing pass
         id: cookie
@@ -257,7 +277,9 @@ jobs:
         run: python3 .github/zap/scan-credentials.py cookie
 
       - name: ZAP API scan, pass 4 of 4 - authentication surface, session cookie credential
+        id: scan-4
         if: steps.passes.outputs.pass3 == 'true' && steps.cookie.outputs.ready == 'true'
+        continue-on-error: true
         uses: zaproxy/action-api-scan@v0.10.0
         with:
           target: zap-openapi-3-authentication.json
@@ -265,7 +287,31 @@ jobs:
           allow_issue_writing: false
           fail_action: false
           artifact_name: zap-api-scan-report-4-authentication-cookie
-          cmd_options: '-z "-configfile /zap/wrk/zap-auth-cookie.conf"'
+          cmd_options: '-P 8093 -z "-configfile /zap/wrk/zap-auth-cookie.conf"'
+
+      - name: Fail the job if any pass did not complete
+        if: always()
+        run: |
+          set -uo pipefail
+
+          failed=""
+          for pass in \
+            "1 application:${{ steps.scan-1.outcome }}" \
+            "2 administration:${{ steps.scan-2.outcome }}" \
+            "3 authentication, API key:${{ steps.scan-3.outcome }}" \
+            "4 authentication, session cookie:${{ steps.scan-4.outcome }}"; do
+            name="${pass%%:*}"
+            outcome="${pass##*:}"
+            echo "Pass $name: ${outcome:-not run}"
+            if [ "$outcome" = "failure" ]; then
+              failed="$failed$name; "
+            fi
+          done
+
+          if [ -n "$failed" ]; then
+            echo "The following passes did not complete: ${failed%; }"
+            exit 1
+          fi
 
       - name: Show docker-compose logs
         if: failure()
