@@ -13,14 +13,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Jube.App.Code.Waf.Models;
 
 namespace Jube.App.Code.Waf
 {
-    public sealed class WafInspector(WafRegistry registry)
+    public sealed class WafInspector(WafRegistry registry, DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
     {
         private const int MaxMatchedValueLength = 512;
+        private const int DefaultMaxInspectionMilliseconds = 200;
 
         public WafInspectionResult Inspect(WafInspectionRequest request)
         {
@@ -34,6 +37,8 @@ namespace Jube.App.Code.Waf
 
             List<WafMatch> matches = null;
             var blocked = false;
+            var budget = MaxInspectionMilliseconds();
+            var elapsed = Stopwatch.StartNew();
 
             foreach (var field in request.Fields)
             {
@@ -44,6 +49,11 @@ namespace Jube.App.Code.Waf
 
                 foreach (var signature in ruleSet.Signatures)
                 {
+                    if (elapsed.ElapsedMilliseconds > budget)
+                    {
+                        return matches == null ? WafInspectionResult.None : new WafInspectionResult(blocked, matches);
+                    }
+
                     if ((signature.Scope & field.Scope) == 0)
                     {
                         continue;
@@ -120,6 +130,14 @@ namespace Jube.App.Code.Waf
             }
 
             return value[..MaxMatchedValueLength];
+        }
+
+        private int MaxInspectionMilliseconds()
+        {
+            return int.TryParse(dynamicEnvironment.AppSettings("WafMaxInspectionMilliseconds"), NumberStyles.Integer,
+                CultureInfo.InvariantCulture, out var value) && value > 0
+                ? value
+                : DefaultMaxInspectionMilliseconds;
         }
     }
 }

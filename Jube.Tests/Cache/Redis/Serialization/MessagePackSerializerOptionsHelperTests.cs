@@ -118,4 +118,9 @@ namespace Jube.Test.Cache.Redis.Serialization
             [Key(1)] public int Value { get; set; }
         }
     }
+
+    [GeneratedMessagePackResolver]
+    internal partial class JubeTestsGeneratedMessagePackResolver
+    {
+    }
 }

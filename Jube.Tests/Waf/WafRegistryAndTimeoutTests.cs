@@ -17,6 +17,7 @@ using FluentAssertions;
 using Jube.App.Code.Waf;
 using Jube.App.Code.Waf.Models;
 using Jube.Data.Poco;
+using Jube.Test.Infrastructure;
 using Xunit;
 
 namespace Jube.Test.Waf
@@ -72,7 +73,7 @@ namespace Jube.Test.Waf
                     MatchTimeoutMilliseconds = 50, Drop = 1, Active = 1
                 }
             ], []);
-            var inspector = new WafInspector(registry);
+            var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
             var evilInput = new string('a', 40) + "!";
 
             var request = new WafInspectionRequest("Http", "/api/Test", "POST", "127.0.0.1", "tester", "trace",

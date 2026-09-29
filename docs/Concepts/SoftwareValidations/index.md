@@ -119,13 +119,9 @@ connections or return the text of another query (`pg_sleep`, `set_config`, `next
 additionally refused access to the identity and credential tables (`UserRegistry`, `TenantRegistry` and their siblings).
 Execution then runs inside a read only transaction with a statement timeout (30 seconds) and a ceiling of 100,000 rows,
 so that the database itself refuses a write and a runaway query is cancelled even if the parser were to miss something.
-An absent `ParserAssertSelectOnly` setting fails closed: the gate stays on.
 
-The Assert Select Only Parser itself can be bypassed via the `ParserAssertSelectOnly` Environment Variable, which exists
-purely to make certain test scenarios easier to construct where standing up a full Postgres-backed integration test is
-impractical. **This must be set to True for every production workload** - see
-[Environment Variables](../EnvironmentVariables/index.html) - since setting it to False removes this validation layer
-from every dynamic SQL execution path in the platform, not just the one being tested.
+The Assert Select Only Parser is unconditional: there is no Environment Variable or other switch that bypasses it, so
+this validation layer applies to every dynamic SQL execution path in the platform with no opt-out.
 
 There exists one administrator-only page which allows for the embedding of SQL:
 

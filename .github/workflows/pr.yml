@@ -1,0 +1,50 @@
+# Fast PR gate: the Category=Unit slice of the suite is pure units and concepts - no Postgres, no Redis, no
+# docker-compose stack, nothing that touches the network - so it needs none of that infrastructure and runs in
+# well under a minute. This is the one signal a PR gets; the full Unit/Service/PenTest battery (which needs the
+# real docker-compose stack and takes hours) runs nightly against master instead - see master.yml.
+
+name: Unit Tests
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Run unit tests
+        run: >
+          dotnet test --no-build -c Release
+          --filter "Category=Unit"
+          --logger "trx;LogFileName=unit-tests.trx"
+          --results-directory ./TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: TestResults/*.trx
+          retention-days: 14

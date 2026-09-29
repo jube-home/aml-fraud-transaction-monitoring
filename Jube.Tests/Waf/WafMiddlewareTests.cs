@@ -60,8 +60,9 @@ namespace Jube.Test.Waf
 
         private static WafMiddleware Middleware(RequestDelegate next, bool enabled)
         {
-            return new WafMiddleware(next, new WafInspector(WafTestRuleSets.SeededRegistry()), Environment(enabled),
-                TestLog.NoOp);
+            var environment = Environment(enabled);
+            return new WafMiddleware(next, new WafInspector(WafTestRuleSets.SeededRegistry(), environment),
+                environment, TestLog.NoOp);
         }
 
         [Fact]

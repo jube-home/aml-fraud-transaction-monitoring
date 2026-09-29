@@ -439,6 +439,9 @@ namespace Jube.DynamicEnvironment
                     "WafMaxRegexTimeoutMilliseconds", "100"
                 },
                 {
+                    "WafMaxInspectionMilliseconds", "200"
+                },
+                {
                     "CsrfOriginCheck", "True"
                 },
                 {
@@ -575,6 +578,9 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "EnableServiceChangeStream", "False"
+                },
+                {
+                    "ServiceChangeStreamHeartbeatIntervalSeconds", "15"
                 },
                 {
                     "EtcdEndpoints", null
