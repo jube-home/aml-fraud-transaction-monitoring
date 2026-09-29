@@ -41,6 +41,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 
         private string cachedEtcdToken;
 
+        public string LastError { get; private set; }
+
         public void Dispose()
         {
             httpClient.Dispose();
@@ -53,7 +55,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             using var response = await httpClient.PostAsync($"{baseUrl}/v3/auth/authenticate", content, token)
                 .ConfigureAwait(false);
             var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
-            return (string)JObject.Parse(text)["token"];
+
+            if (!EtcdApiResponse.TryRead(response.StatusCode, text, out var payload, out var error))
+            {
+                LastError ??= $"authenticating as {etcdUsername} at {baseUrl} returned {error}";
+                return null;
+            }
+
+            return (string)payload["token"];
         }
 
         public async Task<(List<PatroniMemberStatus> Statuses, List<PatroniClusterEvent> Events)> SampleAsync(
@@ -191,6 +200,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             {
                 return events;
             }
+
+            LastError = null;
 
             var key = $"{dcsNamespace}{scope}/history";
             var keyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(key));
@@ -355,7 +366,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 }
 
                 var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
-                return JObject.Parse(text);
+
+                if (EtcdApiResponse.TryRead(response.StatusCode, text, out var payload, out var error))
+                {
+                    return payload;
+                }
+
+                LastError ??= $"{url} returned {error}";
+                return null;
             }
             catch (Exception) when (!token.IsCancellationRequested)
             {

@@ -38,6 +38,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 
         private string cachedToken;
 
+        public string LastError { get; private set; }
+
         public void Dispose()
         {
             httpClient.Dispose();
@@ -50,7 +52,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             using var response = await httpClient.PostAsync($"{baseUrl}/v3/auth/authenticate", content, token)
                 .ConfigureAwait(false);
             var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
-            return (string)JObject.Parse(text)["token"];
+
+            if (!EtcdApiResponse.TryRead(response.StatusCode, text, out var payload, out var error))
+            {
+                LastError ??= $"authenticating as {username} at {baseUrl} returned {error}";
+                return null;
+            }
+
+            return (string)payload["token"];
         }
 
         private async Task<HttpRequestMessage> AuthorisedRequestAsync(HttpMethod method, string baseUrl, string url,
@@ -76,6 +85,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         {
             try
             {
+                LastError = null;
+
                 var baseUrl = $"http://{endpoint}";
 
                 var versionJson = await GetJsonAsync($"{baseUrl}/version", token).ConfigureAwait(false);
@@ -282,7 +293,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 }
 
                 var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
-                return JObject.Parse(text);
+
+                if (EtcdApiResponse.TryRead(response.StatusCode, text, out var payload, out var error))
+                {
+                    return payload;
+                }
+
+                LastError ??= $"{url} returned {error}";
+                return null;
             }
             catch (Exception) when (!token.IsCancellationRequested)
             {

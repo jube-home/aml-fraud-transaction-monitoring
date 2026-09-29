@@ -945,6 +945,17 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 }
 
                 scope.Rows(rows);
+
+                if (rows == 0)
+                {
+                    scope.Tag("jube.etcd.last.error", etcdMetricSampler.LastError ?? string.Empty);
+                    context.Services.Log.Error(
+                        "InfrastructureHealthMetricsStarter: No etcd member status could be sampled from any of " +
+                        $"the {endpoints.Count} discovered endpoints. " +
+                        $"{etcdMetricSampler.LastError ?? "No endpoint returned a usable response."} " +
+                        "Where etcd requires client authentication, check EtcdClientUsername and EtcdClientPassword " +
+                        "are both set on this service.");
+                }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -1024,6 +1035,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                         await eventRepository.InsertAsync(historyEvent, token).ConfigureAwait(false);
                         rows++;
+                    }
+
+                    if (patroniMetricSampler.LastError != null)
+                    {
+                        scope.Tag("jube.etcd.last.error", patroniMetricSampler.LastError);
+                        context.Services.Log.Error(
+                            "InfrastructureHealthMetricsStarter: Patroni's DCS history could not be read from etcd. " +
+                            $"{patroniMetricSampler.LastError} Where etcd requires client authentication, check " +
+                            "EtcdClientUsername and EtcdClientPassword are both set on this service.");
                     }
                 }
 

@@ -26,7 +26,7 @@ and is worth locking down deliberately before a production build.
 | Component  | Version  |
 |------------|----------|
 | PostgreSQL | 17       |
-| Patroni    | 3.3.2    |
+| Patroni    | 4.1.5    |
 | etcd       | v3.5.34  |
 | Redis      | 7-alpine |
 | HAProxy    | 2.8      |
@@ -41,8 +41,13 @@ etcd is Patroni's leader-election store - five nodes, deliberately odd, so a net
 Built from `Jube.Cluster/etcd/Dockerfile` - the stock `quay.io/coreos/etcd:v3.5.34` binaries (statically linked, so any
 base image can run them) copied onto Alpine, with an entrypoint that bootstraps etcd's username/password auth once,
 idempotently, on every node's own startup (creates a `root` user and a `patroni` user scoped to Patroni's DCS key
-prefix, then enables auth - a no-op on every later restart once auth is already on). Tagged and referenced as
-`${ETCD_IMAGE}` in the compose file, same convention as `${PATRONI_IMAGE}` below.
+prefix, then enables auth - a no-op on every later restart once auth is already on). Every `etcdctl` call that
+bootstrap makes, including the readiness and "is auth already on?" probes that decide whether it has anything left to
+do, authenticates as `root` through `ETCDCTL_USER` rather than argv. It has to: once auth is on, an unauthenticated
+`etcdctl endpoint health` is rejected like anything else, so a bootstrap that probed without credentials could never
+reach its own no-op path and would instead re-probe every three seconds for the life of the container. The wait is
+bounded as well, so a node that never becomes healthy gives up and says so rather than polling indefinitely. Tagged
+and referenced as `${ETCD_IMAGE}` in the compose file, same convention as `${PATRONI_IMAGE}` below.
 
 | Service           | Image           | Version  | Notes                                                                  |
 |-------------------|-----------------|----------|-------------------------------------------------------------------------|
@@ -58,9 +63,22 @@ lays it over a slim Postgres/pgBackRest runtime image. Tagged and referenced as 
 |--------------|------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | Alpine Linux | 3.21       | Both build and runtime stages.                                                                                                            |
 | PostgreSQL   | 17.x       | `postgresql17` / `postgresql17-client` / `postgresql17-dev` - Alpine 3.21's packaged 17 branch; patch version floats with the base image. |
-| Patroni      | 3.3.2      | Pinned: `patroni[etcd3]==3.3.2`, installed via pip into a dedicated venv.                                                                 |
+| Patroni      | 4.1.5      | Pinned: `patroni[etcd3]==4.1.5`, installed via pip into a dedicated venv. 4.0.11/4.1.1 is the floor - see below.                          |
 | psycopg2     | 2.9.9      | Pinned, Patroni's Postgres driver.                                                                                                        |
 | pgBackRest   | *unpinned* | Alpine `pgbackrest` package - whatever the 3.21 repos currently carry.                                                                    |
+
+Patroni's version floor here is set by etcd client authentication, not by anything Postgres-side. Patroni's etcd3
+driver fetches the etcd member list to build its own endpoint failover list, and up to and including 3.3.2 it did that
+**before** authenticating. Once `auth enable` has run, etcd rejects `member/list` with `etcdserver: user name is empty`,
+so Patroni could never complete client construction, retried it every five seconds forever
+(`waiting on etcd`, logged at INFO and therefore invisible under this cluster's `log.level: WARNING`), and the cluster
+never came up. Patroni authenticates as part of that first member-list fetch from 4.0.11 and 4.1.1 onward, so any
+Patroni older than those cannot be used with an auth-enabled etcd at all.
+
+Upgrading an already-bootstrapped cluster to this image is a rolling restart, one member at a time
+(`patronictl restart postgres-cluster <member>`), standbys before the primary, confirming
+`patronictl list` shows the cluster healthy between each. Nothing in `patroni/patroni*.yml` changes: the whole of this
+deployment's configuration validates identically under 3.3.2 and 4.1.5 (`patroni --validate-config`).
 
 > **Dev-only comparison** - the repo-root `docker-compose.yml` (single-node evaluation setup, not part of the Swarm
 > cluster) runs plain `postgres:17` rather than the Patroni-wrapped image above.

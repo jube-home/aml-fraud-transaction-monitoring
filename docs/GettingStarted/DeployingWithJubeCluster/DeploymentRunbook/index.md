@@ -198,6 +198,10 @@ username/password auth once, idempotently, on every node's own startup - see
 [Software Inventory](../SoftwareInventory/index.html#consensus--coordination). Its build context is
 `Jube.Cluster/etcd`, not the repo root, since it doesn't need to `COPY` any Jube project files.
 
+`jube.patroni` must be built from a Dockerfile pinning Patroni 4.0.11/4.1.1 or newer. Older Patroni cannot talk to an
+auth-enabled etcd at all, for the reason set out under
+[Database & backup](../SoftwareInventory/index.html#database--backup).
+
 To build manually instead, from the root of the repository (`Jube.Cluster/patroni/Dockerfile` has no `-f`-implied
 default, so it needs one just like the others):
 
@@ -331,6 +335,16 @@ reads `/run/secrets/<NAME>` directly and `export`s it as a plain environment var
 process - Patroni auto-maps `PATRONI_ETCD3_PASSWORD` onto its own `etcd3.password` config the same way it already
 does for `PATRONI_ETCD3_HOSTS`, and etcd's entrypoint reads `ETCD_ROOT_PASSWORD`/`PATRONI_ETCD3_PASSWORD` directly to
 bootstrap its own auth (see [Software Inventory](../SoftwareInventory/index.html#consensus--coordination)).
+
+`PATRONI_ETCD3_PASSWORD` is the one secret that spans both patterns, because Patroni is not the only etcd client here.
+Every Jube service running the engine (`EnableEngine=True` - `jube-api` and `jube-jobs`) polls etcd for member and
+health status and reads Patroni's DCS history key, for the Infrastructure Health Metrics pages. Those services
+therefore mount the same secret and reach it the ordinary `[@Key@]` way, through `EtcdClientUsername=patroni` and
+`EtcdClientPassword=[@PATRONI_ETCD3_PASSWORD@]`. Reusing Patroni's own scoped credential rather than issuing a second
+one keeps the etcd role list to what Patroni already needs; the samplers only read. Leave either variable off a
+service that runs the engine and its etcd samplers fall back to unauthenticated calls, which an auth-enabled etcd
+rejects - the pages then stay empty with nothing logged, which is why
+`Jube.Tests/Cluster/ClusterComposeSecretTests.cs` asserts the pairing directly against this compose file.
 
 Any secret created outside this process - for example, a client-provided key received over email or another channel
 that isn't end-to-end secure - should still be rotated into `docker secret create` rather than left as a plain
