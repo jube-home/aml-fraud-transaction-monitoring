@@ -11,6 +11,7 @@ BaseUrl = os.environ["BaseUrl"]
 IdentityFile = "scan-identity.json"
 ApiKeyRules = "zap-auth.conf"
 CookieRules = "zap-auth-cookie.conf"
+UiRules = "zap-ui.conf"
 
 
 def call(method, path, token=None, body=None):
@@ -72,7 +73,7 @@ def jwt_from_jar(path="cookies.txt"):
     return found.group(1)
 
 
-def write_rules(path, rules):
+def write_rules(path, rules, exclusions=()):
     with open(path, "w") as handle:
         for index, (description, header, value) in enumerate(rules):
             handle.write(f"replacer.full_list({index}).description={description}\n")
@@ -81,9 +82,28 @@ def write_rules(path, rules):
             handle.write(f"replacer.full_list({index}).matchstr={header}\n")
             handle.write(f"replacer.full_list({index}).regex=false\n")
             handle.write(f"replacer.full_list({index}).replacement={value}\n")
+        for index, (name, pattern) in enumerate(exclusions):
+            key = f"network.globalExclusions.exclusions.exclusion({index})"
+            handle.write(f"{key}.name={name}\n")
+            handle.write(f"{key}.value={pattern}\n")
+            handle.write(f"{key}.enabled=true\n")
     print(f"Replacer rules written to {path}:")
     for index, (description, header, _) in enumerate(rules):
         print(f"  ({index}) {description}: sets request header {header} to <redacted>")
+    for index, (name, pattern) in enumerate(exclusions):
+        print(f"  exclusion ({index}) {name}: {pattern}")
+
+
+def session_destroying_exclusions():
+    host = re.escape(BaseUrl)
+    return [
+        ("logout", f"^{host}/api/Authentication/Logout$"),
+        ("change-password", f"^{host}/api/Authentication/ChangePassword$"),
+        ("set-password", f"^{host}/api/UserRegistry/SetPassword$"),
+        ("revoke-tokens", f"^{host}/api/UserRegistry/RevokeTokens.*$"),
+        ("delete-user", f"^{host}/api/UserRegistry/[0-9]+$"),
+        ("delete-api-key", f"^{host}/api/UserRegistryApiKey/[0-9]+$"),
+    ]
 
 
 def sign_in(user_name, password, new_password=None):
@@ -209,10 +229,12 @@ def cookie():
     except (RuntimeError, urllib.error.URLError) as error:
         return unavailable(f"The scan identity could not sign in again ({error}).")
 
-    write_rules(CookieRules, [
+    cookie_rules = [
         ("jube-session-cookie", "Cookie", "authentication-jwt=" + token),
         ("jube-same-origin", "Origin", BaseUrl),
-    ])
+    ]
+    write_rules(CookieRules, cookie_rules)
+    write_rules(UiRules, cookie_rules, session_destroying_exclusions())
 
     if output:
         with open(output, "a") as handle:
