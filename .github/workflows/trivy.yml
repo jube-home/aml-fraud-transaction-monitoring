@@ -73,7 +73,7 @@ jobs:
         run: docker build -f "${{ matrix.dockerfile }}" -t "${{ matrix.name }}:scan" "${{ matrix.context }}"
 
       - name: Scan ${{ matrix.name }} and report to code scanning
-        uses: aquasecurity/trivy-action@v0.33.1
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: ${{ matrix.name }}:scan
           format: sarif
@@ -91,7 +91,7 @@ jobs:
           category: trivy-${{ matrix.name }}
 
       - name: Fail on fixable CRITICAL vulnerabilities in ${{ matrix.name }}
-        uses: aquasecurity/trivy-action@v0.33.1
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: ${{ matrix.name }}:scan
           format: table
