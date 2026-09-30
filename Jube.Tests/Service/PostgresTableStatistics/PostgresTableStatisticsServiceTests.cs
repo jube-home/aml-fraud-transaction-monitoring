@@ -11,10 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
+using Jube.Dto.Payload;
+using Jube.Dto.PostgresTableStatistics;
 using Jube.Service.Exceptions.PostgresTableStatistics;
 using Jube.Service.PostgresTableStatistics;
 using Jube.Service.Reactivity;
@@ -153,6 +156,45 @@ namespace Jube.Test.Service.PostgresTableStatistics
             result.Statistics.Columns.Keys.Should().BeEquivalentTo(
                 "sequentialScans", "sequentialTuplesRead", "indexScans", "indexTuplesFetched", "liveTupleCount",
                 "deadTupleCount", "tableSizeBytes", "indexesSizeBytes", "totalSizeBytes");
+        }
+
+        private static readonly string[] booleanInjectionPayloads =
+        [
+            "sortField AND 1=1 -- ", "sortField AND 1=2 -- ",
+            "sortField' AND '1'='1' -- ", "sortField' AND '1'='2' -- ",
+            "sortField\" AND \"1\"=\"1\" -- ", "sortField) AND (1=1 -- ",
+            "sortField UNION SELECT NULL -- ", "sortField; SELECT pg_sleep(0) -- ",
+            "tableSizeBytes AND 1=1 -- ", "tableSizeBytes AND 1=2 -- ",
+            "tableSizeBytes' AND '1'='1' -- ", "tableSizeBytes' AND '1'='2' -- ",
+            "tableSizeBytes DESC NULLS FIRST", "tableSizeBytes, pg_sleep(0)",
+            "' OR '1'='1", "'; DROP TABLE \"RedisSlowOperation\";-- ", "1; SELECT pg_sleep(0);-- "
+        ];
+
+        public static IEnumerable<object[]> BooleanInjectionPayloads =>
+            booleanInjectionPayloads.Select(payload => new object[] { payload });
+
+        [Theory]
+        [MemberData(nameof(BooleanInjectionPayloads))]
+        public async Task ListIgnoresInjectionInSortFieldAndSortDirectionAsync(string payload)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
+            var expected = Identities(await service.ListAsync());
+            expected.Should().HaveCountGreaterThan(1);
+
+            var viaSortField = await service.ListAsync(payload, "desc");
+            var viaSortDirection = await service.ListAsync("tableSizeBytes", payload);
+
+            Identities(viaSortField).Should().BeEquivalentTo(expected);
+            Identities(viaSortDirection).Should().BeEquivalentTo(expected);
+            viaSortField.Total.Should().Be(expected.Count);
+            viaSortDirection.Total.Should().Be(expected.Count);
+        }
+
+        private static HashSet<string> Identities(PayloadResult<PostgresTableStatisticsDto> result)
+        {
+            return result.Rows.Select(r => r.SchemaName + "\u001f" + r.TableName).ToHashSet();
         }
     }
 }

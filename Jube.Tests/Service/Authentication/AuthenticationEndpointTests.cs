@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Jube.App.Code;
 using Jube.Dto.Authentication;
 using Jube.Service.Agent;
 using Jube.Service.Agent.ServiceToolCatalogue;
@@ -193,7 +194,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     }
 
     [Fact]
-    public async Task ACorrectLogin_Is200_WithATokenBodyAndExactlyTheTwoCookiesAsync()
+    public async Task ACorrectLogin_Is200_WithATokenBodyAndExactlyOneHttpOnlyCookieAsync()
     {
         var host = await HostAsync();
         var user = await AddUserAsync("E2eOk");
@@ -204,10 +205,10 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         using var body = JsonDocument.Parse(response.Body);
         body.RootElement.EnumerateObject().Select(p => p.Name).Should().BeEquivalentTo("token", "expiration");
         response.Headers["Content-Type"].Should().StartWith("application/json");
-        response.SetCookies.Select(c => c.Split('=')[0]).Should().Equal("authentication-jwt", "authentication-expiry");
+        response.SetCookies.Select(c => c.Split('=')[0]).Should().Equal("authentication-jwt");
         response.SetCookies.Should().OnlyContain(c => c.Contains("path=/", StringComparison.OrdinalIgnoreCase)
-                                                      && c.Contains("httponly", StringComparison.OrdinalIgnoreCase) ==
-                                                      c.StartsWith("authentication-jwt="));
+                                                      && c.Contains("httponly", StringComparison.OrdinalIgnoreCase));
+        response.Headers[SessionExpiry.HeaderName].Should().NotBeNullOrEmpty();
         response.Body.Should().NotContain("password").And.NotContain(user.StoredHash);
     }
 
@@ -344,7 +345,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         TimeProvider? clock = null)
     {
         var context = new Microsoft.AspNetCore.Http.DefaultHttpContext();
-        return Jube.App.Code.AuthenticationCookieIssuer.IssueAuthenticationCookies(context.Response, env, user, clock)
+        return AuthenticationCookieIssuer.IssueAuthenticationCookies(context.Response, env, user, clock)
             .Token.Required();
     }
 
@@ -603,7 +604,8 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
             new { password = user.Password, newPassword = "short" }, ("Authorization", $"Bearer {token}"));
 
         response.Status.Should().Be(400);
-        JObject.Parse(response.Body)["errors"].Required()[0].Required()["errorMessage"].Required().Value<string>().Should()
+        JObject.Parse(response.Body)["errors"].Required()[0].Required()["errorMessage"].Required().Value<string>()
+            .Should()
             .NotBeNullOrEmpty();
     }
 
@@ -832,7 +834,7 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
     }
 
     [Fact]
-    public async Task ByNegotiate_WithAnEstablishedIdentity_Is200_WithCookiesAsync()
+    public async Task ByNegotiate_WithAnEstablishedIdentity_Is200_WithTheSessionCookieAsync()
     {
         var host = await HostAsync(env: NegotiateOn);
         var user = await AddUserAsync("HttpNeg");
@@ -841,7 +843,8 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
             (TestNegotiateHandler.Header, user.Name), ("User-Agent", Marker));
 
         response.Status.Should().Be(200);
-        response.SetCookies.Should().HaveCount(2);
+        response.SetCookies.Should().HaveCount(1);
+        response.Headers[SessionExpiry.HeaderName].Should().NotBeNullOrEmpty();
         JObject.Parse(response.Body).Properties().Select(p => p.Name).Should().BeEquivalentTo("token", "expiration");
     }
 
@@ -916,7 +919,8 @@ public sealed class AuthenticationEndpointTests(DatabaseFixture fx) : Authentica
         none.Status.Should().Be(202);
         wrong.Status.Should().Be(401);
         right.Status.Should().Be(200);
-        right.SetCookies.Should().HaveCount(2);
+        right.SetCookies.Should().HaveCount(1);
+        right.Headers[SessionExpiry.HeaderName].Should().NotBeNullOrEmpty();
     }
 
     [Fact]

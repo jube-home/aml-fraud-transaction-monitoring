@@ -77,7 +77,6 @@ function generateGrid(gridData, gridName, series, autoBind) {
         toolbar: ["excel"],
         excel: {
             fileName: "Visualisation.xlsx",
-            proxyURL: "https://proxy.jube.io",
             filterable: true,
             allPages: true
         },

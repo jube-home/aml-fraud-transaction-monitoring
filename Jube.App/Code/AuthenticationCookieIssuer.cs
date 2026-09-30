@@ -31,24 +31,18 @@ namespace Jube.App.Code
             var tokenOptions = new CookieOptions
                 { Expires = cookieExpiration, HttpOnly = true, SameSite = SameSiteMode.Lax };
 
-            var expiryOptions = new CookieOptions
-                { Expires = cookieExpiration, HttpOnly = false, SameSite = SameSiteMode.Lax };
-
             if (dynamicEnvironment.AppSettings("SecureHttpCookie").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 tokenOptions.Secure = true;
                 tokenOptions.SameSite = SameSiteMode.Strict;
-                expiryOptions.Secure = true;
-                expiryOptions.SameSite = SameSiteMode.Strict;
             }
             else if (response.HttpContext.Request.IsHttps)
             {
                 tokenOptions.Secure = true;
-                expiryOptions.Secure = true;
             }
 
             response.Cookies.Append("authentication-jwt", token, tokenOptions);
-            response.Cookies.Append("authentication-expiry", expiration.ToString("O"), expiryOptions);
+            SessionExpiry.Publish(response.HttpContext, expiration);
         }
 
         public static void DeleteCookies(HttpResponse response, DynamicEnvironment dynamicEnvironment)
@@ -60,8 +54,7 @@ namespace Jube.App.Code
 
             response.Cookies.Delete("authentication-jwt",
                 new CookieOptions { HttpOnly = true, SameSite = sameSite, Secure = isSecure });
-            response.Cookies.Delete("authentication-expiry",
-                new CookieOptions { HttpOnly = false, SameSite = sameSite, Secure = isSecure });
+            SessionExpiry.Revoke(response.HttpContext);
         }
 
         public static AuthenticationResponseDto IssueAuthenticationCookies(

@@ -261,6 +261,12 @@ malformed/empty bodies, a stale-calibration example, and so on) - so an
 `EntityAnalysisModelHttpAdaptation.HttpEndpoint` can be pointed at a worked example of the protocol without standing up
 an R/Python sandbox. `GET /api/MockHttpAdaptation` lists every scenario.
 
+These endpoints are mapped only when the `EnableMockEndpoints` environment variable is not `False`. It defaults to
+True, so they are available unless a deployment opts out, and the seeded example model relies on that default. Set it
+to False on a deployment that does not need them: they are unauthenticated by design, and `ServerError` returns an
+HTTP 500 on purpose, which a security scanner will quite correctly report as a server error and an application error
+disclosure for as long as the route is mapped.
+
 ## 6. Source of record
 
 The types in this document are a description of, not a substitute for, the C# records under

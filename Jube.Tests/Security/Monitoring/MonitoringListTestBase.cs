@@ -341,5 +341,5 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
         run.AssertClean(Output);
     }
 
-    private static string Trim(string value) => value.Length > 40 ? value[..40] + "..." : value.Replace("\0", "\\0");
+    protected static string Trim(string value) => value.Length > 40 ? value[..40] + "..." : value.Replace("\0", "\\0");
 }
