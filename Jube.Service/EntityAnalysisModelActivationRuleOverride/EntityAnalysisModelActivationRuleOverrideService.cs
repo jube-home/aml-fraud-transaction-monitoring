@@ -501,6 +501,8 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             EntityAnalysisModelActivationRuleOverrideDto? model,
             CancellationToken token = default)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Create", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
@@ -510,7 +512,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
 
             try
             {
-                ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.Create");
                 EnsureForceOverridePermitted("EntityAnalysisModelActivationRuleOverride.Create", model.OverrideKind);
 
@@ -582,17 +583,18 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             EntityAnalysisModelActivationRuleOverrideDto? model,
             CancellationToken token = default)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Validate", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
             {
                 log.Debug(
-                    $"EntityAnalysisModelActivationRuleOverride.Validate: entry id={model?.Id} user={userName}");
+                    $"EntityAnalysisModelActivationRuleOverride.Validate: entry id={model.Id} user={userName}");
             }
 
             try
             {
-                ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.Validate");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
@@ -634,16 +636,17 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             EntityAnalysisModelActivationRuleOverrideDto? model,
             CancellationToken token = default)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
             {
-                log.Debug($"EntityAnalysisModelActivationRuleOverride.Update: entry id={model?.Id} user={userName}");
+                log.Debug($"EntityAnalysisModelActivationRuleOverride.Update: entry id={model.Id} user={userName}");
             }
 
             try
             {
-                ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.Update");
                 EnsureForceOverridePermitted("EntityAnalysisModelActivationRuleOverride.Update", model.OverrideKind);
 
@@ -711,7 +714,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
-                        $"EntityAnalysisModelActivationRuleOverride.Update: cancelled id={model?.Id} user={userName}");
+                        $"EntityAnalysisModelActivationRuleOverride.Update: cancelled id={model.Id} user={userName}");
                 }
 
                 throw;
@@ -720,7 +723,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             {
                 op.Error(ex);
                 log.Error(
-                    $"EntityAnalysisModelActivationRuleOverride.Update: unexpected failure id={model?.Id} user={userName}",
+                    $"EntityAnalysisModelActivationRuleOverride.Update: unexpected failure id={model.Id} user={userName}",
                     ex);
                 throw;
             }
@@ -740,17 +743,18 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             EntityAnalysisModelActivationRuleOverrideDto? model,
             CancellationToken token = default)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride",
                 "UpdateDeleteExpiryDate", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
             {
                 log.Debug(
-                    $"EntityAnalysisModelActivationRuleOverride.UpdateDeleteExpiryDate: entry entityAnalysisModelGuid={model?.EntityAnalysisModelGuid} user={userName}");
+                    $"EntityAnalysisModelActivationRuleOverride.UpdateDeleteExpiryDate: entry entityAnalysisModelGuid={model.EntityAnalysisModelGuid} user={userName}");
             }
 
             try
             {
-                ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.UpdateDeleteExpiryDate");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
@@ -848,17 +852,18 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
             EntityAnalysisModelActivationRuleOverrideDto? model,
             CancellationToken token = default)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             using var op = OperationScope.Start("EntityAnalysisModelActivationRuleOverride",
                 "UpdateOverrideKind", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
             {
                 log.Debug(
-                    $"EntityAnalysisModelActivationRuleOverride.UpdateOverrideKind: entry entityAnalysisModelGuid={model?.EntityAnalysisModelGuid} user={userName}");
+                    $"EntityAnalysisModelActivationRuleOverride.UpdateOverrideKind: entry entityAnalysisModelGuid={model.EntityAnalysisModelGuid} user={userName}");
             }
 
             try
             {
-                ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("EntityAnalysisModelActivationRuleOverride.UpdateOverrideKind");
                 EnsureForceOverridePermitted("EntityAnalysisModelActivationRuleOverride.UpdateOverrideKind",
                     model.OverrideKind);
