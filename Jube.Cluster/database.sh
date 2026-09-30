@@ -15,12 +15,15 @@ JUBE_REPORTING_PASSWORD="$(read_secret JUBE_REPORTING_PASSWORD)"
 JUBE_MIGRATION_PASSWORD="$(read_secret JUBE_MIGRATION_PASSWORD)"
 
 # Find the leader node name from patronictl
-LEADER=$(docker exec $(docker ps -q -f name=patroni1) \
-    patronictl -c /etc/patroni.yml list 2>/dev/null \
-    | awk '/Leader/ {print $2}')
+
+PATRONI_LIST=$(docker exec "$(docker ps -q -f name=patroni1)" \
+    patronictl -c /etc/patroni.yml list 2>&1)
+
+LEADER=$(printf '%s\n' "$PATRONI_LIST" | awk '/Leader/ {print $2}')
 
 if [ -z "$LEADER" ]; then
-    echo "ERROR: Could not determine Patroni leader — aborting."
+    echo "ERROR: Could not determine Patroni leader — aborting. patronictl said:" >&2
+    printf '%s\n' "$PATRONI_LIST" >&2
     exit 1
 fi
 
@@ -37,6 +40,7 @@ docker exec -i \
     -v reporting_password="$JUBE_REPORTING_PASSWORD" \
     -v migration_password="$JUBE_MIGRATION_PASSWORD" \
     << EOF
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE USER jube_app WITH PASSWORD '$JUBE_APP_PASSWORD';

@@ -24,6 +24,7 @@ using Xunit;
 namespace Jube.Test.DynamicEnvironment
 {
     [Collection("EvalExpressionRegistry")]
+    [Trait("Category", "Unit")]
     public class EnvironmentVariablesDocumentationTests
     {
         private static readonly Regex row = new(@"^\|\s*(?<key>[A-Za-z][A-Za-z0-9_]*)\s*\|\s*(?<default>[^|]*?)\s*\|",

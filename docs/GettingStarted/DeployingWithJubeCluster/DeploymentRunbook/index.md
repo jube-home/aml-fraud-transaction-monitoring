@@ -336,6 +336,24 @@ process - Patroni auto-maps `PATRONI_ETCD3_PASSWORD` onto its own `etcd3.passwor
 does for `PATRONI_ETCD3_HOSTS`, and etcd's entrypoint reads `ETCD_ROOT_PASSWORD`/`PATRONI_ETCD3_PASSWORD` directly to
 bootstrap its own auth (see [Software Inventory](../SoftwareInventory/index.html#consensus--coordination)).
 
+That `export` only ever reaches the process the entrypoint hands off to, which is not where an operator works.
+`docker exec` gives a shell the container's *configured* environment - `PATRONI_ETCD3_USERNAME=patroni` from the
+compose file below - and nothing the entrypoint exported at runtime, so a `patronictl` command typed into such a shell
+ran with a username and no password: python-etcd warns `Username provided without password, both are required for
+authentication` and Patroni then fails every one of the five endpoints, which an auth-enabled etcd reports as
+`etcdserver: user name is empty`. `database.sh` failed the same way, its `patronictl list` returning nothing to read a
+leader out of. The `jube.patroni` image therefore ships `/usr/local/bin/patronictl`, a wrapper ahead of the real
+`/opt/patroni/bin/patronictl` on `PATH` that sources the image's single `load_secret` definition
+(`/usr/local/lib/patroni-secrets.sh`, shared with the entrypoint) and then hands off. Nothing you type changes -
+`patronictl` in a `docker exec` shell simply authenticates now, and so does every `patronictl` command in this runbook.
+Patroni patches its `PATRONI_*` environment variables over whatever the configuration file says, so the credential
+applies whether or not `-c /etc/patroni.yml` is passed; the image also sets `PATRONICTL_CONFIG_FILE=/etc/patroni.yml`,
+because `patronictl` reads that variable rather than the `PATRONI_CONFIG_FILE` the daemon is given, and without it a
+bare `patronictl list` looks for a `~/.config/patroni/patronictl.yaml` that no container has.
+`Jube.Tests/Cluster/ClusterPatroniImageTests.cs` asserts that contract against the Dockerfile: the wrapper ahead of the
+real binary on `PATH`, both entry paths loading their secrets from one definition, and the `patronictl` default
+configuration file matching the one the container is actually given.
+
 `PATRONI_ETCD3_PASSWORD` is the one secret that spans both patterns, because Patroni is not the only etcd client here.
 Every Jube service running the engine (`EnableEngine=True` - `jube-api` and `jube-jobs`) polls etcd for member and
 health status and reads Patroni's DCS history key, for the Infrastructure Health Metrics pages. Those services
@@ -941,6 +959,10 @@ docker exec -it $(docker ps -q -f name=patroni1) su-exec postgres psql -U postgr
 - Mount Postgres data to remote/redundant disks in production, not host-local storage.
 - Remember the pgBackRest stanza step on a fresh cluster - nothing else prompts for it, and backups silently have
   nowhere to go without it.
+- `patronictl` inside a Patroni container is the image's wrapper, not Patroni's own binary - it loads `/run/secrets`
+  before handing off, which is what makes it work at all under etcd client authentication. It lives in the image, so
+  changing it means rebuilding (`build-images.sh`), reloading on every host, and rolling the containers one at a time,
+  standbys before the primary.
 - The Patroni entrypoint fixes pgBackRest volume ownership automatically on every container start - seeing the
   volume start with the wrong ownership (Fedora maps UID 999 to `avahi`) is expected and self-corrects.
 - Sentinel conf files are rewritten by Redis Sentinel at runtime - reset them manually if they become corrupted.

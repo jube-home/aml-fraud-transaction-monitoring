@@ -24,6 +24,7 @@ using Xunit;
 
 namespace Jube.Test.Mocks
 {
+    [Trait("Category", "Unit")]
     public class MockEndpointsGoldenTests : IAsyncLifetime
     {
         private MocksHost Host

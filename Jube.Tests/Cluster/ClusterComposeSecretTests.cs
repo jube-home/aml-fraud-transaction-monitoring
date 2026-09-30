@@ -22,6 +22,7 @@ using Xunit;
 
 namespace Jube.Test.Cluster
 {
+    [Trait("Category", "Unit")]
     public class ClusterComposeSecretTests
     {
         private static readonly Regex tokenReference = new(@"\[@(?<name>[A-Za-z0-9_]+)@\]", RegexOptions.Compiled);
