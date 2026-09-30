@@ -39,7 +39,7 @@
 </script>
 
 <br/>
-<form id="FormAuthenticate" method="post" action="/Account/Login" style="display:none;" asp-antiforgery="false">
+<div id="FormAuthenticate" style="display:none;">
     <table id="AuthenticationTable" class="tTStyle">
         <tr>
             <td>
@@ -67,7 +67,7 @@
             </td>
         </tr>
     </table>
-</form>
+</div>
 <div class="topPaddedGeneral bottomPaddedGeneral">
     <br/>
     <button id="Login" type="submit">Log in</button>
@@ -75,7 +75,7 @@
 </div>
 <template id="PasswordResetTemplate">
     <div id="PasswordResetDiv">
-        <form id="FormChange" method="post" action="/Account/Login" asp-antiforgery="false">
+        <div id="FormChange">
             <br/>
             <table id="PasswordResetTable" class="tTStyle">
                 <tr>
@@ -96,7 +96,7 @@
                     </td>
                 </tr>
             </table>
-        </form>
+        </div>
         <br/>
         <div class="topPaddedGeneral">
             <button id="Change" type="submit">Change Password and Login</button>

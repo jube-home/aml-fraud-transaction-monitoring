@@ -1214,9 +1214,13 @@ namespace Jube.App
                 {
                     appBuilder.Use(async (context, next) =>
                     {
-                        context.Response.Headers.Append("Content-Security-Policy", "frame-ancestors 'none'");
-                        context.Response.Headers.Append("Cache-Control", "no-store");
-                        context.Response.Headers.Append("Referrer-Policy", "no-referrer");
+                        context.Response.OnStarting(() =>
+                        {
+                            context.Response.Headers["Cache-Control"] = "no-store";
+                            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+                            return Task.CompletedTask;
+                        });
+
                         await next.Invoke();
                     });
                 });
@@ -1447,8 +1451,13 @@ namespace Jube.App
                     endpoints.MapPreservationEndpoints();
                     endpoints.MapReadyEndpoints();
                     endpoints.MapAuthenticationEndpoints();
-                    endpoints.MapMockHttpAdaptationEndpoints();
-                    endpoints.MapMockRsaMfaEndpoints();
+                    if (!"False".Equals(dynamicEnvironment.AppSettings("EnableMockEndpoints"),
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        endpoints.MapMockHttpAdaptationEndpoints();
+                        endpoints.MapMockRsaMfaEndpoints();
+                    }
+
                     endpoints.MapInvokeEndpoints();
                     endpoints.MapCompletionsEndpoints();
                     endpoints.MapIconsEndpoints();

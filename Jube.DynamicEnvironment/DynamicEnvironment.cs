@@ -169,6 +169,9 @@ namespace Jube.DynamicEnvironment
                     "EnableInlineScriptExecution", "False"
                 },
                 {
+                    "EnableMockEndpoints", "True"
+                },
+                {
                     "EnableBacktest", "True"
                 },
                 {

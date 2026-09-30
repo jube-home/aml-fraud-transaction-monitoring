@@ -4,3 +4,4 @@ services:
       - WafEnabled=False
       - EnableGlobalHttpRateLimit=False
       - LoginIpRateLimitAttempts=100000
+      - EnableMockEndpoints=False

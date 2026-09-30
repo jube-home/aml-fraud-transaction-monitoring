@@ -924,15 +924,10 @@
         }
 
         (function () {
-            const pollInterval = 10_000;
             const RedirectLogoutCleanly = '/Account/Logout';
+            const renderedExpiry = '@(Jube.App.Code.SessionExpiry.Resolve(Context)?.ToString("O") ?? string.Empty)';
 
-            function getCookie(name) {
-                const match = document.cookie.match(
-                    new RegExp('(?:^|; )' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '=([^;]*)')
-                );
-                return match ? decodeURIComponent(match[1]) : null;
-            }
+            let expiresAt = renderedExpiry ? new Date(renderedExpiry).getTime() : null;
 
             function updateCountdown(msRemaining) {
                 const countdown = document.getElementById('session-countdown');
@@ -947,19 +942,19 @@
                 countdown.textContent = minutes + ':' + seconds;
             }
 
-            let expiresAt = null;
+            $(document).ajaxComplete(function (event, xhr) {
+                const refreshed = xhr.getResponseHeader('@Jube.App.Code.SessionExpiry.HeaderName');
+                if (refreshed) {
+                    expiresAt = new Date(refreshed).getTime();
+                }
+            });
 
-            function checkExpiry() {
-                const raw = getCookie('authentication-expiry');
-
-                if (!raw) {
-                    window.location.href = RedirectLogoutCleanly;
+            function tick() {
+                if (expiresAt === null) {
                     return;
                 }
 
-                expiresAt = new Date(raw).getTime();
                 const msRemaining = expiresAt - Date.now();
-
                 updateCountdown(msRemaining);
 
                 if (msRemaining <= 1000) {
@@ -967,14 +962,8 @@
                 }
             }
 
-            setInterval(checkExpiry, pollInterval);
-            checkExpiry();
-
-            setInterval(function () {
-                if (expiresAt !== null) {
-                    updateCountdown(expiresAt - Date.now());
-                }
-            }, 1_000);
+            tick();
+            setInterval(tick, 1_000);
         })();
     </script>
 }

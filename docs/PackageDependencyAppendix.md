@@ -81,11 +81,14 @@ nav_order: 6
 
 ## B. wwwroot Client-Side Dependencies (`Jube.App/wwwroot`) — non-NuGet, vendored static assets
 
-- Kendo UI for jQuery (Progress/Telerik) — 2021.1.224 — Vendored JS/CSS library (commercial) — `kendo/`
+- Kendo UI for jQuery (Progress/Telerik) — 2021.1.224 — Vendored JS/CSS library (commercial) — `kendo/`. The
+  `kendo/examples/` demo tree was removed (2,674 files, 110MB): it was served anonymously from `wwwroot`,
+  referenced by nothing the application ships, and carried its own third-party copies including AngularJS
+  1.7.2 and jQuery SignalR 1.1.3. The application uses four files from `kendo/`: `js/jquery.min.js`,
+  `js/kendo.all.min.js`, `styles/kendo.common.min.css` and `styles/kendo.silver.min.css`.
 - jQuery (bundled inside Kendo) — 1.12.4 — Vendored JS library — `kendo/js/jquery.min.js`
 - JSZip (bundled inside Kendo) — 2.6.1 — Vendored JS library — internal to Kendo build, per Kendo NOTICE
 - Pako (bundled inside Kendo) — 1.0.6 — Vendored JS library — internal to Kendo build, per Kendo NOTICE
-- AngularJS (bundled inside Kendo examples) — 1.7.2 — Vendored JS library — `kendo/examples/` demo content only, not used by the app
 - WiX Toolset (bundled inside Kendo, build-time only) — 3.8.1128.0 — Vendored MS-RL component — Kendo installer tooling, not runtime
 - Ace Editor — 1.4.13 — Vendored JS library — `js/ace/`
 - JSZip (app-level, separate from Kendo's internal copy) — 3.10.0 — Vendored JS library — `js/jszip/jszip.min.js`

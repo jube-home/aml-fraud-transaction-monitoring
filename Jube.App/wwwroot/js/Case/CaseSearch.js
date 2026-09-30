@@ -62,7 +62,6 @@ function GenerateGrid(gridData) {
         toolbar: ["excel"],
         excel: {
             fileName: "Cases.xlsx",
-            proxyURL: "https://proxy.jube.io",
             filterable: true,
             allPages: true
         },

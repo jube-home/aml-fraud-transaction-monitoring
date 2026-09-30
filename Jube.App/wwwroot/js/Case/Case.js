@@ -1427,7 +1427,6 @@ function generateGridCase(gridData) {
                 groupable: true,
                 excel: {
                     fileName: "Case Key Journal " + CaseKey + ".xlsx",
-                    proxyURL: "https://proxy.jube.io",
                     filterable: true,
                     allPages: true
                 },

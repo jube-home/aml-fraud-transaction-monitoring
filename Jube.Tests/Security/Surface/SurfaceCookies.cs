@@ -35,7 +35,7 @@ public static class SurfaceCookies
 
     public static string Header(string jwt)
     {
-        return $"authentication-jwt={jwt}; authentication-expiry=x";
+        return $"authentication-jwt={jwt}";
     }
 
     public static string? Subject(string jwt)

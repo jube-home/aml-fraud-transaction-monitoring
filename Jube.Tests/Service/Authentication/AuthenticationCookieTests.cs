@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -54,12 +55,12 @@ public sealed class AuthenticationCookieTests
         return TestDynamicEnvironment.Create(settings);
     }
 
-    private static (AuthenticationResponseDto Dto, List<SetCookieHeaderValue> Cookies) Issue(string user,
-        Jube.DynamicEnvironment.DynamicEnvironment env, TimeProvider? clock = null)
+    private static (AuthenticationResponseDto Dto, List<SetCookieHeaderValue> Cookies, HttpContext Context) Issue(
+        string user, Jube.DynamicEnvironment.DynamicEnvironment env, TimeProvider? clock = null)
     {
         var context = new DefaultHttpContext();
         var dto = AuthenticationCookieIssuer.IssueAuthenticationCookies(context.Response, env, user, clock);
-        return (dto, [.. SetCookieHeaderValue.ParseList(context.Response.Headers.SetCookie)]);
+        return (dto, [.. SetCookieHeaderValue.ParseList(context.Response.Headers.SetCookie)], context);
     }
 
     private static async Task<AuthenticateResult> ValidateAsync(string? token, string key = Key,
@@ -108,13 +109,13 @@ public sealed class AuthenticationCookieTests
     public void TheCookieFlags_FollowSessionAndSecureSettings(string session, string secure)
     {
         var clock = new FakeClock(noon);
-        var (dto, cookies) = Issue("alice", Env(("SessionCookie", session), ("SecureHttpCookie", secure)), clock);
+        var (dto, cookies, _) = Issue("alice", Env(("SessionCookie", session), ("SecureHttpCookie", secure)), clock);
 
-        cookies.Select(c => c.Name.Value).Should().Equal("authentication-jwt", "authentication-expiry");
+        cookies.Select(c => c.Name.Value).Should().Equal("authentication-jwt");
         foreach (var cookie in cookies)
         {
             cookie.Path.Value.Should().Be("/");
-            cookie.HttpOnly.Should().Be(cookie.Name.Value == "authentication-jwt");
+            cookie.HttpOnly.Should().BeTrue();
             cookie.Secure.Should().Be(secure == "True");
             cookie.SameSite.Should().Be(secure == "True"
                 ? Microsoft.Net.Http.Headers.SameSiteMode.Strict
@@ -135,25 +136,29 @@ public sealed class AuthenticationCookieTests
     }
 
     [Fact]
-    public void TheDefaultEnvironment_IsASessionCookie_NotSecure_WithOnlyTheJwtHttpOnly()
+    public void TheDefaultEnvironment_IsOneSessionCookie_NotSecure_AndHttpOnly()
     {
-        var (_, cookies) = Issue("alice", Env());
+        var (_, cookies, _) = Issue("alice", Env());
 
         cookies.Should().OnlyContain(c => c.Expires == null && !c.Secure
                                                             && c.SameSite == Microsoft.Net.Http.Headers.SameSiteMode
                                                                 .Lax);
-        cookies.Single(c => c.Name.Value == "authentication-jwt").HttpOnly.Should().BeTrue();
-        cookies.Single(c => c.Name.Value == "authentication-expiry").HttpOnly.Should().BeFalse();
+        cookies.Select(c => c.Name.Value).Should().Equal("authentication-jwt");
+        cookies.Single().HttpOnly.Should().BeTrue();
     }
 
     [Fact]
-    public void TheCookieValues_AreTheTokenAndTheIso8601Expiry_AndMatchTheResponseBody()
+    public void TheCookieValue_IsTheToken_AndTheExpiryTravelsInAHeaderNotACookie()
     {
         var clock = new FakeClock(noon);
-        var (dto, cookies) = Issue("alice", Env(), clock);
+        var (dto, cookies, context) = Issue("alice", Env(), clock);
 
+        cookies.Should().HaveCount(1);
         cookies[0].Value.Value.Should().Be(dto.Token);
-        cookies[1].Value.Value.Should().Be(Uri.EscapeDataString(dto.Expiration.ToString("O")));
+        context.Response.Headers.SetCookie.ToString().Should().NotContain("authentication-expiry");
+        context.Response.Headers[SessionExpiry.HeaderName].ToString().Should()
+            .Be(dto.Expiration.ToString("O", CultureInfo.InvariantCulture));
+        SessionExpiry.Resolve(context).Should().Be(dto.Expiration);
         dto.Expiration.Should().Be(noon.UtcDateTime.AddMinutes(15));
         dto.Expiration.Kind.Should().Be(DateTimeKind.Utc);
     }
@@ -161,7 +166,7 @@ public sealed class AuthenticationCookieTests
     [Fact]
     public void TheJsonBody_HasExactlyTokenAndExpiration()
     {
-        var (dto, _) = Issue("alice", Env());
+        var (dto, _, _) = Issue("alice", Env());
 
         var json = JsonSerializer.Serialize(dto, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 
@@ -172,7 +177,7 @@ public sealed class AuthenticationCookieTests
     [Fact]
     public async Task TheIssuedToken_IsAcceptedByTheRealHandler_AsTheUser_ViaBearerAndCookieAsync()
     {
-        var (dto, _) = Issue("alice", Env());
+        var (dto, _, _) = Issue("alice", Env());
 
         foreach (var viaCookie in new[] { false, true })
         {
@@ -187,7 +192,7 @@ public sealed class AuthenticationCookieTests
     public void TheTokenHeaderAndPayload_CarryOnlyTheNameIssuerAudienceAndExpiry()
     {
         var clock = new FakeClock(noon);
-        var (dto, _) = Issue("alice", Env(), clock);
+        var (dto, _, _) = Issue("alice", Env(), clock);
         var parts = dto.Token.Required().Split('.');
 
         parts.Should().HaveCount(3);
@@ -210,8 +215,8 @@ public sealed class AuthenticationCookieTests
     {
         var clock = new FakeClock(noon);
 
-        var (a, _) = Issue("alice", Env(), clock);
-        var (b, _) = Issue("alice", Env(), clock);
+        var (a, _, _) = Issue("alice", Env(), clock);
+        var (b, _, _) = Issue("alice", Env(), clock);
 
         a.Token.Should().Be(b.Token);
     }
@@ -224,7 +229,7 @@ public sealed class AuthenticationCookieTests
     [InlineData("CORP\\alice")]
     public async Task NamesSurviveTheTokenAndTheCookieRoundTrip_ExactlyAsync(string user)
     {
-        var (dto, cookies) = Issue(user, Env());
+        var (dto, cookies, _) = Issue(user, Env());
 
         var result = await ValidateAsync(cookies[0].Value.Value, viaCookie: true);
 
@@ -236,7 +241,7 @@ public sealed class AuthenticationCookieTests
     [Fact]
     public async Task ATokenIssuedForAnEmptyName_IsRejectedByTheHandlerAsMalformedAsync()
     {
-        var (dto, _) = Issue("", Env());
+        var (dto, _, _) = Issue("", Env());
 
         var result = await ValidateAsync(dto.Token);
 
@@ -262,7 +267,7 @@ public sealed class AuthenticationCookieTests
     [InlineData("truncated")]
     public async Task ATamperedToken_IsRejectedAsync(string tamper)
     {
-        var (dto, _) = Issue("alice", Env());
+        var (dto, _, _) = Issue("alice", Env());
         var parts = dto.Token.Required().Split('.');
         var tampered = tamper switch
         {
@@ -289,7 +294,7 @@ public sealed class AuthenticationCookieTests
     [InlineData("a.b.c.d.e")]
     public async Task AStructurallyMalformedToken_IsSimplyNotAuthenticated_NeverAnExceptionAsync(string kind)
     {
-        var (dto, _) = Issue("alice", Env());
+        var (dto, _, _) = Issue("alice", Env());
         var parts = dto.Token.Required().Split('.');
         var malformed = kind switch
         {
@@ -314,7 +319,7 @@ public sealed class AuthenticationCookieTests
     [Fact]
     public async Task ATokenSignedWithADifferentKey_IsRejectedAsync()
     {
-        var (dto, _) = Issue("alice", Env(("JWTKey", "a-completely-different-signing-key-9876543210")));
+        var (dto, _, _) = Issue("alice", Env(("JWTKey", "a-completely-different-signing-key-9876543210")));
 
         (await ValidateAsync(dto.Token)).Succeeded.Should().BeFalse();
     }
@@ -324,7 +329,7 @@ public sealed class AuthenticationCookieTests
     [InlineData("audience")]
     public async Task ATokenForAnotherIssuerOrAudience_IsRejectedAsync(string which)
     {
-        var (dto, _) = Issue("alice", Env());
+        var (dto, _, _) = Issue("alice", Env());
 
         var result = which == "issuer"
             ? await ValidateAsync(dto.Token, issuer: "http://elsewhere")
@@ -343,7 +348,7 @@ public sealed class AuthenticationCookieTests
     public async Task ExpiryIsEnforced_With30SecondsOfClockSkewAsync(int issuedOffsetSeconds, bool valid)
     {
         var clock = new FakeClock(DateTimeOffset.UtcNow.AddSeconds(issuedOffsetSeconds));
-        var (dto, _) = Issue("alice", Env(), clock);
+        var (dto, _, _) = Issue("alice", Env(), clock);
 
         var result = await ValidateAsync(dto.Token);
 
@@ -358,7 +363,7 @@ public sealed class AuthenticationCookieTests
     public async Task AnExpiredTokenInTheCookie_IsRejectedTooAsync()
     {
         var clock = new FakeClock(DateTimeOffset.UtcNow.AddHours(-2));
-        var (dto, _) = Issue("alice", Env(), clock);
+        var (dto, _, _) = Issue("alice", Env(), clock);
 
         (await ValidateAsync(dto.Token, viaCookie: true)).Succeeded.Should().BeFalse();
     }
@@ -373,11 +378,12 @@ public sealed class AuthenticationCookieTests
     }
 
     [Fact]
-    public async Task AnAlteredExpiryCookie_DoesNotExtendTheTokensLifeAsync()
+    public async Task AnAlteredExpiryHeader_DoesNotExtendTheTokensLifeAsync()
     {
         var clock = new FakeClock(DateTimeOffset.UtcNow.AddHours(-1));
-        var (dto, cookies) = Issue("alice", Env(), clock);
-        cookies[1].Value.Value.Should().NotBeNullOrEmpty();
+        var (dto, _, context) = Issue("alice", Env(), clock);
+        context.Response.Headers[SessionExpiry.HeaderName] =
+            DateTime.UtcNow.AddYears(1).ToString("O", CultureInfo.InvariantCulture);
 
         (await ValidateAsync(dto.Token)).Succeeded.Should().BeFalse();
     }
@@ -385,7 +391,7 @@ public sealed class AuthenticationCookieTests
     [Fact]
     public void TheJwtSecurityTokenHandler_ReadsTheSameClaimsThatWereIssued()
     {
-        var (dto, _) = Issue("alice", Env());
+        var (dto, _, _) = Issue("alice", Env());
 
         var jwt = new JwtSecurityTokenHandler().ReadJwtToken(dto.Token);
 

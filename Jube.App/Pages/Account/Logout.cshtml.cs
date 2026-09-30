@@ -27,7 +27,6 @@ namespace Jube.App.Pages.Account
             if (!IsAuthenticated)
             {
                 Response.Cookies.Delete("authentication-jwt");
-                Response.Cookies.Delete("authentication-expiry");
                 LoggedOut = true;
             }
 

@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,21 +11,10 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+namespace Jube.Test.Security.Monitoring;
 
-namespace Jube.App.Pages
+public sealed record SortDifferentialArea(string Name, string[] Identity, string Measure)
 {
-    public class IndexModel : PageModel
-    {
-        public IActionResult OnGet()
-        {
-            if (User.Identity is { IsAuthenticated: false })
-            {
-                return LocalRedirect("/Account/Login");
-            }
-
-            return Page();
-        }
-    }
+    public string Route => $"/api/{Name}";
+    public override string ToString() => Name;
 }
