@@ -190,12 +190,11 @@ namespace Jube.Service.Repository.Preservation
             }
         }
 
-        [Description("Previews, as YAML text, what an export with the given options would contain for the " +
+        [Description("Previews, as JSON, what an export with the given options would contain for the " +
                      "caller's own tenant. Nothing is changed. Roles are never included in a preview.")]
         public async Task<string> ExportPeekAsync(
             [Description("Include Exhaustive Search Instances.")]
             bool exhaustive,
-            [Description("Include Suppressions.")] bool suppressions,
             [Description("Include Lists.")] bool lists,
             [Description("Include Dictionaries.")] bool dictionaries,
             [Description("Include Visualisations.")]
@@ -217,14 +216,13 @@ namespace Jube.Service.Repository.Preservation
                 var peek = await library.ExportPeekAsync(new global::Jube.Preservation.ExportOptions
                 {
                     Exhaustive = exhaustive,
-                    Suppressions = suppressions,
                     Lists = lists,
                     Dictionaries = dictionaries,
                     Visualisations = visualisations
                 }, token).ConfigureAwait(false);
 
                 op.Rows(1);
-                return peek.Yaml;
+                return peek.Json;
             }
             catch (ForbiddenException)
             {
@@ -266,7 +264,6 @@ namespace Jube.Service.Repository.Preservation
                 {
                     Password = model.Password,
                     Exhaustive = model.Exhaustive,
-                    Suppressions = model.Suppressions,
                     Lists = model.Lists,
                     Dictionaries = model.Dictionaries,
                     Visualisations = model.Visualisations,

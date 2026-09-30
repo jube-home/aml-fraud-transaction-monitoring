@@ -70,7 +70,6 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                 EntityAnalysisModels =
                 {
                     ActiveEntityAnalysisModels = new Dictionary<int, EngineModel>(),
-                    EntityAnalysisModelSuppressionModels = new Dictionary<string, List<string>>(),
                     EntityAnalysisInstanceGuid = Guid.NewGuid()
                 }
             };
@@ -719,10 +718,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
             model.Dependencies.EntityAnalysisModelLists.Should()
                 .BeSameAs(context.EntityAnalysisModels.EntityAnalysisModelLists);
             model.Dependencies.KvpDictionaries.Should().BeSameAs(context.EntityAnalysisModels.KvpDictionaries);
-            model.Dependencies.EntityAnalysisModelSuppressionModels.Should()
-                .BeSameAs(context.EntityAnalysisModels.EntityAnalysisModelSuppressionModels);
-            model.Dependencies.EntityAnalysisModelSuppressionRules.Should()
-                .BeSameAs(context.EntityAnalysisModels.EntityAnalysisModelSuppressionRules);
+            model.Dependencies.EntityAnalysisModelOverrides.Should()
+                .BeSameAs(context.EntityAnalysisModels.EntityAnalysisModelOverrides);
 
             model.ConcurrentQueues.PersistToActivationWatcherAsync.Should()
                 .BeSameAs(context.ConcurrentQueues.PersistToActivationWatcherAsync);

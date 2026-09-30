@@ -97,4 +97,4 @@ nav_order: 6
 - Bootstrap — 3.3.2 — Vendored CSS library — `styles/bootstrap.min.css`
 - normalize.css (bundled in the Bootstrap file) — 3.0.2 — Vendored CSS — header comment in `styles/bootstrap.min.css`
 
-**First-party JS/CSS (not third-party dependencies, excluded above):** `js/BuilderCoder.js`, `js/CaseFilterBuilder.js`, `js/CRUD.js`, `js/ExhaustiveFilterBuilder.js`, `js/Suppression.js`, `js/Tree.js`, the `js/Account`, `js/Administration`, `js/Case`, `js/Model`, `js/RoleAllocation`, `js/Sanction`, `js/Visualisation`, `js/Watcher` directories, and `styles/jube.css` / `styles/site.css`.
+**First-party JS/CSS (not third-party dependencies, excluded above):** `js/BuilderCoder.js`, `js/CaseFilterBuilder.js`, `js/CRUD.js`, `js/ExhaustiveFilterBuilder.js`, `js/Override.js`, `js/Tree.js`, the `js/Account`, `js/Administration`, `js/Case`, `js/Model`, `js/RoleAllocation`, `js/Sanction`, `js/Visualisation`, `js/Watcher` directories, and `styles/jube.css` / `styles/site.css`.

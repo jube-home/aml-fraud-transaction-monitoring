@@ -73,7 +73,7 @@ namespace Jube.Dto.Repository.Case
 
         [Description("Transient, request-only snapshot of the case's editable form fields at the moment of update -- " +
                      "not persisted on the Case row itself. Drives the notification/HTTP-endpoint payload when the " +
-                     "case's CaseWorkflowStatusGuid changes and null suppresses that dispatch.")]
+                     "case's CaseWorkflowStatusGuid changes and null mutes that dispatch.")]
         public string? Payload { get; set; }
     }
 }

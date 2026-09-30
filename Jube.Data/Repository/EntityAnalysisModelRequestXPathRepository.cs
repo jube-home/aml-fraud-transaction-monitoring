@@ -105,14 +105,14 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Name).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelRequestXpath>> GetBySuppressionKeysAsync(
+        public async Task<IEnumerable<EntityAnalysisModelRequestXpath>> GetByOverrideKeysAsync(
             CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelRequestXpath
                 .Where(w =>
                     (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
                     && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)
-                    && w.EnableSuppression == 1 && (w.Deleted == 0 || w.Deleted == null)).ToListAsync(token);
+                    && w.EnableOverride == 1 && (w.Deleted == 0 || w.Deleted == null)).ToListAsync(token);
         }
 
         public async Task<IEnumerable<EntityAnalysisModelRequestXpath>> GetByCasesWorkflowIdAsync(int casesWorkflowId,

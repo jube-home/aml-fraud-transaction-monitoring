@@ -15,7 +15,49 @@ var endpoint = "/api/EntityAnalysisModelActivationRule";
 var parentKeyName = "entityAnalysisModelId";
 var validationFail = "There is invalid data in the form. Please check fields and correct.";
 
-var enableSuppression = $("#EnableSuppression").kendoSwitch();
+var overrideKey = $("#OverrideKey").kendoDropDownList({
+    dataTextField: "text",
+    dataValueField: "value",
+    optionLabel: "Any override enabled key"
+});
+
+var enableForce = $("#EnableForce").kendoSwitch();
+
+var enableOverride = $("#EnableOverride").kendoSwitch({
+    change: function () {
+        ExpandCollapseOverride();
+    }
+});
+
+function LoadOverrideKeys(selected) {
+    const dropDown = overrideKey.data("kendoDropDownList");
+
+    if (!parentKey) {
+        dropDown.setDataSource([]);
+        return;
+    }
+
+    $.get("/api/EntityAnalysisModelRequestXPath/ByEntityAnalysisModelId/" + parentKey, function (data) {
+        const keys = $.grep(data, function (xpath) {
+            return xpath.enableOverride === true;
+        }).map(function (xpath) {
+            return {value: xpath.name, text: xpath.name};
+        });
+
+        dropDown.setDataSource(keys);
+        dropDown.value(selected || "");
+    });
+}
+
+function ExpandCollapseOverride() {
+    const $overrideTable = $("#OverrideTable");
+    if ($('#EnableOverride').prop('checked')) {
+        $overrideTable.show();
+    } else {
+        $overrideTable.hide();
+    }
+}
+
 var visible = $("#Visible").kendoSwitch();
 var enableReprocessing = $("#EnableReprocessing").kendoSwitch();
 var resetButton = $("#Reset").kendoButton().hide();
@@ -321,7 +363,9 @@ function GetData() {
         bypassSuspendSample: bypassSuspendSample.data("kendoSlider").value(),
         visible: visible.prop("checked"),
         enableReprocessing: enableReprocessing.prop("checked"),
-        enableSuppression: enableSuppression.prop("checked"),
+        enableOverride: enableOverride.prop("checked"),
+        enableForce: enableForce.prop("checked"),
+        overrideKey: overrideKey.data("kendoDropDownList").value(),
         enableBypass: enableBypass.prop("checked"),
         priority: priority.data("kendoNumericTextBox").value()
     };
@@ -407,6 +451,7 @@ function Ready() {
         ExpandCollapseResponseElevation();
         ExpandCollapseCasesBypass();
         ExpandCollapseCases();
+        ExpandCollapseOverride();
     } else {
         $.get(endpoint + "/" + id,
             function (data) {
@@ -481,11 +526,19 @@ function Ready() {
                     enableReprocessing.data("kendoSwitch").check(false);
                 }
 
-                if (data.enableSuppression) {
-                    enableSuppression.data("kendoSwitch").check(true);
+                if (data.enableOverride) {
+                    enableOverride.data("kendoSwitch").check(true);
                 } else {
-                    enableSuppression.data("kendoSwitch").check(false);
+                    enableOverride.data("kendoSwitch").check(false);
                 }
+
+                if (data.enableForce) {
+                    enableForce.data("kendoSwitch").check(true);
+                } else {
+                    enableForce.data("kendoSwitch").check(false);
+                }
+
+                LoadOverrideKeys(data.overrideKey);
 
                 if (data.enableBypass) {
                     enableBypass.data("kendoSwitch").check(true);
@@ -527,6 +580,7 @@ function Ready() {
                 ExpandCollapseResponseElevation();
                 ExpandCollapseCasesBypass();
                 ExpandCollapseCases();
+                ExpandCollapseOverride();
             });
     }
 }

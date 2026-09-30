@@ -43,7 +43,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         private static readonly int[] readByEntityAnalysisModelPermissions = [7, 13];
         private static readonly int[] readByDataTypePermissions = [7, 12];
         private static readonly int[] writePermissions = [7];
-        private static readonly int[] suppressionPermissions = [2];
+        private static readonly int[] overridePermissions = [2];
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -281,28 +281,28 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             }
         }
 
-        [Description("Lists Request XPaths flagged for Suppression, scoped to the calling user's tenant.")]
-        [ServiceOperation("EntityAnalysisModelRequestXPathGetBySuppressionKey", OperationKind.Read, Idempotent = true)]
-        public async Task<List<EntityAnalysisModelRequestXPathDto>> GetBySuppressionKeyAsync(
+        [Description("Lists Request XPaths flagged for Override, scoped to the calling user's tenant.")]
+        [ServiceOperation("EntityAnalysisModelRequestXPathGetByOverrideKey", OperationKind.Read, Idempotent = true)]
+        public async Task<List<EntityAnalysisModelRequestXPathDto>> GetByOverrideKeyAsync(
             CancellationToken token = default)
         {
-            using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "ListBySuppressionKey", userName,
+            using var op = OperationScope.Start("EntityAnalysisModelRequestXPath", "ListByOverrideKey", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
             if (log.IsDebugEnabled)
             {
-                log.Debug($"EntityAnalysisModelRequestXPath.ListBySuppressionKey: entry user={userName}");
+                log.Debug($"EntityAnalysisModelRequestXPath.ListByOverrideKey: entry user={userName}");
             }
 
             try
             {
-                EnsurePermitted(suppressionPermissions, "EntityAnalysisModelRequestXPath.ListBySuppressionKey");
-                var dtos = EntityAnalysisModelRequestXPathMapper.ToDto(await repository.GetBySuppressionKeysAsync(token)
+                EnsurePermitted(overridePermissions, "EntityAnalysisModelRequestXPath.ListByOverrideKey");
+                var dtos = EntityAnalysisModelRequestXPathMapper.ToDto(await repository.GetByOverrideKeysAsync(token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
-                        $"EntityAnalysisModelRequestXPath.ListBySuppressionKey: {dtos.Count} rows user={userName}");
+                        $"EntityAnalysisModelRequestXPath.ListByOverrideKey: {dtos.Count} rows user={userName}");
                 }
 
                 return dtos;
@@ -317,7 +317,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                 op.Outcome("cancelled");
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"EntityAnalysisModelRequestXPath.ListBySuppressionKey: cancelled user={userName}");
+                    log.Debug($"EntityAnalysisModelRequestXPath.ListByOverrideKey: cancelled user={userName}");
                 }
 
                 throw;
@@ -325,7 +325,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
             catch (Exception ex)
             {
                 op.Error(ex);
-                log.Error($"EntityAnalysisModelRequestXPath.ListBySuppressionKey: unexpected failure user={userName}",
+                log.Error($"EntityAnalysisModelRequestXPath.ListByOverrideKey: unexpected failure user={userName}",
                     ex);
                 throw;
             }

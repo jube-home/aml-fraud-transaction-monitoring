@@ -37,6 +37,6 @@
         </value>
     </resheader>
     <data name="HasDependents" xml:space="preserve">
-    <value>Suppression impossible : {0} « {1} » en dépend ({2}).</value>
+    <value>Override impossible : {0} « {1} » en dépend ({2}).</value>
   </data>
 </root>

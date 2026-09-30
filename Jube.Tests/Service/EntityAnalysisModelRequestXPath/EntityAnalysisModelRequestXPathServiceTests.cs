@@ -37,6 +37,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
+using Jube.Test.Service.EntityAnalysisModelRequestXPath.Models;
 
 namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
 {
@@ -184,23 +185,23 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
         }
 
         [Fact]
-        public async Task GetBySuppressionKeyOnlyReturnsSuppressionEnabledRowsAsync()
+        public async Task GetByOverrideKeyOnlyReturnsOverrideEnabledRowsAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var suppressed = NewDto(modelId, UniqueName("Suppressed"));
-            suppressed.EnableSuppression = true;
+            suppressed.EnableOverride = true;
             var savedSuppressed = await service.InsertAsync(suppressed);
             createdIds.Add(savedSuppressed.Id);
 
             var notSuppressed = await service.InsertAsync(NewDto(modelId, UniqueName("NotSuppressed")));
             createdIds.Add(notSuppressed.Id);
 
-            var suppressionKeys = await service.GetBySuppressionKeyAsync();
-            suppressionKeys.Should().Contain(d => d.Id == savedSuppressed.Id);
-            suppressionKeys.Should().NotContain(d => d.Id == notSuppressed.Id);
+            var overrideKeys = await service.GetByOverrideKeyAsync();
+            overrideKeys.Should().Contain(d => d.Id == savedSuppressed.Id);
+            overrideKeys.Should().NotContain(d => d.Id == notSuppressed.Id);
         }
 
         [Fact]
@@ -892,7 +893,7 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
                 "EntityAnalysisModelRequestXPathList", "EntityAnalysisModelRequestXPathGet",
                 "EntityAnalysisModelRequestXPathGetByEntityAnalysisModelId",
                 "EntityAnalysisModelRequestXPathGetByCasesWorkflowId",
-                "EntityAnalysisModelRequestXPathGetBySuppressionKey",
+                "EntityAnalysisModelRequestXPathGetByOverrideKey",
                 "EntityAnalysisModelRequestXPathGetByEntityAnalysisModelIdByDataType",
                 "EntityAnalysisModelRequestXPathCreate", "EntityAnalysisModelRequestXPathUpdate",
                 "EntityAnalysisModelRequestXPathDelete"
@@ -917,31 +918,6 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
-        }
-
-        private sealed class CapturingBus : IServiceChangeBus
-        {
-            public readonly List<ServiceChangeEvent> Published = [];
-
-            public Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default)
-            {
-                Published.Add(change);
-                return Task.CompletedTask;
-            }
-
-            public IDisposable Subscribe(Func<ServiceChangeEvent, Task> handler)
-            {
-                return NoopSubscription.Instance;
-            }
-
-            private sealed class NoopSubscription : IDisposable
-            {
-                public static readonly NoopSubscription Instance = new();
-
-                public void Dispose()
-                {
-                }
-            }
         }
     }
 }

@@ -11,7 +11,15 @@ grand_parent: Configuration
 # Permissions
 Permissions grant access to resources in the user interface,  typically pages.  Permissions are added to Roles,  and then a Role is allocated to a user.
 
-In practice,  it is unlikely that a user with day to day responsibilities in customer services would require access beyond Case Management, Lists, Dictionary or Suppression.  Similarly,  an analyst that has responsibility for the creation of rule and reports is unlikely to need access to those pages enjoyed by customer service.
+In practice,  it is unlikely that a user with day to day responsibilities in customer services would require access beyond Case Management, Lists, Dictionary or Override.  Similarly,  an analyst that has responsibility for the creation of rule and reports is unlikely to need access to those pages enjoyed by customer service.
+
+Most permissions grant access to a page.  A small number instead gate a single action that is materially more
+dangerous than the rest of the page,  and are withheld by default.  **Apply Force Override** is one of these:  the
+ordinary Override permission lets an operator mute an Activation Rule for a value,  whereas Apply Force Override
+lets them make one fire,  raising response elevations,  creating cases and sending notifications.  **Import
+Preservation Snapshot** is another:  the ordinary Preservation permission lets an operator take a snapshot and
+export,  whereas this one lets them roll the whole tenant's configuration back to an earlier one.  Both are granted
+on upgrade to the Administrator role only,  and must be granted explicitly to any other role that needs them.
 
 In the absence of a permission the user will not be able to navigate given absence of the resource in the menu.  In the event of deep linking to a resource without a permission,  an unauthorised http status code will be returned.
 

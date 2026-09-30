@@ -26,9 +26,6 @@ namespace Jube.Dto.Repository.Preservation
         [Description("Include Exhaustive Search Instances.")]
         public bool Exhaustive { get; set; }
 
-        [Description("Include Suppressions and Activation Rule Suppressions.")]
-        public bool Suppressions { get; set; }
-
         [Description("Include Lists and their values.")]
         public bool Lists { get; set; }
 

@@ -342,18 +342,18 @@ namespace Jube.Data.Context
         public ITable<EntityAnalysisModelListValue> EntityAnalysisModelListValue =>
             GetTable<EntityAnalysisModelListValue>();
 
-        public ITable<EntityAnalysisModelSuppression> EntityAnalysisModelSuppression =>
-            GetTable<EntityAnalysisModelSuppression>();
+        public ITable<EntityAnalysisModelOverride> EntityAnalysisModelOverride =>
+            GetTable<EntityAnalysisModelOverride>();
 
-        public ITable<EntityAnalysisModelSuppressionVersion> EntityAnalysisModelSuppressionVersion =>
-            GetTable<EntityAnalysisModelSuppressionVersion>();
+        public ITable<EntityAnalysisModelOverrideVersion> EntityAnalysisModelOverrideVersion =>
+            GetTable<EntityAnalysisModelOverrideVersion>();
 
-        public ITable<EntityAnalysisModelActivationRuleSuppression> EntityAnalysisModelActivationRuleSuppression =>
-            GetTable<EntityAnalysisModelActivationRuleSuppression>();
+        public ITable<EntityAnalysisModelActivationRuleOverride> EntityAnalysisModelActivationRuleOverride =>
+            GetTable<EntityAnalysisModelActivationRuleOverride>();
 
-        public ITable<EntityAnalysisModelActivationRuleSuppressionVersion>
-            EntityAnalysisModelActivationRuleSuppressionVersion =>
-            GetTable<EntityAnalysisModelActivationRuleSuppressionVersion>();
+        public ITable<EntityAnalysisModelActivationRuleOverrideVersion>
+            EntityAnalysisModelActivationRuleOverrideVersion =>
+            GetTable<EntityAnalysisModelActivationRuleOverrideVersion>();
 
         public ITable<EntityAnalysisModelDictionaryKvp> EntityAnalysisModelDictionaryKvp =>
             GetTable<EntityAnalysisModelDictionaryKvp>();
@@ -454,6 +454,7 @@ namespace Jube.Data.Context
             GetTable<ExhaustiveSearchInstanceData>();
 
         public ITable<Import> Import => GetTable<Import>();
+        public ITable<PreservationSnapshot> PreservationSnapshot => GetTable<PreservationSnapshot>();
 
         public ITable<Export> Export => GetTable<Export>();
 

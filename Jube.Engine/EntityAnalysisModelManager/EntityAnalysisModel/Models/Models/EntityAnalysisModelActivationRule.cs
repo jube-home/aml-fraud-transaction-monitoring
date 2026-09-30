@@ -19,7 +19,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
     using System.Threading;
     using Dictionary;
     using log4net;
-    using Adaptation=HttpAdaptationProtocol.Adaptation;
+    using Adaptation = HttpAdaptationProtocol.Adaptation;
 
     public class EntityAnalysisModelActivationRule
     {
@@ -37,6 +37,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
         private readonly Lock lockActivationCounterDate = new Lock();
 
         public long ActivationCounter;
+        public long ForcedActivationCounter;
         private DateTime activationCounterDate;
         public long EvaluationCounter;
         public int Id { get; init; }
@@ -57,6 +58,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
         public string ResponseElevationContent { get; set; }
         public string ResponseElevationRedirect { get; set; }
         public bool EnableReprocessing { get; set; }
+        public bool EnableOverride { get; set; }
+        public bool EnableForce { get; set; }
+        public string OverrideKey { get; set; }
         public bool SendToActivationWatcher { get; set; }
         public string ResponseElevationForeColor { get; set; }
         public string ResponseElevationBackColor { get; set; }

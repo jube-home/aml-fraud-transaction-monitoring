@@ -63,10 +63,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
                     EntityAnalysisModelLists =
                         context.EntityAnalysisModels.EntityAnalysisModelLists,
                     KvpDictionaries = context.EntityAnalysisModels.KvpDictionaries,
-                    EntityAnalysisModelSuppressionModels = context.EntityAnalysisModels
-                        .EntityAnalysisModelSuppressionModels,
-                    EntityAnalysisModelSuppressionRules = context.EntityAnalysisModels
-                        .EntityAnalysisModelSuppressionRules
+                    EntityAnalysisModelOverrides = context.EntityAnalysisModels
+                        .EntityAnalysisModelOverrides
                 }
             };
 

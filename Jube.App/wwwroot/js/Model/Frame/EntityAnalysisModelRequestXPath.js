@@ -38,7 +38,7 @@ var searchKeyCache = $("#SearchKeyCache").kendoSwitch({
     }
 });
 
-var enableSuppression = $("#EnableSuppression").kendoSwitch();
+var enableOverride = $("#EnableOverride").kendoSwitch();
 
 var cache = $("#Cache").kendoSwitch();
 
@@ -233,10 +233,10 @@ if (typeof GetSelectedChildID() === "undefined") {
                 searchKey.data("kendoSwitch").check(false);
             }
 
-            if (data.enableSuppression) {
-                enableSuppression.data("kendoSwitch").check(true);
+            if (data.enableOverride) {
+                enableOverride.data("kendoSwitch").check(true);
             } else {
-                enableSuppression.data("kendoSwitch").check(false);
+                enableOverride.data("kendoSwitch").check(false);
             }
 
             if (data.cache) {
@@ -295,7 +295,7 @@ function GetData() {
         xPath: $("#XPath").val(),
         dataTypeId: dataTypeId.val(),
         searchKey: searchKey.prop("checked"),
-        enableSuppression: enableSuppression.prop("checked"),
+        enableOverride: enableOverride.prop("checked"),
         searchKeyCache: searchKeyCache.prop("checked"),
         searchKeyCacheSample: searchKeyCacheSample.prop("checked"),
         searchKeyCacheFetchLimit: searchKeyCacheFetchLimit.val(),

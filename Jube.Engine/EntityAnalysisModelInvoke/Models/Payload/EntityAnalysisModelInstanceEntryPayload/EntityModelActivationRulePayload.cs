@@ -16,5 +16,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
     public class EntityModelActivationRulePayload
     {
         public bool Visible { get; set; }
+        public bool Forced { get; set; }
     }
 }

@@ -76,10 +76,28 @@
             </tr>
             <tr>
                 <td>
-                    <label for="EnableSuppression">Enable Suppression</label>
+                    <label for="EnableOverride" class="k-checkbox-label">Enable Override</label>
                 </td>
                 <td>
-                    <input id="EnableSuppression" type="checkbox"/>
+                    <input id="EnableOverride" type="checkbox"/>
+                    <table id="OverrideTable" class="sTStyle">
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="EnableForce">Enable Force</label>
+                            </td>
+                            <td>
+                                <input id="EnableForce" type="checkbox"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sTBorderStyle">
+                                <label for="OverrideKey">Override Key</label>
+                            </td>
+                            <td>
+                                <select id="OverrideKey"></select>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
             <tr>

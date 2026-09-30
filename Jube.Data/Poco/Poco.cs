@@ -2043,12 +2043,12 @@ namespace Jube.Data.Poco
         [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
             Relationship = Relationship.OneToMany)]
         [Key(54)]
-        public IEnumerable<EntityAnalysisModelSuppression> EntityAnalysisModelSuppression { get; set; }
+        public IEnumerable<EntityAnalysisModelOverride> EntityAnalysisModelOverride { get; set; }
 
         [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
             Relationship = Relationship.OneToMany)]
         [Key(55)]
-        public IEnumerable<EntityAnalysisModelActivationRuleSuppression> EntityAnalysisModelActivationRuleSuppression
+        public IEnumerable<EntityAnalysisModelActivationRuleOverride> EntityAnalysisModelActivationRuleOverride
         {
             get;
             set;
@@ -2069,7 +2069,7 @@ namespace Jube.Data.Poco
 
     [Table]
     [MessagePackObject]
-    public class EntityAnalysisModelActivationRuleSuppression
+    public class EntityAnalysisModelActivationRuleOverride
     {
         [Column]
         [PrimaryKey]
@@ -2084,8 +2084,8 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(5)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(6)] public string DeletedUser { get; set; }
         [Column] [Nullable] [Key(7)] public byte? Deleted { get; set; }
-        [Column] [Nullable] [Key(8)] public string SuppressionKey { get; set; }
-        [Column] [Nullable] [Key(9)] public string SuppressionKeyValue { get; set; }
+        [Column] [Nullable] [Key(8)] public string OverrideKey { get; set; }
+        [Column] [Nullable] [Key(9)] public string OverrideKeyValue { get; set; }
         [Column] [Nullable] [Key(10)] public string EntityAnalysisModelActivationRuleName { get; set; }
         [Column] [Nullable] [Key(11)] public int InheritedId { get; set; }
 
@@ -2096,11 +2096,12 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(13)] public int? ImportId { get; set; }
         [Column] [Nullable] [Key(14)] public DateTime? DeleteExpiryDate { get; set; }
+        [Column] [Nullable] [Key(15)] public byte? OverrideKind { get; set; }
     }
 
     [Table]
     [MessagePackObject]
-    public class EntityAnalysisModelActivationRuleSuppressionVersion
+    public class EntityAnalysisModelActivationRuleOverrideVersion
     {
         [Column]
         [PrimaryKey]
@@ -2108,7 +2109,7 @@ namespace Jube.Data.Poco
         [Key(0)]
         public int Id { get; set; }
 
-        [Column] [Nullable] [Key(1)] public int? EntityAnalysisModelActivationRuleSuppressionId { get; set; }
+        [Column] [Nullable] [Key(1)] public int? EntityAnalysisModelActivationRuleOverrideId { get; set; }
         [Column] [Nullable] [Key(2)] public Guid EntityAnalysisModelGuid { get; set; }
         [Column] [Nullable] [Key(3)] public DateTime? CreatedDate { get; set; }
         [Column] [Nullable] [Key(4)] public string CreatedUser { get; set; }
@@ -2116,11 +2117,12 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(6)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(7)] public string DeletedUser { get; set; }
         [Column] [Nullable] [Key(8)] public byte? Deleted { get; set; }
-        [Column] [Nullable] [Key(9)] public string SuppressionKey { get; set; }
-        [Column] [Nullable] [Key(10)] public string SuppressionKeyValue { get; set; }
+        [Column] [Nullable] [Key(9)] public string OverrideKey { get; set; }
+        [Column] [Nullable] [Key(10)] public string OverrideKeyValue { get; set; }
         [Column] [Nullable] [Key(11)] public string EntityAnalysisModelActivationRuleName { get; set; }
         [Column] [Nullable] [Key(12)] public int? InheritedId { get; set; }
         [Column] [Nullable] [Key(13)] public DateTime? DeleteExpiryDate { get; set; }
+        [Column] [Nullable] [Key(14)] public byte? OverrideKind { get; set; }
     }
 
     [Table]
@@ -2397,10 +2399,12 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(46)] public double? BypassSuspendSample { get; set; }
         [Column] [Nullable] [Key(47)] public byte? Visible { get; set; }
         [Column] [Nullable] [Key(48)] public byte? EnableReprocessing { get; set; }
-        [Column] [Nullable] [Key(49)] public byte? EnableSuppression { get; set; }
+        [Column] [Nullable] [Key(49)] public byte? EnableOverride { get; set; }
         [Column] [Nullable] [Key(50)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(51)] public double? Priority { get; set; }
         [Column] [Nullable] [Key(52)] public long? EvaluationCounter { get; set; }
+        [Column] [Nullable] [Key(53)] public byte? EnableForce { get; set; }
+        [Column] [Nullable] [Key(54)] public string OverrideKey { get; set; }
     }
 
     [Table]
@@ -2466,7 +2470,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(45)] public double? BypassSuspendSample { get; set; }
         [Column] [Nullable] [Key(46)] public byte? Visible { get; set; }
         [Column] [Nullable] [Key(47)] public byte? EnableReprocessing { get; set; }
-        [Column] [Nullable] [Key(48)] public byte? EnableSuppression { get; set; }
+        [Column] [Nullable] [Key(48)] public byte? EnableOverride { get; set; }
 
         [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
             Relationship = Relationship.ManyToOne)]
@@ -2486,6 +2490,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(56)] public long? EvaluationCounter { get; set; }
         [Column] [Nullable] [Key(57)] public byte? Compiled { get; set; }
         [Column] [Nullable] [Key(58)] public string CompileError { get; set; }
+        [Column] [Nullable] [Key(59)] public long? ForcedActivationCounter { get; set; }
+        [Column] [Nullable] [Key(60)] public byte? EnableForce { get; set; }
+        [Column] [Nullable] [Key(61)] public string OverrideKey { get; set; }
     }
 
     [Table]
@@ -2503,6 +2510,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(3)] public long? ActivationCounter { get; set; }
         [Column] [Nullable] [Key(4)] public DateTime? CreatedDate { get; set; }
         [Column] [Nullable] [Key(5)] public string Instance { get; set; }
+        [Column] [Nullable] [Key(6)] public long? ForcedActivationCounter { get; set; }
     }
 
     [Table]
@@ -3555,7 +3563,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(24)] public int? SearchKeyCacheFetchLimit { get; set; }
         [Column] [Nullable] [Key(25)] public byte? ReportTable { get; set; }
         [Column] [Nullable] [Key(26)] public byte? SearchKeyCacheSample { get; set; }
-        [Column] [Nullable] [Key(27)] public byte? EnableSuppression { get; set; }
+        [Column] [Nullable] [Key(27)] public byte? EnableOverride { get; set; }
         [Column] [Nullable] [Key(28)] public string DefaultValue { get; set; }
         [Column] [Nullable] [Key(29)] public int? SearchKeyFetchLimit { get; set; }
         [Column] [Nullable] [Key(30)] public Guid Guid { get; set; }
@@ -3599,7 +3607,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(23)] public int? SearchKeyCacheFetchLimit { get; set; }
         [Column] [Nullable] [Key(24)] public byte? ReportTable { get; set; }
         [Column] [Nullable] [Key(25)] public byte? SearchKeyCacheSample { get; set; }
-        [Column] [Nullable] [Key(26)] public byte? EnableSuppression { get; set; }
+        [Column] [Nullable] [Key(26)] public byte? EnableOverride { get; set; }
         [Column] [Nullable] [Key(27)] public string DefaultValue { get; set; }
         [Column] [Nullable] [Key(28)] public int? SearchKeyFetchLimit { get; set; }
 
@@ -3685,12 +3693,53 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(1)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(2)] public int TenantRegistryId { get; set; }
-        [Column] [Nullable] [Key(3)] public string Yaml { get; set; }
+
+        [Column]
+        [Nullable]
+        [DataType(DataType.Json)]
+        [Key(3)]
+        public string Json { get; set; }
+
         [Column] [Nullable] [Key(5)] public byte? InError { get; set; }
         [Column] [Nullable] [Key(6)] public string ErrorStack { get; set; }
         [Column] [Nullable] [Key(7)] public string CreatedUser { get; set; }
         [Column] [Nullable] [Key(8)] public DateTime? CreatedDate { get; set; }
         [Column] [Nullable] [Key(9)] public DateTime? CompletedDate { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class PreservationSnapshot
+    {
+        [Column("Id")]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public Guid Guid { get; set; }
+        [Column] [Nullable] [Key(2)] public int TenantRegistryId { get; set; }
+        [Column] [Nullable] [Key(3)] public byte SnapshotSourceId { get; set; }
+        [Column] [Nullable] [Key(4)] public string Name { get; set; }
+
+        [Column]
+        [Nullable]
+        [DataType(DataType.BinaryJson)]
+        [Key(5)]
+        public string Json { get; set; }
+
+        [Column] [Nullable] [Key(6)] public int? ExportVersion { get; set; }
+        [Column] [Nullable] [Key(7)] public Guid? ExportGuid { get; set; }
+        [Column] [Nullable] [Key(8)] public int? EntityAnalysisModelCount { get; set; }
+        [Column] [Nullable] [Key(9)] public long? Bytes { get; set; }
+        [Column] [Nullable] [Key(10)] public byte? InError { get; set; }
+        [Column] [Nullable] [Key(11)] public string ErrorStack { get; set; }
+        [Column] [Nullable] [Key(12)] public string CreatedUser { get; set; }
+        [Column] [Nullable] [Key(13)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(14)] public DateTime? CompletedDate { get; set; }
+        [Column] [Nullable] [Key(15)] public byte? Deleted { get; set; }
+        [Column] [Nullable] [Key(16)] public DateTime? DeletedDate { get; set; }
+        [Column] [Nullable] [Key(17)] public string DeletedUser { get; set; }
     }
 
     [Table]
@@ -3993,7 +4042,7 @@ namespace Jube.Data.Poco
 
     [Table]
     [MessagePackObject]
-    public class EntityAnalysisModelSuppression
+    public class EntityAnalysisModelOverride
     {
         [Column]
         [PrimaryKey]
@@ -4008,8 +4057,8 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(5)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(6)] public string DeletedUser { get; set; }
         [Column] [Nullable] [Key(7)] public byte? Deleted { get; set; }
-        [Column] [Nullable] [Key(8)] public string SuppressionKeyValue { get; set; }
-        [Column] [Nullable] [Key(9)] public string SuppressionKey { get; set; }
+        [Column] [Nullable] [Key(8)] public string OverrideKeyValue { get; set; }
+        [Column] [Nullable] [Key(9)] public string OverrideKey { get; set; }
         [Column] [Nullable] [Key(10)] public int InheritedId { get; set; }
 
         [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = false,
@@ -4019,11 +4068,12 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(12)] public int? ImportId { get; set; }
         [Column] [Nullable] [Key(13)] public DateTime? DeleteExpiryDate { get; set; }
+        [Column] [Nullable] [Key(14)] public byte? OverrideKind { get; set; }
     }
 
     [Table]
     [MessagePackObject]
-    public class EntityAnalysisModelSuppressionVersion
+    public class EntityAnalysisModelOverrideVersion
     {
         [Column]
         [PrimaryKey]
@@ -4031,7 +4081,7 @@ namespace Jube.Data.Poco
         [Key(0)]
         public int Id { get; set; }
 
-        [Column] [Nullable] [Key(1)] public int? EntityAnalysisModelSuppressionId { get; set; }
+        [Column] [Nullable] [Key(1)] public int? EntityAnalysisModelOverrideId { get; set; }
         [Column] [Nullable] [Key(2)] public Guid EntityAnalysisModelGuid { get; set; }
         [Column] [Nullable] [Key(3)] public DateTime? CreatedDate { get; set; }
         [Column] [Nullable] [Key(4)] public string CreatedUser { get; set; }
@@ -4039,10 +4089,11 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(6)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(7)] public string DeletedUser { get; set; }
         [Column] [Nullable] [Key(8)] public byte? Deleted { get; set; }
-        [Column] [Nullable] [Key(9)] public string SuppressionKeyValue { get; set; }
-        [Column] [Nullable] [Key(10)] public string SuppressionKey { get; set; }
+        [Column] [Nullable] [Key(9)] public string OverrideKeyValue { get; set; }
+        [Column] [Nullable] [Key(10)] public string OverrideKey { get; set; }
         [Column] [Nullable] [Key(11)] public int? InheritedId { get; set; }
         [Column] [Nullable] [Key(12)] public DateTime? DeleteExpiryDate { get; set; }
+        [Column] [Nullable] [Key(13)] public byte? OverrideKind { get; set; }
     }
 
     [Table]

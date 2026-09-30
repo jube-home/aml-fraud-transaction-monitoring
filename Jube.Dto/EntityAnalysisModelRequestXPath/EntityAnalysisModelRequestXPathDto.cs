@@ -59,11 +59,11 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
         [NewDefault(0)]
         public int EncryptionId { get; set; }
 
-        [Description("When true, this field's extracted value is available in the Suppression page, allowing the " +
+        [Description("When true, this field's extracted value is available in the Override page, allowing the " +
                      "consequences of Rule Activations to be ignored based on a key/value match.")]
         [FormField(Group = "Behaviour", Order = 10, Widget = "switch")]
         [NewDefault(false)]
-        public bool EnableSuppression { get; set; }
+        public bool EnableOverride { get; set; }
 
         [Description("When true, this field's extracted value is serialised to the cache to support Abstraction " +
                      "Rules.")]

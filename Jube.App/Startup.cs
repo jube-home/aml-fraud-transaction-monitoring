@@ -1372,8 +1372,8 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelListValueEndpoints();
                     endpoints.MapEntityAnalysisModelDictionaryEndpoints();
                     endpoints.MapEntityAnalysisModelDictionaryKvpEndpoints();
-                    endpoints.MapEntityAnalysisModelSuppressionEndpoints();
-                    endpoints.MapEntityAnalysisModelActivationRuleSuppressionEndpoints();
+                    endpoints.MapEntityAnalysisModelOverrideEndpoints();
+                    endpoints.MapEntityAnalysisModelActivationRuleOverrideEndpoints();
                     endpoints.MapEntityAnalysisModelReprocessingRuleEndpoints();
                     endpoints.MapEntityAnalysisModelReprocessingRuleInstanceEndpoints();
                     endpoints.MapHttpProcessingCounterEndpoints();
@@ -1428,9 +1428,9 @@ namespace Jube.App
                     endpoints.MapCaseJournalEndpoints();
                     endpoints.MapCaseNoteByCaseKeyValueEndpoints();
                     endpoints.MapCaseWorkflowFormEntryByCaseKeyValueEndpoints();
-                    endpoints.MapEntityAnalysisModelActivationRuleSuppressionQueryEndpoints();
+                    endpoints.MapEntityAnalysisModelActivationRuleOverrideQueryEndpoints();
                     endpoints.MapEntityAnalysisModelSampleEndpoints();
-                    endpoints.MapEntityAnalysisModelSuppressionQueryEndpoints();
+                    endpoints.MapEntityAnalysisModelOverrideQueryEndpoints();
                     endpoints.MapEntityAnalysisModelSynchronisationNodeStatusEntriesEndpoints();
                     endpoints.MapEntityAnalysisPotentialMultiPartStringNamesEndpoints();
                     endpoints.MapEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeEndpoints();
@@ -1449,6 +1449,7 @@ namespace Jube.App
                     endpoints.MapSessionCaseJournalEndpoints();
                     endpoints.MapSessionCaseSearchCompiledSqlEndpoints();
                     endpoints.MapPreservationEndpoints();
+                    endpoints.MapPreservationSnapshotEndpoints();
                     endpoints.MapReadyEndpoints();
                     endpoints.MapAuthenticationEndpoints();
                     if (!"False".Equals(dynamicEnvironment.AppSettings("EnableMockEndpoints"),

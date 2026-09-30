@@ -28,7 +28,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
         public bool ResponsePayload { get; set; }
         public int SearchKeyCacheFetchLimit { get; set; }
         public bool ReportTable { get; set; }
-        public bool EnableSuppression { get; set; }
+        public bool EnableOverride { get; set; }
         public string DefaultValue { get; set; }
         public int SearchKeyFetchLimit { get; set; }
         public string SearchKeyTtlInterval { get; set; }

@@ -42,8 +42,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     false,
                     "Lists Request XPaths reachable from a given Case Workflow's Model, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
-                    "EntityAnalysisModelRequestXPathGetBySuppressionKey", OperationKind.Read, true,
-                    false, "Lists Request XPaths flagged for Suppression, scoped to the caller's tenant."),
+                    "EntityAnalysisModelRequestXPathGetByOverrideKey", OperationKind.Read, true,
+                    false, "Lists Request XPaths flagged for Override, scoped to the caller's tenant."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelRequestXPathGetByEntityAnalysisModelIdByDataType", OperationKind.Read,
                     true, false,

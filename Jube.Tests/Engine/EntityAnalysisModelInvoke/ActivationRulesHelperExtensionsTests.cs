@@ -354,129 +354,323 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             prevailingId.Should().Be(2);
         }
 
-        [Fact]
-        public void ActivationRuleGetSuppressedModelReturnsFalseWhenNoSuppressionXPathsAreConfigured()
+        private static void AddOverrideKey(Context context, string name)
         {
-            var context = NewContext();
-            var suppressedRules = new List<string>();
-
-            var result = context.ActivationRuleGetSuppressedModel(ref suppressedRules);
-
-            result.Should().BeFalse();
-        }
-
-        [Fact]
-        public void ActivationRuleGetSuppressedModelReturnsFalseWhenTheSuppressionKeyIsNotInThePayload()
-        {
-            var context = NewContext();
             context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
-                    Name = "Country",
-                    EnableSuppression = true
+                    Name = name,
+                    EnableOverride = true
                 });
-            var suppressedRules = new List<string>();
-
-            var result = context.ActivationRuleGetSuppressedModel(ref suppressedRules);
-
-            result.Should().BeFalse();
         }
 
         [Fact]
-        public void ActivationRuleGetSuppressedModelReturnsTrueWhenThePayloadValueIsInTheSuppressionList()
+        public void ActivationRuleGetOverridesIgnoresARuleThatIsNotEnabledForOverride()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
-                new EntityAnalysisModelRequestXPath
+            AddOverrideKey(context, "CardFingerprint");
+            AddRule(context, "RuleA", enableOverride: false);
+            AddOverride(context, "CardFingerprint", "cdb7", "RuleA", EntityAnalysisModelOverrideKind.Suppress);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.ActivationRules.Should().BeEmpty(
+                "a rule that has not opted in to being overridden must not be overridable by data alone");
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesIgnoresAForceOnARuleThatIsNotEnabledForForce()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddRule(context, "RuleA", enableForce: false);
+            AddOverride(context, "CardFingerprint", "cdb7", "RuleA", EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.ActivationRules.Should().BeEmpty(
+                "forcing a rule that is not enabled for force would fire consequences the rule never permitted");
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesStillSuppressesARuleThatIsNotEnabledForForce()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddRule(context, "RuleA", enableForce: false);
+            AddOverride(context, "CardFingerprint", "cdb7", "RuleA", EntityAnalysisModelOverrideKind.Suppress);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.KindFor("RuleA").Should().Be(EntityAnalysisModelOverrideKind.Suppress,
+                "refusing force must not refuse suppression, which is the weaker action");
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesIgnoresARuleBoundToADifferentOverrideKey()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddOverrideKey(context, "UserId");
+            AddRule(context, "BlacklistCard", overrideKey: "CardFingerprint");
+            AddOverride(context, "UserId", "U123", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("UserId", "U123");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.ActivationRules.Should().BeEmpty(
+                "a rule declares the one key its overrides relate to, so a binding on another key is meaningless");
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesHonoursARuleBoundToItsOwnOverrideKey()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddRule(context, "BlacklistCard", overrideKey: "CardFingerprint");
+            AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard",
+                EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.KindFor("BlacklistCard").Should().Be(EntityAnalysisModelOverrideKind.Force);
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesIgnoresARuleTheModelDoesNotHave()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddOverride(context, "CardFingerprint", "cdb7", "GoneAway",
+                EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.ActivationRules.Should().BeEmpty(
+                "an override naming a rule that no longer exists must not resurrect anything");
+        }
+
+        private static void AddRule(Context context, string name, bool enableOverride = true,
+            bool enableForce = true, string? overrideKey = null)
+        {
+            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(
+                new EntityAnalysisModelActivationRule
                 {
-                    Name = "Country",
-                    EnableSuppression = true
+                    Name = name,
+                    EnableOverride = enableOverride,
+                    EnableForce = enableForce,
+                    OverrideKey = overrideKey
                 });
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
-                new Dictionary<string, List<string>>
-                {
-                    ["Country"] = ["IR", "KP"]
-                };
+        }
+
+        private static void AddOverride(Context context, string overrideKey, string overrideKeyValue,
+            string? activationRuleName, EntityAnalysisModelOverrideKind kind)
+        {
+            var overrides = context.EntityAnalysisModel.Dependencies.EntityAnalysisModelOverrides;
+
+            if (!overrides.TryGetValue(overrideKey, out var values))
+            {
+                values = new Dictionary<string, EntityAnalysisModelOverride>();
+                overrides.Add(overrideKey, values);
+            }
+
+            if (!values.TryGetValue(overrideKeyValue, out var overrideBinding))
+            {
+                overrideBinding = new EntityAnalysisModelOverride();
+                values.Add(overrideKeyValue, overrideBinding);
+            }
+
+            overrideBinding.Promote(activationRuleName, kind);
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesReturnsNoOverridesWhenNoOverrideXPathsAreConfigured()
+        {
+            var context = NewContext();
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.AllActivationRules.Should().BeNull();
+            outcome.ActivationRules.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesReturnsNoOverridesWhenTheOverrideKeyIsNotInThePayload()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "Country");
+            AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.AllActivationRules.Should().BeNull();
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesSuppressesAllActivationRulesWhenTheValueIsOverridden()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "Country");
+            AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
-            var suppressedRules = new List<string>();
 
-            var result = context.ActivationRuleGetSuppressedModel(ref suppressedRules);
+            var outcome = context.ActivationRuleGetOverrides();
 
-            result.Should().BeTrue();
+            outcome.AllActivationRules.Should().Be(EntityAnalysisModelOverrideKind.Suppress);
+            outcome.KindFor("AnyRule").Should().Be(EntityAnalysisModelOverrideKind.Suppress);
         }
 
         [Fact]
-        public void ActivationRuleGetSuppressedModelReturnsFalseWhenThePayloadValueIsNotInTheSuppressionList()
+        public void ActivationRuleGetOverridesStaysSuppressedWhenALaterKeyIsNotSuppressed()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddOverrideKey(context, "UserId");
+            AddOverride(context, "CardFingerprint", "cdb7", null, EntityAnalysisModelOverrideKind.Suppress);
+            AddOverride(context, "UserId", "U999", null, EntityAnalysisModelOverrideKind.Suppress);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("UserId", "U123");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.AllActivationRules.Should().Be(EntityAnalysisModelOverrideKind.Suppress);
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesIsSuppressedWhenOnlyALaterKeyIsSuppressed()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddOverrideKey(context, "UserId");
+            AddOverride(context, "CardFingerprint", "cdb7", null, EntityAnalysisModelOverrideKind.Suppress);
+            AddOverride(context, "UserId", "U999", null, EntityAnalysisModelOverrideKind.Suppress);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "aaaa");
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("UserId", "U999");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.AllActivationRules.Should().Be(EntityAnalysisModelOverrideKind.Suppress);
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesIsNotSuppressedWhenNoKeyIsSuppressed()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddOverrideKey(context, "UserId");
+            AddOverride(context, "CardFingerprint", "cdb7", null, EntityAnalysisModelOverrideKind.Suppress);
+            AddOverride(context, "UserId", "U999", null, EntityAnalysisModelOverrideKind.Suppress);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "aaaa");
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("UserId", "U123");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.AllActivationRules.Should().BeNull();
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesUnionsActivationRuleOverridesAcrossKeys()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddOverrideKey(context, "UserId");
+            AddRule(context, "RuleA");
+            AddRule(context, "RuleB");
+            AddRule(context, "RuleC");
+            AddOverride(context, "CardFingerprint", "cdb7", "RuleA", EntityAnalysisModelOverrideKind.Suppress);
+            AddOverride(context, "CardFingerprint", "cdb7", "RuleB", EntityAnalysisModelOverrideKind.Suppress);
+            AddOverride(context, "UserId", "U123", "RuleB", EntityAnalysisModelOverrideKind.Suppress);
+            AddOverride(context, "UserId", "U123", "RuleC", EntityAnalysisModelOverrideKind.Suppress);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("UserId", "U123");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.ActivationRules.Keys.Should().BeEquivalentTo("RuleA", "RuleB", "RuleC");
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesLetsForceWinOverSuppressAcrossKeys()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddOverrideKey(context, "UserId");
+            AddRule(context, "RuleA");
+            AddOverride(context, "CardFingerprint", "cdb7", "RuleA", EntityAnalysisModelOverrideKind.Suppress);
+            AddOverride(context, "UserId", "U123", "RuleA", EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("UserId", "U123");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.KindFor("RuleA").Should().Be(EntityAnalysisModelOverrideKind.Force);
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesLetsForceWinOverAnAllActivationRulesSuppress()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddOverride(context, "CardFingerprint", "cdb7", null, EntityAnalysisModelOverrideKind.Suppress);
+            AddRule(context, "RuleA");
+            AddRule(context, "RuleB");
+            AddOverride(context, "CardFingerprint", "cdb7", "RuleA", EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.KindFor("RuleA").Should().Be(EntityAnalysisModelOverrideKind.Force);
+            outcome.KindFor("RuleB").Should().Be(EntityAnalysisModelOverrideKind.Suppress);
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesFallsBackToTheAllActivationRulesOverride()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddOverride(context, "CardFingerprint", "cdb7", null, EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.KindFor("AnyRule").Should().Be(EntityAnalysisModelOverrideKind.Force);
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesIgnoresXPathsThatDoNotHaveOverrideEnabled()
         {
             var context = NewContext();
             context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
                     Name = "Country",
-                    EnableSuppression = true
+                    EnableOverride = false
                 });
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
-                new Dictionary<string, List<string>>
-                {
-                    ["Country"] = ["IR", "KP"]
-                };
-            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "GB");
-            var suppressedRules = new List<string>();
-
-            var result = context.ActivationRuleGetSuppressedModel(ref suppressedRules);
-
-            result.Should().BeFalse();
-        }
-
-        [Fact]
-        public void ActivationRuleGetSuppressedModelPopulatesSuppressedActivationRulesWhenAMatchIsConfigured()
-        {
-            var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
-                new EntityAnalysisModelRequestXPath
-                {
-                    Name = "Country",
-                    EnableSuppression = true
-                });
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
-                new Dictionary<string, List<string>>
-                {
-                    ["Country"] = ["IR"]
-                };
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionRules["Country"] =
-                new Dictionary<string, List<string>>
-                {
-                    ["IR"] = ["RuleA", "RuleB"]
-                };
+            AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
-            var suppressedRules = new List<string>();
 
-            context.ActivationRuleGetSuppressedModel(ref suppressedRules);
+            var outcome = context.ActivationRuleGetOverrides();
 
-            suppressedRules.Should().Equal("RuleA", "RuleB");
+            outcome.AllActivationRules.Should().BeNull();
         }
 
         [Fact]
-        public void ActivationRuleGetSuppressedModelIgnoresXPathsThatDoNotHaveSuppressionEnabled()
+        public void ActivationRuleGetOverridesDoesNotThrowWhenDependenciesHaveNotSynchronised()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
-                new EntityAnalysisModelRequestXPath
-                {
-                    Name = "Country",
-                    EnableSuppression = false
-                });
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
-                new Dictionary<string, List<string>>
-                {
-                    ["Country"] = ["IR"]
-                };
-            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
-            var suppressedRules = new List<string>();
+            AddOverrideKey(context, "CardFingerprint");
+            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelOverrides = null;
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
-            var result = context.ActivationRuleGetSuppressedModel(ref suppressedRules);
+            var outcome = context.ActivationRuleGetOverrides();
 
-            result.Should().BeFalse();
+            outcome.AllActivationRules.Should().BeNull();
+            outcome.ActivationRules.Should().BeEmpty();
         }
     }
 }

@@ -53,9 +53,9 @@ namespace Jube.App.Endpoints
                 .Produces<List<EntityAnalysisModelRequestXPathDto>>()
                 .WithName("EntityAnalysisModelRequestXPathGetByCasesWorkflowId");
 
-            group.MapGet("BySuppressionKey", GetBySuppressionKeyAsync)
+            group.MapGet("ByOverrideKey", GetByOverrideKeyAsync)
                 .Produces<List<EntityAnalysisModelRequestXPathDto>>()
-                .WithName("EntityAnalysisModelRequestXPathGetBySuppressionKey");
+                .WithName("EntityAnalysisModelRequestXPathGetByOverrideKey");
 
             group.MapGet("ByEntityAnalysisModelId/{entityAnalysisModelId:int}/ByStringIntegerFloatDataType",
                     GetByEntityAnalysisModelIdByDataTypeAsync)
@@ -249,7 +249,7 @@ namespace Jube.App.Endpoints
             }
         }
 
-        private static async Task<IResult> GetBySuppressionKeyAsync(
+        private static async Task<IResult> GetByOverrideKeyAsync(
             HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             CancellationToken token)
@@ -257,7 +257,7 @@ namespace Jube.App.Endpoints
             var user = httpContext.User.Identity?.Name;
             if (log.IsDebugEnabled)
             {
-                log.Debug($"GET {Base}/BySuppressionKey: entry user={user}");
+                log.Debug($"GET {Base}/ByOverrideKey: entry user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -266,14 +266,14 @@ namespace Jube.App.Endpoints
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
-                var result = await service.GetBySuppressionKeyAsync(token);
+                var result = await service.GetByOverrideKeyAsync(token);
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/BySuppressionKey: 403 (not authenticated) user={user}");
+                    log.Warn($"GET {Base}/ByOverrideKey: 403 (not authenticated) user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -282,7 +282,7 @@ namespace Jube.App.Endpoints
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/BySuppressionKey: 403 user={user}");
+                    log.Warn($"GET {Base}/ByOverrideKey: 403 user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -291,14 +291,14 @@ namespace Jube.App.Endpoints
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"GET {Base}/BySuppressionKey: client cancelled user={user}");
+                    log.Debug($"GET {Base}/ByOverrideKey: client cancelled user={user}");
                 }
 
                 throw;
             }
             catch (Exception e)
             {
-                log.Error($"GET {Base}/BySuppressionKey: 500 user={user}", e);
+                log.Error($"GET {Base}/ByOverrideKey: 500 user={user}", e);
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

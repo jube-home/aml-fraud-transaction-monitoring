@@ -46,8 +46,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddEntityAnalysisModelListValue(tools);
                 AddEntityAnalysisModelDictionary(tools);
                 AddEntityAnalysisModelDictionaryKvp(tools);
-                AddEntityAnalysisModelSuppression(tools);
-                AddEntityAnalysisModelActivationRuleSuppression(tools);
+                AddEntityAnalysisModelOverride(tools);
+                AddEntityAnalysisModelActivationRuleOverride(tools);
                 AddEntityAnalysisModelReprocessingRule(tools);
                 AddEntityAnalysisModelReprocessingRuleInstance(tools);
                 AddEntityAnalysisModelStagePerformanceCounter(tools);
@@ -143,9 +143,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddCaseJournal(tools);
                 AddCaseNoteByCaseKeyValue(tools);
                 AddCaseWorkflowFormEntryByCaseKeyValue(tools);
-                AddEntityAnalysisModelActivationRuleSuppressionQuery(tools);
+                AddEntityAnalysisModelActivationRuleOverrideQuery(tools);
                 AddEntityAnalysisModelSample(tools);
-                AddEntityAnalysisModelSuppressionQuery(tools);
+                AddEntityAnalysisModelOverrideQuery(tools);
                 AddEntityAnalysisModelSynchronisationNodeStatusEntries(tools);
                 AddEntityAnalysisPotentialMultiPartStringNames(tools);
                 AddEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType(tools);
@@ -206,8 +206,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddEntityAnalysisModelListValue(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelDictionary(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelDictionaryKvp(List<ServiceToolDescriptor> tools);
-        static partial void AddEntityAnalysisModelSuppression(List<ServiceToolDescriptor> tools);
-        static partial void AddEntityAnalysisModelActivationRuleSuppression(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelOverride(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelActivationRuleOverride(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelReprocessingRule(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelReprocessingRuleInstance(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelStagePerformanceCounter(List<ServiceToolDescriptor> tools);
@@ -303,9 +303,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddCaseJournal(List<ServiceToolDescriptor> tools);
         static partial void AddCaseNoteByCaseKeyValue(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowFormEntryByCaseKeyValue(List<ServiceToolDescriptor> tools);
-        static partial void AddEntityAnalysisModelActivationRuleSuppressionQuery(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelActivationRuleOverrideQuery(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelSample(List<ServiceToolDescriptor> tools);
-        static partial void AddEntityAnalysisModelSuppressionQuery(List<ServiceToolDescriptor> tools);
+        static partial void AddEntityAnalysisModelOverrideQuery(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelSynchronisationNodeStatusEntries(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisPotentialMultiPartStringNames(List<ServiceToolDescriptor> tools);
 
