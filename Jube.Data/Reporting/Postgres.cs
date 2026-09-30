@@ -62,10 +62,11 @@ namespace Jube.Data.Reporting
             return new GuardScope(connection);
         }
 
-        public Postgres(string connectionString, ILog log, bool blockProtectedRelations = false)
+        public Postgres(string connectionString, ILog log, bool blockProtectedRelations = false,
+            int? maxRetries = null)
         {
             this.blockProtectedRelations = blockProtectedRelations;
-            connection = new ResilientNpgsqlConnection(GuardedConnectionString(connectionString), log);
+            connection = new ResilientNpgsqlConnection(GuardedConnectionString(connectionString), log, maxRetries);
             try
             {
                 connection.Open();

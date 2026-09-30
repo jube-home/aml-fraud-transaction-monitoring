@@ -11,18 +11,21 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using Jube.Test.Infrastructure.ModelScaffolding;
-
-namespace Jube.Test.Load
+namespace Jube.ResilientNpgsqlConnection
 {
-    public sealed class ReprocessingLoadFixture : ModelScaffoldFixture
-    {
-        public const int BulkLimit = 5000;
+    using System.Threading;
 
-        protected override IReadOnlyDictionary<string, string> EngineSettings => new Dictionary<string, string>
+    public static class PgRetryBudget
+    {
+        public const int DefaultMaxRetries = 10;
+
+        private static int shared = DefaultMaxRetries;
+
+        public static int Shared => Volatile.Read(ref shared);
+
+        public static void ConfigureShared(int maxRetries)
         {
-            ["ReprocessingBulkLimit"] = BulkLimit.ToString()
-        };
+            Volatile.Write(ref shared, maxRetries < 0 ? 0 : maxRetries);
+        }
     }
 }

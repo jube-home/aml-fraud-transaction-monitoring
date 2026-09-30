@@ -28,6 +28,11 @@ namespace Jube.Test.ResilientNpgsql
             return new PostgresException("message", "ERROR", "ERROR", sqlState);
         }
 
+        private static NpgsqlException PoolExhausted(string message = "the connection pool has been exhausted")
+        {
+            return new NpgsqlException(message, new TimeoutException("The operation has timed out."));
+        }
+
         [Theory]
         [InlineData("25006")]
         [InlineData("08000")]
@@ -86,6 +91,47 @@ namespace Jube.Test.ResilientNpgsql
         {
             PostgresErrorClassification.WarrantsPoolClear(new SocketException()).Should().BeTrue();
             PostgresErrorClassification.WarrantsPoolClear(new TimeoutException()).Should().BeTrue();
+        }
+
+        [Fact]
+        public void AnExhaustedPoolIsRecognisedAsAConnectionAcquisitionTimeout()
+        {
+            PostgresErrorClassification.IsConnectionAcquisitionTimeout(PoolExhausted()).Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("The connection pool has been exhausted, either raise MaxPoolSize (currently 20) or Timeout (currently 15 seconds)")]
+        [InlineData("The connection pool has been exhausted, either raise MaxPoolSize (currently 400) or Timeout (currently 90 seconds)")]
+        [InlineData("Timeout during connection attempt")]
+        [InlineData("")]
+        public void RecognisingAnAcquisitionTimeoutNeverReadsTheMessage(string message)
+        {
+            PostgresErrorClassification.IsConnectionAcquisitionTimeout(PoolExhausted(message)).Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("53300")]
+        [InlineData("08006")]
+        public void AServerErrorIsNeverAConnectionAcquisitionTimeout(string sqlState)
+        {
+            PostgresErrorClassification.IsConnectionAcquisitionTimeout(For(sqlState)).Should().BeFalse();
+        }
+
+        [Fact]
+        public void ABareTimeoutIsNotAConnectionAcquisitionTimeout()
+        {
+            PostgresErrorClassification.IsConnectionAcquisitionTimeout(new TimeoutException()).Should().BeFalse();
+            PostgresErrorClassification.IsConnectionAcquisitionTimeout(new NpgsqlException("broken pipe"))
+                .Should().BeFalse();
+        }
+
+        [Fact]
+        public void AnExhaustedPoolNeitherClearsThePoolNorRecyclesTheConnection()
+        {
+            var exception = PoolExhausted();
+
+            PostgresErrorClassification.WarrantsPoolClear(exception).Should().BeFalse();
+            PostgresErrorClassification.WarrantsConnectionRecycle(exception).Should().BeFalse();
         }
 
         [Theory]

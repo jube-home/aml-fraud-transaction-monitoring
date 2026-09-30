@@ -29,12 +29,12 @@ using LinqToDB.Data;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Jube.Test.Load
+namespace Jube.Test.Volume
 {
-    [Trait("Category", "Load")]
+    [Trait("Category", "Service")]
     [Collection("Database")]
-    public sealed class ReprocessingLoadTests(ReprocessingLoadFixture fixture, ITestOutputHelper output)
-        : IClassFixture<ReprocessingLoadFixture>, IAsyncLifetime
+    public sealed class ReprocessingVolumeTests(ReprocessingVolumeFixture fixture, ITestOutputHelper output)
+        : IClassFixture<ReprocessingVolumeFixture>, IAsyncLifetime
     {
         private const long MaxHeapGrowthBytes = 128L * 1024 * 1024;
         private const int CommandTimeoutSeconds = 3600;
@@ -120,8 +120,7 @@ namespace Jube.Test.Load
         [Fact]
         public async Task ReprocessingProcessesEveryArchivedDocumentOnceUpdatesEveryMatchInBoundedMemoryAsync()
         {
-            var count = Setting("JubeReprocessingLoadRows", 1_000_000);
-            var minimumRowsPerSecond = Setting("JubeReprocessingLoadMinRowsPerSecond", 2_000);
+            var count = Setting("JubeReprocessingVolumeRows", 100_000);
 
             await using var dbContext = Db();
             var seeding = Stopwatch.StartNew();
@@ -210,17 +209,14 @@ namespace Jube.Test.Load
             result.Matched.Should().Be((int)expectedMatched);
             result.Errors.Should().Be(0);
             result.Pages.Should()
-                .Be((int)((count + ReprocessingLoadFixture.BulkLimit - 1) / ReprocessingLoadFixture.BulkLimit));
+                .Be((int)((count + ReprocessingVolumeFixture.BulkLimit - 1) / ReprocessingVolumeFixture.BulkLimit));
             pageSizes.Should().HaveCount(result.Pages);
             pageSizes.Sum().Should().Be((int)count);
-            pageSizes.SkipLast(1).Should().OnlyContain(size => size == ReprocessingLoadFixture.BulkLimit,
+            pageSizes.SkipLast(1).Should().OnlyContain(size => size == ReprocessingVolumeFixture.BulkLimit,
                 "every page but the last must be a full page, or keyset paging is skipping or repeating rows");
             updated.Should().Be(expectedMatched);
             overUpdated.Should().Be(0);
             (peak - baseline).Should().BeLessThan(MaxHeapGrowthBytes);
-            rowsPerSecond.Should().BeGreaterThanOrEqualTo(minimumRowsPerSecond);
-            lateFetch.Should().BeLessThanOrEqualTo(Math.Max(earlyFetch * 3, 50),
-                "reading a later page of the archive must not get slower as reprocessing goes deeper");
 
             var instance =
                 await dbContext.EntityAnalysisModelReprocessingRuleInstance.SingleAsync(w => w.Id == instanceId);

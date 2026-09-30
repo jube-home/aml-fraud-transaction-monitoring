@@ -34,7 +34,8 @@ namespace Jube.Data.Repository
                                                  a.state,
                                                  a.wait_event_type,
                                                  a.wait_event,
-                                                 pg_blocking_pids(a.pid),
+                                                 CASE WHEN a.wait_event_type = 'Lock'
+                                                     THEN pg_blocking_pids(a.pid) ELSE '{}'::int[] END,
                                                  a.backend_start,
                                                  a.xact_start,
                                                  EXTRACT(EPOCH FROM (now() - a.xact_start)),

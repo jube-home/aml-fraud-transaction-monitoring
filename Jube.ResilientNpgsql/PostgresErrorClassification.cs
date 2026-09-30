@@ -13,6 +13,7 @@
 
 namespace Jube.ResilientNpgsqlConnection
 {
+    using System;
     using Npgsql;
 
     public static class PostgresErrorClassification
@@ -31,8 +32,19 @@ namespace Jube.ResilientNpgsqlConnection
                    || exception.SqlState == ReadOnlyTransaction;
         }
 
+        public static bool IsConnectionAcquisitionTimeout(Exception exception)
+        {
+            return exception is NpgsqlException and not PostgresException
+                   && exception.InnerException is TimeoutException;
+        }
+
         public static bool WarrantsPoolClear(Exception exception)
         {
+            if (IsConnectionAcquisitionTimeout(exception))
+            {
+                return false;
+            }
+
             if (exception is not PostgresException postgresException)
             {
                 return true;
@@ -44,6 +56,11 @@ namespace Jube.ResilientNpgsqlConnection
 
         public static bool WarrantsConnectionRecycle(Exception exception)
         {
+            if (IsConnectionAcquisitionTimeout(exception))
+            {
+                return false;
+            }
+
             if (exception is not PostgresException postgresException)
             {
                 return true;

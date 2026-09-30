@@ -33,6 +33,7 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using Jube.Test.Service.Repository.SessionCaseSearchCompiledSql.Models;
 using LinqToDB;
+using Npgsql;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -533,7 +534,8 @@ namespace Jube.Test.Service.Repository.SessionCaseSearchCompiledSql
             {
                 ["ConnectionString"] = connectionString,
                 ["ReportConnectionString"] =
-                    "Host=localhost;Port=1;Database=postgres;Username=postgres;Password=postgres;Timeout=2;CommandTimeout=2;"
+                    new NpgsqlConnectionStringBuilder(connectionString) { Database = "ZzTestNoSuchReportDatabase" }
+                        .ConnectionString
             });
             var failingService = await SessionCaseSearchCompiledSqlService.CreateAsync(dbContext, user, TestLog.NoOp,
                 localizers, new NullServiceChangeBus(), unreachable, TestLog.NoOp);

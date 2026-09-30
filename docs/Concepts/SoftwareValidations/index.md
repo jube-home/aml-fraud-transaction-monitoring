@@ -230,10 +230,18 @@ backtracking pattern proven not to hang a request.
 # Automated Penetration Testing
 
 Everything described on this page is not only designed in but continuously verified, and not lightly: `Jube.Tests`
-runs to 19,301 individual test cases at the time of writing, across 465 files, and every one of them is checked before
-a change is considered finished. `Unit` (7,813 cases) proves logic in isolation with no database or HTTP; `Service`
-(5,292) proves it against the real Postgres database; and `Category=PenTest` (5,972) is the suite this section
-describes — real attack traffic against a real host. A dedicated page cataloguing what each individual test proves is
+holds 7,679 test methods across 484 files at the time of writing, carrying 14,837 written assertions between them,
+and every one of them is checked before a change is considered finished. Because a `[Theory]` runs once per data
+row, those methods expand to 19,530 executed cases: `Unit` (8,067) proves logic in isolation with no database or
+HTTP; `Service` (5,393) proves it against the real Postgres database, and includes the `Jube.Tests/Volume` cases
+that prove behaviour holds across more rows than fit in a single page; `PermissionParity` (20) holds the permission
+surface to its declared shape; and `Category=PenTest` (6,050) is the suite this section describes — real attack
+traffic against a real host.
+
+The assertion count is the conservative one of the three, and materially so for the pen tests: a single method there
+drives a whole corpus and checks every response as it returns, so its assertions are counted once in the source and
+made thousands of times at run time. The monitoring sweeps alone issue 25,670 requests, each checked for status,
+shape, content type, credential leakage, reflected markup, header injection and timing. A dedicated page cataloguing what each individual test proves is
 planned; for now, this is the shape of that number.
 
 The `PenTest` suite runs as ordinary xUnit tests against a real Kestrel host bound to an ephemeral local port,
@@ -306,10 +314,101 @@ all — an engine-hosting test's `StartAsync` can simply never observe `Ready` a
 since the stall happens inside the engine's own connection acquisition, several layers below anything the test itself
 can catch and log. Neither is a sign that anything is actually broken; it means the pool is undersized for the full
 suite's aggregate concurrency, not for any one test's needs. Raise `Maximum Pool Size` in `JubeTestConnectionString`
-for a full local run; a narrower `--filter` against one area under active work does not need it. The CI pipeline's
-own connection string uses the same default (`Maximum Pool Size=20`) and runs the full suite unfiltered, so it likely
-carries the same exposure and is worth revisiting there too rather than assuming a GitHub Actions runner's lower core
-count keeps it under the threshold by luck.
+for a full local run; a narrower `--filter` against one area under active work does not need it. The CI pipeline did
+carry exactly this exposure — its own connection string used `Maximum Pool Size=20` against an unfiltered run — and
+the first end-to-end run duly collapsed into it: the pool exhausted, and classes as unrelated as the backtest
+heartbeat failed in their own `InitializeAsync`. Its connection string now uses `Maximum Pool Size=100`, matching the
+fixture's own default instead of undercutting it fivefold, and `docker-compose.yml` raises the server's
+`max_connections` to 300 so the budget covers the application's pool, the monitoring service's and the test host's at
+once rather than rationing one against the others.
+
+## The shape of the nightly pipeline
+
+The nightly end-to-end workflow runs two slices — `Unit`+`Service`+`PermissionParity` and `PenTest` — each
+standing up a private copy of the whole docker-compose stack, in parallel, so the wall clock is the slower of the
+two rather than their sum. Each slice carries its own `timeout-minutes` rather than sharing a guessed ceiling,
+because a runner's capacity is not something the workflow should assume: a slice that legitimately wants an hour is
+not a problem, whereas a slice silently truncated at a number somebody estimated is. The point of the split is isolation rather than speed: one unfiltered run
+put the pen test battery's thousands of deliberately concurrent hostile requests on the same Postgres instance and
+the same Npgsql pool as the `Service` tests, and the pen test's own load starved them of connections, producing
+failures in classes that had nothing to do with anything under test.
+
+Two slices, not more, and that is a measured decision rather than a guess. It is tempting to read a slow suite as
+one that needs sharding, and the pen tests are the obvious candidate; they are not the answer here. What was
+costing the hours was two defects and one accident of measurement, described below, and with those dealt with the
+entire `Category=PenTest` battery — 6,050 tests, the payload corpora exhaustive — runs in seven minutes and
+forty-six seconds in a single process pinned to four cores, with `Unit`+`Service`+`PermissionParity` in under four.
+Sharding would have multiplied the nightly's docker and dotnet builds several times over to save nothing. The
+lesson is worth keeping: measure which tests are slow before buying parallelism to hide them. Where parallelism is
+wanted, the pen test sweeps take theirs from `Environment.ProcessorCount` rather than a literal, so a sweep widens
+on a developer's workstation and stays modest on a shared runner; the deliberate burst tests keep fixed
+concurrency, because there the load shape is the thing under test and must not vary with the hardware.
+
+### Where the hours were actually going
+
+Three tests accounted for most of the suite's wall clock, and two of them were the same defect wearing different
+clothes. `ResilientNpgsqlConnection` retries a failed connection ten times with exponential backoff capped at
+thirty seconds, so any test that provokes a retryable failure and waits for the layer to give up pays
+`2+4+8+16+30*6` — two hundred and ten seconds, to the tenth of a second, every time.
+`SessionCaseSearchCompiledSqlServiceTests` provoked it with a refused socket (`Port=1`) while proving something
+entirely unrelated: that a failed rebuild is not stamped and a later read rebuilds. It does not care *which*
+failure, so it now points at a database that does not exist, which raises `3D000` — a state the retry
+classification deliberately excludes — and the class fell from 216 seconds to one. `PenTestPostgresGuard`'s
+reconnect test provoked it more subtly: its closing assertion expects a write to be refused with `25006`, and
+`25006` is *deliberately* retryable, because a read-only transaction error after a failover means the connection
+has landed on a replica and should be recycled. Asserting it through `ResilientNpgsqlCommand` therefore bought the
+whole failover budget to reach a foregone conclusion. The write probe now runs on the underlying connection, which
+is what the test's name claims to check — that the read-only guard survives a reconnect — and the class fell from
+220 seconds to five. That `25006` is retried, recycled and pool-cleared together keeps its own coverage in
+`PostgresErrorClassificationTests`, where it costs nothing.
+
+Worth recording as a live design question rather than a defect: that same budget means an unreachable or
+failed-over Postgres costs a caller about three and a half minutes before the layer gives up. For engine work
+that is reasonable patience for a leader election. On a synchronous request path it is long past the point where
+whoever asked has gone away. `maxRetries` is already a constructor parameter with nothing configuring it, so a
+`DynamicEnvironment` key would expose it in the same shape as `PgPoolClearDebounceMilliseconds`.
+
+The third was not a defect but a measurement trap. `RuleVocabularyTests` compared the parser's token list against
+the vocabulary with FluentAssertions' `BeEquivalentTo`, which builds a structural match graph and is quadratic in
+the collection size; on a list this long that single assertion cost fifty-seven seconds. Because the assertion
+immediately above it already required the items to be unique, and the right-hand side was already distinct, set
+equality is exactly the same claim — so two `Except` assertions replace it, the class runs in under six hundred
+milliseconds, and a failure now names the offending words instead of printing a comparison graph.
+
+Coverage is deliberately *not* what pays for the wall clock here. The payload corpora are exhaustive and stay
+exhaustive — every injection seed crossed with every encoding and evasion transform, against every parameter of
+every area. Where a sweep is slow the answer is to find what is actually slow about it, not to sample the corpus
+down to fit a budget.
+
+There is no performance assertion anywhere in these suites, and that is deliberate. What used to be a `Load`
+category is now `Jube.Tests/Volume`, carrying `Category=Service`: those tests assert function *across* volume —
+that reprocessing reads every archived document exactly once, that every page but the last is full, that a backtest
+counts millions of generated rows exactly, that memory stays bounded because the work streams rather than
+materialises — all of which need more rows than fit in a page to mean anything, and none of which is a statement
+about speed. The records-per-second floors they used to carry have gone. A throughput floor measured on whatever
+hardware the gate happens to land on cannot distinguish a regression from a busy neighbour, and the one that was
+there proved it: on a four-core runner the reprocessing test recorded 741 records a second against a floor of
+2,000, while its own stage breakdown showed sanctions screening consuming 34.5 ms of each of 4,914 re-invocations.
+The floor was measuring sanctions latency. Performance testing is worth doing, but it belongs in its own suite on
+hardware whose capacity is known, where a number can be compared against the same number from yesterday.
+
+The volumes those tests use default to 100,000 rows, and `JubeBacktestVolumeRows`, `JubeBacktestVolumeDatabaseRows`
+and `JubeReprocessingVolumeRows` raise them for a deeper run. A hundred thousand is chosen as the smallest number
+that still exercises what the tests are for — many pages rather than one, a keyset cursor that has to advance, heap
+behaviour observed over enough samples to mean something — on the principle that a volume test earns its runtime by
+crossing the thresholds where behaviour changes, not by being large.
+
+A timing assertion on a shared CI runner needs care that an absolute bound cannot give it. The monitoring parameter
+sweep looks for time-blind injection by comparing a payload's latency against the area's baseline, and on a loaded
+four-core runner every request drifts past any fixed bound at once — the first run produced 723 violations against
+494 requests, almost all of them a saturated host reported as a finding. A candidate is now confirmed rather than
+reported: an unparameterised control request is issued, and unless the control comes back quickly *and* the payload
+is still slow on a second attempt, the host was merely busy and nothing is raised. Confirming a candidate is also
+what lets the bound be *tightened* rather than loosened, to baseline plus six seconds — comfortably under the
+eight-second `pg_sleep` the corpus actually plants, where the previous `baseline * 3 + 7s` was wide enough to have
+stepped straight over a genuine one. The separate absolute `SLOW` bound on the same requests is gone: it fired on
+exactly the same saturated requests, so it contributed a second violation per false positive and no signal of its
+own.
 
 # Generic Validations and Display of Error Messages
 

@@ -447,7 +447,8 @@ public sealed class AuthenticationLockoutTests(DatabaseFixture fx) : Authenticat
         outcomes.Count(o => o.Kind == AuthenticationOutcomeKind.Ok).Should().BeLessThanOrEqualTo(8);
         outcomes.Should().OnlyContain(o => o.Kind == AuthenticationOutcomeKind.Ok
                                            || o.Kind == AuthenticationOutcomeKind.Unauthorized);
-        Cookies.Issued.Should().OnlyContain(n => n == user.Name);
+        Cookies.Issued.Should().NotContain(n => n != user.Name);
+        Cookies.Issued.Count.Should().Be(outcomes.Count(o => o.Kind == AuthenticationOutcomeKind.Ok));
         Hash.RealVerifyCalls.Should().BeLessThanOrEqualTo(16);
     }
 
