@@ -80,6 +80,13 @@ Upgrading an already-bootstrapped cluster to this image is a rolling restart, on
 `patronictl list` shows the cluster healthy between each. Nothing in `patroni/patroni*.yml` changes: the whole of this
 deployment's configuration validates identically under 3.3.2 and 4.1.5 (`patroni --validate-config`).
 
+The image also wraps `patronictl` itself. Patroni's etcd credential arrives as a Docker secret that the entrypoint
+`export`s into the Patroni process, which leaves a `docker exec` shell holding `PATRONI_ETCD3_USERNAME` and no
+password, so operator commands were refused by the same authenticated etcd that the daemon talks to perfectly well.
+`/usr/local/bin/patronictl` sits ahead of the real binary on `PATH`, loads the secrets from the one definition the
+entrypoint also sources, and hands off - see [Creating
+Secrets](../DeploymentRunbook/index.html#creating-secrets) in the Deployment Runbook.
+
 > **Dev-only comparison** - the repo-root `docker-compose.yml` (single-node evaluation setup, not part of the Swarm
 > cluster) runs plain `postgres:17` rather than the Patroni-wrapped image above.
 

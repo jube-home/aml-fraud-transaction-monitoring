@@ -128,9 +128,8 @@ done
 EOF
 RUN chmod +x /post_bootstrap.sh
 
-RUN cat > /entrypoint.sh << 'EOF'
+RUN cat > /usr/local/lib/patroni-secrets.sh << 'EOF'
 #!/bin/bash
-set -e
 
 load_secret() {
     local var_name=$1
@@ -140,6 +139,20 @@ load_secret() {
     fi
 }
 
+load_patroni_secrets() {
+    load_secret "PATRONI_SUPERUSER_PASSWORD"
+    load_secret "PATRONI_REPLICATION_PASSWORD"
+    load_secret "PATRONI_ADMIN_PASSWORD"
+    load_secret "PATRONI_ETCD3_PASSWORD"
+}
+EOF
+
+RUN cat > /entrypoint.sh << 'EOF'
+#!/bin/bash
+set -e
+
+. /usr/local/lib/patroni-secrets.sh
+
 if [ ! -f /var/lib/pgbackrest/repo/.initialized ]; then
     echo "Initialising pgBackRest repo directory ownership..."
     mkdir -p /var/lib/pgbackrest/repo
@@ -148,17 +161,26 @@ if [ ! -f /var/lib/pgbackrest/repo/.initialized ]; then
     touch /var/lib/pgbackrest/repo/.initialized
 fi
 
-load_secret "PATRONI_SUPERUSER_PASSWORD"
-load_secret "PATRONI_REPLICATION_PASSWORD"
-load_secret "PATRONI_ADMIN_PASSWORD"
-load_secret "PATRONI_ETCD3_PASSWORD"
+load_patroni_secrets
 
 exec su-exec postgres patroni "$@"
 EOF
 
-RUN chmod +x /entrypoint.sh
+RUN cat > /usr/local/bin/patronictl << 'EOF'
+#!/bin/bash
+set -e
 
-ENV PATH="/opt/patroni/bin:$PATH"
+. /usr/local/lib/patroni-secrets.sh
+
+load_patroni_secrets
+
+exec /opt/patroni/bin/patronictl "$@"
+EOF
+
+RUN chmod +x /entrypoint.sh /usr/local/bin/patronictl
+
+ENV PATH="/usr/local/bin:/opt/patroni/bin:$PATH"
+ENV PATRONICTL_CONFIG_FILE=/etc/patroni.yml
 
 HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
     CMD curl -sf http://localhost:8008/health || exit 1
