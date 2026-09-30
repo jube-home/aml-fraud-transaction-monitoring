@@ -58,6 +58,9 @@ namespace Jube.DynamicEnvironment
                     "PgPoolClearDebounceMilliseconds", "5000"
                 },
                 {
+                    "PgMaxConnectionRetries", "10"
+                },
+                {
                     "EnableSearchKeyCache", "True"
                 },
                 {

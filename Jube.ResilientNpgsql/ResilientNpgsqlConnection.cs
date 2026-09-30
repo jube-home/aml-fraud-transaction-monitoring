@@ -23,12 +23,14 @@ namespace Jube.ResilientNpgsqlConnection
 
     public class ResilientNpgsqlConnection : DbConnection
     {
-        public ResilientNpgsqlConnection(string connectionString, ILog log, int maxRetries = 10)
+        public ResilientNpgsqlConnection(string connectionString, ILog log, int? maxRetries = null)
         {
+            var attempts = maxRetries ?? PgRetryBudget.Shared;
             UnderlyingConnection = new NpgsqlConnection(connectionString);
 
             FailoverPolicy = Policy
-                .Handle<NpgsqlException>(ex => ex.IsTransient)
+                .Handle<NpgsqlException>(ex =>
+                    ex.IsTransient && !PostgresErrorClassification.IsConnectionAcquisitionTimeout(ex))
                 .Or<NpgsqlException>(ex => ex.InnerException is EndOfStreamException)
                 .Or<InvalidOperationException>(ex =>
                     ex.Message.Contains("Connection is not open") ||
@@ -37,7 +39,7 @@ namespace Jube.ResilientNpgsqlConnection
                 .Or<SocketException>()
                 .Or<TimeoutException>()
                 .WaitAndRetryAsync(
-                    maxRetries,
+                    attempts,
                     (attempt, ex, _) =>
                         ex is PostgresException { SqlState: "55P03" or "40001" or "40P01" }
                             ? TimeSpan.FromMilliseconds(Random.Shared.Next(50, 500) * attempt)
@@ -66,16 +68,16 @@ namespace Jube.ResilientNpgsqlConnection
                         }
                         catch (Exception outerEx)
                         {
-                            log.Warn($"Pg Retry: {count}/{maxRetries}. Reconnect failed. {outerEx.Message}");
+                            log.Warn($"Pg Retry: {count}/{attempts}. Reconnect failed. {outerEx.Message}");
                         }
 
-                        if (count == maxRetries)
+                        if (count == attempts)
                         {
-                            log.Error($"Pg Retry exhausted: {count}/{maxRetries}. {innerEx.Message}");
+                            log.Error($"Pg Retry exhausted: {count}/{attempts}. {innerEx.Message}");
                         }
                         else
                         {
-                            log.Warn($"Pg Retry: {count}/{maxRetries}. {innerEx.Message}");
+                            log.Warn($"Pg Retry: {count}/{attempts}. {innerEx.Message}");
                         }
                     });
         }

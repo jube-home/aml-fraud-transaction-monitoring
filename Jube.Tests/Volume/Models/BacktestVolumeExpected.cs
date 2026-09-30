@@ -11,9 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-namespace Jube.Test.Load.Models
+namespace Jube.Test.Volume.Models
 {
-    internal sealed class BacktestLoadExpected
+    internal sealed class BacktestVolumeExpected
     {
         public long TruePositives { get; private set; }
         public long FalsePositives { get; private set; }

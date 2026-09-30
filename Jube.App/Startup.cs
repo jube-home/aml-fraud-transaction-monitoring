@@ -964,6 +964,8 @@ namespace Jube.App
             PoolClearGate.ConfigureShared(TimeSpan.FromMilliseconds(
                 int.Parse(dynamicEnvironment.AppSettings("PgPoolClearDebounceMilliseconds"))));
 
+            PgRetryBudget.ConfigureShared(int.Parse(dynamicEnvironment.AppSettings("PgMaxConnectionRetries")));
+
             services.AddSingleton(log);
             services.AddSingleton(dynamicEnvironment);
             return dynamicEnvironment;

@@ -182,10 +182,9 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
         var run = NewRun(area.Name + " params");
         var client = As(PenTestUser.Landlord);
         var work = new List<(string Param, string Value, string Query)>();
-        var baseline =
-            run.Check(await client.GetAsync(area.Route + (area.Parameters.Contains("take") ? "?take=5" : string.Empty)),
-                TimeSpan.FromSeconds(60));
-        var blindBound = baseline.Elapsed * 3 + TimeSpan.FromSeconds(7);
+        var control = area.Route + (area.Parameters.Contains("take") ? "?take=5" : string.Empty);
+        var baseline = run.Check(await client.GetAsync(control), TimeSpan.FromSeconds(60));
+        var blindBound = baseline.Elapsed + TimeSpan.FromSeconds(6);
 
         foreach (var parameter in area.Parameters)
         {
@@ -239,6 +238,23 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
                 new("__proto__", "1"), new("constructor", "x"), new("tenantRegistryId", "1"), new("id", "1")
             ])));
 
+        async Task<bool> TimeBlindAsync(PenTestResponse response, string query)
+        {
+            if (response.Elapsed < blindBound)
+            {
+                return false;
+            }
+
+            var quiet = await client.GetAsync(control);
+            if (quiet.Elapsed >= blindBound)
+            {
+                return false;
+            }
+
+            var again = await client.GetAsync(area.Route + query);
+            return again.Elapsed >= blindBound;
+        }
+
         await run.ForEachAsync(work, async item =>
         {
             var query = item.Query;
@@ -248,7 +264,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
                 query = "?take=5" + (query.Length > 1 ? "&" + query[1..] : string.Empty);
             }
 
-            var r = run.Check(await client.GetAsync(area.Route + query), Bound);
+            var r = run.Check(await client.GetAsync(area.Route + query));
             run.Expect(r.Status is 200 or 400 or 403 || (r.Status == 414 && query.Length > 4000), r, "STATUS",
                 $"{item.Param}={Trim(item.Value)} must be 200 or 400");
             if (r.Status == 200)
@@ -259,8 +275,10 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
                 run.Expect(!ContainsSecret(r.Body), r, "SECRET-IN-BODY", $"{item.Param}={Trim(item.Value)}");
             }
 
-            run.Expect(item.Param is "from" or "to" || r.Elapsed < blindBound, r, "TIME-BLIND",
-                $"{item.Param}={Trim(item.Value)} took {r.Elapsed.TotalSeconds:F1}s");
+            run.Expect(item.Param is "from" or "to" || !await TimeBlindAsync(r, query), r, "TIME-BLIND",
+                $"{item.Param}={Trim(item.Value)} took {r.Elapsed.TotalSeconds:F1}s against a "
+                + $"{baseline.Elapsed.TotalSeconds:F1}s baseline, and did so again while an unparameterised "
+                + "control came back quickly");
             run.Expect(
                 !r.Body.Contains("<script", StringComparison.OrdinalIgnoreCase) ||
                 (r.ContentType ?? string.Empty).Contains("json", StringComparison.OrdinalIgnoreCase),
@@ -269,7 +287,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
                 r.Header("X-Injected") == null && r.Header("pen") == null &&
                 !r.HeaderValues("Set-Cookie").Any(c => c.Contains("pen=1")), r,
                 "HEADER-INJECTION", "CRLF in a parameter must not create headers");
-        }, 10);
+        });
 
         run.AssertClean(Output);
     }

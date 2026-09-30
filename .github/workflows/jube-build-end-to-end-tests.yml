@@ -1,13 +1,31 @@
 # Proof gate: builds the real Docker images from docker-compose.yml (the same stack a developer runs locally),
 # waits for the jube container's own health check to report healthy (its startup applies migrations, so
-# "healthy" means the schema is ready), then runs the entire Unit/Service/PenTest suite against it - this is the
-# one gate we actually rely on before shipping.
+# "healthy" means the schema is ready), then runs the suite against it - this is the one gate we actually rely
+# on before shipping.
 #
-# The full suite now takes hours (the PenTest battery alone is thousands of requests per area), which is too
-# slow to gate a PR on. Instead this runs nightly against master, guarded by check-for-changes so a quiet night
-# doesn't burn hours re-testing a commit that's already been proven green. workflow_dispatch is there for an
-# on-demand run (e.g. to verify this workflow file itself, or to re-check master immediately after a fix)
-# and always executes regardless of whether master has moved.
+# The suite runs as two slices, each standing up its own private copy of the stack, in parallel, so the wall
+# clock is the slower of the two rather than their sum.
+#
+# The split is about isolation, not speed. A single unfiltered run put the pen test battery - thousands of
+# hostile requests, deliberately concurrent - on the same Postgres instance and the same Npgsql pool as the
+# Service tests, and the pen test's load starved the Service tests of connections; failures that said nothing
+# at all about the code under test. Each slice now gets its own instance and its own pool.
+#
+# Two, not more, and that is measured rather than assumed: the whole Category=PenTest battery - 6,050 tests, the
+# payload corpora exhaustive - runs in under eight minutes in one process pinned to four cores, so sharding it by
+# namespace would multiply the nightly's docker and dotnet builds several times over to save nothing. Shard when a
+# measurement says to, not before. There is no Load slice: those tests assert function across volume rather than
+# throughput, so they carry Category=Service and run in the first slice. Performance belongs in a suite of its
+# own, on hardware whose capacity is known, and not in a correctness gate.
+#
+# timeout-minutes is per slice rather than shared, because the runner's capacity is not something this workflow
+# should assume. The values are deliberately generous: a slice that needs an hour is not a problem, a slice
+# silently truncated at a guessed ceiling is.
+#
+# This runs nightly against master, guarded by check-for-changes so a quiet night doesn't burn hours re-testing
+# a commit that's already been proven green. workflow_dispatch is there for an on-demand run (e.g. to verify
+# this workflow file itself, or to re-check master immediately after a fix) and always executes regardless of
+# whether master has moved.
 
 name: Jube Build and End-to-End Tests
 
@@ -37,7 +55,7 @@ jobs:
             exit 0
           fi
 
-          last_sha=$(gh api "repos/${{ github.repository }}/actions/workflows/jube-build-end-to-end-test.yml/runs?branch=master&status=success&per_page=1" \
+          last_sha=$(gh api "repos/${{ github.repository }}/actions/workflows/jube-build-end-to-end-tests.yml/runs?branch=master&status=success&per_page=1" \
             --jq '.workflow_runs[0].head_sha // ""')
           echo "Last successful nightly run was at commit ${last_sha:-<none>}; current master HEAD is ${{ github.sha }}"
 
@@ -51,7 +69,18 @@ jobs:
     needs: check-for-changes
     if: needs.check-for-changes.outputs.changed == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: ${{ matrix.timeout }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - slice: units-and-services
+            timeout: 60
+            filter: "Category=Unit|Category=Service|Category=PermissionParity"
+          - slice: pen-test
+            timeout: 60
+            filter: "Category=PenTest"
 
     env:
       DockerComposePostgresPassword: ${{ secrets.DOCKER_COMPOSE_POSTGRES_PASSWORD }}
@@ -59,7 +88,12 @@ jobs:
       DockerComposeApiHmacKey: ${{ secrets.DOCKER_COMPOSE_API_HMAC_KEY }}
       DockerComposePasswordHashingKey: ${{ secrets.DOCKER_COMPOSE_PASSWORD_HASHING_KEY }}
       DockerComposeElementSymmetricEncryptionKey: ${{ secrets.DOCKER_COMPOSE_ELEMENT_SYMMETRIC_ENCRYPTION_KEY }}
-      JubeTestConnectionString: "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=${{ secrets.DOCKER_COMPOSE_POSTGRES_PASSWORD }};Pooling=true;Minimum Pool Size=0;Maximum Pool Size=20;"
+      # Maximum Pool Size matches the DatabaseFixture's own default rather than undercutting it by five times.
+      # xUnit parallelises by test class, several classes stand up a real engine host with a pool of its own,
+      # and a pool of 20 is exhausted by the suite's aggregate concurrency rather than by any one test's needs -
+      # the symptom being a cascade of "The connection pool has been exhausted" in classes that touch nothing
+      # related to whatever is actually broken. docker-compose.yml raises the server's max_connections to match.
+      JubeTestConnectionString: "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=${{ secrets.DOCKER_COMPOSE_POSTGRES_PASSWORD }};Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;"
 
     steps:
       - uses: actions/checkout@v5
@@ -92,11 +126,12 @@ jobs:
       - name: Build
         run: dotnet build --no-restore -c Release
 
-      - name: Run full test suite
+      - name: Run the ${{ matrix.slice }} slice
         id: first_run
         continue-on-error: true
         run: >
           dotnet test --no-build -c Release
+          --filter "${{ matrix.filter }}"
           --logger "trx;LogFileName=first-run.trx"
           --results-directory ./TestResults
 
@@ -153,13 +188,24 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-results-${{ matrix.slice }}
           path: TestResults/*.trx
           retention-days: 14
 
-      - name: Show docker-compose logs
-        if: failure()
-        run: docker compose logs
+      # Captured unconditionally rather than behind failure(): the first run is continue-on-error, so a slice
+      # that only went green on the retry leaves no failure() step behind at all, and the stack logs explaining
+      # what the first run actually hit are exactly what the next iteration of this pipeline needs to read.
+      - name: Capture the docker-compose logs
+        if: always()
+        run: docker compose logs --no-color > compose-logs.txt 2>&1 || true
+
+      - name: Upload the docker-compose logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compose-logs-${{ matrix.slice }}
+          path: compose-logs.txt
+          retention-days: 14
 
       - name: Stop the docker-compose stack
         if: always()

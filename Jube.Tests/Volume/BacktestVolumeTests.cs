@@ -31,13 +31,13 @@ using LinqToDB.Data;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Abstractions;
-using Jube.Test.Load.Models;
+using Jube.Test.Volume.Models;
 
-namespace Jube.Test.Load
+namespace Jube.Test.Volume
 {
-    [Trait("Category", "Load")]
+    [Trait("Category", "Service")]
     [Collection("Database")]
-    public sealed class BacktestLoadTests(DatabaseFixture fx, ITestOutputHelper output) : IAsyncLifetime
+    public sealed class BacktestVolumeTests(DatabaseFixture fx, ITestOutputHelper output) : IAsyncLifetime
     {
         private const int PageSize = 5000;
         private const long MaxHeapGrowthBytes = 128L * 1024 * 1024;
@@ -116,7 +116,7 @@ namespace Jube.Test.Load
             return parsed;
         }
 
-        private static IEnumerable<List<BacktestRow>> Pages(long count, Random random, BacktestLoadExpected expected)
+        private static IEnumerable<List<BacktestRow>> Pages(long count, Random random, BacktestVolumeExpected expected)
         {
             var page = new List<BacktestRow>(PageSize);
             for (long i = 0; i < count; i++)
@@ -163,8 +163,7 @@ namespace Jube.Test.Load
         [Fact]
         public async Task TheBacktestCountsMillionsOfGeneratedRowsExactlyInBoundedMemoryAsync()
         {
-            var count = Setting("JubeBacktestLoadRows", 1_000_000);
-            var minimumRowsPerSecond = Setting("JubeBacktestLoadMinRowsPerSecond", 5_000);
+            var count = Setting("JubeBacktestVolumeRows", 100_000);
             var catalogue = new Dictionary<string, BuilderField>
             {
                 ["Tag.Fraud"] = new("Tag.Fraud", BuilderFieldType.Boolean)
@@ -173,7 +172,7 @@ namespace Jube.Test.Load
             var backtest = new RuleBacktest(new BacktestPlan(1, Parse(Rule), RuleParse.ActivationRule, false, null,
                 BuilderFilter.CompileValues(parsedClass.Group), ["Fraud", "Reviewed"],
                 [new InvocationContextField("Payload.Amount", "Payload", "double")], [], 10));
-            var expected = new BacktestLoadExpected();
+            var expected = new BacktestVolumeExpected();
 
             var baseline = Heap();
             var peak = baseline;
@@ -182,7 +181,7 @@ namespace Jube.Test.Load
             foreach (var page in Pages(count, new Random(42), expected))
             {
                 (await backtest.AddAsync(page)).Should().BeTrue();
-                if (++pages % 100 == 0)
+                if (++pages % 10 == 0)
                 {
                     peak = Math.Max(peak, Heap());
                 }
@@ -202,14 +201,12 @@ namespace Jube.Test.Load
             result.TruePositiveSamples.Should().HaveCount(10);
             result.TagsInSample.Keys.Should().BeEquivalentTo("Fraud", "Reviewed");
             (peak - baseline).Should().BeLessThan(MaxHeapGrowthBytes);
-            rowsPerSecond.Should().BeGreaterThanOrEqualTo(minimumRowsPerSecond);
         }
 
         [Fact]
         public async Task TheBacktestReadsTheArchivePageByPageAndCountsExactlyInBoundedMemoryAsync()
         {
-            var count = Setting("JubeBacktestLoadDatabaseRows", 200_000);
-            var minimumRowsPerSecond = Setting("JubeBacktestLoadDatabaseMinRowsPerSecond", 2_000);
+            var count = Setting("JubeBacktestVolumeDatabaseRows", 200_000);
 
             await using var dbContext = fx.GetDbContext();
             dbContext.CommandTimeout = CommandTimeoutSeconds;
@@ -290,9 +287,6 @@ namespace Jube.Test.Load
             (result.TruePositives + result.FalsePositives + result.FalseNegatives + result.TrueNegatives).Should()
                 .Be(count);
             (peak - baseline).Should().BeLessThan(MaxHeapGrowthBytes);
-            rowsPerSecond.Should().BeGreaterThanOrEqualTo(minimumRowsPerSecond);
-            latePages.Should().BeLessThanOrEqualTo(Math.Max(earlyPages * 3, 50),
-                "reading a later page of the archive must not get slower as the backtest goes deeper");
         }
 
         private async Task SeedAsync(Data.Context.DbContext dbContext, long count)

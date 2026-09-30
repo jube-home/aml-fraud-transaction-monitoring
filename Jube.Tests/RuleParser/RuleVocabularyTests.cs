@@ -24,13 +24,14 @@ namespace Jube.Test.RuleParser
         [Fact]
         public void EveryWordTheParserAllowsIsListedOnceExceptCompilerNames()
         {
-            var words = RuleVocabulary.Build(["PadLeft"]);
+            var words = RuleVocabulary.Build(["PadLeft"]).Select(w => w.Name.ToUpperInvariant()).ToList();
             var allowed = new Jube.Parser.Parser(null!, ["PadLeft"]).RuleScriptTokens
                 .Where(t => !t.Contains('<') && !t.Contains('$') && !t.StartsWith("get_") && !t.StartsWith("set_"))
                 .Select(t => t.ToUpperInvariant()).Distinct().ToList();
 
-            words.Select(w => w.Name.ToUpperInvariant()).Should().OnlyHaveUniqueItems();
-            words.Select(w => w.Name.ToUpperInvariant()).Should().BeEquivalentTo(allowed);
+            words.GroupBy(w => w).Where(g => g.Count() > 1).Select(g => g.Key).Should().BeEmpty();
+            words.Except(allowed).Should().BeEmpty("the vocabulary lists a word the parser does not allow");
+            allowed.Except(words).Should().BeEmpty("the parser allows a token the vocabulary does not list");
         }
 
         [Fact]

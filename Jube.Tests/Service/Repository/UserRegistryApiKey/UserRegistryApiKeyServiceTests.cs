@@ -49,9 +49,11 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
 
         private readonly List<int> createdApiKeyIds = [];
 
+        private static readonly Dictionary<string, string> hmacKey =
+            new() { ["ApiHmacKey"] = $"{DatabaseFixture.Prefix}HmacSecretForTests" };
+
         public Task InitializeAsync()
         {
-            Environment.SetEnvironmentVariable("ApiHmacKey", $"{DatabaseFixture.Prefix}HmacSecretForTests");
             return Task.CompletedTask;
         }
 
@@ -70,7 +72,7 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
         {
             return UserRegistryApiKeyService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp,
                 localizers, serviceChangeBus ?? new NullServiceChangeBus(),
-                TestDynamicEnvironment.Create(),
+                TestDynamicEnvironment.Create(hmacKey),
                 cacheInvalidator ?? NullUserRegistryApiKeyCacheInvalidator.Instance, auditLog ?? TestLog.NoOp);
         }
 
