@@ -87,7 +87,8 @@ namespace Jube.Test.Cluster
                 body.Add(line);
             }
 
-            path.Should().BeNull("every heredoc opened in the Dockerfile has to be terminated");
+            (path is null).Should()
+                .BeTrue($"the heredoc opened for '{path}' has to be terminated with EOF");
 
             return files;
         }
