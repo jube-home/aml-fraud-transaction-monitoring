@@ -19,6 +19,7 @@ using Xunit;
 
 namespace Jube.Test.Engine.Metrics
 {
+    [Trait("Category", "Unit")]
     public class EtcdApiResponseTests
     {
         private const string UserNameEmptyBody =

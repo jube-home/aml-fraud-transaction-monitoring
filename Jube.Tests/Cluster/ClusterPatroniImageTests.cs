@@ -22,6 +22,7 @@ using Xunit;
 
 namespace Jube.Test.Cluster
 {
+    [Trait("Category", "Unit")]
     public class ClusterPatroniImageTests
     {
         private const string Loader = "/usr/local/lib/patroni-secrets.sh";
