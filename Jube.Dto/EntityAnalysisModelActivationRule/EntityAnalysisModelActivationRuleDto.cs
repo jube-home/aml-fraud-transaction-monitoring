@@ -25,7 +25,7 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Review", Order = 20)]
     [FormGroup("Rule", Order = 30)]
-    [FormGroup("Suppression", Order = 40)]
+    [FormGroup("Override", Order = 40)]
     [FormGroup("Case Workflow", Order = 50)]
     [FormGroup("Response Elevation", Order = 60)]
     [FormGroup("Notification", Order = 70, Collapsed = true)]
@@ -73,11 +73,28 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
         [Forms.Editor("RuleBuilder")]
         public string? CoderRuleScript { get; set; }
 
-        [Description("When true, this Activation Rule's matches are eligible for suppression (see the separate " +
-                     "Activation Rule Suppression configuration).")]
-        [FormField(Group = "Suppression", Order = 10, Widget = "switch")]
+        [Description("When true, this Activation Rule's matches are eligible for override (see the separate " +
+                     "Activation Rule Override configuration).")]
+        [FormField(Group = "Override", Order = 10, Widget = "switch")]
         [NewDefault(false)]
-        public bool EnableSuppression { get; set; }
+        public bool EnableOverride { get; set; }
+
+        [Description("When true, an Override against this Activation Rule may be of kind Force, which treats " +
+                     "the rule as matched for the overridden value without evaluating it, so its Response " +
+                     "Elevation, Case and Notification all fire. Withheld by default, because forcing a rule " +
+                     "raises consequences whereas suppressing one only withholds them.")]
+        [FormField(Group = "Override", Order = 20, Widget = "switch")]
+        [EnabledWhen(nameof(EnableOverride), ConditionOp.Equals, true)]
+        [NewDefault(false)]
+        public bool EnableForce { get; set; }
+
+        [Description("The single Request XPath, of those with Enable Override set, that Overrides against this " +
+                     "Activation Rule relate to. An Override bound on any other key is ignored. Leave empty to " +
+                     "accept an Override on any override-enabled key, which is only sensible for a rule that " +
+                     "is not tied to one field. A rule needing more than one key is two rules.")]
+        [FormField(Group = "Override", Order = 30)]
+        [EnabledWhen(nameof(EnableOverride), ConditionOp.Equals, true)]
+        public string? OverrideKey { get; set; }
 
         [Description("When true, a Case is created as a consequence of this Activation Rule matching.")]
         [FormField(Group = "Case Workflow", Order = 10, Widget = "switch")]

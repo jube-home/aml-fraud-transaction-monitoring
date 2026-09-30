@@ -147,6 +147,7 @@ namespace Jube.Data.Repository
         }
 
         public async Task UpdateCounterAsync(int id, long evaluationCounter, long activationCounter,
+            long forcedActivationCounter,
             DateTime activationCounterDate, CancellationToken token = default)
         {
             await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
@@ -159,6 +160,8 @@ namespace Jube.Data.Repository
                         && (d.Deleted == 0 || d.Deleted == null))
                     .Set(s => s.ActivationCounter, s => (s.ActivationCounter ?? 0) + activationCounter)
                     .Set(s => s.EvaluationCounter, s => (s.EvaluationCounter ?? 0) + evaluationCounter)
+                    .Set(s => s.ForcedActivationCounter,
+                        s => (s.ForcedActivationCounter ?? 0) + forcedActivationCounter)
                     .Set(s => s.ActivationCounterDate,
                         s => s.ActivationCounterDate == null || s.ActivationCounterDate < activationCounterDate
                             ? activationCounterDate
@@ -166,7 +169,8 @@ namespace Jube.Data.Repository
                     .UpdateAsync(token).ConfigureAwait(false);
 
                 await new EntityAnalysisModelActivationRuleCounterHistoryRepository(dbContext)
-                    .InsertAsync(id, evaluationCounter, activationCounter, Dns.GetHostName(), token)
+                    .InsertAsync(id, evaluationCounter, activationCounter, forcedActivationCounter, Dns.GetHostName(),
+                        token)
                     .ConfigureAwait(false);
 
                 await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);

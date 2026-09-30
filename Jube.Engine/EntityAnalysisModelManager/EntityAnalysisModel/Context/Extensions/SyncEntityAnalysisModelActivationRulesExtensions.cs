@@ -293,6 +293,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                             }
 
+                            modelActivationRule.EnableOverride = record.EnableOverride == 1;
+                            modelActivationRule.EnableForce = record.EnableForce == 1;
+                            modelActivationRule.OverrideKey = record.OverrideKey;
+
+                            if (context.Services.Log.IsDebugEnabled)
+                            {
+                                context.Services.Log.Debug(
+                                    $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set Enable Override as {modelActivationRule.EnableOverride}, Enable Force as {modelActivationRule.EnableForce} and Override Key as {modelActivationRule.OverrideKey}.");
+                            }
+
                             if (record.ResponseElevationForeColor != null)
                             {
                                 modelActivationRule.ResponseElevationForeColor = record.ResponseElevationForeColor;
@@ -1051,6 +1061,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             Interlocked.Exchange(ref previousActivationRule.EvaluationCounter, 0);
                         newActivationRule.ActivationCounter =
                             Interlocked.Exchange(ref previousActivationRule.ActivationCounter, 0);
+                        newActivationRule.ForcedActivationCounter =
+                            Interlocked.Exchange(ref previousActivationRule.ForcedActivationCounter, 0);
                         newActivationRule.ActivationCounterDate = previousActivationRule.ActivationCounterDate;
                     }
 

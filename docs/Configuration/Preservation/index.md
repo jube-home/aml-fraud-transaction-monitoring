@@ -40,7 +40,12 @@ in the case of:
 * Exhaustive models, including training data, which has the potential to be very large.
 * Lists and List Values, which has the potential to contain sensitive or production data.
 * Dictionaries and Dictionary Values, which has the potential to contain sensitive or production data.
-* Suppressions, which has the potential to contain sensitive or production data.
+
+Overrides are deliberately **not** carried by Preservation, in either direction.  An override suppresses or
+forces an Activation Rule for one live key value, such as a card or a customer;  it is operational data belonging
+to a running estate, not model configuration, and moving it between environments would carry production decisions
+into places they were never meant to reach.  Overrides are administered on the Override page and expire on their
+own Delete Expiry Date.
 
 Visualisation Registry (reports configuration) data, and all data rolling up to Visualisation Registries, can be
 selectively
@@ -99,7 +104,6 @@ The Preservation screen comprises the following:
 |------------------------|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | Encryption Password    | SuperSecretPasswordToProtectExport | Subject to the encryption scheme described below a password, rather encryption key, to protect the contents of the .jemp file downloaded. |
 | Include Exhaustive     | True                               | A flag to indicate that the Exhaustive models and training data should be included in either the Import or the Export.                    |
-| Include Suppressions   | True                               | A flag to indicate that the Suppression data should be included in either the Import or the Export.                                       |
 | Include Lists          | True                               | A flag to indicate that the Lists and List Values data should be included in either the Import or the Export.                             |
 | Include Dictionaries   | True                               | A flag to indicate that the Dictionaries and Dictionary Values data should be included in either the Import or the Export.                |
 | Include Visualisations | True                               | A flag to indicate that the Visualisation data should be included in either the Import or the Export.                                     |
@@ -144,15 +148,17 @@ mere
 
 ![FileSize.png](FileSize.png)
 
-By contrast that same data in YAML when peeked would be 140kb.
+By contrast that same data in JSON when peeked would be appreciably larger, being neither compressed nor encrypted.
 
 The small size and its encryption allows for the simple exchange of files via email, irrespective of content filtering.
 
 # Peek
 
 Peek is functionality to export a human-readable serialisation of the export model containing all included data without
-any encryption or compression. The serialisation format is YAML, as it was judged to be the most human-readable and
-initiative to compare versions with file difference tooling.
+any encryption or compression. The serialisation format is indented JSON, held in a `json` column, which preserves
+the text exactly as it was written. That matters because a peek exists to be compared against another peek with file
+difference tooling: a `jsonb` column would reorder keys and discard the formatting, and two peeks of identical
+configuration could then differ on the page for no reason.
 
 A human-readable peek of the export model containing all included data cannot be imported nor recovered.
 
@@ -161,17 +167,73 @@ compared
 to one another at a point in time, which is useful for identifying changes without necessitating inspection of the audit
 tables of Jube.
 
-While it is technically feasible to deserialize YAML, it is not supported given the risks of injection attacks. For the
-avoidance of doubt, only .jemp files can be imported, and the YAML must in no way be relied on as a means to
-preserve definitions.
+A peek is not an import format. For the avoidance of doubt, only .jemp files can be imported from a file, and a peek
+must in no way be relied on as a means to preserve definitions. Where a restorable point in time is wanted, take a
+Preservation Snapshot, which holds the same JSON and can be imported back.
 
-To obtain a YAML, upon configuring the parameters as would be required for Export, identify the Peek hyperlink:
+To obtain a peek, upon configuring the parameters as would be required for Export, identify the Peek hyperlink:
 
 ![IdentifyPeekLink.png](IdentifyPeekLink.png)
 
-Click the Peek Hyperlink which will open the YAML data in a new tab:
+Click the Peek Hyperlink which will open the JSON data in a new tab:
 
 ![YAMLRender.png](YAMLRender.png)
+
+# Snapshots
+
+An Export produces an encrypted file for a person to keep. A **Snapshot** is the same export body, kept inside Jube
+instead, stored as JSON in a jsonb column so that it can be both restored and queried.
+
+Snapshots exist so there is always a way back. The intention is that a snapshot is taken before configuration
+changes, so the state before the change can be restored, and so the estate can be examined as it stood at a point in
+time without reading through audit tables.
+
+Snapshots are reached from Administration, Snapshots. The grid lists what has been taken for the tenant, most recent
+first, with the source, how many Models the body holds, its size, who took it and when. The body itself is never
+listed, only described.
+
+## Taking one
+
+The Take Snapshot button records the tenant's configuration as it currently stands, with an optional label for the
+reason. Nothing in the running configuration is changed by taking a snapshot.
+
+Each snapshot records **what took it**:
+
+| Source | Meaning |
+|---|---|
+| Preservation Page | A person pressed Take Snapshot |
+| Model Sync | A model synchronisation state change caused one to be taken |
+| AskJooby | AskJooby took one before changing configuration, so the change can be undone |
+
+The user is recorded in every case, including where a process forced the snapshot rather than a person asking for
+it, so it is always possible to see whose change a snapshot belongs to.
+
+## Restoring one
+
+The Import button on a row rolls the tenant back to that snapshot, by running the same import a Preservation
+package uses. **This replaces configuration and is not itself reversible**, so take a snapshot first if the current
+state matters. The button is disabled for a snapshot that did not complete or is in error.
+
+Restoring is guarded by its own permission, **Import Preservation Snapshot**, separate from the permission that
+allows taking snapshots and exporting. Taking a snapshot records state; restoring one replaces the whole tenant's
+configuration, and the two are not the same risk. On upgrade the permission is granted to the Administrator role
+alone and must be granted deliberately to any other role. Where a role does not hold it, the Import button is
+disabled rather than merely refused on use.
+
+## Why JSON rather than the encrypted package
+
+The body could have been stored as the same compressed, encrypted MessagePack an Export produces. It is stored as
+JSON so that snapshots can be **queried**: the column is `jsonb` with a GIN index, so the estate as it stood at a
+given moment can be interrogated directly, which an opaque encrypted blob could not support.
+
+Note the difference from a Peek, which is deliberate. A snapshot is `jsonb` because it is there to be queried, and
+`jsonb` normalises what it stores, reordering keys and dropping formatting. A peek is plain `json` because it is
+there to be read and diffed, and must come back exactly as written. The two therefore are not expected to match
+character for character, even where they describe the same configuration.
+
+That choice has a consequence worth stating plainly. A snapshot body is the tenant's configuration in the clear,
+inside the database. It is confined to the tenant that took it and reading it needs the Preservation permission, but
+it is not encrypted at rest in the way an exported file is.
 
 # Import Upload
 
@@ -314,8 +376,8 @@ successful, after which decompression and deserialisation is attempted.
 
 Such is the strength of the encryption scheme, subject to, at a minimum, a password encryption key, there is no
 means to recover a file should the encryption key or salt become lost. It is however possible to recover unencrypted
-bytes from the export auditing, but only on the same instance of Jube that created it, but, not unliked the reasoning
-held of for YAML, the importing of unencrypted serialisation is unsupported.
+bytes from the export auditing, but only on the same instance of Jube that created it, but, not unlike the reasoning
+held for a peek, the importing of unencrypted serialisation is unsupported.
 
 # Auditing
 
@@ -339,7 +401,7 @@ from "Import"
 
 ![ImportTable.png](ImportTable.png)
 
-The ExportPeek table details all rendering of human-readable YAML responses:
+The ExportPeek table details all rendering of human-readable JSON responses, held in a jsonb column named Json:
 
 ```sql
 select *

@@ -19,6 +19,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Cryptography;
+using Jube.Dto.Repository.PreservationSnapshot;
+using Jube.Service.Repository.PreservationSnapshot;
+using System.Text.Json;
 using Jube.Data.Context;
 using Jube.Dto.Repository.Preservation;
 using Jube.Preservation.Exceptions;
@@ -32,6 +35,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.Preservation.Models;
 using LinqToDB;
+using LinqToDB.Data;
 using MessagePack;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -91,7 +95,7 @@ namespace Jube.Test.Service.Repository.Preservation
                 .Where(w => listIdsNullable.Contains(w.EntityAnalysisModelListId)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                 .Where(w => listIds.Contains(w.Id)).DeleteAsync();
-            await dbContext.GetTable<Data.Poco.EntityAnalysisModelSuppression>()
+            await dbContext.GetTable<Data.Poco.EntityAnalysisModelOverride>()
                 .Where(w => modelGuids.Contains(w.EntityAnalysisModelGuid)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelRequestXpathVersion>()
                 .Where(w => modelIdsNullable.Contains(w.EntityAnalysisModelId)).DeleteAsync();
@@ -126,6 +130,34 @@ namespace Jube.Test.Service.Repository.Preservation
         {
             return PreservationService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp, localizers,
                 serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp, Salt, legacyFallback);
+        }
+
+        private async Task GrantPermissionAsync(Tenant tenant, int permissionSpecificationId)
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var roleRegistryId = await dbContext.RoleRegistry
+                .Where(w => w.Guid == tenant.RoleGuid)
+                .Select(s => s.Id).FirstOrDefaultAsync();
+
+            await dbContext.InsertAsync(new Data.Poco.RoleRegistryPermission
+            {
+                RoleRegistryId = roleRegistryId,
+                PermissionSpecificationId = permissionSpecificationId,
+                Active = 1,
+                CreatedDate = DateTime.UtcNow,
+                CreatedUser = tenant.UserName,
+                Version = 1,
+                Guid = Guid.NewGuid()
+            });
+        }
+
+        private static Task<PreservationSnapshotService> BuildSnapshotServiceAsync(
+            DbContext dbContext, string? userName, ILog? log = null, ILog? auditLog = null,
+            IServiceChangeBus? serviceChangeBus = null)
+        {
+            return PreservationSnapshotService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp, localizers,
+                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp, Salt, false);
         }
 
         private async Task<Tenant> CreateTenantAsync(string label, bool withPermission = true)
@@ -297,7 +329,6 @@ namespace Jube.Test.Service.Repository.Preservation
                 Password = Password,
                 Lists = true,
                 Dictionaries = true,
-                Suppressions = true,
                 Roles = roles
             };
         }
@@ -375,7 +406,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var import = await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.ImportAsync([new PreservationImportFileDto { Content = stream }], Password));
             var peek = await Assert.ThrowsAsync<ForbiddenException>(() =>
-                service.ExportPeekAsync(true, true, true, true, true));
+                service.ExportPeekAsync(true, true, true, true));
             var export = await Assert.ThrowsAsync<ForbiddenException>(() => service.ExportAsync(FullOptions()));
 
             foreach (var ex in new[] { import, peek, export })
@@ -412,16 +443,16 @@ namespace Jube.Test.Service.Repository.Preservation
 
             await using var dbContext = fx.GetDbContext();
             var serviceA = await BuildServiceAsync(dbContext, tenantA.UserName);
-            var yamlA = await serviceA.ExportPeekAsync(true, true, true, true, true);
-            yamlA.Should().Contain(seededA.ModelName).And.Contain(seededA.ListName)
+            var peekA = await serviceA.ExportPeekAsync(true, true, true, true);
+            peekA.Should().Contain(seededA.ModelName).And.Contain(seededA.ListName)
                 .And.Contain(seededA.DictionaryName);
-            yamlA.Should().NotContain(seededB.ModelName).And.NotContain(seededB.ListName)
+            peekA.Should().NotContain(seededB.ModelName).And.NotContain(seededB.ListName)
                 .And.NotContain(seededB.DictionaryName).And.NotContain(seededB.XpathName)
                 .And.NotContain(seededB.KvpKey);
 
             var serviceB = await BuildServiceAsync(dbContext, tenantB.UserName);
-            var yamlB = await serviceB.ExportPeekAsync(true, true, true, true, true);
-            yamlB.Should().Contain(seededB.ModelName).And.NotContain(seededA.ModelName);
+            var peekB = await serviceB.ExportPeekAsync(true, true, true, true);
+            peekB.Should().Contain(seededB.ModelName).And.NotContain(seededA.ModelName);
         }
 
         [Fact]
@@ -717,7 +748,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var service = await BuildServiceAsync(dbContext, tenant.UserName);
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
-                service.ExportPeekAsync(true, true, true, true, true, cts.Token));
+                service.ExportPeekAsync(true, true, true, true, cts.Token));
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 service.ExportAsync(FullOptions(), cts.Token));
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
@@ -738,7 +769,7 @@ namespace Jube.Test.Service.Repository.Preservation
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, tenant.UserName, auditLog: audit, serviceChangeBus: bus);
 
-            await service.ExportPeekAsync(false, false, false, false, false);
+            await service.ExportPeekAsync(false, false, false, false);
             await service.ExportAsync(FullOptions());
 
             audit.Entries.Count(e => e.Message.Contains("area=Preservation op=ExportPeek ")).Should().Be(1);
@@ -766,6 +797,317 @@ namespace Jube.Test.Service.Repository.Preservation
         {
             ServiceToolCatalogue.All.Select(t => t.Name)
                 .Should().NotContain(n => n.Contains("Preservation", StringComparison.OrdinalIgnoreCase));
+        }
+
+        [Fact]
+        public async Task SnapshotStoresTheExportBodyAsQueryableJsonAndReturnsItsMetadataAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapTake");
+            var seeded = await SeedTenantAsync(tenant, "SnapTake");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            var dto = await service.CreateAsync(new PreservationSnapshotRequestDto
+            {
+                Name = "before a change",
+                SnapshotSourceId = PreservationSnapshotSource.AskJooby
+            });
+
+            dto.Id.Should().BeGreaterThan(0, "the Id is the handle a rollback is quoted against");
+            dto.SnapshotSourceId.Should().Be(PreservationSnapshotSource.AskJooby);
+            dto.Name.Should().Be("before a change");
+            dto.InError.Should().BeFalse();
+            dto.CompletedDate.Should().NotBeNull();
+            dto.EntityAnalysisModelCount.Should().Be(1);
+            dto.Bytes.Should().BeGreaterThan(0);
+
+            var stored = await dbContext.PreservationSnapshot.FirstOrDefaultAsync(w => w.Id == dto.Id);
+            stored.Should().NotBeNull();
+            stored!.Json.Should().NotBeNullOrEmpty();
+            stored.TenantRegistryId.Should().Be(tenant.Id);
+
+            using var document = JsonDocument.Parse(stored.Json!);
+            document.RootElement.TryGetProperty("Payload", out var payload).Should().BeTrue();
+            payload.TryGetProperty("EntityAnalysisModel", out var models).Should().BeTrue();
+            models.EnumerateArray().Select(m => m.GetProperty("Name").GetString()).Should()
+                .Contain(seeded.ModelName, "the body must be readable as JSON, which is the point of storing it so");
+        }
+
+        [Fact]
+        public async Task SnapshotBodyIsQueryableInPostgresAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapQuery");
+            var seeded = await SeedTenantAsync(tenant, "SnapQuery");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+            var dto = await service.CreateAsync(new PreservationSnapshotRequestDto());
+
+            var containment = "[{\"Name\":\"" + seeded.ModelName + "\"}]";
+
+            var sql = "SELECT count(*)::int FROM \"PreservationSnapshot\" "
+                      + "WHERE \"Id\" = " + dto.Id + " "
+                      + "AND \"Json\" -> 'Payload' -> 'EntityAnalysisModel' @> '" + containment + "'::jsonb";
+
+            var found = await dbContext.ExecuteAsync<int>(sql);
+
+            found.Should().Be(1,
+                "the snapshot is stored as jsonb precisely so the estate can be queried at a point in time, "
+                + "so a containment query over the body must find the model it captured");
+        }
+
+        [Fact]
+        public async Task SnapshotListReturnsMetadataOnlyAndIsTenantScopedAsync()
+        {
+            var tenantA = await CreateTenantAsync("SnapA");
+            await SeedTenantAsync(tenantA, "SnapA");
+            var tenantB = await CreateTenantAsync("SnapB");
+            await SeedTenantAsync(tenantB, "SnapB");
+
+            await using var dbContext = fx.GetDbContext();
+
+            var serviceA = await BuildSnapshotServiceAsync(dbContext, tenantA.UserName);
+            var created = await serviceA.CreateAsync(new PreservationSnapshotRequestDto { Name = "tenant a" });
+
+            var listA = await serviceA.GetAsync();
+            listA.Should().ContainSingle(s => s.Id == created.Id);
+
+            var serviceB = await BuildSnapshotServiceAsync(dbContext, tenantB.UserName);
+            var listB = await serviceB.GetAsync();
+            listB.Should().NotContain(s => s.Id == created.Id,
+                "another tenant must never see this tenant's snapshots");
+
+            var fromB = async () => await serviceB.GetByIdAsync(created.Id);
+            await fromB.Should().ThrowAsync<Jube.Service.Exceptions.Repository.PreservationSnapshot.NotFoundException>(
+                "a snapshot of another tenant must be indistinguishable from one that does not exist");
+        }
+
+        [Fact]
+        public async Task SnapshotImportRestoresTheConfigurationItHoldsAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapBack");
+            var seeded = await SeedTenantAsync(tenant, "SnapBack");
+            await GrantPermissionAsync(tenant, 63);
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            var snapshot = await service.CreateAsync(new PreservationSnapshotRequestDto { Name = "rollback point" });
+
+            var renamed = $"{DatabaseFixture.Prefix}Changed{Guid.NewGuid():N}"[..40];
+            await dbContext.EntityAnalysisModel.Where(w => w.Id == seeded.ModelId)
+                .Set(s => s.Name, renamed).UpdateAsync();
+
+            (await dbContext.EntityAnalysisModel.CountAsync(w => w.TenantRegistryId == tenant.Id
+                                                                 && w.Name == seeded.ModelName))
+                .Should().Be(0, "the model was renamed, so the original name is gone before the rollback");
+
+            var imported = await service.ImportAsync(snapshot.Id);
+            imported.Id.Should().Be(snapshot.Id);
+
+            (await dbContext.EntityAnalysisModel.CountAsync(w => w.TenantRegistryId == tenant.Id
+                                                                 && w.Name == seeded.ModelName))
+                .Should().Be(1, "importing the snapshot must restore the configuration it captured");
+        }
+
+        [Fact]
+        public async Task SnapshotOperationsAreRefusedWithoutThePreservationPermissionAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapNoPerm", false);
+            await SeedTenantAsync(tenant, "SnapNoPerm");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.GetAsync());
+            await Assert.ThrowsAsync<ForbiddenException>(() =>
+                service.CreateAsync(new PreservationSnapshotRequestDto()));
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ImportAsync(1));
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(1));
+
+            (await dbContext.PreservationSnapshot.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
+        }
+
+        [Fact]
+        public async Task DeletedSnapshotStopsBeingListedAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapDel");
+            await SeedTenantAsync(tenant, "SnapDel");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            var created = await service.CreateAsync(new PreservationSnapshotRequestDto());
+            (await service.GetAsync()).Should().ContainSingle(s => s.Id == created.Id);
+
+            await service.DeleteAsync(created.Id);
+
+            (await service.GetAsync()).Should().NotContain(s => s.Id == created.Id);
+            var gone = async () => await service.GetByIdAsync(created.Id);
+            await gone.Should().ThrowAsync<Jube.Service.Exceptions.Repository.PreservationSnapshot.NotFoundException>();
+        }
+
+
+        [Fact]
+        public async Task SnapshotImportIsRefusedWithoutItsOwnPermissionEvenWithPreservationAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapImpPerm");
+            var seeded = await SeedTenantAsync(tenant, "SnapImpPerm");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            var snapshot = await service.CreateAsync(new PreservationSnapshotRequestDto());
+
+            (await service.GetAsync()).Should().ContainSingle(x => x.Id == snapshot.Id,
+                "listing needs only the Preservation permission");
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ImportAsync(snapshot.Id));
+
+            var renamed = $"{DatabaseFixture.Prefix}Untouched{Guid.NewGuid():N}"[..40];
+            await dbContext.EntityAnalysisModel.Where(w => w.Id == seeded.ModelId)
+                .Set(s => s.Name, renamed).UpdateAsync();
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ImportAsync(snapshot.Id));
+
+            (await dbContext.EntityAnalysisModel.CountAsync(w => w.Id == seeded.ModelId && w.Name == renamed))
+                .Should().Be(1,
+                    "a refused import must not have replaced any configuration");
+
+            await GrantPermissionAsync(tenant, 63);
+
+            await using var permittedContext = fx.GetDbContext();
+            var permitted = await BuildSnapshotServiceAsync(permittedContext, tenant.UserName);
+            await permitted.ImportAsync(snapshot.Id);
+
+            (await permittedContext.EntityAnalysisModel.CountAsync(w => w.TenantRegistryId == tenant.Id
+                                                                        && w.Name == seeded.ModelName))
+                .Should().Be(1, "granting the import permission must let the rollback through");
+        }
+
+
+        [Fact]
+        public async Task ProcessSnapshotBypassesPermissionButStillRecordsTheUserAndStaysInTenantAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapProc", false);
+            var seeded = await SeedTenantAsync(tenant, "SnapProc");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() =>
+                service.CreateAsync(new PreservationSnapshotRequestDto()));
+
+            var snapshot = await service.CreateForProcessAsync(new PreservationSnapshotRequestDto
+            {
+                SnapshotSourceId = PreservationSnapshotSource.ModelSync,
+                Name = "model sync"
+            });
+
+            snapshot.Id.Should().BeGreaterThan(0,
+                "a process has already decided to act, so it is not gated by the user's permission");
+            snapshot.SnapshotSourceId.Should().Be(PreservationSnapshotSource.ModelSync);
+            snapshot.CreatedUser.Should().Be(tenant.UserName,
+                "the user is recorded even where the process, not the user, forced the snapshot");
+
+            var stored = await dbContext.PreservationSnapshot.FirstOrDefaultAsync(w => w.Id == snapshot.Id);
+            stored.Should().NotBeNull();
+            stored!.TenantRegistryId.Should().Be(tenant.Id,
+                "bypassing permission must never bypass tenant scoping");
+            stored.Json.Should().Contain(seeded.ModelName);
+        }
+
+        [Fact]
+        public async Task ProcessSnapshotRefusesToActForThePreservationPageSourceAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapProcSrc", false);
+            await SeedTenantAsync(tenant, "SnapProcSrc");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+                service.CreateForProcessAsync(new PreservationSnapshotRequestDto
+                {
+                    SnapshotSourceId = PreservationSnapshotSource.PreservationPage
+                }));
+
+            (await dbContext.PreservationSnapshot.CountAsync(w => w.TenantRegistryId == tenant.Id))
+                .Should().Be(0,
+                    "the Preservation page always means a person acting directly, so it may not use the "
+                    + "process path to sidestep the permission");
+        }
+
+        [Fact]
+        public async Task ProcessImportBypassesThePermissionAndRestoresAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapProcImp", false);
+            var seeded = await SeedTenantAsync(tenant, "SnapProcImp");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            var snapshot = await service.CreateForProcessAsync(new PreservationSnapshotRequestDto
+            {
+                SnapshotSourceId = PreservationSnapshotSource.AskJooby
+            });
+
+            var renamed = $"{DatabaseFixture.Prefix}Changed{Guid.NewGuid():N}"[..40];
+            await dbContext.EntityAnalysisModel.Where(w => w.Id == seeded.ModelId)
+                .Set(s => s.Name, renamed).UpdateAsync();
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ImportAsync(snapshot.Id));
+
+            await service.ImportForProcessAsync(snapshot.Id);
+
+            (await dbContext.EntityAnalysisModel.CountAsync(w => w.TenantRegistryId == tenant.Id
+                                                                 && w.Name == seeded.ModelName))
+                .Should().Be(1, "AskJooby must be able to roll back the change it made");
+        }
+
+
+        [Fact]
+        public async Task SnapshotBodyIsReturnedWholeAndIsTenantScopedAsync()
+        {
+            var tenantA = await CreateTenantAsync("SnapBodyA");
+            var seededA = await SeedTenantAsync(tenantA, "SnapBodyA");
+            var tenantB = await CreateTenantAsync("SnapBodyB");
+            await SeedTenantAsync(tenantB, "SnapBodyB");
+
+            await using var dbContext = fx.GetDbContext();
+            var serviceA = await BuildSnapshotServiceAsync(dbContext, tenantA.UserName);
+            var snapshot = await serviceA.CreateAsync(new PreservationSnapshotRequestDto());
+
+            var body = await serviceA.GetBodyAsync(snapshot.Id);
+
+            body.Should().NotBeNullOrEmpty();
+            using var document = JsonDocument.Parse(body);
+            document.RootElement.GetProperty("Payload").GetProperty("EntityAnalysisModel")
+                .EnumerateArray().Select(m => m.GetProperty("Name").GetString()).Should()
+                .Contain(seededA.ModelName, "the whole captured body must come back, not a summary of it");
+
+            var serviceB = await BuildSnapshotServiceAsync(dbContext, tenantB.UserName);
+            var fromB = async () => await serviceB.GetBodyAsync(snapshot.Id);
+            await fromB.Should().ThrowAsync<Jube.Service.Exceptions.Repository.PreservationSnapshot.NotFoundException>(
+                "the body of another tenant's snapshot is the whole of its configuration and must never be served");
+        }
+
+        [Fact]
+        public async Task SnapshotBodyIsRefusedWithoutThePreservationPermissionAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapBodyPerm", false);
+            await SeedTenantAsync(tenant, "SnapBodyPerm");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            var snapshot = await service.CreateForProcessAsync(new PreservationSnapshotRequestDto
+            {
+                SnapshotSourceId = PreservationSnapshotSource.ModelSync
+            });
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.GetBodyAsync(snapshot.Id));
         }
     }
 }

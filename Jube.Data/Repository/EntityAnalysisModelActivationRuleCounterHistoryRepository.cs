@@ -23,13 +23,14 @@ namespace Jube.Data.Repository
     public class EntityAnalysisModelActivationRuleCounterHistoryRepository(DbContext dbContext)
     {
         public Task InsertAsync(int entityAnalysisModelActivationRuleId, long evaluationCounter, long activationCounter,
-            string instance, CancellationToken token = default)
+            long forcedActivationCounter, string instance, CancellationToken token = default)
         {
             return dbContext.InsertAsync(new EntityAnalysisModelActivationRuleCounterHistory
             {
                 EntityAnalysisModelActivationRuleId = entityAnalysisModelActivationRuleId,
                 EvaluationCounter = evaluationCounter,
                 ActivationCounter = activationCounter,
+                ForcedActivationCounter = forcedActivationCounter,
                 Instance = instance,
                 CreatedDate = DateTime.UtcNow
             }, token: token);

@@ -12,19 +12,17 @@
  */
 
 $(document).ready(function () {
-    const exhaustiveSwitch = $("#Exhaustive").kendoSwitch({ checked: true }).data("kendoSwitch");
-    const suppressionsSwitch = $("#Suppressions").kendoSwitch({ checked: true }).data("kendoSwitch");
-    const listsSwitch = $("#Lists").kendoSwitch({ checked: true }).data("kendoSwitch");
-    const dictionariesSwitch = $("#Dictionaries").kendoSwitch({ checked: true }).data("kendoSwitch");
-    const visualisationsSwitch = $("#Visualisations").kendoSwitch({ checked: true }).data("kendoSwitch");
-    const rolesSwitch = $("#Roles").kendoSwitch({ checked: true }).data("kendoSwitch");
+    const exhaustiveSwitch = $("#Exhaustive").kendoSwitch({checked: true}).data("kendoSwitch");
+    const listsSwitch = $("#Lists").kendoSwitch({checked: true}).data("kendoSwitch");
+    const dictionariesSwitch = $("#Dictionaries").kendoSwitch({checked: true}).data("kendoSwitch");
+    const visualisationsSwitch = $("#Visualisations").kendoSwitch({checked: true}).data("kendoSwitch");
+    const rolesSwitch = $("#Roles").kendoSwitch({checked: true}).data("kendoSwitch");
 
     $("#Download").kendoButton({
         click: async function () {
             const data = {
                 Password: $("#Password").val(),
                 Exhaustive: exhaustiveSwitch.check(),
-                Suppressions: suppressionsSwitch.check(),
                 Lists: listsSwitch.check(),
                 Dictionaries: dictionariesSwitch.check(),
                 Visualisations: visualisationsSwitch.check(),
@@ -57,7 +55,6 @@ $(document).ready(function () {
 
         const params = new URLSearchParams({
             Exhaustive: exhaustiveSwitch.check(),
-            Suppressions: suppressionsSwitch.check(),
             Lists: listsSwitch.check(),
             Dictionaries: dictionariesSwitch.check(),
             Visualisations: visualisationsSwitch.check(),

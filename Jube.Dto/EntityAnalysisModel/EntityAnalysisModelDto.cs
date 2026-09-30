@@ -126,7 +126,7 @@ namespace Jube.Dto.EntityAnalysisModel
         public int MaxResponseElevationValue { get; init; }
 
         [Description("Maximum number of response elevations permitted within the rolling period before further " +
-                     "elevations are suppressed to zero.")]
+                     "elevations are overridden to zero.")]
         [FormField(Group = "Response Elevation Limit", Order = 50, Widget = "number")]
         [VisibleWhen(nameof(EnableResponseElevationLimit), true)]
         [RequiredWhen(nameof(EnableResponseElevationLimit), true)]

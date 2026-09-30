@@ -104,7 +104,7 @@ with ML outputs for comprehensive detection.
 - Velocity and aggregation checks
 - Automatically check transactions and counterparties against global sanctions lists for
   regulatory compliance
-- Time-to-live counters and suppression
+- Time-to-live counters and overrides
 - Fully integrates with ML outputs for combined detection
 - Online or background preparation of velocity and other aggregations depending on data volume
 

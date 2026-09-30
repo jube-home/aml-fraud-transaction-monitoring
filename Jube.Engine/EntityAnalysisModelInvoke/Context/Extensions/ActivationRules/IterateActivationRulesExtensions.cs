@@ -23,6 +23,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers
 using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
 using RabbitMQ.Client;
 
@@ -40,10 +41,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 CacheService cacheService, Dictionary<int, EntityAnalysisModel> availableModels,
                 IModel rabbitMqChannel)
         {
-            var rulesCount = context.EntityAnalysisModel.Collections.ModelActivationRules.Count;
             var prevailingActivationRuleName = string.Empty;
             var responseElevationHighWaterMark = 0d;
-            var suppressedActivationRules = new List<string>(rulesCount);
+            var overrideBinding = context.ActivationRuleGetOverrides();
             var activationRuleCount = 0;
             CreateCase createCase = null;
             int? prevailingActivationRuleId = null;
@@ -57,57 +57,79 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
                 try
                 {
+                    var overrideKind = evaluateActivationRule.EnableOverride
+                        ? overrideBinding.KindFor(evaluateActivationRule.Name)
+                        : null;
+
+                    var forced = overrideKind == EntityAnalysisModelOverrideKind.Force;
+
+                    if (!evaluateActivationRule.EnableOverride)
+                    {
+                        context.TraceLog(
+                            $"activation rule {evaluateActivationRule.Id} is not enabled for override, so any override naming it is ignored.");
+                    }
+
                     var suppressed = false;
-                    if (context.ActivationRuleGetSuppressedModel(ref suppressedActivationRules) ||
-                        context.CheckSuppressedResponseElevation())
+                    if (overrideKind == EntityAnalysisModelOverrideKind.Suppress)
                     {
                         suppressed = true;
 
                         context.TraceLog(
-                            $"activation rule {evaluateActivationRule.Id} is suppressed at the model level or has exceeded response elevation counter at {context.EntityAnalysisModel.ConcurrentQueues.ResponseElevationEntries.Count}.");
-                    }
-                    else
-                    {
-                        context.TraceLog(
-                            $"activation rule {evaluateActivationRule.Id} is not suppressed at the model level, will test at rule level.");
-
-                        if (!evaluateActivationRule.EnableReprocessing && context
-                                .EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId
-                                .HasValue)
-                        {
-                            suppressed = true;
-
-                            context.TraceLog(
-                                $"activation rule {evaluateActivationRule.Id} is suppressed at the activation rule level because of reprocessing.");
-                        }
-                        else if (suppressedActivationRules is { Count: > 0 })
-                        {
-                            suppressed = suppressedActivationRules.Contains(evaluateActivationRule.Name);
-
-                            context.TraceLog(
-                                $"activation rule {evaluateActivationRule.Id} is {(suppressed ? "suppressed" : "not suppressed")} at the activation rule level.");
-                        }
+                            $"activation rule {evaluateActivationRule.Id} is suppressed by an override.");
                     }
 
-                    var activationSample = evaluateActivationRule.ActivationSample >= context.Random.NextDouble();
-                    if (!activationSample)
+                    if (context.CheckSuppressedResponseElevation())
                     {
-                        context.TraceLog(
-                            $"has failed in sampling so certain activations will not take place even if there is a match on the activation rule.");
+                        suppressed = true;
 
-                        continue;
+                        context.TraceLog(
+                            $"activation rule {evaluateActivationRule.Id} is suppressed because it has exceeded response elevation counter at {context.EntityAnalysisModel.ConcurrentQueues.ResponseElevationEntries.Count}.");
+                    }
+
+                    if (!evaluateActivationRule.EnableReprocessing && context
+                            .EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId
+                            .HasValue)
+                    {
+                        suppressed = true;
+
+                        context.TraceLog(
+                            $"activation rule {evaluateActivationRule.Id} is suppressed at the activation rule level because of reprocessing.");
+                    }
+
+                    if (!forced)
+                    {
+                        var activationSample = evaluateActivationRule.ActivationSample >= context.Random.NextDouble();
+                        if (!activationSample)
+                        {
+                            context.TraceLog(
+                                $"has failed in sampling so certain activations will not take place even if there is a match on the activation rule.");
+
+                            continue;
+                        }
                     }
 
                     UpdateEvaluationCount(evaluateActivationRule);
 
                     context.TraceLog($"has passed sampling and is eligible for activation.");
 
-                    var matched = ReflectRuleHelper.Execute(
-                        evaluateActivationRule,
-                        context.EntityAnalysisModel,
-                        context.EntityAnalysisModelInstanceEntryPayload,
-                        context.EntityAnalysisModelInstanceEntryPayload.Dictionary,
-                        context.Log);
+
+                    bool matched;
+                    if (forced)
+                    {
+                        matched = true;
+
+                        context.TraceLog(
+                            $"activation rule {evaluateActivationRule.Id} is treated as matched by a force override without evaluating the rule.");
+                    }
+                    else
+                    {
+                        matched = ReflectRuleHelper.Execute(
+                            evaluateActivationRule,
+                            context.EntityAnalysisModel,
+                            context.EntityAnalysisModelInstanceEntryPayload,
+                            context.EntityAnalysisModelInstanceEntryPayload.Dictionary,
+                            context.Log);
+                    }
 
                     var matchedForLog = matched;
 
@@ -155,6 +177,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
                     UpdateActivationCounter(evaluateActivationRule);
 
+                    if (forced)
+                    {
+                        UpdateForcedActivationCounter(evaluateActivationRule);
+                    }
+
                     if (context.EntityAnalysisModelInstanceEntryPayload.Activation.ContainsKey(evaluateActivationRule
                             .Name))
                     {
@@ -168,7 +195,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                         evaluateActivationRule.Name,
                         new EntityModelActivationRulePayload
                         {
-                            Visible = evaluateActivationRule.Visible
+                            Visible = evaluateActivationRule.Visible,
+                            Forced = forced
                         });
 
                     context.TraceLog(
@@ -264,6 +292,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             sw.Stop();
             return (result, new TaskPerformance((long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency)),
                 Math.Max(GC.GetAllocatedBytesForCurrentThread() - startBytes, 0)));
+        }
+
+        private static void UpdateForcedActivationCounter(EntityAnalysisModelActivationRule evaluateActivationRule)
+        {
+            Interlocked.Increment(ref evaluateActivationRule.ForcedActivationCounter);
         }
 
         private static void UpdateActivationCounter(EntityAnalysisModelActivationRule evaluateActivationRule)

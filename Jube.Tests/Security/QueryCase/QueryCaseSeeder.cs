@@ -28,7 +28,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
 {
     private readonly List<int> actionIds = [];
     private readonly List<int> activationRuleIds = [];
-    private readonly List<int> activationRuleSuppressionIds = [];
+    private readonly List<int> activationRuleOverrideIds = [];
     private readonly List<int> caseIds = [];
     private readonly List<int> displayIds = [];
     private readonly List<int> entryIds = [];
@@ -39,7 +39,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     private readonly List<int> noteIds = [];
     private readonly List<int> scheduleIds = [];
     private readonly List<int> statusIds = [];
-    private readonly List<int> suppressionIds = [];
+    private readonly List<int> overrideIds = [];
     private readonly List<int> workflowIds = [];
     private readonly List<int> xpathIds = [];
     private readonly List<int> syncEntryIds = [];
@@ -251,7 +251,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         return (model.Id, model.Guid);
     }
 
-    public async Task<int> XPathAsync(int modelId, string name, int dataTypeId = 1, bool suppression = false,
+    public async Task<int> XPathAsync(int modelId, string name, int dataTypeId = 1, bool overrideEnabled = false,
         byte deleted = 0)
     {
         await using var dbContext = fx.GetDbContext();
@@ -259,7 +259,7 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         {
             EntityAnalysisModelId = modelId, Name = name, XPath = "$.a", DataTypeId = (byte)dataTypeId, Active = 1,
             Locked = 0, Deleted = deleted, Version = 1, Guid = Guid.NewGuid(), CreatedDate = DateTime.UtcNow,
-            CreatedUser = DatabaseFixture.Prefix, EnableSuppression = (byte)(suppression ? 1 : 0)
+            CreatedUser = DatabaseFixture.Prefix, EnableOverride = (byte)(overrideEnabled ? 1 : 0)
         });
         xpathIds.Add(id);
         return id;
@@ -276,39 +276,39 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         }));
     }
 
-    public async Task<int> ActivationRuleAsync(string owner, int modelId, string name, bool enableSuppression = true)
+    public async Task<int> ActivationRuleAsync(string owner, int modelId, string name, bool enableOverride = true)
     {
         await using var dbContext = fx.GetDbContext();
         var rule = await new EntityAnalysisModelActivationRuleRepository(dbContext, owner).InsertAsync(
             new EntityAnalysisModelActivationRule
             {
                 EntityAnalysisModelId = modelId, Name = name, Active = 1, Locked = 0, Deleted = 0,
-                EnableSuppression = (byte)(enableSuppression ? 1 : 0)
+                EnableOverride = (byte)(enableOverride ? 1 : 0)
             });
         activationRuleIds.Add(rule.Id);
         return rule.Id;
     }
 
-    public async Task SuppressionAsync(Guid modelGuid, string key, string value, DateTime? expiry = null,
+    public async Task OverrideAsync(Guid modelGuid, string key, string value, DateTime? expiry = null,
         bool deleted = false)
     {
         await using var dbContext = fx.GetDbContext();
-        suppressionIds.Add(await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelSuppression
+        overrideIds.Add(await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelOverride
         {
-            EntityAnalysisModelGuid = modelGuid, SuppressionKey = key, SuppressionKeyValue = value,
+            EntityAnalysisModelGuid = modelGuid, OverrideKey = key, OverrideKeyValue = value,
             DeleteExpiryDate = expiry, Deleted = (byte)(deleted ? 1 : 0), CreatedDate = DateTime.UtcNow,
             CreatedUser = DatabaseFixture.Prefix, Version = 1
         }));
     }
 
-    public async Task ActivationRuleSuppressionAsync(Guid modelGuid, string ruleName, string key, string value,
+    public async Task ActivationRuleOverrideAsync(Guid modelGuid, string ruleName, string key, string value,
         DateTime? expiry = null, bool deleted = false)
     {
         await using var dbContext = fx.GetDbContext();
-        activationRuleSuppressionIds.Add(await dbContext.InsertWithInt32IdentityAsync(
-            new EntityAnalysisModelActivationRuleSuppression
+        activationRuleOverrideIds.Add(await dbContext.InsertWithInt32IdentityAsync(
+            new EntityAnalysisModelActivationRuleOverride
             {
-                EntityAnalysisModelGuid = modelGuid, SuppressionKey = key, SuppressionKeyValue = value,
+                EntityAnalysisModelGuid = modelGuid, OverrideKey = key, OverrideKeyValue = value,
                 EntityAnalysisModelActivationRuleName = ruleName, DeleteExpiryDate = expiry,
                 Deleted = (byte)(deleted ? 1 : 0),
                 CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix, Version = 1
@@ -378,9 +378,9 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
         await dbContext.CaseWorkflowStatus.Where(w => statusIds.Contains(w.Id)).DeleteAsync();
         await dbContext.CaseWorkflow.Where(w => workflowIds.Contains(w.Id)).DeleteAsync();
 
-        await dbContext.GetTable<EntityAnalysisModelActivationRuleSuppression>()
-            .Where(w => activationRuleSuppressionIds.Contains(w.Id)).DeleteAsync();
-        await dbContext.GetTable<EntityAnalysisModelSuppression>().Where(w => suppressionIds.Contains(w.Id))
+        await dbContext.GetTable<EntityAnalysisModelActivationRuleOverride>()
+            .Where(w => activationRuleOverrideIds.Contains(w.Id)).DeleteAsync();
+        await dbContext.GetTable<EntityAnalysisModelOverride>().Where(w => overrideIds.Contains(w.Id))
             .DeleteAsync();
         await dbContext.GetTable<EntityAnalysisModelInlineFunction>()
             .Where(w => inlineFunctionIds.Contains(w.Id)).DeleteAsync();

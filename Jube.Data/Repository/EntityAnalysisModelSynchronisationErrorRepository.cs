@@ -40,12 +40,13 @@ namespace Jube.Data.Repository
             ExhaustiveSearchInstances = 14,
             ActivationRules = 15,
             Tags = 16,
-            Suppression = 17,
-            ActivationRuleSuppression = 18,
+            Override = 17,
+            ActivationRuleOverride = 18,
             ApiUsers = 19
         }
 
-        public Task InsertAsync(EntityAnalysisModelSynchronisationErrorStepEnum synchronisationStepId, string errorMessage, CancellationToken token = default)
+        public Task InsertAsync(EntityAnalysisModelSynchronisationErrorStepEnum synchronisationStepId,
+            string errorMessage, CancellationToken token = default)
         {
             return dbContext.InsertAsync(new EntityAnalysisModelSynchronisationError
             {

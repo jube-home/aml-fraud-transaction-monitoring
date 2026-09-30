@@ -141,7 +141,7 @@ namespace Jube.App.Endpoints.Repository
         private static async Task<IResult> ExportPeekAsync(
             HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            CancellationToken token, bool exhaustive = false, bool suppressions = false, bool lists = false,
+            CancellationToken token, bool exhaustive = false, bool lists = false,
             bool dictionaries = false, bool visualisations = false)
         {
             var user = httpContext.User.Identity?.Name;
@@ -156,9 +156,9 @@ namespace Jube.App.Endpoints.Repository
             {
                 var service = await CreateServiceAsync(dbContext, user, log, dynamicEnvironment,
                     stringLocalizerFactory, serviceChangeBus, token);
-                var yaml = await service.ExportPeekAsync(exhaustive, suppressions, lists, dictionaries,
+                var json = await service.ExportPeekAsync(exhaustive, lists, dictionaries,
                     visualisations, token);
-                return TypedResults.Text(yaml, "text/plain");
+                return TypedResults.Text(json, "application/json");
             }
             catch (NotAuthenticatedException)
             {

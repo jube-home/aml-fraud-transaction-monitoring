@@ -1,0 +1,34 @@
+@* Copyright (C) 2022-present Jube Holdings Limited
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License 
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty  
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not, 
+ * see <https://www.gnu.org/licenses/>.
+ *@
+@page
+@model Jube.App.Pages.Administration.PreservationSnapshot
+@{
+    Layout = "Shared/_Layout";
+}
+
+@section Scripts
+{
+    <script>
+        const canImportSnapshot = @Json.Serialize(Model.CanImport);
+    </script>
+    <script src="/js/Administration/PreservationSnapshot.js"></script>
+}
+
+<div class="topPaddedGeneral bottomPaddedGeneral">
+    <button id="Take" type="button">Take Snapshot</button>
+    <input class="k-textbox" id="Name" type="text" placeholder="Optional label">
+    <span id="Updating" hidden="hidden" class="updating">Working</span>
+    <span class="hint">A snapshot records this tenant's configuration so it can be restored later.</span>
+</div>
+<div id="ErrorMessage" class="errorMessage"></div>
+<div id="grid"></div>

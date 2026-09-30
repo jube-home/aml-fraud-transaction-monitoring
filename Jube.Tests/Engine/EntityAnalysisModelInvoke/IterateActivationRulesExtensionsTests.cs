@@ -25,6 +25,7 @@ using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.E
 using Jube.HttpAdaptationProtocol;
 using Jube.Test.Infrastructure;
 using Xunit;
+using Jube.Test.Engine.EntityAnalysisModelInvoke.Models;
 using Context = Jube.Engine.EntityAnalysisModelInvoke.Context.Context;
 using EntityAnalysisModel = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
 
@@ -64,10 +65,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
         private static EntityAnalysisModelActivationRule NewRule(string name, bool matched, bool visible = true,
             double activationSample = 1, bool reportTable = false, bool enableCaseWorkflow = false,
-            bool enableReprocessing = true)
+            bool enableReprocessing = true, bool enableOverride = true, bool enableForce = true,
+            string? overrideKey = null)
         {
             return new EntityAnalysisModelActivationRule
             {
+                EnableOverride = enableOverride,
+                EnableForce = enableForce,
+                OverrideKey = overrideKey,
                 Id = Math.Abs(name.GetHashCode()) % 100000,
                 Guid = Guid.NewGuid(),
                 Name = name,
@@ -184,13 +189,130 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         [Fact]
+        public async Task AForceOverrideActivatesARuleThatWouldNotOtherwiseMatchAsync()
+        {
+            var context = NewContext();
+            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+                new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
+            AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var rule = NewRule("BlacklistCard", false, reportTable: true);
+            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            var cacheService = TestCacheService.Create(out _);
+
+            var (activationRuleCount, _, prevailingActivationRuleId, _) =
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+
+            activationRuleCount.Should().Be(1);
+            prevailingActivationRuleId.Should().Be(rule.Id);
+            context.EntityAnalysisModelInstanceEntryPayload.Activation.Should().ContainKey("BlacklistCard");
+        }
+
+        [Fact]
+        public async Task AForceOverrideBypassesActivationSamplingAsync()
+        {
+            var context = NewContext(0.99);
+            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+                new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
+            AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var rule = NewRule("BlacklistCard", false, activationSample: 0.01);
+            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            var cacheService = TestCacheService.Create(out _);
+
+            var (activationRuleCount, _, _, _) =
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+
+            activationRuleCount.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task AForceOverrideOnlyAppliesToTheRuleItIsBoundToAsync()
+        {
+            var context = NewContext();
+            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+                new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
+            AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(NewRule("BlacklistCard", false));
+            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(NewRule("SomeOtherRule", false));
+            var cacheService = TestCacheService.Create(out _);
+
+            var (activationRuleCount, _, _, _) =
+                await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+
+            activationRuleCount.Should().Be(1);
+            context.EntityAnalysisModelInstanceEntryPayload.Activation.Should().ContainKey("BlacklistCard");
+            context.EntityAnalysisModelInstanceEntryPayload.Activation.Should().NotContainKey("SomeOtherRule");
+        }
+
+        [Fact]
+        public async Task AForcedActivationIsMarkedForcedOnThePayloadAndCountedSeparatelyAsync()
+        {
+            var context = NewContext();
+            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+                new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
+            AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var rule = NewRule("BlacklistCard", false);
+            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            var cacheService = TestCacheService.Create(out _);
+
+            await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+
+            context.EntityAnalysisModelInstanceEntryPayload.Activation["BlacklistCard"].Forced.Should()
+                .BeTrue("the payload must record that the rule was forced rather than matched on its own logic");
+            rule.ForcedActivationCounter.Should().Be(1,
+                "a forced activation is counted separately so a rule's match rate stays honest");
+            rule.ActivationCounter.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task AGenuineMatchIsNotMarkedForcedAndDoesNotRaiseTheForcedCounterAsync()
+        {
+            var context = NewContext();
+            var rule = NewRule("HighAmount", true);
+            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            var cacheService = TestCacheService.Create(out _);
+
+            await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
+
+            context.EntityAnalysisModelInstanceEntryPayload.Activation["HighAmount"].Forced.Should().BeFalse();
+            rule.ForcedActivationCounter.Should().Be(0);
+            rule.ActivationCounter.Should().Be(1);
+        }
+
+        private static void AddOverride(Context context, string overrideKey, string overrideKeyValue,
+            string? activationRuleName, EntityAnalysisModelOverrideKind kind)
+        {
+            var overrides = context.EntityAnalysisModel.Dependencies.EntityAnalysisModelOverrides;
+
+            if (!overrides.TryGetValue(overrideKey, out var values))
+            {
+                values = new Dictionary<string, EntityAnalysisModelOverride>();
+                overrides.Add(overrideKey, values);
+            }
+
+            if (!values.TryGetValue(overrideKeyValue, out var overrideBinding))
+            {
+                overrideBinding = new EntityAnalysisModelOverride();
+                values.Add(overrideKeyValue, overrideBinding);
+            }
+
+            overrideBinding.Promote(activationRuleName, kind);
+        }
+
+        [Fact]
         public async Task ARuleSuppressedAtTheModelLevelIsStillEvaluatedButNotCountedTowardsPrevailingAsync()
         {
             var context = NewContext();
             context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
-                new EntityAnalysisModelRequestXPath { Name = "Country", EnableSuppression = true });
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
-                new Dictionary<string, List<string>> { ["Country"] = ["IR"] };
+                new EntityAnalysisModelRequestXPath { Name = "Country", EnableOverride = true });
+            AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
 
             var rule = NewRule("SanctionedCountryRule", true, reportTable: true);
@@ -209,15 +331,12 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         [Fact]
-        public async Task ARuleSuppressedAtTheRuleLevelViaAnotherModelsSuppressionListIsNotCountedAsync()
+        public async Task ARuleSuppressedAtTheRuleLevelViaAnotherModelsOverrideListIsNotCountedAsync()
         {
             var context = NewContext();
             context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
-                new EntityAnalysisModelRequestXPath { Name = "Country", EnableSuppression = true });
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
-                new Dictionary<string, List<string>> { ["Country"] = [] };
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionRules["Country"] =
-                new Dictionary<string, List<string>> { ["IR"] = ["TargetedRule"] };
+                new EntityAnalysisModelRequestXPath { Name = "Country", EnableOverride = true });
+            AddOverride(context, "Country", "IR", "TargetedRule", EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
 
             var rule = NewRule("TargetedRule", true);
@@ -376,9 +495,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
-                new EntityAnalysisModelRequestXPath { Name = "Country", EnableSuppression = true });
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelSuppressionModels =
-                new Dictionary<string, List<string>> { ["Country"] = ["IR"] };
+                new EntityAnalysisModelRequestXPath { Name = "Country", EnableOverride = true });
+            AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CurrencyAmount", "1");
 
@@ -453,14 +571,6 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             items.Should().ContainKey("TimedRule");
             items["TimedRule"].Rule.Should().NotBeNull();
-        }
-
-        private sealed class FixedRandom(double fixedNextDouble) : Random
-        {
-            public override double NextDouble()
-            {
-                return fixedNextDouble;
-            }
         }
     }
 }

@@ -365,24 +365,24 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                             }
 
-                            if (!record.EnableSuppression.HasValue)
+                            if (!record.EnableOverride.HasValue)
                             {
-                                entityAnalysisModelRequestXPath.EnableSuppression = false;
+                                entityAnalysisModelRequestXPath.EnableOverride = false;
 
                                 if (context.Services.Log.IsDebugEnabled)
                                 {
                                     context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Response Payload {entityAnalysisModelRequestXPath.Id} set DEFAULT Enable Suppression value as {entityAnalysisModelRequestXPath.EnableSuppression}.");
+                                        $"Entity Start: Entity Model {key} and Response Payload {entityAnalysisModelRequestXPath.Id} set DEFAULT Enable Override value as {entityAnalysisModelRequestXPath.EnableOverride}.");
                                 }
                             }
                             else
                             {
-                                entityAnalysisModelRequestXPath.EnableSuppression = record.EnableSuppression == 1;
+                                entityAnalysisModelRequestXPath.EnableOverride = record.EnableOverride == 1;
 
                                 if (context.Services.Log.IsDebugEnabled)
                                 {
                                     context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Response Payload {entityAnalysisModelRequestXPath.Id} set Enable Suppression value as {entityAnalysisModelRequestXPath.EnableSuppression}.");
+                                        $"Entity Start: Entity Model {key} and Response Payload {entityAnalysisModelRequestXPath.Id} set Enable Override value as {entityAnalysisModelRequestXPath.EnableOverride}.");
                                 }
                             }
 
