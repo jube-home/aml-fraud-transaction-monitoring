@@ -170,6 +170,16 @@ namespace Jube.App.Endpoints.Repository
                 log.Debug($"PUT {Base}: entry tenantRegistryId={model?.TenantRegistryId} user={user}");
             }
 
+            if (model is null)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 400 (no body) user={user}");
+                }
+
+                return TypedResults.BadRequest();
+            }
+
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
             try
