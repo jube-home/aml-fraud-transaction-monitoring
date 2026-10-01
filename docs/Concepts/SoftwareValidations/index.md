@@ -236,12 +236,12 @@ short-circuited for the convenience of the test.
 
 ## Suite composition
 
-`Jube.Tests` holds 7,679 test methods across 484 files, carrying 14,837 written assertions. Because a `[Theory]`
-executes once per data row, those methods expand to 19,553 executed cases:
+`Jube.Tests` holds 7,689 test methods across 485 files, carrying 14,850 written assertions. Because a `[Theory]`
+executes once per data row, those methods expand to 19,566 executed cases:
 
 | Category           | Cases | Proves                                                        | Requires             |
 |--------------------|-------|---------------------------------------------------------------|----------------------|
-| `Unit`             | 8,067 | logic in isolation                                            | nothing              |
+| `Unit`             | 8,080 | logic in isolation                                            | nothing              |
 | `Service`          | 5,393 | behaviour against the real database, with `Jube.Tests/Volume` | Postgres             |
 | `PermissionParity` | 20    | that the permission surface matches its declared shape        | Postgres             |
 | `PenTest`          | 6,073 | the controls on this page, under real attack traffic          | Postgres and Kestrel |
@@ -408,6 +408,25 @@ is detected rather than silently truncated. A response over budget is reported b
 `RESPONSE-SIZE`, and the login and logout equivalents. Row-count and clamping assertions are not evaluated against a
 body the client could not read to the end, since such a body cannot be parsed and would otherwise be reported as an
 unclamped row count.
+
+### Recognising a tenant's own data
+
+A cross-tenant assertion has to decide whether a response carries the other tenant's data, and the exhaustive query
+battery tells its two tenants apart by a number — tenant A's rows score 7.31 and tenant B's 2.64 — because most of those
+endpoints return nothing but numbers. Looking for that number as text in the response body is not the same question.
+`GET /api/GetExhaustiveSearchInstancePromotedTrialInstanceQuery/291` returned 186 bytes of tenant A's own row and was
+reported as leaking tenant B's data, because the row's `createdDate` ended `:12.6423456`, and `2.64` sits inside it. The
+collision needs only a seconds value whose last digit is the marker's first and a fraction beginning with the rest, so
+it arrives in roughly one dated response in a thousand, which is to say somewhere in most full runs of the battery.
+
+`PenTestMarker.Carries` therefore asks the question structurally. A numeric marker is compared against the response's
+JSON numbers, equal to within half of the last digit the marker was printed with, so 7.31 matches a score of
+7.3100000000000005 and matches neither a score of 17.31 nor an identifier of 2641. Where a numeric marker could only
+appear inside a JSON string, or in a body that is not JSON at all, it counts only where it stands as a number in its own
+right — no digit, decimal point or sign immediately before it, and no digit or decimal point immediately after — which
+is enough to catch `score 2.64 of tenant B` and not enough to catch a timestamp's fractional seconds. A marker that is
+not a number is still matched as text, which is what the markers elsewhere in the battery are: `ZzTest`-prefixed names,
+`QxAJson`, a GUID.
 
 ## Rules for writing tests in these suites
 

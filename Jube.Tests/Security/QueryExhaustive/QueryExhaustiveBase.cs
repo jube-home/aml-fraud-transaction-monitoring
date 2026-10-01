@@ -118,14 +118,14 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         {
             var response = run.Check(await GetAsAsync(user, IdOf(set)));
             CheckWellFormed(run, response, "OWN");
-            run.Expect(response.Body.Contains(Fingerprint(set), StringComparison.Ordinal), response, "OWN-DATA",
+            run.Expect(PenTestMarker.Carries(response, Fingerprint(set)), response, "OWN-DATA",
                 $"{user} did not receive its own data ({Fingerprint(set)})");
-            run.Expect(!response.Body.Contains(Fingerprint(other), StringComparison.Ordinal) ||
+            run.Expect(!PenTestMarker.Carries(response, Fingerprint(other)) ||
                        Fingerprint(other) == Fingerprint(set), response, "OWN-FOREIGN-DATA",
                 $"{user} received the other tenant's data ({Fingerprint(other)})");
             foreach (var marker in AbsentMarkers)
             {
-                run.Expect(!response.Body.Contains(marker, StringComparison.Ordinal), response, "OWN-SOFT-DELETED",
+                run.Expect(!PenTestMarker.Carries(response, marker), response, "OWN-SOFT-DELETED",
                     $"soft-deleted/removed marker {marker} returned");
             }
 
@@ -162,7 +162,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             var response = run.Check(await item.Client.GetAsync(PathFor(id)));
             run.Expect(response.IsRejection || response.Status == 403, response, "AUTHZ-NOT-REFUSED",
                 $"{item.Who} was not refused");
-            run.Expect(!response.Body.Contains(fingerprintA, StringComparison.Ordinal), response, "AUTHZ-LEAK",
+            run.Expect(!PenTestMarker.Carries(response, fingerprintA), response, "AUTHZ-LEAK",
                 $"{item.Who} saw tenant data");
         });
 
@@ -203,7 +203,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             var response = run.Check(await GetAsAsync(probe.User, probe.Id));
             run.Expect(Same(response, probe.Baseline), response, "IDOR-DISTINGUISHABLE",
                 $"{probe.What}: response differs from a non-existent id ({probe.Baseline.Status})");
-            run.Expect(!response.Body.Contains(probe.Forbidden, StringComparison.Ordinal), response, "IDOR-LEAK",
+            run.Expect(!PenTestMarker.Carries(response, probe.Forbidden), response, "IDOR-LEAK",
                 probe.What);
         });
 
@@ -238,7 +238,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             {
                 var response = run.Check(await GetAsAsync(user, id));
                 run.Expect(response.Status == 200, response, "ENUM-STATUS-NOT-UNIFORM", $"id {id}");
-                run.Expect(!response.Body.Contains(forbidden, StringComparison.Ordinal) ||
+                run.Expect(!PenTestMarker.Carries(response, forbidden) ||
                            forbidden == own, response, "ENUM-FOREIGN-DATA",
                     $"id {id} returned the other tenant's data");
             });
@@ -255,7 +255,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         var own = run.Check(await GetAsAsync(PenTestUser.WithPermission, IdOf(World.A)));
         foreach (var marker in AbsentMarkers)
         {
-            run.Expect(!own.Body.Contains(marker, StringComparison.Ordinal), own, "SOFT-DELETED-ROW",
+            run.Expect(!PenTestMarker.Carries(own, marker), own, "SOFT-DELETED-ROW",
                 $"marker {marker} returned for own instance");
         }
 
@@ -274,8 +274,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         {
             var response = run.Check(await GetAsAsync(PenTestUser.WithPermission, id));
             CheckWellFormed(run, response, "EMPTY");
-            run.Expect(!response.Body.Contains(Fingerprint(World.A), StringComparison.Ordinal), response,
-                "EMPTY-LEAK");
+            run.Expect(!PenTestMarker.Carries(response, Fingerprint(World.A)), response, "EMPTY-LEAK");
         }
 
         await run.AssertCleanAsync(Output);
@@ -348,8 +347,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             var response = run.Check(await user.GetAsync(target), TimeSpan.FromSeconds(4));
             run.Expect(response.Status is 200 or 400 or 403 or 404 or 405 or 414 or 431, response, "BOUNDARY-STATUS",
                 $"unexpected status {response.Status}");
-            run.Expect(!response.Body.Contains(forbiddenA, StringComparison.Ordinal), response,
-                "BOUNDARY-FOREIGN-DATA");
+            run.Expect(!PenTestMarker.Carries(response, forbiddenA), response, "BOUNDARY-FOREIGN-DATA");
             if (response.Status == 200)
             {
                 run.Expect(IsValidJson(response.Body), response, "BOUNDARY-JSON");
