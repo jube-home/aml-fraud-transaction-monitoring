@@ -15,24 +15,46 @@ jobs:
     outputs:
       changed: ${{ steps.check.outputs.changed }}
     steps:
-      - name: Check whether master has moved since the last successful run
+      - name: Check whether master has moved, or the last successful scan has gone stale
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          StaleAfterDays: '7'
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "Manual run - always executing regardless of whether master has moved."
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "${{ github.event_name }} - always executing regardless of whether master has moved."
             echo "changed=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           last_sha=$(gh api "repos/${{ github.repository }}/actions/workflows/zap.yml/runs?branch=master&status=success&per_page=1" \
             --jq '.workflow_runs[0].head_sha // ""')
-          echo "Last successful run was at commit ${last_sha:-<none>}; current master HEAD is ${{ github.sha }}"
+          last_at=$(gh api "repos/${{ github.repository }}/actions/workflows/zap.yml/runs?branch=master&status=success&per_page=1" \
+            --jq '.workflow_runs[0].created_at // ""')
+          echo "Last successful run was at commit ${last_sha:-<none>} on ${last_at:-<never>}; current master HEAD is ${{ github.sha }}"
 
-          if [ "$last_sha" = "${{ github.sha }}" ]; then
+          # A scan whose rules and signatures come from somebody else's release cadence goes out of date without
+          # the repository changing at all, so the age of the last successful scan is a reason to run in its own
+          # right. Expressing it as age rather than as a comparison of the ZAP image digest keeps the condition
+          # free of any external lookup that could fail quietly and leave the scan skipped for good.
+          stale=true
+          if [ -n "$last_at" ]; then
+            cutoff=$(date -u -d "$StaleAfterDays days ago" +%s)
+            last=$(date -u -d "$last_at" +%s)
+            if [ "$last" -ge "$cutoff" ]; then
+              stale=false
+            fi
+          fi
+
+          if [ "$last_sha" = "${{ github.sha }}" ] && [ "$stale" = "false" ]; then
+            echo "Master has not moved and the last scan is under $StaleAfterDays days old - skipping."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
+            if [ "$stale" = "true" ]; then
+              echo "The last successful scan is older than $StaleAfterDays days (or there is none) - executing."
+            else
+              echo "Master has moved since the last successful scan - executing."
+            fi
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 

@@ -75,7 +75,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
             r => r.Status == 200 &&
                  FlagFor(r, scenario.ModelGuid, scenario.RuleName == "" ? null : scenario.RuleName) == true,
             Empty, scenario.ModelGuid.ToString(), scenario.RuleName);
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -111,7 +111,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
                 response, "FOREIGN-GUID", $"{user} with guid {foreignGuid}");
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     protected abstract string NameOf(Scenario scenario);
@@ -149,7 +149,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
         run.Expect(await QueryAsync(noXPathOverride, "x") == null, R(), "XPATH-WITHOUT-SUPPRESSION-LISTED");
         run.Expect(await QueryAsync(xpathDeleted, "x") == null, R(), "DELETED-XPATH-LISTED");
         run.Expect(await QueryAsync(modelDeleted, "x") == null, R(), "DELETED-MODEL-LISTED");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     private static PenTestResponse R() => new() { Request = "state" };
@@ -191,7 +191,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
 
         var still = run.Check(await client.GetAsync(Target(key, "v1", scenario.ModelGuid)));
         run.Expect(FlagFor(still, scenario.ModelGuid, NameOf(scenario)) == true, still, "STATE-DAMAGED");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -243,7 +243,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
                 run.Expect(response.Status is 400 or 403 or 404 or 414 or 431, response, "STATUS");
             }
         });
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -279,6 +279,6 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
             run.Expect(r.Status == 200 && FlagFor(r, own.ModelGuid, NameOf(own)) == true &&
                        FlagFor(r, other.ModelGuid) == null, r, "PARALLEL");
         }, 10);
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 }

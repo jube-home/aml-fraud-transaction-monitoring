@@ -133,7 +133,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
                 StringComparison.OrdinalIgnoreCase), response, "NOSNIFF", "missing X-Content-Type-Options: nosniff");
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -175,7 +175,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         var bearer = run.Check(await As(PenTestUser.WithPermission).AsBearer().GetAsync(PathFor(id)));
         run.Expect(bearer.Status == 200, bearer, "BEARER-AUTHORISED", "valid bearer token should be accepted");
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -219,7 +219,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         run.Expect(delta < 1500, baselineB, "IDOR-TIMING",
             $"median difference {delta:F0}ms between foreign and missing");
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -244,7 +244,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             });
         }, 2);
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -263,7 +263,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         run.Expect(Same(deleted, baseline), deleted, "SOFT-DELETED-INSTANCE",
             "a soft-deleted search instance still serves its data");
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -278,7 +278,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
                 "EMPTY-LEAK");
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -287,7 +287,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
         var run = NewRun($"{RouteName} numeric edge cases");
         var response = run.Check(await GetAsAsync(PenTestUser.WithPermission, IdOf(World.Edge)));
         CheckWellFormed(run, response, "EDGE");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -308,7 +308,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             run.Expect(Same(response, first), response, "CONCURRENT-DIFFERS", "body changed under parallel reads");
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -359,7 +359,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
 
         var after = run.Check(await GetAsAsync(PenTestUser.WithPermission, IdOf(World.A)));
         run.Expect(Same(before, after), after, "BOUNDARY-SIDE-EFFECT", "own data changed after hostile ids");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -426,7 +426,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
             }
         });
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -458,7 +458,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
 
         var after = run.Check(await GetAsAsync(PenTestUser.WithPermission, id));
         run.Expect(Same(before, after), after, "VERB-SIDE-EFFECT", "data changed after verb tampering");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     protected static IEnumerable<string> GenerateInjectionPayloads()

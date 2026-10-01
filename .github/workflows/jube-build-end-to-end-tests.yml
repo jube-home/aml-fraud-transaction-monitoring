@@ -11,7 +11,7 @@
 # Service tests, and the pen test's load starved the Service tests of connections; failures that said nothing
 # at all about the code under test. Each slice now gets its own instance and its own pool.
 #
-# Two, not more, and that is measured rather than assumed: the whole Category=PenTest battery - 6,050 tests, the
+# Two, not more, and that is measured rather than assumed: the whole Category=PenTest battery - 6,073 tests, the
 # payload corpora exhaustive - runs in under eight minutes in one process pinned to four cores, so sharding it by
 # namespace would multiply the nightly's docker and dotnet builds several times over to save nothing. Shard when a
 # measurement says to, not before. There is no Load slice: those tests assert function across volume rather than
@@ -22,21 +22,31 @@
 # should assume. The values are deliberately generous: a slice that needs an hour is not a problem, a slice
 # silently truncated at a guessed ceiling is.
 #
-# This runs nightly against master, guarded by check-for-changes so a quiet night doesn't burn hours re-testing
-# a commit that's already been proven green. workflow_dispatch is there for an on-demand run (e.g. to verify
-# this workflow file itself, or to re-check master immediately after a fix) and always executes regardless of
-# whether master has moved.
+# This is the gate on every pull request, and it runs nightly against master as well. A pull request event
+# builds the merge commit rather than the branch in isolation, so what passes here is post-merge state and
+# nothing re-tests on the merge itself; that equivalence depends on "Require branches to be up to date before
+# merging" being set in branch protection, which forces a re-run whenever master advances underneath an open
+# pull request.
+#
+# check-for-changes guards the schedule only, so a quiet night doesn't burn hours re-testing a commit already
+# proven green. Every other event - a pull request, or workflow_dispatch for an on-demand run - always executes.
 
 name: Jube Build and End-to-End Tests
 
 on:
   schedule:
     - cron: '0 2 * * *'
+  pull_request:
+    branches: [ "master" ]
   workflow_dispatch:
 
 permissions:
   actions: read
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   check-for-changes:
@@ -49,8 +59,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "Manual run - always executing regardless of whether master has moved."
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "${{ github.event_name }} - always executing regardless of whether master has moved."
             echo "changed=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -66,6 +76,10 @@ jobs:
           fi
 
   end-to-end:
+    # The check's name is what branch protection requires, and a matrix of several keys would otherwise name it
+    # after every value of every key, including the filter expression. Naming it by the slice alone keeps the
+    # required check stable and legible.
+    name: end-to-end (${{ matrix.slice }})
     needs: check-for-changes
     if: needs.check-for-changes.outputs.changed == 'true'
     runs-on: ubuntu-latest
@@ -94,6 +108,10 @@ jobs:
       # the symptom being a cascade of "The connection pool has been exhausted" in classes that touch nothing
       # related to whatever is actually broken. docker-compose.yml raises the server's max_connections to match.
       JubeTestConnectionString: "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=${{ secrets.DOCKER_COMPOSE_POSTGRES_PASSWORD }};Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;"
+      # The stack's own jube container runs the cache prune server against database 0 of the same Redis, and it
+      # deletes payloads, journals and ledgers past a threshold reference date. A test that asserts the cache is
+      # exactly as it left it cannot share a keyspace with it, so the suite is given a logical database of its own.
+      JubeTestRedisConnectionString: "localhost,defaultDatabase=1"
 
     steps:
       - uses: actions/checkout@v5

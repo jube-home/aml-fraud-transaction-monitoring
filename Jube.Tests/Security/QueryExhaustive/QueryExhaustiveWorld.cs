@@ -121,6 +121,10 @@ public sealed class QueryExhaustiveWorld
 
         foreach (var modelId in modelIds)
         {
+            await db.GetTable<MockArchive>().Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+            await db.GetTable<Archive>().Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+            await db.GetTable<EntityAnalysisModelInstance>().Where(w => w.EntityAnalysisModelId == modelId)
+                .DeleteAsync();
             await db.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
             await db.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();

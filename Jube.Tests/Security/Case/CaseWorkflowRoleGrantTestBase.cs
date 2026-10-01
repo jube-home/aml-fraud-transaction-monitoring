@@ -89,7 +89,7 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
         run.Expect(created.Status == 200 && id > 0, created, "AUTHORISED", "owner could not grant");
         var deleted = await MatrixAsync(run, "DELETE", $"{Route}/{id}", () => null, s => !IsSuccess(s), IsSuccess);
         run.Expect(IsSuccess(deleted.Status), deleted, "AUTHORISED", "owner could not revoke");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
             await World.CountAsync(Table, "\"RoleRegistryGuid\" = @r", new DataParameter("r", World.RoleB)) ==
             otherTenantRoleCount, reverse,
             "SIDE-EFFECT", "tenant B's role was attached to something");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
         run.Expect(reverse.Status == missing.Status && reverse.Body == missing.Body, reverse, "BOLA",
             "tenant B can tell tenant A's row from a missing one");
         ExpectNoForeign(run, PenTestUser.WithPermission, foreign);
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -173,7 +173,7 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
             .GetAsync($"{Route}/{ListTemplate.Replace("{guid}", ParentGuid(World.A).ToString())}"));
         run.Expect(!listed.Body.Contains(World.RoleNoPermission.ToString()), listed, "REPLAY",
             "a revoked grant is still listed");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -197,7 +197,7 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
                 Grant(ParentGuid(World.A), World.RoleNoPermission)));
             run.Expect(r.Status is 200 or 400 or 409, r, "CONCURRENCY", "unexpected status");
         });
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -229,7 +229,7 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
             run.Expect(!row[5].StartsWith("1999", StringComparison.Ordinal), r, "MASS", "created date forged");
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -285,7 +285,7 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
             new PenTestResponse { Request = "state" }, "BOLA", "another tenant's role was attached");
         run.Expect(state.StartsWith(before.Split(',')[0], StringComparison.Ordinal),
             new PenTestResponse { Request = "state" }, "INTEGRITY", "seeded grant changed");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -311,7 +311,7 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
         }, 6);
         run.Expect(await StateAsync() == before, new PenTestResponse { Request = "state" }, "SIDE-EFFECT",
             "route probing changed rows");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -341,6 +341,6 @@ public abstract class CaseWorkflowRoleGrantTestBase(DatabaseFixture fx, ITestOut
 
         run.Expect(await StateAsync() == before, new PenTestResponse { Request = "state" }, "VERB",
             "a wrong verb changed rows");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 }

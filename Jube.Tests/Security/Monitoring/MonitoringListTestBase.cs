@@ -174,7 +174,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
             run.Expect(!r.IsSuccess || r.Body.Length < 4 || !IsRow(r), r, "PATH-TRICK", "no data through path tricks");
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     protected async Task ParameterAbuseAsync(MonitoringArea area)
@@ -238,23 +238,6 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
                 new("__proto__", "1"), new("constructor", "x"), new("tenantRegistryId", "1"), new("id", "1")
             ])));
 
-        async Task<bool> TimeBlindAsync(PenTestResponse response, string query)
-        {
-            if (response.Elapsed < blindBound)
-            {
-                return false;
-            }
-
-            var quiet = await client.GetAsync(control);
-            if (quiet.Elapsed >= blindBound)
-            {
-                return false;
-            }
-
-            var again = await client.GetAsync(area.Route + query);
-            return again.Elapsed >= blindBound;
-        }
-
         await run.ForEachAsync(work, async item =>
         {
             var query = item.Query;
@@ -275,10 +258,12 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
                 run.Expect(!ContainsSecret(r.Body), r, "SECRET-IN-BODY", $"{item.Param}={Trim(item.Value)}");
             }
 
-            run.Expect(item.Param is "from" or "to" || !await TimeBlindAsync(r, query), r, "TIME-BLIND",
-                $"{item.Param}={Trim(item.Value)} took {r.Elapsed.TotalSeconds:F1}s against a "
-                + $"{baseline.Elapsed.TotalSeconds:F1}s baseline, and did so again while an unparameterised "
-                + "control came back quickly");
+            if (item.Param is not ("from" or "to"))
+            {
+                run.ExpectNotSlow(r, blindBound, "TIME-BLIND",
+                    $"{item.Param}={Trim(item.Value)} against a {baseline.Elapsed.TotalSeconds:F1}s baseline");
+            }
+
             run.Expect(
                 !r.Body.Contains("<script", StringComparison.OrdinalIgnoreCase) ||
                 (r.ContentType ?? string.Empty).Contains("json", StringComparison.OrdinalIgnoreCase),
@@ -289,7 +274,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
                 "HEADER-INJECTION", "CRLF in a parameter must not create headers");
         });
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     protected async Task ConsumptionAndVerbsAsync(MonitoringArea area)
@@ -347,7 +332,8 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
         {
             var r = run.Check(await client.GetAsync(area.Route + extremeQuery), TimeSpan.FromSeconds(28));
             run.Expect(r.Status is 200 or 400, r, "BURST", "parallel extreme requests must not fail");
-            run.Expect(r.BodyBytes.Length < 64 * 1024 * 1024, r, "RESPONSE-SIZE", $"{r.BodyBytes.Length} bytes");
+            run.Expect(!r.Truncated, r, "RESPONSE-SIZE",
+                $"{r.BodyBytes.Length} bytes exceeded the {PenTestClient.ResponseBudget / (1024 * 1024)}MB budget");
         }, 4);
 
         await run.ForEachAsync(bursts, async _ =>
@@ -356,7 +342,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
             run.Expect(r.IsRejection, r, "ANON-BURST", "anonymous burst");
         }, 12);
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     protected static string Trim(string value) => value.Length > 40 ? value[..40] + "..." : value.Replace("\0", "\\0");
