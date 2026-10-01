@@ -888,9 +888,10 @@
                     $.ajax({
                         url: '/api/UserInTenant',
                         type: 'PUT',
-                        data: {
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({
                             tenantRegistryId: dataItem.id
-                        },
+                        }),
                         success: function () {
                             window.location.reload();
                         }
@@ -934,7 +935,7 @@
 
         (function () {
             const RedirectLogoutCleanly = '/Account/Logout';
-            const renderedExpiry = '@(Jube.App.Code.SessionExpiry.Resolve(Context)?.ToString("O") ?? string.Empty)';
+            const renderedExpiry = '@(SessionExpiry.Resolve(Context)?.ToString("O") ?? string.Empty)';
 
             let expiresAt = renderedExpiry ? new Date(renderedExpiry).getTime() : null;
 
@@ -952,7 +953,7 @@
             }
 
             $(document).ajaxComplete(function (event, xhr) {
-                const refreshed = xhr.getResponseHeader('@Jube.App.Code.SessionExpiry.HeaderName');
+                const refreshed = xhr.getResponseHeader('@SessionExpiry.HeaderName');
                 if (refreshed) {
                     expiresAt = new Date(refreshed).getTime();
                 }

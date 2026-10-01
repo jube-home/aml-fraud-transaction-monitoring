@@ -25,6 +25,7 @@ using Jube.Service.Repository.UserInTenant;
 using log4net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 
@@ -158,14 +159,15 @@ namespace Jube.App.Endpoints.Repository
             }
         }
 
-        private static async Task<IResult> UpdateAsync(int tenantRegistryId, HttpContext httpContext, ILog log,
-            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, CancellationToken token)
+        private static async Task<IResult> UpdateAsync([FromBody] UserInTenantDto model, HttpContext httpContext,
+            ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
             if (log.IsDebugEnabled)
             {
-                log.Debug($"PUT {Base}: entry tenantRegistryId={tenantRegistryId} user={user}");
+                log.Debug($"PUT {Base}: entry tenantRegistryId={model?.TenantRegistryId} user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -174,7 +176,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 var service = await UserInTenantService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, token);
-                await service.UpdateAsync(tenantRegistryId, token);
+                await service.UpdateAsync(model.TenantRegistryId, token);
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
