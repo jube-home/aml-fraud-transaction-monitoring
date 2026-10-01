@@ -22,66 +22,44 @@
 # should assume. The values are deliberately generous: a slice that needs an hour is not a problem, a slice
 # silently truncated at a guessed ceiling is.
 #
-# This is the gate on every pull request, and it runs nightly against master as well. A pull request event
-# builds the merge commit rather than the branch in isolation, so what passes here is post-merge state and
-# nothing re-tests on the merge itself; that equivalence depends on "Require branches to be up to date before
-# merging" being set in branch protection, which forces a re-run whenever master advances underneath an open
-# pull request.
+# This is the gate on every pull request, and it runs again on the push to master that the merge produces. A pull
+# request event builds the merge commit rather than the branch in isolation, so what passes there is post-merge state
+# already - but only of the merge as it stood when the run happened, which is why "Require branches to be up to date
+# before merging" has to be set in branch protection: without it, two pull requests each green against an older master
+# can merge cleanly and still break it. The push run closes the remaining gap by proving the commit that actually
+# exists, and it is what the README's badge reports, so the badge describes master rather than the last schedule.
 #
-# check-for-changes guards the schedule only, so a quiet night doesn't burn hours re-testing a commit already
-# proven green. Every other event - a pull request, or workflow_dispatch for an on-demand run - always executes.
+# The schedule is weekly rather than nightly, and is no longer guarded by a check for whether master has moved, because
+# re-running against an unchanged master is the only thing a schedule can do that the pull request and push runs cannot:
+# the stack is built from docker-compose, so the base images, the runner image and the restored package graph all move
+# underneath a repository that is standing still, and a week of that drift is worth one run to discover.
 
 name: Jube Build and End-to-End Tests
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '0 2 * * 0'
+  push:
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
 
 permissions:
-  actions: read
   contents: read
 
+# A superseded pull request run is worth cancelling; a superseded master run is not, because its conclusion is what the
+# badge and the history report for that commit, and a cancelled run says nothing about the code.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  check-for-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.check.outputs.changed }}
-    steps:
-      - name: Check whether master has moved since the last successful run
-        id: check
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [ "${{ github.event_name }}" != "schedule" ]; then
-            echo "${{ github.event_name }} - always executing regardless of whether master has moved."
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          last_sha=$(gh api "repos/${{ github.repository }}/actions/workflows/jube-build-end-to-end-tests.yml/runs?branch=master&status=success&per_page=1" \
-            --jq '.workflow_runs[0].head_sha // ""')
-          echo "Last successful nightly run was at commit ${last_sha:-<none>}; current master HEAD is ${{ github.sha }}"
-
-          if [ "$last_sha" = "${{ github.sha }}" ]; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
   end-to-end:
     # The check's name is what branch protection requires, and a matrix of several keys would otherwise name it
     # after every value of every key, including the filter expression. Naming it by the slice alone keeps the
     # required check stable and legible.
     name: end-to-end (${{ matrix.slice }})
-    needs: check-for-changes
-    if: needs.check-for-changes.outputs.changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: ${{ matrix.timeout }}
 
@@ -158,6 +136,7 @@ jobs:
         id: failures
         run: |
           python3 - <<'PY'
+          import os
           import xml.etree.ElementTree as ET
 
           # Resolve each failed result's *class + method* via TestDefinitions rather than parsing the
@@ -187,8 +166,14 @@ jobs:
           with open("failed_tests.txt", "w") as f:
               f.write("\n".join(names))
           print(f"{len(names)} failed test method(s) on the first run.")
+
+          # The count is written here rather than measured from the file, because the file holds the names newline
+          # separated with no trailing newline and "wc -l" therefore counted one fewer than it holds: a single failed
+          # test counted as none, which skipped the retry and failed the run on the guard meant for a first run that
+          # died without recording a test result at all.
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"failed_count={len(names)}\n")
           PY
-          echo "failed_count=$(wc -l < failed_tests.txt)" >> "$GITHUB_OUTPUT"
 
       - name: Retry only the tests that failed
         if: steps.first_run.outcome == 'failure' && steps.failures.outputs.failed_count != '0'

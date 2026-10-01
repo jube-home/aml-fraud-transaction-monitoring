@@ -321,10 +321,10 @@ the test itself can catch. Neither indicates a defect. `Maximum Pool Size=100` m
 service's and the test host's coexist rather than ration one another. A narrower `--filter` against one area under
 active work does not need it.
 
-## The nightly pipeline
+## The end-to-end pipeline
 
-The nightly end-to-end workflow runs two slices in parallel, each standing up a private copy of the whole docker-compose
-stack, so the wall clock is the slower of the two rather than their sum:
+The end-to-end workflow runs two slices in parallel, each standing up a private copy of the whole docker-compose stack,
+so the wall clock is the slower of the two rather than their sum:
 
 | Slice | Content                                  | Duration on four cores |
 |-------|------------------------------------------|------------------------|
@@ -338,9 +338,30 @@ tests for the same Postgres instance and the same pool, and starve them of conne
 nothing to do with the change under test.
 
 Two slices suffice. A battery's wall clock is governed by its individually slow tests rather than by its breadth, so
-sharding the penetration tests would multiply the nightly's docker and dotnet builds without shortening it. Sweep
+sharding the penetration tests would multiply the workflow's docker and dotnet builds without shortening it. Sweep
 parallelism derives from `Environment.ProcessorCount`, so a sweep widens on a workstation and stays modest on a shared
 runner; the deliberate burst tests keep fixed concurrency, because there the load shape is the subject of the test.
+
+It runs on every pull request, on the push to master that each merge produces, and weekly. The three are not redundant.
+A pull request event builds the merge commit rather than the branch alone, so it proves post-merge state — but only the
+merge as it stood when the run happened, which is why "Require branches to be up to date before merging" belongs in
+branch protection: without it two pull requests can each be green against an older master, merge cleanly, and break it
+between them. The push run proves the commit that actually exists and is what the README's badge reports, so the badge
+describes master rather than whatever the last schedule happened to catch. The weekly run is the only one of the three
+that can tell you anything about code nobody has touched, and that is its whole purpose: the stack is built from
+docker-compose, so base images, the runner image and the restored package graph all move underneath a repository that is
+standing still.
+
+A pull request run is cancelled when the branch is pushed again, because a superseded run answers a question nobody is
+asking any more; a master run is not, because its conclusion is the recorded verdict on that commit and a cancellation
+says nothing about the code.
+
+The first run of a slice is allowed to fail, and only the test methods it recorded as failed are run again, named from
+the TRX by class and method rather than by display name so that a `[Theory]`'s data row cannot break the filter
+expression. A slice is green when the retry is green, which keeps a single non-deterministic failure from blocking a
+merge while leaving it in the artifacts to be read. A first run that fails *without* recording any failed test is a
+different animal — a crashed test host, a stack that never came up — and fails the slice outright, because there is
+nothing to retry and nothing has been proven.
 
 ## Timing assertions
 
