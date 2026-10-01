@@ -8,7 +8,7 @@ parent: Concepts
 🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
 Jube's developer — real sovereignty, zero vendor lock-in.
 
-## Native .NET MVC Pipeline
+# Native .NET MVC Pipeline
 
 Jube is substantially a .NET ASP.NET application and uses the native MVC pipeline. It follows that certain injection
 risks are natively handled, and XSS risks are substantially reduced. Any malicious code is escaped far upstream of the
@@ -31,7 +31,7 @@ In developer mode, which is set via an environment variable, the picture is diff
 
 ![InDeveloperModeException](InDeveloperModeException.png)
 
-## Authenticate Attribute Decoration
+# Authenticate Attribute Decoration
 
 The .NET authentication pipeline is implemented, which takes care of identity. Every endpoint and page requires
 authentication, with the exception of a short, named list of anonymous routes: the login and logout endpoints and pages
@@ -49,7 +49,7 @@ In the case of an API recall without authentication, this will be served a 401:
 
 ![APIWithoutAuthorize](APIWithoutAuthorize.png)
 
-## Data Transformation Object (DTO)
+# Data Transformation Object (DTO)
 
 A DTO is a model (class) that exists for the sole purpose of serialising and deserialising data, to and from, a user's
 request. For example, suppose the UI or independent service invokes an API endpoint with a JSON payload — the JSON
@@ -229,214 +229,231 @@ backtracking pattern proven not to hang a request.
 
 # Automated Penetration Testing
 
-Everything described on this page is not only designed in but continuously verified, and not lightly: `Jube.Tests`
-holds 7,679 test methods across 484 files at the time of writing, carrying 14,837 written assertions between them,
-and every one of them is checked before a change is considered finished. Because a `[Theory]` runs once per data
-row, those methods expand to 19,530 executed cases: `Unit` (8,067) proves logic in isolation with no database or
-HTTP; `Service` (5,393) proves it against the real Postgres database, and includes the `Jube.Tests/Volume` cases
-that prove behaviour holds across more rows than fit in a single page; `PermissionParity` (20) holds the permission
-surface to its declared shape; and `Category=PenTest` (6,050) is the suite this section describes — real attack
-traffic against a real host.
+Every control described above is verified continuously, and the penetration tests in particular run against a real host
+rather than a test double. The suite starts Kestrel on an ephemeral local port and drives it with a plain HTTP client,
+so routing, middleware, serialisation and status codes are exactly those a caller meets on the wire; nothing is
+short-circuited for the convenience of the test.
 
-The assertion count is the conservative one of the three, and materially so for the pen tests: a single method there
-drives a whole corpus and checks every response as it returns, so its assertions are counted once in the source and
-made thousands of times at run time. The monitoring sweeps alone issue 25,670 requests, each checked for status,
-shape, content type, credential leakage, reflected markup, header injection and timing. A dedicated page cataloguing what each individual test proves is
-planned; for now, this is the shape of that number.
+## Suite composition
 
-The `PenTest` suite runs as ordinary xUnit tests against a real Kestrel host bound to an ephemeral local port,
-exercised through a plain HTTP client rather than an in-memory test server. What is exercised is therefore exactly
-what a real attacker sees on the wire: real routing, real middleware, real serialisation, real status codes, nothing
-short-circuited for the sake of the test.
+`Jube.Tests` holds 7,679 test methods across 484 files, carrying 14,837 written assertions. Because a `[Theory]`
+executes once per data row, those methods expand to 19,553 executed cases:
 
-Coverage is structured around the OWASP API Security Top 10 (2023) and the relevant OWASP ASVS/Top 10 web items, in
-two layers:
+| Category           | Cases | Proves                                                        | Requires             |
+|--------------------|-------|---------------------------------------------------------------|----------------------|
+| `Unit`             | 8,067 | logic in isolation                                            | nothing              |
+| `Service`          | 5,393 | behaviour against the real database, with `Jube.Tests/Volume` | Postgres             |
+| `PermissionParity` | 20    | that the permission surface matches its declared shape        | Postgres             |
+| `PenTest`          | 6,073 | the controls on this page, under real attack traffic          | Postgres and Kestrel |
 
-- **A generic layer** discovers every mapped route — Minimal API and MVC controller alike, read directly from
-  `EndpointDataSource` — and runs the same checks against every one of them: anonymous access is refused everywhere
-  except a short, explicit allow-list (a small number of login, logout, readiness-probe, error and demonstration-mock
-  routes), and a test fails if the real anonymous-reachable surface ever drifts from that list; every route is checked
-  for verb tampering, oversized and malformed request bodies, content-type confusion, and null-byte or traversal
-  characters in route parameters; no error response is ever allowed to leak a stack trace; and Swagger and static file
-  serving are checked for what they expose to an unauthenticated caller.
-- **Targeted suites per functional area** — organised the same way as the platform itself (Identity, Model, Case,
-  Permissions, the dynamic SQL surface, Monitoring, Observability, Visualisations and the query families each have
-  their own) — exercise the authorisation matrix for every role, cross-tenant object references using real seeded ids
-  from a second tenant (Broken Object Level Authorization), the hostile-rule and dynamic-SQL corpora described above,
-  mass assignment of server-controlled fields (`Id`, `TenantRegistryId`, `CreatedUser`, `Deleted`, `Locked`), type
-  confusion and deeply nested or malformed JSON, and the specific attack surface of each feature — a case workflow's
-  role grants, the SQL gate's obfuscated write statements, and so on.
+The assertion count is the conservative measure, and most so for the penetration tests: a single method drives a whole
+payload corpus and checks every response as it returns, so an assertion written once is made thousands of times at run
+time. The monitoring sweeps alone issue 25,670 requests, each checked for status, shape, content type, credential
+leakage, reflected markup, header injection and timing.
 
-A genuine finding from this exercise is fixed in the production code, not merely documented, and is then backed by a
-permanent regression test at the fastest level available to prove it. The two findings on this page are both recent
-examples: the rule-parser nesting-depth guard and the Web Application Firewall each began life as something this
-suite's approach surfaced, and each now also carries its own fast test coverage close to the code — 1,649 tests
-against the parser directly, needing no database or HTTP host at all, and 66 for the WAF, almost all to the same
-standard — precisely so the regression signal does not depend on standing up the full HTTP harness. Where a
-capability is instead an intentional design trade-off rather than a defect — for example, that a named
-administrator-only page is deliberately able to execute arbitrary read-only SQL, or that a case workflow macro is
-deliberately able to make an outbound HTTP call — it is recorded as accepted by design rather than re-raised on every
-run.
+## Coverage
+
+Coverage follows the OWASP API Security Top 10 (2023) and the relevant OWASP ASVS and Top 10 web items, in two layers.
+
+A **generic layer** reads every mapped route from `EndpointDataSource` — Minimal API and MVC controller alike — and
+applies the same checks to all of them:
+
+- anonymous access is refused except on a short, explicit allow-list (login, logout, the readiness probe, the error
+  pages and the demonstration mocks), and the suite fails if the anonymous-reachable surface ever drifts from that list;
+- every route is checked for verb tampering, oversized and malformed request bodies, content-type confusion, and
+  null-byte or traversal characters in route parameters;
+- no error response may carry a stack trace;
+- Swagger and static file serving are checked for what they expose to an unauthenticated caller.
+
+**Targeted suites** follow the platform's own structure — Identity, Model, Case, Permissions, the dynamic SQL surface,
+Monitoring, Observability, Visualisations and the query families each have their own — and exercise the authorisation
+matrix for every role, cross-tenant object references using real seeded identifiers from a second tenant (Broken Object
+Level Authorization), the hostile-rule and dynamic-SQL corpora described above, mass assignment of server-controlled
+fields (`Id`, `TenantRegistryId`, `CreatedUser`, `Deleted`, `Locked`), type confusion and malformed or deeply nested
+JSON, and the particular attack surface of each feature, such as a case workflow's role grants or the SQL gate's
+obfuscated write statements.
+
+## Findings policy
+
+A finding is fixed in production code and then held by a permanent regression test at the fastest level that can prove
+it, so that the regression signal does not depend on standing up the HTTP harness. The rule-parser nesting-depth guard
+and the Web Application Firewall both arrived this way, and both carry close-to-the-code coverage of their own: 1,649
+parser tests that need neither a database nor a host, and 66 for the firewall.
+
+A capability that is an intentional trade-off rather than a defect is recorded as accepted by design and is not
+re-raised on each run. The administrator-only page that executes read-only SQL, and the case workflow macro that makes
+an outbound HTTP call, are both of this kind.
 
 ## Running the suite locally
 
-`Unit` needs nothing beyond `dotnet test` — no database, no HTTP host, no environment variables. `Service` and
-`PenTest` both need a real Postgres instance and read its connection string from `JubeTestConnectionString`, an
-ordinary Npgsql connection string (`Host=...;Port=...;Database=...;Username=...;Password=...;`) pointed at the same
-database docker-compose's `POSTGRES_PASSWORD` creates locally; a handful of tests that exercise Redis-backed behaviour
-directly also read `JubeTestRedisConnectionString`, which defaults to `localhost` when unset. Neither variable has
-anything to do with a deployed instance's own `ConnectionString` setting — they exist purely so the test host can
-stand up its own connection without touching production configuration.
+`Unit` needs nothing beyond `dotnet test`. `Service` and `PenTest` need a real Postgres instance and read its connection
+string from `JubeTestConnectionString`, an ordinary Npgsql connection string
+(`Host=...;Port=...;Database=...;Username=...;Password=...;`) pointed at the database that docker-compose creates
+locally. Tests exercising Redis-backed behaviour directly read `JubeTestRedisConnectionString`, which defaults to
+`localhost`. Neither variable has anything to do with a deployed instance's own `ConnectionString`; they exist so that
+the test host can open its own connection without touching production configuration.
 
-`dotnet test` from a shell picks up whatever is exported in that shell. An IDE's own test runner does not: Rider and
-Visual Studio launch the test host with only the environment configured on the run configuration itself, so a shell
-`export` made before opening the IDE has no effect on a run started from its Unit Tests window — the usual symptom is
-every database-backed test failing at once, rather than the handful a real regression would touch. In Rider this is
-set once, for every future run, on the run configuration template — Run → Edit Configurations → Templates → xUnit →
-Environment Variables — rather than on each test's own configuration; a run configuration saved before the template
-is changed keeps its own copy and needs recreating. Set the variable before the test host process starts, not after —
-some fixtures temporarily rewrite `DynamicEnvironment` settings around a single test and restore them afterwards, and
-a variable that is not present from the start of the run can be raced by parallel test classes doing the same thing.
+**Set the variables before the test host process starts.** A shell `export` reaches `dotnet test` in that shell and
+nothing else. An IDE runner launches the host with only the environment configured on the run configuration, so in Rider
+the variables belong on the template — Run → Edit Configurations → Templates → xUnit → Environment Variables — and a
+configuration saved before the template was changed keeps its own copy and needs recreating. The symptom of a missing
+variable is every database-backed test failing at once, rather than the handful a real regression would touch. Some
+fixtures rewrite `DynamicEnvironment` settings around a single test and restore them afterwards, so a variable that
+appears part way through a run can be raced by parallel classes doing the same.
 
-Only one process should run tests against a given Postgres instance at a time. `Service` and `PenTest` classes seed
-and tear down their own rows around each test, and two concurrent `dotnet test` invocations — a terminal and an IDE,
-say — racing the same database produce cascading, spurious failures (typically `Sequence contains no elements` from a
-fixture's own setup) in test classes entirely unrelated to whatever is actually being worked on.
+**Run one process against a given database at a time.** `Service` and `PenTest` classes seed and tear down their own
+rows around each test, so two concurrent invocations — a terminal and an IDE, say — produce cascading failures in
+classes unrelated to the work in hand, typically `Sequence contains no elements` from a fixture's own setup. Two further
+mechanics have the same consequence and the same misleading symptom:
 
-Running the whole `Unit`+`Service` set in one invocation is a separate case worth calling out on its own: xUnit
-parallelises by test class by default, and a number of `Service` tests each stand up a real engine host with its own
-Npgsql connection pool against `JubeTestConnectionString`. `[Collection("Database")]` only serialises the tests
-*within* that collection against each other — it does nothing to limit how many other, unrelated test classes are
-concurrently opening connections of their own — so a full run can demand more concurrent connections than a small
-pool serves. The visible symptom is either an explicit `Npgsql.NpgsqlException: The connection pool has been
-exhausted, either raise MaxPoolSize (currently 20) or Timeout (currently 15 seconds)`, or, worse, no exception at
-all — an engine-hosting test's `StartAsync` can simply never observe `Ready` and time out after its own deadline,
-since the stall happens inside the engine's own connection acquisition, several layers below anything the test itself
-can catch and log. Neither is a sign that anything is actually broken; it means the pool is undersized for the full
-suite's aggregate concurrency, not for any one test's needs. Raise `Maximum Pool Size` in `JubeTestConnectionString`
-for a full local run; a narrower `--filter` against one area under active work does not need it. The CI pipeline did
-carry exactly this exposure — its own connection string used `Maximum Pool Size=20` against an unfiltered run — and
-the first end-to-end run duly collapsed into it: the pool exhausted, and classes as unrelated as the backtest
-heartbeat failed in their own `InitializeAsync`. Its connection string now uses `Maximum Pool Size=100`, matching the
-fixture's own default instead of undercutting it fivefold, and `docker-compose.yml` raises the server's
-`max_connections` to 300 so the budget covers the application's pool, the monitoring service's and the test host's at
-once rather than rationing one against the others.
+- Stopping a run means stopping its `testhost` as well as `dotnet test`. The driver exits first, and the surviving host
+  continues to its own teardown, which deletes the seeded tenant underneath whatever starts next.
+- Rebuilding the test project while a run is in flight replaces an assembly and the application's static asset manifest
+  that the host loaded once at start, and every subsequent host start fails.
 
-## The shape of the nightly pipeline
+**Size the connection pool for the whole run rather than for one test.** xUnit parallelises by class, and several
+`Service` tests each stand up an engine host with an Npgsql pool of its own; `[Collection("Database")]` serialises only
+the classes within that collection, so aggregate demand is higher than any one test suggests. An undersized pool appears
+either as `Npgsql.NpgsqlException: The connection pool has been exhausted` or, less helpfully, as an engine host that
+never observes `Ready` and times out, the stall occurring inside the engine's connection acquisition and below anything
+the test itself can catch. Neither indicates a defect. `Maximum Pool Size=100` matches the fixture's own default, and
+`docker-compose.yml` raises the server's `max_connections` to 300 so that the application's pool, the monitoring
+service's and the test host's coexist rather than ration one another. A narrower `--filter` against one area under
+active work does not need it.
 
-The nightly end-to-end workflow runs two slices — `Unit`+`Service`+`PermissionParity` and `PenTest` — each
-standing up a private copy of the whole docker-compose stack, in parallel, so the wall clock is the slower of the
-two rather than their sum. Each slice carries its own `timeout-minutes` rather than sharing a guessed ceiling,
-because a runner's capacity is not something the workflow should assume: a slice that legitimately wants an hour is
-not a problem, whereas a slice silently truncated at a number somebody estimated is. The point of the split is isolation rather than speed: one unfiltered run
-put the pen test battery's thousands of deliberately concurrent hostile requests on the same Postgres instance and
-the same Npgsql pool as the `Service` tests, and the pen test's own load starved them of connections, producing
-failures in classes that had nothing to do with anything under test.
+## The nightly pipeline
 
-Two slices, not more, and that is a measured decision rather than a guess. It is tempting to read a slow suite as
-one that needs sharding, and the pen tests are the obvious candidate; they are not the answer here. What was
-costing the hours was two defects and one accident of measurement, described below, and with those dealt with the
-entire `Category=PenTest` battery — 6,050 tests, the payload corpora exhaustive — runs in seven minutes and
-forty-six seconds in a single process pinned to four cores, with `Unit`+`Service`+`PermissionParity` in under four.
-Sharding would have multiplied the nightly's docker and dotnet builds several times over to save nothing. The
-lesson is worth keeping: measure which tests are slow before buying parallelism to hide them. Where parallelism is
-wanted, the pen test sweeps take theirs from `Environment.ProcessorCount` rather than a literal, so a sweep widens
-on a developer's workstation and stays modest on a shared runner; the deliberate burst tests keep fixed
-concurrency, because there the load shape is the thing under test and must not vary with the hardware.
+The nightly end-to-end workflow runs two slices in parallel, each standing up a private copy of the whole docker-compose
+stack, so the wall clock is the slower of the two rather than their sum:
 
-### Where the hours were actually going
+| Slice | Content                                  | Duration on four cores |
+|-------|------------------------------------------|------------------------|
+| 1     | `Unit`, `Service` and `PermissionParity` | under four minutes     |
+| 2     | `PenTest`                                | seven to eight minutes |
 
-Three tests accounted for most of the suite's wall clock, and two of them were the same defect wearing different
-clothes. `ResilientNpgsqlConnection` retries a failed connection ten times with exponential backoff capped at
-thirty seconds, so any test that provokes a retryable failure and waits for the layer to give up pays
-`2+4+8+16+30*6` — two hundred and ten seconds, to the tenth of a second, every time.
-`SessionCaseSearchCompiledSqlServiceTests` provoked it with a refused socket (`Port=1`) while proving something
-entirely unrelated: that a failed rebuild is not stamped and a later read rebuilds. It does not care *which*
-failure, so it now points at a database that does not exist, which raises `3D000` — a state the retry
-classification deliberately excludes — and the class fell from 216 seconds to one. `PenTestPostgresGuard`'s
-reconnect test provoked it more subtly: its closing assertion expects a write to be refused with `25006`, and
-`25006` is *deliberately* retryable, because a read-only transaction error after a failover means the connection
-has landed on a replica and should be recycled. Asserting it through `ResilientNpgsqlCommand` therefore bought the
-whole failover budget to reach a foregone conclusion. The write probe now runs on the underlying connection, which
-is what the test's name claims to check — that the read-only guard survives a reconnect — and the class fell from
-220 seconds to five. That `25006` is retried, recycled and pool-cleared together keeps its own coverage in
-`PostgresErrorClassificationTests`, where it costs nothing.
+Each slice carries its own `timeout-minutes` rather than sharing an estimated ceiling, because a slice that legitimately
+wants an hour is not a problem whereas a slice silently truncated at an estimate is. The split exists for isolation: run
+unfiltered, the penetration tests' thousands of deliberately concurrent hostile requests compete with the `Service`
+tests for the same Postgres instance and the same pool, and starve them of connections, failing classes that have
+nothing to do with the change under test.
 
-Worth recording as a live design question rather than a defect: that same budget means an unreachable or
-failed-over Postgres costs a caller about three and a half minutes before the layer gives up. For engine work
-that is reasonable patience for a leader election. On a synchronous request path it is long past the point where
-whoever asked has gone away. `maxRetries` is already a constructor parameter with nothing configuring it, so a
-`DynamicEnvironment` key would expose it in the same shape as `PgPoolClearDebounceMilliseconds`.
+Two slices suffice. A battery's wall clock is governed by its individually slow tests rather than by its breadth, so
+sharding the penetration tests would multiply the nightly's docker and dotnet builds without shortening it. Sweep
+parallelism derives from `Environment.ProcessorCount`, so a sweep widens on a workstation and stays modest on a shared
+runner; the deliberate burst tests keep fixed concurrency, because there the load shape is the subject of the test.
 
-The third was not a defect but a measurement trap. `RuleVocabularyTests` compared the parser's token list against
-the vocabulary with FluentAssertions' `BeEquivalentTo`, which builds a structural match graph and is quadratic in
-the collection size; on a list this long that single assertion cost fifty-seven seconds. Because the assertion
-immediately above it already required the items to be unique, and the right-hand side was already distinct, set
-equality is exactly the same claim — so two `Except` assertions replace it, the class runs in under six hundred
-milliseconds, and a failure now names the offending words instead of printing a comparison graph.
+## Timing assertions
 
-Coverage is deliberately *not* what pays for the wall clock here. The payload corpora are exhaustive and stay
-exhaustive — every injection seed crossed with every encoding and evasion transform, against every parameter of
-every area. Where a sweep is slow the answer is to find what is actually slow about it, not to sample the corpus
-down to fit a budget.
+### No performance assertions
 
-There is no performance assertion anywhere in these suites, and that is deliberate. What used to be a `Load`
-category is now `Jube.Tests/Volume`, carrying `Category=Service`: those tests assert function *across* volume —
-that reprocessing reads every archived document exactly once, that every page but the last is full, that a backtest
-counts millions of generated rows exactly, that memory stays bounded because the work streams rather than
-materialises — all of which need more rows than fit in a page to mean anything, and none of which is a statement
-about speed. The records-per-second floors they used to carry have gone. A throughput floor measured on whatever
-hardware the gate happens to land on cannot distinguish a regression from a busy neighbour, and the one that was
-there proved it: on a four-core runner the reprocessing test recorded 741 records a second against a floor of
-2,000, while its own stage breakdown showed sanctions screening consuming 34.5 ms of each of 4,914 re-invocations.
-The floor was measuring sanctions latency. Performance testing is worth doing, but it belongs in its own suite on
-hardware whose capacity is known, where a number can be compared against the same number from yesterday.
+These suites assert no throughput or latency figure. What was once a `Load` category is now `Jube.Tests/Volume` under
+`Category=Service`, and those tests assert function *across* volume: that reprocessing reads every archived document
+exactly once, that every page but the last is full, that a backtest counts millions of generated rows exactly, and that
+memory stays bounded because the work streams rather than materialises. Each needs more rows than fit in a single page
+to mean anything, and none is a statement about speed.
 
-The volumes those tests use default to 100,000 rows, and `JubeBacktestVolumeRows`, `JubeBacktestVolumeDatabaseRows`
-and `JubeReprocessingVolumeRows` raise them for a deeper run. A hundred thousand is chosen as the smallest number
-that still exercises what the tests are for — many pages rather than one, a keyset cursor that has to advance, heap
-behaviour observed over enough samples to mean something — on the principle that a volume test earns its runtime by
-crossing the thresholds where behaviour changes, not by being large.
+A throughput floor measured on whatever hardware the gate lands on cannot distinguish a regression from a busy
+neighbour. A floor of 2,000 records a second previously failed a reprocessing test that recorded 741 on four cores,
+while the same run's own stage breakdown showed sanctions screening consuming 34.5 ms of each of 4,914 re-invocations:
+the floor was measuring sanctions latency, not reprocessing. Performance testing is worth doing, but it belongs in its
+own suite on hardware of known capacity, where a number can be compared with the same number from yesterday.
 
-A timing assertion on a shared CI runner needs care that an absolute bound cannot give it. The monitoring parameter
-sweep looks for time-blind injection by comparing a payload's latency against the area's baseline, and on a loaded
-four-core runner every request drifts past any fixed bound at once — the first run produced 723 violations against
-494 requests, almost all of them a saturated host reported as a finding. A candidate is now confirmed rather than
-reported: an unparameterised control request is issued, and unless the control comes back quickly *and* the payload
-is still slow on a second attempt, the host was merely busy and nothing is raised. Confirming a candidate is also
-what lets the bound be *tightened* rather than loosened, to baseline plus six seconds — comfortably under the
-eight-second `pg_sleep` the corpus actually plants, where the previous `baseline * 3 + 7s` was wide enough to have
-stepped straight over a genuine one. The separate absolute `SLOW` bound on the same requests is gone: it fired on
-exactly the same saturated requests, so it contributed a second violation per false positive and no signal of its
-own.
+Volumes default to 100,000 rows, chosen as the smallest number that still crosses the thresholds where behaviour changes
+— many pages rather than one, a keyset cursor that has to advance, and enough samples for heap behaviour to mean
+something. `JubeBacktestVolumeRows`, `JubeBacktestVolumeDatabaseRows` and `JubeReprocessingVolumeRows` raise them for a
+deeper run.
+
+### Confirming a timing candidate
+
+Time-blind injection can only be detected by measuring elapsed time, so the penetration tests do carry wall-clock
+bounds. A breach of one is a *candidate*, never a finding in itself. Every bound in the battery is evaluated by
+`PenTestRun`, which confirms a candidate before reporting it:
+
+1. **Control.** `GET /api/Ready` is issued at once. The route is anonymous and touches neither the database nor the
+   cache, so its latency measures nothing but the host's ability to answer. If the control cannot itself return inside
+   the same bound, the runner was saturated and the candidate is dropped.
+2. **Replay.** Where the request under suspicion is idempotent — `GET`, `HEAD` or `OPTIONS`, logout excluded —
+   `PenTestClient` carries a replay delegate on the response, and the candidate must breach a second time before it is
+   reported. A one-off scheduling spike therefore cannot produce a finding, while a planted `pg_sleep` or a genuine
+   algorithmic blow-up reproduces on demand.
+3. **Mutations rest on the control alone**, because re-sending a `POST` would create a second row.
+
+A reported violation carries all three measurements — the original time, the replay, and what the control managed at
+that moment — so a reader can see which conclusion the evidence supports. Each run's summary states how many candidates
+were dropped and for which of the two reasons, so suppression is visible rather than silent.
+
+Confirmation is also what allows a bound to be *tight*. The monitoring parameter sweep compares a payload's latency
+against the area's own baseline plus six seconds, comfortably under the eight-second `pg_sleep` its corpus plants, where
+a wide multiplier would be capable of stepping over a genuine finding.
+
+A bound is only meaningful where the request's own cost is bounded, so a sweep whose subject is parameter handling sends
+`take=5`. The observability sort, search and identifier-filter sweeps assert that an unrecognised sort field falls back
+to ordering by identifier and that a hostile value is never concatenated into a statement, neither of which needs the
+hundred thousand row default; response size and clamping are proved where they belong, in the paging test that
+deliberately asks for a hundred thousand rows, the widest date range and a burst.
+
+### Differentials inside the process
+
+Three guards measure work in the process rather than over the wire, and each compares against a control measured beside
+it: hostile redaction input against inert text of the same length; the refusal of an over-cap statement against the cost
+of validating a statement that really is parsed, and the per-character cost of a 65 kB statement against an 8,000-value
+one; and a datasource parameter's default value against the fastest of the same set of attack values. A saturated host
+inflates both sides of such a comparison equally, where it would carry a single absolute measurement past a fixed
+bound.
+
+### Response budget
+
+`PenTestClient.ResponseBudget` is 32 MB, and the client reads one byte beyond it so that a response exceeding the budget
+is detected rather than silently truncated. A response over budget is reported by the size rules — `SIZE`, `WIDE-SIZE`,
+`RESPONSE-SIZE`, and the login and logout equivalents. Row-count and clamping assertions are not evaluated against a
+body the client could not read to the end, since such a body cannot be parsed and would otherwise be reported as an
+unclamped row count.
+
+## Rules for writing tests in these suites
+
+- A test must not provoke `ResilientNpgsqlConnection`'s retry budget unless the retry is itself the subject. Ten
+  attempts with exponential backoff capped at thirty seconds cost `2+4+8+16+30*6`, which is two hundred and ten seconds
+  every time. Where a test needs a failed connection for some other reason, choose a state the retry classification
+  excludes, such as `3D000` from a database that does not exist, rather than a refused socket.
+- `25006` is deliberately retryable, because a read-only transaction error after a failover means the connection has
+  landed on a replica and should be recycled. A test asserting that the read-only guard survives a reconnect therefore
+  issues its write probe on the underlying connection; the classification itself is covered in
+  `PostgresErrorClassificationTests`, where it costs nothing.
+- FluentAssertions' `BeEquivalentTo` builds a structural match graph and is quadratic in collection size. Where the
+  claim is set equality and uniqueness is already asserted separately, two `Except` assertions state the same thing, run
+  in milliseconds, and name the offending items on failure.
+- Payload corpora stay exhaustive — every injection seed crossed with every encoding and evasion transform, against
+  every parameter of every area. Where a sweep is slow, find what is slow about it rather than sampling the corpus down
+  to fit a budget.
+
+`ResilientNpgsqlConnection`'s budget also means that an unreachable or failed-over Postgres costs a caller about three
+and a half minutes before the layer gives up. That is reasonable patience for engine work waiting on a leader election,
+and long past useful on a synchronous request path. `maxRetries` is already a constructor parameter with nothing
+configuring it, so a `DynamicEnvironment` key would expose it in the same shape as `PgPoolClearDebounceMilliseconds`.
 
 # Generic Validations and Display of Error Messages
 
-The following describes the scenario where there is database interuption which will bring about errors in the Jube
-software. Such errors are not displayed directly in the software and are instead bubbled up as a generic message. For
-example, a fairly standard CRUD process as follows, where the database has been terminated:
-
-In the case above, the following error is bubbled up to the user interface:
+A database interruption brings about errors in the Jube software. Such errors are never displayed directly and are
+instead bubbled up as a generic message. A standard CRUD operation attempted while the database is terminated shows the
+user interface the following:
 
 ![ErrorInUiForCRUD.png](ErrorInUiForCRUD.png)
 
-Further proof as follows that the exception does not come across the wire in the background either:
-
-Meanwhile the error is available in the logs:
+The exception does not cross the wire in the background either. The detail is available only in the logs:
 
 ![ErrorInLogs.png](ErrorInLogs.png)
 
-There are certain administrative pages in the application that do bubble up more detailed errors, given that their
-purpose is the to created reports on the basis of SQl, it does provide more reliable feedback as to the error.
+Certain administrative pages do bubble up more detailed errors. Their purpose is to author reports on the basis of
+SQL, where the text of the database's own error is the feedback the author needs.
 
-## Direct Object Reference and Role Based Access (RBAC) Validation
+# Direct Object Reference and Role Based Access (RBAC) Validation
 
 The vertical slices that exist in Jube follow the pattern of Endpoint > Service > Repository > Data Context (Object
 Relation Mapper) > Database (the screenshots below show the original Controller form, whose logic now lives in the
-service). The create bulk of the system does not make direct SQL calls to the database and instead pushes SQL down via
-LINQ. The approach makes for a very strongly typed approach where models are mapped through the layers of the
-application whereby there is no direct object reference. In the following case it can be seen that the input from the
-user is mapped indirectly to the object required of the Repository layer:
+service). The great bulk of the system makes no direct SQL call to the database and instead pushes SQL down via LINQ.
+The approach is strongly typed throughout: models are mapped through the layers of the application, so there is no
+direct object reference. In the following case the input from the user is mapped indirectly to the object the
+Repository layer requires:
 
 ![PassingObjectsAround.png](PassingObjectsAround.png)
 
@@ -444,13 +461,13 @@ Meanwhile, the repository layer maps once more via LINQ to the underlying SQL:
 
 ![StronglyTypedDatabaseAccess.png](StronglyTypedDatabaseAccess.png)
 
-In terms of RBAC, much of the horizontal data isolation is achived by passing the users identity as part of
-paramaterised query, where the identity is taken from the .NET authentication pipeline only:
+Much of the horizontal data isolation is achieved by passing the user's identity as part of a parameterised query,
+where that identity is taken from the .NET authentication pipeline and from nowhere else:
 
 ![CheckingPermissionsAtController.png](CheckingPermissionsAtController.png)
 
-In addition to validations set out above, every call to an API will first validate RBAC for that functionality, and the
-functionality is only adressible in the case a Permission is added:
+In addition to the validations set out above, every call to an API first validates RBAC for that functionality, which
+is addressable only where a Permission has been added:
 
 ![ControllerPermissions.png](ControllerPermissions.png)
 

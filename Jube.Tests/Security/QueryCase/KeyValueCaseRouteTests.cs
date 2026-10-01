@@ -65,7 +65,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             r => r.Status == 200 && IntsOf(r, CaseIdProperty).Contains(graph.CaseId),
             Empty, graph.Value);
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             }
         });
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -169,7 +169,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             }
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -197,7 +197,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
         run.Expect(IntsOf(still, CaseIdProperty).Contains(graph.CaseId), still, "STATE-DAMAGED",
             "the legitimate lookup must be unaffected by the injection attempts");
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -265,7 +265,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             run.Expect(response.Status is 200 or 406, response, "HEADER-STATUS", headers.Item1);
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -291,7 +291,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
         run.Expect(response.ContentType?.Contains("json", StringComparison.OrdinalIgnoreCase) == true, response,
             "CONTENT-TYPE", response.ContentType ?? "none");
         run.Expect(response.Header("X-Content-Type-Options") != null, response, "NOSNIFF");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -315,7 +315,7 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
 
         var after = run.Check(await client.GetAsync(target));
         run.Expect(before.Body == after.Body && after.Status == 200, after, "ROWSET-CHANGED");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -342,6 +342,6 @@ public abstract class KeyValueCaseRouteTests(DatabaseFixture fx, ITestOutputHelp
             }
         }, 12);
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 }

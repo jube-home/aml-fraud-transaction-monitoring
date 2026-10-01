@@ -1,7 +1,9 @@
-# Fast PR gate: the Category=Unit slice of the suite is pure units and concepts - no Postgres, no Redis, no
+# Fast gate: the Category=Unit slice of the suite is pure units and concepts - no Postgres, no Redis, no
 # docker-compose stack, nothing that touches the network - so it needs none of that infrastructure and runs in
-# well under a minute. This is the one signal a PR gets; the full Unit/Service/PenTest battery (which needs the
-# real docker-compose stack and takes hours) runs nightly against master instead - see master.yml.
+# well under a minute. The authoritative gate is Jube Build and End-to-End Tests, which also runs on every pull
+# request; this one earns its place beside it by failing in a minute rather than fifteen, by saying whether the
+# code itself is sound when the docker-compose stack is what went wrong, and by keeping the master badge live on
+# every commit, which a pull request event cannot do because its runs are attributed to the source branch.
 
 name: Jube Build and Unit Tests
 
@@ -14,6 +16,10 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   unit-tests:

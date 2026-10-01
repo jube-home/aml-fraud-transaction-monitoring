@@ -108,7 +108,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
                 $"{template}: tenant B saw tenant A's row");
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
         run.Expect(updated.Status == 200, updated, "AUTHORISED", "owner could not update");
         var deleted = await MatrixAsync(run, "DELETE", $"{Route}/{id}", () => null, s => !IsSuccess(s), IsSuccess);
         run.Expect(IsSuccess(deleted.Status), deleted, "AUTHORISED", "owner could not delete");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     private static bool IsSuccess(int status) => status == 200;
@@ -185,7 +185,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
             var r = await ReadAsync(run, PenTestUser.WithPermission, $"{Route}/{id}");
             ExpectNoForeign(run, PenTestUser.WithPermission, r);
         });
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     private async Task<PenTestResponse> ReadAsync(PenTestRun run, PenTestUser user, string target)
@@ -234,7 +234,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
         var reverseDelete = run.Check(await As(PenTestUser.TenantB).SendAsync("DELETE", $"{Route}/{OwnId(World.A)}"));
         run.Expect(!IsSuccess(reverseDelete.Status), reverseDelete, "BOLA", "tenant B deleted tenant A's row");
         run.Expect(await StateAsync() == before, foreignPut, "SIDE-EFFECT", "a refused write changed rows");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     private static Dictionary<string, object?> Set(Dictionary<string, object?> body, string key, object? value)
@@ -299,7 +299,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
         run.Expect(after[2] is "0" or "", update, "MASS", "update soft-deleted the row");
         run.Expect(after[3] == "2", update, "MASS", $"version not server managed: {after[3]}");
         run.Expect(after[4] == parts[5], update, "MASS", "created date changed by update");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -351,7 +351,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
         run.Expect(seeded.Body.Contains(OwnName(World.A)), seeded, "INTEGRITY", "seeded row damaged");
         run.Expect((await StateAsync()).StartsWith(before.Split(',')[0], StringComparison.Ordinal), seeded, "INTEGRITY",
             "first seeded row changed");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     protected virtual void EnableFor(Dictionary<string, object?> body, string field)
@@ -408,7 +408,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
             run.Expect(c.Status is 400 or 413, c, "API4", $"{field}: a 4 MB value was accepted");
         }
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -491,7 +491,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
         var state = await StateAsync();
         run.Expect(state.StartsWith(before.Split(',')[0], StringComparison.Ordinal),
             new PenTestResponse { Request = "state" }, "INTEGRITY", "seeded rows changed");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     protected virtual string Fixed() => string.Empty;
@@ -528,7 +528,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
         }, 6);
         run.Expect(await StateAsync() == before, new PenTestResponse { Request = "state" }, "SIDE-EFFECT",
             "route probing changed rows");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -573,7 +573,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
                 new DataParameter("i", lockedId)) == 1,
             lockedDelete, "LOCK", "the locked row changed");
 
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     [Fact]
@@ -596,7 +596,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
         run.Expect(await RowCountAsync($"\"Name\" = '{name}' AND COALESCE(\"Deleted\",0) = 0") <= 1,
             new PenTestResponse { Request = "race" }, "CONCURRENCY",
             "concurrent creates produced duplicate names");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 
     private static bool IsListedActive(PenTestResponse list, int id)
@@ -632,6 +632,6 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
 
         run.Expect(await StateAsync() == before, new PenTestResponse { Request = "state" }, "VERB",
             "a wrong verb changed rows");
-        run.AssertClean(Output);
+        await run.AssertCleanAsync(Output);
     }
 }

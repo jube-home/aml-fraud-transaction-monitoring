@@ -57,7 +57,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
         {
             coordinator = new TaskCoordinator(new CancellationTokenProvider(), TestLog.NoOp);
             cache = new CacheService(
-                Environment.GetEnvironmentVariable("JubeTestRedisConnectionString") ?? "localhost",
+                Environment.GetEnvironmentVariable("JubeTestRedisConnectionString") ?? "localhost,defaultDatabase=1",
                 Environment.GetEnvironmentVariable("JubeTestConnectionString") ?? string.Empty,
                 new ConcurrentDictionary<Guid,
                     TaskCompletionSource<global::Jube.Cache.Redis.Callback.Callback>>(), 3000, false, false,

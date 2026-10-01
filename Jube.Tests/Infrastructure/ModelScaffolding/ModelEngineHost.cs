@@ -45,7 +45,8 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         public global::Jube.Engine.Engine Engine { get; }
 
         public static string RedisConnectionString { get; } =
-            System.Environment.GetEnvironmentVariable("JubeTestRedisConnectionString") ?? "localhost";
+            System.Environment.GetEnvironmentVariable("JubeTestRedisConnectionString")
+            ?? "localhost,defaultDatabase=1";
 
         private static Dictionary<string, string> DefaultSettings() => new()
         {

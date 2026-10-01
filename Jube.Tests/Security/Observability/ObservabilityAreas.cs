@@ -45,7 +45,8 @@ public static class ObservabilityAreas
         new("HAProxyReachabilityProbe", monitoring, false, [], true),
         new("HAProxyServerStatus", monitoring, false, [], true),
         new("HttpProcessingCounter", [5, 9], false, [], false),
-        new("ModelInvokeWarning", monitoring, false, [], true, "entityAnalysisModelGuid")
+        new("ModelInvokeWarning", monitoring, false, [], true, "entityAnalysisModelGuid"),
+        new("WafAttack", monitoring, false, [], true)
     ];
 
     public static IEnumerable<object[]> Names() => All.Select(a => new object[] { a.Name });

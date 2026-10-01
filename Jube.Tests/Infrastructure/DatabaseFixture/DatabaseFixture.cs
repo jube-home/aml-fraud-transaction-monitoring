@@ -56,12 +56,15 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
             }
 
             await using var dbContext = GetDbContext();
+            await dbContext.WafAttack.DeleteAsync().ConfigureAwait(false);
             Seed = await SeedAsync(dbContext).ConfigureAwait(false);
         }
 
         public async Task DisposeAsync()
         {
             await using var dbContext = GetDbContext();
+
+            await ReclaimByCreatedUserAsync(dbContext).ConfigureAwait(false);
 
             var prefixedModelIds = dbContext.EntityAnalysisModel
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
@@ -207,6 +210,34 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
 
             await dbContext.TenantRegistry
                 .Where(w => w.Name != null && w.Name.StartsWith(Prefix))
+                .DeleteAsync().ConfigureAwait(false);
+        }
+
+        private static async Task ReclaimByCreatedUserAsync(DbContext dbContext)
+        {
+            await dbContext.GetTable<PreservationSnapshot>()
+                .Where(w => w.CreatedUser != null && w.CreatedUser.StartsWith(Prefix))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<UserLogout>()
+                .Where(w => w.CreatedUser != null && w.CreatedUser.StartsWith(Prefix))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<UserLogout>()
+                .Where(w => w.OutcomeId == Jube.Service.UserLogout.UserLogoutOutcome.NoSession
+                            && (w.CreatedUser == null || w.CreatedUser == "") && w.TenantRegistryId == null)
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<OpenTelemetryExclude>()
+                .Where(w => w.CreatedUser != null && w.CreatedUser.StartsWith(Prefix))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<CaseWorkflowStatusVersion>()
+                .Where(w => w.CreatedUser != null && w.CreatedUser.StartsWith(Prefix))
+                .DeleteAsync().ConfigureAwait(false);
+
+            await dbContext.GetTable<TenantRegistryVersion>()
+                .Where(w => w.CreatedUser != null && w.CreatedUser.StartsWith(Prefix))
                 .DeleteAsync().ConfigureAwait(false);
         }
 
