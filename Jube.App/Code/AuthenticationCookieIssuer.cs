@@ -34,7 +34,7 @@ namespace Jube.App.Code
             if (dynamicEnvironment.AppSettings("SecureHttpCookie").Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 tokenOptions.Secure = true;
-                tokenOptions.SameSite = SameSiteMode.Strict;
+                tokenOptions.SameSite = StrictCookie(dynamicEnvironment) ? SameSiteMode.Strict : SameSiteMode.Lax;
             }
             else if (response.HttpContext.Request.IsHttps)
             {
@@ -49,12 +49,17 @@ namespace Jube.App.Code
         {
             var secure = dynamicEnvironment.AppSettings("SecureHttpCookie")
                 .Equals("True", StringComparison.OrdinalIgnoreCase);
-            var sameSite = secure ? SameSiteMode.Strict : SameSiteMode.Lax;
+            var sameSite = secure && StrictCookie(dynamicEnvironment) ? SameSiteMode.Strict : SameSiteMode.Lax;
             var isSecure = secure || response.HttpContext.Request.IsHttps;
 
             response.Cookies.Delete("authentication-jwt",
                 new CookieOptions { HttpOnly = true, SameSite = sameSite, Secure = isSecure });
             SessionExpiry.Revoke(response.HttpContext);
+        }
+
+        private static bool StrictCookie(DynamicEnvironment dynamicEnvironment)
+        {
+            return dynamicEnvironment.AppSettings("StrictCookie").Equals("True", StringComparison.OrdinalIgnoreCase);
         }
 
         public static AuthenticationResponseDto IssueAuthenticationCookies(

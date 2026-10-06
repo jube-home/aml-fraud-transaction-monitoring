@@ -136,6 +136,37 @@ public sealed class AuthenticationCookieTests
     }
 
     [Fact]
+    public void StrictCookieFalse_IssuesLaxWhenSecure()
+    {
+        var clock = new FakeClock(noon);
+        var (_, cookies, _) = Issue("alice",
+            Env(("SecureHttpCookie", "True"), ("StrictCookie", "False")), clock);
+
+        cookies.Single().Secure.Should().BeTrue();
+        cookies.Single().SameSite.Should().Be(Microsoft.Net.Http.Headers.SameSiteMode.Lax);
+    }
+
+    [Fact]
+    public void StrictCookieDefault_IssuesStrictWhenSecure()
+    {
+        var clock = new FakeClock(noon);
+        var (_, cookies, _) = Issue("alice", Env(("SecureHttpCookie", "True")), clock);
+
+        cookies.Single().SameSite.Should().Be(Microsoft.Net.Http.Headers.SameSiteMode.Strict);
+    }
+
+    [Fact]
+    public void StrictCookieFalse_DeletesWithLaxWhenSecure()
+    {
+        var context = new DefaultHttpContext();
+
+        AuthenticationCookieIssuer.DeleteCookies(context.Response,
+            Env(("SecureHttpCookie", "True"), ("StrictCookie", "False")));
+
+        context.Response.Headers.SetCookie.ToString().Should().Contain("samesite=lax");
+    }
+
+    [Fact]
     public void TheDefaultEnvironment_IsOneSessionCookie_NotSecure_AndHttpOnly()
     {
         var (_, cookies, _) = Issue("alice", Env());
