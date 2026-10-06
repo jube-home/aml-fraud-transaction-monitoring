@@ -412,6 +412,9 @@ namespace Jube.DynamicEnvironment
                     "SecureHttpCookie", "False"
                 },
                 {
+                    "StrictCookie", "True"
+                },
+                {
                     "SessionAbsoluteLifetimeInterval", "n"
                 },
                 {
@@ -569,6 +572,9 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "OAuthForceGet", "False"
+                },
+                {
+                    "OAuthSignInInterstitial", "False"
                 },
                 {
                     "SanctionsLevenshteinMaxDistanceRatio", "0.3"
