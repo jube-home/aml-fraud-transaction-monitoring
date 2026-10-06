@@ -39,7 +39,7 @@ internal static class VisSupport
         await using var db = fx.GetDbContext();
         var userA = host.UserName(PenTestUser.WithPermission);
         var userB = host.UserName(PenTestUser.TenantB);
-        var userA2 = host.UserName(PenTestUser.NoApproveByReview);
+        var userA2 = host.UserName(PenTestUser.NoApproval);
 
         var tenantA = await db.UserInTenant.Where(w => w.User == userA).Select(s => s.TenantRegistryId)
             .FirstAsync();

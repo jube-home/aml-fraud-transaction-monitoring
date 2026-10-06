@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Query.GetApprovedEntityQuery;
+
 namespace Jube.Data.Repository
 {
     using System;
@@ -74,7 +76,7 @@ namespace Jube.Data.Repository
         {
             return dbContext.EntityAnalysisModel.FirstOrDefaultAsync(w
                 => (w.TenantRegistryId == tenantRegistryId || !w.TenantRegistryId.HasValue)
-                   && w.Id == id && (w.Deleted == null || w.Deleted == 0), token);
+                   && w.Id == id, token);
         }
 
         public Task<EntityAnalysisModel> GetByGuidAsync(Guid guid, CancellationToken token = default)
@@ -101,7 +103,6 @@ namespace Jube.Data.Repository
                 .FirstOrDefaultAsync(w => w.Id
                                           == model.Id
                                           && (w.TenantRegistryId == tenantRegistryId || !w.TenantRegistryId.HasValue)
-                                          && (w.Deleted == 0 || w.Deleted == null)
                                           && (w.Locked == 0 || w.Locked == null), token);
 
             if (existing == null)
@@ -115,25 +116,55 @@ namespace Jube.Data.Repository
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
             model.Version = existing.Version + 1;
+            model.Deleted = 0;
+            model.DeletedDate = null;
+            model.DeletedUser = null;
             model.Guid = existing.Guid;
 
             await dbContext.UpdateAsync(model, token: token);
 
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<EntityAnalysisModel, EntityAnalysisModelVersion>(); },
+                NullLoggerFactory.Instance));
+
+            var audit = mapper.Map<EntityAnalysisModelVersion>(existing);
+            audit.EntityAnalysisModelId = existing.Id;
+
+            if (existing.Deleted != 1)
             {
-                cfg.CreateMap<EntityAnalysisModel, EntityAnalysisModelVersion>();
-            }, NullLoggerFactory.Instance));
+                await dbContext.InsertAsync(audit, token: token);
+            }
+
+            return model;
+        }
+
+        public Task DeleteAsync(int id, CancellationToken token = default)
+        {
+            return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
+        }
+
+        private async Task DeleteVersionedAsync(int id, CancellationToken token)
+        {
+            var existing = await dbContext.EntityAnalysisModel
+                .FirstOrDefaultAsync(w => (w.TenantRegistryId == tenantRegistryId || !w.TenantRegistryId.HasValue)
+                                          && w.Id == id
+                                          && (w.Deleted == 0 || w.Deleted == null)
+                                          && (w.Locked == 0 || w.Locked == null), token);
+
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<EntityAnalysisModel, EntityAnalysisModelVersion>(); },
+                NullLoggerFactory.Instance));
 
             var audit = mapper.Map<EntityAnalysisModelVersion>(existing);
             audit.EntityAnalysisModelId = existing.Id;
 
             await dbContext.InsertAsync(audit, token: token);
 
-            return model;
-        }
-
-        public async Task DeleteAsync(int id, CancellationToken token = default)
-        {
             var records = await dbContext.EntityAnalysisModel
                 .Where(d => (d.TenantRegistryId == tenantRegistryId || !d.TenantRegistryId.HasValue)
                             && d.Id == id
@@ -142,15 +173,26 @@ namespace Jube.Data.Repository
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .Set(s => s.DeletedUser, userName)
+                .Set(s => s.Version, (existing.Version ?? 1) + 1)
                 .UpdateAsync(token);
 
             if (records == 0)
             {
                 throw new KeyNotFoundException();
             }
+
+            var deletedState = mapper.Map<EntityAnalysisModelVersion>(existing);
+            deletedState.EntityAnalysisModelId = existing.Id;
+            deletedState.Deleted = Convert.ToByte(1);
+            deletedState.DeletedDate = DateTime.UtcNow;
+            deletedState.DeletedUser = userName;
+            deletedState.Version = (existing.Version ?? 1) + 1;
+
+            await dbContext.InsertAsync(deletedState, token: token);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModel
                 .Where(d => d.TenantRegistryId == tenantRegistryIdOutsideOfInstance
@@ -159,6 +201,21 @@ namespace Jube.Data.Repository
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .UpdateAsync(token);
+        }
+
+        public async Task<IEnumerable<EntityAnalysisModel>> GetApprovedAsync(
+            int approvalsRequired = 1,
+            CancellationToken token = default)
+        {
+            var current = await dbContext.EntityAnalysisModel
+                .Where(w =>
+                    w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            return await new GetApprovedEntityQuery<EntityAnalysisModel, EntityAnalysisModelVersion>(dbContext,
+                    EntityApprovalKind.EntityAnalysisModel, nameof(EntityAnalysisModelVersion.EntityAnalysisModelId),
+                    tenantRegistryId)
+                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
     }
 }

@@ -44,7 +44,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Checking if model {key} is started for the purpose determining adding Abstraction Calculations.");
                     }
 
-                    var repository = new EntityAnalysisModelAbstractionCalculationRepository(context.Services.DbContext);
+                    var repository =
+                        new EntityAnalysisModelAbstractionCalculationRepository(context.Services.DbContext);
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -52,7 +53,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelAbstractionCalculationRepository.GetByEntityAnalysisModelId for entity model key of {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdOrderByIdDescAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository.GetApprovedByEntityAnalysisModelIdOrderByIdDescAsync(key,
+                        context.ApprovalsRequired,
+                        context.Services.CancellationToken).ConfigureAwait(false);
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -122,7 +125,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                                 else
                                 {
-                                    entityAnalysisModelAbstractionCalculation.ResponsePayload = record.ResponsePayload == 1;
+                                    entityAnalysisModelAbstractionCalculation.ResponsePayload =
+                                        record.ResponsePayload == 1;
 
                                     if (context.Services.Log.IsDebugEnabled)
                                     {
@@ -205,7 +209,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                             $"Entity Start: {key} and Calculation {entityAnalysisModelAbstractionCalculation.Id} has been hashed to {activationRuleScriptHash}, will now check if it is in the hash cache.");
                                     }
 
-                                    if (context.Caching.HashCacheAssembly.TryGetValue(activationRuleScriptHash, out var valueHash))
+                                    if (context.Caching.HashCacheAssembly.TryGetValue(activationRuleScriptHash,
+                                            out var valueHash))
                                     {
                                         if (context.Services.Log.IsDebugEnabled)
                                         {
@@ -217,14 +222,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                             valueHash;
 
                                         var classType =
-                                            entityAnalysisModelAbstractionCalculation.FunctionCalculationCompile.GetType(
-                                                "CalculationRule");
+                                            entityAnalysisModelAbstractionCalculation.FunctionCalculationCompile
+                                                .GetType(
+                                                    "CalculationRule");
                                         var methodInfo = classType.GetMethod("Match");
                                         entityAnalysisModelAbstractionCalculation.FunctionCalculationCompileDelegate =
                                             (EntityAnalysisModelAbstractionCalculation.Match)Delegate.CreateDelegate(
                                                 typeof(EntityAnalysisModelAbstractionCalculation.Match), methodInfo);
 
-                                        await repository.UpdateCompileStatusAsync(entityAnalysisModelAbstractionCalculation.Id,
+                                        await repository.UpdateCompileStatusAsync(
+                                            entityAnalysisModelAbstractionCalculation.Id,
                                             true, null, context.Services.CancellationToken).ConfigureAwait(false);
 
                                         if (context.Services.Log.IsDebugEnabled)
@@ -244,7 +251,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         var compile = new Compile();
                                         compile.CompileCode(activationRuleScript.ToString(), context.Services.Log,
                                         [
-                                            Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(), "log4net.dll"),
+                                            Path.Combine(
+                                                context.Paths.BinaryPath ?? throw new InvalidOperationException(),
+                                                "log4net.dll"),
                                             Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll")
                                         ], Compile.Language.Vb);
 
@@ -269,16 +278,21 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                                 entityAnalysisModelAbstractionCalculation.FunctionCalculationCompile
                                                     .GetType("CalculationRule");
                                             var methodInfo = classType.GetMethod("Match");
-                                            entityAnalysisModelAbstractionCalculation.FunctionCalculationCompileDelegate =
+                                            entityAnalysisModelAbstractionCalculation
+                                                    .FunctionCalculationCompileDelegate =
                                                 (EntityAnalysisModelAbstractionCalculation.Match)
                                                 Delegate.CreateDelegate(
-                                                    typeof(EntityAnalysisModelAbstractionCalculation.Match), methodInfo);
+                                                    typeof(EntityAnalysisModelAbstractionCalculation.Match),
+                                                    methodInfo);
 
-                                            context.Caching.HashCacheAssembly.TryAdd(activationRuleScriptHash, compile.CompiledAssembly);
+                                            context.Caching.HashCacheAssembly.TryAdd(activationRuleScriptHash,
+                                                compile.CompiledAssembly);
                                             context.Caching.HashCacheAssemblyMetadata.TryAdd(activationRuleScriptHash,
-                                                new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes, compile.CompiledAssemblyBinary, activationRuleScript.ToString()));
+                                                new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
+                                                    compile.CompiledAssemblyBinary, activationRuleScript.ToString()));
 
-                                            await repository.UpdateCompileStatusAsync(entityAnalysisModelAbstractionCalculation.Id,
+                                            await repository.UpdateCompileStatusAsync(
+                                                entityAnalysisModelAbstractionCalculation.Id,
                                                 true, null, context.Services.CancellationToken).ConfigureAwait(false);
 
                                             if (context.Services.Log.IsDebugEnabled)
@@ -289,8 +303,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         }
                                         else
                                         {
-                                            await repository.UpdateCompileStatusAsync(entityAnalysisModelAbstractionCalculation.Id,
-                                                false, compile.ErrorsSummary, context.Services.CancellationToken).ConfigureAwait(false);
+                                            await repository.UpdateCompileStatusAsync(
+                                                    entityAnalysisModelAbstractionCalculation.Id,
+                                                    false, compile.ErrorsSummary, context.Services.CancellationToken)
+                                                .ConfigureAwait(false);
 
                                             if (context.Services.Log.IsDebugEnabled)
                                             {
@@ -301,7 +317,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     }
                                 }
 
-                                if (entityAnalysisModelAbstractionCalculation.FunctionCalculationCompileDelegate == null)
+                                if (entityAnalysisModelAbstractionCalculation.FunctionCalculationCompileDelegate ==
+                                    null)
                                 {
                                     await repository.UpdateCompileStatusAsync(
                                         entityAnalysisModelAbstractionCalculation.Id, false,
@@ -351,7 +368,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                     }
 
-                    value.Collections.EntityAnalysisModelAbstractionCalculations =
+                    context.Snapshots.Builder(key, value).EntityAnalysisModelAbstractionCalculations =
                         shadowEntityAnalysisModelAbstractionCalculation;
 
                     if (context.Services.Log.IsDebugEnabled)
@@ -363,15 +380,19 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
-                    context.Services.Log.Debug("Entity Start: Completed adding Abstraction Calculations to entity models.");
+                    context.Services.Log.Debug(
+                        "Entity Start: Completed adding Abstraction Calculations to entity models.");
                 }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                context.Services.Log.Error($"SyncEntityAnalysisModelAbstractionCalculationsAsync: has produced an error {ex}");
+                context.Services.Log.Error(
+                    $"SyncEntityAnalysisModelAbstractionCalculationsAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.AbstractionCalculation, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.AbstractionCalculation, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

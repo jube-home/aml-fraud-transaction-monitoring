@@ -46,7 +46,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelTtlCounterRepository.GetByEntityAnalysisModelId and entity model key of {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository.GetApprovedByEntityAnalysisModelIdOrderByIdAsync(key,
+                        context.ApprovalsRequired,
+                        context.Services.CancellationToken).ConfigureAwait(false);
 
                     var shadowEntityAnalysisModelTtlCounters = new List<EntityAnalysisModelTtlCounter>();
                     foreach (var record in records)
@@ -169,7 +171,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             }
                             else
                             {
-                                entityAnalysisModelTtlCounter.TtlCounterDataValue = record.TtlCounterDataValue.Replace(" ", "_");
+                                entityAnalysisModelTtlCounter.TtlCounterDataValue =
+                                    record.TtlCounterDataValue.Replace(" ", "_");
 
                                 if (context.Services.Log.IsDebugEnabled)
                                 {
@@ -333,7 +336,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     $"Entity Start: Model {key} and TTL Counter Interval {entityAnalysisModelTtlCounter.Id} has been added to a shadow collection of TTL Counters.");
                             }
 
-                            context.Services.Parser.EntityAnalysisModelsTtlCounters.TryAdd(entityAnalysisModelTtlCounter.Name);
+                            context.Services.Parser.EntityAnalysisModelsTtlCounters.TryAdd(entityAnalysisModelTtlCounter
+                                .Name);
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -348,7 +352,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                     }
 
-                    value.Collections.ModelTtlCounters = shadowEntityAnalysisModelTtlCounters;
+                    context.Snapshots.Builder(key, value).ModelTtlCounters = shadowEntityAnalysisModelTtlCounters;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -367,7 +371,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelTtlCountersAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.TtlCounters, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.TtlCounters, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

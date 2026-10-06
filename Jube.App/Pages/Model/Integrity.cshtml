@@ -33,16 +33,40 @@
         <li>Findings</li>
         <li>Engine</li>
         <li>Dependencies</li>
+        <li>Pending Approvals</li>
     </ul>
     <div>
         <div id="FindingsGrid"></div>
     </div>
     <div>
+        @if (Model.CanSynchronise)
+        {
+            <div class="ruleToolsHint">Model synchronisation across engine instances. Schedule a synchronisation for a
+                chosen time, or synchronise now. Use Refresh to update the instance states.
+            </div>
+            <div class="syncToolbar">
+                <input id="SyncPicker" title="Synchronisation schedule date and time"/>
+                <button type="button" id="SyncSchedule">Schedule Synchronisation</button>
+                <button type="button" id="SyncNow">Synchronise Now</button>
+                <button type="button" id="SyncRefresh">Refresh</button>
+                <span id="SyncMessage" class="errorMessage"></span>
+            </div>
+            <div id="SyncGrid"></div>
+        }
         <div id="EngineGrid"></div>
     </div>
     <div>
         <div id="DependenciesNote" class="ruleToolsHint"></div>
         <div id="DependenciesDiagram" style="height:640px;"></div>
         <div id="DependenciesGrid"></div>
+    </div>
+    <div>
+        <div class="ruleToolsHint">Each row is one kind of change waiting for a checker. Expand it with the arrow to see
+            its entities. Click an entity to review it: the changes and any values are shown together, and it is
+            approved or rejected from there.
+        </div>
+        <div id="PendingMessage" class="errorMessage"></div>
+        <div id="PendingGrid"></div>
+        <div id="PendingReview" class="pending-review-panel"></div>
     </div>
 </div>

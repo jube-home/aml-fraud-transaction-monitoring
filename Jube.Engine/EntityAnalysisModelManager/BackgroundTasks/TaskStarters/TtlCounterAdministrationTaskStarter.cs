@@ -99,7 +99,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         $"TTL Counter Administration: has started for {entityAnalysisModel.Instance.Id}.  Is about to loop around all TTL Counters.");
                 }
 
-                foreach (var ttlCounterWithinLoop in entityAnalysisModel.Collections.ModelTtlCounters)
+                foreach (var ttlCounterWithinLoop in entityAnalysisModel.Snapshot.ModelTtlCounters)
                 {
                     context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
 

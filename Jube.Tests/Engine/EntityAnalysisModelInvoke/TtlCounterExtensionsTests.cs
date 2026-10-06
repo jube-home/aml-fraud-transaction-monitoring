@@ -123,7 +123,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 }
             };
 
-            entityAnalysisModel.Collections.ModelTtlCounters.Add(counter);
+            entityAnalysisModel.Snapshot.ModelTtlCounters.Add(counter);
 
             var payload = new DictionaryNoBoxing<string>();
             payload.Add(counter.TtlCounterDataName, dataValue);

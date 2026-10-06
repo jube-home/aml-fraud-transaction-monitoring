@@ -308,7 +308,7 @@ namespace Jube.Service.Query.EntityAnalysisModelInvocationContext
 
         private async Task<List<RequestField>> RequestFieldsAsync(int entityAnalysisModelId, CancellationToken token)
         {
-            return (await new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId)
+            return (await new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId)
                     .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
                 .Where(x => x.Active == 1 && !string.IsNullOrEmpty(x.Name))
                 .Select(x => new RequestField(x.Name, x.XPath, x.DataTypeId ?? 1, x.DefaultValue,

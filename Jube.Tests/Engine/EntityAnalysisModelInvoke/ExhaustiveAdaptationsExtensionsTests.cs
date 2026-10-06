@@ -33,7 +33,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         private static Context NewContext(params ExhaustiveSearchInstance[] models)
         {
             var entityAnalysisModel = new EntityAnalysisModel();
-            entityAnalysisModel.Collections.ExhaustiveModels.AddRange(models);
+            entityAnalysisModel.Snapshot.ExhaustiveModels.AddRange(models);
 
             return new Context
             {

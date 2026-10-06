@@ -40,7 +40,7 @@ namespace Jube.Test.RuleParser
             var parsed = BuilderProfile.Parse(json, BuilderFilter.Catalogue(typeof(Row)));
             parsed.Valid.Should().BeTrue(string.Join("; ", parsed.Errors.Select(e => e.Message)));
             var predicate = BuilderFilter.Compile<Row>(parsed.Group);
-            return rows.Where(predicate).Select(r => r.Id).ToArray();
+            return [.. rows.Where(predicate).Select(r => r.Id)];
         }
 
         private static string Rule(string id, string op, string value)

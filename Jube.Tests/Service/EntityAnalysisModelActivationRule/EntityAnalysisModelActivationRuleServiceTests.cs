@@ -30,6 +30,7 @@ using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
+using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -113,7 +114,6 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
                 Json = "{\"valid\":true,\"condition\":\"AND\",\"rules\":[]}",
                 CoderRuleScript = "Return True",
                 RuleScriptTypeId = 1,
-                ReviewStatusId = 0,
                 ActivationSample = 1,
                 Priority = 0
             };
@@ -204,7 +204,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
         }
 
         [Fact]
-        public async Task DeleteSoftDeletesAndRowDisappearsFromReadsAsync()
+        public async Task DeleteKeepsRowReachableByIdAndHidesItFromListsAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
@@ -216,7 +216,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             await service.DeleteAsync(saved.Id);
 
             var byId = await service.GetByIdAsync(saved.Id);
-            byId.Should().BeNull();
+            byId.Should().NotBeNull("a deleted row stays reachable by id so it can be opened and revived");
 
             var all = await service.GetAsync();
             all.Should().NotContain(d => d.Id == saved.Id);
@@ -385,19 +385,6 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "EntityAnalysisModelIdInvalid");
-        }
-
-        [Fact]
-        public async Task InvalidReviewStatusIdIsRejectedAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var dto = NewDto(modelId, UniqueName("BadReview"));
-            dto.ReviewStatusId = 99;
-
-            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
-            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "ReviewStatusIdInvalid");
         }
 
         [Fact]
@@ -639,53 +626,6 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
         }
 
         [Fact]
-        public async Task InsertWithApprovedByReviewWithoutPermissionThrowsReviewStatusApprovalExceptionAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
-            var dto = NewDto(modelId, UniqueName("NoApprove"));
-            dto.ReviewStatusId = 4;
-
-            var ex = await Assert.ThrowsAsync<ReviewStatusApprovalException>(() => service.InsertAsync(dto));
-            ex.Code.Should().Be("PermissionDenied");
-            ex.PropertyName.Should().Be("Permission");
-        }
-
-        [Fact]
-        public async Task InsertWithApprovedByReviewWithPermissionSucceedsAsync()
-        {
-            await using var dbContext = fx.GetDbContext();
-            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var dto = NewDto(modelId, UniqueName("Approve"));
-            dto.ReviewStatusId = 4;
-
-            var saved = await service.InsertAsync(dto);
-            createdIds.Add(saved.Id);
-
-            saved.ReviewStatusId.Should().Be(4);
-        }
-
-        [Fact]
-        public async Task UpdateWithApprovedByReviewWithoutPermissionThrowsReviewStatusApprovalExceptionAsync()
-        {
-            await using var ownerDb = fx.GetDbContext();
-            var modelId = await CreateParentModelAsync(ownerDb, fx.Seed.UserWithPermissionNoApproveByReview);
-            var owner = await BuildServiceAsync(ownerDb, fx.Seed.UserWithPermissionNoApproveByReview);
-            var saved = await owner.InsertAsync(NewDto(modelId, UniqueName("NoApproveUpdate")));
-            createdIds.Add(saved.Id);
-
-            var dto = NewDto(modelId, saved.Name);
-            dto.Id = saved.Id;
-            dto.ReviewStatusId = 4;
-
-            var ex = await Assert.ThrowsAsync<ReviewStatusApprovalException>(() => owner.UpdateAsync(dto));
-            ex.Code.Should().Be("PermissionDenied");
-            ex.PropertyName.Should().Be("Permission");
-        }
-
-        [Fact]
         public async Task TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -744,7 +684,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
         }
 
         [Fact]
-        public async Task UpdateOfSoftDeletedRowThrowsNotFoundAsync()
+        public async Task UpdateOfSoftDeletedRowRevivesItAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
@@ -756,7 +696,10 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
 
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
-            await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
+            await service.UpdateAsync(dto);
+
+            (await service.GetByIdAsync(saved.Id)).Should().NotBeNull(
+                "an update to a deleted row revives it, so it is reachable by id");
         }
 
         [Fact]
@@ -1033,31 +976,6 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
-        }
-
-        private sealed class CapturingBus : IServiceChangeBus
-        {
-            public readonly List<ServiceChangeEvent> Published = [];
-
-            public Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default)
-            {
-                Published.Add(change);
-                return Task.CompletedTask;
-            }
-
-            public IDisposable Subscribe(Func<ServiceChangeEvent, Task> handler)
-            {
-                return NoopSubscription.Instance;
-            }
-
-            private sealed class NoopSubscription : IDisposable
-            {
-                public static readonly NoopSubscription Instance = new();
-
-                public void Dispose()
-                {
-                }
-            }
         }
     }
 }

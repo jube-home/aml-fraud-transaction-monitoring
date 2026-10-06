@@ -29,8 +29,6 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
         private const int MaxRuleScriptLength = 65536;
         private const int MaxFreeTextLength = 65536;
         private const int MaxShortTextLength = 512;
-
-        private static readonly int[] allowedReviewStatusIds = [0, 1, 2, 3, 4];
         private static readonly int[] allowedRuleScriptTypeIds = [1, 2];
         private static readonly int[] allowedNotificationTypeIds = [1, 2];
         private static readonly char[] allowedBypassSuspendIntervals = ['n', 'h', 'd', 'm'];
@@ -68,11 +66,6 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.NameAlreadyExists])
                 .WithErrorCode("NameDuplicate");
-
-            RuleFor(p => p.ReviewStatusId)
-                .Must(m => allowedReviewStatusIds.Contains(m))
-                .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.ReviewStatusIdInvalid])
-                .WithErrorCode("ReviewStatusIdInvalid");
 
             RuleFor(p => p.RuleScriptTypeId)
                 .Must(m => allowedRuleScriptTypeIds.Contains(m))

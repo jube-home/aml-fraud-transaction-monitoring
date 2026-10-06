@@ -106,7 +106,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task ARuleThatDoesNotMatchIsNotAddedToActivationsAndDoesNotCountAsync()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(NewRule("NoMatch", false));
+            context.Snapshot.ModelActivationRules.Add(NewRule("NoMatch", false));
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, items) =
@@ -123,7 +123,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             var rule = NewRule("HighAmount", true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
@@ -139,7 +139,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             var rule = NewRule("Hidden", true, false);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
@@ -156,8 +156,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
             var first = NewRule("First", true);
             var second = NewRule("Second", true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(first);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(second);
+            context.Snapshot.ModelActivationRules.Add(first);
+            context.Snapshot.ModelActivationRules.Add(second);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
@@ -172,7 +172,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext(0.99);
             var rule = NewRule("RareRule", true, activationSample: 0.01);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, items) =
@@ -192,13 +192,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AForceOverrideActivatesARuleThatWouldNotOtherwiseMatchAsync()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
             AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
             var rule = NewRule("BlacklistCard", false, reportTable: true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
@@ -213,13 +213,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AForceOverrideBypassesActivationSamplingAsync()
         {
             var context = NewContext(0.99);
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
             AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
             var rule = NewRule("BlacklistCard", false, activationSample: 0.01);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
@@ -232,13 +232,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AForceOverrideOnlyAppliesToTheRuleItIsBoundToAsync()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
             AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(NewRule("BlacklistCard", false));
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(NewRule("SomeOtherRule", false));
+            context.Snapshot.ModelActivationRules.Add(NewRule("BlacklistCard", false));
+            context.Snapshot.ModelActivationRules.Add(NewRule("SomeOtherRule", false));
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
@@ -253,13 +253,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AForcedActivationIsMarkedForcedOnThePayloadAndCountedSeparatelyAsync()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "CardFingerprint", EnableOverride = true });
             AddOverride(context, "CardFingerprint", "cdb7", "BlacklistCard", EntityAnalysisModelOverrideKind.Force);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
             var rule = NewRule("BlacklistCard", false);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
@@ -276,7 +276,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             var rule = NewRule("HighAmount", true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
@@ -289,7 +289,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         private static void AddOverride(Context context, string overrideKey, string overrideKeyValue,
             string? activationRuleName, EntityAnalysisModelOverrideKind kind)
         {
-            var overrides = context.EntityAnalysisModel.Dependencies.EntityAnalysisModelOverrides;
+            var overrides = context.Snapshot.EntityAnalysisModelOverrides;
 
             if (!overrides.TryGetValue(overrideKey, out var values))
             {
@@ -310,13 +310,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task ARuleSuppressedAtTheModelLevelIsStillEvaluatedButNotCountedTowardsPrevailingAsync()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Country", EnableOverride = true });
             AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
 
             var rule = NewRule("SanctionedCountryRule", true, reportTable: true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
@@ -334,13 +334,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task ARuleSuppressedAtTheRuleLevelViaAnotherModelsOverrideListIsNotCountedAsync()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Country", EnableOverride = true });
             AddOverride(context, "Country", "IR", "TargetedRule", EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
 
             var rule = NewRule("TargetedRule", true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
@@ -355,7 +355,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId = 99;
             var rule = NewRule("NoReprocessRule", true, enableReprocessing: false);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
@@ -369,7 +369,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             var rule = NewRule("ReportedRule", true, reportTable: true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
@@ -385,7 +385,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             var rule = NewRule("UnreportedRule", true, reportTable: false);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             await context.IterateAndProcessAsync(cacheService, noAvailableModels, null);
@@ -399,8 +399,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
             var first = NewRule("DuplicateName", true, reportTable: true);
             var second = NewRule("DuplicateName", true, reportTable: true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(first);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(second);
+            context.Snapshot.ModelActivationRules.Add(first);
+            context.Snapshot.ModelActivationRules.Add(second);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, _) =
@@ -416,7 +416,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             var rule = NewRule("OverriddenRule", false);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
 
             var script = new EntityAnalysisModelInlineScript
             {
@@ -432,7 +432,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 Guid = rule.Guid,
                 Name = rule.Name
             });
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Add(script);
+            context.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
@@ -447,7 +447,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             var rule = NewRule("StillNoMatch", false);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
 
             var script = new EntityAnalysisModelInlineScript
             {
@@ -463,7 +463,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 Guid = rule.Guid,
                 Name = rule.Name
             });
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Add(script);
+            context.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
@@ -479,8 +479,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
             var first = NewRule("CaseRuleOne", true, enableCaseWorkflow: true);
             var second = NewRule("CaseRuleTwo", true, enableCaseWorkflow: true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(first);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(second);
+            context.Snapshot.ModelActivationRules.Add(first);
+            context.Snapshot.ModelActivationRules.Add(second);
             var cacheService = TestCacheService.Create(out _);
 
             var (_, createCase, _, _) =
@@ -494,7 +494,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task ATtlCounterIsStillIncrementedForAMatchedRuleEvenWhenSuppressedAtTheModelLevelAsync()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Country", EnableOverride = true });
             AddOverride(context, "Country", "IR", null, EntityAnalysisModelOverrideKind.Suppress);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Country", "IR");
@@ -520,14 +520,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 EnableLiveForever = true
             };
 
-            targetModel.Collections.ModelTtlCounters.Add(counter);
+            targetModel.Snapshot.ModelTtlCounters.Add(counter);
             var availableModels = new Dictionary<int, EntityAnalysisModel> { [1] = targetModel };
 
             var rule = NewRule("SuppressedTtlRule", true);
             rule.EnableTtlCounter = true;
             rule.EntityAnalysisModelGuidTtlCounter = targetModel.Instance.Guid;
             rule.EntityAnalysisModelTtlCounterGuid = counter.Guid;
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, _, _) =
@@ -545,8 +545,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             failing.ActivationRuleCompileDelegate = (_, _, _, _, _, _, _, _, _, _, _) =>
                 throw new InvalidOperationException("boom");
             var healthy = NewRule("HealthyRule", true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(failing);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(healthy);
+            context.Snapshot.ModelActivationRules.Add(failing);
+            context.Snapshot.ModelActivationRules.Add(healthy);
             var cacheService = TestCacheService.Create(out _);
 
             var (activationRuleCount, _, prevailingActivationRuleId, items) =
@@ -563,7 +563,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             var rule = NewRule("TimedRule", true);
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(rule);
+            context.Snapshot.ModelActivationRules.Add(rule);
             var cacheService = TestCacheService.Create(out _);
 
             var (_, _, _, items) =

@@ -1,0 +1,41 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Jube.Service.EntityApproval
+{
+    using Data.Repository;
+    using Parser.Dependency;
+
+    public static class EntityApprovalGraphKind
+    {
+        public static ModelEntityKind? Of(EntityApprovalKind kind)
+        {
+            return kind switch
+            {
+                EntityApprovalKind.EntityAnalysisModelRequestXPath => ModelEntityKind.RequestXPath,
+                EntityApprovalKind.EntityAnalysisModelInlineFunction => ModelEntityKind.InlineFunction,
+                EntityApprovalKind.EntityAnalysisModelGatewayRule => ModelEntityKind.GatewayRule,
+                EntityApprovalKind.EntityAnalysisModelAbstractionRule => ModelEntityKind.AbstractionRule,
+                EntityApprovalKind.EntityAnalysisModelAbstractionCalculation => ModelEntityKind.AbstractionCalculation,
+                EntityApprovalKind.EntityAnalysisModelTtlCounter => ModelEntityKind.TtlCounter,
+                EntityApprovalKind.EntityAnalysisModelActivationRule => ModelEntityKind.ActivationRule,
+                EntityApprovalKind.EntityAnalysisModelSanction => ModelEntityKind.Sanction,
+                EntityApprovalKind.EntityAnalysisModelList => ModelEntityKind.List,
+                EntityApprovalKind.EntityAnalysisModelDictionary => ModelEntityKind.Dictionary,
+                EntityApprovalKind.EntityAnalysisModelHttpAdaptation => ModelEntityKind.HttpAdaptation,
+                EntityApprovalKind.ExhaustiveSearchInstance => ModelEntityKind.ExhaustiveAdaptation,
+                _ => null
+            };
+        }
+    }
+}

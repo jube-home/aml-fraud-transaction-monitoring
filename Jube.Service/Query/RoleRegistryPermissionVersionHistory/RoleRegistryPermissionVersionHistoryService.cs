@@ -20,10 +20,12 @@ using Jube.Service.Exceptions.Query.EntityVersionHistory;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
+using Jube.Service.Query.VersionHistory;
 
 namespace Jube.Service.Query.RoleRegistryPermissionVersionHistory
 {
-    public sealed class RoleRegistryPermissionVersionHistoryService
+    public sealed class RoleRegistryPermissionVersionHistoryService : IVersionHistoryService<
+        RoleRegistryPermissionVersionHistoryService, RoleRegistryPermissionVersion>
     {
         private static readonly int[] permissions = [36];
 

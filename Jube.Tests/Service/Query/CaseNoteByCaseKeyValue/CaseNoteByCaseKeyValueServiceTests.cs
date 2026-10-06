@@ -407,7 +407,7 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
             var graph = await CreateCaseGraphAsync(dbContext, fx.Seed.UserWithPermission,
                 fx.Seed.UserWithPermission, key, value);
             await AddNoteAsync(dbContext, graph, "n", 1, "x", DateTime.UtcNow);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
 
             (await service.GetAsync(key, value)).Should().BeEmpty();
         }

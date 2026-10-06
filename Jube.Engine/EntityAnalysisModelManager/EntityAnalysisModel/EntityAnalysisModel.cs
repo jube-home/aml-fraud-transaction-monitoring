@@ -13,6 +13,7 @@
 
 // ReSharper disable CollectionNeverUpdated.Global
 
+using System.Threading;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ResponseTimePipelineCounters;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.StagePerformanceCounters;
@@ -28,8 +29,17 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel
         public Instance Instance { get; } = new();
         public Services Services { get; } = new();
         public Flags Flags { get; } = new();
-        public Collections Collections { get; } = new();
         public Dependencies Dependencies { get; } = new();
+
+        private ModelSnapshot snapshot = new();
+
+        public ModelSnapshot Snapshot => Volatile.Read(ref snapshot);
+
+        public void PublishSnapshot(ModelSnapshot value)
+        {
+            Volatile.Write(ref snapshot, value);
+        }
+
         public ConcurrentQueues ConcurrentQueues { get; } = new();
         public Counters Counters { get; } = new();
         public StagePerformanceCounters StagePerformanceCounters { get; } = new();

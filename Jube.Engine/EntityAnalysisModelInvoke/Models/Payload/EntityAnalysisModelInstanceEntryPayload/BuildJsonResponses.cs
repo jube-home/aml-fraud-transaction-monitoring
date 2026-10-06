@@ -90,7 +90,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
                 jObject.Add("Payload", kvpEntityAnalysisModelPayloadJObject);
             }
 
-            foreach (var entityAnalysisModelInlineScript in context.EntityAnalysisModel.Collections
+            foreach (var entityAnalysisModelInlineScript in context.Snapshot
                          .EntityAnalysisModelInlineScripts)
             {
                 foreach (var entityAnalysisModelInlineScriptPropertyAttribute in entityAnalysisModelInlineScript
@@ -156,7 +156,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddPayloadToJObject(Context.Context context, JObject jObject)
         {
-            var kvpEntityAnalysisModelRequestXPaths = context.EntityAnalysisModel.Collections
+            var kvpEntityAnalysisModelRequestXPaths = context.Snapshot
                 .EntityAnalysisModelRequestXPaths.Where(w => w.ResponsePayload).ToArray();
             if (!kvpEntityAnalysisModelRequestXPaths.Any())
             {
@@ -225,7 +225,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddInlineFunctionToJObject(Context.Context context, JObject jObject)
         {
-            var kvpEntityAnalysisModelInlineFunctions = context.EntityAnalysisModel.Collections
+            var kvpEntityAnalysisModelInlineFunctions = context.Snapshot
                 .EntityAnalysisModelInlineFunctions.Where(w => w.ResponsePayload).ToArray();
             if (!kvpEntityAnalysisModelInlineFunctions.Any())
             {
@@ -294,7 +294,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddActivationToJObject(Context.Context context, JObject jObject)
         {
-            var kvpModelActivationRules = context.EntityAnalysisModel.Collections.ModelActivationRules
+            var kvpModelActivationRules = context.Snapshot.ModelActivationRules
                 .Where(w => w.ResponsePayload).ToArray();
             if (!kvpModelActivationRules.Any())
             {
@@ -318,7 +318,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddExhaustiveAdaptationToJObject(Context.Context context, JObject jObject)
         {
-            var kvpExhaustiveModels = context.EntityAnalysisModel.Collections.ExhaustiveModels
+            var kvpExhaustiveModels = context.Snapshot.ExhaustiveModels
                 .Where(w => w.ResponsePayload).ToArray();
             if (!kvpExhaustiveModels.Any())
             {
@@ -341,7 +341,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddHttpAdaptationToJObject(Context.Context context, JObject jObject)
         {
-            var kvpEntityAnalysisModelAdaptations = context.EntityAnalysisModel.Collections
+            var kvpEntityAnalysisModelAdaptations = context.Snapshot
                 .EntityAnalysisModelAdaptations.Where(w => w.ResponsePayload).ToArray();
             if (!kvpEntityAnalysisModelAdaptations.Any())
             {
@@ -365,7 +365,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddAbstractionCalculationToJObject(Context.Context context, JObject jObject)
         {
-            var kvpEntityAnalysisModelAbstractionCalculations = context.EntityAnalysisModel.Collections
+            var kvpEntityAnalysisModelAbstractionCalculations = context.Snapshot
                 .EntityAnalysisModelAbstractionCalculations.Where(w => w.ResponsePayload).ToArray();
             if (!kvpEntityAnalysisModelAbstractionCalculations.Any())
             {
@@ -389,7 +389,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddAbstractionToJObject(Context.Context context, JObject jObject)
         {
-            var kvpAbstractions = context.EntityAnalysisModel.Collections.ModelAbstractionRules
+            var kvpAbstractions = context.Snapshot.ModelAbstractionRules
                 .Where(w => w.ResponsePayload).ToArray();
             if (!kvpAbstractions.Any())
             {
@@ -412,7 +412,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddSanctionToJObject(Context.Context context, JObject jObject)
         {
-            var kvpEntityAnalysisModelSanctions = context.EntityAnalysisModel.Collections.EntityAnalysisModelSanctions
+            var kvpEntityAnalysisModelSanctions = context.Snapshot.EntityAnalysisModelSanctions
                 .Where(w => w.ResponsePayload).ToArray();
             if (!kvpEntityAnalysisModelSanctions.Any())
             {
@@ -436,7 +436,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddTtlCounterToJObject(Context.Context context, JObject jObject)
         {
-            var kvpModelTtlCounters = context.EntityAnalysisModel.Collections.ModelTtlCounters
+            var kvpModelTtlCounters = context.Snapshot.ModelTtlCounters
                 .Where(w => w.ResponsePayload).ToArray();
             if (!kvpModelTtlCounters.Any())
             {
@@ -459,7 +459,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
 
         private static void AddDictionaryToJObject(Context.Context context, JObject jObject)
         {
-            var responsePayloadDictionaryNames = context.EntityAnalysisModel.Dependencies.KvpDictionaries
+            var responsePayloadDictionaryNames = context.Snapshot.KvpDictionaries
                 .Where(w => w.Value.ResponsePayload)
                 .Select(s => s.Value.Name)
                 .ToHashSet();

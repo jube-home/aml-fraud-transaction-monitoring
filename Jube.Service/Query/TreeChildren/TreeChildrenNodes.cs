@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository;
+
 namespace Jube.Service.Query.TreeChildren
 {
     public static class TreeChildrenNodes
@@ -19,7 +21,8 @@ namespace Jube.Service.Query.TreeChildren
         public const string ByGuid = "guid";
         public const string ByKey = "key";
 
-        public static readonly TreeChildrenNode RequestXPath = new("RequestXPath", ById, [7]);
+        public static readonly TreeChildrenNode RequestXPath =
+            new("RequestXPath", ById, [7], EntityApprovalKind.EntityAnalysisModelRequestXPath);
 
         public static readonly TreeChildrenNode VisualisationRegistryDatasource =
             new("VisualisationRegistryDatasource", ById, [33]);
@@ -30,24 +33,49 @@ namespace Jube.Service.Query.TreeChildren
         public static readonly TreeChildrenNode VisualisationRegistryParameter =
             new("VisualisationRegistryParameter", ById, [32]);
 
-        public static readonly TreeChildrenNode InlineFunction = new("InlineFunction", ById, [8]);
-        public static readonly TreeChildrenNode Tag = new("Tag", ById, [37]);
-        public static readonly TreeChildrenNode GatewayRule = new("GatewayRule", ById, [10]);
-        public static readonly TreeChildrenNode Exhaustive = new("Exhaustive", ById, [16]);
+        public static readonly TreeChildrenNode InlineFunction = new("InlineFunction", ById, [8],
+            EntityApprovalKind.EntityAnalysisModelInlineFunction);
+
+        public static readonly TreeChildrenNode Tag = new("Tag", ById, [37], EntityApprovalKind.EntityAnalysisModelTag);
+
+        public static readonly TreeChildrenNode GatewayRule = new("GatewayRule", ById, [10],
+            EntityApprovalKind.EntityAnalysisModelGatewayRule);
+
+        public static readonly TreeChildrenNode Exhaustive = new("Exhaustive", ById, [16],
+            EntityApprovalKind.ExhaustiveSearchInstance);
+
         public static readonly TreeChildrenNode Reprocessing = new("Reprocessing", ById, [26]);
-        public static readonly TreeChildrenNode Adaptation = new("Adaptation", ById, [15]);
+
+        public static readonly TreeChildrenNode Adaptation = new("Adaptation", ById, [15],
+            EntityApprovalKind.EntityAnalysisModelHttpAdaptation);
 
         public static readonly TreeChildrenNode CaseWorkflow =
             new("CaseWorkflow", ById, [18, 19, 20, 21, 22, 23, 24, 25]);
 
-        public static readonly TreeChildrenNode AbstractionCalculation = new("AbstractionCalculation", ById, [14]);
-        public static readonly TreeChildrenNode AbstractionRule = new("AbstractionRule", ById, [13, 14]);
-        public static readonly TreeChildrenNode ActivationRule = new("ActivationRule", ById, [17]);
-        public static readonly TreeChildrenNode TtlCounter = new("TTLCounter", ById, [12]);
-        public static readonly TreeChildrenNode InlineScript = new("InlineScript", ById, [9]);
-        public static readonly TreeChildrenNode Sanctions = new("Sanctions", ById, [11]);
-        public static readonly TreeChildrenNode List = new("List", ByGuid, [3]);
-        public static readonly TreeChildrenNode Dictionary = new("Dictionary", ByGuid, [4]);
+        public static readonly TreeChildrenNode AbstractionCalculation = new("AbstractionCalculation", ById, [14],
+            EntityApprovalKind.EntityAnalysisModelAbstractionCalculation);
+
+        public static readonly TreeChildrenNode AbstractionRule = new("AbstractionRule", ById, [13, 14],
+            EntityApprovalKind.EntityAnalysisModelAbstractionRule);
+
+        public static readonly TreeChildrenNode ActivationRule = new("ActivationRule", ById, [17],
+            EntityApprovalKind.EntityAnalysisModelActivationRule);
+
+        public static readonly TreeChildrenNode TtlCounter = new("TTLCounter", ById, [12],
+            EntityApprovalKind.EntityAnalysisModelTtlCounter);
+
+        public static readonly TreeChildrenNode InlineScript =
+            new("InlineScript", ById, [9], EntityApprovalKind.EntityAnalysisModelInlineScript);
+
+        public static readonly TreeChildrenNode Sanctions = new("Sanctions", ById, [11],
+            EntityApprovalKind.EntityAnalysisModelSanction);
+
+        public static readonly TreeChildrenNode List = new("List", ByGuid, [3],
+            EntityApprovalKind.EntityAnalysisModelList);
+
+        public static readonly TreeChildrenNode Dictionary = new("Dictionary", ByGuid, [4],
+            EntityApprovalKind.EntityAnalysisModelDictionary);
+
         public static readonly TreeChildrenNode CaseWorkflowXPath = new("CaseWorkflowXPath", ByKey, [20]);
         public static readonly TreeChildrenNode CaseWorkflowForm = new("CaseWorkflowForm", ByKey, [21]);
         public static readonly TreeChildrenNode CaseWorkflowAction = new("CaseWorkflowAction", ByKey, [22]);

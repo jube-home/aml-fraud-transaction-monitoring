@@ -21,14 +21,17 @@ namespace Jube.Data.Query.Models
         public List<ModelDependencyRuleTextDto> RuleTexts { get; } = [];
         public List<ModelDependencyReferenceDto> References { get; } = [];
 
-        internal void Add(string kind, int id, string name, byte? active)
+        internal void Add(string kind, int id, string name, byte? active, int? version = null)
         {
             if (string.IsNullOrEmpty(name))
             {
                 return;
             }
 
-            Entities.Add(new ModelDependencyEntityDto { Kind = kind, Id = id, Name = name, Active = active == 1 });
+            Entities.Add(new ModelDependencyEntityDto
+            {
+                Kind = kind, Id = id, Name = name, Active = active == 1, Version = version
+            });
         }
 
         internal void Text(string kind, int id, int ruleParseType, string text, bool? showOnlyCacheForPayload)

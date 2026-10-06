@@ -79,7 +79,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                     {
                         case string s:
                             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(prop.Key, s);
-                            context.EntityAnalysisModel.ResolveDictionaryValueForField(
+                            context.EntityAnalysisModel.ResolveDictionaryValueForField(context.Snapshot, 
                                 context.EntityAnalysisModelInstanceEntryPayload, context.Log, prop.Key);
 
                             if (prop.Value.ReportTable)

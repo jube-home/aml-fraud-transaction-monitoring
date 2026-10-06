@@ -465,7 +465,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
         {
             await using var dbContext = fx.GetDbContext();
             var seeded = await SeedAsync(dbContext, fx.Seed.UserWithPermission);
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
 
             await Assert.ThrowsAsync<NullReferenceException>(() => service.GetAsync(seeded.CompiledGuid));
 
@@ -482,7 +482,7 @@ namespace Jube.Test.Service.Query.CaseBySessionCaseSearchCompile
 
             new SessionCaseSearchCompiledSqlRepository(dbContext, fx.Seed.UserWithPermission)
                 .GetByGuid(seeded.CompiledGuid).Should().NotBeNull();
-            new SessionCaseSearchCompiledSqlRepository(dbContext, fx.Seed.UserWithPermissionNoApproveByReview)
+            new SessionCaseSearchCompiledSqlRepository(dbContext, fx.Seed.UserWithPermissionNoApproval)
                 .GetByGuid(seeded.CompiledGuid).Should().BeNull();
             new SessionCaseSearchCompiledSqlRepository(dbContext, fx.Seed.UserTenantB)
                 .GetByGuid(seeded.CompiledGuid).Should().BeNull();

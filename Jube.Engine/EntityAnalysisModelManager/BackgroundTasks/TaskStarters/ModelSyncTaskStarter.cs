@@ -12,12 +12,15 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Jube.Data.Context;
+using Jube.Data.Query.Models;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Helpers;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Utilities;
 using RabbitMQ.Client;
 
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
@@ -45,6 +48,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             try
             {
                 var startupTenantRegistrySchedule = true;
+                var lastSynchronisedWatermarks = new Dictionary<int, EntityAnalysisModelSyncWatermark>();
 
                 while (!context.Services.TaskCoordinator.CancellationToken.IsCancellationRequested)
                 {
@@ -117,15 +121,25 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 }
                             };
 
-                            await entityAnalysisModelContext.SyncEntityAnalysisInlineScriptAsync()
-                                .ConfigureAwait(false);
-                            await entityAnalysisModelContext.ConfigureTokenParserForSecurityAsync()
-                                .ConfigureAwait(false);
+                            var watermark = await SyncWatermarkHelpers.GetAsync(context.Services.Log, dbContext,
+                                scheduledModel.TenantRegistryId,
+                                context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
-                            if (scheduledModel.SynchronisationPending || startupTenantRegistrySchedule)
+                            lastSynchronisedWatermarks.TryGetValue(scheduledModel.TenantRegistryId,
+                                out var lastSynchronisedWatermark);
+
+                            if (scheduledModel.SynchronisationPending || startupTenantRegistrySchedule
+                                                                      || SyncWatermarkDecision
+                                                                          .RequiresSynchronisation(
+                                                                              lastSynchronisedWatermark, watermark,
+                                                                              DateTime.UtcNow))
                             {
                                 context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
 
+                                await entityAnalysisModelContext.SyncEntityAnalysisInlineScriptAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.ConfigureTokenParserForSecurityAsync()
+                                    .ConfigureAwait(false);
                                 await entityAnalysisModelContext
                                     .SyncEntityAnalysisModelsAsync(scheduledModel.TenantRegistryId)
                                     .ConfigureAwait(false);
@@ -159,35 +173,23 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncEntityAnalysisModelTagsAsync()
                                     .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncOverridesAsync().ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync()
+                                    .ConfigureAwait(false);
+                                entityAnalysisModelContext.Snapshots.Publish();
+                                await entityAnalysisModelContext.StartupModelAsync().ConfigureAwait(false);
                                 await entityAnalysisModelContext.ConfirmSyncAsync(scheduledModel.TenantRegistryId)
                                     .ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync()
-                                    .ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync()
-                                    .ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncOverridesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync()
-                                    .ConfigureAwait(false);
-                                await entityAnalysisModelContext.StartupModelAsync().ConfigureAwait(false);
                                 await entityAnalysisModelContext
                                     .PersistEngineSnapshotAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
+
+                                lastSynchronisedWatermarks[scheduledModel.TenantRegistryId] = watermark;
                                 context.EntityAnalysisModels.EntityModelsHasLoadedForStartup = true;
                             }
-                            else
-                            {
-                                await entityAnalysisModelContext.SyncExhaustiveSearchInstancesAsync()
-                                    .ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync()
-                                    .ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync()
-                                    .ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncOverridesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync()
-                                    .ConfigureAwait(false);
-                                await entityAnalysisModelContext.StoreRuleCounterValuesAsync().ConfigureAwait(false);
-                                await entityAnalysisModelContext
-                                    .HeartbeatThisModelAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
-                            }
+
+                            await entityAnalysisModelContext.StoreRuleCounterValuesAsync().ConfigureAwait(false);
+                            await entityAnalysisModelContext
+                                .HeartbeatThisModelAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
                         }
 
                         if (context.Services.Log.IsDebugEnabled)

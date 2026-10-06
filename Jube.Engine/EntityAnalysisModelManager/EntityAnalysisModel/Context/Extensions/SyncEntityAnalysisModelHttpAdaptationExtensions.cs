@@ -45,7 +45,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelHttpAdaptationRepository.GetByEntityAnalysisModelIdOrderByPriority for entity model key of {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdOrderByPriorityAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository.GetApprovedByEntityAnalysisModelIdOrderByPriorityAsync(key,
+                        context.ApprovalsRequired,
+                        context.Services.CancellationToken).ConfigureAwait(false);
 
                     var shadowEntityAnalysisModelAdaptations = new List<EntityAnalysisModelHttpAdaptation>();
                     foreach (var record in records)
@@ -173,7 +175,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             }
                             else
                             {
-                                var validHost = context.Services.DynamicEnvironment.AppSettings("HttpAdaptationUrl").EndsWith('/')
+                                var validHost = context.Services.DynamicEnvironment.AppSettings("HttpAdaptationUrl")
+                                    .EndsWith('/')
                                     ? context.Services.DynamicEnvironment.AppSettings("HttpAdaptationUrl")
                                     : context.Services.DynamicEnvironment.AppSettings("HttpAdaptationUrl") + "/";
 
@@ -200,7 +203,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     $"Entity Start: Model {key} and Exhaustive Search Instance Trial Instance ID  {entityAnalysisModelAdaptation.Id} has been added to a shadow list of Adaptations.");
                             }
 
-                            context.Services.Parser.EntityAnalysisModelsHttpAdaptations.Add(entityAnalysisModelAdaptation.Name);
+                            context.Services.Parser.EntityAnalysisModelsHttpAdaptations.Add(
+                                entityAnalysisModelAdaptation.Name);
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -221,7 +225,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Model {key} and Adaptations Model  {key} has completed creating the adaptations into a shadow list of adaptations and it will now be allocated the fields in the order that they appeared in model training.");
                     }
 
-                    value.Collections.EntityAnalysisModelAdaptations = shadowEntityAnalysisModelAdaptations;
+                    context.Snapshots.Builder(key, value).EntityAnalysisModelAdaptations =
+                        shadowEntityAnalysisModelAdaptations;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -232,7 +237,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
-                    context.Services.Log.Debug("Entity Start: Completed adding Adaptations and Exhaustive Neural Networks to entity models.");
+                    context.Services.Log.Debug(
+                        "Entity Start: Completed adding Adaptations and Exhaustive Neural Networks to entity models.");
                 }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -240,7 +246,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelHttpAdaptationAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.HttpAdaptation, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.HttpAdaptation, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

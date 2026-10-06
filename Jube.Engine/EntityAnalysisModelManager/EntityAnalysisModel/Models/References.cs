@@ -22,6 +22,5 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public byte ReferenceDatePayloadLocationTypeId { get; set; }
         public string ArchivePayloadSqlSelect { get; set; }
         public string ArchivePayloadSqlBody { get; set; }
-        public int PayloadInitialSize { get; set; }
     }
 }

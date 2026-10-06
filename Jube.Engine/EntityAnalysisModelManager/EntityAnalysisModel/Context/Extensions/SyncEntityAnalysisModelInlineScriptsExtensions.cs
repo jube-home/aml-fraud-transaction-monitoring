@@ -18,7 +18,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System.Threading.Tasks;
     using Data.Repository;
     using Data.SyntaxTree;
-    using Helpers;
     using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
 
     public static class SyncEntityAnalysisModelInlineScriptsExtensions
@@ -46,7 +45,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelInlineScriptRepository.GetByEntityAnalysisModelId and entity model key of {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository.GetApprovedByEntityAnalysisModelIdOrderByIdAsync(key,
+                        context.ApprovalsRequired,
+                        context.Services.CancellationToken).ConfigureAwait(false);
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -104,9 +105,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     continue;
                                 }
 
-                                foreach (var publicProperty in SyntaxTreeHelpers.GetPublicProperties(inlineScript.InlineScriptCode, inlineScript.LanguageId == 2))
+                                foreach (var publicProperty in SyntaxTreeHelpers.GetPublicProperties(
+                                             inlineScript.InlineScriptCode, inlineScript.LanguageId == 2))
                                 {
-                                    shadowEntityAnalysisModelInlineScriptProperties.TryAdd(publicProperty.Key, publicProperty.Value.DataTypeId);
+                                    shadowEntityAnalysisModelInlineScriptProperties.TryAdd(publicProperty.Key,
+                                        publicProperty.Value.DataTypeId);
 
                                     var databaseType = publicProperty.Value.DataTypeId switch
                                     {
@@ -139,7 +142,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                             $"Entity Start: Inline Script ID ID {record.EntityAnalysisInlineScriptId.Value} returned for model {key} checking inline script {inlineScript.Id} grouping ket {searchKey.SearchKey}.");
                                     }
 
-                                    if (value.Collections.DistinctSearchKeys.TryAdd(searchKey.SearchKey, searchKey))
+                                    if (context.Snapshots.Builder(key, value).DistinctSearchKeys
+                                        .TryAdd(searchKey.SearchKey, searchKey))
                                     {
                                         if (context.Services.Log.IsDebugEnabled)
                                         {
@@ -149,7 +153,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     }
                                     else
                                     {
-                                        value.Collections.DistinctSearchKeys[searchKey.SearchKey] = searchKey;
+                                        context.Snapshots.Builder(key, value).DistinctSearchKeys[searchKey.SearchKey] =
+                                            searchKey;
                                     }
                                 }
 
@@ -180,9 +185,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                     }
 
-                    context.Services.Parser.EntityAnalysisModelInlineScriptProperties = shadowEntityAnalysisModelInlineScriptProperties;
-                    value.Collections.EntityAnalysisModelInlineScripts = shadowEntityAnalysisModelInlineScripts;
-                    value.References.PayloadInitialSize = DictionaryNoBoxingHelpers.CalculateInitialSize(value);
+                    context.Services.Parser.EntityAnalysisModelInlineScriptProperties =
+                        shadowEntityAnalysisModelInlineScriptProperties;
+                    context.Snapshots.Builder(key, value).EntityAnalysisModelInlineScripts =
+                        shadowEntityAnalysisModelInlineScripts;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -201,7 +207,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelInlineScriptsAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.InlineScripts, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.InlineScripts, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

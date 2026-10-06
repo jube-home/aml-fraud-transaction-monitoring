@@ -20,21 +20,23 @@ namespace Jube.Service.Query.TreeChildren
         private static string Colour(bool active) => active ? "green" : "red";
 
         internal static EntityAnalysisModelTreeChildDto ToModelChild(int key, string? name, int? active,
-            int? entityAnalysisModelId) => new()
+            int? entityAnalysisModelId, bool deleted = false) => new()
         {
             Color = Colour(active == 1),
             Key = key,
             Name = name,
-            EntityAnalysisModelId = entityAnalysisModelId
+            EntityAnalysisModelId = entityAnalysisModelId,
+            Deleted = deleted
         };
 
         internal static EntityAnalysisModelTreeChildDto ToModelGuidChild(int key, string? name, int? active,
-            Guid? entityAnalysisModelGuid) => new()
+            Guid? entityAnalysisModelGuid, bool deleted = false) => new()
         {
             Color = Colour(active == 1),
             Key = key,
             Name = name,
-            EntityAnalysisModelGuid = entityAnalysisModelGuid
+            EntityAnalysisModelGuid = entityAnalysisModelGuid,
+            Deleted = deleted
         };
 
         internal static VisualisationRegistryTreeChildDto ToVisualisationRegistryChild(int key, string? name,

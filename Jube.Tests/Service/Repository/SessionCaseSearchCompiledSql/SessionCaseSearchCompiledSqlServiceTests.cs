@@ -439,9 +439,9 @@ namespace Jube.Test.Service.Repository.SessionCaseSearchCompiledSql
         public async Task GetLastWhenNoneExistsReturnsNotFoundPlaceholderAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
             var owned = await dbContext.SessionCaseSearchCompiledSql
-                .CountAsync(r => r.CreatedUser == fx.Seed.UserWithPermissionNoApproveByReview);
+                .CountAsync(r => r.CreatedUser == fx.Seed.UserWithPermissionNoApproval);
             if (owned > 0)
             {
                 return;
@@ -459,7 +459,7 @@ namespace Jube.Test.Service.Repository.SessionCaseSearchCompiledSql
         {
             await using var dbContext = fx.GetDbContext();
             var user = fx.Seed.UserWithPermission;
-            var other = fx.Seed.UserWithPermissionNoApproveByReview;
+            var other = fx.Seed.UserWithPermissionNoApproval;
             var seeded = await SeedAsync(dbContext, user);
             var service = await BuildServiceAsync(dbContext, user);
 
@@ -641,7 +641,7 @@ namespace Jube.Test.Service.Repository.SessionCaseSearchCompiledSql
             var seeded = await SeedAsync(dbContext, owner);
             var compiled = await (await BuildServiceAsync(dbContext, owner)).InsertAsync(Request(seeded));
 
-            foreach (var intruder in new[] { fx.Seed.UserWithPermissionNoApproveByReview, fx.Seed.UserTenantB })
+            foreach (var intruder in new[] { fx.Seed.UserWithPermissionNoApproval, fx.Seed.UserTenantB })
             {
                 var service = await BuildServiceAsync(dbContext, intruder);
                 await Assert.ThrowsAsync<NotFoundException>(() => service.ExecuteByGuidAsync(compiled.Guid));

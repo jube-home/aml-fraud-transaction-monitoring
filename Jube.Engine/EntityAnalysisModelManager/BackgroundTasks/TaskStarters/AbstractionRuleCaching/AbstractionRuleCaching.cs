@@ -55,7 +55,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                 }
 
                 var processedGroupingValues = 0;
-                foreach (var (key, value) in entityAnalysisModel.Collections.DistinctSearchKeys)
+                foreach (var (key, value) in entityAnalysisModel.Snapshot.DistinctSearchKeys)
                 {
                     token.ThrowIfCancellationRequested();
 
@@ -125,26 +125,26 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                             var entityInstanceEntryPayload = new EntityAnalysisModelInstanceEntryPayload
                             {
                                 Abstraction =
-                                    new PooledDictionary<string, double>(entityAnalysisModel.Collections
+                                    new PooledDictionary<string, double>(entityAnalysisModel.Snapshot
                                         .ModelAbstractionRules.Count),
                                 Activation =
                                     new PooledDictionary<string, EntityModelActivationRulePayload>(entityAnalysisModel
-                                        .Collections.ModelActivationRules.Count),
+                                        .Snapshot.ModelActivationRules.Count),
                                 Tag = [],
                                 Dictionary =
-                                    new PooledDictionary<string, double>(entityAnalysisModel.Dependencies
+                                    new PooledDictionary<string, double>(entityAnalysisModel.Snapshot
                                         .KvpDictionaries.Count),
                                 TtlCounter =
-                                    new PooledDictionary<string, double>(entityAnalysisModel.Collections
+                                    new PooledDictionary<string, double>(entityAnalysisModel.Snapshot
                                         .ModelTtlCounters.Count),
-                                Sanction = new PooledDictionary<string, double>(entityAnalysisModel.Collections
+                                Sanction = new PooledDictionary<string, double>(entityAnalysisModel.Snapshot
                                     .EntityAnalysisModelSanctions.Count),
                                 AbstractionCalculation = new PooledDictionary<string, double>(entityAnalysisModel
-                                    .Collections.EntityAnalysisModelAbstractionCalculations.Count),
+                                    .Snapshot.EntityAnalysisModelAbstractionCalculations.Count),
                                 HttpAdaptation = new PooledDictionary<string, Adaptation>(entityAnalysisModel
-                                    .Collections.EntityAnalysisModelAdaptations.Count),
+                                    .Snapshot.EntityAnalysisModelAdaptations.Count),
                                 ExhaustiveAdaptation =
-                                    new PooledDictionary<string, double>(entityAnalysisModel.Collections
+                                    new PooledDictionary<string, double>(entityAnalysisModel.Snapshot
                                         .ExhaustiveModels.Count),
                                 InvokeTaskPerformance = new InvokeTaskPerformance()
                             };
@@ -202,7 +202,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                                     try
                                     {
                                         var abstractionRule =
-                                            entityAnalysisModel.Collections.ModelAbstractionRules.Find(x =>
+                                            entityAnalysisModel.Snapshot.ModelAbstractionRules.Find(x =>
                                                 x.Id == abstractionRuleMatch.Key);
 
                                         if (abstractionRule != null)
@@ -305,7 +305,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                         $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and grouping key {distinctSearchKey.SearchKey} will step through all abstraction rules.");
                 }
 
-                foreach (var evaluateAbstractionRule in entityAnalysisModel.Collections.ModelAbstractionRules)
+                foreach (var evaluateAbstractionRule in entityAnalysisModel.Snapshot.ModelAbstractionRules)
                 {
                     token.ThrowIfCancellationRequested();
 
@@ -344,7 +344,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                             }
 
                             matches = documents.FindAll(x =>
-                                ReflectRuleHelper.Execute(evaluateAbstractionRule, entityAnalysisModel, x, null,
+                                ReflectRuleHelper.Execute(evaluateAbstractionRule, entityAnalysisModel.Snapshot, x, null,
                                     entityAnalysisModel.Services.Log));
                             logicHashMatches.Add(evaluateAbstractionRule.LogicHash, matches);
 

@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models;
 using Jube.TaskCancellation.TaskHelper;
 using log4net;
 
@@ -30,8 +31,18 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context
         public readonly List<Task<TimedTaskResult>> PendingWriteTasks = [];
         public long LastLogEntryElapsedMicroseconds;
         public long? StartBytesUsed { get; init; }
+        private readonly ModelSnapshot snapshot;
+
         public EntityAnalysisModel EntityAnalysisModel { get; init; }
-        public Dictionary<int, EntityAnalysisModel> AvailableEntityAnalysisModels { get; init; }
+
+        public ModelSnapshot Snapshot
+        {
+            get => snapshot ?? EntityAnalysisModel?.Snapshot;
+            init => snapshot = value;
+        }
+
+        public IReadOnlyDictionary<int, EntityAnalysisModel> AvailableEntityAnalysisModels { get; init; }
+        public IReadOnlyDictionary<int, ModelSnapshot> AvailableSnapshots { get; init; }
         public EntityAnalysisModelInstanceEntryPayload EntityAnalysisModelInstanceEntryPayload { get; init; }
         public Stopwatch Stopwatch { get; init; }
         public ILog Log { get; init; }

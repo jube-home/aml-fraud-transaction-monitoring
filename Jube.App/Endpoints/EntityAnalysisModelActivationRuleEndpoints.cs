@@ -277,15 +277,6 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.Forbid();
             }
-            catch (ReviewStatusApprovalException ex)
-            {
-                if (log.IsWarnEnabled)
-                {
-                    log.Warn($"POST {Base}: 400 (approve-by-review denied) user={user}");
-                }
-
-                return ApprovalDenied(ex);
-            }
             catch (DtoValidationException ex)
             {
                 if (log.IsWarnEnabled)
@@ -348,15 +339,6 @@ namespace Jube.App.Endpoints
                 }
 
                 return TypedResults.Forbid();
-            }
-            catch (ReviewStatusApprovalException ex)
-            {
-                if (log.IsWarnEnabled)
-                {
-                    log.Warn($"PUT {Base}: 400 (approve-by-review denied) user={user}");
-                }
-
-                return ApprovalDenied(ex);
             }
             catch (DtoValidationException ex)
             {
@@ -525,21 +507,6 @@ namespace Jube.App.Endpoints
                 log.Error($"POST {Base}/{id}/Reset: 500 user={user}", e);
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
-        }
-
-        private static IResult ApprovalDenied(ReviewStatusApprovalException ex)
-        {
-            return TypedResults.BadRequest(new
-            {
-                errors = new[]
-                {
-                    new
-                    {
-                        errorMessage = ex.Message,
-                        propertyName = ex.PropertyName
-                    }
-                }
-            });
         }
     }
 }

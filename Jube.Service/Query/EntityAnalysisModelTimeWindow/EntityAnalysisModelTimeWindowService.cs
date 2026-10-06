@@ -179,7 +179,7 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
                         strings[EntityAnalysisModelTimeWindowResources.NotASearchRule]);
                 }
 
-                var searchKey = (await new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId)
+                var searchKey = (await new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId)
                         .GetByEntityAnalysisModelIdOrderByIdAsync(model.Id, token).ConfigureAwait(false))
                     .FirstOrDefault(x => x.Name == rule.SearchKey && x.Active == 1);
                 var settings = AbstractionSettings.FromRecord(rule.Id, rule.Name, rule.SearchKey,

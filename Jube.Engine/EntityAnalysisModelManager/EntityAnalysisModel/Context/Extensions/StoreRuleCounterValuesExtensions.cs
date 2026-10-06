@@ -35,7 +35,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Checking if model {key} is started for the purpose Synchronisation of the model counters.  Will now start with the Gateway Rule Counters.");
                     }
 
-                    foreach (var gatewayRule in value.Collections.ModelGatewayRules)
+                    foreach (var gatewayRule in value.Snapshot.ModelGatewayRules)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();
 
@@ -65,7 +65,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                     }
 
-                    foreach (var activationRule in value.Collections.ModelActivationRules)
+                    foreach (var activationRule in value.Snapshot.ModelActivationRules)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();
 
@@ -132,9 +132,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     forcedActivationCounter, activationCounterDate,
                     context.Services.CancellationToken).ConfigureAwait(false);
 
-                Interlocked.Add(ref activationRule.EvaluationCounter, -evaluationCounter);
-                Interlocked.Add(ref activationRule.ActivationCounter, -activationCounter);
-                Interlocked.Add(ref activationRule.ForcedActivationCounter, -forcedActivationCounter);
+                Interlocked.Add(ref activationRule.Counters.EvaluationCounter, -evaluationCounter);
+                Interlocked.Add(ref activationRule.Counters.ActivationCounter, -activationCounter);
+                Interlocked.Add(ref activationRule.Counters.ForcedActivationCounter, -forcedActivationCounter);
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
@@ -169,8 +169,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     activationCounter, activationCounterDate,
                     context.Services.CancellationToken).ConfigureAwait(false);
 
-                Interlocked.Add(ref gatewayRule.EvaluationCounter, -evaluationCounter);
-                Interlocked.Add(ref gatewayRule.ActivationCounter, -activationCounter);
+                Interlocked.Add(ref gatewayRule.Counters.EvaluationCounter, -evaluationCounter);
+                Interlocked.Add(ref gatewayRule.Counters.ActivationCounter, -activationCounter);
 
                 if (context.Services.Log.IsDebugEnabled)
                 {

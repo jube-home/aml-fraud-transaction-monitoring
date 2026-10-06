@@ -17,6 +17,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
+using Jube.Data.Query;
 using Jube.Service.Exceptions.Query.TreeChildren;
 using Jube.Service.Query.TreeChildren;
 using Jube.Service.Reactivity.Interfaces;
@@ -150,7 +151,8 @@ namespace Jube.App.Endpoints.Query
             try
             {
                 var service = await TreeChildrenService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, token);
+                    stringLocalizerFactory, serviceChangeBus, token,
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")));
                 return TypedResults.Ok(await run(service, token));
             }
             catch (NotAuthenticatedException)

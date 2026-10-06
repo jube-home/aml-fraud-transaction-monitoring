@@ -50,7 +50,7 @@ namespace Jube.Data.Query
             if (parserTypeId > 0)
             {
                 var entityAnalysisModelRequestXPathRepository =
-                    new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId);
+                    new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId);
 
                 IEnumerable<EntityAnalysisModelRequestXpath> entityAnalysisModelRequestXpaths;
                 if (reporting || parserTypeId != 3)

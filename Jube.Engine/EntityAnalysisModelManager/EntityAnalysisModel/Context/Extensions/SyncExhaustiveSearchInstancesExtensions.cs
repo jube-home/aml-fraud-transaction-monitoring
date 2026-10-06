@@ -50,7 +50,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing select from Exhaustive Search Instance Repository and entity model key of {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository.GetApprovedByEntityAnalysisModelIdOrderByIdAsync(key,
+                        context.ApprovalsRequired,
+                        context.Services.CancellationToken).ConfigureAwait(false);
 
                     var shadowEntityAnalysisModelExhaustive = new List<ExhaustiveSearchInstance>();
 
@@ -62,7 +64,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         {
                             if (context.Services.Log.IsDebugEnabled)
                             {
-                                context.Services.Log.Debug($"Entity Start: Exhaustive ID {record.Id} returned for model {key}.");
+                                context.Services.Log.Debug(
+                                    $"Entity Start: Exhaustive ID {record.Id} returned for model {key}.");
                             }
 
                             if (record.Active != 1)
@@ -141,8 +144,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             }
 
                             var getExhaustiveSearchInstancePromotedTrialInstanceQuery
-                                = await new GetExhaustiveSearchInstancePromotedTrialInstanceByLastActiveQuery(context.Services.DbContext)
-                                    .ExecuteAsync(exhaustive.Id, context.Services.CancellationToken).ConfigureAwait(false);
+                                = await new GetExhaustiveSearchInstancePromotedTrialInstanceByLastActiveQuery(
+                                        context.Services.DbContext)
+                                    .ExecuteAsync(exhaustive.Id, context.Services.CancellationToken)
+                                    .ConfigureAwait(false);
 
                             if (getExhaustiveSearchInstancePromotedTrialInstanceQuery != null)
                             {
@@ -158,7 +163,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     exhaustive.TopologyNetwork =
                                         JsonConvert.DeserializeObject<ActivationNetwork>
                                         (getExhaustiveSearchInstancePromotedTrialInstanceQuery.Json,
-                                            context.JsonSerializationHelper.DeserializeTopologyNetworkJsonSerializerSettings);
+                                            context.JsonSerializationHelper
+                                                .DeserializeTopologyNetworkJsonSerializerSettings);
 
                                     if (context.Services.Log.IsDebugEnabled)
                                     {
@@ -168,12 +174,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     }
 
                                     var getExhaustiveSearchInstancePromotedTrialInstanceVariableQuery
-                                        = new GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(context.Services.DbContext);
+                                        = new GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(
+                                            context.Services.DbContext);
 
-                                    var trialInstanceDto = await getExhaustiveSearchInstancePromotedTrialInstanceVariableQuery
-                                        .ExecuteByExhaustiveSearchInstanceTrialInstanceIdAsync(
-                                            getExhaustiveSearchInstancePromotedTrialInstanceQuery
-                                                .ExhaustiveSearchInstanceTrialInstanceId, context.Services.CancellationToken).ConfigureAwait(false);
+                                    var trialInstanceDto =
+                                        await getExhaustiveSearchInstancePromotedTrialInstanceVariableQuery
+                                            .ExecuteByExhaustiveSearchInstanceTrialInstanceIdAsync(
+                                                getExhaustiveSearchInstancePromotedTrialInstanceQuery
+                                                    .ExhaustiveSearchInstanceTrialInstanceId,
+                                                context.Services.CancellationToken).ConfigureAwait(false);
 
                                     foreach (var exhaustiveVariable in
                                              trialInstanceDto.Select(variable =>
@@ -212,7 +221,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         $"Entity Start: Exhaustive GUID {exhaustive.Id} has added {exhaustive.Name} to shadow collection.");
                                 }
 
-                                context.Services.Parser.EntityAnalysisModelsExhaustiveAdaptations.TryAdd(exhaustive.Name);
+                                context.Services.Parser.EntityAnalysisModelsExhaustiveAdaptations.TryAdd(
+                                    exhaustive.Name);
 
                                 if (context.Services.Log.IsDebugEnabled)
                                 {
@@ -236,7 +246,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                     }
 
-                    value.Collections.ExhaustiveModels = shadowEntityAnalysisModelExhaustive;
+                    context.Snapshots.Builder(key, value).ExhaustiveModels = shadowEntityAnalysisModelExhaustive;
                 }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -244,7 +254,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncExhaustiveSearchInstancesAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.ExhaustiveSearchInstances, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.ExhaustiveSearchInstances, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

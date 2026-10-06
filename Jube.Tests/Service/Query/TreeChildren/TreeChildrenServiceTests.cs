@@ -67,7 +67,7 @@ namespace Jube.Test.Service.Query.TreeChildren
         }
 
         private static Child ToChild(EntityAnalysisModelTreeChildDto d) =>
-            new(d.Key, d.Name, d.Color, d.EntityAnalysisModelId, d.EntityAnalysisModelGuid);
+            new(d.Key, d.Name, d.Color, d.EntityAnalysisModelId, d.EntityAnalysisModelGuid, d.Deleted);
 
         private static Child ToChild(VisualisationRegistryTreeChildDto d) =>
             new(d.Key, d.Name, d.Color, d.VisualisationRegistryId, null);
@@ -505,7 +505,7 @@ namespace Jube.Test.Service.Query.TreeChildren
         {
             var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
             Property(new EntityAnalysisModelTreeChildDto(), options).Should()
-                .BeEquivalentTo("entityAnalysisModelId", "entityAnalysisModelGuid", "key", "name", "color");
+                .BeEquivalentTo("entityAnalysisModelId", "entityAnalysisModelGuid", "key", "name", "color", "deleted");
             Property(new VisualisationRegistryTreeChildDto(), options).Should()
                 .BeEquivalentTo("visualisationRegistryId", "key", "name", "color");
             Property(new RoleRegistryTreeChildDto(), options).Should()
@@ -613,20 +613,38 @@ namespace Jube.Test.Service.Query.TreeChildren
             var parents = await CreateParentsAsync(dbContext, fx.Seed.UserWithPermission);
             var activeRow = await c.Seed(this, dbContext, route, parents, NewName("Act"), 1, 0);
             var inactiveRow = await c.Seed(this, dbContext, route, parents, NewName("Inact"), 0, 0);
-            await c.Seed(this, dbContext, route, parents, NewName("Del"), 1, 1);
+            var deletedRow = await c.Seed(this, dbContext, route, parents, NewName("Del"), 1, 1);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await c.Invoke(service, parents, default);
 
-            result.Select(r => r.Key).Should().BeEquivalentTo(
-                [activeRow.Id, inactiveRow.Id, .. PreExistingKeys(c, parents)],
-                $"{route} returns every non-deleted child of the parent and nothing else");
+            var expectedKeys = new List<int> { activeRow.Id, inactiveRow.Id };
+            if (c.Node.ApprovalKind.HasValue)
+            {
+                expectedKeys.Add(deletedRow.Id);
+            }
+
+            expectedKeys.AddRange(PreExistingKeys(c, parents));
+            result.Select(r => r.Key).Should().BeEquivalentTo(expectedKeys,
+                $"{route} returns every child of the parent and nothing else; approvable nodes keep deleted rows so they can be restored");
             var active = result.Single(r => r.Key == activeRow.Id);
             active.Name.Should().Be(activeRow.Name);
-            active.Color.Should().Be("green");
             var inactive = result.Single(r => r.Key == inactiveRow.Id);
             inactive.Name.Should().Be(inactiveRow.Name);
-            inactive.Color.Should().Be("red");
+            if (c.Node.ApprovalKind.HasValue)
+            {
+                active.Color.Should().Be("orange", "a row nobody has approved is awaiting approval");
+                inactive.Color.Should().Be("orange", "pending takes precedence over active or inactive");
+                var deleted = result.Single(r => r.Key == deletedRow.Id);
+                deleted.Deleted.Should().BeTrue("the deleted row is reported as deleted");
+                deleted.Color.Should().Be("orange", "a deletion nobody has approved is awaiting approval");
+            }
+            else
+            {
+                active.Color.Should().Be("green");
+                inactive.Color.Should().Be("red");
+            }
+
             foreach (var child in result)
             {
                 child.IntParent.Should().Be(ExpectedIntParent(c, parents));

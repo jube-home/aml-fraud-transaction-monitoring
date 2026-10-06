@@ -401,7 +401,7 @@ namespace Jube.Service.Invoke
 
                     foreach (var (_, value) in foundModels)
                     {
-                        if (!value.Collections.Users.Contains(userName))
+                        if (!value.Snapshot.Users.Contains(userName))
                         {
                             continue;
                         }
@@ -597,7 +597,7 @@ namespace Jube.Service.Invoke
 
                 var foundExhaustive = engine.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
                     .ActiveEntityAnalysisModels
-                    .Where(w => w.Value.Collections.ExhaustiveModels.Any(a => a.Guid == guid)).ToList();
+                    .Where(w => w.Value.Snapshot.ExhaustiveModels.Any(a => a.Guid == guid)).ToList();
 
                 if (foundExhaustive.Count == 0)
                 {
@@ -606,7 +606,7 @@ namespace Jube.Service.Invoke
 
                 foreach (var (_, value) in foundExhaustive)
                 {
-                    if (!value.Collections.Users.Contains(userName))
+                    if (!value.Snapshot.Users.Contains(userName))
                     {
                         continue;
                     }
@@ -621,7 +621,7 @@ namespace Jube.Service.Invoke
                         return InvokeResult.Json(400, "Malformed JSON in POST body.");
                     }
 
-                    var exhaustive = value.Collections.ExhaustiveModels.First(a => a.Guid == guid);
+                    var exhaustive = value.Snapshot.ExhaustiveModels.First(a => a.Guid == guid);
                     if (!RecallBodyHasValidTypes(exhaustive, recallBody))
                     {
                         return InvokeResult.Json(400, "Exhaustive recall input has an invalid shape or types.");

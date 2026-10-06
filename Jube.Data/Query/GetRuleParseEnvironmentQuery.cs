@@ -89,7 +89,7 @@ namespace Jube.Data.Query
             CancellationToken token)
         {
             var values = new Dictionary<string, RuleParseEnvironmentRequestXPathDto>();
-            foreach (var xPath in await new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId)
+            foreach (var xPath in await new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId)
                          .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token)
                          .ConfigureAwait(false))
             {

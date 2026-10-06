@@ -15,5 +15,11 @@ using System;
 
 namespace Jube.Test.Service.Query.TreeChildren.Models
 {
-    internal sealed record Child(int Key, string? Name, string? Color, int? IntParent, Guid? GuidParent);
+    internal sealed record Child(
+        int Key,
+        string? Name,
+        string? Color,
+        int? IntParent,
+        Guid? GuidParent,
+        bool Deleted = false);
 }

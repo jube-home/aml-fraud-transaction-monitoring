@@ -175,6 +175,9 @@ namespace Jube.DynamicEnvironment
                     "EnableMockEndpoints", "True"
                 },
                 {
+                    "ApprovalsRequired", "1"
+                },
+                {
                     "EnableBacktest", "True"
                 },
                 {

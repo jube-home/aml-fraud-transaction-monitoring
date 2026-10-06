@@ -16,9 +16,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Text;
-    using System.Threading;
     using System.Threading.Tasks;
     using Data.Repository;
     using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
@@ -52,7 +50,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     }
 
                     var records = await repository
-                        .GetByEntityAnalysisModelIdOrderByPriorityAsync(key, context.Services.CancellationToken)
+                        .GetApprovedByEntityAnalysisModelIdOrderByPriorityAsync(key, context.ApprovalsRequired,
+                            context.Services.CancellationToken)
                         .ConfigureAwait(false);
 
                     var shadowEntityModelGatewayRule = new List<EntityModelGatewayRule>();
@@ -369,24 +368,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: {key} is being finished,  proceeding to update gateway rules and close off the cursor.");
                     }
 
-                    var previousGatewayRulesById = value.Collections.ModelGatewayRules
-                        .ToDictionary(r => r.EntityAnalysisModelGatewayRuleId);
-                    foreach (var newGatewayRule in shadowEntityModelGatewayRule)
-                    {
-                        if (!previousGatewayRulesById.TryGetValue(newGatewayRule.EntityAnalysisModelGatewayRuleId,
-                                out var previousGatewayRule))
-                        {
-                            continue;
-                        }
-
-                        newGatewayRule.EvaluationCounter =
-                            Interlocked.Exchange(ref previousGatewayRule.EvaluationCounter, 0);
-                        newGatewayRule.ActivationCounter =
-                            Interlocked.Exchange(ref previousGatewayRule.ActivationCounter, 0);
-                        newGatewayRule.ActivationCounterDate = previousGatewayRule.ActivationCounterDate;
-                    }
-
-                    value.Collections.ModelGatewayRules = shadowEntityModelGatewayRule;
+                    context.Snapshots.Builder(key, value).ModelGatewayRules = shadowEntityModelGatewayRule;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {

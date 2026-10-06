@@ -13,6 +13,7 @@
 
 namespace Jube.Data.Repository
 {
+    using Jube.Data.Query;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -47,6 +48,20 @@ namespace Jube.Data.Repository
                     CreatedDate = now
                 }, token: token).ConfigureAwait(false);
             }
+        }
+
+        public Task<int> DeleteStaleAsync(int tenantRegistryId, string keepInstance, DateTime now,
+            CancellationToken token = default)
+        {
+            var cutoff = EngineInstanceLiveness.CutoffFrom(now);
+            var live = dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
+                .Where(w => w.TenantRegistryId == tenantRegistryId && w.HeartbeatDate > cutoff)
+                .Select(s => s.Instance);
+
+            return dbContext.EntityAnalysisModelEngineSnapshot
+                .Where(w => w.TenantRegistryId == tenantRegistryId && w.Instance != keepInstance
+                                                                   && !live.Contains(w.Instance))
+                .DeleteAsync(token);
         }
 
         public Task<List<EntityAnalysisModelEngineSnapshot>> GetByEntityAnalysisModelIdAsync(int tenantRegistryId,

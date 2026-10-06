@@ -11,9 +11,15 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository;
+
 namespace Jube.Service.Query.TreeChildren
 {
-    public sealed record TreeChildrenNode(string Route, string KeyName, int[] Permissions)
+    public sealed record TreeChildrenNode(
+        string Route,
+        string KeyName,
+        int[] Permissions,
+        EntityApprovalKind? ApprovalKind = null)
     {
         public string ToolName => $"TreeChildren{Route}Get";
     }

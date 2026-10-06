@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="/kendo/styles/kendo.silver.min.css"/>
     <script src="/kendo/js/jquery.min.js"></script>
     <script src="/kendo/js/kendo.all.min.js"></script>
+    <script src="/js/Approval/ApprovalManager.js"></script>
     @await RenderSectionAsync("Scripts", false).ConfigureAwait(false)
 </head>
 <body>
@@ -102,16 +103,6 @@
                 <li>
                     Models
                     <ul>
-                        @if (permissionValidation.Validate(new[]
-                                 {
-                                     5
-                                 }))
-                        {
-                            <li>
-                                <a href='/Model/Synchronisation'>Synchronisation</a>
-                            </li>
-                        }
-
                         @if (permissionValidation.Validate(new[]
                                  {
                                      60

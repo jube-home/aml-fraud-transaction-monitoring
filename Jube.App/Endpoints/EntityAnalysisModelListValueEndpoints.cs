@@ -271,6 +271,11 @@ namespace Jube.App.Endpoints
                 : 0;
         }
 
+        private static bool IncludeDeletedOf(HttpContext httpContext)
+        {
+            return bool.TryParse(httpContext.Request.Query["includeDeleted"], out var includeDeleted) && includeDeleted;
+        }
+
         private static async Task<IResult> GetByEntityAnalysisModelListIdAsync(
             HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
@@ -290,7 +295,8 @@ namespace Jube.App.Endpoints
             {
                 var service = await EntityAnalysisModelListValueService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
-                var result = await service.GetByEntityAnalysisModelListIdAsync(entityAnalysisModelListId, token);
+                var result = await service.GetByEntityAnalysisModelListIdAsync(entityAnalysisModelListId, token,
+                    IncludeDeletedOf(httpContext));
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)

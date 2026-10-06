@@ -59,12 +59,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
                     ActiveEntityAnalysisModels =
                         context.EntityAnalysisModels.ActiveEntityAnalysisModels,
                     SanctionsEntries = context.EntityAnalysisModels.SanctionsEntries,
-                    SanctionsStopTokens = context.EntityAnalysisModels.SanctionsStopTokens,
-                    EntityAnalysisModelLists =
-                        context.EntityAnalysisModels.EntityAnalysisModelLists,
-                    KvpDictionaries = context.EntityAnalysisModels.KvpDictionaries,
-                    EntityAnalysisModelOverrides = context.EntityAnalysisModels
-                        .EntityAnalysisModelOverrides
+                    SanctionsStopTokens = context.EntityAnalysisModels.SanctionsStopTokens
                 }
             };
 

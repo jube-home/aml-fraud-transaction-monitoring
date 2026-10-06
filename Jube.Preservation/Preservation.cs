@@ -165,7 +165,7 @@ namespace Jube.Preservation
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelRequestXPathRepository =
-                    new EntityAnalysisModelRequestXPathRepository(dbContext, import.TenantRegistryId);
+                    new EntityAnalysisModelRequestXpathRepository(dbContext, import.TenantRegistryId);
                 await entityAnalysisModelRequestXPathRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
@@ -575,6 +575,8 @@ namespace Jube.Preservation
                     }
                 }
 
+                var importedEntityAnalysisModelIds = new List<int>();
+
                 if (wrapper.Payload?.EntityAnalysisModel != null)
                 {
                     foreach (var oldEntityAnalysisModel in wrapper.Payload.EntityAnalysisModel)
@@ -605,6 +607,8 @@ namespace Jube.Preservation
 
                         var newEntityAnalysisModel =
                             await entityAnalysisModelRepository.InsertAsync(oldEntityAnalysisModel, token);
+
+                        importedEntityAnalysisModelIds.Add(newEntityAnalysisModel.Id);
 
                         foreach (var entityAnalysisModelRequestXpath in oldEntityAnalysisModel
                                      .EntityAnalysisModelRequestXpath)
@@ -1331,6 +1335,14 @@ namespace Jube.Preservation
                     }
                 }
 
+                var entityApprovalRepository = new EntityApprovalRepository(dbContext);
+
+                foreach (var importedEntityAnalysisModelId in importedEntityAnalysisModelIds)
+                {
+                    await entityApprovalRepository
+                        .ApproveEntireModelAsync(importedEntityAnalysisModelId, userName, token);
+                }
+
                 if (wrapper.Payload?.RoleRegistry != null)
                 {
                     foreach (var roleRegistry in wrapper.Payload.RoleRegistry)
@@ -1787,7 +1799,7 @@ namespace Jube.Preservation
             foreach (var entityAnalysisModel in payload.EntityAnalysisModel)
             {
                 var entityAnalysisModelRequestXPathRepository =
-                    new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId);
+                    new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId);
                 entityAnalysisModel.EntityAnalysisModelRequestXpath
                     = await entityAnalysisModelRequestXPathRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);

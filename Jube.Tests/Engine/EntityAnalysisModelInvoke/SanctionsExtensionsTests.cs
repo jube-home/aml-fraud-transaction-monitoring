@@ -58,7 +58,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             params EntityAnalysisModelSanction[] sanctionChecks)
         {
             var entityAnalysisModel = new EntityAnalysisModel();
-            entityAnalysisModel.Collections.EntityAnalysisModelSanctions.AddRange(sanctionChecks);
+            entityAnalysisModel.Snapshot.EntityAnalysisModelSanctions.AddRange(sanctionChecks);
             entityAnalysisModel.Services.CacheService = TestCacheService.Create(out var redis);
 
             var context = new Context

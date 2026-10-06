@@ -74,7 +74,7 @@ namespace Jube.Test.Waf
         private async Task<List<WafAttack>> MineAsync(IEnumerable<WafAttack> rows)
         {
             await Task.CompletedTask;
-            return rows.Where(w => w.CorrelationId == marker).ToList();
+            return [.. rows.Where(w => w.CorrelationId == marker)];
         }
 
         [Fact]

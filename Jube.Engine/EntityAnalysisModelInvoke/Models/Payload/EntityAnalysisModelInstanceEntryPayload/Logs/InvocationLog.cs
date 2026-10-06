@@ -22,17 +22,26 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
     public class InvocationLog
     {
         private readonly Lock entriesLock = new();
+        private readonly List<InvocationLogEntry> entries = [];
 
         public DateTime AnchorDate { get; set; }
 
-        // ReSharper disable once CollectionNeverQueried.Local
-        private List<InvocationLogEntry> Entries { get; } = [];
+        public IReadOnlyList<InvocationLogEntry> Entries
+        {
+            get
+            {
+                lock (entriesLock)
+                {
+                    return entries.ToArray();
+                }
+            }
+        }
 
         public void AddEntry(InvocationLogEntry entry)
         {
             lock (entriesLock)
             {
-                Entries.Add(entry);
+                entries.Add(entry);
             }
         }
     }

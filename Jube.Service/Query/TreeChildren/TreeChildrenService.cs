@@ -13,6 +13,9 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetPendingEntityApprovalEntityIdsQuery;
+using Jube.Data.Query.GetRejectedEntityApprovalEntityIdsQuery;
+using Jube.Data.Query;
 using Jube.Data.Repository;
 using Jube.Dto.Query.TreeChildren;
 using Jube.Resources;
@@ -21,6 +24,7 @@ using Jube.Service.Exceptions.Query.TreeChildren;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
+using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -28,6 +32,11 @@ namespace Jube.Service.Query.TreeChildren
 {
     public sealed class TreeChildrenService
     {
+        private const string PendingColour = "orange";
+        private const string RejectedColour = "purple";
+        private static readonly int[] ViewPendingApprovalsPermissions = [45];
+        private static readonly int[] ViewApprovalStatePermissions = [45, 44];
+        private readonly int approvalsRequired;
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -39,8 +48,9 @@ namespace Jube.Service.Query.TreeChildren
 
         private TreeChildrenService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            IStringLocalizer strings, int approvalsRequired)
         {
+            this.approvalsRequired = approvalsRequired;
             this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
@@ -53,15 +63,16 @@ namespace Jube.Service.Query.TreeChildren
 
         public static Task<TreeChildrenService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            CancellationToken token = default)
+            CancellationToken token = default, int approvalsRequired = ApprovalsRequiredResolver.Default)
         {
             return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
-                LogManager.GetLogger("Jube.Audit"), token);
+                LogManager.GetLogger("Jube.Audit"), token, approvalsRequired);
         }
 
         internal static async Task<TreeChildrenService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
+            IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default,
+            int approvalsRequired = ApprovalsRequiredResolver.Default)
         {
             var strings = stringLocalizerFactory.Create(typeof(TreeChildrenResources));
 
@@ -92,7 +103,7 @@ namespace Jube.Service.Query.TreeChildren
                 .ConfigureAwait(false);
 
             return new TreeChildrenService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, approvalsRequired);
         }
 
         private async Task<List<TDto>> RunAsync<TRow, TDto>(TreeChildrenNode node,
@@ -111,6 +122,10 @@ namespace Jube.Service.Query.TreeChildren
                 token.ThrowIfCancellationRequested();
 
                 var dtos = (await load(token).ConfigureAwait(false)).Select(map).ToList();
+                await MarkPendingAsync(node, dtos, token).ConfigureAwait(false);
+                dtos.RemoveAll(d => d is EntityAnalysisModelTreeChildDto child && child.Deleted
+                                                                               && child.Color != PendingColour &&
+                                                                               child.Color != RejectedColour);
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
                 {
@@ -137,6 +152,76 @@ namespace Jube.Service.Query.TreeChildren
             }
         }
 
+        private async Task MarkPendingAsync<TDto>(TreeChildrenNode node, List<TDto> dtos,
+            CancellationToken token)
+        {
+            if (!node.ApprovalKind.HasValue || dtos.Count == 0
+                                            || !permissionValidation.Validate(ViewApprovalStatePermissions))
+            {
+                return;
+            }
+
+            var modelId = await ParentModelIdAsync(dtos.OfType<EntityAnalysisModelTreeChildDto>().FirstOrDefault(),
+                token).ConfigureAwait(false);
+
+            if (!modelId.HasValue)
+            {
+                return;
+            }
+
+            var pendingQuery = new GetPendingEntityApprovalEntityIdsQuery(dbContext, tenantRegistryId);
+            var rejectedQuery = new GetRejectedEntityApprovalEntityIdsQuery(dbContext, tenantRegistryId);
+            var canSeePending = permissionValidation.Validate(ViewPendingApprovalsPermissions);
+
+            var pending = canSeePending
+                ? await pendingQuery.ExecuteAsync(node.ApprovalKind.Value, modelId.Value, approvalsRequired, token)
+                    .ConfigureAwait(false)
+                : new HashSet<int>();
+            var rejected = await rejectedQuery.ExecuteAsync(node.ApprovalKind.Value, modelId.Value, token)
+                .ConfigureAwait(false);
+
+            foreach (var dto in dtos)
+            {
+                if (dto is not EntityAnalysisModelTreeChildDto child)
+                {
+                    continue;
+                }
+
+                if (canSeePending && pending.Contains(child.Key))
+                {
+                    child.Color = PendingColour;
+                }
+                else if (rejected.Contains(child.Key))
+                {
+                    child.Color = RejectedColour;
+                }
+            }
+        }
+
+        private async Task<int?> ParentModelIdAsync(EntityAnalysisModelTreeChildDto? child, CancellationToken token)
+        {
+            if (child is null)
+            {
+                return null;
+            }
+
+            if (child.EntityAnalysisModelId.HasValue)
+            {
+                return child.EntityAnalysisModelId;
+            }
+
+            if (!child.EntityAnalysisModelGuid.HasValue)
+            {
+                return null;
+            }
+
+            return await dbContext.EntityAnalysisModel
+                .Where(m => m.Guid == child.EntityAnalysisModelGuid.Value && m.TenantRegistryId == tenantRegistryId)
+                .Select(m => (int?)m.Id)
+                .FirstOrDefaultAsync(token)
+                .ConfigureAwait(false);
+        }
+
         private void EnsurePermitted(TreeChildrenNode node)
         {
             if (permissionValidation.Validate(node.Permissions))
@@ -154,20 +239,21 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the request XPath nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the request XPath nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenRequestXPathGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetRequestXPathAsync(
             [Description("Id of the parent Entity Analysis Model.")]
             int id = 0, CancellationToken token = default)
         {
             return RunAsync(TreeChildrenNodes.RequestXPath,
-                t => new EntityAnalysisModelRequestXPathRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                t => new EntityAnalysisModelRequestXpathRepository(dbContext, userName)
+                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the datasource nodes of a Visualisation Registry as tree children, ordered by priority. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the datasource nodes of a Visualisation Registry as tree children, ordered by priority. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenVisualisationRegistryDatasourceGet", OperationKind.Read, Idempotent = true)]
         public Task<List<VisualisationRegistryTreeChildDto>> GetVisualisationRegistryDatasourceAsync(
             [Description("Id of the parent Visualisation Registry.")]
@@ -181,7 +267,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the users of a Role Registry as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the users of a Role Registry as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenUserRegistryGet", OperationKind.Read, Idempotent = true)]
         public Task<List<RoleRegistryTreeChildDto>> GetUserRegistryAsync(
             [Description("Guid of the parent Role Registry.")]
@@ -194,20 +280,20 @@ namespace Jube.Service.Query.TreeChildren
 
         [Description("Lists the permission nodes granted to a Role Registry as tree children; the name is the " +
                      "permission specification name. Only roles in the caller's tenant are returned; Colour is " +
-                     "'green' for active rows, otherwise 'red'.")]
+                     "'orange' for a row awaiting approval (only for callers who may view pending approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenRoleRegistryPermissionGet", OperationKind.Read, Idempotent = true)]
         public Task<List<RoleRegistryTreeChildDto>> GetRoleRegistryPermissionAsync(
             [Description("Id of the parent Role Registry.")]
             int id = 0, CancellationToken token = default)
         {
             return RunAsync(TreeChildrenNodes.RoleRegistryPermission,
-                t => new global::Jube.Data.Query.GetRoleRegistryPermissionByRoleRegistryGuidQuery(dbContext, userName)
+                t => new GetRoleRegistryPermissionByRoleRegistryGuidQuery(dbContext, userName)
                     .ExecuteAsync(id, t),
                 e => TreeChildrenMapper.ToRoleRegistryChild(e.Id, e.Name, e.Active, e.RoleRegistryGuid), token);
         }
 
         [Description(
-            "Lists the parameter nodes of a Visualisation Registry as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the parameter nodes of a Visualisation Registry as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenVisualisationRegistryParameterGet", OperationKind.Read, Idempotent = true)]
         public Task<List<VisualisationRegistryTreeChildDto>> GetVisualisationRegistryParameterAsync(
             [Description("Id of the parent Visualisation Registry.")]
@@ -221,7 +307,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the inline function nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the inline function nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenInlineFunctionGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetInlineFunctionAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -229,12 +315,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.InlineFunction,
                 t => new EntityAnalysisModelInlineFunctionRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the tag nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the tag nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenTagGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetTagAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -242,12 +329,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.Tag,
                 t => new EntityAnalysisModelTagRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the gateway rule nodes of an Entity Analysis Model as tree children, ordered by priority. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the gateway rule nodes of an Entity Analysis Model as tree children, ordered by priority. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenGatewayRuleGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetGatewayRuleAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -255,12 +343,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.GatewayRule,
                 t => new EntityAnalysisModelGatewayRuleRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByPriorityAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByPriorityAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the exhaustive search instance nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the exhaustive search instance nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenExhaustiveGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetExhaustiveAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -268,12 +357,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.Exhaustive,
                 t => new ExhaustiveSearchInstanceRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the reprocessing rule nodes of an Entity Analysis Model as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the reprocessing rule nodes of an Entity Analysis Model as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenReprocessingGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetReprocessingAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -286,7 +376,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the HTTP adaptation nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the HTTP adaptation nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenAdaptationGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetAdaptationAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -294,12 +384,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.Adaptation,
                 t => new EntityAnalysisModelHttpAdaptationRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the case workflow nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the case workflow nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenCaseWorkflowGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetCaseWorkflowAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -311,7 +402,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the abstraction calculation nodes of an Entity Analysis Model as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the abstraction calculation nodes of an Entity Analysis Model as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenAbstractionCalculationGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetAbstractionCalculationAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -319,12 +410,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.AbstractionCalculation,
                 t => new EntityAnalysisModelAbstractionCalculationRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdDescAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByIdDescAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the abstraction rule nodes of an Entity Analysis Model as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the abstraction rule nodes of an Entity Analysis Model as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenAbstractionRuleGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetAbstractionRuleAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -332,12 +424,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.AbstractionRule,
                 t => new EntityAnalysisModelAbstractionRuleRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdDescAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByIdDescAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the activation rule nodes of an Entity Analysis Model as tree children, ordered by priority. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the activation rule nodes of an Entity Analysis Model as tree children, ordered by priority. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenActivationRuleGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetActivationRuleAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -345,12 +438,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.ActivationRule,
                 t => new EntityAnalysisModelActivationRuleRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByPriorityDescAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByPriorityDescAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the TTL counter nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the TTL counter nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenTTLCounterGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetTtlCounterAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -358,12 +452,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.TtlCounter,
                 t => new EntityAnalysisModelTtlCounterRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the inline script nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the inline script nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenInlineScriptGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetInlineScriptAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -371,12 +466,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.InlineScript,
                 t => new EntityAnalysisModelInlineScriptRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the sanction nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the sanction nodes of an Entity Analysis Model as tree children, ordered by Id. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenSanctionsGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetSanctionsAsync(
             [Description("Id of the parent Entity Analysis Model.")]
@@ -384,12 +480,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.Sanctions,
                 t => new EntityAnalysisModelSanctionRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t),
-                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId), token);
+                    .GetByEntityAnalysisModelIdOrderByIdAsync(id, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelId, e.Deleted == 1),
+                token);
         }
 
         [Description(
-            "Lists the list nodes of an Entity Analysis Model, addressed by model Guid, as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the list nodes of an Entity Analysis Model, addressed by model Guid, as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenListGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetListAsync(
             [Description("Guid of the parent Entity Analysis Model.")]
@@ -397,12 +494,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.List,
                 t => new EntityAnalysisModelListRepository(dbContext, userName).GetByEntityAnalysisModelGuidAsync(guid,
-                    t),
-                e => TreeChildrenMapper.ToModelGuidChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelGuid), token);
+                    t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelGuidChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelGuid,
+                    e.Deleted == 1), token);
         }
 
         [Description(
-            "Lists the dictionary nodes of an Entity Analysis Model, addressed by model Guid, as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the dictionary nodes of an Entity Analysis Model, addressed by model Guid, as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), a deleted row is listed only while its deletion is awaiting approval or rejected, otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenDictionaryGet", OperationKind.Read, Idempotent = true)]
         public Task<List<EntityAnalysisModelTreeChildDto>> GetDictionaryAsync(
             [Description("Guid of the parent Entity Analysis Model.")]
@@ -410,12 +508,13 @@ namespace Jube.Service.Query.TreeChildren
         {
             return RunAsync(TreeChildrenNodes.Dictionary,
                 t => new EntityAnalysisModelDictionaryRepository(dbContext, userName)
-                    .GetByEntityAnalysisModelGuidAsync(guid, t),
-                e => TreeChildrenMapper.ToModelGuidChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelGuid), token);
+                    .GetByEntityAnalysisModelGuidAsync(guid, t, includeDeleted: true),
+                e => TreeChildrenMapper.ToModelGuidChild(e.Id, e.Name, e.Active, e.EntityAnalysisModelGuid,
+                    e.Deleted == 1), token);
         }
 
         [Description(
-            "Lists the xpath nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the xpath nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenCaseWorkflowXPathGet", OperationKind.Read, Idempotent = true)]
         public Task<List<CasesWorkflowTreeChildDto>> GetCaseWorkflowXPathAsync(
             [Description("Id of the parent Case Workflow.")]
@@ -428,7 +527,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the form nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the form nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenCaseWorkflowFormGet", OperationKind.Read, Idempotent = true)]
         public Task<List<CasesWorkflowTreeChildDto>> GetCaseWorkflowFormAsync(
             [Description("Id of the parent Case Workflow.")]
@@ -440,7 +539,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the action nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the action nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenCaseWorkflowActionGet", OperationKind.Read, Idempotent = true)]
         public Task<List<CasesWorkflowTreeChildDto>> GetCaseWorkflowActionAsync(
             [Description("Id of the parent Case Workflow.")]
@@ -452,7 +551,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the macro nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the macro nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenCaseWorkflowMacroGet", OperationKind.Read, Idempotent = true)]
         public Task<List<CasesWorkflowTreeChildDto>> GetCaseWorkflowMacroAsync(
             [Description("Id of the parent Case Workflow.")]
@@ -464,7 +563,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the filter nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the filter nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenCaseWorkflowFilterGet", OperationKind.Read, Idempotent = true)]
         public Task<List<CasesWorkflowTreeChildDto>> GetCaseWorkflowFilterAsync(
             [Description("Id of the parent Case Workflow.")]
@@ -476,7 +575,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the display nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the display nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenCaseWorkflowDisplayGet", OperationKind.Read, Idempotent = true)]
         public Task<List<CasesWorkflowTreeChildDto>> GetCaseWorkflowDisplayAsync(
             [Description("Id of the parent Case Workflow.")]
@@ -488,7 +587,7 @@ namespace Jube.Service.Query.TreeChildren
         }
 
         [Description(
-            "Lists the status nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'green' for active rows, otherwise 'red'.")]
+            "Lists the status nodes of a Case Workflow as tree children. Only rows in the caller's tenant are returned; Colour is 'orange' for a row awaiting approval (only for callers who may view pending approvals), 'purple' for a row whose current version was rejected (for callers who may view approvals), otherwise 'green' for active rows and 'red' for inactive ones.")]
         [ServiceOperation("TreeChildrenCaseWorkflowStatusGet", OperationKind.Read, Idempotent = true)]
         public Task<List<CasesWorkflowTreeChildDto>> GetCaseWorkflowStatusAsync(
             [Description("Id of the parent Case Workflow.")]

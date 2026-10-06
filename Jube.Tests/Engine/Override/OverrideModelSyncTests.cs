@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -86,7 +87,7 @@ namespace Jube.Test.Engine.Override
             return (saved, modelGuid);
         }
 
-        private static Task SyncAsync(DbContext dbContext, int modelId, Guid modelGuid,
+        private static async Task SyncAsync(DbContext dbContext, int modelId, Guid modelGuid,
             EntityAnalysisModelDomain model)
         {
             var context = new SyncContext
@@ -99,14 +100,15 @@ namespace Jube.Test.Engine.Override
                 },
                 EntityAnalysisModels =
                 {
-                    ActiveEntityAnalysisModels = new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
+                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
                 }
             };
 
             model.Instance.Id = modelId;
             model.Instance.Guid = modelGuid;
 
-            return context.SyncOverridesAsync();
+            await context.SyncOverridesAsync().ConfigureAwait(false);
+            context.Snapshots.Publish();
         }
 
         private static Task InsertModelOverrideAsync(DbContext dbContext, Guid modelGuid, string key, string value,
@@ -157,10 +159,10 @@ namespace Jube.Test.Engine.Override
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            var overrides = model.Dependencies.EntityAnalysisModelOverrides;
+            var overrides = model.Snapshot.EntityAnalysisModelOverrides;
 
             overrides.Should().ContainKey("CardFingerprint");
-            overrides["CardFingerprint"].Keys.Should().BeEquivalentTo(new[] { "cdb7", "aaaa", "bbbb" },
+            overrides["CardFingerprint"].Keys.Should().BeEquivalentTo(["cdb7", "aaaa", "bbbb"],
                 "every suppressed value against the key must survive synchronisation, not only the last row");
         }
 
@@ -179,7 +181,7 @@ namespace Jube.Test.Engine.Override
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            var overrides = model.Dependencies.EntityAnalysisModelOverrides;
+            var overrides = model.Snapshot.EntityAnalysisModelOverrides;
 
             overrides.Keys.Should().BeEquivalentTo("CardFingerprint", "UserId", "ProjectCode");
             overrides["CardFingerprint"].Should().ContainKey("cdb7");
@@ -202,10 +204,10 @@ namespace Jube.Test.Engine.Override
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            var overrides = model.Dependencies.EntityAnalysisModelOverrides;
+            var overrides = model.Snapshot.EntityAnalysisModelOverrides;
 
             overrides["CardFingerprint"]["cdb7"].ActivationRules.Keys.Should()
-                .BeEquivalentTo(new[] { "RuleA", "RuleB", "RuleC" },
+                .BeEquivalentTo(["RuleA", "RuleB", "RuleC"],
                     "every activation rule bound to the value must survive, not only the last row");
         }
 
@@ -223,7 +225,7 @@ namespace Jube.Test.Engine.Override
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            var overrides = model.Dependencies.EntityAnalysisModelOverrides;
+            var overrides = model.Snapshot.EntityAnalysisModelOverrides;
 
             overrides["CardFingerprint"].Keys.Should().BeEquivalentTo("cdb7", "aaaa");
             overrides["CardFingerprint"]["cdb7"].ActivationRules.Should().ContainKey("RuleA");
@@ -244,7 +246,7 @@ namespace Jube.Test.Engine.Override
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            var overrideBinding = model.Dependencies.EntityAnalysisModelOverrides
+            var overrideBinding = model.Snapshot.EntityAnalysisModelOverrides
                 ["CardFingerprint"]["cdb7"];
 
             overrideBinding.AllActivationRules.Should().Be(EntityAnalysisModelOverrideKind.Suppress);
@@ -267,7 +269,7 @@ namespace Jube.Test.Engine.Override
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            var overrideBinding = model.Dependencies.EntityAnalysisModelOverrides
+            var overrideBinding = model.Snapshot.EntityAnalysisModelOverrides
                 ["CardFingerprint"]["cdb7"];
 
             overrideBinding.KindFor("BlacklistCard").Should().Be(EntityAnalysisModelOverrideKind.Force);
@@ -289,7 +291,7 @@ namespace Jube.Test.Engine.Override
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            var overrideBinding = model.Dependencies.EntityAnalysisModelOverrides
+            var overrideBinding = model.Snapshot.EntityAnalysisModelOverrides
                 ["CardFingerprint"]["cdb7"];
 
             overrideBinding.KindFor("BlacklistCard").Should().Be(EntityAnalysisModelOverrideKind.Force,
@@ -333,7 +335,7 @@ namespace Jube.Test.Engine.Override
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            var overrides = model.Dependencies.EntityAnalysisModelOverrides;
+            var overrides = model.Snapshot.EntityAnalysisModelOverrides;
 
             overrides["CardFingerprint"].Keys.Should().BeEquivalentTo("live");
         }
@@ -351,14 +353,14 @@ namespace Jube.Test.Engine.Override
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            model.Dependencies.EntityAnalysisModelOverrides["CardFingerprint"].Should().ContainKey("cdb7");
+            model.Snapshot.EntityAnalysisModelOverrides["CardFingerprint"].Should().ContainKey("cdb7");
 
             await dbContext.EntityAnalysisModelOverride
                 .Where(w => w.EntityAnalysisModelGuid == modelGuid).DeleteAsync();
 
             await SyncAsync(dbContext, modelId, modelGuid, model);
 
-            model.Dependencies.EntityAnalysisModelOverrides.Should().BeEmpty(
+            model.Snapshot.EntityAnalysisModelOverrides.Should().BeEmpty(
                 "a removed override must not survive the next synchronisation");
         }
     }

@@ -33,7 +33,8 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
 {
     public sealed class EntityAnalysisModelIntegrityService
     {
-        private static readonly TimeSpan HeartbeatTolerance = TimeSpan.FromMinutes(10);
+        private static readonly TimeSpan HeartbeatTolerance =
+            TimeSpan.FromMinutes(EngineInstanceLiveness.ToleranceMinutes);
 
         private static readonly int[] permissions = [60];
 
@@ -279,12 +280,15 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
         {
             var nodes = inputs.Nodes.Select(n => new EngineNode(n.Instance, n.HeartbeatDate, n.SynchronisedDate))
                 .ToList();
+            var liveCutoff = EngineInstanceLiveness.CutoffFrom(DateTime.UtcNow);
+            var liveInstances = nodes.Where(n => n.HeartbeatDate > liveCutoff).Select(n => n.Instance).ToHashSet();
             var snapshots = (await new EntityAnalysisModelEngineSnapshotRepository(dbContext)
                     .GetByEntityAnalysisModelIdAsync(tenantRegistryId, entityAnalysisModelId, token)
                     .ConfigureAwait(false))
                 .Select(s => JsonConvert.DeserializeObject<EngineModelState>(s.Json))
                 .Where(s => s != null)
                 .Select(s => s!)
+                .Where(s => liveInstances.Contains(s.Instance))
                 .ToList();
 
             if (engineStateSource is { Available: true })

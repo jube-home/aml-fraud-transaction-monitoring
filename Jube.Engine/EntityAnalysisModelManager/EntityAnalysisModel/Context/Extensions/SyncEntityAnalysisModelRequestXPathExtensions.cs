@@ -17,7 +17,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Data.Repository;
-    using Helpers;
     using Parser;
 
     public static class SyncEntityAnalysisModelRequestXPathExtensions
@@ -39,16 +38,17 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Looping through active models {key} is started for the purpose adding the XPath.");
                     }
 
-                    var repository = new EntityAnalysisModelRequestXPathRepository(context.Services.DbContext);
+                    var repository = new EntityAnalysisModelRequestXpathRepository(context.Services.DbContext);
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
                         context.Services.Log.Debug(
-                            $"Entity Start: Executing EntityAnalysisModelRequestXPathRepository.GetByEntityAnalysisModelId for entity model key of {key}.");
+                            $"Entity Start: Executing EntityAnalysisModelRequestXpathRepository.GetByEntityAnalysisModelId for entity model key of {key}.");
                     }
 
                     var records = await
-                        repository.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken)
+                        repository.GetApprovedByEntityAnalysisModelIdOrderByIdAsync(key, context.ApprovalsRequired,
+                                context.Services.CancellationToken)
                             .ConfigureAwait(false);
 
                     var shadowEntityAnalysisModelRequestXPath =
@@ -641,8 +641,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                                              + " and (a.\"ReferenceDate\", a.\"EntityAnalysisModelInstanceEntryGuid\") > ((@afterReferenceDate), (@afterEntityAnalysisModelInstanceEntryGuid))"
                                                              + " order by a.\"ReferenceDate\" asc, a.\"EntityAnalysisModelInstanceEntryGuid\" asc limit (@limit);";
 
-                    value.Collections.EntityAnalysisModelRequestXPaths = shadowEntityAnalysisModelRequestXPath;
-                    value.References.PayloadInitialSize = DictionaryNoBoxingHelpers.CalculateInitialSize(value);
+                    context.Snapshots.Builder(key, value).EntityAnalysisModelRequestXPaths =
+                        shadowEntityAnalysisModelRequestXPath;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {

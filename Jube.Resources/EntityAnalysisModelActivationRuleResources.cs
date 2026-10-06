@@ -17,12 +17,10 @@ namespace Jube.Resources
     {
         public const string PermissionDenied = nameof(PermissionDenied);
         public const string NotAuthenticated = nameof(NotAuthenticated);
-        public const string PermissionDeniedApproveByReview = nameof(PermissionDeniedApproveByReview);
         public const string EntityAnalysisModelIdInvalid = nameof(EntityAnalysisModelIdInvalid);
         public const string NameRequired = nameof(NameRequired);
         public const string NameMaxLength = nameof(NameMaxLength);
         public const string NameAlreadyExists = nameof(NameAlreadyExists);
-        public const string ReviewStatusIdInvalid = nameof(ReviewStatusIdInvalid);
         public const string RuleScriptTypeIdInvalid = nameof(RuleScriptTypeIdInvalid);
         public const string BuilderRuleScriptRequired = nameof(BuilderRuleScriptRequired);
         public const string BuilderRuleScriptMaxLength = nameof(BuilderRuleScriptMaxLength);

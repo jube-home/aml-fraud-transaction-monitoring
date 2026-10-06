@@ -170,7 +170,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
         public async Task<List<EntityAnalysisModelDictionaryKvpDto>> GetByEntityAnalysisModelDictionaryIdAsync(
             [Description("Numeric identifier of the parent Dictionary.")]
             int entityAnalysisModelDictionaryId,
-            CancellationToken token = default)
+            CancellationToken token = default, bool includeDeleted = false)
         {
             using var op = OperationScope.Start("EntityAnalysisModelDictionaryKvp",
                 "ListByEntityAnalysisModelDictionaryId", userName, tenantRegistryId, auditLog, log, serviceChangeBus);
@@ -184,7 +184,8 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             {
                 EnsurePermitted("EntityAnalysisModelDictionaryKvp.ListByEntityAnalysisModelDictionaryId");
                 var dtos = EntityAnalysisModelDictionaryKvpMapper.ToDto(await repository
-                    .GetByEntityAnalysisModelDictionaryIdOrderByIdAsync(entityAnalysisModelDictionaryId, token)
+                    .GetByEntityAnalysisModelDictionaryIdOrderByIdAsync(entityAnalysisModelDictionaryId, token,
+                        includeDeleted)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)
@@ -221,13 +222,12 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             }
         }
 
-        [Description("Returns one Key Value Pair, scoped to the calling user's tenant. Note: the underlying " +
-                     "query matches on the parent Dictionary's Id, not the pair's own Id -- a pre-existing quirk " +
-                     "carried forward from the legacy repository. Returns null when no matching row is visible " +
-                     "to the caller.")]
+        [Description("Returns one Key Value Pair by its own identifier, scoped to the calling user's tenant. A " +
+                     "soft-deleted pair is returned with its deleted state set, so it can be reviewed and revived. " +
+                     "Returns null when no matching row is visible to the caller.")]
         [ServiceOperation("EntityAnalysisModelDictionaryKvpGet", OperationKind.Read, Idempotent = true)]
         public async Task<EntityAnalysisModelDictionaryKvpDto?> GetByIdAsync(
-            [Description("Numeric identifier matched against the pair's parent Dictionary Id (see remarks).")]
+            [Description("Numeric identifier of the Key Value Pair.")]
             int id,
             CancellationToken token = default)
         {

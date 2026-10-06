@@ -18,6 +18,7 @@ using System.Text;
 using FluentAssertions;
 using Jube.Cryptography;
 using Jube.Engine.EntityAnalysisModelInvoke.Extraction;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Test.Infrastructure;
 using Newtonsoft.Json;
@@ -56,11 +57,15 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
                     EntryName = "TxnId",
                     ReferenceDateXpath = "$.TxnDateTime",
                     ReferenceDateName = "TxnDateTime",
-                    ReferenceDatePayloadLocationTypeId = 1,
-                    PayloadInitialSize = 16
+                    ReferenceDatePayloadLocationTypeId = 1
                 }
             };
-            model.Collections.EntityAnalysisModelRequestXPaths.AddRange(xPaths);
+
+            model.PublishSnapshot(new ModelSnapshotBuilder(model.Snapshot)
+            {
+                EntityAnalysisModelRequestXPaths = [.. xPaths]
+            }.Build());
+
             return model;
         }
 
@@ -306,7 +311,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
         public void AStringFieldResolvesAConfiguredKvpDictionaryValueIntoTheDictionaryCache()
         {
             var model = NewModel(XPath("AccountId", "$.AccountId", 1));
-            model.Dependencies.KvpDictionaries[1] = new EntityAnalysisModelDictionary
+            model.Snapshot.KvpDictionaries[1] = new EntityAnalysisModelDictionary
             {
                 Name = "AccountRisk",
                 DataName = "AccountId",

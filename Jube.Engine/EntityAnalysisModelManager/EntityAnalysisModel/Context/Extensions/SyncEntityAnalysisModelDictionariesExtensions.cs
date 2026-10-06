@@ -46,7 +46,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelDictionaryRepository.GetByEntityAnalysisModelId and entity model key of {key}.");
                     }
 
-                    var recordsDictionary = await repositoryDictionary.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var recordsDictionary = await repositoryDictionary.GetApprovedByEntityAnalysisModelIdOrderByIdAsync(
+                        key, context.ApprovalsRequired,
+                        context.Services.CancellationToken).ConfigureAwait(false);
 
                     var shadowKvpDictionary = new Dictionary<int, EntityAnalysisModelDictionary>();
                     foreach (var recordDictionary in recordsDictionary)
@@ -146,7 +148,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();
 
-                        var repositoryDictionaryKvp = new EntityAnalysisModelDictionaryKvpRepository(context.Services.DbContext);
+                        var repositoryDictionaryKvp =
+                            new EntityAnalysisModelDictionaryKvpRepository(context.Services.DbContext);
 
                         if (context.Services.Log.IsDebugEnabled)
                         {
@@ -154,7 +157,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 $"Entity Start: Executing EntityAnalysisModelDictionaryKvpRepository.GetByEntityAnalysisModelDictionaryId for entity model key of {key} and Dictionary id {i}.");
                         }
 
-                        var recordsDictionaryKvp = await repositoryDictionaryKvp.GetByEntityAnalysisModelDictionaryIdOrderByIdAsync(i, context.Services.CancellationToken).ConfigureAwait(false);
+                        var recordsDictionaryKvp = await repositoryDictionaryKvp
+                            .GetApprovedByEntityAnalysisModelDictionaryIdOrderByIdAsync(i, context.ApprovalsRequired,
+                                context.Services.CancellationToken).ConfigureAwait(false);
 
                         if (context.Services.Log.IsDebugEnabled)
                         {
@@ -224,7 +229,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                     }
 
-                    value.Dependencies.KvpDictionaries = shadowKvpDictionary;
+                    context.Snapshots.Builder(key, value).KvpDictionaries = shadowKvpDictionary;
                 }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -232,7 +237,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelDictionariesAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.Dictionaries, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.Dictionaries, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

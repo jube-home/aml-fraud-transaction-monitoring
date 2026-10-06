@@ -36,7 +36,7 @@ namespace Jube.Test.Validations
     public sealed class EntityAnalysisModelActivationRuleOverrideDtoValidatorTests(DatabaseFixture fx)
         : IAsyncLifetime
     {
-        private static readonly IStringLocalizer Localiser =
+        private static readonly IStringLocalizer localiser =
             new ResourceManagerStringLocalizerFactory(Options.Create(new LocalizationOptions()),
                     NullLoggerFactory.Instance)
                 .Create(typeof(EntityAnalysisModelActivationRuleOverrideDtoValidatorTests));
@@ -166,7 +166,7 @@ namespace Jube.Test.Validations
             var validator = new EntityAnalysisModelActivationRuleOverrideDtoValidator(
                 new EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission),
                 new EntityAnalysisModelActivationRuleRepository(dbContext, fx.Seed.UserWithPermission),
-                Localiser);
+                localiser);
 
             return validator.ValidateAsync(dto);
         }

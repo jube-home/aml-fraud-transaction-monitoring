@@ -20,15 +20,17 @@ using Jube.Service.Exceptions.Query.EntityVersionHistory;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
+using Jube.Service.Query.VersionHistory;
 
 namespace Jube.Service.Query.EntityAnalysisModelRequestXpathVersionHistory
 {
-    public sealed class EntityAnalysisModelRequestXpathVersionHistoryService
+    public sealed class EntityAnalysisModelRequestXpathVersionHistoryService : IVersionHistoryService<
+        EntityAnalysisModelRequestXpathVersionHistoryService, EntityAnalysisModelRequestXpathVersion>
     {
         private static readonly int[] permissions = [7];
 
         private readonly GetEntityVersionHistoryQuery<EntityAnalysisModelRequestXpathVersion> query;
-        private readonly EntityAnalysisModelRequestXPathRepository parentRepository;
+        private readonly EntityAnalysisModelRequestXpathRepository parentRepository;
         private readonly PermissionValidation permissionValidation;
         private readonly ILog log;
         private readonly IStringLocalizer strings;
@@ -43,7 +45,7 @@ namespace Jube.Service.Query.EntityAnalysisModelRequestXpathVersionHistory
             this.strings = strings;
             query = new GetEntityVersionHistoryQuery<EntityAnalysisModelRequestXpathVersion>(dbContext,
                 nameof(EntityAnalysisModelRequestXpathVersion.EntityAnalysisModelRequestXpathId));
-            parentRepository = new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId);
+            parentRepository = new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId);
         }
 
         public static Task<EntityAnalysisModelRequestXpathVersionHistoryService> CreateAsync(DbContext dbContext,

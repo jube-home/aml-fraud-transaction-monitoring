@@ -18,9 +18,10 @@
 }
 
 <script src="/js/CRUD.js"></script>
+<script src="/js/Model/Frame/ValueGrid.js"></script>
 <script src="/js/Model/Frame/EntityAnalysisModelList.js"></script>
 
-<form id="Form" class="k-form">
+<form id="Form" data-approval-endpoint="/api/EntityAnalysisModelList" class="k-form">
     <body>
     <div class="fCStyle">
         <table id="TemplateTable" class="tTStyle">
@@ -89,38 +90,11 @@
                 </div>
             </div>
             <div id="ListValuesDiv" class="filesStyle">
+                <div id="valueGridToolbar" class="valueGridToolbar"></div>
+                <div id="ValueMessage" class="errorMessage"></div>
                 <div class="k-content wide">
-                    <div id="listView"></div>
+                    <div id="valueGrid"></div>
                 </div>
-                <script type="text/x-kendo-tmpl" id="template">
-                    <div class="listView k-widget">
-                        <dl>
-                            <dd>#:listValue##if(deleteExpiryDate){# / #:kendo.toString(deleteExpiryDate, "yyyy-MM-dd HH:mm")##}#</dd>
-                        </dl>
-                        <div class="edit-buttons">
-                            <a class="k-button k-edit-button" href="\\#"><span class="k-icon k-i-edit"></span></a>
-                            <a class="k-button k-delete-button" href="\\#"><span class="k-icon k-i-delete"></span></a>
-                        </div>
-                    </div>
-                </script>
-                <script type="text/x-kendo-tmpl" id="editTemplate">
-                    <div class="listView k-widget">
-                        <div class="listViewEditForm">
-                            <div class="listViewEditRow">
-                                <label for="ListValue">List Value</label>
-                                <input type="text" class="k-textbox" data-bind="value:listValue" name="ListValue"/>
-                            </div>
-                            <div class="listViewEditRow">
-                                <label for="DeleteExpiryDate">Delete Expiry Date</label>
-                                <input type="text" data-role="datetimepicker" class="expiryDateCell" data-bind="value:deleteExpiryDate" name="DeleteExpiryDate"/>
-                            </div>
-                        </div>
-                        <div class="edit-buttons">
-                            <a class="k-button k-update-button" href="\\#"><span class="k-icon k-i-check"></span></a>
-                            <a class="k-button k-cancel-button" href="\\#"><span class="k-icon k-i-cancel"></span></a>
-                        </div>
-                    </div>
-                </script>
             </div>
         </div>
     </div>

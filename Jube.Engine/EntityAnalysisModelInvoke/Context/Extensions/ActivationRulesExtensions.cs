@@ -23,7 +23,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         public static async Task<Context> ExecuteActivationsAsync(this Context context)
         {
             context.TraceLog(
-                $"will now process {context.EntityAnalysisModel.Collections.ModelActivationRules.Count} Activation Rules.");
+                $"will now process {context.Snapshot.ModelActivationRules.Count} Activation Rules.");
 
             var stopwatch = Stopwatch.StartNew();
 

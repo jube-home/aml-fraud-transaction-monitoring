@@ -118,6 +118,7 @@ namespace Jube.Test.Service.Repository.Preservation
                 .Where(w => roleIdsNullable.Contains(w.RoleRegistryId)).DeleteAsync();
             await dbContext.RoleRegistry.Where(w => roleIds.Contains(w.Id)).DeleteAsync();
 
+            await dbContext.EntityApproval.Where(w => tenantIdsNullable.Contains(w.TenantRegistryId)).DeleteAsync();
             await dbContext.Import.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
             await dbContext.Export.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
             await dbContext.ExportPeek.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();

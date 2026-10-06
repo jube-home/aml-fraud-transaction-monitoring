@@ -17,7 +17,7 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
     public sealed record SeedData(
         string UserWithPermission,
         string UserWithoutPermission,
-        string UserWithPermissionNoApproveByReview,
+        string UserWithPermissionNoApproval,
         string UserTenantB,
         string LandlordUser,
         string UserNoTenant,

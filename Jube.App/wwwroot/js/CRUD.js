@@ -169,37 +169,6 @@ function HandleDataSourceError(e) {
     components.errorMessage.html(processingFailed);
 }
 
-function WireListViewValidation(listView, dataSource) {
-    let pendingUid = null;
-
-    listView.bind("save", function (e) {
-        pendingUid = e.model.uid;
-    });
-
-    dataSource.bind("sync", function () {
-        pendingUid = null;
-        clearFieldErrorStyles();
-    });
-
-    dataSource.bind("error", function (e) {
-        HandleDataSourceError(e);
-
-        if (!pendingUid) {
-            return;
-        }
-
-        const uid = pendingUid;
-        pendingUid = null;
-
-        const row = listView.items().filter("[data-uid='" + uid + "']");
-        if (!row.length) {
-            return;
-        }
-
-        listView.edit(row);
-        listView.items().filter("[data-uid='" + uid + "']").addClass("field-error-highlight");
-    });
-}
 
 function hideRoles() {
     const roleManager = $("#RoleManager").data("kendoRoleManager");
@@ -292,12 +261,16 @@ function Create(endpoint, data, keyName, parentKeyName, callback) {
             id = responseData.id;
             guid = responseData.guid;
 
+            showApprovalManager(responseData);
+
             if (responseData.version === 1) {
                 if (typeof AddNode === "function") {
                     const nodeName = $("#Name").length > 0 ? responseData.name : window.Name;
                     AddNode(responseData[parentKeyName], id, nodeName);
                 }
             }
+
+            syncTreeState(id, responseData.name, responseData.active);
 
             components.addButton.hide();
             components.updateButton.show();
@@ -313,7 +286,7 @@ function Create(endpoint, data, keyName, parentKeyName, callback) {
             }
 
             $("#Version").html(responseData.version);
-            $("#CreatedUser").html(responseData.createdUser);
+            $("#CreatedUser").text(responseData.createdUser);
             $("#CreatedDate").html(new Date(responseData.createdDate).toLocaleString());
 
             SetTable();
@@ -354,8 +327,11 @@ function Update(endpoint, data, keyName, parentKeyName, callback) {
             id = responseData.id;
 
             $("#Version").html(responseData.version);
-            $("#CreatedUser").html(responseData.createdUser);
+            $("#CreatedUser").text(responseData.createdUser);
             $("#CreatedDate").html(new Date(responseData.createdDate).toLocaleString());
+
+            refreshApprovalManager();
+            syncTreeState(id, responseData.name, responseData.active);
 
             components.addButton.hide();
             components.updateButton.show();
@@ -390,7 +366,10 @@ function Delete(endpoint, key) {
             }
         },
         success: () => {
-            if (typeof DeleteNode === "function") {
+            if (approvalMappingForPage() !== undefined) {
+                refreshApprovalManager();
+                syncTreeState(key);
+            } else if (typeof DeleteNode === "function") {
                 DeleteNode(key, 1);
             } else if (typeof showHomePage === "function") {
                 showHomePage();
@@ -431,6 +410,7 @@ function Lock(isLocked) {
 
 function ReadyNew() {
     id = undefined;
+    hideApprovalManager();
     $("#Name").val("");
     $("#Version, #CreatedDate, #CreatedUser").html("");
     $("#Counters").html("0 / 0 (0%)");
@@ -478,7 +458,7 @@ function ReadyExisting(data) {
 
     $("#Version").html(data.version);
     $("#CreatedDate").html(new Date(data.createdDate).toLocaleString());
-    $("#CreatedUser").html(data.createdUser);
+    $("#CreatedUser").text(data.createdUser);
 
     SetTable();
 
@@ -489,6 +469,8 @@ function ReadyExisting(data) {
     if (typeof showRoleAllocation === "function") {
         showRoleAllocation();
     }
+
+    showApprovalManager(data);
 
     const lockedWidget = components.locked;
     if (lockedWidget) {
@@ -510,6 +492,104 @@ function showRoleAllocation() {
             guid: guid
         });
     }
+}
+
+function syncTreeState(key, name, active) {
+    const mapping = approvalMappingForPage();
+    if (mapping === undefined || typeof SetNodeState !== "function") {
+        return;
+    }
+
+    const endpoint = $("form[data-approval-endpoint]").data("approvalEndpoint");
+
+    $.getJSON("/api/EntityApproval/Status", {kind: mapping.kind, entityId: key})
+        .done(function (status) {
+            if (!status.pending && !status.rejected && status.deleted) {
+                RemoveTreeNode(key);
+                return;
+            }
+
+            const colourFor = function (isActive) {
+                if (status.rejected) {
+                    return "purple";
+                }
+                if (status.pending) {
+                    return "orange";
+                }
+                return isActive ? "green" : "red";
+            };
+
+            if (name !== undefined && active !== undefined) {
+                SetNodeState(key, colourFor(active === true || active === 1), name);
+                return;
+            }
+
+            $.getJSON(endpoint + "/" + key).done(function (entity) {
+                SetNodeState(key, colourFor(entity.active === true || entity.active === 1), entity.name);
+            });
+        });
+}
+
+function approvalMappingForPage() {
+    if (typeof ApprovalKinds === "undefined") {
+        return undefined;
+    }
+
+    const approvalEndpoint = $("form[data-approval-endpoint]").data("approvalEndpoint");
+
+    return approvalEndpoint ? ApprovalKinds[approvalEndpoint] : undefined;
+}
+
+function showApprovalManager(data) {
+    const mapping = approvalMappingForPage();
+
+    if (!mapping || !data || data.id === undefined || data.id === null) {
+        hideApprovalManager();
+        return;
+    }
+
+    let host = $("#ApprovalManager");
+
+    if (!host.length) {
+        host = $('<div id="ApprovalManager"></div>');
+        const footer = $(".footerStyle").first();
+
+        if (footer.length) {
+            footer.before(host);
+        } else {
+            $("#Form").append(host);
+        }
+    }
+
+    const existing = host.data("kendoApprovalManager");
+    if (existing) {
+        existing.destroy();
+    }
+
+    host.kendoApprovalManager({
+        kind: mapping.kind,
+        entityId: data.id,
+        historyRoute: mapping.historyRoute
+    }).data("kendoApprovalManager").bind("changed", function () {
+        syncTreeState(data.id);
+    });
+}
+
+function refreshApprovalManager() {
+    const manager = $("#ApprovalManager").data("kendoApprovalManager");
+    if (manager) {
+        manager.refresh();
+    }
+}
+
+function hideApprovalManager() {
+    $("#TemplateTable tr.approval-row").remove();
+    const host = $("#ApprovalManager");
+    const manager = host.data("kendoApprovalManager");
+    if (manager) {
+        manager.destroy();
+    }
+    host.remove();
 }
 
 //# sourceURL=CRUD.js

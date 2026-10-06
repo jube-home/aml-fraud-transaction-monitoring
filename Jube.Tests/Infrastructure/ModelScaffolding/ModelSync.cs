@@ -60,7 +60,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 var advanced = current != null && (before == null || current > before);
                 var model = engine.FindActiveModel(scaffold.ModelGuid);
                 var hasCallers = !scaffold.Options.CreateCallers || (model != null &&
-                                                                     model.Collections.Users
+                                                                     model.Snapshot.Users
                                                                          .Contains(scaffold.UserName));
 
                 if (advanced && model != null && hasCallers)

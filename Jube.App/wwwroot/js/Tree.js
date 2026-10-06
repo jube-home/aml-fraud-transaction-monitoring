@@ -25,14 +25,12 @@ let EntityAnalysisModelChildrenChildren;
 const Page = getUrlVars()["Page"];
 
 function GetColor(e) {
-    const items = e.sender.items();
-    for (let j = 0; j < items.length; j++) {
-        const item = $(items[j]);
-        const dataItem = e.sender.dataItem(item);
-        const color = dataItem.get("color");
-
-        item.css("color", color);
-    }
+    e.sender.element.find(".k-item").each(function () {
+        const dataItem = e.sender.dataItem(this);
+        if (dataItem) {
+            $(this).css("color", dataItem.get("color") || "");
+        }
+    });
 }
 
 $(document).ready(function () {
@@ -626,6 +624,48 @@ function GetSelectedChildID() {
     } else if (parentAmount > 0 && HasThirdLevel === false) {
         return item.key;
     }
+}
+
+function RemoveTreeNode(key) {
+    const treeview = $("#Tree").data("kendoTreeView");
+    if (!treeview) {
+        return;
+    }
+
+    treeview.element.find(".k-item").toArray().forEach(function (element) {
+        const item = treeview.dataItem(element);
+        if (item && item.key === key) {
+            treeview.remove(element);
+        }
+    });
+}
+
+function SetNodeState(key, colour, name) {
+    const treeview = $("#Tree").data("kendoTreeView");
+    if (!treeview) {
+        return;
+    }
+
+    const items = [];
+    treeview.element.find(".k-item").each(function () {
+        const item = treeview.dataItem(this);
+        if (item && item.key === key) {
+            items.push(item);
+        }
+    });
+
+    items.forEach(function (item) {
+        if (name !== undefined && name !== null) {
+            item.set("name", name);
+        }
+        item.set("color", colour);
+    });
+
+    items.forEach(function (item) {
+        const node = treeview.findByUid(item.uid);
+        node.css("color", colour);
+        node.children(".k-in").css("color", colour);
+    });
 }
 
 function AddNode(parent, child, name) {

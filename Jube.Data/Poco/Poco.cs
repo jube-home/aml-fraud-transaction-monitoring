@@ -2381,7 +2381,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(28)] public long? ActivationCounter { get; set; }
         [Column] [Nullable] [Key(29)] public DateTime? ActivationCounterDate { get; set; }
         [Column] [Nullable] [Key(30)] public string ResponseElevationRedirect { get; set; }
-        [Column] [Nullable] [Key(31)] public byte? ReviewStatusId { get; set; }
+        // [Column] [Nullable] [Key(31)] public byte? ReviewStatusId { get; set; } Reserved for future use
         [Column] [Nullable] [Key(32)] public byte? ReportTable { get; set; }
         [Column] [Nullable] [Key(33)] public byte? EnableNotification { get; set; }
         [Column] [Nullable] [Key(34)] public byte? NotificationTypeId { get; set; }
@@ -2452,7 +2452,6 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(27)] public long? ActivationCounter { get; set; }
         [Column] [Nullable] [Key(28)] public DateTime? ActivationCounterDate { get; set; }
         [Column] [Nullable] [Key(29)] public string ResponseElevationRedirect { get; set; }
-        [Column] [Nullable] [Key(30)] public byte? ReviewStatusId { get; set; }
         [Column] [Nullable] [Key(31)] public byte? ReportTable { get; set; }
         [Column] [Nullable] [Key(32)] public byte? EnableNotification { get; set; }
         [Column] [Nullable] [Key(33)] public byte? NotificationTypeId { get; set; }
@@ -4124,7 +4123,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(16)] public byte[] Object { get; set; }
         [Column] [Nullable] [Key(17)] public byte? Deleted { get; set; }
         [Column] [Nullable] [Key(18)] public string DeletedUser { get; set; }
-        [Column] [Nullable] [Key(19)] public DateTime DeletedDate { get; set; }
+        [Column] [Nullable] [Key(19)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(20)] public string CreatedUser { get; set; }
         [Column] [Nullable] [Key(21)] public int? Version { get; set; }
         [Column] [Nullable] [Key(22)] public int? InheritedId { get; set; }
@@ -4197,7 +4196,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(17)] public byte[] Object { get; set; }
         [Column] [Nullable] [Key(18)] public byte? Deleted { get; set; }
         [Column] [Nullable] [Key(19)] public string DeletedUser { get; set; }
-        [Column] [Nullable] [Key(20)] public DateTime DeletedDate { get; set; }
+        [Column] [Nullable] [Key(20)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(21)] public string CreatedUser { get; set; }
         [Column] [Nullable] [Key(22)] public int? Version { get; set; }
         [Column] [Nullable] [Key(23)] public int? InheritedId { get; set; }
@@ -6574,5 +6573,26 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(12)] public string Action { get; set; }
         [Column] [Nullable] [Key(13)] public string CorrelationId { get; set; }
         [Column] [Nullable] [Key(14)] public string Instance { get; set; }
+    }
+
+    [Table]
+    [MessagePackObject]
+    public class EntityApproval
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public int? TenantRegistryId { get; set; }
+        [Column] [Nullable] [Key(2)] public int? EntityApprovalKindId { get; set; }
+        [Column] [Nullable] [Key(3)] public int? EntityId { get; set; }
+        [Column] [Nullable] [Key(4)] public int? EntityVersion { get; set; }
+        [Column] [Nullable] [Key(5)] public int? StateId { get; set; }
+        [Column] [Nullable] [Key(6)] public string Note { get; set; }
+        [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(8)] public string CreatedUser { get; set; }
+        [Column] [Nullable] [Key(9)] public Guid Guid { get; set; }
     }
 }

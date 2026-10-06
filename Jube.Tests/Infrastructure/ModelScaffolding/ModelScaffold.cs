@@ -21,6 +21,7 @@ using Jube.Data.Poco;
 using LinqToDB;
 using Npgsql;
 using Fixture = Jube.Test.Infrastructure.DatabaseFixture.DatabaseFixture;
+using Jube.Data.Repository;
 
 namespace Jube.Test.Infrastructure.ModelScaffolding
 {
@@ -37,6 +38,8 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             "CaseWorkflowFormEntryValue)$";
 
         internal const string Root = "EntityAnalysisModel";
+
+        internal const string ApprovedBy = "ZzTestChecker";
 
         private readonly object gate = new();
         private readonly List<int> scheduleIds = [];
@@ -194,6 +197,12 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 (ModelId, IdMap) = await ModelGraphCopier.CopyAsync(connection, transaction, Options,
                     TenantRegistryId, ModelGuid, ModelName).ConfigureAwait(false);
                 await transaction.CommitAsync().ConfigureAwait(false);
+            }
+
+            if (Options.Approve)
+            {
+                await new EntityApprovalRepository(dbContext)
+                    .ApproveEntireModelAsync(ModelId, ApprovedBy).ConfigureAwait(false);
             }
 
             if (Options.CreateCallers)

@@ -274,7 +274,7 @@ namespace Jube.Test.Dictionary.Fuzzy
         [Fact]
         public void AnArrayIsTreatedAsAList()
         {
-            FuzzyListMatcher.Any("Jon Smith", new[] { "John Smith" }, FuzzyOptions.Default).Should().BeTrue();
+            FuzzyListMatcher.Any("Jon Smith", ["John Smith"], FuzzyOptions.Default).Should().BeTrue();
         }
 
         [Fact]

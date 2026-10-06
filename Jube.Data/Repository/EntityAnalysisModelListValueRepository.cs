@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Query.GetApprovedEntityQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace Jube.Data.Repository
         }
 
         public async Task<IEnumerable<EntityAnalysisModelListValue>> GetByEntityAnalysisModelListIdOrderByIdAsync(
-            int entityAnalysisModelListId, CancellationToken token = default)
+            int entityAnalysisModelListId, CancellationToken token = default, bool includeDeleted = false)
         {
             return await dbContext.EntityAnalysisModelListValue
                 .Where(w =>
@@ -68,7 +69,7 @@ namespace Jube.Data.Repository
                     && w.EntityAnalysisModelListId == entityAnalysisModelListId
                     && (w.EntityAnalysisModelList.EntityAnalysisModel.Deleted == 0 ||
                         w.EntityAnalysisModelList.EntityAnalysisModel.Deleted == null)
-                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (includeDeleted || w.Deleted == 0 || w.Deleted == null)
                     && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow))
                 .OrderBy(o => o.Id).ToListAsync(token);
         }
@@ -78,7 +79,7 @@ namespace Jube.Data.Repository
             return dbContext.EntityAnalysisModelListValue.FirstOrDefaultAsync(w =>
                 (w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
                  !tenantRegistryId.HasValue)
-                && w.Id == id && (w.Deleted == 0 || w.Deleted == null)
+                && w.Id == id
                 && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
         }
 
@@ -101,7 +102,6 @@ namespace Jube.Data.Repository
                                           == model.Id
                                           && w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId ==
                                           tenantRegistryId
-                                          && (w.Deleted == 0 || w.Deleted == null)
                                           && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow),
                     token);
 
@@ -111,6 +111,9 @@ namespace Jube.Data.Repository
             }
 
             model.Version = existing.Version + 1;
+            model.Deleted = 0;
+            model.DeletedDate = null;
+            model.DeletedUser = null;
             model.Guid = existing.Guid;
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
@@ -124,13 +127,43 @@ namespace Jube.Data.Repository
             var audit = mapper.Map<EntityAnalysisModelListValueVersion>(existing);
             audit.EntityAnalysisModelListValueId = existing.Id;
 
-            await dbContext.InsertAsync(audit, token: token);
+            if (existing.Deleted != 1)
+            {
+                await dbContext.InsertAsync(audit, token: token);
+            }
 
             return model;
         }
 
-        public async Task DeleteAsync(int id, CancellationToken token = default)
+        public Task DeleteAsync(int id, CancellationToken token = default)
         {
+            return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
+        }
+
+        private async Task DeleteVersionedAsync(int id, CancellationToken token)
+        {
+            var existing = await dbContext.EntityAnalysisModelListValue
+                .FirstOrDefaultAsync(w =>
+                    (w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
+                     !tenantRegistryId.HasValue)
+                    && w.Id == id
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
+
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<EntityAnalysisModelListValue, EntityAnalysisModelListValueVersion>(); },
+                NullLoggerFactory.Instance));
+
+            var audit = mapper.Map<EntityAnalysisModelListValueVersion>(existing);
+            audit.EntityAnalysisModelListValueId = existing.Id;
+
+            await dbContext.InsertAsync(audit, token: token);
+
             var records = await dbContext.EntityAnalysisModelListValue
                 .Where(d =>
                     (d.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
@@ -141,12 +174,22 @@ namespace Jube.Data.Repository
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .Set(s => s.DeletedUser, userName)
+                .Set(s => s.Version, (existing.Version ?? 1) + 1)
                 .UpdateAsync(token);
 
             if (records == 0)
             {
                 throw new KeyNotFoundException();
             }
+
+            var deletedState = mapper.Map<EntityAnalysisModelListValueVersion>(existing);
+            deletedState.EntityAnalysisModelListValueId = existing.Id;
+            deletedState.Deleted = Convert.ToByte(1);
+            deletedState.DeletedDate = DateTime.UtcNow;
+            deletedState.DeletedUser = userName;
+            deletedState.Version = (existing.Version ?? 1) + 1;
+
+            await dbContext.InsertAsync(deletedState, token: token);
         }
 
         public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
@@ -160,6 +203,29 @@ namespace Jube.Data.Repository
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .UpdateAsync(token);
+        }
+
+        public async Task<IEnumerable<EntityAnalysisModelListValue>>
+            GetApprovedByEntityAnalysisModelListIdOrderByIdAsync(
+                int entityAnalysisModelListId, int approvalsRequired = 1,
+                CancellationToken token = default)
+        {
+            var current = await dbContext.EntityAnalysisModelListValue
+                .Where(w =>
+                    (w.EntityAnalysisModelList.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
+                     !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelListId == entityAnalysisModelListId
+                    && (w.EntityAnalysisModelList.EntityAnalysisModel.Deleted == 0 ||
+                        w.EntityAnalysisModelList.EntityAnalysisModel.Deleted == null)
+                    && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow))
+                .OrderBy(o => o.Id)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            return await new GetApprovedEntityQuery<EntityAnalysisModelListValue, EntityAnalysisModelListValueVersion>(
+                    dbContext,
+                    EntityApprovalKind.EntityAnalysisModelListValue,
+                    nameof(EntityAnalysisModelListValueVersion.EntityAnalysisModelListValueId), tenantRegistryId)
+                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
     }
 }

@@ -20,10 +20,12 @@ using Jube.Service.Exceptions.Query.EntityVersionHistory;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
+using Jube.Service.Query.VersionHistory;
 
 namespace Jube.Service.Query.ExhaustiveSearchInstanceVersionHistory
 {
-    public sealed class ExhaustiveSearchInstanceVersionHistoryService
+    public sealed class ExhaustiveSearchInstanceVersionHistoryService : IVersionHistoryService<
+        ExhaustiveSearchInstanceVersionHistoryService, ExhaustiveSearchInstanceVersion>
     {
         private static readonly int[] permissions = [16];
 

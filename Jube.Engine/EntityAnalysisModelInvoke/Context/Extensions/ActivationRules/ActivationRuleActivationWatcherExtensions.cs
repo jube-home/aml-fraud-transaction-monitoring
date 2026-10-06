@@ -140,12 +140,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
         private static double GetLongitude(Context context)
         {
-            var longitudeFieldName = context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths
+            var longitudeFieldName = context.Snapshot.EntityAnalysisModelRequestXPaths
                 .FirstOrDefault(f => f.DataTypeId == 7)?.Name;
 
             if (string.IsNullOrEmpty(longitudeFieldName))
             {
-                longitudeFieldName = context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts
+                longitudeFieldName = context.Snapshot.EntityAnalysisModelInlineScripts
                     .SelectMany(entityAnalysisModelInlineScript => entityAnalysisModelInlineScript
                         .EntityAnalysisModelInlineScriptPropertyAttributes
                         .Where(entityAnalysisModelInlineScriptPropertyAttribute =>
@@ -168,12 +168,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
         private static double GetLatitude(Context context)
         {
-            var latitudeFieldName = context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths
+            var latitudeFieldName = context.Snapshot.EntityAnalysisModelRequestXPaths
                 .FirstOrDefault(f => f.DataTypeId == 6)?.Name;
 
             if (string.IsNullOrEmpty(latitudeFieldName))
             {
-                latitudeFieldName = context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts
+                latitudeFieldName = context.Snapshot.EntityAnalysisModelInlineScripts
                     .SelectMany(entityAnalysisModelInlineScript => entityAnalysisModelInlineScript
                         .EntityAnalysisModelInlineScriptPropertyAttributes
                         .Where(entityAnalysisModelInlineScriptPropertyAttribute =>

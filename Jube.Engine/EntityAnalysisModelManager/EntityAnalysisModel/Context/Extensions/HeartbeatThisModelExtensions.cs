@@ -25,7 +25,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
         {
             try
             {
-                var repository = new EntityAnalysisModelSyncronisationNodeStatusEntryRepository(context.Services.DbContext);
+                var repository =
+                    new EntityAnalysisModelSynchronisationNodeStatusEntryRepository(context.Services.DbContext);
 
                 var upsert = new EntityAnalysisModelSynchronisationNodeStatusEntry
                 {

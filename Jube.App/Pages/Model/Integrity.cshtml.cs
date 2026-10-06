@@ -25,7 +25,8 @@ namespace Jube.App.Pages.Model
     public class Integrity : PageModel
     {
         public const int Permission = 60;
-
+        public const int SynchronisationPermission = 5;
+        public bool CanSynchronise { get; private set; }
         private readonly PermissionValidation permissionValidation;
 
         public Integrity(ILog log, DynamicEnvironment dynamicEnvironment, IHttpContextAccessor httpContextAccessor)
@@ -37,6 +38,7 @@ namespace Jube.App.Pages.Model
 
         public ActionResult OnGet()
         {
+            CanSynchronise = permissionValidation.Validate([SynchronisationPermission]);
             return permissionValidation.Validate([Permission]) ? new PageResult() : Forbid();
         }
     }

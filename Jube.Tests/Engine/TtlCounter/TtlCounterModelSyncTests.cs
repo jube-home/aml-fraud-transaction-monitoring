@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -22,6 +23,7 @@ using Jube.Data.Poco;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
 using Jube.TaskCancellation;
+using Jube.Data.Repository;
 using Jube.Test.Infrastructure;
 using LinqToDB;
 using Xunit;
@@ -104,7 +106,7 @@ namespace Jube.Test.Engine.TtlCounter
             var modelId = await CreateModelAsync(dbContext);
             var counterGuid = Guid.NewGuid();
 
-            await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelTtlCounter
+            var ttlCounterId = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelTtlCounter
             {
                 EntityAnalysisModelId = modelId,
                 Name = "Sync Test Counter",
@@ -125,6 +127,9 @@ namespace Jube.Test.Engine.TtlCounter
             });
             createdCounterGuidsForCleanup.Add(counterGuid);
 
+            await EntityApprovalSeed.ApproveAsync(dbContext,
+                EntityApprovalKind.EntityAnalysisModelTtlCounter, ttlCounterId);
+
             var model = new EntityAnalysisModelDomain
             {
                 Instance = { Id = modelId, Guid = Guid.NewGuid() }
@@ -140,15 +145,16 @@ namespace Jube.Test.Engine.TtlCounter
                 },
                 EntityAnalysisModels =
                 {
-                    ActiveEntityAnalysisModels = new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
+                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
                 }
             };
 
             await context.SyncEntityAnalysisModelTtlCountersAsync();
+            context.Snapshots.Publish();
 
-            model.Collections.ModelTtlCounters.Should().ContainSingle(
+            model.Snapshot.ModelTtlCounters.Should().ContainSingle(
                 "sync should have loaded the one active TTL Counter definition for this model");
-            var synced = model.Collections.ModelTtlCounters.Single();
+            var synced = model.Snapshot.ModelTtlCounters.Single();
 
             synced.Guid.Should().Be(counterGuid);
             synced.Name.Should().Be("Sync_Test_Counter", "sync replaces spaces in the name with underscores");
@@ -174,7 +180,7 @@ namespace Jube.Test.Engine.TtlCounter
             var modelId = await CreateModelAsync(dbContext);
             var counterGuid = Guid.NewGuid();
 
-            await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelTtlCounter
+            var ttlCounterId = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelTtlCounter
             {
                 EntityAnalysisModelId = modelId,
                 Name = "Inactive Counter",
@@ -187,6 +193,9 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterValue = 1
             });
             createdCounterGuidsForCleanup.Add(counterGuid);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext,
+                EntityApprovalKind.EntityAnalysisModelTtlCounter, ttlCounterId);
 
             var model = new EntityAnalysisModelDomain
             {
@@ -202,13 +211,14 @@ namespace Jube.Test.Engine.TtlCounter
                 },
                 EntityAnalysisModels =
                 {
-                    ActiveEntityAnalysisModels = new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
+                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
                 }
             };
 
             await context.SyncEntityAnalysisModelTtlCountersAsync();
+            context.Snapshots.Publish();
 
-            model.Collections.ModelTtlCounters.Should().BeEmpty(
+            model.Snapshot.ModelTtlCounters.Should().BeEmpty(
                 "an inactive TTL Counter definition must never be loaded into the live model");
         }
 
@@ -226,7 +236,7 @@ namespace Jube.Test.Engine.TtlCounter
             var modelId = await CreateModelAsync(dbContext);
             var counterGuid = Guid.NewGuid();
 
-            await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelTtlCounter
+            var ttlCounterId = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelTtlCounter
             {
                 EntityAnalysisModelId = modelId,
                 Name = "Synced Batch Counter",
@@ -241,6 +251,9 @@ namespace Jube.Test.Engine.TtlCounter
                 EnableSum = 0
             });
             createdCounterGuidsForCleanup.Add(counterGuid);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext,
+                EntityApprovalKind.EntityAnalysisModelTtlCounter, ttlCounterId);
 
             var model = new EntityAnalysisModelDomain
             {
@@ -259,14 +272,15 @@ namespace Jube.Test.Engine.TtlCounter
                 },
                 EntityAnalysisModels =
                 {
-                    ActiveEntityAnalysisModels = new Dictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
+                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EntityAnalysisModelDomain> { [modelId] = model }
                 }
             };
 
             await syncContext.SyncEntityAnalysisModelTtlCountersAsync();
+            syncContext.Snapshots.Publish();
 
-            model.Collections.ModelTtlCounters.Should().ContainSingle();
-            var syncedCounter = model.Collections.ModelTtlCounters.Single();
+            model.Snapshot.ModelTtlCounters.Should().ContainSingle();
+            var syncedCounter = model.Snapshot.ModelTtlCounters.Single();
             var dataName = syncedCounter.TtlCounterDataName;
 
             var pollMs = Math.Max(50,

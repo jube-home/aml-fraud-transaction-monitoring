@@ -34,7 +34,7 @@ namespace Jube.Engine.Integrity
         {
             ArgumentNullException.ThrowIfNull(model);
 
-            var collections = model.Collections;
+            var collections = model.Snapshot;
             var loaded = new List<EngineLoadedEntity>();
 
             loaded.AddRange(collections.EntityAnalysisModelRequestXPaths.Select(x =>

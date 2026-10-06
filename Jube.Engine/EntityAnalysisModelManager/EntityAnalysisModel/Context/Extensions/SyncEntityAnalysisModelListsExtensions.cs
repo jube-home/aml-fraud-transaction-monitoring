@@ -46,7 +46,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Executing EntityAnalysisModelListRepository.GetByEntityAnalysisModelId and entity model key of {key}.");
                     }
 
-                    var recordsList = await repositoryList.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var recordsList = await repositoryList.GetApprovedByEntityAnalysisModelIdOrderByIdAsync(key,
+                        context.ApprovalsRequired,
+                        context.Services.CancellationToken).ConfigureAwait(false);
 
                     var listIdName = new Dictionary<int, string>();
                     var shadowEntityAnalysisModelLists = new Dictionary<string, List<string>>();
@@ -112,7 +114,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                         shadowEntityAnalysisModelLists.Add(s, []);
 
-                        var repositoryListValues = new EntityAnalysisModelListValueRepository(context.Services.DbContext);
+                        var repositoryListValues =
+                            new EntityAnalysisModelListValueRepository(context.Services.DbContext);
 
                         if (context.Services.Log.IsDebugEnabled)
                         {
@@ -120,7 +123,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 $"Entity Start: Executing EntityAnalysisModelListValueRepository.GetByEntityAnalysisModelListId for entity model key of {key} and list id {i}.");
                         }
 
-                        var recordsListValues = await repositoryListValues.GetByEntityAnalysisModelListIdOrderByIdAsync(i, context.Services.CancellationToken).ConfigureAwait(false);
+                        var recordsListValues = await repositoryListValues
+                            .GetApprovedByEntityAnalysisModelListIdOrderByIdAsync(i, context.ApprovalsRequired,
+                                context.Services.CancellationToken).ConfigureAwait(false);
 
                         if (context.Services.Log.IsDebugEnabled)
                         {
@@ -166,7 +171,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                     }
 
-                    value.Dependencies.EntityAnalysisModelLists = shadowEntityAnalysisModelLists;
+                    context.Snapshots.Builder(key, value).EntityAnalysisModelLists = shadowEntityAnalysisModelLists;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -179,7 +184,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelListsAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.Lists, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.Lists, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Dto.Query.EntityAnalysisModelSynchronisationNodeStatusEntries;
@@ -30,7 +31,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
         private static readonly int[] permissions = [5];
 
         private readonly ILog auditLog;
-        private readonly global::Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery query;
+        private readonly GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery query;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly IServiceChangeBus serviceChangeBus;
@@ -49,7 +50,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery(
+            query = new GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery(
                 dbContext, userName);
         }
 
@@ -105,10 +106,10 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
         [Description("Lists the synchronisation status of every model-synchronisation node of the caller's " +
                      "tenant that has sent a heartbeat within the last hour, reporting whether a scheduled " +
                      "synchronisation is pending and whether the instance is currently available. Returns null " +
-                     "(no content) when the tenant has never scheduled a synchronisation. Read-only.")]
+                     "(an empty list) when the tenant has never scheduled a synchronisation. Read-only.")]
         [ServiceOperation("EntityAnalysisModelSynchronisationNodeStatusEntriesGet", OperationKind.Read,
             Idempotent = true)]
-        public async Task<List<EntityAnalysisModelSynchronisationNodeStatusEntriesDto>?> GetAsync(
+        public async Task<List<EntityAnalysisModelSynchronisationNodeStatusEntriesDto>> GetAsync(
             CancellationToken token = default)
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationNodeStatusEntries", "Get",
@@ -122,11 +123,6 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
             {
                 EnsurePermitted("EntityAnalysisModelSynchronisationNodeStatusEntries.Get");
                 var result = await query.ExecuteAsync(token).ConfigureAwait(false);
-                if (result is null)
-                {
-                    op.Rows(0);
-                    return null;
-                }
 
                 var dtos = EntityAnalysisModelSynchronisationNodeStatusEntriesMapper.ToDto(result);
                 op.Rows(dtos.Count);

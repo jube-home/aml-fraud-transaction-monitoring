@@ -97,7 +97,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                     EnableTtlCounter = modelFlagEnableTtlCounter
                 }
             };
-            model.Collections.ModelTtlCounters.Add(counter);
+            model.Snapshot.ModelTtlCounters.Add(counter);
 
             return (model, counter);
         }

@@ -21,14 +21,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
         public static EntityAnalysisModelOverride ActivationRuleGetOverrides(this Context context)
         {
             var outcome = new EntityAnalysisModelOverride();
-            var overrides = context.EntityAnalysisModel.Dependencies.EntityAnalysisModelOverrides;
+            var overrides = context.Snapshot.EntityAnalysisModelOverrides;
 
             if (overrides == null)
             {
                 return outcome;
             }
 
-            foreach (var xpath in context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths
+            foreach (var xpath in context.Snapshot.EntityAnalysisModelRequestXPaths
                          .Where(w => w.EnableOverride))
             {
                 context.TraceLog(
@@ -80,7 +80,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
             foreach (var (activationRuleName, kind) in binding.ActivationRules)
             {
-                var rule = context.EntityAnalysisModel.Collections.ModelActivationRules
+                var rule = context.Snapshot.ModelActivationRules
                     .FirstOrDefault(w => w.Name == activationRuleName);
 
                 if (rule == null)

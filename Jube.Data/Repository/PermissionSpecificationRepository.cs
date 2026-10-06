@@ -24,10 +24,13 @@ namespace Jube.Data.Repository
     public class PermissionSpecificationRepository(DbContext dbContext)
     {
         private const int RetiredMonitoringSpecificationId = 27;
+        private const int RetiredApprovedByReviewSpecificationId = 41;
 
         public async Task<IEnumerable<PermissionSpecification>> GetAsync(CancellationToken token = default)
         {
-            return await dbContext.PermissionSpecification.Where(w => w.Id != RetiredMonitoringSpecificationId)
+            return await dbContext.PermissionSpecification
+                .Where(w => w.Id != RetiredMonitoringSpecificationId
+                            && w.Id != RetiredApprovedByReviewSpecificationId)
                 .ToListAsync(token);
         }
     }

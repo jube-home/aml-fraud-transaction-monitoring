@@ -193,7 +193,7 @@ namespace Jube.Test.Service.PostgresIndexStatistics
 
         private static HashSet<string> Identities(PayloadResult<PostgresIndexStatisticsDto> result)
         {
-            return result.Rows.Select(r => r.SchemaName + "\u001f" + r.TableName + "\u001f" + r.IndexName).ToHashSet();
+            return [.. result.Rows.Select(r => r.SchemaName + "\u001f" + r.TableName + "\u001f" + r.IndexName)];
         }
     }
 }

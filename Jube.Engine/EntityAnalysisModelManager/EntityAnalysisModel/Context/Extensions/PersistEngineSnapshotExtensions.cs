@@ -38,6 +38,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     await repository.UpsertAsync(instance, tenantRegistryId, model.Instance.Id,
                         JsonConvert.SerializeObject(state), context.Services.CancellationToken).ConfigureAwait(false);
                 }
+
+                await repository.DeleteStaleAsync(tenantRegistryId, instance, now,
+                    context.Services.CancellationToken).ConfigureAwait(false);
+
+                await new EntityAnalysisModelSynchronisationNodeStatusEntryRepository(context.Services.DbContext)
+                    .DeleteSilentAsync(tenantRegistryId, instance, now, context.Services.CancellationToken)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {

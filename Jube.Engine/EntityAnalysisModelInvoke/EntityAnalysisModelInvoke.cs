@@ -245,7 +245,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
                 if (context.EntityAnalysisModelInstanceEntryPayload.MatchedGatewayRule)
                 {
                     context.ExecuteCacheDbStorage(context.EntityAnalysisModel.Services.CacheService,
-                        context.EntityAnalysisModel.Collections.DistinctSearchKeys);
+                        context.Snapshot.DistinctSearchKeys);
 
                     context.RecordResponseTime("CacheDbStorage");
 

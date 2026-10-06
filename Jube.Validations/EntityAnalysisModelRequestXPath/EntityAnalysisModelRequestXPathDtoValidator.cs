@@ -31,7 +31,7 @@ namespace Jube.Validations.EntityAnalysisModelRequestXPath
         private static readonly string[] allowedIntervals = ["s", "n", "h", "d"];
 
         public EntityAnalysisModelRequestXPathDtoValidator(
-            EntityAnalysisModelRequestXPathRepository repository, IStringLocalizer localiser,
+            EntityAnalysisModelRequestXpathRepository repository, IStringLocalizer localiser,
             EntityAnalysisModelRepository entityAnalysisModelRepository)
         {
             RuleFor(p => p.EntityAnalysisModelId)

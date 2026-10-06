@@ -42,9 +42,6 @@
     <data name="NotAuthenticated" xml:space="preserve">
     <value>You must be signed in to a tenant to perform this action.</value>
   </data>
-    <data name="PermissionDeniedApproveByReview" xml:space="preserve">
-    <value>Can't update to Approved by Review without permission.</value>
-  </data>
     <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
     <value>A valid Model is required.</value>
   </data>
@@ -56,9 +53,6 @@
   </data>
     <data name="NameAlreadyExists" xml:space="preserve">
     <value>This name already exists.</value>
-  </data>
-    <data name="ReviewStatusIdInvalid" xml:space="preserve">
-    <value>The review status is not recognised.</value>
   </data>
     <data name="RuleScriptTypeIdInvalid" xml:space="preserve">
     <value>The rule script type must be either Builder or Coder.</value>

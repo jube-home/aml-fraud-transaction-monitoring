@@ -137,7 +137,8 @@ namespace Jube.Test.Engine.Integrity
             var observation = new EngineObservation(EngineStateSourceKind.Snapshot, [state],
             [
                 new EngineNode("node-a", now.AddMinutes(-1), now.AddMinutes(-5)),
-                new EngineNode("node-b", now.AddHours(-2), now.AddHours(-2))
+                new EngineNode("node-b", now.AddMinutes(-30), now.AddMinutes(-30)),
+                new EngineNode("node-c", now.AddHours(-2), now.AddHours(-2))
             ]);
 
             var checks = ModelIntegrityRules.EngineChecks(observation, true, Graph().Entities, now,
@@ -151,6 +152,8 @@ namespace Jube.Test.Engine.Integrity
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.EngineEntityStale &&
                                                c.EntityName == "Deactivated");
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.EngineNodeStale && c.EntityName == "node-b");
+            checks.Should().NotContain(c => c.Code == IntegrityCode.EngineNodeStale && c.EntityName == "node-c",
+                "an instance silent for longer than the retention window drops out of the findings");
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.EngineModelNotLoaded &&
                                                c.EntityName == "node-b");
             checks.Should().NotContain(c => c.EntityName == "NotCompared" || c.EntityName == "Unused");
@@ -172,11 +175,11 @@ namespace Jube.Test.Engine.Integrity
             var model = new EngineModel { Started = true };
             model.Instance.Id = 7;
             model.Instance.TenantRegistryId = 3;
-            model.Collections.EntityAnalysisModelRequestXPaths.Add(new EntityAnalysisModelRequestXPath
+            model.Snapshot.EntityAnalysisModelRequestXPaths.Add(new EntityAnalysisModelRequestXPath
                 { Id = 1, Name = "AccountId" });
-            model.Collections.ModelGatewayRules.Add(new EntityModelGatewayRule
+            model.Snapshot.ModelGatewayRules.Add(new EntityModelGatewayRule
                 { EntityAnalysisModelGatewayRuleId = 4, Name = "Gate" });
-            model.Collections.ModelActivationRules.Add(new EntityAnalysisModelActivationRule
+            model.Snapshot.ModelActivationRules.Add(new EntityAnalysisModelActivationRule
                 { Id = 5, Name = "Act" });
 
             var state = EngineModelStateBuilder.FromModel(model, "node-a", now);

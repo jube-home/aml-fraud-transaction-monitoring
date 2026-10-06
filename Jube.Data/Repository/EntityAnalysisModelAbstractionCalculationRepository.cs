@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Query.GetApprovedEntityQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,12 +78,12 @@ namespace Jube.Data.Repository
 
         public async Task<IEnumerable<EntityAnalysisModelAbstractionCalculation>>
             GetByEntityAnalysisModelIdOrderByIdDescAsync(
-                int entityAnalysisModelId, CancellationToken token = default)
+                int entityAnalysisModelId, CancellationToken token = default, bool includeDeleted = false)
         {
             return await dbContext.EntityAnalysisModelAbstractionCalculation
                 .Where(w => (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
                             && w.EntityAnalysisModelId == entityAnalysisModelId &&
-                            (w.Deleted == 0 || w.Deleted == null))
+                            (includeDeleted || w.Deleted == 0 || w.Deleted == null))
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
@@ -101,7 +102,7 @@ namespace Jube.Data.Repository
         {
             return dbContext.EntityAnalysisModelAbstractionCalculation.FirstOrDefaultAsync(w =>
                 (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
+                && w.Id == id, token);
         }
 
         public async Task<EntityAnalysisModelAbstractionCalculation> InsertAsync(
@@ -123,7 +124,6 @@ namespace Jube.Data.Repository
                                           == model.Id
                                           && (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
                                               || !tenantRegistryId.HasValue)
-                                          && (w.Deleted == 0 || w.Deleted == null)
                                           && (w.Locked == 0 || w.Locked == null), token);
 
             if (existing == null)
@@ -138,6 +138,9 @@ namespace Jube.Data.Repository
             }
 
             model.Version = existing.Version + 1;
+            model.Deleted = 0;
+            model.DeletedDate = null;
+            model.DeletedUser = null;
             model.Guid = existing.Guid;
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
@@ -153,13 +156,46 @@ namespace Jube.Data.Repository
             var audit = mapper.Map<EntityAnalysisModelAbstractionCalculationVersion>(existing);
             audit.EntityAnalysisModelAbstractionCalculationId = existing.Id;
 
-            await dbContext.InsertAsync(audit, token: token);
+            if (existing.Deleted != 1)
+            {
+                await dbContext.InsertAsync(audit, token: token);
+            }
 
             return model;
         }
 
-        public async Task DeleteAsync(int id, CancellationToken token = default)
+        public Task DeleteAsync(int id, CancellationToken token = default)
         {
+            return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
+        }
+
+        private async Task DeleteVersionedAsync(int id, CancellationToken token)
+        {
+            var existing = await dbContext.EntityAnalysisModelAbstractionCalculation
+                .FirstOrDefaultAsync(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.Id == id
+                    && (w.Locked == 0 || w.Locked == null)
+                    && (w.Deleted == 0 || w.Deleted == null), token);
+
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg =>
+                {
+                    cfg.CreateMap<EntityAnalysisModelAbstractionCalculation,
+                        EntityAnalysisModelAbstractionCalculationVersion>();
+                },
+                NullLoggerFactory.Instance));
+
+            var audit = mapper.Map<EntityAnalysisModelAbstractionCalculationVersion>(existing);
+            audit.EntityAnalysisModelAbstractionCalculationId = existing.Id;
+
+            await dbContext.InsertAsync(audit, token: token);
+
             var records = await dbContext.EntityAnalysisModelAbstractionCalculation
                 .Where(d =>
                     (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
@@ -169,21 +205,40 @@ namespace Jube.Data.Repository
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .Set(s => s.DeletedUser, userName)
+                .Set(s => s.Version, (existing.Version ?? 1) + 1)
                 .UpdateAsync(token);
 
             if (records == 0)
             {
                 throw new KeyNotFoundException();
             }
+
+            var deletedState = mapper.Map<EntityAnalysisModelAbstractionCalculationVersion>(existing);
+            deletedState.EntityAnalysisModelAbstractionCalculationId = existing.Id;
+            deletedState.Deleted = Convert.ToByte(1);
+            deletedState.DeletedDate = DateTime.UtcNow;
+            deletedState.DeletedUser = userName;
+            deletedState.Version = (existing.Version ?? 1) + 1;
+
+            await dbContext.InsertAsync(deletedState, token: token);
         }
 
         public Task UpdateCompileStatusAsync(int id, bool compiled, string compileError,
             CancellationToken token = default)
         {
-            return dbContext.EntityAnalysisModelAbstractionCalculation
+            var compiledValue = Convert.ToByte(compiled ? 1 : 0);
+
+            var query = dbContext.EntityAnalysisModelAbstractionCalculation
                 .Where(d => (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                            && d.Id == id)
-                .Set(s => s.Compiled, Convert.ToByte(compiled ? 1 : 0))
+                            && d.Id == id);
+
+            query = compileError == null
+                ? query.Where(d => d.Compiled == null || d.Compiled != compiledValue || d.CompileError != null)
+                : query.Where(d => d.Compiled == null || d.Compiled != compiledValue || d.CompileError == null
+                                   || d.CompileError != compileError);
+
+            return query
+                .Set(s => s.Compiled, compiledValue)
                 .Set(s => s.CompileError, compileError)
                 .UpdateAsync(token);
         }
@@ -199,6 +254,26 @@ namespace Jube.Data.Repository
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .UpdateAsync(token);
+        }
+
+        public async Task<IEnumerable<EntityAnalysisModelAbstractionCalculation>>
+            GetApprovedByEntityAnalysisModelIdOrderByIdDescAsync(
+                int entityAnalysisModelId, int approvalsRequired = 1,
+                CancellationToken token = default)
+        {
+            var current = await dbContext.EntityAnalysisModelAbstractionCalculation
+                .Where(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelId == entityAnalysisModelId)
+                .OrderBy(o => o.Id)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            return await new GetApprovedEntityQuery<EntityAnalysisModelAbstractionCalculation,
+                    EntityAnalysisModelAbstractionCalculationVersion>(dbContext,
+                    EntityApprovalKind.EntityAnalysisModelAbstractionCalculation,
+                    nameof(EntityAnalysisModelAbstractionCalculationVersion
+                        .EntityAnalysisModelAbstractionCalculationId), tenantRegistryId)
+                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
     }
 }

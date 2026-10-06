@@ -110,7 +110,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         private static async Task IterateAndProcessAsync(Context context, CacheService cacheService,
             ConcurrentDictionary<string, TaskPerformance> items)
         {
-            var onlineTtlCounters = context.EntityAnalysisModel.Collections.ModelTtlCounters
+            var onlineTtlCounters = context.Snapshot.ModelTtlCounters
                 .Where(x => x.OnlineAggregation)
                 .ToList();
 
@@ -233,7 +233,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             context.TraceLog($"will now look for TTL Counters from the cache.");
 
             var ttlCounters =
-                context.EntityAnalysisModel.Collections.ModelTtlCounters.FindAll(x => !x.OnlineAggregation);
+                context.Snapshot.ModelTtlCounters.FindAll(x => !x.OnlineAggregation);
             var tasks = ttlCounters.Select(async ttlCounter =>
             {
                 var timed = await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(

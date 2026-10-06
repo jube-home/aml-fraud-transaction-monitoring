@@ -36,10 +36,11 @@ namespace Jube.Engine.Exhaustive.Extensions
 
                 try
                 {
-                    foreach (var exhaustive in context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels.ActiveEntityAnalysisModels.Select(model =>
-                                 model.Value.Collections.ExhaustiveModels
-                                     .FirstOrDefault(w => w.Guid
-                                                          == guid)).Where(exhaustive => exhaustive != null))
+                    foreach (var exhaustive in context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                                 .ActiveEntityAnalysisModels.Select(model =>
+                                     model.Value.Snapshot.ExhaustiveModels
+                                         .FirstOrDefault(w => w.Guid
+                                                              == guid)).Where(exhaustive => exhaustive != null))
                     {
                         foundExhaustive = true;
 

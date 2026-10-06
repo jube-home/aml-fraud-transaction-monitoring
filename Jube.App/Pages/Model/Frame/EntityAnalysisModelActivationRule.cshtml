@@ -23,7 +23,7 @@
 <script src="/js/Model/Frame/RuleTools.js"></script>
 <link rel="stylesheet" href="/styles/RuleTools.css"/>
 
-<form id="Form" class="k-form">
+<form id="Form" data-approval-endpoint="/api/EntityAnalysisModelActivationRule" class="k-form">
     <body>
     <div class="fCStyle">
         <table id="TemplateTable" class="tTStyle">
@@ -58,20 +58,6 @@
                 </td>
                 <td>
                     <input id="Priority" value="0"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="ReviewStatusId">Activation Rule Review Status</label>
-                </td>
-                <td>
-                    <select id="ReviewStatusId">
-                        <option value="0">New</option>
-                        <option value="1">New Pending Review</option>
-                        <option value="2">Updated Pending Review</option>
-                        <option value="3">Rejected by Review</option>
-                        <option value="4">Approved by Review</option>
-                    </select>
                 </td>
             </tr>
             <tr>

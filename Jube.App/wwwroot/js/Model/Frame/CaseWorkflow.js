@@ -69,14 +69,10 @@ $(function () {
 });
 
 function GetData() {
-    if (enableVisualisation.data("kendoSwitch").check()) {
-        return {
-            enableVisualisation: enableVisualisation.data("kendoSwitch").check(),
-            visualisationRegistryGuid: visualisationRegistryGuid.data("kendoDropDownList").value()
-        };
-    } else {
-        return {};
-    }
+    return {
+        enableVisualisation: enableVisualisation.data("kendoSwitch").check(),
+        visualisationRegistryGuid: visualisationRegistryGuid.data("kendoDropDownList").value() || "00000000-0000-0000-0000-000000000000"
+    };
 }
 
 $(function () {

@@ -234,7 +234,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
                     strings[EntityAnalysisModelHistorySimulationResources.NotASearchRule]);
             }
 
-            var xPaths = (await new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId)
+            var xPaths = (await new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId)
                 .GetByEntityAnalysisModelIdOrderByIdAsync(model.Id, token).ConfigureAwait(false)).ToList();
             var searchKeyXPath = xPaths.FirstOrDefault(x => x.Name == rule.SearchKey && x.Active == 1);
             if (searchKeyXPath == null)

@@ -131,7 +131,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
         {
             var entityAnalysisModel =
                 new Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel();
-            entityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Add(script);
+            entityAnalysisModel.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
 
             return new Jube.Engine.EntityAnalysisModelInvoke.Context.Context
             {

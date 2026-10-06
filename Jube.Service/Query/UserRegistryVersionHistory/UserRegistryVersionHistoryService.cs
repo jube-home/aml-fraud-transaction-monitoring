@@ -20,13 +20,15 @@ using Jube.Service.Exceptions.Query.EntityVersionHistory;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
+using Jube.Service.Query.VersionHistory;
 
 namespace Jube.Service.Query.UserRegistryVersionHistory
 {
-    public sealed class UserRegistryVersionHistoryService
+    public sealed class
+        UserRegistryVersionHistoryService : IVersionHistoryService<UserRegistryVersionHistoryService,
+        UserRegistryVersion>
     {
         private static readonly int[] permissions = [35];
-
         private readonly GetEntityVersionHistoryQuery<UserRegistryVersion> query;
         private readonly UserRegistryRepository parentRepository;
         private readonly PermissionValidation permissionValidation;

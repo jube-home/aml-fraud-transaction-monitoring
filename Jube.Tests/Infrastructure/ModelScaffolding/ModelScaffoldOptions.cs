@@ -20,23 +20,15 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
     public sealed class ModelScaffoldOptions
     {
         public int SourceModelId { get; init; } = ModelScaffold.ExampleModelId;
-
         public int? TenantRegistryId { get; init; }
-
         public Guid? ModelGuid { get; init; } = ModelScaffold.ExampleModelGuid;
-
         public string NamePrefix { get; init; } = Fixture.Prefix;
-
         public IReadOnlyCollection<string> IncludeTables { get; init; } = [];
-
         public IReadOnlyCollection<string> ExcludeTables { get; init; } = [];
-
         public bool Active { get; init; } = true;
-
         public bool Locked { get; init; }
-
         public bool CreateCallers { get; init; } = true;
-
+        public bool Approve { get; init; } = true;
         public static ModelScaffoldOptions Isolated => new() { ModelGuid = null };
     }
 }

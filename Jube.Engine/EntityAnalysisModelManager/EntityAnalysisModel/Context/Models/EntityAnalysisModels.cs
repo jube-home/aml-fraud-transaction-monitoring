@@ -16,18 +16,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using EntityAnalysisModelDictionary =
-        Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelDictionary;
     using EntityAnalysisModelInlineScript =
         Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript.
         EntityAnalysisModelInlineScript;
-    using EntityAnalysisModelOverride =
-        Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelOverride;
     using SanctionEntry = Sanctions.Models.SanctionEntry;
 
     public class EntityAnalysisModels
     {
-        public Dictionary<int, EntityAnalysisModel> ActiveEntityAnalysisModels { get; set; }
+        public ConcurrentDictionary<int, EntityAnalysisModel> ActiveEntityAnalysisModels { get; set; }
         public List<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScripts { get; set; }
         public Guid EntityAnalysisInstanceGuid { get; set; }
 
@@ -36,15 +32,5 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
 
         public ConcurrentDictionary<string, byte> SanctionsStopTokens { get; set; } =
             new ConcurrentDictionary<string, byte>();
-
-        public Dictionary<string, List<string>> EntityAnalysisModelLists { get; } =
-            new Dictionary<string, List<string>>();
-
-        public Dictionary<int, EntityAnalysisModelDictionary> KvpDictionaries { get; } =
-            new Dictionary<int, EntityAnalysisModelDictionary>();
-
-        public Dictionary<string, Dictionary<string, EntityAnalysisModelOverride>>
-            EntityAnalysisModelOverrides { get; } =
-            new Dictionary<string, Dictionary<string, EntityAnalysisModelOverride>>();
     }
 }

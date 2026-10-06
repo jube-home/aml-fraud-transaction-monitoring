@@ -126,7 +126,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             await context.Services.CacheService.CachePayloadLatestRepository.DeleteByReferenceDateAsync(
                 model.Instance.TenantRegistryId, model.Instance.Guid,
                 referenceDate.Value, thresholdReferenceDatePayload.Value, limit,
-                model.Collections.DistinctSearchKeys.Select(distinctSearchKey
+                model.Snapshot.DistinctSearchKeys.Select(distinctSearchKey
                     => (distinctSearchKey.Key,
                         distinctSearchKey.Value.SearchKeyTtlInterval,
                         distinctSearchKey.Value.SearchKeyTtlIntervalValue)).ToList()).ConfigureAwait(false);
