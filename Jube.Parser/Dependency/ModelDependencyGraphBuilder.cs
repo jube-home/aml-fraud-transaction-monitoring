@@ -20,16 +20,18 @@ namespace Jube.Parser.Dependency
     using System.Threading.Tasks;
     using Data.Context;
     using Data.Query;
+    using Data.Query.GetModelDependencyInputsQuery;
     using Data.Query.Models;
     using log4net;
 
     public static class ModelDependencyGraphBuilder
     {
         public static async Task<ModelDependencyGraph> BuildAsync(DbContext dbContext, int tenantRegistryId,
-            string userName, int entityAnalysisModelId, ILog log, CancellationToken token = default)
+            string userName, int entityAnalysisModelId, ILog log, CancellationToken token = default,
+            int approvalsRequired = 1)
         {
             var inputs = await new GetModelDependencyInputsQuery(dbContext, tenantRegistryId, userName)
-                .ExecuteAsync(entityAnalysisModelId, token).ConfigureAwait(false);
+                .ExecuteAsync(entityAnalysisModelId, token, approvalsRequired).ConfigureAwait(false);
 
             var environment = await new GetRuleParseEnvironmentQuery(dbContext, tenantRegistryId)
                 .ExecuteAsync(entityAnalysisModelId, RuleParse.ActivationRule, token).ConfigureAwait(false);
@@ -44,7 +46,7 @@ namespace Jube.Parser.Dependency
             ArgumentNullException.ThrowIfNull(environment);
 
             var entities = inputs.Entities
-                .Select(e => new ModelEntity(Enum.Parse<ModelEntityKind>(e.Kind), e.Id, e.Name, e.Active))
+                .Select(e => new ModelEntity(Enum.Parse<ModelEntityKind>(e.Kind), e.Id, e.Name, e.Active, e.Approved))
                 .ToList();
 
             var byKindAndId = entities

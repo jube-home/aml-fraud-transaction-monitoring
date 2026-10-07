@@ -33,7 +33,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         private static Context NewContext(params EntityAnalysisModelAbstractionCalculation[] calculations)
         {
             var entityAnalysisModel = new EntityAnalysisModel();
-            entityAnalysisModel.Collections.EntityAnalysisModelAbstractionCalculations.AddRange(calculations);
+            entityAnalysisModel.Snapshot.EntityAnalysisModelAbstractionCalculations.AddRange(calculations);
 
             return new Context
             {
@@ -187,7 +187,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void AnExceptionThrownByTheRuleDelegateIsCaughtAndTheCalculationIsSkipped()
         {
-            var throwing = NewCalculation("Throws", (_, _, _, _, _, _, _, _) => throw new InvalidOperationException("boom"),
+            var throwing = NewCalculation("Throws",
+                (_, _, _, _, _, _, _, _) => throw new InvalidOperationException("boom"),
                 id: 1);
             var second = NewCalculation("Second", (_, _, _, _, _, _, _, _) => 5, id: 2);
             var context = NewContext(throwing, second);
@@ -195,7 +196,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var act = context.ExecuteAbstractionCalculations;
 
             act.Should().NotThrow();
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.ContainsKey("Throws").Should().BeFalse();
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.ContainsKey("Throws").Should()
+                .BeFalse();
             context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Second"].Should().Be(5);
         }
 
@@ -209,7 +211,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var act = context.ExecuteAbstractionCalculations;
 
             act.Should().NotThrow();
-            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.ContainsKey("NoScript").Should().BeFalse();
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.ContainsKey("NoScript").Should()
+                .BeFalse();
             context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Second"].Should().Be(5);
         }
 

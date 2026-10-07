@@ -25,7 +25,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
         {
             try
             {
-                var repository = new EntityAnalysisModelSyncronisationNodeStatusEntryRepository(context.Services.DbContext);
+                var repository =
+                    new EntityAnalysisModelSynchronisationNodeStatusEntryRepository(context.Services.DbContext);
 
                 var upsert = new EntityAnalysisModelSynchronisationNodeStatusEntry
                 {
@@ -33,7 +34,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     TenantRegistryId = tenantRegistryId
                 };
 
-                await repository.UpsertSynchronisationAsync(upsert, context.Services.CancellationToken).ConfigureAwait(false);
+                await repository.UpsertSynchronisationAsync(upsert, context.Services.CancellationToken)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {

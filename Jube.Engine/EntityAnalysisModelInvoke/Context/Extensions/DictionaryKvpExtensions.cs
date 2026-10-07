@@ -17,7 +17,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
     using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
     using log4net;
     using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using EntityAnalysisModel=EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
+    using EntityAnalysisModel = EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
 
     public static class DictionaryKvpExtensions
     {
@@ -27,7 +27,18 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             ILog log,
             string fieldName)
         {
-            foreach (var (i, kvpDictionary) in entityAnalysisModel.Dependencies.KvpDictionaries)
+            entityAnalysisModel.ResolveDictionaryValueForField(entityAnalysisModel.Snapshot,
+                entityAnalysisModelInstanceEntryPayload, log, fieldName);
+        }
+
+        public static void ResolveDictionaryValueForField(
+            this EntityAnalysisModel entityAnalysisModel,
+            Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot,
+            EntityAnalysisModelInstanceEntryPayload entityAnalysisModelInstanceEntryPayload,
+            ILog log,
+            string fieldName)
+        {
+            foreach (var (i, kvpDictionary) in snapshot.KvpDictionaries)
             {
                 if (!String.Equals(kvpDictionary.DataName, fieldName, StringComparison.Ordinal))
                 {
@@ -53,8 +64,10 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                             $"Entity Invoke: GUID {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {entityAnalysisModel.Instance.Id} is evaluating dictionary kvp key of {i} for field {fieldName}.");
                     }
 
-                    var value = LookupFromTheLocalCacheOfDictionaryKeyValuePairs(entityAnalysisModel, entityAnalysisModelInstanceEntryPayload, log, kvpDictionary, i);
-                    AddToResponsesIfNotAdded(entityAnalysisModel, entityAnalysisModelInstanceEntryPayload, log, kvpDictionary, value, i);
+                    var value = LookupFromTheLocalCacheOfDictionaryKeyValuePairs(entityAnalysisModel,
+                        entityAnalysisModelInstanceEntryPayload, log, kvpDictionary, i);
+                    AddToResponsesIfNotAdded(entityAnalysisModel, entityAnalysisModelInstanceEntryPayload, log,
+                        kvpDictionary, value, i);
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {

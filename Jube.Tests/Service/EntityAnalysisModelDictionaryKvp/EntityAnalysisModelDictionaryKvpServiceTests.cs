@@ -30,6 +30,7 @@ using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
+using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -523,7 +524,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         }
 
         [Fact]
-        public async Task UpdateOfSoftDeletedRowThrowsNotFoundAsync()
+        public async Task UpdateOfSoftDeletedRowRevivesItAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
@@ -535,7 +536,11 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
 
             var dto = NewDto(dictionaryId, saved.KvpKey!);
             dto.Id = saved.Id;
-            await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
+            await service.UpdateAsync(dto);
+
+            await using var check = fx.GetDbContext();
+            var revived = await check.EntityAnalysisModelDictionaryKvp.FirstAsync(w => w.Id == saved.Id);
+            (revived.Deleted is null or 0).Should().BeTrue("an update to a deleted pair revives it");
         }
 
         [Fact]
@@ -568,21 +573,35 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         }
 
         [Fact]
-        public async Task GetByIdMatchesOnParentDictionaryIdPreExistingRepositoryQuirkAsync()
+        public async Task AKeyValuePairDeletedThroughTheServiceIsStillReturnedByIdWithItsDeletedStateAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
-            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("GetByIdQuirk")));
+            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("DeleteThenGet")));
+            createdIds.Add(saved.Id);
+
+            await service.DeleteAsync(saved.Id);
+
+            var afterDelete = await service.GetByIdAsync(saved.Id);
+            afterDelete.Should().NotBeNull("a soft-deleted row must stay reachable by its own id");
+            afterDelete!.DeletedUser.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task GetByIdReturnsTheKeyValuePairWithThatIdAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("GetById")));
             createdIds.Add(saved.Id);
 
             var byOwnId = await service.GetByIdAsync(saved.Id);
-            byOwnId.Should().BeNull();
-
-            var byParentDictionaryId = await service.GetByIdAsync(dictionaryId);
-            byParentDictionaryId.Should().NotBeNull();
-            byParentDictionaryId!.Id.Should().Be(saved.Id);
+            byOwnId.Should().NotBeNull();
+            byOwnId!.Id.Should().Be(saved.Id);
         }
 
         [Fact]
@@ -772,31 +791,6 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
-        }
-
-        private sealed class CapturingBus : IServiceChangeBus
-        {
-            public readonly List<ServiceChangeEvent> Published = [];
-
-            public Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default)
-            {
-                Published.Add(change);
-                return Task.CompletedTask;
-            }
-
-            public IDisposable Subscribe(Func<ServiceChangeEvent, Task> handler)
-            {
-                return NoopSubscription.Instance;
-            }
-
-            private sealed class NoopSubscription : IDisposable
-            {
-                public static readonly NoopSubscription Instance = new();
-
-                public void Dispose()
-                {
-                }
-            }
         }
     }
 }

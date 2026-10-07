@@ -310,7 +310,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("John", new string[0], false)]
         public void InListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -334,7 +334,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "GB" }, false)]
         public void InListIgnoreCaseAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -358,7 +358,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "GB" }, false)]
         public void NotInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -523,7 +523,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, false)]
         public void ContainsAnyInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -547,7 +547,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, false)]
         public void ContainsAnyInListIgnoreCaseAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -571,7 +571,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, false)]
         public void ContainsAllInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -595,7 +595,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, false)]
         public void ContainsNoneInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -665,7 +665,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "GB" }, false)]
         public void StartsWithAnyInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1300,7 +1300,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, false)]
         public void EmailDomainInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1441,7 +1441,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { ".com" }, false)]
         public void EndsWithAnyInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1511,7 +1511,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, false)]
         public void ContainsAllInListIgnoreCaseAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1535,7 +1535,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, false)]
         public void ContainsNoneInListIgnoreCaseAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1609,7 +1609,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "John" }, 0.5, false)]
         public void ContainsFuzzyAnyInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, double threshold, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1633,7 +1633,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, 5, false)]
         public void LevenshteinAtMostAnyInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, int distance, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1657,7 +1657,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, 0, false)]
         public void SimilarityAtLeastAnyInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, double threshold, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1681,7 +1681,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "a" }, 0.5, false)]
         public void JaroWinklerAtLeastAnyInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, double threshold, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1735,7 +1735,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("Bob Marley", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, "nonsense", false)]
         public void SomehowInListWithAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, string? options, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1806,7 +1806,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, false)]
         public void ContainsSomehowInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1830,7 +1830,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("Payment to Bob", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, "lev=2", false)]
         public void ContainsSomehowInListWithAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, string? options, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1857,7 +1857,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("John Smith", new string[0], false)]
         public void NormalisedInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1881,7 +1881,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("Jon Smyth", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, 2, true)]
         public void LevenshteinInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, int maxDistance, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1905,7 +1905,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("Jhon Smyth", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, 2, true)]
         public void DamerauInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, int maxDistance, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1931,7 +1931,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, 0.5, false)]
         public void SimilarInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, double threshold, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1957,7 +1957,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("John Smith", new string[0], 0.5, false)]
         public void JaroWinklerInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, double threshold, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -1983,7 +1983,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("J", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, 0.5, false)]
         public void DiceInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, double threshold, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -2009,7 +2009,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("John", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, false)]
         public void SoundexInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -2035,7 +2035,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("Bob Marley", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, 0.95, false)]
         public void TokenSortInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, double threshold, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -2060,7 +2060,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("Bob", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, 0.5, false)]
         public void TokenSetInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, double threshold, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -2085,7 +2085,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("K Smith", new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, false)]
         public void InitialsInListAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -2110,7 +2110,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData(null, new[] { "John Smith", "Maria Garcia", "Ahmed Al-Rashid", "Acme Trading Ltd" }, 0, null, false)]
         public void FuzzyScoreAtLeastAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, double threshold, string? options, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,
@@ -2135,7 +2135,7 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("John Smith", new[] { "Bob" }, 0, "exact", true)]
         public void FuzzyMatchCountAtLeastAppliesTheOutcomeOfEveryStepKind(string? value, IEnumerable<string> list, int count, string? options, bool expected)
         {
-            list = list.ToArray();
+            list = [.. list];
             var start = value.Start();
 
             FlowAssert.Kinds(expected,

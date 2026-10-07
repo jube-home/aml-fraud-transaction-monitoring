@@ -32,7 +32,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         private static Context NewContext(params EntityAnalysisModelInlineFunction[] functions)
         {
             var entityAnalysisModel = new EntityAnalysisModel();
-            entityAnalysisModel.Collections.EntityAnalysisModelInlineFunctions.AddRange(functions);
+            entityAnalysisModel.Snapshot.EntityAnalysisModelInlineFunctions.AddRange(functions);
 
             return new Context
             {

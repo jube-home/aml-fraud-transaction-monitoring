@@ -20,10 +20,13 @@ using Jube.Service.Exceptions.Query.EntityVersionHistory;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
+using Jube.Service.Query.VersionHistory;
 
 namespace Jube.Service.Query.TenantRegistryVersionHistory
 {
-    public sealed class TenantRegistryVersionHistoryService
+    public sealed class
+        TenantRegistryVersionHistoryService : IVersionHistoryService<TenantRegistryVersionHistoryService,
+        TenantRegistryVersion>
     {
         private readonly GetEntityVersionHistoryQuery<TenantRegistryVersion> query;
         private readonly PermissionValidation permissionValidation;
@@ -83,10 +86,11 @@ namespace Jube.Service.Query.TenantRegistryVersionHistory
             return new TenantRegistryVersionHistoryService(dbContext, userName, permissionValidation, log, strings);
         }
 
-        public Task<TenantRegistryVersion> GetByIdAsync(int id, CancellationToken token = default)
+        public async Task<TenantRegistryVersion?> GetByIdAsync(int id, CancellationToken token = default)
         {
             EnsureLandlord("TenantRegistryVersionHistory.GetById");
-            return query.ByIdAsync(id, token);
+            var version = await query.ByIdAsync(id, token).ConfigureAwait(false);
+            return version;
         }
 
         public Task<List<TenantRegistryVersion>> GetByParentIdAsync(int parentId, CancellationToken token = default)
@@ -102,17 +106,19 @@ namespace Jube.Service.Query.TenantRegistryVersionHistory
             return query.ByDateRangeAsync(parentId, from, to, token);
         }
 
-        public Task<TenantRegistryVersion> GetByIdAndDateRangeAsync(int id, DateTime from, DateTime to,
+        public async Task<TenantRegistryVersion?> GetByIdAndDateRangeAsync(int id, DateTime from, DateTime to,
             CancellationToken token = default)
         {
             EnsureLandlord("TenantRegistryVersionHistory.GetByIdAndDateRange");
-            return query.ByIdAndDateRangeAsync(id, from, to, token);
+            var version = await query.ByIdAndDateRangeAsync(id, from, to, token).ConfigureAwait(false);
+            return version;
         }
 
-        public Task<TenantRegistryVersion> GetLatestAsync(int parentId, CancellationToken token = default)
+        public async Task<TenantRegistryVersion?> GetLatestAsync(int parentId, CancellationToken token = default)
         {
             EnsureLandlord("TenantRegistryVersionHistory.GetLatest");
-            return query.LatestAsync(parentId, token);
+            var version = await query.LatestAsync(parentId, token).ConfigureAwait(false);
+            return version;
         }
 
         public Task<IReadOnlyList<VersionFieldChange>> CompareAsync(int fromId, int toId,

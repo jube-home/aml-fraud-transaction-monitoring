@@ -88,7 +88,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             Dictionary<string, DictionaryNoBoxing<string>> parsedPayloadMap)
         {
             var pendingExecutionThreads = new List<Task>();
-            foreach (var (key, value) in context.EntityAnalysisModel.Collections.DistinctSearchKeys)
+            foreach (var (key, value) in context.Snapshot.DistinctSearchKeys)
             {
                 if (value.SearchKeyCache)
                 {
@@ -139,7 +139,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         private static Dictionary<string, DictionaryNoBoxing<string>> BuildParsedPayloadMap(Context context,
             Dictionary<string, DictionaryNoBoxing<int>> payloadMap)
         {
-            return CachedPayloadDecoder.Decode(payloadMap, context.EntityAnalysisModel.Collections.ParseIndexCache,
+            return CachedPayloadDecoder.Decode(payloadMap, context.Snapshot.ParseIndexCache,
                 context.EntityAnalysisModel.References.ReferenceDateName);
         }
 
@@ -147,7 +147,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             Context context, ConcurrentDictionary<string, List<RedisValue>> sortedSetKeysByGroupingKey)
         {
             var sortedSetFetchTasks = new List<Task>();
-            foreach (var (key, value) in context.EntityAnalysisModel.Collections.DistinctSearchKeys)
+            foreach (var (key, value) in context.Snapshot.DistinctSearchKeys)
             {
                 context.TraceLog($"is evaluating grouping key {key}.");
 
@@ -264,7 +264,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 await FetchCacheBackedAbstractionRuleValuesAsync(context, cacheService, items)
                     .ConfigureAwait(false);
 
-            foreach (var abstractionRule in context.EntityAnalysisModel.Collections.ModelAbstractionRules)
+            foreach (var abstractionRule in context.Snapshot.ModelAbstractionRules)
             {
                 if (!abstractionRule.Search)
                 {
@@ -277,7 +277,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 {
                     context.TraceLog($"is evaluating abstraction rule {abstractionRule.Id}.");
 
-                    var isCacheBacked = context.EntityAnalysisModel.Collections.DistinctSearchKeys.FirstOrDefault(x =>
+                    var isCacheBacked = context.Snapshot.DistinctSearchKeys.FirstOrDefault(x =>
                         x.Key == abstractionRule.SearchKey && x.Value.SearchKeyCache).Value != null;
 
                     if (isCacheBacked)
@@ -326,7 +326,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             try
             {
-                foreach (var abstractionRule in context.EntityAnalysisModel.Collections.ModelAbstractionRules)
+                foreach (var abstractionRule in context.Snapshot.ModelAbstractionRules)
                 {
                     if (!abstractionRule.Search)
                     {
@@ -335,7 +335,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
                     try
                     {
-                        var isCacheBacked = context.EntityAnalysisModel.Collections.DistinctSearchKeys
+                        var isCacheBacked = context.Snapshot.DistinctSearchKeys
                             .FirstOrDefault(x => x.Key == abstractionRule.SearchKey && x.Value.SearchKeyCache)
                             .Value != null;
 

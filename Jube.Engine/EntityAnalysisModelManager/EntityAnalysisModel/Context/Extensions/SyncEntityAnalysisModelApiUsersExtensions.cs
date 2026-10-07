@@ -58,7 +58,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: Has mapped {shadowUsers.Count} users for {key}.  Will swap the shadow to primary.");
                     }
 
-                    value.Collections.Users = shadowUsers;
+                    context.Snapshots.Builder(key, value).Users = shadowUsers;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -72,8 +72,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelApiUsersAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.ApiUsers, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.ApiUsers, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
+
+                throw;
             }
 
             return context;

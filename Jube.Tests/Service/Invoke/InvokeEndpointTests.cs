@@ -361,14 +361,14 @@ namespace Jube.Test.Service.Invoke
             instance.NetworkVariablesInOrder.Add(new global::Jube.Engine.Exhaustive.Models
                 .ExhaustiveSearchInstancePromotedTrialInstanceVariable { Name = "Count", NormalisationTypeId = 1 });
 
-            engineModel.Collections.ExhaustiveModels.Add(instance);
+            engineModel.Snapshot.ExhaustiveModels.Add(instance);
             try
             {
                 return await action(instance.Guid);
             }
             finally
             {
-                engineModel.Collections.ExhaustiveModels.Remove(instance);
+                engineModel.Snapshot.ExhaustiveModels.Remove(instance);
             }
         }
 

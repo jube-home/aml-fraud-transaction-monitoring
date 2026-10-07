@@ -25,8 +25,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers
     public static class EntityAnalysisModelInstanceEntryPayloadHelpers
     {
         public static EntityAnalysisModelInstanceEntryPayload Create(EntityAnalysisModel model,
-            Guid entityAnalysisModelInstanceEntryGuid = default)
+            Guid entityAnalysisModelInstanceEntryGuid = default, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot = null)
         {
+            snapshot ??= model.Snapshot;
             return new EntityAnalysisModelInstanceEntryPayload
             {
                 EntityAnalysisModelName = model.Instance.Name,
@@ -37,18 +38,18 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers
                     ? Guid.NewGuid()
                     : entityAnalysisModelInstanceEntryGuid,
                 EntityAnalysisModelGuid = model.Instance.Guid,
-                Abstraction = new PooledDictionary<string, double>(model.Collections.ModelAbstractionRules.Count),
+                Abstraction = new PooledDictionary<string, double>(snapshot.ModelAbstractionRules.Count),
                 Activation = new PooledDictionary<string, EntityModelActivationRulePayload>(),
                 Tag = [],
-                Dictionary = new PooledDictionary<string, double>(model.Dependencies.KvpDictionaries.Count),
-                TtlCounter = new PooledDictionary<string, double>(model.Collections.ModelTtlCounters.Count),
-                Sanction = new PooledDictionary<string, double>(model.Collections.EntityAnalysisModelSanctions.Count),
+                Dictionary = new PooledDictionary<string, double>(snapshot.KvpDictionaries.Count),
+                TtlCounter = new PooledDictionary<string, double>(snapshot.ModelTtlCounters.Count),
+                Sanction = new PooledDictionary<string, double>(snapshot.EntityAnalysisModelSanctions.Count),
                 AbstractionCalculation =
-                    new PooledDictionary<string, double>(model.Collections.EntityAnalysisModelAbstractionCalculations
+                    new PooledDictionary<string, double>(snapshot.EntityAnalysisModelAbstractionCalculations
                         .Count),
                 HttpAdaptation =
-                    new PooledDictionary<string, Adaptation>(model.Collections.EntityAnalysisModelAdaptations.Count),
-                ExhaustiveAdaptation = new PooledDictionary<string, double>(model.Collections.ExhaustiveModels.Count),
+                    new PooledDictionary<string, Adaptation>(snapshot.EntityAnalysisModelAdaptations.Count),
+                ExhaustiveAdaptation = new PooledDictionary<string, double>(snapshot.ExhaustiveModels.Count),
                 InvokeTaskPerformance = new InvokeTaskPerformance(),
                 CreatedDate = DateTime.UtcNow,
                 ArchiveKeys = []

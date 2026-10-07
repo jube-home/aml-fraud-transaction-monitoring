@@ -59,7 +59,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void GetLatitudeReadsFromTheXPathFlaggedWithDataTypeSix()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Lat", DataTypeId = 6 });
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Lat", 51.5);
 
@@ -70,7 +70,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void GetLongitudeReadsFromTheXPathFlaggedWithDataTypeSeven()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Lon", DataTypeId = 7 });
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Lon", -0.12);
 
@@ -94,7 +94,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                     }
                 }
             };
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Add(script);
+            context.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("LongitudeField", 12.34);
 
             InvokePrivateCoordinateMethod(context, "GetLongitude").Should().Be(12.34);
@@ -117,7 +117,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                     }
                 }
             };
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Add(script);
+            context.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("LatitudeField", 99.0);
 
             InvokePrivateCoordinateMethod(context, "GetLongitude").Should().Be(0);

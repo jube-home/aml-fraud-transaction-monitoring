@@ -594,7 +594,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var values = await service.GetValuesAsync(key);
 
-            values.Select(v => v.OverrideKeyValue).Should().BeEquivalentTo(new[] { "Test1", "ddd" },
+            values.Select(v => v.OverrideKeyValue).Should().BeEquivalentTo(["Test1", "ddd"],
                 "a model guid shared with a soft deleted row must not multiply the override through the join");
         }
 
@@ -614,7 +614,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var values = await service.GetValuesAsync(key);
 
-            values.Select(v => v.OverrideKeyValue).Should().BeEquivalentTo(new[] { "kept" },
+            values.Select(v => v.OverrideKeyValue).Should().BeEquivalentTo(["kept"],
                 "an override belonging to a deleted model is not a live override");
         }
 

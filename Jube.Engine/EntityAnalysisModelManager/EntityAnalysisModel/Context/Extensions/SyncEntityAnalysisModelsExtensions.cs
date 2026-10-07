@@ -37,7 +37,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         "Entity Start: Executing EntityAnalysisModelRepository.Get.");
                 }
 
-                var records = await repository.GetAsync(context.Services.CancellationToken).ConfigureAwait(false);
+                var records = await repository
+                    .GetApprovedAsync(context.ApprovalsRequired, context.Services.CancellationToken)
+                    .ConfigureAwait(false);
                 foreach (var record in records)
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
@@ -103,7 +105,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                         else
                         {
-                            var removed = context.EntityAnalysisModels.ActiveEntityAnalysisModels.Remove(record.Id);
+                            var removed = context.EntityAnalysisModels.ActiveEntityAnalysisModels.TryRemove(record.Id, out _);
                             if (context.Services.Log.IsDebugEnabled)
                             {
                                 context.Services.Log.Debug(removed

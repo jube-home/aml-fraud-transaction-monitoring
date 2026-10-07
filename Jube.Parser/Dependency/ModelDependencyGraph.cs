@@ -17,7 +17,7 @@ namespace Jube.Parser.Dependency
     using System.Collections.Generic;
     using System.Linq;
 
-    public sealed record ModelEntity(ModelEntityKind Kind, int Id, string Name, bool Active);
+    public sealed record ModelEntity(ModelEntityKind Kind, int Id, string Name, bool Active, bool Approved = true);
 
     public sealed record ModelReference(
         ModelEntity Dependent,
@@ -36,6 +36,7 @@ namespace Jube.Parser.Dependency
     {
         public bool Dangling => Target == null;
         public bool TargetInactive => Target is { Active: false };
+        public bool TargetUnapproved => Target is { Approved: false };
     }
 
     public sealed class ModelDependencyGraph
@@ -70,6 +71,22 @@ namespace Jube.Parser.Dependency
 
             dependencies = references.Select(r => new ModelDependency(r.Dependent, Resolve(byKindAndName, r), r.Kind,
                 r.Namespace, r.Name, r.Line)).ToList();
+        }
+
+        public ModelDependencyGraph WithEntity(ModelEntity entity)
+        {
+            ArgumentNullException.ThrowIfNull(entity);
+
+            var withEntity = entities
+                .Where(e => !(e.Kind == entity.Kind && e.Id == entity.Id))
+                .Append(entity)
+                .ToList();
+
+            var references = dependencies
+                .Select(d => new ModelReference(d.Dependent, d.Kind, d.Namespace, d.Name, d.Line))
+                .ToList();
+
+            return new ModelDependencyGraph(withEntity, references);
         }
 
         public IReadOnlyList<ModelEntity> Entities => entities;
@@ -118,6 +135,11 @@ namespace Jube.Parser.Dependency
         public IEnumerable<ModelDependency> OnInactiveTargets()
         {
             return dependencies.Where(d => d.TargetInactive && d.Dependent.Active);
+        }
+
+        public IEnumerable<ModelDependency> OnUnapprovedTargets()
+        {
+            return dependencies.Where(d => d.TargetUnapproved && d.Dependent.Active);
         }
 
         public IEnumerable<ModelEntity> Unreferenced(params ModelEntityKind[] kinds)

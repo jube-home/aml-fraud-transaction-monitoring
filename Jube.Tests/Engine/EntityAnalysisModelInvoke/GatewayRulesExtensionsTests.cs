@@ -19,6 +19,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+using Jube.Test.Engine.EntityAnalysisModelInvoke.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
 using Context = Jube.Engine.EntityAnalysisModelInvoke.Context.Context;
@@ -45,7 +46,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         private static Context NewContext(double randomDraw = 0.0, params EntityModelGatewayRule[] rules)
         {
             var entityAnalysisModel = new EntityAnalysisModel();
-            entityAnalysisModel.Collections.ModelGatewayRules.AddRange(rules);
+            entityAnalysisModel.Snapshot.ModelGatewayRules.AddRange(rules);
 
             var payload = new DictionaryNoBoxing<string>();
             payload.Add("Currency", "AED");
@@ -253,14 +254,6 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             act.Should().NotThrow();
             context.EntityAnalysisModelInstanceEntryPayload.MatchedGatewayRule.Should().BeFalse();
-        }
-
-        private sealed class FixedRandom(double fixedNextDouble) : Random
-        {
-            public override double NextDouble()
-            {
-                return fixedNextDouble;
-            }
         }
     }
 }

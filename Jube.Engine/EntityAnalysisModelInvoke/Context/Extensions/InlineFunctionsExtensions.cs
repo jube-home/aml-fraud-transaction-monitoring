@@ -64,7 +64,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         {
             context.TraceLog($"is going to check for inline functions.");
 
-            foreach (var inlineFunction in context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineFunctions)
+            foreach (var inlineFunction in context.Snapshot.EntityAnalysisModelInlineFunctions)
             {
                 context.TraceLog($"is going to invoke inline function {inlineFunction.Id}.");
 
@@ -73,7 +73,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     object output = null;
                     var timed = TaskHelper.MeasureTimeAndMemoryAllocated(TaskType.InlineFunction, () =>
                     {
-                        output = ReflectRuleHelper.Execute(inlineFunction, context.EntityAnalysisModel,
+                        output = ReflectRuleHelper.Execute(inlineFunction, context.Snapshot,
                             context.EntityAnalysisModelInstanceEntryPayload,
                             context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log);
                     });
@@ -111,7 +111,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             if (inlineFunction.ReturnDataTypeId == 1 && writtenToPayload)
             {
-                context.EntityAnalysisModel.ResolveDictionaryValueForField(
+                context.EntityAnalysisModel.ResolveDictionaryValueForField(context.Snapshot, 
                     context.EntityAnalysisModelInstanceEntryPayload, context.Log, inlineFunction.Name);
             }
 

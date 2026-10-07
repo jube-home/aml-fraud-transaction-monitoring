@@ -53,11 +53,12 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     }
 
                     var records = await repository
-                        .GetByEntityAnalysisModelIdOrderByIdDescAsync(key, context.Services.CancellationToken)
+                        .GetApprovedByEntityAnalysisModelIdOrderByIdDescAsync(key, context.ApprovalsRequired,
+                            context.Services.CancellationToken)
                         .ConfigureAwait(false);
 
                     var shadowEntityModelAbstractionRule = new List<EntityAnalysisModelAbstractionRule>();
-                    var shadowDistinctSearchKeys = value.Collections.DistinctSearchKeys;
+                    var shadowDistinctSearchKeys = context.Snapshots.Builder(key, value).DistinctSearchKeys;
 
                     foreach (var record in records)
                     {
@@ -220,7 +221,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         $"Entity Start: Entity Model {key} and Abstraction Rule {modelAbstractionRule.Id} set Abstraction Rule Search Extrapolation Type value is greater than 1, {modelAbstractionRule.Search}.  Checking to see if already added to the distinct search keys available to this abstraction rule.");
                                 }
 
-                                foreach (var requestXPath in value.Collections.EntityAnalysisModelRequestXPaths)
+                                foreach (var requestXPath in context.Snapshots.Builder(key, value)
+                                             .EntityAnalysisModelRequestXPaths)
                                 {
                                     context.Services.CancellationToken.ThrowIfCancellationRequested();
 
@@ -734,8 +736,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             " order by a.\"ReferenceDate\" desc limit (@limit)";
                     }
 
-                    value.Collections.ModelAbstractionRules = shadowEntityModelAbstractionRule;
-                    value.Collections.DistinctSearchKeys = shadowDistinctSearchKeys;
+                    context.Snapshots.Builder(key, value).ModelAbstractionRules = shadowEntityModelAbstractionRule;
+                    context.Snapshots.Builder(key, value).DistinctSearchKeys = shadowDistinctSearchKeys;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {

@@ -135,7 +135,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Amount", "123.45");
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Add(
+            context.Snapshot.EntityAnalysisModelInlineScripts.Add(
                 new EntityAnalysisModelInlineScript
                 {
                     EntityAnalysisModelInlineScriptPropertyAttributes =
@@ -155,7 +155,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Amount", "123.45");
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Add(
+            context.Snapshot.EntityAnalysisModelInlineScripts.Add(
                 new EntityAnalysisModelInlineScript
                 {
                     EntityAnalysisModelInlineScriptPropertyAttributes =
@@ -174,7 +174,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
 
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Add(
+            context.Snapshot.EntityAnalysisModelInlineScripts.Add(
                 new EntityAnalysisModelInlineScript
                 {
                     EntityAnalysisModelInlineScriptPropertyAttributes =
@@ -194,7 +194,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "ACC-1");
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
                     Name = "AccountId",
@@ -213,7 +213,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "ACC-1");
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
                     Name = "AccountId",
@@ -232,7 +232,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("UnrelatedField", "should-not-appear");
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
                     Name = "SomeOtherField",

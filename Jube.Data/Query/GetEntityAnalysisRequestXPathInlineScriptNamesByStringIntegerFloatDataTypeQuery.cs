@@ -39,7 +39,7 @@ namespace Jube.Data.Query
             var searchKeys = new List<Dto>();
 
             var entityAnalysisModelRequestXpath =
-                new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId);
+                new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId);
             var entityAnalysisModelInlineScriptRepository =
                 new EntityAnalysisModelInlineScriptRepository(dbContext, tenantRegistryId);
             var entityAnalysisModelInlineScripts = await entityAnalysisModelInlineScriptRepository

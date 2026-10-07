@@ -22,6 +22,13 @@ namespace Jube.Engine.Integrity
 
         [Description("Uses an inactive entity")]
         DependencyOnInactive,
+
+        [Description("Uses an entity that is not yet approved")]
+        DependencyOnUnapproved,
+
+        [Description("Changed and waiting for approval")]
+        EntityPendingApproval,
+
         [Description("Not used by anything")] EntityUnreferenced,
 
         [Description("Did not compile in the engine")]

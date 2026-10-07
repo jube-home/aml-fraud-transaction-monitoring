@@ -52,14 +52,6 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
         [NewDefault(0)]
         public double Priority { get; set; }
 
-        [Description("Maker-checker review status: 0 New, 1 New Pending Review, 2 Updated Pending Review, " +
-                     "3 Rejected by Review, 4 Approved by Review. Only a rule with status 4 (Approved by Review) " +
-                     "is eligible for activation on transaction invocation. Setting this to 4 requires the caller " +
-                     "to additionally hold the Allow Approved By Review permission.")]
-        [FormField(Group = "Review", Order = 10, Widget = "select")]
-        [NewDefault(0)]
-        public int ReviewStatusId { get; set; }
-
         [Description("Which rule authoring surface is authoritative for this rule: 1 = visual Builder (requires " +
                      "BuilderRuleScript and Json), 2 = hand-written Coder (requires CoderRuleScript). The two " +
                      "surfaces are mutually exclusive -- only the selected surface's script is required.")]

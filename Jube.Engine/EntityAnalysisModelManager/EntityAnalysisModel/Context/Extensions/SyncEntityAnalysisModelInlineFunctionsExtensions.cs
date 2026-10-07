@@ -19,7 +19,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System.Text;
     using System.Threading.Tasks;
     using Data.Repository;
-    using Helpers;
     using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
     using Jube.Engine.EntityAnalysisModelManager.Helpers;
     using Jube.Engine.Models;
@@ -52,7 +51,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     }
 
                     var records = await repository
-                        .GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken)
+                        .GetApprovedByEntityAnalysisModelIdOrderByIdAsync(key, context.ApprovalsRequired,
+                            context.Services.CancellationToken)
                         .ConfigureAwait(false);
 
                     if (context.Services.Log.IsDebugEnabled)
@@ -381,8 +381,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     context.Services.Parser.EntityAnalysisModelsInlineFunctions =
                         shadowEntityAnalysisModelsInlineFunctions;
-                    value.Collections.EntityAnalysisModelInlineFunctions = shadowEntityAnalysisModelInlineFunctions;
-                    value.References.PayloadInitialSize = DictionaryNoBoxingHelpers.CalculateInitialSize(value);
+                    context.Snapshots.Builder(key, value).EntityAnalysisModelInlineFunctions =
+                        shadowEntityAnalysisModelInlineFunctions;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {

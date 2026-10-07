@@ -315,7 +315,7 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterDataValue = enableSum ? "Amount" : null
             };
             createdCounterGuidsForCleanup.Add(counter.Guid);
-            model.Collections.ModelTtlCounters.Add(counter);
+            model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
@@ -528,7 +528,7 @@ namespace Jube.Test.Engine.TtlCounter
                 EnableLiveForever = true
             };
             createdCounterGuidsForCleanup.Add(counter.Guid);
-            model.Collections.ModelTtlCounters.Add(counter);
+            model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
@@ -618,7 +618,7 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterValue = 0
             };
             createdCounterGuidsForCleanup.Add(counter.Guid);
-            model.Collections.ModelTtlCounters.Add(counter);
+            model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
@@ -705,8 +705,8 @@ namespace Jube.Test.Engine.TtlCounter
             };
             createdCounterGuidsForCleanup.Add(shortCounter.Guid);
             createdCounterGuidsForCleanup.Add(longCounter.Guid);
-            model.Collections.ModelTtlCounters.Add(shortCounter);
-            model.Collections.ModelTtlCounters.Add(longCounter);
+            model.Snapshot.ModelTtlCounters.Add(shortCounter);
+            model.Snapshot.ModelTtlCounters.Add(longCounter);
 
             var pollMs = ResolveFastPollMilliseconds();
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
@@ -796,7 +796,7 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterValue = 1
             };
             createdCounterGuidsForCleanup.Add(counter.Guid);
-            model.Collections.ModelTtlCounters.Add(counter);
+            model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
@@ -894,7 +894,7 @@ namespace Jube.Test.Engine.TtlCounter
                 TtlCounterValue = ttlCounterValue
             };
             createdCounterGuidsForCleanup.Add(counter.Guid);
-            model.Collections.ModelTtlCounters.Add(counter);
+            model.Snapshot.ModelTtlCounters.Add(counter);
 
             var pollMs = ResolveFastPollMilliseconds();
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>

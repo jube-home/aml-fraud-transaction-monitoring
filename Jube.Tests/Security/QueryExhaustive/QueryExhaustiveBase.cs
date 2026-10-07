@@ -166,7 +166,7 @@ public abstract partial class QueryExhaustiveBase(DatabaseFixture fx, ITestOutpu
                 $"{item.Who} saw tenant data");
         });
 
-        foreach (var user in new[] { PenTestUser.Landlord, PenTestUser.BothTenants, PenTestUser.NoApproveByReview })
+        foreach (var user in new[] { PenTestUser.Landlord, PenTestUser.BothTenants, PenTestUser.NoApproval })
         {
             var response = run.Check(await GetAsAsync(user, id));
             run.Expect(!response.IsServerError, response, "AUTHZ-5XX", user.ToString());

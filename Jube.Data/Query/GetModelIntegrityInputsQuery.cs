@@ -35,7 +35,7 @@ namespace Jube.Data.Query
                     ToCompiled(g.Compiled), g.CompileError));
             }
 
-            var xPaths = (await new EntityAnalysisModelRequestXPathRepository(dbContext, tenantRegistryId)
+            var xPaths = (await new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId)
                 .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false)).ToList();
 
             foreach (var a in await new EntityAnalysisModelAbstractionRuleRepository(dbContext, tenantRegistryId)

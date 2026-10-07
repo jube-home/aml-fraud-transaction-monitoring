@@ -16,7 +16,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using System.Threading;
     using Dictionary;
     using log4net;
     using Adaptation = HttpAdaptationProtocol.Adaptation;
@@ -34,12 +33,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
             ICollection<string> activation,
             ILog log);
 
-        private readonly Lock lockActivationCounterDate = new Lock();
+        public RuleCounters Counters { get; set; } = new();
 
-        public long ActivationCounter;
-        public long ForcedActivationCounter;
-        private DateTime activationCounterDate;
-        public long EvaluationCounter;
+        public long ActivationCounter => Counters.ActivationCounter;
+        public long ForcedActivationCounter => Counters.ForcedActivationCounter;
+        public long EvaluationCounter => Counters.EvaluationCounter;
         public int Id { get; init; }
         public bool Visible { get; set; }
         public int RuleScriptTypeId { get; set; }
@@ -82,20 +80,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
 
         public DateTime ActivationCounterDate
         {
-            get
-            {
-                lock (lockActivationCounterDate)
-                {
-                    return activationCounterDate;
-                }
-            }
-            set
-            {
-                lock (lockActivationCounterDate)
-                {
-                    activationCounterDate = value;
-                }
-            }
+            get => Counters.ActivationCounterDate;
+            set => Counters.ActivationCounterDate = value;
         }
     }
 }

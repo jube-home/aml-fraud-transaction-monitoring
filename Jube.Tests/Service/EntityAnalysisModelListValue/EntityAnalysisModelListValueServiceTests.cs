@@ -483,7 +483,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
         }
 
         [Fact]
-        public async Task UpdateOfSoftDeletedRowThrowsNotFoundAsync()
+        public async Task UpdateOfSoftDeletedRowRevivesItAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
@@ -495,7 +495,10 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
 
             var dto = NewDto(listId, saved.ListValue.Required());
             dto.Id = saved.Id;
-            await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
+            await service.UpdateAsync(dto);
+
+            (await service.GetByIdAsync(saved.Id)).Should().NotBeNull(
+                "an update to a deleted row revives it, so it is reachable by id");
         }
 
         [Fact]

@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -69,7 +70,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                 },
                 EntityAnalysisModels =
                 {
-                    ActiveEntityAnalysisModels = new Dictionary<int, EngineModel>(),
+                    ActiveEntityAnalysisModels = new ConcurrentDictionary<int, EngineModel>(),
                     EntityAnalysisInstanceGuid = Guid.NewGuid()
                 }
             };
@@ -715,11 +716,6 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
             model.Dependencies.SanctionsEntries.Should().BeSameAs(context.EntityAnalysisModels.SanctionsEntries);
             model.Dependencies.SanctionsStopTokens.Should()
                 .BeSameAs(context.EntityAnalysisModels.SanctionsStopTokens);
-            model.Dependencies.EntityAnalysisModelLists.Should()
-                .BeSameAs(context.EntityAnalysisModels.EntityAnalysisModelLists);
-            model.Dependencies.KvpDictionaries.Should().BeSameAs(context.EntityAnalysisModels.KvpDictionaries);
-            model.Dependencies.EntityAnalysisModelOverrides.Should()
-                .BeSameAs(context.EntityAnalysisModels.EntityAnalysisModelOverrides);
 
             model.ConcurrentQueues.PersistToActivationWatcherAsync.Should()
                 .BeSameAs(context.ConcurrentQueues.PersistToActivationWatcherAsync);
@@ -729,6 +725,27 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
             model.ConcurrentQueues.Callbacks.Should().BeSameAs(context.ConcurrentQueues.Callbacks);
             model.ConcurrentQueues.PendingEntityInvoke.Should()
                 .BeSameAs(context.ConcurrentQueues.PendingEntityInvoke);
+        }
+
+        [Fact]
+        public void CreateEntityAnalysisModelStartsOnAnEmptySnapshotThatTheModelOwns()
+        {
+            var context = NewContext();
+            var record = NewRecord();
+
+            var first = EntityAnalysisModelRecordMapper.CreateEntityAnalysisModel(context, record);
+            var second = EntityAnalysisModelRecordMapper.CreateEntityAnalysisModel(context, record);
+
+            using var scope = new AssertionScope();
+            first.Snapshot.Should().NotBeNull();
+            first.Snapshot.Generation.Should().Be(0);
+            first.Snapshot.EntityAnalysisModelLists.Should().BeEmpty();
+            first.Snapshot.KvpDictionaries.Should().BeEmpty();
+            first.Snapshot.EntityAnalysisModelOverrides.Should().BeEmpty();
+            first.Snapshot.ModelActivationRules.Should().BeEmpty();
+            first.Snapshot.Should().NotBeSameAs(second.Snapshot);
+            first.Snapshot.EntityAnalysisModelLists.Should()
+                .NotBeSameAs(second.Snapshot.EntityAnalysisModelLists);
         }
 
         [Fact]

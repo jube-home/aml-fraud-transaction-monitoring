@@ -59,7 +59,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         private static async Task IterateAndProcessAsync(Context context, Dictionary<string, TaskPerformance> items)
         {
             foreach (var inlineScript in
-                     context.EntityAnalysisModel.Collections.EntityAnalysisModelInlineScripts.Where(s => s
+                     context.Snapshot.EntityAnalysisModelInlineScripts.Where(s => s
                          .EntityAnalysisModelInlineScriptEvents
                          .Any(e => e.EntityAnalysisModelInlineScriptEventType ==
                                    EntityAnalysisModelInlineScriptEventTypeEnum.Payload)))

@@ -24,6 +24,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.Extraction.Extensions.YourNamespace.
 using Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+using System.Linq;
 using log4net;
 using Newtonsoft.Json.Linq;
 
@@ -33,10 +34,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
     public class EntityAnalysisModelJsonExtractor(
         EntityAnalysisModel entityAnalysisModel,
-        Dictionary<int, EntityAnalysisModel> availableModels,
+        IReadOnlyDictionary<int, EntityAnalysisModel> availableModels,
         DynamicEnvironment.DynamicEnvironment environment,
         ILog log)
     {
+        private readonly Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot = entityAnalysisModel.Snapshot;
+        private readonly IReadOnlyDictionary<int, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot> availableSnapshots =
+            availableModels.ToDictionary(kv => kv.Key, kv => kv.Value.Snapshot);
+
         public Context.Context CreateContext(
             MemoryStream inputStream)
         {
@@ -44,9 +49,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             stopwatch.Start();
 
             var entityAnalysisModelInstanceEntryPayload =
-                EntityAnalysisModelInstanceEntryPayloadHelpers.Create(entityAnalysisModel);
+                EntityAnalysisModelInstanceEntryPayloadHelpers.Create(entityAnalysisModel, default, snapshot);
             entityAnalysisModelInstanceEntryPayload.Payload =
-                new DictionaryNoBoxing<string>(entityAnalysisModel.References.PayloadInitialSize);
+                new DictionaryNoBoxing<string>(snapshot.PayloadInitialSize);
 
             var reportDatabaseValues = new List<ArchiveKey>();
             entityAnalysisModelInstanceEntryPayload.ArchiveKeys = reportDatabaseValues;
@@ -68,7 +73,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             {
                 StartBytesUsed = GC.GetAllocatedBytesForCurrentThread(),
                 EntityAnalysisModel = entityAnalysisModel,
+                Snapshot = snapshot,
                 AvailableEntityAnalysisModels = availableModels,
+                AvailableSnapshots = availableSnapshots,
                 EntityAnalysisModelInstanceEntryPayload = entityAnalysisModelInstanceEntryPayload,
                 Stopwatch = stopwatch,
                 Log = log,
@@ -149,7 +156,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             List<ArchiveKey> reportDatabaseValues,
             bool isReprocess)
         {
-            if (entityAnalysisModel.Collections?.EntityAnalysisModelRequestXPaths == null)
+            if (snapshot?.EntityAnalysisModelRequestXPaths == null)
             {
                 return;
             }
@@ -160,7 +167,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     $"Json to Context Extractor: GUID payload {entityInstanceEntryPayloadStore.EntityAnalysisModelInstanceEntryGuid} model id {entityAnalysisModel.Instance.Id} beginning request XPath extraction.");
             }
 
-            foreach (var xPath in entityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths)
+            foreach (var xPath in snapshot.EntityAnalysisModelRequestXPaths)
             {
                 try
                 {
@@ -241,7 +248,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                         };
 
                         payload.TryAdd(xPath.Name, value);
-                        entityAnalysisModel.ResolveDictionaryValueForField(entityAnalysisModelInstanceEntryPayload, log,
+                        entityAnalysisModel.ResolveDictionaryValueForField(snapshot, entityAnalysisModelInstanceEntryPayload, log,
                             xPath.Name);
                         reportDatabaseValues.AddArchiveKey(xPath, entityAnalysisModelInstanceEntryPayload, value,
                             isReprocess: isReprocess);

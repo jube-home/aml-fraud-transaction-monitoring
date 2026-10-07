@@ -32,8 +32,8 @@ namespace Jube.Test.Service.ModelScaffolding
             Assert.NotNull(model);
             Assert.Equal(fixture.Shared.ModelGuid, model.Instance.Guid);
             Assert.Equal(fixture.Shared.ModelId, model.Instance.Id);
-            Assert.Contains(fixture.Shared.UserName, model.Collections.Users);
-            Assert.DoesNotContain(fixture.Shared.OtherUserName, model.Collections.Users);
+            Assert.Contains(fixture.Shared.UserName, model.Snapshot.Users);
+            Assert.DoesNotContain(fixture.Shared.OtherUserName, model.Snapshot.Users);
             Assert.NotNull(fixture.SharedSync.SynchronisedDate);
             Assert.Equal(0, fixture.SharedSync.ErrorRowsAdded);
             Assert.Contains(fixture.SharedSync.ScheduleId, fixture.Shared.ScheduleIds);
@@ -49,12 +49,12 @@ namespace Jube.Test.Service.ModelScaffolding
             {
                 var model = fixture.Engine.FindActiveModel(scaffold.ModelGuid);
                 Assert.NotNull(model);
-                Assert.Contains(scaffold.UserName, model.Required().Collections.Users);
+                Assert.Contains(scaffold.UserName, model.Required().Snapshot.Users);
             }
 
             Assert.NotEqual(one.ModelGuid, fixture.Shared.ModelGuid);
             Assert.DoesNotContain(one.UserName,
-                fixture.Engine.FindActiveModel(two.ModelGuid).Required().Collections.Users);
+                fixture.Engine.FindActiveModel(two.ModelGuid).Required().Snapshot.Users);
         }
 
         [Fact]

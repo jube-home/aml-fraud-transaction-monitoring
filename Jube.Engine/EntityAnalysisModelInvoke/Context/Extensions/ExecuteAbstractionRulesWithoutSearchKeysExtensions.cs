@@ -29,7 +29,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             var items = new Dictionary<string, TaskPerformance>();
 
             foreach (var evaluateAbstractionRule in
-                     from evaluateAbstractionRuleLinq in context.EntityAnalysisModel.Collections.ModelAbstractionRules
+                     from evaluateAbstractionRuleLinq in context.Snapshot.ModelAbstractionRules
                      where !evaluateAbstractionRuleLinq.Search
                      select evaluateAbstractionRuleLinq)
             {
@@ -42,7 +42,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 {
                     double abstractionValue;
 
-                    if (ReflectRuleHelper.Execute(evaluateAbstractionRule, context.EntityAnalysisModel,
+                    if (ReflectRuleHelper.Execute(evaluateAbstractionRule, context.Snapshot,
                             context.EntityAnalysisModelInstanceEntryPayload.Payload,
                             context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log))
                     {

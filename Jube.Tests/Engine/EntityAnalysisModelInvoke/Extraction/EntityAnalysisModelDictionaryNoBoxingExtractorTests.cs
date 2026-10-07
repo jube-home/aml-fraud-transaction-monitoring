@@ -37,7 +37,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
                     ReferenceDateName = "TxnDateTime"
                 }
             };
-            model.Collections.EntityAnalysisModelRequestXPaths.AddRange(xPaths);
+            model.Snapshot.EntityAnalysisModelRequestXPaths.AddRange(xPaths);
             return model;
         }
 

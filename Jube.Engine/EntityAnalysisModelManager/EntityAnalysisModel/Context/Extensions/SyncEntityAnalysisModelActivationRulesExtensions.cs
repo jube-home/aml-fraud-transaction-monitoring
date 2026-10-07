@@ -16,9 +16,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Text;
-    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using Data.Repository;
@@ -53,7 +51,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     }
 
                     var records = await repository
-                        .GetByEntityAnalysisModelIdInPriorityOrderAsync(key, context.Services.CancellationToken)
+                        .GetApprovedByEntityAnalysisModelIdInPriorityOrderAsync(key, context.ApprovalsRequired,
+                            context.Services.CancellationToken)
                         .ConfigureAwait(false);
 
                     var shadowEntityModelActivationRule = new List<EntityAnalysisModelActivationRule>();
@@ -91,85 +90,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                             }
 
-                            bool approval;
-                            if (record.ReviewStatusId.HasValue)
-                            {
-                                switch (record.ReviewStatusId.Value)
-                                {
-                                    case 0:
-                                        approval = false;
-
-                                        if (context.Services.Log.IsDebugEnabled)
-                                        {
-                                            context.Services.Log.Debug(
-                                                $"Entity Start: Entity Model {key} and Activation Rule {record.Id} set Approval value 0 set as {approval}.");
-                                        }
-
-                                        break;
-                                    case 1:
-                                        approval = false;
-
-                                        if (context.Services.Log.IsDebugEnabled)
-                                        {
-                                            context.Services.Log.Debug(
-                                                $"Entity Start: Entity Model {key} and Activation Rule {record.Id} set Approval value 1 set as {approval}.");
-                                        }
-
-                                        break;
-                                    case 2:
-                                        approval = false;
-
-                                        if (context.Services.Log.IsDebugEnabled)
-                                        {
-                                            context.Services.Log.Debug(
-                                                $"Entity Start: Entity Model {key} and Activation Rule {record.Id} set Approval value 2 set as {approval}.");
-                                        }
-
-                                        break;
-                                    case 3:
-                                        approval = false;
-
-                                        if (context.Services.Log.IsDebugEnabled)
-                                        {
-                                            context.Services.Log.Debug(
-                                                $"Entity Start: Entity Model {key} and Activation Rule {record.Id} set Approval value 3 set as {approval}.");
-                                        }
-
-                                        break;
-                                    case 4:
-                                        approval = true;
-
-                                        if (context.Services.Log.IsDebugEnabled)
-                                        {
-                                            context.Services.Log.Debug(
-                                                $"Entity Start: Entity Model {key} and Activation Rule {record.Id} set Approval value 4 set as {approval}.");
-                                        }
-
-                                        break;
-                                    default:
-                                        approval = false;
-
-                                        if (context.Services.Log.IsDebugEnabled)
-                                        {
-                                            context.Services.Log.Debug(
-                                                $"Entity Start: Entity Model {key} and Activation Rule {record.Id} set Approval value 0 set as {approval}.");
-                                        }
-
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                approval = false;
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {record.Id} set DEFAULT Approval value set as {approval}.");
-                                }
-                            }
-
-                            if (!active || !approval)
+                            if (!active)
                             {
                                 continue;
                             }
@@ -177,7 +98,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             if (context.Services.Log.IsDebugEnabled)
                             {
                                 context.Services.Log.Debug(
-                                    $"Entity Start: Entity Model {key} and Activation Rule {record.Id} is Active and Approved. Proceeding to build Activation Rule.");
+                                    $"Entity Start: Entity Model {key} and Activation Rule {record.Id} is Active. Proceeding to build Activation Rule.");
                             }
 
                             var modelActivationRule = new EntityAnalysisModelActivationRule
@@ -1048,25 +969,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Entity Start: {key} replaced Activation Rule List with shadow activation rules.");
                     }
 
-                    var previousActivationRulesById = value.Collections.ModelActivationRules.ToDictionary(r => r.Id);
-                    foreach (var newActivationRule in shadowEntityModelActivationRule)
-                    {
-                        if (!previousActivationRulesById.TryGetValue(newActivationRule.Id,
-                                out var previousActivationRule))
-                        {
-                            continue;
-                        }
-
-                        newActivationRule.EvaluationCounter =
-                            Interlocked.Exchange(ref previousActivationRule.EvaluationCounter, 0);
-                        newActivationRule.ActivationCounter =
-                            Interlocked.Exchange(ref previousActivationRule.ActivationCounter, 0);
-                        newActivationRule.ForcedActivationCounter =
-                            Interlocked.Exchange(ref previousActivationRule.ForcedActivationCounter, 0);
-                        newActivationRule.ActivationCounterDate = previousActivationRule.ActivationCounterDate;
-                    }
-
-                    value.Collections.ModelActivationRules = shadowEntityModelActivationRule;
+                    context.Snapshots.Builder(key, value).ModelActivationRules = shadowEntityModelActivationRule;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {

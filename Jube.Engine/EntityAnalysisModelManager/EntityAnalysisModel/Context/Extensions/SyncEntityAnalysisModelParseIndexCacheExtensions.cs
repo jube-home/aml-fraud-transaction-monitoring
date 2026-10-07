@@ -36,16 +36,17 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     var parseIndexCache = new Dictionary<int, string>();
 
-                    foreach (var xpath in value.Collections.EntityAnalysisModelRequestXPaths)
+                    foreach (var xpath in context.Snapshots.Builder(key, value).EntityAnalysisModelRequestXPaths)
                     {
                         if (!xpath.Cache)
                         {
                             continue;
                         }
+
                         parseIndexCache[xpath.CacheIndexId] = xpath.Name;
                     }
 
-                    foreach (var script in value.Collections.EntityAnalysisModelInlineScripts)
+                    foreach (var script in context.Snapshots.Builder(key, value).EntityAnalysisModelInlineScripts)
                     foreach (var (attributeName, attribute) in script.EntityAnalysisModelInlineScriptPropertyAttributes)
                     {
                         if (attribute.CacheIndexId is not null)
@@ -54,7 +55,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         }
                     }
 
-                    value.Collections.ParseIndexCache = parseIndexCache;
+                    context.Snapshots.Builder(key, value).ParseIndexCache = parseIndexCache;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -68,7 +69,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelParseIndexCacheAsync: has produced an error {ex}.");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.ParseIndexCache, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.ParseIndexCache, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

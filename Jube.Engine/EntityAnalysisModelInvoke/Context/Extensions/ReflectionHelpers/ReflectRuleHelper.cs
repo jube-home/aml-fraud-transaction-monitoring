@@ -14,7 +14,6 @@
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers
 {
     using Dictionary;
-    using EntityAnalysisModelManager.EntityAnalysisModel;
     using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
     using log4net;
     using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
@@ -22,22 +21,24 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
     public static class ReflectRuleHelper
     {
         public static bool Execute(EntityAnalysisModelAbstractionRule abstractionRule,
-            EntityAnalysisModel entityAnalysisModel, DictionaryNoBoxing<string> fields,
+            Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot, DictionaryNoBoxing<string> fields,
             PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs, ILog log)
         {
             var matched = abstractionRule.AbstractionRuleCompileDelegate(fields,
-                entityAnalysisModel.Dependencies.EntityAnalysisModelLists, entityInstanceEntryDictionaryKvPs, log);
+                snapshot.EntityAnalysisModelLists, entityInstanceEntryDictionaryKvPs, log);
             return matched;
         }
 
         public static bool Execute(EntityAnalysisModelActivationRule activationRule,
-            EntityAnalysisModel entityAnalysisModel,
-            EntityAnalysisModelInstanceEntryPayload payload, PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs,
+            Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot,
+            EntityAnalysisModelInstanceEntryPayload payload,
+            PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs,
             ILog log)
         {
             var matched = activationRule.ActivationRuleCompileDelegate(payload.Payload,
                 payload.TtlCounter, payload.Abstraction,
-                payload.HttpAdaptation, payload.ExhaustiveAdaptation, entityAnalysisModel.Dependencies.EntityAnalysisModelLists,
+                payload.HttpAdaptation, payload.ExhaustiveAdaptation,
+                snapshot.EntityAnalysisModelLists,
                 payload.AbstractionCalculation,
                 payload.Sanction, entityInstanceEntryDictionaryKvPs,
                 payload.Activation.Keys,
@@ -46,13 +47,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
         }
 
         public static double Execute(EntityAnalysisModelAbstractionCalculation functionRule,
-            EntityAnalysisModel entityAnalysisModel,
-            EntityAnalysisModelInstanceEntryPayload payload, PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs,
+            Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot,
+            EntityAnalysisModelInstanceEntryPayload payload,
+            PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs,
             ILog log)
         {
             var matched = functionRule.FunctionCalculationCompileDelegate(payload.Payload,
                 payload.TtlCounter, payload.Abstraction,
-                entityAnalysisModel.Dependencies.EntityAnalysisModelLists,
+                snapshot.EntityAnalysisModelLists,
                 payload.AbstractionCalculation, payload.Sanction,
                 entityInstanceEntryDictionaryKvPs, log);
 
@@ -60,12 +62,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
         }
 
         public static object Execute(EntityAnalysisModelInlineFunction entityAnalysisModelInlineFunction,
-            EntityAnalysisModel entityAnalysisModel,
+            Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot,
             EntityAnalysisModelInstanceEntryPayload payload,
             PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs, ILog log)
         {
             var matched = entityAnalysisModelInlineFunction.FunctionCalculationCompileDelegate(payload.Payload,
-                entityAnalysisModel.Dependencies.EntityAnalysisModelLists, entityInstanceEntryDictionaryKvPs, log);
+                snapshot.EntityAnalysisModelLists, entityInstanceEntryDictionaryKvPs, log);
 
             return matched;
         }

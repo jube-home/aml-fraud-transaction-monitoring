@@ -1,0 +1,84 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Jube.Data.Repository
+{
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Context;
+    using System.Linq;
+    using Jube.Data.Query;
+    using LinqToDB;
+    using Poco;
+
+    public class EntityAnalysisModelSynchronisationNodeStatusEntryRepository(DbContext dbContext)
+    {
+        public async Task UpsertSynchronisationAsync(
+            EntityAnalysisModelSynchronisationNodeStatusEntry model, CancellationToken token = default)
+        {
+            var existing = await
+                dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
+                    .FirstOrDefaultAsync(w
+                        => w.TenantRegistryId == model.TenantRegistryId
+                           && w.Instance == model.Instance, token).ConfigureAwait(false);
+
+            if (existing == null)
+            {
+                model.SynchronisedDate = DateTime.UtcNow;
+                model.HeartbeatDate = DateTime.UtcNow;
+                model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+            }
+            else
+            {
+                existing.SynchronisedDate = DateTime.UtcNow;
+                existing.HeartbeatDate = DateTime.UtcNow;
+                await dbContext.UpdateAsync(existing, token: token).ConfigureAwait(false);
+            }
+        }
+
+        public async Task UpsertHeartbeatAsync(
+            EntityAnalysisModelSynchronisationNodeStatusEntry model, CancellationToken token = default)
+        {
+            var existing =
+                await dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
+                    .FirstOrDefaultAsync(w
+                        => w.TenantRegistryId == model.TenantRegistryId
+                           && w.Instance == model.Instance, token).ConfigureAwait(false);
+
+            if (existing == null)
+            {
+                model.SynchronisedDate = DateTime.UtcNow;
+                model.HeartbeatDate = DateTime.UtcNow;
+                model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+            }
+            else
+            {
+                existing.HeartbeatDate = DateTime.UtcNow;
+                await dbContext.UpdateAsync(existing, token: token).ConfigureAwait(false);
+            }
+        }
+
+        public Task<int> DeleteSilentAsync(int tenantRegistryId, string keepInstance, DateTime now,
+            CancellationToken token = default)
+        {
+            var cutoff = EngineInstanceLiveness.CutoffFrom(now);
+
+            return dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
+                .Where(w => w.TenantRegistryId == tenantRegistryId && w.Instance != keepInstance
+                                                                   && (w.HeartbeatDate == null ||
+                                                                       w.HeartbeatDate <= cutoff))
+                .DeleteAsync(token);
+        }
+    }
+}

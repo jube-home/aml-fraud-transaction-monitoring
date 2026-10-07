@@ -41,7 +41,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     await AddActivationRuleOverrideAsync(context, key, value.Instance.Guid, shadow)
                         .ConfigureAwait(false);
 
-                    value.Dependencies.EntityAnalysisModelOverrides = shadow;
+                    context.Snapshots.Builder(key, value).EntityAnalysisModelOverrides = shadow;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {

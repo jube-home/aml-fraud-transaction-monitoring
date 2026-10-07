@@ -1060,10 +1060,8 @@ function GetData() {
         data["filterTokens"] = builderCoder.filterTokens;
     }
 
-    if ($('#Anomaly').prop('checked')) {
-        data["anomaly"] = true;
-        data["AnomalyProbability"] = anomalyProbability.data("kendoSlider").value();
-    }
+    data["anomaly"] = $('#Anomaly').prop('checked');
+    data["AnomalyProbability"] = anomalyProbability.data("kendoSlider").value();
 
     return data;
 }

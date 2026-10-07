@@ -59,7 +59,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         {
             context.TraceLog($"is starting Sanctions processing.");
 
-            foreach (var entityAnalysisModelSanction in context.EntityAnalysisModel.Collections
+            foreach (var entityAnalysisModelSanction in context.Snapshot
                          .EntityAnalysisModelSanctions)
             {
                 context.TraceLog($"is evaluating Sanctions {entityAnalysisModelSanction.Name}.");

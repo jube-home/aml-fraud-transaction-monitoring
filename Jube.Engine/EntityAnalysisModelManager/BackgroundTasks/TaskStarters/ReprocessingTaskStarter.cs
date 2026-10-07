@@ -228,7 +228,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             sampled += 1;
 
                             if (instance.ReprocessingRuleCompileDelegate(entry,
-                                    model.Dependencies.EntityAnalysisModelLists,
+                                    model.Snapshot.EntityAnalysisModelLists,
                                     new PooledDictionary<string, DictionaryNoBoxing<string>>(),
                                     context.Services.Log))
                             {
@@ -486,7 +486,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     };
 
                     foreach (var entityAnalysisModelRequestXPath in
-                             entityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths
+                             entityAnalysisModel.Snapshot.EntityAnalysisModelRequestXPaths
                                  .Where(entityAnalysisModelRequestXPath =>
                                      !parser.EntityAnalysisModelRequestXPaths.ContainsKey(
                                          entityAnalysisModelRequestXPath.Name)))
@@ -501,7 +501,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     }
 
                     foreach (var publicProperty in
-                             entityAnalysisModel.Collections.EntityAnalysisModelInlineScripts
+                             entityAnalysisModel.Snapshot.EntityAnalysisModelInlineScripts
                                  .SelectMany(entityAnalysisModelInlineScript
                                      => SyntaxTreeHelpers.GetPublicProperties(
                                          entityAnalysisModelInlineScript.InlineScriptCode,

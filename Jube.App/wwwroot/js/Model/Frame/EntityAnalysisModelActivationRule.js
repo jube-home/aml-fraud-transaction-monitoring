@@ -13,6 +13,7 @@
 
 var endpoint = "/api/EntityAnalysisModelActivationRule";
 var parentKeyName = "entityAnalysisModelId";
+var emptyGuid = "00000000-0000-0000-0000-000000000000";
 var validationFail = "There is invalid data in the form. Please check fields and correct.";
 
 var overrideKey = $("#OverrideKey").kendoDropDownList({
@@ -96,11 +97,6 @@ var enableTTLCounter = $("#EnableTTLCounter").kendoSwitch({
     change: function () {
         ExpandCollapseTTLCounter();
     }
-});
-
-var reviewStatusId = $("#ReviewStatusId").kendoDropDownList({
-    dataTextField: "text",
-    dataValueField: "value"
 });
 
 var caseWorkflowGuid = $("#CaseWorkflowGuid").kendoDropDownList({
@@ -349,7 +345,6 @@ function GetData() {
         responseElevationBackColor: $("#ResponseElevationBackColor").val(),
         activationSample: activationSample.data("kendoSlider").value(),
         responseElevationRedirect: $("#ResponseElevationRedirect").val(),
-        reviewStatusId: reviewStatusId.data("kendoDropDownList").value(),
         enableNotification: enableNotification.prop("checked"),
         notificationTypeId: $('input[name=NotificationTypeId]:checked').val(),
         notificationDestination: $("#NotificationDestination").val(),
@@ -370,25 +365,10 @@ function GetData() {
         priority: priority.data("kendoNumericTextBox").value()
     };
 
-    if (data.enableCaseWorkflow) {
-        if (caseWorkflowGuid.data("kendoDropDownList").dataSource.data().length > 0) {
-            data["caseWorkflowGuid"] = caseWorkflowGuid.data("kendoDropDownList").value();
-        }
-
-        if (caseWorkflowGuid.data("kendoDropDownList").dataSource.data().length > 0) {
-            data["caseWorkflowStatusGuid"] = caseWorkflowStatusGuid.data("kendoDropDownList").value();
-        }
-    }
-
-    if (data.enableTtlCounter) {
-        if (entityAnalysisModelTtlCounterGuid.data("kendoDropDownList").dataSource.data().length > 0) {
-            data["entityAnalysisModelTtlCounterGuid"] = entityAnalysisModelTtlCounterGuid.data("kendoDropDownList").value();
-        }
-
-        if (entityAnalysisModelGuidTtlCounter.data("kendoDropDownList").dataSource.data().length > 0) {
-            data["entityAnalysisModelGuidTtlCounter"] = entityAnalysisModelGuidTtlCounter.data("kendoDropDownList").value();
-        }
-    }
+    data.caseWorkflowGuid = caseWorkflowGuid.data("kendoDropDownList").value() || emptyGuid;
+    data.caseWorkflowStatusGuid = caseWorkflowStatusGuid.data("kendoDropDownList").value() || emptyGuid;
+    data.entityAnalysisModelTtlCounterGuid = entityAnalysisModelTtlCounterGuid.data("kendoDropDownList").value() || emptyGuid;
+    data.entityAnalysisModelGuidTtlCounter = entityAnalysisModelGuidTtlCounter.data("kendoDropDownList").value() || emptyGuid;
 
     return data;
 }
@@ -495,7 +475,6 @@ function Ready() {
 
                 caseWorkflowStatusGuid.data("kendoDropDownList").value(data.caseWorkflowStatusGuid);
                 activationSample.data("kendoSlider").value(data.activationSample);
-                reviewStatusId.data("kendoDropDownList").value(data.reviewStatusId);
 
                 if (data.enableNotification) {
                     enableNotification.data("kendoSwitch").check(true);

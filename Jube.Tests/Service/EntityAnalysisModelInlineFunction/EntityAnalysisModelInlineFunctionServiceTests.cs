@@ -30,6 +30,7 @@ using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
+using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -201,7 +202,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
         }
 
         [Fact]
-        public async Task DeleteSoftDeletesAndRowDisappearsFromReadsAsync()
+        public async Task DeleteKeepsRowReachableByIdAndHidesItFromListsAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
@@ -213,7 +214,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
             await service.DeleteAsync(saved.Id);
 
             var byId = await service.GetByIdAsync(saved.Id);
-            byId.Should().BeNull();
+            byId.Should().NotBeNull("a deleted row stays reachable by id so it can be opened and revived");
 
             var all = await service.GetAsync();
             all.Should().NotContain(d => d.Id == saved.Id);
@@ -513,7 +514,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
         }
 
         [Fact]
-        public async Task UpdateOfSoftDeletedRowThrowsNotFoundAsync()
+        public async Task UpdateOfSoftDeletedRowRevivesItAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
@@ -525,7 +526,10 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
 
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
-            await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
+            await service.UpdateAsync(dto);
+
+            (await service.GetByIdAsync(saved.Id)).Should().NotBeNull(
+                "an update to a deleted row revives it, so it is reachable by id");
         }
 
         [Fact]
@@ -770,31 +774,6 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
-        }
-
-        private sealed class CapturingBus : IServiceChangeBus
-        {
-            public readonly List<ServiceChangeEvent> Published = [];
-
-            public Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default)
-            {
-                Published.Add(change);
-                return Task.CompletedTask;
-            }
-
-            public IDisposable Subscribe(Func<ServiceChangeEvent, Task> handler)
-            {
-                return NoopSubscription.Instance;
-            }
-
-            private sealed class NoopSubscription : IDisposable
-            {
-                public static readonly NoopSubscription Instance = new();
-
-                public void Dispose()
-                {
-                }
-            }
         }
     }
 }

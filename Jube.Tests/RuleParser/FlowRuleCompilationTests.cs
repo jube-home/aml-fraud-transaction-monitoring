@@ -84,7 +84,7 @@ namespace Jube.Test.RuleParser
             data.TryAdd("Narrative", narrative);
             data.TryAdd("Email", email);
 
-            var lists = new Dictionary<string, List<string>> { ["HighRiskTerms"] = highRiskTerms.ToList() };
+            var lists = new Dictionary<string, List<string>> { ["HighRiskTerms"] = [.. highRiskTerms] };
             var kvp = new PooledDictionary<string, double>();
 
             var match = compile.CompiledAssembly.GetType("GatewayRule")!.GetMethod("Match")!;

@@ -27,6 +27,7 @@ using Jube.App.Code.ServiceChange;
 using Jube.App.Code.Waf;
 using Jube.App.Code.Watcher;
 using Jube.App.Endpoints;
+using Jube.App.Endpoints.VersionHistory;
 using Jube.App.Endpoints.Mocks;
 using Jube.App.Endpoints.Query;
 using Jube.App.Endpoints.Repository;
@@ -1022,9 +1023,7 @@ namespace Jube.App
                         log.Info($"Could not connect to Postgres after {i} attempts for {ex.Message}.");
                     }
 
-#pragma warning disable VSTHRD002
-                    Task.Delay(6000).Wait();
-#pragma warning restore VSTHRD002
+                    Thread.Sleep(6000);
                 }
             }
 
@@ -1071,9 +1070,7 @@ namespace Jube.App
                                  amqpUrl + " with error " + ex);
                     }
 
-#pragma warning disable VSTHRD002
-                    Task.Delay(3000).Wait();
-#pragma warning restore VSTHRD002
+                    Thread.Sleep(3000);
                 }
             }
 
@@ -1135,21 +1132,14 @@ namespace Jube.App
                         log.Info($"Can't make a connection to Redis after {i} attempt(s) for {ex.Message}.");
                     }
 
-#pragma warning disable VSTHRD002
-                    Task.Delay(1500).Wait();
-#pragma warning restore VSTHRD002
+                    Thread.Sleep(1500);
                 }
             }
 
             throw new Exception($"Could not connect to Redis after {retryRedisConnectionRetry} attempts.");
         }
 
-#pragma warning disable AsyncFixer03
-#pragma warning disable VSTHRD100
-        // ReSharper disable once AsyncVoidMethod
-        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-#pragma warning restore VSTHRD100
-#pragma warning restore AsyncFixer03
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
         {
             try
@@ -1322,6 +1312,8 @@ namespace Jube.App
                     endpoints.MapEntityAnalysisModelGatewayRuleEndpoints();
                     endpoints.MapEntityAnalysisModelSanctionEndpoints();
                     endpoints.MapEntityAnalysisModelTagEndpoints();
+                    endpoints.MapEntityApprovalEndpoints();
+                    endpoints.MapVersionHistoryEndpoints();
                     endpoints.MapEntityAnalysisModelStagePerformanceCounterEndpoints();
                     endpoints.MapEntityAnalysisModelIntegrityEndpoints();
                     endpoints.MapQueryBuilderEndpoints();
@@ -1480,6 +1472,18 @@ namespace Jube.App
                     endpoints.MapCaseWorkflowMacroExecutionEndpoints();
                 });
 
+                _ = StartEngineInBackgroundAsync(app, log);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Error in App Configure as {ex}");
+            }
+        }
+
+        private static async Task StartEngineInBackgroundAsync(IApplicationBuilder app, ILog log)
+        {
+            try
+            {
                 await app.StartEngineAsync().ConfigureAwait(false);
             }
             catch (Exception ex)

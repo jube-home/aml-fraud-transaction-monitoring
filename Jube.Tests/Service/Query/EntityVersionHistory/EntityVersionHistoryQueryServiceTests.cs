@@ -96,8 +96,7 @@ namespace Jube.Test.Service.Query.EntityVersionHistory
             (await service.GetByIdAndDateRangeAsync(firstVersionId, midDate, lateDate))
                 .Should().BeNull("the row exists but falls outside the requested window");
 
-            var latest = await service.GetLatestAsync(tenant.Id);
-            latest.Should().NotBeNull();
+            var latest = (await service.GetLatestAsync(tenant.Id)).Required();
             latest.Id.Should().Be(secondVersionId);
 
             var changes = await service.CompareAsync(firstVersionId, secondVersionId);

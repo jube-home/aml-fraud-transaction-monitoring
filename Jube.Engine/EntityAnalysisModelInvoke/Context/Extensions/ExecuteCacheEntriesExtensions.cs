@@ -104,7 +104,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             var reducedInternedPayload = new DictionaryNoBoxing<int>();
             reducedInternedPayload.Add(-1, context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate);
 
-            foreach (var entityAnalysisModelInlineScriptPropertyAttribute in context.EntityAnalysisModel.Collections
+            foreach (var entityAnalysisModelInlineScriptPropertyAttribute in context.Snapshot
                          .EntityAnalysisModelInlineScripts.SelectMany(entityAnalysisModelInlineScript =>
                              entityAnalysisModelInlineScript.EntityAnalysisModelInlineScriptPropertyAttributes))
             {
@@ -120,7 +120,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 }
             }
 
-            foreach (var entityAnalysisModelRequestXPath in context.EntityAnalysisModel.Collections
+            foreach (var entityAnalysisModelRequestXPath in context.Snapshot
                          .EntityAnalysisModelRequestXPaths.Where(w => w.Cache))
             {
                 if (context.EntityAnalysisModelInstanceEntryPayload.Payload.TryGetValue(

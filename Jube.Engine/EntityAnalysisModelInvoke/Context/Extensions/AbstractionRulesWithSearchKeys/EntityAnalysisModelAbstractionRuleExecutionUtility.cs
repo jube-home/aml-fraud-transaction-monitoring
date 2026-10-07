@@ -72,7 +72,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
                     var logicHashMatches = new Dictionary<string, List<DictionaryNoBoxing<string>>>();
                     var abstractionRuleMatches = new Dictionary<int, List<DictionaryNoBoxing<string>>>();
 
-                    var rulesToEvaluate = EntityAnalysisModel.Collections.ModelAbstractionRules
+                    var rulesToEvaluate = Context.Snapshot.ModelAbstractionRules
                         .FindAll(x => x.SearchKey == DistinctSearchKey.SearchKey && x.Search);
 
                     foreach (var evaluateAbstractionRule in rulesToEvaluate)
@@ -86,7 +86,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
                             {
                                 matches = documents.FindAll(x => ReflectRuleHelper.Execute(
                                     evaluateAbstractionRule,
-                                    EntityAnalysisModel, x,
+                                    Context.Snapshot, x,
                                     EntityInstanceEntryDictionaryKvPs, Log));
 
                                 logicHashMatches.Add(evaluateAbstractionRule.LogicHash, matches);

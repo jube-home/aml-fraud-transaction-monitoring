@@ -30,6 +30,7 @@ using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
+using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -776,31 +777,6 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
-        }
-
-        private sealed class CapturingBus : IServiceChangeBus
-        {
-            public readonly List<ServiceChangeEvent> Published = [];
-
-            public Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default)
-            {
-                Published.Add(change);
-                return Task.CompletedTask;
-            }
-
-            public IDisposable Subscribe(Func<ServiceChangeEvent, Task> handler)
-            {
-                return NoopSubscription.Instance;
-            }
-
-            private sealed class NoopSubscription : IDisposable
-            {
-                public static readonly NoopSubscription Instance = new();
-
-                public void Dispose()
-                {
-                }
-            }
         }
     }
 }

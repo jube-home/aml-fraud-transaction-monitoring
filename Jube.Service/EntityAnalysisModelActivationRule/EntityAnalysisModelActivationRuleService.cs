@@ -41,11 +41,9 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
     public sealed class EntityAnalysisModelActivationRuleService
     {
         private const int MaxListTake = 200;
-        private const int ApprovedByReviewStatusId = 4;
         private static readonly int[] listPermissions = [17];
         private static readonly int[] readPermissions = [17];
         private static readonly int[] writePermissions = [17];
-        private static readonly int[] approveByReviewPermissions = [41];
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -489,8 +487,8 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
         }
 
         [Description("Registers a new Activation Rule under a Model in the caller's tenant. Not idempotent -- " +
-                     "calling twice creates two rows. Setting ReviewStatusId to 4 (Approved by Review) requires " +
-                     "the caller to additionally hold the Allow Approved By Review permission.")]
+                     "calling twice creates two rows. The rule is not loaded by the engine until a checker " +
+                     "approves the version this creates.")]
         [ServiceOperation("EntityAnalysisModelActivationRuleCreate", OperationKind.Write, Idempotent = false)]
         public async Task<ActivationRulePoco> InsertAsync(
             [Description("The Activation Rule to create.")]
@@ -509,7 +507,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                 ArgumentNullException.ThrowIfNull(model);
                 model.Id = 0;
                 EnsurePermitted(writePermissions, "EntityAnalysisModelActivationRule.Create");
-                EnsureApprovedByReviewPermitted(model, "EntityAnalysisModelActivationRule.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 if (!results.IsValid)
@@ -543,11 +540,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
-                throw;
-            }
-            catch (ReviewStatusApprovalException)
-            {
-                op.Outcome("invalid");
                 throw;
             }
             catch (DtoValidationException)
@@ -594,7 +586,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
             {
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted(writePermissions, "EntityAnalysisModelActivationRule.Validate");
-                EnsureApprovedByReviewPermitted(model, "EntityAnalysisModelActivationRule.Validate");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
@@ -766,8 +757,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
 
         [Description("Updates an existing Activation Rule in the caller's tenant, identified by its Id. " +
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version. " +
-                     "Setting ReviewStatusId to 4 (Approved by Review) requires the caller to additionally hold " +
-                     "the Allow Approved By Review permission.")]
+                     "The engine keeps running the last approved version until a checker approves the new one.")]
         [ServiceOperation("EntityAnalysisModelActivationRuleUpdate", OperationKind.Write, Idempotent = true)]
         public async Task<ActivationRulePoco> UpdateAsync(
             [Description("The Activation Rule to update. Id selects the row; identity/tenant/audit fields are " +
@@ -786,7 +776,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
             {
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted(writePermissions, "EntityAnalysisModelActivationRule.Update");
-                EnsureApprovedByReviewPermitted(model, "EntityAnalysisModelActivationRule.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 if (!results.IsValid)
@@ -833,11 +822,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
-                throw;
-            }
-            catch (ReviewStatusApprovalException)
-            {
-                op.Outcome("invalid");
                 throw;
             }
             catch (DtoValidationException)
@@ -1050,27 +1034,6 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
 
             throw new ForbiddenException(strings[EntityAnalysisModelActivationRuleResources.PermissionDenied],
                 specs);
-        }
-
-        private void EnsureApprovedByReviewPermitted(EntityAnalysisModelActivationRuleDto model, string op)
-        {
-            if (model.ReviewStatusId != ApprovedByReviewStatusId)
-            {
-                return;
-            }
-
-            if (permissionValidation.Validate(approveByReviewPermissions))
-            {
-                return;
-            }
-
-            if (log.IsWarnEnabled)
-            {
-                log.Warn($"{op}: Approved by Review requested without permission user={userName}");
-            }
-
-            throw new ReviewStatusApprovalException(
-                strings[EntityAnalysisModelActivationRuleResources.PermissionDeniedApproveByReview], "Permission");
         }
     }
 }

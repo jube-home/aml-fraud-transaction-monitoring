@@ -17,6 +17,7 @@ namespace Jube.Engine.Integrity
     using System.Collections.Generic;
     using System.Linq;
     using EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
+    using Jube.Data.Query;
     using Parser.Dependency;
 
     public sealed record IntegrityCheck(
@@ -97,6 +98,15 @@ namespace Jube.Engine.Integrity
                     inactive.Dependent,
                     $"{Describe(inactive)} uses {inactive.Target.Kind} {inactive.Target.Name}, which is inactive, " +
                     "so the engine does not load it and the use will not work.");
+            }
+
+            foreach (var unapproved in graph.OnUnapprovedTargets().OrderBy(d => d.Dependent.Kind)
+                         .ThenBy(d => d.Dependent.Name))
+            {
+                yield return Check(IntegrityCode.DependencyOnUnapproved, IntegritySeverity.Warning, Dependencies,
+                    unapproved.Dependent,
+                    $"{Describe(unapproved)} uses {unapproved.Target.Kind} {unapproved.Target.Name}, which is not " +
+                    "yet approved, so the engine does not run it and the use will not work until it is.");
             }
 
             foreach (var unused in graph.Unreferenced(unreferencedKinds).Where(e => e.Active)
@@ -195,13 +205,16 @@ namespace Jube.Engine.Integrity
                     null, null, "No engine instance has synchronised this tenant's models."));
             }
 
+            var retention = TimeSpan.FromMinutes(EngineInstanceLiveness.RetentionMinutes);
             foreach (var node in observation.Nodes.Where(n =>
-                         n.HeartbeatDate == null || now - n.HeartbeatDate.Value > heartbeatTolerance))
+                         n.HeartbeatDate is { } reported && now - reported > heartbeatTolerance
+                                                         && now - reported <= retention))
             {
-                checks.Add(new IntegrityCheck(IntegrityCode.EngineNodeStale, IntegritySeverity.Warning, Engine, null,
+                checks.Add(new IntegrityCheck(IntegrityCode.EngineNodeStale, IntegritySeverity.Error, Engine, null,
                     null, node.Instance,
-                    $"Engine instance {node.Instance} last reported at {Format(node.HeartbeatDate)}, more than " +
-                    $"{heartbeatTolerance.TotalMinutes:0} minutes ago; it may have stopped."));
+                    $"Engine instance {node.Instance} last reported at {Format(node.HeartbeatDate)} and is not running. " +
+                    $"It is removed at the next synchronisation, or drops out of this list at " +
+                    $"{Format(node.HeartbeatDate!.Value.Add(retention))} if no synchronisation runs."));
             }
 
             if (!modelActive || observation.Source == EngineStateSourceKind.Unavailable)
@@ -209,9 +222,12 @@ namespace Jube.Engine.Integrity
                 return checks;
             }
 
-            var active = entities.Where(e => e.Active && loadedKinds.Contains(e.Kind.ToString()))
-                .Select(e => (Kind: e.Kind.ToString(), e.Id, e.Name)).ToList();
+            var entityList = entities.ToList();
+            var active = entityList.Where(e => e.Active && loadedKinds.Contains(e.Kind.ToString()))
+                .Select(e => (Kind: e.Kind.ToString(), e.Id, e.Name, e.Approved)).ToList();
             var activeKeys = active.Select(e => (e.Kind, e.Id)).ToHashSet();
+            var pendingKeys = entityList.Where(e => !e.Approved && loadedKinds.Contains(e.Kind.ToString()))
+                .Select(e => (Kind: e.Kind.ToString(), e.Id)).ToHashSet();
 
             foreach (var state in observation.States.OrderBy(s => s.Instance, StringComparer.Ordinal))
             {
@@ -228,16 +244,33 @@ namespace Jube.Engine.Integrity
                 foreach (var missing in active.Where(e => !loadedKeys.Contains((e.Kind, e.Id)))
                              .OrderBy(e => e.Kind).ThenBy(e => e.Name))
                 {
+                    if (!missing.Approved)
+                    {
+                        checks.Add(new IntegrityCheck(IntegrityCode.EntityPendingApproval, IntegritySeverity.Info,
+                            Engine, missing.Kind, missing.Id, missing.Name,
+                            $"{missing.Kind} {missing.Name} is waiting for approval, so engine instance " +
+                            $"{state.Instance} does not run it yet."));
+                        continue;
+                    }
+
                     checks.Add(new IntegrityCheck(IntegrityCode.EngineEntityNotLoaded, IntegritySeverity.Warning,
                         Engine, missing.Kind, missing.Id, missing.Name,
-                        $"{missing.Kind} {missing.Name} is active but engine instance {state.Instance} has not " +
-                        "loaded it: synchronise the model, and check that it compiles" +
-                        (missing.Kind == nameof(ModelEntityKind.ActivationRule) ? " and is approved." : ".")));
+                        $"{missing.Kind} {missing.Name} is approved and active but engine instance {state.Instance} " +
+                        "has not loaded it: synchronise the model, and check that it compiles."));
                 }
 
                 foreach (var stale in loaded.Where(l => !activeKeys.Contains((l.Kind, l.Id)))
                              .OrderBy(l => l.Kind).ThenBy(l => l.Name))
                 {
+                    if (pendingKeys.Contains((stale.Kind, stale.Id)))
+                    {
+                        checks.Add(new IntegrityCheck(IntegrityCode.EntityPendingApproval, IntegritySeverity.Info,
+                            Engine, stale.Kind, stale.Id, stale.Name,
+                            $"{stale.Kind} {stale.Name} has a change waiting for approval, so engine instance " +
+                            $"{state.Instance} is still running the last approved version."));
+                        continue;
+                    }
+
                     checks.Add(new IntegrityCheck(IntegrityCode.EngineEntityStale, IntegritySeverity.Warning, Engine,
                         stale.Kind, stale.Id, stale.Name,
                         $"Engine instance {state.Instance} is still running {stale.Kind} {stale.Name}, which is no " +

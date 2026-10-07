@@ -47,7 +47,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         private static Context NewContext(params EntityAnalysisModelAbstractionRule[] rules)
         {
             var entityAnalysisModel = new EntityAnalysisModel();
-            entityAnalysisModel.Collections.ModelAbstractionRules.AddRange(rules);
+            entityAnalysisModel.Snapshot.ModelAbstractionRules.AddRange(rules);
 
             var payload = new DictionaryNoBoxing<string>();
             payload.Add("Currency", "AED");

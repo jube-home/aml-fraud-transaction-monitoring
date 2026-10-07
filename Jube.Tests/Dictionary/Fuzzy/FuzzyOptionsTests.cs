@@ -38,7 +38,7 @@ namespace Jube.Test.Dictionary.Fuzzy
 
             options.IsValid.Should().BeTrue();
             options.Algorithms.Select(a => a.Algorithm).Should()
-                .BeEquivalentTo(new[] { FuzzyAlgorithm.JaroWinkler, FuzzyAlgorithm.TokenSort });
+                .BeEquivalentTo([FuzzyAlgorithm.JaroWinkler, FuzzyAlgorithm.TokenSort]);
             options.Algorithms.Should().OnlyContain(a => Math.Abs(a.Threshold - 0.92) < 0.0001);
             options.RequireAll.Should().BeFalse();
             options.Within.Should().BeFalse();
@@ -89,7 +89,7 @@ namespace Jube.Test.Dictionary.Fuzzy
             var options = FuzzyOptions.Parse("notitles,within");
 
             options.Algorithms.Select(a => a.Algorithm).Should()
-                .BeEquivalentTo(new[] { FuzzyAlgorithm.JaroWinkler, FuzzyAlgorithm.TokenSort });
+                .BeEquivalentTo([FuzzyAlgorithm.JaroWinkler, FuzzyAlgorithm.TokenSort]);
         }
 
         [Fact]

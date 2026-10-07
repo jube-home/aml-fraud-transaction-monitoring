@@ -19,7 +19,7 @@ namespace Jube.Test.Waf
 {
     internal static class WafTestRuleSets
     {
-        internal static readonly (string Name, string Category, string Pattern)[] SeededSignatures =
+        internal static readonly (string Name, string Category, string Pattern)[] seededSignatures =
         [
             ("OWASP-SQLI-UNION", "A1-Injection", @"(?i)union[\s/*]+select"),
             ("OWASP-SQLI-TAUTOLOGY", "A1-Injection", @"(?i)(\bor\b|\band\b)[\s(]+[\w""']+\s*(=|<>|like)\s*[\w""']+"),
@@ -41,7 +41,7 @@ namespace Jube.Test.Waf
         {
             var signatures = new List<WafSignature>();
             var id = 1;
-            foreach (var (name, category, pattern) in SeededSignatures)
+            foreach (var (name, category, pattern) in seededSignatures)
             {
                 signatures.Add(new WafSignature
                 {

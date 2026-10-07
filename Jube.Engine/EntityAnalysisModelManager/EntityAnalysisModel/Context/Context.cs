@@ -13,6 +13,7 @@
 
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context
 {
+    using Data.Query;
     using Jube.Engine.Helpers;
     using Models;
 
@@ -20,29 +21,19 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context
     {
         public JsonSerializationHelper JsonSerializationHelper { get; init; }
 
-        public Services Services
-        {
-            get;
-        } = new Services();
+        public int ApprovalsRequired =>
+            ApprovalsRequiredResolver.Resolve(Services.DynamicEnvironment?.AppSettings("ApprovalsRequired"));
 
-        public Paths Paths
-        {
-            get;
-        } = new Paths();
+        public Services Services { get; } = new Services();
 
-        public EntityAnalysisModels EntityAnalysisModels
-        {
-            get;
-        } = new EntityAnalysisModels();
+        public Paths Paths { get; } = new Paths();
 
-        public Caching Caching
-        {
-            get;
-        } = new Caching();
+        public EntityAnalysisModels EntityAnalysisModels { get; } = new EntityAnalysisModels();
 
-        public ConcurrentQueues ConcurrentQueues
-        {
-            get;
-        } = new ConcurrentQueues();
+        public Snapshots Snapshots { get; } = new Snapshots();
+
+        public Caching Caching { get; } = new Caching();
+
+        public ConcurrentQueues ConcurrentQueues { get; } = new ConcurrentQueues();
     }
 }

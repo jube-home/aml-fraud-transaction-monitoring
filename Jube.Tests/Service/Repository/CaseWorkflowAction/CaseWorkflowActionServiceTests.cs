@@ -281,14 +281,14 @@ namespace Jube.Test.Service.Repository.CaseWorkflowAction
             createdActionIds.Add(created.Id);
 
             await Task.Delay(50);
-            var updaterService = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var updaterService = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
             created.Name += "-updated";
             var updated = await updaterService.UpdateAsync(created);
 
             updated.Version.Should().Be(2);
             updated.CreatedUser.Should().Be(created.CreatedUser);
             updated.CreatedDate.Should().BeCloseTo(created.CreatedDate.Required(), TimeSpan.FromMilliseconds(10));
-            updated.UpdatedUser.Should().Be(fx.Seed.UserWithPermissionNoApproveByReview);
+            updated.UpdatedUser.Should().Be(fx.Seed.UserWithPermissionNoApproval);
             updated.UpdatedDate.Should().NotBeNull();
         }
 
@@ -579,21 +579,21 @@ namespace Jube.Test.Service.Repository.CaseWorkflowAction
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
-            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermissionNoApproveByReview);
-            var owner = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermissionNoApproval);
+            var owner = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
             var created = await owner.InsertAsync(ValidDto(workflowId));
             createdActionIds.Add(created.Id);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
 
             (await service.GetByCasesWorkflowIdActiveOnlyAsync(workflowId)).Should()
                 .NotContain(d => d.Id == created.Id);
 
-            await GrantWorkflowRoleAsync(dbContext, workflowId, fx.Seed.UserWithPermissionNoApproveByReview);
+            await GrantWorkflowRoleAsync(dbContext, workflowId, fx.Seed.UserWithPermissionNoApproval);
             (await service.GetByCasesWorkflowIdActiveOnlyAsync(workflowId)).Should()
                 .NotContain(d => d.Id == created.Id);
 
-            await GrantActionRoleAsync(dbContext, created.Guid, fx.Seed.UserWithPermissionNoApproveByReview);
+            await GrantActionRoleAsync(dbContext, created.Guid, fx.Seed.UserWithPermissionNoApproval);
             (await service.GetByCasesWorkflowIdActiveOnlyAsync(workflowId)).Should()
                 .Contain(d => d.Id == created.Id);
         }
@@ -602,18 +602,18 @@ namespace Jube.Test.Service.Repository.CaseWorkflowAction
         public async Task ListByWorkflowGuidActiveOnlyReturnsRowsOnceBothRolesGrantedAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
-            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermissionNoApproveByReview);
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermissionNoApproval);
             var workflowGuid = await dbContext.CaseWorkflow.Where(w => w.Id == workflowId)
                 .Select(w => w.Guid).FirstAsync();
-            var owner = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var owner = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
             var created = await owner.InsertAsync(ValidDto(workflowId));
             createdActionIds.Add(created.Id);
 
-            await GrantWorkflowRoleAsync(dbContext, workflowId, fx.Seed.UserWithPermissionNoApproveByReview);
-            await GrantActionRoleAsync(dbContext, created.Guid, fx.Seed.UserWithPermissionNoApproveByReview);
+            await GrantWorkflowRoleAsync(dbContext, workflowId, fx.Seed.UserWithPermissionNoApproval);
+            await GrantActionRoleAsync(dbContext, created.Guid, fx.Seed.UserWithPermissionNoApproval);
 
-            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
             var list = await service.GetByCasesWorkflowGuidActiveOnlyAsync(workflowGuid);
 
             list.Should().Contain(d => d.Id == created.Id);

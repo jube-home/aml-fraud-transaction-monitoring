@@ -18,30 +18,18 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
     using System.Collections.Generic;
     using BackgroundTasks.TaskStarters.Archiver;
     using EntityAnalysisModel = EntityAnalysisModel;
-    using EntityAnalysisModelDictionary = Models.EntityAnalysisModelDictionary;
-    using EntityAnalysisModelOverride = Models.EntityAnalysisModelOverride;
     using SanctionEntry = Sanctions.Models.SanctionEntry;
 
     public class Dependencies
     {
-        public Dictionary<string, List<string>> EntityAnalysisModelLists { get; set; } =
-            new Dictionary<string, List<string>>();
-
-        public Dictionary<int, EntityAnalysisModelDictionary> KvpDictionaries { get; set; } =
-            new Dictionary<int, EntityAnalysisModelDictionary>();
-
-        public Dictionary<string, Dictionary<string, EntityAnalysisModelOverride>>
-            EntityAnalysisModelOverrides { get; set; } =
-            new Dictionary<string, Dictionary<string, EntityAnalysisModelOverride>>();
-
         public ConcurrentDictionary<int, SanctionEntry> SanctionsEntries { get; set; } =
             new ConcurrentDictionary<int, SanctionEntry>();
 
         public ConcurrentDictionary<string, byte> SanctionsStopTokens { get; set; } =
             new ConcurrentDictionary<string, byte>();
 
-        public Dictionary<int, EntityAnalysisModel> ActiveEntityAnalysisModels { get; set; } =
-            new Dictionary<int, EntityAnalysisModel>();
+        public ConcurrentDictionary<int, EntityAnalysisModel> ActiveEntityAnalysisModels { get; set; } =
+            new ConcurrentDictionary<int, EntityAnalysisModel>();
 
         public Dictionary<string, DateTime> LastAbstractionRuleCache { get; } = new Dictionary<string, DateTime>();
         public Dictionary<int, ArchiveBuffer> BulkInsertMessageBuffers { get; } = new Dictionary<int, ArchiveBuffer>();

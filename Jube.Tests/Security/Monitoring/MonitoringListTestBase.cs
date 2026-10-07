@@ -128,7 +128,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
         }
 
         foreach (var user in new[]
-                     { PenTestUser.NoApproveByReview, PenTestUser.TenantB, PenTestUser.BothTenants })
+                     { PenTestUser.NoApproval, PenTestUser.TenantB, PenTestUser.BothTenants })
         {
             var r = await GetAsClientAsync(As(user));
             run.Expect(r.Status == 403, r, "NOT-LANDLORD", $"{user} is not a landlord and must get 403");

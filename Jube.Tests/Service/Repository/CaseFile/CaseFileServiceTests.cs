@@ -512,11 +512,11 @@ namespace Jube.Test.Service.Repository.CaseFile
         {
             await using var dbContext = fx.GetDbContext();
             var (workflowGuid, statusGuid) =
-                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
             await CreateCaseFileAsync(dbContext, caseId, "account", caseKeyValue,
-                fx.Seed.UserWithPermissionNoApproveByReview);
+                fx.Seed.UserWithPermissionNoApproval);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var result = await service.GetByCaseKeyValueAsync("account", caseKeyValue);

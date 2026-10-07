@@ -56,7 +56,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
         private static void IterateAndProcess(Context context, Dictionary<string, TaskPerformance> items)
         {
-            foreach (var entityAnalysisModelAbstractionCalculation in context.EntityAnalysisModel.Collections
+            foreach (var entityAnalysisModelAbstractionCalculation in context.Snapshot
                          .EntityAnalysisModelAbstractionCalculations)
             {
                 context.TraceLog(
@@ -111,7 +111,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             EntityAnalysisModelAbstractionCalculation entityAnalysisModelAbstractionCalculation)
         {
             var calculationDouble = ReflectRuleHelper.Execute(entityAnalysisModelAbstractionCalculation,
-                context.EntityAnalysisModel,
+                context.Snapshot,
                 context.EntityAnalysisModelInstanceEntryPayload,
                 context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log);
 

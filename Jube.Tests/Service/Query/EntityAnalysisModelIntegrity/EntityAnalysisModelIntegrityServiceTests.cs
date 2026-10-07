@@ -183,8 +183,8 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
             engine.Source.Should().Be("Snapshot");
             engine.Nodes.Should().Contain(n => n.Instance == instance);
             engine.Instances.Should().ContainSingle(i => i.Instance == instance && i.Started).Which.Loaded
-                .Select(l => (l.Kind, l.Count)).Should().BeEquivalentTo(new[]
-                    { ("GatewayRule", 1), ("RequestXPath", 1), ("TtlCounter", 1) });
+                .Select(l => (l.Kind, l.Count)).Should().BeEquivalentTo([("GatewayRule", 1), ("RequestXPath", 1), ("TtlCounter", 1)
+                ]);
         }
 
         [Fact]

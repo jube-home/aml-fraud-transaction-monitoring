@@ -187,7 +187,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
         }
 
         [Fact]
-        public async Task DeleteSoftDeletesAndRowDisappearsFromReadsAsync()
+        public async Task DeleteKeepsRowReachableByIdAndHidesItFromListsAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
@@ -198,7 +198,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             await service.DeleteAsync(saved.Id);
 
             var byId = await service.GetByIdAsync(saved.Id);
-            byId.Should().BeNull();
+            byId.Should().NotBeNull("a deleted row stays reachable by id so it can be opened and revived");
 
             var all = await service.GetAsync();
             all.Should().NotContain(d => d.Id == saved.Id);
@@ -725,7 +725,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
         }
 
         [Fact]
-        public async Task UpdateOfSoftDeletedRowThrowsNotFoundAsync()
+        public async Task UpdateOfSoftDeletedRowRevivesItAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
@@ -736,7 +736,10 @@ namespace Jube.Test.Service.EntityAnalysisModel
 
             var dto = NewDto(saved.Name);
             dto.Id = saved.Id;
-            await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
+            await service.UpdateAsync(dto);
+
+            (await service.GetByIdAsync(saved.Id)).Should().NotBeNull(
+                "an update to a deleted row revives it, so it is reachable by id");
         }
 
         [Fact]

@@ -384,7 +384,7 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission,
-                [fx.Seed.UserWithPermissionNoApproveByReview], [fx.Seed.UserWithPermission]);
+                [fx.Seed.UserWithPermissionNoApproval], [fx.Seed.UserWithPermission]);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().BeEmpty();
@@ -395,7 +395,7 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission, [fx.Seed.UserWithPermission],
-                [fx.Seed.UserWithPermissionNoApproveByReview]);
+                [fx.Seed.UserWithPermissionNoApproval]);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().BeEmpty();
@@ -406,10 +406,10 @@ namespace Jube.Test.Service.Query.CaseByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var c = await CreateCaseAsync(dbContext, fx.Seed.UserWithPermission,
-                [fx.Seed.UserWithPermission, fx.Seed.UserWithPermissionNoApproveByReview],
-                [fx.Seed.UserWithPermission, fx.Seed.UserWithPermissionNoApproveByReview]);
+                [fx.Seed.UserWithPermission, fx.Seed.UserWithPermissionNoApproval],
+                [fx.Seed.UserWithPermission, fx.Seed.UserWithPermissionNoApproval]);
             var serviceOne = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var serviceTwo = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var serviceTwo = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
 
             (await serviceOne.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().ContainSingle();
             (await serviceTwo.GetAsync(c.CaseKey, c.CaseKeyValue)).Should().ContainSingle();

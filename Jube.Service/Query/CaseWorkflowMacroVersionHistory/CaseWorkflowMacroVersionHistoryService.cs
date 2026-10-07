@@ -20,10 +20,12 @@ using Jube.Service.Exceptions.Query.EntityVersionHistory;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
+using Jube.Service.Query.VersionHistory;
 
 namespace Jube.Service.Query.CaseWorkflowMacroVersionHistory
 {
-    public sealed class CaseWorkflowMacroVersionHistoryService
+    public sealed class CaseWorkflowMacroVersionHistoryService : IVersionHistoryService<
+        CaseWorkflowMacroVersionHistoryService, CaseWorkflowMacroVersion>
     {
         private static readonly int[] permissions = [24];
 

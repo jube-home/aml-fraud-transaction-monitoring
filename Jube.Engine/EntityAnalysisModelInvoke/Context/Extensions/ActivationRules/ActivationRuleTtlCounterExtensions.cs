@@ -27,7 +27,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
     {
         public static async Task ActivationRuleTtlCounterAsync(this Context context,
             EntityAnalysisModelActivationRule evaluateActivationRule,
-            Dictionary<int, EntityAnalysisModel> availableModels, CacheService cacheService)
+            IReadOnlyDictionary<int, EntityAnalysisModel> availableModels, CacheService cacheService)
         {
             if (!evaluateActivationRule.EnableTtlCounter || context.EntityAnalysisModelInstanceEntryPayload
                     .EntityAnalysisModelReprocessingRuleInstanceId.HasValue)
@@ -38,7 +38,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             context.TraceLog(
                 $"is incrementing TTL counter {evaluateActivationRule.EntityAnalysisModelTtlCounterGuid} as this is enabled in the activation rule.");
 
-            var target = FindTargetTtlCounter(evaluateActivationRule, availableModels);
+            var target = FindTargetTtlCounter(evaluateActivationRule, availableModels, context.AvailableSnapshots);
             if (target == null)
             {
                 return;
@@ -183,16 +183,21 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
         private static (EntityAnalysisModel Model, EntityAnalysisModelTtlCounter TtlCounter)?
             FindTargetTtlCounter(EntityAnalysisModelActivationRule evaluateActivationRule,
-                Dictionary<int, EntityAnalysisModel> availableModels)
+                IReadOnlyDictionary<int, EntityAnalysisModel> availableModels,
+                IReadOnlyDictionary<int, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot> snapshots)
         {
-            foreach (var (_, model) in availableModels)
+            foreach (var (key, model) in availableModels)
             {
                 if (evaluateActivationRule.EntityAnalysisModelGuidTtlCounter != model.Instance.Guid)
                 {
                     continue;
                 }
 
-                foreach (var candidate in model.Collections.ModelTtlCounters)
+                var snapshot = snapshots != null && snapshots.TryGetValue(key, out var pinned)
+                    ? pinned
+                    : model.Snapshot;
+
+                foreach (var candidate in snapshot.ModelTtlCounters)
                 {
                     if (evaluateActivationRule.EntityAnalysisModelTtlCounterGuid == candidate.Guid)
                     {

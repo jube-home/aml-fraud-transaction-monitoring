@@ -526,5 +526,7 @@ namespace Jube.Data.Context
         public ITable<UserRegistryApiKey> UserRegistryApiKey => GetTable<UserRegistryApiKey>();
 
         public ITable<SanctionStopToken> SanctionStopToken => GetTable<SanctionStopToken>();
+
+        public ITable<EntityApproval> EntityApproval => GetTable<EntityApproval>();
     }
 }

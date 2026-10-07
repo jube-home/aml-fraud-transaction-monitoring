@@ -15,7 +15,7 @@ using System;
 
 namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Models
 {
-    internal sealed class FixedRandom(double fixedNextDouble) : Random
+    public sealed class FixedRandom(double fixedNextDouble) : Random
     {
         public override double NextDouble()
         {

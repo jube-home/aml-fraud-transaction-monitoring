@@ -19,5 +19,7 @@ namespace Jube.Data.Query.Models
         public int Id { get; init; }
         public string Name { get; init; }
         public bool Active { get; init; }
+        public int? Version { get; init; }
+        public bool Approved { get; set; } = true;
     }
 }

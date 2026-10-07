@@ -13,6 +13,11 @@
 
 const endpoint = "/api/EntityAnalysisModelDictionary";
 const endpointValues = "/api/EntityAnalysisModelDictionaryKvp";
+
+$("#AddValue").kendoButton().click(function (e) {
+    $("#valueGrid").data("kendoGrid").addRow();
+    e.preventDefault();
+});
 const parentKeyName = "entityAnalysisModelGuid";
 const validationFail = "There is invalid data in the form. Please check fields and correct.";
 
@@ -37,7 +42,7 @@ function LoadFiles() {
 }
 
 function onSuccess() {
-    $("#listView").data("kendoListView").dataSource.data([]);
+    $("#valueGrid").data("kendoGrid").dataSource.data([]);
     LoadList();
 }
 
@@ -56,86 +61,18 @@ function PopulateStrings() {
 }
 
 function LoadList() {
-    const dataSource = new kendo.data.DataSource({
-        transport: {
-            read: {
-                url: endpointValues + "/ByEntityAnalysisModelDictionaryId",
-                type: "GET"
-            },
-            update: {
-                url: endpointValues,
-                dataType: "json",
-                contentType: "application/json",
-                type: "PUT"
-            },
-            destroy: {
-                url: endpointValues,
-                type: "DELETE"
-            },
-            create: {
-                url: endpointValues,
-                dataType: "json",
-                contentType: "application/json",
-                type: "POST"
-            },
-            parameterMap: function (options, operation) {
-                if (operation === "read") {
-                    return {entityAnalysisModelDictionaryId: id};
-                } else if (operation === "update") {
-                    return JSON.stringify({
-                        entityAnalysisModelDictionaryId: id,
-                        id:
-                        options.models[0].id,
-                        kvpKey: options.models[0].kvpKey,
-                        kvpValue: options.models[0].kvpValue,
-                        deleteExpiryDate: options.models[0].deleteExpiryDate
-                    });
-                } else if (operation === "destroy") {
-                    return {
-                        id:
-                        options.models[0].id
-                    };
-                } else if (operation === "create") {
-                    return JSON.stringify({
-                        entityAnalysisModelDictionaryId: id,
-                        kvpKey: options.models[0].kvpKey,
-                        kvpValue: options.models[0].kvpValue,
-                        deleteExpiryDate: options.models[0].deleteExpiryDate
-                    });
-                }
-            }
-        },
-        batch: true,
-        schema: {
-            model: {
-                id: "id",
-                fields: {
-                    id: {editable: false, nullable: true},
-                    kvpKey: "kvpKey",
-                    kvpValue: "kvpValue",
-                    entityAnalysisModelDictionaryId: "entityAnalysisModelDictionaryId",
-                    deleteExpiryDate: {type: "date", defaultValue: null}
-                }
-            }
-        }
-    });
-
-    const listView = $("#listView").kendoListView({
-        dataSource: dataSource,
-        remove: function (e) {
-            if (!confirm("Are you sure you want to delete?")) {
-                e.preventDefault();
-            }
-        },
-        template: kendo.template($("#template").html()),
-        editTemplate: kendo.template($("#editTemplate").html())
-    }).data("kendoListView");
-
-    WireListViewValidation(listView, dataSource);
-
-    $("#AddValue").kendoButton().click(function (e) {
-        listView.add();
-        e.preventDefault();
+    createValueGrid({
+        readUrl: endpointValues + "/ByEntityAnalysisModelDictionaryId",
+        readParameter: "entityAnalysisModelDictionaryId",
+        endpoint: endpointValues,
+        parentField: "entityAnalysisModelDictionaryId",
+        parentId: id,
+        parentKind: 4,
+        title: "Dictionary pair",
+        valueFields: [
+            {field: "kvpKey", title: "Key", type: "string"},
+            {field: "kvpValue", title: "Value", type: "number"}
+        ]
     });
 
     $("#ListValuesDiv").show();

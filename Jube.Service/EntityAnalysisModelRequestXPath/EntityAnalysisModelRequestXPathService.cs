@@ -33,7 +33,7 @@ using Microsoft.Extensions.Localization;
 namespace Jube.Service.EntityAnalysisModelRequestXPath
 {
     using RequestXPathPoco = EntityAnalysisModelRequestXpath;
-    using RequestXPathRepository = EntityAnalysisModelRequestXPathRepository;
+    using RequestXPathRepository = EntityAnalysisModelRequestXpathRepository;
 
     public sealed class EntityAnalysisModelRequestXPathService
     {

@@ -257,7 +257,7 @@ namespace Jube.Test.Service.Repository.RoleRegistryPermission
             await using var dbContext = fx.GetDbContext();
             await EnsureActorCanManageRoleRegistryPermissionAsync(dbContext, fx.Seed.UserWithPermission);
             await EnsureActorCanManageRoleRegistryPermissionAsync(dbContext,
-                fx.Seed.UserWithPermissionNoApproveByReview);
+                fx.Seed.UserWithPermissionNoApproval);
             var tenantRegistryId = await ResolveTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
             var targetRoleRegistryId = await CreateTargetRoleRegistryAsync(dbContext, tenantRegistryId);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
@@ -265,14 +265,14 @@ namespace Jube.Test.Service.Repository.RoleRegistryPermission
             createdGrantIds.Add(created.Id);
 
             await Task.Delay(50);
-            var updaterService = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproveByReview);
+            var updaterService = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
             created.Active = false;
             var updated = await updaterService.UpdateAsync(created);
 
             updated.Version.Should().Be(2);
             updated.CreatedUser.Should().Be(created.CreatedUser);
             updated.CreatedDate.Should().BeCloseTo(created.CreatedDate.Required(), TimeSpan.FromMilliseconds(10));
-            updated.UpdatedUser.Should().Be(fx.Seed.UserWithPermissionNoApproveByReview);
+            updated.UpdatedUser.Should().Be(fx.Seed.UserWithPermissionNoApproval);
             updated.UpdatedDate.Should().NotBeNull();
             updated.Active.Should().BeFalse();
         }

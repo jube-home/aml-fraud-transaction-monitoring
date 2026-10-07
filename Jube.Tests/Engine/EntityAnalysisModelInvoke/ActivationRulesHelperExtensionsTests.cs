@@ -18,6 +18,7 @@ using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRules;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
@@ -356,7 +357,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
         private static void AddOverrideKey(Context context, string name)
         {
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
                     Name = name,
@@ -458,7 +459,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         private static void AddRule(Context context, string name, bool enableOverride = true,
             bool enableForce = true, string? overrideKey = null)
         {
-            context.EntityAnalysisModel.Collections.ModelActivationRules.Add(
+            context.Snapshot.ModelActivationRules.Add(
                 new EntityAnalysisModelActivationRule
                 {
                     Name = name,
@@ -471,7 +472,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         private static void AddOverride(Context context, string overrideKey, string overrideKeyValue,
             string? activationRuleName, EntityAnalysisModelOverrideKind kind)
         {
-            var overrides = context.EntityAnalysisModel.Dependencies.EntityAnalysisModelOverrides;
+            var overrides = context.Snapshot.EntityAnalysisModelOverrides;
 
             if (!overrides.TryGetValue(overrideKey, out var values))
             {
@@ -645,7 +646,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ActivationRuleGetOverridesIgnoresXPathsThatDoNotHaveOverrideEnabled()
         {
             var context = NewContext();
-            context.EntityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths.Add(
+            context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
                     Name = "Country",
@@ -664,7 +665,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             AddOverrideKey(context, "CardFingerprint");
-            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelOverrides = null;
+            context.EntityAnalysisModel.PublishSnapshot(
+                new ModelSnapshotBuilder(context.Snapshot) { EntityAnalysisModelOverrides = null }.Build());
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
 
             var outcome = context.ActivationRuleGetOverrides();

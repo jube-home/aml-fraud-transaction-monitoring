@@ -27,10 +27,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
     public class EntityAnalysisModelDictionaryNoBoxingExtractor(
         EntityAnalysisModel entityAnalysisModel,
-        Dictionary<int, EntityAnalysisModel> availableModels,
+        IReadOnlyDictionary<int, EntityAnalysisModel> availableModels,
         DynamicEnvironment.DynamicEnvironment environment,
         ILog log)
     {
+        private readonly Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot = entityAnalysisModel.Snapshot;
+        private readonly IReadOnlyDictionary<int, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot> availableSnapshots =
+            availableModels.ToDictionary(kv => kv.Key, kv => kv.Value.Snapshot);
+
         public Context.Context CreateContext(
             DictionaryNoBoxing<string> payload, int entityAnalysisModelReprocessingRuleInstanceId)
         {
@@ -46,7 +50,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             {
                 StartBytesUsed = GC.GetAllocatedBytesForCurrentThread(),
                 EntityAnalysisModel = entityAnalysisModel,
+                Snapshot = snapshot,
                 AvailableEntityAnalysisModels = availableModels,
+                AvailableSnapshots = availableSnapshots,
                 EntityAnalysisModelInstanceEntryPayload = entityAnalysisModelInstanceEntryPayload,
                 Stopwatch = stopwatch,
                 Log = log,
@@ -61,7 +67,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
         {
             var entityAnalysisModelInstanceEntryPayload =
                 EntityAnalysisModelInstanceEntryPayloadHelpers.Create(entityAnalysisModel,
-                    entry["EntityAnalysisModelInstanceEntryGuid"]);
+                    entry["EntityAnalysisModelInstanceEntryGuid"], snapshot);
 
             var modelEntryValue = string.Empty;
             DateTime referenceDateValue = default;
@@ -111,7 +117,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             try
             {
                 foreach (var xPath in
-                         from xPathLinq in entityAnalysisModel.Collections.EntityAnalysisModelRequestXPaths
+                         from xPathLinq in snapshot.EntityAnalysisModelRequestXPaths
                          where !entityAnalysisModelInstanceEntryPayload.Payload.ContainsKey(xPathLinq.Name)
                          select xPathLinq)
                 {

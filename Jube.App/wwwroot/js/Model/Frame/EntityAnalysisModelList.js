@@ -17,7 +17,7 @@ const parentKeyName = "entityAnalysisModelGuid";
 const validationFail = "There is invalid data in the form. Please check fields and correct.";
 
 const addValue = $("#AddValue").kendoButton().click(function (e) {
-    $("#listView").data("kendoListView").add();
+    $("#valueGrid").data("kendoGrid").addRow();
     e.preventDefault();
 });
 
@@ -37,83 +37,21 @@ function LoadFiles() {
 }
 
 function onSuccess() {
-    $("#listView").data("kendoListView").dataSource.data([]);
+    $("#valueGrid").data("kendoGrid").dataSource.data([]);
     LoadList();
 }
 
 function LoadList() {
-    const dataSource = new kendo.data.DataSource({
-        transport: {
-            read: {
-                url: endpointValues + "/ByEntityAnalysisModelListId",
-                type: "GET"
-            },
-            update: {
-                url: endpointValues,
-                dataType: "json",
-                contentType: "application/json",
-                type: "PUT"
-            },
-            destroy: {
-                url: endpointValues,
-                type: "DELETE"
-            },
-            create: {
-                url: endpointValues,
-                dataType: "json",
-                contentType: "application/json",
-                type: "POST"
-            },
-            parameterMap: function (options, operation) {
-                if (operation === "read") {
-                    return {entityAnalysisModelListId: id};
-                } else if (operation === "update") {
-                    return JSON.stringify({
-                        id: options.models[0].id,
-                        entityAnalysisModelListId: id,
-                        listValue: options.models[0].listValue,
-                        deleteExpiryDate: options.models[0].deleteExpiryDate
-                    });
-                } else if (operation === "destroy") {
-                    return {
-                        id:
-                        options.models[0].id
-                    };
-                } else if (operation === "create") {
-                    return JSON.stringify({
-                        entityAnalysisModelListId: id,
-                        listValue: options.models[0].listValue,
-                        deleteExpiryDate: options.models[0].deleteExpiryDate
-                    });
-                }
-            }
-        },
-        batch: true,
-        schema: {
-            model: {
-                id: "id",
-                fields: {
-                    id: {editable: false, nullable: true},
-                    listValue: "listValue",
-                    entityAnalysisModelListId: "entityAnalysisModelListId",
-                    deleteExpiryDate: {type: "date", defaultValue: null}
-                }
-            }
-        }
+    createValueGrid({
+        readUrl: endpointValues + "/ByEntityAnalysisModelListId",
+        readParameter: "entityAnalysisModelListId",
+        endpoint: endpointValues,
+        parentField: "entityAnalysisModelListId",
+        parentId: id,
+        parentKind: 2,
+        title: "List value",
+        valueFields: [{field: "listValue", title: "Value", type: "string"}]
     });
-
-    const listView = $("#listView").kendoListView({
-        dataSource: dataSource,
-        remove: function (e) {
-            if (!confirm("Are you sure you want to delete?")) {
-                e.preventDefault();
-            }
-        },
-        template: kendo.template($("#template").html()),
-        editTemplate: kendo.template($("#editTemplate").html())
-    }).data("kendoListView");
-
-    WireListViewValidation(listView, dataSource);
 
     $("#ListValuesDiv").show();
 }

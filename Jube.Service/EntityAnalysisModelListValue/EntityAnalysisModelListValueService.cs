@@ -169,7 +169,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
         public async Task<List<EntityAnalysisModelListValueDto>> GetByEntityAnalysisModelListIdAsync(
             [Description("Numeric identifier of the parent List.")]
             int entityAnalysisModelListId,
-            CancellationToken token = default)
+            CancellationToken token = default, bool includeDeleted = false)
         {
             using var op = OperationScope.Start("EntityAnalysisModelListValue", "ListByEntityAnalysisModelListId",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
@@ -183,7 +183,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
             {
                 EnsurePermitted("EntityAnalysisModelListValue.ListByEntityAnalysisModelListId");
                 var dtos = EntityAnalysisModelListValueMapper.ToDto(await repository
-                    .GetByEntityAnalysisModelListIdOrderByIdAsync(entityAnalysisModelListId, token)
+                    .GetByEntityAnalysisModelListIdOrderByIdAsync(entityAnalysisModelListId, token, includeDeleted)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
                 if (log.IsDebugEnabled)

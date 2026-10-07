@@ -39,10 +39,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
-                        context.Services.Log.Debug($"Entity Start: Executing fetch of all Tags for entity model {key}.");
+                        context.Services.Log.Debug(
+                            $"Entity Start: Executing fetch of all Tags for entity model {key}.");
                     }
 
-                    var records = await repository.GetByEntityAnalysisModelIdOrderByIdAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                    var records = await repository.GetApprovedByEntityAnalysisModelIdOrderByIdAsync(key,
+                        context.ApprovalsRequired,
+                        context.Services.CancellationToken).ConfigureAwait(false);
 
                     var shadowEntityAnalysisModelTags = new List<EntityAnalysisModelTag>();
                     foreach (var record in records)
@@ -158,7 +161,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             $"Model {key} and Tag Model  {key} has completed creating the adaptations into a shadow list of adaptations and it will now be allocated the fields in the order that they appeared in model training.");
                     }
 
-                    value.Collections.EntityAnalysisModelTags = shadowEntityAnalysisModelTags;
+                    context.Snapshots.Builder(key, value).EntityAnalysisModelTags = shadowEntityAnalysisModelTags;
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -169,7 +172,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
-                    context.Services.Log.Debug("Entity Start: Completed adding Adaptations and Exhaustive Neural Networks to entity models.");
+                    context.Services.Log.Debug(
+                        "Entity Start: Completed adding Adaptations and Exhaustive Neural Networks to entity models.");
                 }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -177,7 +181,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Log.Error($"SyncEntityAnalysisModelTagsAsync: has produced an error {ex}");
 
                 await new EntityAnalysisModelSynchronisationErrorRepository(context.Services.DbContext)
-                    .InsertAsync(EntityAnalysisModelSynchronisationErrorRepository.EntityAnalysisModelSynchronisationErrorStepEnum.Tags, ex.ToString(),
+                    .InsertAsync(
+                        EntityAnalysisModelSynchronisationErrorRepository
+                            .EntityAnalysisModelSynchronisationErrorStepEnum.Tags, ex.ToString(),
                         context.Services.CancellationToken).ConfigureAwait(false);
             }
 

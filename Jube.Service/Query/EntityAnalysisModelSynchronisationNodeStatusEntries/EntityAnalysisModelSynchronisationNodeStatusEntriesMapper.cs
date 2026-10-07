@@ -15,7 +15,9 @@ using Jube.Dto.Query.EntityAnalysisModelSynchronisationNodeStatusEntries;
 
 namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
 {
-    using DataDto = global::Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery.Dto;
+    using DataDto =
+        global::Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery.
+        GetEntityAnalysisModelSynchronisationNodeStatusEntriesQueryDto;
 
     internal static class EntityAnalysisModelSynchronisationNodeStatusEntriesMapper
     {

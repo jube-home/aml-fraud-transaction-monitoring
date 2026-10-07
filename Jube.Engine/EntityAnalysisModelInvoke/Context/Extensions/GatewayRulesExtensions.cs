@@ -57,10 +57,10 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             context.TraceLog($"has created a Gateway Sample of {gatewaySample}.");
 
-            var rulesCount = context.EntityAnalysisModel.Collections.ModelGatewayRules.Count;
+            var rulesCount = context.Snapshot.ModelGatewayRules.Count;
             for (var i = 0; i < rulesCount; i++)
             {
-                var gatewayRule = context.EntityAnalysisModel.Collections.ModelGatewayRules[i];
+                var gatewayRule = context.Snapshot.ModelGatewayRules[i];
                 try
                 {
                     context.TraceLog(
@@ -78,7 +78,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     {
                         matched = gatewayRule.GatewayRuleCompileDelegate(
                             context.EntityAnalysisModelInstanceEntryPayload.Payload,
-                            context.EntityAnalysisModel.Dependencies.EntityAnalysisModelLists,
+                            context.Snapshot.EntityAnalysisModelLists,
                             context.EntityAnalysisModelInstanceEntryPayload.Dictionary,
                             context.Log);
                     });
@@ -110,13 +110,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
         private static void IncrementEvaluationCounter(EntityModelGatewayRule gatewayRule)
         {
-            Interlocked.Increment(ref gatewayRule.EvaluationCounter);
+            Interlocked.Increment(ref gatewayRule.Counters.EvaluationCounter);
         }
 
         private static void IncrementGatewayRuleCounters(Context context, EntityModelGatewayRule gatewayRule)
         {
             Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ModelInvokeGatewayCounter);
-            Interlocked.Increment(ref gatewayRule.ActivationCounter);
+            Interlocked.Increment(ref gatewayRule.Counters.ActivationCounter);
             gatewayRule.ActivationCounterDate = DateTime.UtcNow;
         }
     }

@@ -13,6 +13,7 @@
 
 namespace Jube.Data.Query
 {
+    using System;
     using System.Collections.Generic;
     using System.Reflection;
 
@@ -20,8 +21,18 @@ namespace Jube.Data.Query
 
     public static class VersionDiff
     {
+        private const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
+
+        private static readonly IReadOnlySet<string> NoIgnoredFields = new HashSet<string>();
+
         public static IReadOnlyList<VersionFieldChange> Compare<TVersion>(TVersion from, TVersion to)
             where TVersion : class
+        {
+            return Compare(from, to, NoIgnoredFields);
+        }
+
+        public static IReadOnlyList<VersionFieldChange> Compare(object from, object to,
+            IReadOnlySet<string> ignoredFields)
         {
             var changes = new List<VersionFieldChange>();
 
@@ -30,23 +41,41 @@ namespace Jube.Data.Query
                 return changes;
             }
 
-            foreach (var property in typeof(TVersion).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var property in from.GetType().GetProperties(PublicInstance))
             {
-                if (!property.CanRead)
+                if (!property.CanRead || !IsSimple(property.PropertyType)
+                                      || ignoredFields.Contains(property.Name))
+                {
+                    continue;
+                }
+
+                var target = to.GetType().GetProperty(property.Name, PublicInstance);
+
+                if (target is null || !target.CanRead || !IsSimple(target.PropertyType))
                 {
                     continue;
                 }
 
                 var fromValue = property.GetValue(from);
-                var toValue = property.GetValue(to);
+                var toValue = target.GetValue(to);
 
-                if (!Equals(fromValue, toValue))
+                if (!VersionText.Matches(fromValue, toValue))
                 {
                     changes.Add(new VersionFieldChange(property.Name, fromValue, toValue));
                 }
             }
 
             return changes;
+        }
+
+        private static bool IsSimple(Type type)
+        {
+            var underlying = Nullable.GetUnderlyingType(type) ?? type;
+
+            return underlying.IsPrimitive || underlying.IsEnum || underlying == typeof(string)
+                   || underlying == typeof(Guid) || underlying == typeof(DateTime)
+                   || underlying == typeof(DateTimeOffset) || underlying == typeof(decimal)
+                   || underlying == typeof(TimeSpan);
         }
     }
 }

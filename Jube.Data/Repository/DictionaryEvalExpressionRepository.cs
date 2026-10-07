@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -31,9 +32,17 @@ namespace Jube.Data.Repository
         public Task UpdateCompileStatusAsync(int id, bool compiled, string compileError,
             CancellationToken token = default)
         {
-            return dbContext.DictionaryEvalExpression
-                .Where(x => x.Id == id)
-                .Set(x => x.Compiled, (byte)(compiled ? 1 : 0))
+            var compiledValue = Convert.ToByte(compiled ? 1 : 0);
+
+            var query = dbContext.DictionaryEvalExpression.Where(x => x.Id == id);
+
+            query = compileError == null
+                ? query.Where(x => x.Compiled == null || x.Compiled != compiledValue || x.CompileError != null)
+                : query.Where(x => x.Compiled == null || x.Compiled != compiledValue || x.CompileError == null
+                                   || x.CompileError != compileError);
+
+            return query
+                .Set(x => x.Compiled, compiledValue)
                 .Set(x => x.CompileError, compileError)
                 .UpdateAsync(token);
         }

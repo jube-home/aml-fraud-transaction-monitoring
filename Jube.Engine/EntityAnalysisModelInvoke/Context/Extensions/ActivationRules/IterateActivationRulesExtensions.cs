@@ -38,7 +38,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
         public static async
             Task<(int activationRuleCount, CreateCase createCase, int? prevailingActivationRuleId,
                 Dictionary<string, ActivationRuleTiming> items)> IterateAndProcessAsync(this Context context,
-                CacheService cacheService, Dictionary<int, EntityAnalysisModel> availableModels,
+                CacheService cacheService, IReadOnlyDictionary<int, EntityAnalysisModel> availableModels,
                 IModel rabbitMqChannel)
         {
             var prevailingActivationRuleName = string.Empty;
@@ -49,7 +49,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             int? prevailingActivationRuleId = null;
             var items = new Dictionary<string, ActivationRuleTiming>();
 
-            foreach (var evaluateActivationRule in context.EntityAnalysisModel.Collections.ModelActivationRules)
+            foreach (var evaluateActivationRule in context.Snapshot.ModelActivationRules)
             {
                 var itemStopwatch = Stopwatch.StartNew();
                 var itemStartBytes = GC.GetAllocatedBytesForCurrentThread();
@@ -125,7 +125,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                     {
                         matched = ReflectRuleHelper.Execute(
                             evaluateActivationRule,
-                            context.EntityAnalysisModel,
+                            context.Snapshot,
                             context.EntityAnalysisModelInstanceEntryPayload,
                             context.EntityAnalysisModelInstanceEntryPayload.Dictionary,
                             context.Log);
@@ -140,7 +140,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                         $"is checking for Activation Rule Evaluation InlineScripts looking for context Guid:{evaluateActivationRule.Guid} and or Name:{evaluateActivationRule.Name}.");
 
                     var overrideScriptTimings = new Dictionary<string, TaskPerformance>();
-                    foreach (var inlineScript in context.EntityAnalysisModel.Collections
+                    foreach (var inlineScript in context.Snapshot
                                  .EntityAnalysisModelInlineScripts.Where(s => s.EntityAnalysisModelInlineScriptEvents
                                      .Any(e => e.EntityAnalysisModelInlineScriptEventType ==
                                                EntityAnalysisModelInlineScriptEventTypeEnum.AbstractionRuleOverride
@@ -296,18 +296,18 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
         private static void UpdateForcedActivationCounter(EntityAnalysisModelActivationRule evaluateActivationRule)
         {
-            Interlocked.Increment(ref evaluateActivationRule.ForcedActivationCounter);
+            Interlocked.Increment(ref evaluateActivationRule.Counters.ForcedActivationCounter);
         }
 
         private static void UpdateActivationCounter(EntityAnalysisModelActivationRule evaluateActivationRule)
         {
-            Interlocked.Increment(ref evaluateActivationRule.ActivationCounter);
+            Interlocked.Increment(ref evaluateActivationRule.Counters.ActivationCounter);
             evaluateActivationRule.ActivationCounterDate = DateTime.UtcNow;
         }
 
         private static void UpdateEvaluationCount(EntityAnalysisModelActivationRule evaluateActivationRule)
         {
-            Interlocked.Increment(ref evaluateActivationRule.EvaluationCounter);
+            Interlocked.Increment(ref evaluateActivationRule.Counters.EvaluationCounter);
         }
     }
 }

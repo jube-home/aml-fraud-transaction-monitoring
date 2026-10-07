@@ -35,5 +35,9 @@ namespace Jube.Dto.Query.TreeChildren
 
         [Description("'green' when the child is active, otherwise 'red'.")]
         public string? Color { get; set; }
+
+        [Description(
+            "True when the child row is deleted. A deleted row stays in the tree so it can be opened and restored.")]
+        public bool Deleted { get; set; }
     }
 }

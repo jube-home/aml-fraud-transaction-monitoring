@@ -53,7 +53,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
         private static void IterateAndProcess(Context context, Dictionary<string, TaskPerformance> items)
         {
-            foreach (var exhaustive in context.EntityAnalysisModel.Collections.ExhaustiveModels)
+            foreach (var exhaustive in context.Snapshot.ExhaustiveModels)
             {
                 context.TraceLog($"evaluating Exhaustive Search Instance Id {exhaustive.Id}.");
 

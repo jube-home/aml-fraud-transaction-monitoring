@@ -17,6 +17,7 @@ let $model;
 let findingsGrid;
 let engineGrid;
 let dependenciesGrid;
+let pendingGrid;
 let pendingGraph = null;
 let dependencyIndex = {};
 let highlightedDependency = null;
@@ -524,6 +525,66 @@ function initGrids() {
         ]
     }).data("kendoGrid");
 
+    pendingGrid = $("#PendingGrid").kendoGrid({
+        dataSource: {data: []},
+        sortable: true,
+        scrollable: false,
+        noRecords: {template: "Nothing is awaiting approval in this model."},
+        detailInit: function (e) {
+            $('<div/>').appendTo(e.detailCell).kendoGrid({
+                dataSource: {data: e.data.entities},
+                sortable: true,
+                scrollable: false,
+                noRecords: {template: "Nothing is awaiting approval."},
+                selectable: "row",
+                change: function () {
+                    const item = this.dataItem(this.select());
+                    if (item) {
+                        openReview(item.kind, item.entityId, item.name);
+                    }
+                },
+                columns: [
+                    {
+                        field: "name", title: "Name", template: function (d) {
+                            return escapeHtml(d.name);
+                        }
+                    },
+                    {
+                        field: "change", title: "Change", width: 160,
+                        template: function (d) {
+                            return escapeHtml(d.change);
+                        }
+                    },
+                    {
+                        field: "makerUser", title: "Made By", width: 180,
+                        template: function (d) {
+                            return escapeHtml(d.makerUser || "");
+                        }
+                    },
+                    {field: "valueCount", title: "Values", width: 90}
+                ]
+            });
+        },
+        columns: [
+            {
+                field: "kindName", title: "Kind", width: 240, template: function (d) {
+                    return escapeHtml(d.kindName);
+                }
+            },
+            {field: "count", title: "Waiting (entities and values)", width: 240},
+            {field: "deletions", title: "Of which deletions", width: 180}
+        ]
+    }).data("kendoGrid");
+    $("#PendingGrid, #PendingReview").on("click", ".pending-approve-values", function (e) {
+        e.preventDefault();
+        approveValues($(this));
+    }).on("click", ".pending-approve", function (e) {
+        e.preventDefault();
+        decideApproval($(this), "Approve");
+    }).on("click", ".pending-reject", function (e) {
+        e.preventDefault();
+        decideApproval($(this), "Reject");
+    });
     dependenciesGrid = $("#DependenciesGrid").kendoGrid({
         dataSource: {
             data: [], pageSize: 50, schema: {model: {id: "id"}},
@@ -568,11 +629,293 @@ function initGrids() {
     }).data("kendoGrid");
 }
 
+const approvalKindNames = {
+    1: "Model", 2: "List", 3: "List value", 4: "Dictionary", 5: "Dictionary pair", 6: "Request XPath",
+    7: "Inline script", 8: "Inline function", 9: "Gateway rule", 10: "Sanction", 11: "Abstraction rule",
+    12: "Abstraction calculation", 13: "TTL counter", 14: "HTTP adaptation", 15: "Exhaustive instance",
+    16: "Activation rule", 17: "Tag"
+};
+
+const approvalValueKinds = {2: 3, 4: 5};
+
+function endpointOf(kind) {
+    const match = Object.keys(ApprovalKinds).find(function (endpoint) {
+        return ApprovalKinds[endpoint].kind === kind;
+    });
+    return match || null;
+}
+
+function historyRouteOf(kind) {
+    const match = Object.values(ApprovalKinds).find(function (entry) {
+        return entry.kind === kind;
+    });
+    return match ? match.historyRoute : null;
+}
+
+function findPendingEntity(kind, entityId) {
+    let found = null;
+    pendingGrid.dataSource.data().forEach(function (group) {
+        group.entities.forEach(function (entity) {
+            if (entity.kind === kind && entity.entityId === entityId) {
+                found = entity;
+            }
+        });
+    });
+    return found;
+}
+
+function closeReview() {
+    $("#PendingReview").empty().hide();
+}
+
+function openReview(kind, entityId, name) {
+    const route = historyRouteOf(kind);
+    const panel = $("#PendingReview").empty().show();
+    panel[0].scrollIntoView({behavior: "smooth", block: "start"});
+    panel.append($("<h3></h3>").text("Review: " + name));
+    const note = $("<div class='pending-review-note'></div>").appendTo(panel);
+    const grid = $("<div></div>").appendTo(panel);
+    const widget = $("<div></div>").appendTo(panel);
+    widget.kendoApprovalManager({kind: kind, entityId: entityId, historyRoute: route}).data("kendoApprovalManager")
+        .bind("changed", function () {
+            closeReview();
+            loadPending($model.value());
+        });
+
+    const entity = findPendingEntity(kind, entityId);
+    const values = entity ? entity.values : [];
+    if (values.length && approvalValueKinds[kind] !== undefined) {
+        grid.before($("<div></div>").append(
+            "<button type=\"button\" class=\"ButtonDefault pending-approve-values\" data-kind=\"" + kind +
+            "\" data-id=\"" + entityId + "\">Approve values</button>"));
+    }
+
+    function valueRows() {
+        return values.map(function (value) {
+            return {
+                label: value.name,
+                before: value.version > 1 || value.deleted ? value.name : "",
+                after: value.deleted ? "" : value.name,
+                status: value.deleted ? "Removed" : (value.version > 1 ? "Changed" : "Added"),
+                actions: approvalActions(value)
+            };
+        });
+    }
+
+    function render(rows) {
+        grid.kendoGrid({
+            dataSource: {data: rows},
+            sortable: true,
+            scrollable: false,
+            noRecords: {template: "Nothing differs from the earlier version."},
+            columns: [
+                {
+                    field: "label", title: "Item", template: function (d) {
+                        return escapeHtml(d.label);
+                    }
+                },
+                {
+                    field: "before", title: "Earlier version", width: 240,
+                    template: function (d) {
+                        return escapeHtml(d.before);
+                    }
+                },
+                {
+                    field: "after", title: "Pending version", width: 240,
+                    template: function (d) {
+                        return escapeHtml(d.after);
+                    }
+                },
+                {field: "status", title: "Change", width: 110},
+                {
+                    title: "", width: 260, template: function (d) {
+                        return d.actions || "";
+                    }
+                }
+            ],
+            dataBound: function (e) {
+                const colours = {Added: "#e3f4e8", Removed: "#f9dcdc", Changed: "#fdebd0"};
+                e.sender.tbody.find("tr").each(function () {
+                    const status = e.sender.dataItem(this).status;
+                    $(this).children("td").css("background-color", colours[status] || "");
+                });
+            }
+        });
+    }
+
+    if (endpointOf(kind) === null) {
+        note.text("This kind has no earlier versions to compare.");
+        render(valueRows());
+        return;
+    }
+
+    $.getJSON("/api/EntityApproval/Changes", {kind: kind, entityId: entityId, version: entity ? entity.version : null})
+        .done(function (result) {
+            const rows = [];
+            if (entity && entity.deleted) {
+                rows.push({label: "This row", before: "present", after: "deleted", status: "Removed", actions: ""});
+            }
+            if (!result.hasEarlierVersion) {
+                note.text("There is no earlier version to compare with.");
+            } else {
+                result.changes.forEach(function (change) {
+                    rows.push({
+                        label: change.field, before: change.before, after: change.after,
+                        status: change.status, actions: ""
+                    });
+                });
+            }
+            render(rows.concat(valueRows()));
+        }).fail(function () {
+        note.text("The earlier version could not be loaded.");
+        render(valueRows());
+    });
+}
+
+function pendingChange(row) {
+    return row.deleted ? "Deletion" : "Edit to version " + row.version;
+}
+
+function pendingGroups(rows) {
+    const valueParentKind = {3: 2, 5: 4};
+    const entities = rows.map(function (row) {
+        return {
+            kind: row.kind, entityId: row.entityId, name: row.name, version: row.version,
+            deleted: row.deleted, makerUser: row.makerUser, change: pendingChange(row),
+            parentId: row.parentId, values: [], valueCount: 0
+        };
+    });
+
+    const parents = {};
+    entities.forEach(function (entity) {
+        if (approvalValueKinds[entity.kind] !== undefined) {
+            parents[entity.kind + "|" + entity.entityId] = entity;
+        }
+    });
+
+    const groups = [];
+    const groupByKind = {};
+    entities.forEach(function (entity) {
+        const parentKind = valueParentKind[entity.kind];
+        const parent = parentKind !== undefined ? parents[parentKind + "|" + entity.parentId] : undefined;
+        if (parent) {
+            parent.values.push(entity);
+            parent.valueCount = parent.values.length;
+            return;
+        }
+        if (!groupByKind[entity.kind]) {
+            groupByKind[entity.kind] = {
+                kind: entity.kind, kindName: approvalKindNames[entity.kind] || String(entity.kind),
+                entities: []
+            };
+            groups.push(groupByKind[entity.kind]);
+        }
+        groupByKind[entity.kind].entities.push(entity);
+    });
+
+    return groups.map(function (group) {
+        group.count = group.entities.reduce(function (total, e) {
+            return total + 1 + e.values.length;
+        }, 0);
+        group.deletions = group.entities.filter(function (e) {
+            return e.deleted;
+        }).length;
+        return group;
+    });
+}
+
+function approvalActions(entity) {
+    const bulk = (entity.kind === 2 || entity.kind === 4) && entity.valueCount > 0
+        ? ' <button type="button" class="ButtonDefault pending-approve-values" data-kind="' + entity.kind +
+        '" data-id="' + entity.entityId + '">Approve values</button>'
+        : '';
+    return '<button type="button" class="ButtonDefault pending-approve" data-kind="' + entity.kind +
+        '" data-id="' + entity.entityId + '" data-version="' + entity.version + '">Approve</button> ' +
+        '<button type="button" class="ButtonDefault pending-reject" data-kind="' + entity.kind +
+        '" data-id="' + entity.entityId + '" data-version="' + entity.version + '">Reject</button>' + bulk;
+}
+
+function approveValues(button) {
+    $.ajax({
+        url: "/api/EntityApproval/ApproveValues",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({kind: Number(button.data("kind")), entityId: Number(button.data("id"))}),
+        success: function (result) {
+            if (button.closest("#PendingReview").length) {
+                closeReview();
+            }
+            loadPending($model.value());
+            const message = $("#PendingMessage").empty();
+            message.append($("<div></div>").text("Approved " + result.approved + " value(s)."));
+            result.refusals.forEach(function (reason) {
+                message.append($("<div></div>").text(reason));
+            });
+        },
+        error: function (xhr) {
+            const message = $("#PendingMessage").empty();
+            const reasons = xhr.responseJSON && xhr.responseJSON.reasons
+                ? xhr.responseJSON.reasons
+                : [(xhr.responseJSON && xhr.responseJSON.message) || "The values could not be approved."];
+            reasons.forEach(function (reason) {
+                message.append($("<div></div>").text(reason));
+            });
+        }
+    });
+}
+
+function loadPending(modelId) {
+    $("#PendingMessage").text("");
+    $.getJSON("/api/EntityApproval/Pending", {modelId: modelId}).done(function (rows) {
+        pendingGrid.dataSource.data(pendingGroups(rows));
+    }).fail(function (xhr) {
+        pendingGrid.dataSource.data([]);
+        $("#PendingMessage").text(xhr.status === 403
+            ? "You do not have permission to view pending approvals."
+            : "The pending approvals could not be loaded.");
+    });
+}
+
+function decideApproval(button, action) {
+    const body = {
+        kind: Number(button.data("kind")),
+        entityId: Number(button.data("id")),
+        version: Number(button.data("version")),
+        note: null
+    };
+
+    $.ajax({
+        url: "/api/EntityApproval/" + action,
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(body),
+        success: function () {
+            $("#PendingMessage").text("");
+            loadPending($model.value());
+        },
+        error: function (xhr) {
+            let reasons;
+            if (xhr.responseJSON && xhr.responseJSON.reasons) {
+                reasons = xhr.responseJSON.reasons;
+            } else if (xhr.status === 403) {
+                reasons = ["You do not have permission to " + action.toLowerCase() + " this change."];
+            } else {
+                reasons = [(xhr.responseJSON && xhr.responseJSON.message) || "The " + action.toLowerCase() + " was refused."];
+            }
+            $("#PendingMessage").empty();
+            reasons.forEach(function (reason) {
+                $("#PendingMessage").append($("<div></div>").text(reason));
+            });
+        }
+    });
+}
+
 function load() {
     const modelId = $model.value();
     if (!modelId) {
         return;
     }
+    loadPending(modelId);
 
     $("#IntegritySummary").text("Checking…");
 
@@ -620,6 +963,9 @@ $(document).ready(function () {
         }
     }).data("kendoTabStrip").select(0);
     $("#IntegrityRefresh").kendoButton({click: load});
+    if ($("#SyncPicker").length) {
+        initSynchronisation();
+    }
     initGrids();
 
     $model = $("#IntegrityModel").kendoDropDownList({
@@ -644,3 +990,113 @@ $(document).ready(function () {
 });
 
 //# sourceURL=Integrity.js
+
+function colourSyncRows(e) {
+    e.sender.tbody.children().each(function () {
+        const row = $(this);
+        const item = e.sender.dataItem(row);
+        if (item.get("synchronisationPending") && item.get("instanceAvailable")) {
+            row.css("color", "orange");
+        } else if (item.get("instanceAvailable")) {
+            row.css("color", "green");
+        } else {
+            row.css("color", "red");
+        }
+    });
+}
+
+function loadSyncSchedule() {
+    $.get("/api/EntityAnalysisModelSynchronisationSchedule/ByCurrent", function (data) {
+        $("#SyncPicker").data("kendoDateTimePicker").value(kendo.parseDate(data.scheduleDate));
+    });
+}
+
+function refreshSync() {
+    $("#SyncMessage").text("");
+    $("#SyncGrid").data("kendoGrid").dataSource.read();
+    loadSyncSchedule();
+}
+
+function postSync(body) {
+    $("#SyncMessage").text("");
+    $.ajax({
+        url: "/api/EntityAnalysisModelSynchronisationSchedule",
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        data: JSON.stringify(body),
+        success: function (data) {
+            $("#SyncPicker").data("kendoDateTimePicker").value(kendo.parseDate(data.scheduleDate));
+            refreshSync();
+        },
+        error: function (xhr) {
+            const refused = xhr.responseText && xhr.responseText.indexOf("ScheduleDateTooFarInFuture") >= 0;
+            let message = "The synchronisation could not be scheduled.";
+            if (refused) {
+                message = "The schedule is too far in the future. Choose a nearer date.";
+            } else if (xhr.status === 403) {
+                message = "You do not have permission to schedule synchronisation.";
+            }
+            $("#SyncMessage").text(message);
+        }
+    });
+}
+
+function initSynchronisation() {
+    $("#SyncPicker").kendoDateTimePicker({
+        value: new Date(),
+        parseFormats: ["yyyy-MM-ddThh:mm:ss"],
+        format: "yyyy-MM-dd HH:mm:ss",
+        dateInput: true
+    });
+
+    $("#SyncSchedule, #SyncNow, #SyncRefresh").kendoButton();
+
+    $("#SyncGrid").kendoGrid({
+        dataSource: {
+            transport: {
+                read: {
+                    url: "/api/GetEntityAnalysisModelSynchronisationNodeStatusEntries",
+                    dataType: "json"
+                }
+            },
+            schema: {
+                model: {
+                    id: "id",
+                    fields: {
+                        instance: {type: "string"},
+                        heartbeatDate: {type: "date"},
+                        synchronisedDate: {type: "date"}
+                    }
+                }
+            }
+        },
+        pageable: false,
+        height: 240,
+        scrollable: true,
+        filterable: true,
+        dataBound: colourSyncRows,
+        columns: [
+            {field: "instance", title: "Instance"},
+            {field: "heartbeatDate", title: "Heartbeat"},
+            {field: "synchronisedDate", title: "Synchronised"}
+        ]
+    });
+
+    $("#SyncSchedule").click(function () {
+        const picked = $("#SyncPicker").data("kendoDateTimePicker").value();
+        if (!picked) {
+            $("#SyncMessage").text("Choose a date and time first.");
+            return;
+        }
+        postSync({ScheduleDate: picked.toISOString()});
+    });
+
+    $("#SyncNow").click(function () {
+        postSync({});
+    });
+
+    $("#SyncRefresh").click(refreshSync);
+
+    refreshSync();
+}

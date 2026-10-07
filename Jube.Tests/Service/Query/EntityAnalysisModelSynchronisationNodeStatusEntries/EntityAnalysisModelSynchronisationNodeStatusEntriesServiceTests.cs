@@ -213,7 +213,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
         }
 
         [Fact]
-        public async Task GetAsyncReturnsNullWhenTenantHasNeverScheduledASynchronisationAsync()
+        public async Task GetAsyncReturnsAnEmptyListWhenTenantHasNeverScheduledASynchronisationAsync()
         {
             await using var seedContext = fx.GetDbContext();
             var tenantB = await TenantOfAsync(seedContext, fx.Seed.UserTenantB);
@@ -222,7 +222,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
 
-            (await service.GetAsync()).Should().BeNull();
+            (await service.GetAsync()).Should().NotBeNull().And.BeEmpty();
         }
 
         [Fact]

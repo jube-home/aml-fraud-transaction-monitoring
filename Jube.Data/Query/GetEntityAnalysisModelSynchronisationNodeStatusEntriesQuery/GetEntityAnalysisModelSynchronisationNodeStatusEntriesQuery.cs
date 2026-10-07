@@ -1,0 +1,67 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Context;
+    using LinqToDB;
+
+    public class GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery
+    {
+        private readonly DbContext dbContext;
+        private readonly int tenantRegistryId;
+
+        public GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery(DbContext dbContext, string userName)
+        {
+            this.dbContext = dbContext;
+            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == userName)
+                .Select(s => s.TenantRegistryId).FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<GetEntityAnalysisModelSynchronisationNodeStatusEntriesQueryDto>> ExecuteAsync(
+            CancellationToken token = default)
+        {
+            var schedule = await dbContext.EntityAnalysisModelSynchronisationSchedule
+                .Where(w => w.TenantRegistryId == tenantRegistryId)
+                .OrderByDescending(o => o.Id)
+                .FirstOrDefaultAsync(token);
+
+            if (schedule == null)
+            {
+                return [];
+            }
+
+            var entries = await dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
+                .Where(w => w.TenantRegistryId == tenantRegistryId
+                            && w.HeartbeatDate >= DateTime.UtcNow.AddHours(-1))
+                .Select(s => new GetEntityAnalysisModelSynchronisationNodeStatusEntriesQueryDto
+                {
+                    HeartbeatDate = s.HeartbeatDate.Value,
+                    Instance = s.Instance,
+                    SynchronisedDate = s.SynchronisedDate ?? default(DateTime),
+                    SynchronisationPending = (schedule.ScheduleDate > s.SynchronisedDate &&
+                                              DateTime.UtcNow > schedule.ScheduleDate)
+                                             || !s.SynchronisedDate.HasValue,
+                    InstanceAvailable = s.HeartbeatDate >
+                                        DateTime.UtcNow.AddMinutes(-EngineInstanceLiveness.ToleranceMinutes)
+                }).ToListAsync(token);
+
+            return entries;
+        }
+    }
+}
