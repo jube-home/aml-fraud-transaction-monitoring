@@ -407,8 +407,14 @@ namespace Jube.Cache.Redis
                 }
                 finally
                 {
-                    await dbContext.CloseAsync();
-                    await dbContext.DisposeAsync();
+                    try
+                    {
+                        await dbContext.CloseAsync();
+                    }
+                    finally
+                    {
+                        await dbContext.DisposeAsync();
+                    }
                 }
             }
         }
@@ -562,10 +568,16 @@ namespace Jube.Cache.Redis
                 }
                 finally
                 {
-                    // ReSharper disable once MethodSupportsCancellation
-                    await dbContext.CloseAsync();
-                    // ReSharper disable once MethodSupportsCancellation
-                    await dbContext.DisposeAsync();
+                    try
+                    {
+                        // ReSharper disable once MethodSupportsCancellation
+                        await dbContext.CloseAsync();
+                    }
+                    finally
+                    {
+                        // ReSharper disable once MethodSupportsCancellation
+                        await dbContext.DisposeAsync();
+                    }
                 }
             }
             catch (Exception ex)

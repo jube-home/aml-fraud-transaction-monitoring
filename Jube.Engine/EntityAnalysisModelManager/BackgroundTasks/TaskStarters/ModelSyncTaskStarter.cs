@@ -208,20 +208,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     }
                     catch (OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-
                         throw;
                     }
                     catch (Exception ex)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-
                         context.Services.Log.Error($"ModelSyncAsync: Has produced an error {ex} waiting.");
 
                         await Task.Delay(
@@ -230,10 +220,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     }
                     finally
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                 }
             }

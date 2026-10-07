@@ -25,13 +25,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     {
         public static async Task<Context> LogStartInstanceAsync(this Context context)
         {
-            var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+            var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
 
             try
             {
                 if (context.Services.Log.IsDebugEnabled)
                 {
-                    context.Services.Log.Debug("Entity Start: Trying to establish a connection to the Database database.");
+                    context.Services.Log.Debug(
+                        "Entity Start: Trying to establish a connection to the Database database.");
                 }
 
                 var repository = new EntityAnalysisInstanceRepository(dbContext);
@@ -60,7 +62,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         $"Entity Start: Passing values to record the entity instance starting Entity_Analysis_Instance_GUID {context.EntityAnalysisModels.EntityAnalysisInstanceGuid}; Node {model.Instance};.");
                 }
 
-                await repository.InsertAsync(model, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                await repository.InsertAsync(model, context.Services.TaskCoordinator.CancellationToken)
+                    .ConfigureAwait(false);
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
@@ -74,8 +77,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             }
             finally
             {
-                await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                try
+                {
+                    await dbContext.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await dbContext.DisposeAsync().ConfigureAwait(false);
+                }
 
                 if (context.Services.Log.IsDebugEnabled)
                 {

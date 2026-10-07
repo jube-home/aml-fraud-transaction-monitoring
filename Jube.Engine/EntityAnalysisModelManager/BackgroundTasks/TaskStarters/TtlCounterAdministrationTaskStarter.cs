@@ -216,8 +216,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             }
                             finally
                             {
-                                await dbContext.CloseAsync();
-                                await dbContext.DisposeAsync();
+                                try
+                                {
+                                    await dbContext.CloseAsync();
+                                }
+                                finally
+                                {
+                                    await dbContext.DisposeAsync();
+                                }
                             }
                         }
                         else

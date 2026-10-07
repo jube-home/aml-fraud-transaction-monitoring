@@ -979,6 +979,7 @@ services:
       - JUBE_APP_PASSWORD
       - JUBE_REPORTING_PASSWORD
       - JUBE_MIGRATION_PASSWORD
+      - JUBE_PURGE_PASSWORD
       - JWT_KEY
       - PASSWORD_HASHING_KEY
       - REDIS_PASSWORD
@@ -994,6 +995,17 @@ services:
       - ConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_app;Password=[@JUBE_APP_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
       - ReportConnectionString=Host=haproxy;Port=5433;Database=postgres;Username=jube_reporting;Password=[@JUBE_REPORTING_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
       - MigrationConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_migration;Password=[@JUBE_MIGRATION_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
+      # jube_purge only has SELECT/DELETE on the fixed set of infrastructure-health-metric tables that
+      # InfrastructureHealthMetricsPurgeStarter chunk-deletes from (see database.sh) - jube_app itself has
+      # no DELETE grant at all, which is what turned a routine purge cycle into the permission-denied/
+      # connection-leak pair this was added to fix. Falls back to ConnectionString (PurgeConnectionString
+      # unset) so this isn't a breaking change for a cluster that hasn't provisioned jube_purge yet.
+      - PurgeConnectionString=Host=haproxy;Port=5432;Database=postgres;Username=jube_purge;Password=[@JUBE_PURGE_PASSWORD@];Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
+      # Explicit off switch (default True) - set False until jube_purge has actually been provisioned and
+      # granted via database.sh, otherwise the purge cycle keeps hitting 42501 permission-denied against
+      # jube_app and leaking a connection on every failed DeleteAsync. Flip back to True once the grant
+      # script above has run and PurgeConnectionString resolves.
+      - EnableInfrastructureHealthMetricsPurge=False
       - RedisConnectionString=sentinel1:26379,sentinel2:26379,sentinel3:26379,sentinel4:26379,sentinel5:26379,serviceName=redis-master,password=[@REDIS_PASSWORD@],abortConnect=false,syncTimeout=8000,connectTimeout=10000,keepAlive=60
       # Only used because RedisConnectionString sets serviceName= above (Sentinel mode). Independent of that
       # string's own connectTimeout/syncTimeout - this bounds the Sentinel-discovery hop specifically, so a
@@ -1194,6 +1206,8 @@ secrets:
   JUBE_REPORTING_PASSWORD:
     external: true
   JUBE_MIGRATION_PASSWORD:
+    external: true
+  JUBE_PURGE_PASSWORD:
     external: true
   REDIS_PASSWORD:
     external: true

@@ -606,10 +606,12 @@ docker exec -it $(docker ps -q -f name=patroni1) \
 ### Creating the database users
 
 Run the least-privilege database user setup **before** scaling Jube up - `jube-api`/`jube-jobs`/`jube-ui` connect as
-`jube_app`/`jube_reporting`/`jube_migration` from the moment they start, and those users don't exist until this
-script creates them (mirroring the same `service`/`reporting` least-privilege split as the single-node
+`jube_app`/`jube_reporting`/`jube_migration`/`jube_purge` from the moment they start, and those users don't exist until
+this script creates them (mirroring the same `service`/`reporting` least-privilege split as the single-node
 [`CreateUsers.sql`](../../CreateUsers.sql) referenced from [Deploying with Docker](../../DeployingWithDocker/index.html) -
-`jube_migration` gets DDL rights, `jube_app` gets DML only, `jube_reporting` gets read-only):
+`jube_migration` gets DDL rights, `jube_app` gets DML only (no `DELETE`), `jube_reporting` gets read-only, and
+`jube_purge` gets `SELECT`/`DELETE` on only the fixed list of tables `InfrastructureHealthMetricsPurgeStarter`
+chunk-deletes from, for `jube-jobs`'s `PurgeConnectionString`):
 
 ```bash
 sudo chmod +x database.sh

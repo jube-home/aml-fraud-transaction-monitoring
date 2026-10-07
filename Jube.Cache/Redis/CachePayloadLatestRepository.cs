@@ -335,8 +335,14 @@ namespace Jube.Cache.Redis
                     }
                     finally
                     {
-                        await dbContext.CloseAsync();
-                        await dbContext.DisposeAsync();
+                        try
+                        {
+                            await dbContext.CloseAsync();
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync();
+                        }
                     }
 
                     if (expiredSortedSetEntries.Length < limit)

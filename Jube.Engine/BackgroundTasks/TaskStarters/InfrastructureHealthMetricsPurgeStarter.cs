@@ -34,7 +34,13 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 {
                     try
                     {
-                        await PurgeAllAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        if ("True".Equals(context.Services.DynamicEnvironment
+                                    .AppSettings("EnableInfrastructureHealthMetricsPurge"),
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            await PurgeAllAsync(context.Services.TaskCoordinator.CancellationToken)
+                                .ConfigureAwait(false);
+                        }
 
                         var wait = int.Parse(context.Services.DynamicEnvironment
                             .AppSettings("WaitInfrastructureHealthMetricsPurge"));
@@ -179,8 +185,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             int chunkSize, CancellationToken token) where T : class
         {
             using var scope = SamplerScope.Start($"{tableName}Purge", Dns.GetHostName());
+            var connectionString = context.Services.DynamicEnvironment.AppSettings("PurgeConnectionString")
+                                   ?? context.Services.DynamicEnvironment.AppSettings("ConnectionString");
             var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
-                context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+                connectionString, context.Services.Log);
             try
             {
                 var deleted = await ChunkedPurge.DeleteOlderThanAsync(dbContext, olderThanPredicate, idSelector,
@@ -203,8 +211,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
             finally
             {
-                await dbContext.CloseAsync(token).ConfigureAwait(false);
-                await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await dbContext.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await dbContext.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
     }

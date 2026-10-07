@@ -36,7 +36,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     }
 
                     var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
-                            context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+                        context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
                     try
                     {
                         if (context.Services.Log.IsDebugEnabled)
@@ -80,31 +80,53 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                             }
                         }
 
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         if (context.Services.Log.IsDebugEnabled)
                         {
                             context.Services.Log.Debug("Case Automation: Is waiting.");
                         }
 
-                        await Task.Delay(Int32.Parse(context.Services.DynamicEnvironment.AppSettings("CasesAutomationWait")), context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(
+                            Int32.Parse(context.Services.DynamicEnvironment.AppSettings("CasesAutomationWait")),
+                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         throw;
                     }
                     catch (Exception ex) when (ex is not OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         context.Services.Log.Error($"Case Automation: Has created an error inside the loop {ex}");
 
-                        await Task.Delay(Int32.Parse(context.Services.DynamicEnvironment.AppSettings("CasesAutomationWait")), context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(
+                            Int32.Parse(context.Services.DynamicEnvironment.AppSettings("CasesAutomationWait")),
+                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -127,10 +149,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
-                    context.Services.Log.Debug("Case Automation: Has instantiated the command object to return all expired cases.");
+                    context.Services.Log.Debug(
+                        "Case Automation: Has instantiated the command object to return all expired cases.");
                 }
 
-                var records = await repository.GetByExpiredAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                var records = await repository.GetByExpiredAsync(context.Services.TaskCoordinator.CancellationToken)
+                    .ConfigureAwait(false);
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
@@ -229,7 +253,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     context.Services.Log.Debug(
                         "Case Automation: Has closed the reader of expired cases and will now process them.");
                 }
-
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -256,7 +279,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     CaseId = processExpiredCase.CaseId
                 };
 
-                await repository.InsertAsync(model, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                await repository.InsertAsync(model, context.Services.TaskCoordinator.CancellationToken)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -270,8 +294,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             {
                 var repository = new CaseRepository(dbContext);
 
-                await repository.UpdateExpiredCaseDiaryAsync(processExpiredCase.CaseId, processExpiredCase.NewClosedStatus,
-                    processExpiredCase.OldClosedStatus, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                await repository.UpdateExpiredCaseDiaryAsync(processExpiredCase.CaseId,
+                        processExpiredCase.NewClosedStatus,
+                        processExpiredCase.OldClosedStatus, context.Services.TaskCoordinator.CancellationToken)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {

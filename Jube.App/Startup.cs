@@ -753,8 +753,14 @@ namespace Jube.App
                             }
                             finally
                             {
-                                await dbContext.CloseAsync();
-                                await dbContext.DisposeAsync();
+                                try
+                                {
+                                    await dbContext.CloseAsync();
+                                }
+                                finally
+                                {
+                                    await dbContext.DisposeAsync();
+                                }
                             }
                         }
                     };
@@ -794,8 +800,14 @@ namespace Jube.App
             {
                 if (ownsDbContext && dbContext != null)
                 {
-                    await dbContext.CloseAsync();
-                    await dbContext.DisposeAsync();
+                    try
+                    {
+                        await dbContext.CloseAsync();
+                    }
+                    finally
+                    {
+                        await dbContext.DisposeAsync();
+                    }
                 }
             }
         }

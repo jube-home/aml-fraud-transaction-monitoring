@@ -89,8 +89,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                     log.Error($"Database Persist:  Archive Keys Bulk Copy failed {ex}.");
                 }
 
-                await dbContext.CloseAsync(token).ConfigureAwait(false);
-                await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await dbContext.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await dbContext.DisposeAsync().ConfigureAwait(false);
+                }
 
                 if (log.IsInfoEnabled)
                 {
@@ -152,8 +158,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
             }
             finally
             {
-                await dbContext.CloseAsync(token).ConfigureAwait(false);
-                await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await dbContext.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await dbContext.DisposeAsync().ConfigureAwait(false);
+                }
 
                 if (log.IsInfoEnabled)
                 {
