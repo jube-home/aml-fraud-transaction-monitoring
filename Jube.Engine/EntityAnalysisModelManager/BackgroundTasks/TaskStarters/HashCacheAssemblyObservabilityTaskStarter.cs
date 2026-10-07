@@ -44,13 +44,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 {
                     await SnapshotAsync().ConfigureAwait(false);
 
-                    await Task.Delay(waitHashCacheAssemblyObservability, context.Services.TaskCoordinator.CancellationToken)
+                    await Task.Delay(waitHashCacheAssemblyObservability,
+                            context.Services.TaskCoordinator.CancellationToken)
                         .ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException ex)
             {
-                context.Services.Log.Info($"Graceful Cancellation HashCacheAssemblyObservability: has produced an error {ex}");
+                context.Services.Log.Info(
+                    $"Graceful Cancellation HashCacheAssemblyObservability: has produced an error {ex}");
             }
             catch (Exception ex)
             {
@@ -89,8 +91,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
             finally
             {
-                await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                try
+                {
+                    await dbContext.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await dbContext.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -105,7 +113,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 var totalBytes = context.Caching.HashCacheAssemblyMetadata.Values.Sum(metadata => metadata.Bytes);
 
                 var instanceRepository = new HashCacheAssemblyInstanceRepository(dbContext);
-                await instanceRepository.UpdateCountAndBytesAsync(hashCacheAssemblyInstanceId, scriptHashes.Count, totalBytes,
+                await instanceRepository.UpdateCountAndBytesAsync(hashCacheAssemblyInstanceId, scriptHashes.Count,
+                    totalBytes,
                     context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
                 var journalRepository = new HashCacheAssemblyInstanceJournalRepository(dbContext);
@@ -116,7 +125,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     Bytes = totalBytes
                 }, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
-                var newScriptHashes = scriptHashes.Where(scriptHash => !recordedScriptHashes.Contains(scriptHash)).ToList();
+                var newScriptHashes = scriptHashes.Where(scriptHash => !recordedScriptHashes.Contains(scriptHash))
+                    .ToList();
 
                 if (newScriptHashes.Count == 0)
                 {
@@ -149,8 +159,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
             finally
             {
-                await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                try
+                {
+                    await dbContext.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await dbContext.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
     }

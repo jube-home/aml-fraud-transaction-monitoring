@@ -74,29 +74,41 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             }
                         }
 
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         await Task.Delay(20000, context.Services.TaskCoordinator.CancellationToken)
                             .ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         throw;
                     }
                     catch (Exception ex) when (ex is not OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         context.Services.Log.Error($"Entity Reprocessing: {ex}. Waiting.");
 

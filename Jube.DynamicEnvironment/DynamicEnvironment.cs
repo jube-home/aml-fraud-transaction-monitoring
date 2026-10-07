@@ -55,6 +55,9 @@ namespace Jube.DynamicEnvironment
                     "MigrationConnectionString", null
                 },
                 {
+                    "PurgeConnectionString", null
+                },
+                {
                     "PgPoolClearDebounceMilliseconds", "5000"
                 },
                 {
@@ -629,6 +632,9 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "PatroniDcsNamespace", "/service/"
+                },
+                {
+                    "EnableInfrastructureHealthMetricsPurge", "True"
                 },
                 {
                     "WaitInfrastructureHealthMetricsPurge", "60000"

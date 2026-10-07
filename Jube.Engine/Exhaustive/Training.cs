@@ -109,22 +109,40 @@ namespace Jube.Engine.Exhaustive
                             log.Info("Exhaustive Training: Finished and closing database context.  Waiting.");
                         }
 
-                        await dbContext.CloseAsync(token).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         await Task.Delay(60000, token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(token).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         throw;
                     }
                     catch (Exception ex)
                     {
-                        await dbContext.CloseAsync(token).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         log.Error(
                             $"Exhaustive Training: Has experienced an error as {ex}  waiting to poll again.  Closing database context.");

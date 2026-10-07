@@ -891,6 +891,20 @@ is the one that actually works). All twenty-five tables purge concurrently via `
 sampling groups above do: a large backlog on one table (many chunk round trips, e.g. after the purge job has been off
 for a while) must never stall every other table behind it.
 
+`EnableInfrastructureHealthMetricsPurge` (default `True`) turns the whole cycle on or off explicitly, rather than
+relying on `InfrastructureHealthMetricsPurgeDeleteLimit=0` (the loop's own `Take(0)` breaking before any `DELETE` is
+issued) or an impractically large `WaitInfrastructureHealthMetricsPurge` as an implicit off switch -- both work as a
+stopgap, but neither says "purging is disabled" to the next person reading the configuration. `PurgeConnectionString`
+is an optional, separate connection string for this cycle only, falling back to `ConnectionString` when unset, for
+exactly the same reason `MigrationConnectionString` exists: `ConnectionString`'s own credential is deliberately
+DELETE-less in a hardened deployment (`GRANT SELECT, INSERT, UPDATE ON ALL TABLES` only, no `DELETE`, in
+`Jube.Cluster/database.sh`), so without a credential that actually has `DELETE` on these tables every purge attempt
+fails with Postgres `42501`. That failure is caught per table in `PurgeTableAsync`, logged, and does not stop the
+other tables' purges -- but it does mean the retention window above is not actually being honoured, which is easy to
+miss since nothing else surfaces it. `Jube.Cluster/database.sh` provisions a `jube_purge` user scoped to `SELECT`,
+`DELETE` on exactly this table list (no `ALTER DEFAULT PRIVILEGES`, unlike `jube_app`/`jube_reporting` -- a table
+added to the purge list later needs its grant added there explicitly) for `PurgeConnectionString` to point at.
+
 ## Browsing it without a database connection
 
 Up to the last 100,000 rows of each table are browsable directly, most recent first:

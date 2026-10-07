@@ -59,10 +59,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         await LoadSanctionsFromFilesAsync(context, dbContext).ConfigureAwait(false);
                         context.Sanctions.SanctionsLoadedForStartup = true;
 
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         if (context.Services.Log.IsInfoEnabled)
                         {
@@ -74,19 +78,27 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     }
                     catch (OperationCanceledException)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         throw;
                     }
                     catch (Exception ex)
                     {
-                        await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
-                        await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken)
-                            .ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
 
                         context.Services.Log.Error($"Sanctions Cache Loader: Error {ex}");
 
@@ -202,8 +214,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 {
                     try
                     {
-                        await dbContext.CloseAsync(token).ConfigureAwait(false);
-                        await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            await dbContext.CloseAsync().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await dbContext.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     // ReSharper disable once EmptyGeneralCatchClause
                     catch (Exception)

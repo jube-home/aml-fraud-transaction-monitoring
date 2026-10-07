@@ -282,8 +282,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             }
             finally
             {
-                await dbContext.CloseAsync(token).ConfigureAwait(false);
-                await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await dbContext.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await dbContext.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -344,7 +350,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                             }
 
                             matches = documents.FindAll(x =>
-                                ReflectRuleHelper.Execute(evaluateAbstractionRule, entityAnalysisModel.Snapshot, x, null,
+                                ReflectRuleHelper.Execute(evaluateAbstractionRule, entityAnalysisModel.Snapshot, x,
+                                    null,
                                     entityAnalysisModel.Services.Log));
                             logicHashMatches.Add(evaluateAbstractionRule.LogicHash, matches);
 

@@ -33,7 +33,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         foreach (var (key, value) in
                                  from modelEntityKvp in context.EntityAnalysisModels.ActiveEntityAnalysisModels
                                  where modelEntityKvp.Value.Started
-                                 where AddSearchKeyCacheServerTime(modelEntityKvp.Value.Cache.LastModelSearchKeyCacheWritten) <
+                                 where AddSearchKeyCacheServerTime(modelEntityKvp.Value.Cache
+                                           .LastModelSearchKeyCacheWritten) <
                                        DateTime.UtcNow
                                  select modelEntityKvp)
                         {
@@ -48,7 +49,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 }
 
                                 var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
-                                    context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+                                    context.Services.DynamicEnvironment.AppSettings("ConnectionString"),
+                                    context.Services.Log);
                                 try
                                 {
                                     var query =
@@ -61,7 +63,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                             $"Entity Abstraction Rule Caching: Is about to lookup the last date the search keys were run for model {key}.");
                                     }
 
-                                    var records = await query.ExecuteAsync(value.Instance.Guid, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    var records = await query.ExecuteAsync(value.Instance.Guid,
+                                        context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
                                     if (context.Services.Log.IsDebugEnabled)
                                     {
@@ -71,7 +74,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                                     foreach (var record in records)
                                     {
-                                        context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
+                                        context.Services.TaskCoordinator.CancellationToken
+                                            .ThrowIfCancellationRequested();
 
                                         if (record.SearchKey != null)
                                         {
@@ -105,8 +109,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                         }
                                     }
 
-                                    await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                                    await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    try
+                                    {
+                                        await dbContext.CloseAsync().ConfigureAwait(false);
+                                    }
+                                    finally
+                                    {
+                                        await dbContext.DisposeAsync().ConfigureAwait(false);
+                                    }
 
                                     if (context.Services.Log.IsDebugEnabled)
                                     {
@@ -118,15 +128,27 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 }
                                 catch (OperationCanceledException)
                                 {
-                                    await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                                    await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    try
+                                    {
+                                        await dbContext.CloseAsync().ConfigureAwait(false);
+                                    }
+                                    finally
+                                    {
+                                        await dbContext.DisposeAsync().ConfigureAwait(false);
+                                    }
 
                                     throw;
                                 }
                                 catch (Exception ex)
                                 {
-                                    await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                                    await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    try
+                                    {
+                                        await dbContext.CloseAsync().ConfigureAwait(false);
+                                    }
+                                    finally
+                                    {
+                                        await dbContext.DisposeAsync().ConfigureAwait(false);
+                                    }
 
                                     context.Services.Log.Error(
                                         $"Entity Abstraction Rule Caching: Error while fetching the last search key cache dates as {ex}.");
@@ -153,13 +175,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
-                                context.Services.Log.Debug($"Entity Abstraction Rule Caching: Entity Model {key} has finished.");
+                                context.Services.Log.Debug(
+                                    $"Entity Abstraction Rule Caching: Entity Model {key} has finished.");
                             }
                         }
                     }
                     catch (OperationCanceledException ex)
                     {
-                        context.Services.Log.Info($"Graceful Cancellation AbstractionRuleCachingAsync: has produced an error {ex}");
+                        context.Services.Log.Info(
+                            $"Graceful Cancellation AbstractionRuleCachingAsync: has produced an error {ex}");
                     }
                     catch (Exception ex)
                     {
@@ -167,7 +191,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     }
                     finally
                     {
-                        await Task.Delay(10000, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                        await Task.Delay(10000, context.Services.TaskCoordinator.CancellationToken)
+                            .ConfigureAwait(false);
                     }
                 }
             }
@@ -185,7 +210,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     Int32.Parse(context.Services.DynamicEnvironment.AppSettings("SearchKeyCacheServerIntervalValue"))),
                 "h" => currentDate.AddHours(
                     Int32.Parse(context.Services.DynamicEnvironment.AppSettings("SearchKeyCacheServerIntervalValue"))),
-                "d" => currentDate.AddDays(Int32.Parse(context.Services.DynamicEnvironment.AppSettings("SearchKeyCacheServerIntervalValue"))),
+                "d" => currentDate.AddDays(
+                    Int32.Parse(context.Services.DynamicEnvironment.AppSettings("SearchKeyCacheServerIntervalValue"))),
                 "m" => currentDate.AddMonths(
                     Int32.Parse(context.Services.DynamicEnvironment.AppSettings("SearchKeyCacheServerIntervalValue"))),
                 _ => currentDate.AddHours(1)

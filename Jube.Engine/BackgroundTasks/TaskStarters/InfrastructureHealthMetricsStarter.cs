@@ -179,8 +179,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
             finally
             {
-                await dbContext.CloseAsync(token).ConfigureAwait(false);
-                await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await dbContext.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await dbContext.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 

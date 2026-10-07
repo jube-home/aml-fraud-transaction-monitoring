@@ -42,12 +42,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 }
 
                                 var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
-                                        context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+                                    context.Services.DynamicEnvironment.AppSettings("ConnectionString"),
+                                    context.Services.Log);
 
                                 var repository = new ActivationWatcherRepository(dbContext);
                                 try
                                 {
-                                    await repository.InsertAsync(payload, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    await repository
+                                        .InsertAsync(payload, context.Services.TaskCoordinator.CancellationToken)
+                                        .ConfigureAwait(false);
                                 }
                                 catch (Exception ex) when (ex is not OperationCanceledException)
                                 {
@@ -55,28 +58,38 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 }
                                 finally
                                 {
-                                    await dbContext.CloseAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                                    await dbContext.DisposeAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                                    try
+                                    {
+                                        await dbContext.CloseAsync().ConfigureAwait(false);
+                                    }
+                                    finally
+                                    {
+                                        await dbContext.DisposeAsync().ConfigureAwait(false);
+                                    }
 
                                     if (context.Services.Log.IsInfoEnabled)
                                     {
-                                        context.Services.Log.Info("Database Activation Watcher Persist: Closed and Disposed Connection.");
+                                        context.Services.Log.Info(
+                                            "Database Activation Watcher Persist: Closed and Disposed Connection.");
                                     }
                                 }
                             }
                             catch (Exception ex) when (ex is not OperationCanceledException)
                             {
-                                context.Services.Log.Error($"Database Activation Watcher Persist: An error has occurred as {ex}.");
+                                context.Services.Log.Error(
+                                    $"Database Activation Watcher Persist: An error has occurred as {ex}.");
                             }
                         }
                         else
                         {
-                            await Task.Delay(100, context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+                            await Task.Delay(100, context.Services.TaskCoordinator.CancellationToken)
+                                .ConfigureAwait(false);
                         }
                     }
                     catch (Exception ex) when (ex is not OperationCanceledException)
                     {
-                        context.Services.Log.Error($"Database Activation Watcher Persist: An error has occurred as {ex}.");
+                        context.Services.Log.Error(
+                            $"Database Activation Watcher Persist: An error has occurred as {ex}.");
                     }
                 }
 
@@ -84,7 +97,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
             catch (OperationCanceledException ex)
             {
-                context.Services.Log.Info($"Graceful Cancellation PersistToActivationWatcherPollingAsync: has produced an error {ex}");
+                context.Services.Log.Info(
+                    $"Graceful Cancellation PersistToActivationWatcherPollingAsync: has produced an error {ex}");
             }
             catch (Exception ex)
             {

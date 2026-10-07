@@ -269,8 +269,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Case
             }
             finally
             {
-                await dbContext.CloseAsync(token).ConfigureAwait(false);
-                await dbContext.DisposeAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await dbContext.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await dbContext.DisposeAsync().ConfigureAwait(false);
+                }
 
                 if (log.IsInfoEnabled)
                 {

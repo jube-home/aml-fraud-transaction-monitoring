@@ -34,8 +34,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         {
             if (multiplexer != null)
             {
-                await multiplexer.CloseAsync().ConfigureAwait(false);
-                multiplexer.Dispose();
+                try
+                {
+                    await multiplexer.CloseAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    multiplexer.Dispose();
+                }
             }
         }
 
