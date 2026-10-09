@@ -42,6 +42,8 @@ function createValueGrid(options) {
     const statusById = {};
     let statusUnavailable = false;
     let deletedIds = {};
+    let statusRequestSeq = 0;
+    let statusLoaded = false;
 
     function isVisible(id) {
         if (!deletedIds[id]) {
@@ -76,8 +78,8 @@ function createValueGrid(options) {
         const fields = {
             id: {editable: false, nullable: true},
             deleteExpiryDate: {type: "date", defaultValue: null},
-            state: {type: "string", defaultValue: ""},
-            madeByUser: {type: "string", defaultValue: ""}
+            state: {type: "string", defaultValue: "", editable: false},
+            madeByUser: {type: "string", defaultValue: "", editable: false}
         };
         options.valueFields.forEach(function (field) {
             fields[field.field] = {type: field.type};
@@ -100,6 +102,21 @@ function createValueGrid(options) {
     }
 
     function loadStatus() {
+        const seq = ++statusRequestSeq;
+
+        function applyIfCurrent(apply) {
+            if (seq !== statusRequestSeq) {
+                return;
+            }
+            apply();
+            statusLoaded = true;
+            syncComputedFields();
+            const grid = host.data("kendoGrid");
+            if (grid && !host.find(".k-grid-edit-row").length) {
+                grid.refresh();
+            }
+        }
+
         return $.ajax({
             url: "/api/EntityApproval/ValueStatus",
             method: "POST",
@@ -107,26 +124,20 @@ function createValueGrid(options) {
             data: JSON.stringify({kind: options.parentKind, entityId: options.parentId})
         })
             .done(function (rows) {
-                statusUnavailable = false;
-                Object.keys(statusById).forEach(function (key) {
-                    delete statusById[key];
+                applyIfCurrent(function () {
+                    statusUnavailable = false;
+                    Object.keys(statusById).forEach(function (key) {
+                        delete statusById[key];
+                    });
+                    rows.forEach(function (row) {
+                        statusById[row.entityId] = row;
+                    });
                 });
-                rows.forEach(function (row) {
-                    statusById[row.entityId] = row;
-                });
-                syncComputedFields();
-                const grid = host.data("kendoGrid");
-                if (grid && !host.find(".k-grid-edit-row").length) {
-                    grid.refresh();
-                }
             })
             .fail(function () {
-                statusUnavailable = true;
-                syncComputedFields();
-                const grid = host.data("kendoGrid");
-                if (grid && !host.find(".k-grid-edit-row").length) {
-                    grid.refresh();
-                }
+                applyIfCurrent(function () {
+                    statusUnavailable = true;
+                });
             });
     }
 
@@ -197,6 +208,16 @@ function createValueGrid(options) {
             }
         }
     });
+
+    const rawTotal = dataSource.total.bind(dataSource);
+    dataSource.total = function () {
+        if (!statusLoaded) {
+            return rawTotal();
+        }
+        return dataSource.data().filter(function (row) {
+            return isVisible(row.id);
+        }).length;
+    };
 
     dataSource.bind("change", function () {
         deletedIds = {};
