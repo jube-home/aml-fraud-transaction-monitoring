@@ -49,7 +49,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates a Dictionary in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelDictionaryDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a Dictionary in the caller's tenant by id.")
+                    "Soft-deletes a Dictionary in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected Dictionary for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected Dictionary, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

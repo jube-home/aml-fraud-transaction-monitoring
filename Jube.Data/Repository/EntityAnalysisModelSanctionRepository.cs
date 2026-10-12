@@ -25,29 +25,41 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
 {
-    public class EntityAnalysisModelSanctionRepository
+    public class EntityAnalysisModelSanctionRepository :
+        VersionedApprovalRepository<EntityAnalysisModelSanction, EntityAnalysisModelSanctionVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelSanctionRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelSanctionRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelSanctionRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelSanctionRepository(DbContext dbContext, int tenantRegistryId) : this(dbContext,
+            tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelSanctionRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelSanctionRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelSanction,
+            nameof(EntityAnalysisModelSanctionVersion.EntityAnalysisModelSanctionId), tenantRegistryId, userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelSanctionRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelSanction> LoadForMutationAsync(int id,
+            CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public Task<EntityAnalysisModelSanction> GetByNameEntityAnalysisModelIdAsync(string name,

@@ -55,7 +55,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates an Abstraction Calculation in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelAbstractionCalculationDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes an Abstraction Calculation in the caller's tenant by id.")
+                    "Soft-deletes an Abstraction Calculation in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelAbstractionCalculationResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected Abstraction Calculation for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelAbstractionCalculationRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected Abstraction Calculation, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

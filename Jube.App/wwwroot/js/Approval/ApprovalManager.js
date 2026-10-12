@@ -46,6 +46,8 @@ var ApprovalKinds = {
         ui = kendo.ui,
         Widget = ui.Widget;
 
+    var EntityApprovalReturnKind = {Retracted: 1, Resubmitted: 2};
+
     function text(value) {
         return $("<span></span>").text(value === null || value === undefined ? "" : String(value));
     }
@@ -59,7 +61,6 @@ var ApprovalKinds = {
         ".k-approval-manager .approval-pending { color: #b35c00; font-weight: 600; }",
         ".k-approval-manager .approval-rejected { color: #b00020; font-weight: 600; }",
         ".k-approval-manager .approval-meta { color: #5f6b7a; font-size: 12px; }",
-        ".k-approval-manager .k-approval-actions { margin: 8px 0; display: flex; gap: 8px; align-items: flex-start; }",
         ".k-approval-manager .approval-note { width: 100%; min-width: 180px; }",
         ".k-approval-manager .k-approval-error { color: #b00020; margin: 6px 0; }",
         ".k-approval-manager .k-approval-notice { color: #1d6b34; font-weight: 600; margin: 6px 0; }",
@@ -102,7 +103,8 @@ var ApprovalKinds = {
             name: "ApprovalManager",
             kind: null,
             entityId: null,
-            historyRoute: null
+            historyRoute: null,
+            entityRoute: null
         },
 
         events: ["changed"],
@@ -126,6 +128,16 @@ var ApprovalKinds = {
             that.element.on("click", ".reject-btn", function (e) {
                 e.preventDefault();
                 that._decide("Reject");
+            });
+
+            that.element.on("click", ".resubmit-btn", function (e) {
+                e.preventDefault();
+                that._act("Resubmit");
+            });
+
+            that.element.on("click", ".retract-btn", function (e) {
+                e.preventDefault();
+                that._act("Retract");
             });
 
         },
@@ -176,6 +188,8 @@ var ApprovalKinds = {
             that.element.data("canApprove", !!status.canApprove);
             that.element.data("makerUser", status.makerUser);
             that.element.data("deleted", deleted);
+            that.element.data("rejected", !!status.rejected);
+            that.element.data("hasBaseline", status.effectiveVersion !== null && status.effectiveVersion !== undefined);
             $("#Delete").toggle(!deleted);
 
             form.find("tr.approval-row").remove();
@@ -204,6 +218,39 @@ var ApprovalKinds = {
                 data: JSON.stringify(body),
                 success: function () {
                     that.element.find(".k-approval-notice").text("");
+                    that.refresh();
+                    that.trigger("changed");
+                },
+                error: function (xhr) {
+                    var reasons = xhr.responseJSON && xhr.responseJSON.reasons
+                        ? xhr.responseJSON.reasons
+                        : [xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "The " + action.toLowerCase() + " was refused."];
+                    var error = that.element.find(".k-approval-error").empty();
+                    $.each(reasons, function (_, reason) {
+                        error.append($("<div></div>").append(text(reason)));
+                    });
+                }
+            });
+        },
+
+        _act: function (action) {
+            var that = this,
+                options = that.options,
+                note = that.element.find(".action-note").val() || null;
+
+            if (!options.entityRoute) {
+                return;
+            }
+
+            $.ajax({
+                url: options.entityRoute + "/" + options.entityId + "/" + action,
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({note: note}),
+                success: function () {
+                    that.element.find(".k-approval-error").empty();
+                    that.element.find(".k-approval-notice")
+                        .text(action === "Resubmit" ? "Resubmitted." : "Retracted.");
                     that.refresh();
                     that.trigger("changed");
                 },
@@ -269,7 +316,9 @@ var ApprovalKinds = {
             $.when(historyCall, versionsCall || $.Deferred().resolve([])).done(function (historyResult, versionsResult) {
                 var rows = historyResult[0],
                     versionRows = versionsCall ? versionsResult[0] : [],
-                    deletedAt = {};
+                    deletedAt = {},
+                    retractedAt = {},
+                    resubmittedAt = {};
 
                 versionRows.forEach(function (row) {
                     if (field(row, "deletedUser") || field(row, "deleted")) {
@@ -277,7 +326,22 @@ var ApprovalKinds = {
                     }
                 });
 
+                rows.forEach(function (row) {
+                    if (field(row, "returnKindId") === EntityApprovalReturnKind.Retracted) {
+                        retractedAt[field(row, "entityVersion")] = true;
+                    }
+                    if (field(row, "returnKindId") === EntityApprovalReturnKind.Resubmitted) {
+                        resubmittedAt[field(row, "entityVersion")] = true;
+                    }
+                });
+
                 var changeOf = function (version, isCurrent) {
+                    if (resubmittedAt[version - 1]) {
+                        return "Resubmitted";
+                    }
+                    if (retractedAt[version - 1]) {
+                        return "Retracted";
+                    }
                     if (isCurrent && that.element.data("deleted")) {
                         return "Deletion";
                     }
@@ -300,13 +364,16 @@ var ApprovalKinds = {
 
                 that._grid(target, pending.concat(rows.map(function (row) {
                     var version = field(row, "entityVersion");
+
                     return {
                         version: version,
                         change: changeOf(version, false),
                         decision: field(row, "state"),
                         by: field(row, "createdUser"),
                         when: when(field(row, "createdDate")),
-                        note: field(row, "note") || ""
+                        note: field(row, "note") || "",
+                        returnNote: field(row, "returnedNote") || "",
+                        currentRejected: that.element.data("rejected") && version === that.element.data("currentVersion")
                     };
                 })), [
                     {field: "version", title: "Version", width: 90},
@@ -316,21 +383,45 @@ var ApprovalKinds = {
                     {field: "when", title: "When", width: 170},
                     {
                         field: "note",
-                        title: "Note",
+                        title: "Checker note",
                         template: function (d) {
-                            return d.pending
-                                ? "<input type=\"text\" class=\"k-textbox approval-note\" placeholder=\"Note (optional)\"/>"
-                                : kendo.htmlEncode(d.note || "");
+                            if (d.pending) {
+                                return "<input type=\"text\" class=\"k-textbox approval-note\" placeholder=\"Note (optional)\"/>";
+                            }
+
+                            return d.note ? kendo.htmlEncode(d.note) : "";
+                        }
+                    },
+                    {
+                        field: "returnNote",
+                        title: "Return note",
+                        template: function (d) {
+                            if (d.currentRejected) {
+                                return (d.returnNote ? kendo.htmlEncode(d.returnNote) + " " : "") +
+                                    "<input type=\"text\" class=\"k-textbox action-note\" placeholder=\"Note (optional)\"/>";
+                            }
+
+                            return d.returnNote ? kendo.htmlEncode(d.returnNote) : "";
                         }
                     },
                     {
                         title: "",
                         width: 200,
                         template: function (d) {
-                            return d.pending
-                                ? "<button type=\"button\" class=\"k-button approve-btn\">Approve</button> " +
-                                "<button type=\"button\" class=\"k-button reject-btn\">Reject</button>"
-                                : "";
+                            if (d.pending) {
+                                return "<button type=\"button\" class=\"k-button approve-btn\">Approve</button> " +
+                                    "<button type=\"button\" class=\"k-button reject-btn\">Reject</button>";
+                            }
+
+                            if (d.currentRejected) {
+                                var buttons = "<button type=\"button\" class=\"k-button resubmit-btn\">Resubmit</button> ";
+                                if (that.element.data("hasBaseline")) {
+                                    buttons += "<button type=\"button\" class=\"k-button retract-btn\">Retract</button>";
+                                }
+                                return buttons;
+                            }
+
+                            return "";
                         }
                     }
                 ], "No approvals or rejections recorded.");

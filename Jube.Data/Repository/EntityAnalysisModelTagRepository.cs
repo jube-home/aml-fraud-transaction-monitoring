@@ -25,29 +25,40 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
 {
-    public class EntityAnalysisModelTagRepository
+    public class EntityAnalysisModelTagRepository :
+        VersionedApprovalRepository<EntityAnalysisModelTag, EntityAnalysisModelTagVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelTagRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelTagRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelTagRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelTagRepository(DbContext dbContext, int tenantRegistryId) : this(dbContext,
+            tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelTagRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelTagRepository(DbContext dbContext, int? tenantRegistryId, string userName) :
+            base(dbContext, EntityApprovalKind.EntityAnalysisModelTag,
+                nameof(EntityAnalysisModelTagVersion.EntityAnalysisModelTagId), tenantRegistryId, userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelTagRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelTag> LoadForMutationAsync(int id, CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public Task<EntityAnalysisModelTag> GetByNameEntityAnalysisModelIdAsync(string name, int entityAnalysisModelId,

@@ -25,29 +25,44 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
 {
-    public class EntityAnalysisModelAbstractionCalculationRepository
+    public class EntityAnalysisModelAbstractionCalculationRepository :
+        VersionedApprovalRepository<EntityAnalysisModelAbstractionCalculation,
+            EntityAnalysisModelAbstractionCalculationVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelAbstractionCalculationRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelAbstractionCalculationRepository(DbContext dbContext, string userName) : this(
+            dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelAbstractionCalculationRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelAbstractionCalculationRepository(DbContext dbContext, int tenantRegistryId) : this(
+            dbContext, tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelAbstractionCalculationRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelAbstractionCalculationRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelAbstractionCalculation,
+            nameof(EntityAnalysisModelAbstractionCalculationVersion.EntityAnalysisModelAbstractionCalculationId),
+            tenantRegistryId, userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelAbstractionCalculationRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelAbstractionCalculation> LoadForMutationAsync(int id,
+            CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public Task<bool> ParentModelVisibleAsync(int entityAnalysisModelId, CancellationToken token = default)

@@ -44,7 +44,7 @@ namespace Jube.Test.Infrastructure
         }
 
         public static Task RejectAsync(DbContext dbContext, EntityApprovalKind kind, int entityId,
-            int version = 1, int? tenantRegistryId = null, string rejectedBy = Checker,
+            int version = 1, int? tenantRegistryId = null, string rejectedBy = Checker, string? note = null,
             CancellationToken token = default)
         {
             return dbContext.InsertAsync(new EntityApproval
@@ -54,6 +54,7 @@ namespace Jube.Test.Infrastructure
                 EntityId = entityId,
                 EntityVersion = version,
                 StateId = (int)EntityApprovalState.Rejected,
+                Note = note,
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = rejectedBy,
                 Guid = Guid.NewGuid()

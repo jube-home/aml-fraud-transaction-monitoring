@@ -108,11 +108,11 @@ namespace Jube.App.Endpoints
                 var statuses = await service.ValueStatusAsync((EntityApprovalKind)body.Kind, body.EntityId, token);
                 return TypedResults.Ok(statuses.Select(ToStatusDto).ToList());
             }
-            catch (NotAuthenticatedException)
+            catch (EntityApprovalNotAuthenticatedException)
             {
                 return TypedResults.Forbid();
             }
-            catch (ForbiddenException)
+            catch (EntityApprovalForbiddenException)
             {
                 return TypedResults.Forbid();
             }
@@ -168,11 +168,11 @@ namespace Jube.App.Endpoints
                 var result = await service.ApproveValuesAsync((EntityApprovalKind)body.Kind, body.EntityId, token);
                 return TypedResults.Ok(new EntityApprovalBulkResultDto(result.Approved, result.Refusals));
             }
-            catch (NotAuthenticatedException)
+            catch (EntityApprovalNotAuthenticatedException)
             {
                 return TypedResults.Forbid();
             }
-            catch (ForbiddenException)
+            catch (EntityApprovalForbiddenException)
             {
                 return TypedResults.Forbid();
             }
@@ -216,11 +216,11 @@ namespace Jube.App.Endpoints
                 var status = await service.StatusAsync((EntityApprovalKind)kind, entityId, token);
                 return TypedResults.Ok(ToStatusDto(status));
             }
-            catch (NotAuthenticatedException)
+            catch (EntityApprovalNotAuthenticatedException)
             {
                 return TypedResults.Forbid();
             }
-            catch (ForbiddenException)
+            catch (EntityApprovalForbiddenException)
             {
                 return TypedResults.Forbid();
             }
@@ -262,11 +262,11 @@ namespace Jube.App.Endpoints
                         (int)p.Kind, p.EntityId, p.Name, p.Version, p.Deleted, p.MakerUser, p.ModelId, p.ParentId))
                     .ToList());
             }
-            catch (NotAuthenticatedException)
+            catch (EntityApprovalNotAuthenticatedException)
             {
                 return TypedResults.Forbid();
             }
-            catch (ForbiddenException)
+            catch (EntityApprovalForbiddenException)
             {
                 return TypedResults.Forbid();
             }
@@ -327,12 +327,12 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.Ok(ToDto(approval));
             }
-            catch (NotAuthenticatedException)
+            catch (EntityApprovalNotAuthenticatedException)
             {
                 log.Warn($"POST {Base}/{verb}: 403 (not authenticated) user={user}");
                 return TypedResults.Forbid();
             }
-            catch (ForbiddenException)
+            catch (EntityApprovalForbiddenException)
             {
                 log.Warn($"POST {Base}/{verb}: 403 user={user}");
                 return TypedResults.Forbid();
@@ -379,11 +379,11 @@ namespace Jube.App.Endpoints
                 var rows = await service.HistoryAsync((EntityApprovalKind)kind, entityId, token);
                 return TypedResults.Ok(rows.Select(ToDto).ToList());
             }
-            catch (NotAuthenticatedException)
+            catch (EntityApprovalNotAuthenticatedException)
             {
                 return TypedResults.Forbid();
             }
-            catch (ForbiddenException)
+            catch (EntityApprovalForbiddenException)
             {
                 return TypedResults.Forbid();
             }
@@ -416,11 +416,11 @@ namespace Jube.App.Endpoints
                         (int)p.Kind, p.EntityId, p.Name, p.Version, p.Deleted, p.MakerUser, p.ModelId, p.ParentId))
                     .ToList());
             }
-            catch (NotAuthenticatedException)
+            catch (EntityApprovalNotAuthenticatedException)
             {
                 return TypedResults.Forbid();
             }
-            catch (ForbiddenException)
+            catch (EntityApprovalForbiddenException)
             {
                 return TypedResults.Forbid();
             }
@@ -459,11 +459,11 @@ namespace Jube.App.Endpoints
                         VersionText.Preview(c.FromValue), VersionText.Preview(c.ToValue),
                         VersionText.ChangeKind(c.FromValue, c.ToValue))).ToList()));
             }
-            catch (NotAuthenticatedException)
+            catch (EntityApprovalNotAuthenticatedException)
             {
                 return TypedResults.Forbid();
             }
-            catch (ForbiddenException)
+            catch (EntityApprovalForbiddenException)
             {
                 return TypedResults.Forbid();
             }
@@ -491,7 +491,9 @@ namespace Jube.App.Endpoints
             return new EntityApprovalDto(approval.Id, approval.EntityApprovalKindId ?? 0, approval.EntityId ?? 0,
                 approval.EntityVersion ?? 0, approval.StateId == (int)EntityApprovalState.Rejected
                     ? "Rejected"
-                    : "Approved", approval.Note, approval.CreatedUser, approval.CreatedDate);
+                    : "Approved", approval.Note, approval.CreatedUser, approval.CreatedDate,
+                approval.ReturnedDate, approval.ReturnedUser, approval.ReturnedNote, approval.ReturnKindId,
+                approval.CarriedForwardFromVersion);
         }
     }
 }

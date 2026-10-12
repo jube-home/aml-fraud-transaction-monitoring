@@ -25,6 +25,7 @@ using Jube.Dto.EntityAnalysisModelDictionaryKvp;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityAnalysisModelDictionaryKvp;
 using Jube.Service.Exceptions.EntityAnalysisModelDictionaryKvp;
+using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
@@ -54,15 +55,26 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         private readonly List<int> createdDictionaryIds = [];
         private readonly List<int> createdIds = [];
         private readonly List<int> createdModelIds = [];
+        private int tenantRegistryId;
 
-        public Task InitializeAsync()
+        public async Task InitializeAsync()
         {
-            return Task.CompletedTask;
+            await using var dbContext = fx.GetDbContext();
+
+            tenantRegistryId = await dbContext.UserInTenant
+                .Where(w => w.User == fx.Seed.UserWithPermission)
+                .Select(s => s.TenantRegistryId)
+                .FirstAsync();
         }
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
+            await dbContext.EntityApproval.Where(w => createdIds.Contains(w.EntityId ?? 0)
+                                                      && w.EntityApprovalKindId == (int)EntityApprovalKind
+                                                          .EntityAnalysisModelDictionaryKvp)
+                .DeleteAsync();
 
             foreach (var id in createdIds)
             {
@@ -275,6 +287,8 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ResubmitAsync(seedRow.Id));
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.RetractAsync(seedRow.Id));
 
             var afterCount = await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionaryKvp>()
                 .CountAsync(w => w.KvpKey!.StartsWith(DatabaseFixture.Prefix));
@@ -573,6 +587,147 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
         }
 
         [Fact]
+        public async Task ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("ResubmitPending")));
+            createdIds.Add(saved.Id);
+
+            await Assert.ThrowsAsync<ApprovalRefusedException>(() => service.ResubmitAsync(saved.Id));
+
+            (await service.GetByIdAsync(saved.Id))!.Version.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task ResubmitOfRejectedVersionBumpsVersionArchivesOldAndKeepsContentAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("ResubmitRejected")));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
+                saved.Id, 1, tenantRegistryId);
+
+            var resubmitted = await service.ResubmitAsync(saved.Id);
+
+            resubmitted.Version.Should().Be(2);
+            resubmitted.KvpKey.Should().Be(saved.KvpKey);
+
+            var auditRows = await dbContext.GetTable<EntityAnalysisModelDictionaryKvpVersion>()
+                .Where(w => w.EntityAnalysisModelDictionaryKvpId == saved.Id).CountAsync();
+            auditRows.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task ResubmitOfRejectedDeleteKeepsDeletedTrueAndReopensApprovalAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("ResubmitDelete")));
+            createdIds.Add(saved.Id);
+
+            await service.DeleteAsync(saved.Id);
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
+                saved.Id, 2, tenantRegistryId);
+
+            var resubmitted = await service.ResubmitAsync(saved.Id);
+
+            resubmitted.Version.Should().Be(3);
+            resubmitted.Deleted.Should().Be(1,
+                "resubmitting a rejected delete must re-open approval without un-deleting it");
+        }
+
+        [Fact]
+        public async Task RetractOfNonRejectedVersionThrowsApprovalRefusedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("RetractPending")));
+            createdIds.Add(saved.Id);
+
+            await Assert.ThrowsAsync<ApprovalRefusedException>(() => service.RetractAsync(saved.Id));
+        }
+
+        [Fact]
+        public async Task RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("RetractNoBaseline")));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
+                saved.Id, 1, tenantRegistryId);
+
+            await Assert.ThrowsAsync<ApprovalRefusedException>(() => service.RetractAsync(saved.Id));
+        }
+
+        [Fact]
+        public async Task RetractOfRejectedEditRestoresLastApprovedContentAndStampsTheRejectionRetractedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var originalKey = UniqueKey("RetractEdit");
+            var saved = await service.InsertAsync(NewDto(dictionaryId, originalKey));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
+                saved.Id, 1, tenantRegistryId);
+
+            var updateDto = NewDto(dictionaryId, UniqueKey("RetractEditChanged"));
+            updateDto.Id = saved.Id;
+            await service.UpdateAsync(updateDto);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
+                saved.Id, 2, tenantRegistryId);
+
+            var retracted = await service.RetractAsync(saved.Id);
+
+            retracted.Version.Should().Be(3);
+            retracted.KvpKey.Should().Be(originalKey, "retracting abandons the rejected edit and restores " +
+                                                      "the last approved content");
+
+            var rejectionRow = await dbContext.EntityApproval.FirstAsync(w =>
+                w.EntityApprovalKindId == (int)EntityApprovalKind.EntityAnalysisModelDictionaryKvp
+                && w.EntityId == saved.Id && w.EntityVersion == 2
+                && w.StateId == (int)EntityApprovalState.Rejected);
+            rejectionRow.ReturnedDate.Should().NotBeNull();
+            rejectionRow.ReturnedUser.Should().Be(fx.Seed.UserWithPermission);
+        }
+
+        [Fact]
+        public async Task RetractOfRejectedDeleteUndeletesAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var dictionaryId = await CreateParentDictionaryAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("RetractDelete")));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
+                saved.Id, 1, tenantRegistryId);
+
+            await service.DeleteAsync(saved.Id);
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
+                saved.Id, 2, tenantRegistryId);
+
+            var retracted = await service.RetractAsync(saved.Id);
+
+            retracted.Version.Should().Be(3);
+            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+                "retracting a rejected delete undeletes the record");
+        }
+
+        [Fact]
         public async Task AKeyValuePairDeletedThroughTheServiceIsStillReturnedByIdWithItsDeletedStateAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -769,7 +924,8 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
                 "EntityAnalysisModelDictionaryKvpList", "EntityAnalysisModelDictionaryKvpGet",
                 "EntityAnalysisModelDictionaryKvpGetByEntityAnalysisModelDictionaryId",
                 "EntityAnalysisModelDictionaryKvpCreate", "EntityAnalysisModelDictionaryKvpUpdate",
-                "EntityAnalysisModelDictionaryKvpDelete"
+                "EntityAnalysisModelDictionaryKvpDelete",
+                "EntityAnalysisModelDictionaryKvpResubmit", "EntityAnalysisModelDictionaryKvpRetract"
             ]);
         }
 

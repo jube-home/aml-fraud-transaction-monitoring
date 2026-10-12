@@ -2380,7 +2380,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(27)] public double? ActivationSample { get; set; }
         [Column] [Nullable] [Key(28)] public long? ActivationCounter { get; set; }
         [Column] [Nullable] [Key(29)] public DateTime? ActivationCounterDate { get; set; }
+
         [Column] [Nullable] [Key(30)] public string ResponseElevationRedirect { get; set; }
+
         // [Column] [Nullable] [Key(31)] public byte? ReviewStatusId { get; set; } Reserved for future use
         [Column] [Nullable] [Key(32)] public byte? ReportTable { get; set; }
         [Column] [Nullable] [Key(33)] public byte? EnableNotification { get; set; }
@@ -6594,5 +6596,10 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(7)] public DateTime? CreatedDate { get; set; }
         [Column] [Nullable] [Key(8)] public string CreatedUser { get; set; }
         [Column] [Nullable] [Key(9)] public Guid Guid { get; set; }
+        [Column] [Nullable] [Key(10)] public DateTime? ReturnedDate { get; set; }
+        [Column] [Nullable] [Key(11)] public string ReturnedUser { get; set; }
+        [Column] [Nullable] [Key(12)] public int? CarriedForwardFromVersion { get; set; }
+        [Column] [Nullable] [Key(13)] public string ReturnedNote { get; set; }
+        [Column] [Nullable] [Key(14)] public int? ReturnKindId { get; set; }
     }
 }

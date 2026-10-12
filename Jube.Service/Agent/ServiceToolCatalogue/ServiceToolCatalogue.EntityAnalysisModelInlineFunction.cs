@@ -54,7 +54,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates an Inline Function in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineFunctionDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes an Inline Function in the caller's tenant by id.")
+                    "Soft-deletes an Inline Function in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineFunctionResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected Inline Function for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineFunctionRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected Inline Function, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

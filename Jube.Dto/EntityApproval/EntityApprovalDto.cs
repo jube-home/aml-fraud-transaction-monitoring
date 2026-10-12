@@ -23,7 +23,12 @@ namespace Jube.Dto.EntityApproval
         string State,
         string? Note,
         string? CreatedUser,
-        DateTime? CreatedDate);
+        DateTime? CreatedDate,
+        DateTime? ReturnedDate,
+        string? ReturnedUser,
+        string? ReturnedNote,
+        int? ReturnKindId,
+        int? CarriedForwardFromVersion);
 
     public sealed record EntityApprovalStatusDto(
         int Kind,

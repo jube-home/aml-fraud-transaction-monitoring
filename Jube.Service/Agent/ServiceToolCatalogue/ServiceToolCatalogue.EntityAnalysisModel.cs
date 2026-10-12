@@ -43,7 +43,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 "Updates a Model in the caller's tenant by id."),
             new ServiceToolDescriptor(
                 "EntityAnalysisModelDelete", OperationKind.Delete, Idempotent: true, Destructive: true,
-                "Soft-deletes a Model in the caller's tenant by id.")
+                "Soft-deletes a Model in the caller's tenant by id."),
+            new ServiceToolDescriptor(
+                "EntityAnalysisModelResubmit", OperationKind.Write, false, false,
+                "Resubmits a rejected Model for approval again, unchanged, opening a fresh approval cycle."),
+            new ServiceToolDescriptor(
+                "EntityAnalysisModelRetract", OperationKind.Write, false, false,
+                "Retracts a rejected Model, restoring it to its last approved version without a new approval cycle.")
         ]);
     }
 }

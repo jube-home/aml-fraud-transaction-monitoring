@@ -49,7 +49,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates an HTTP Adaptation in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelHttpAdaptationDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes an HTTP Adaptation in the caller's tenant by id.")
+                    "Soft-deletes an HTTP Adaptation in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelHttpAdaptationResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected HTTP Adaptation for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelHttpAdaptationRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected HTTP Adaptation, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

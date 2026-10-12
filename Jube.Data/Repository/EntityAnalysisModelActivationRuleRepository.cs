@@ -26,29 +26,42 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
 {
-    public class EntityAnalysisModelActivationRuleRepository
+    public class EntityAnalysisModelActivationRuleRepository :
+        VersionedApprovalRepository<EntityAnalysisModelActivationRule, EntityAnalysisModelActivationRuleVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelActivationRuleRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelActivationRuleRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelActivationRuleRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelActivationRuleRepository(DbContext dbContext, int tenantRegistryId) : this(
+            dbContext, tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelActivationRuleRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelActivationRuleRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelActivationRule,
+            nameof(EntityAnalysisModelActivationRuleVersion.EntityAnalysisModelActivationRuleId), tenantRegistryId,
+            userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelActivationRuleRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelActivationRule> LoadForMutationAsync(int id,
+            CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public Task<bool> ParentModelVisibleAsync(int entityAnalysisModelId, CancellationToken token = default)

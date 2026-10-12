@@ -48,7 +48,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates a List in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelListDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a List in the caller's tenant by id.")
+                    "Soft-deletes a List in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelListResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected List for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelListRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected List, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

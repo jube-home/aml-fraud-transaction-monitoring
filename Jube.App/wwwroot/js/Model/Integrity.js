@@ -676,7 +676,8 @@ function openReview(kind, entityId, name) {
     const note = $("<div class='pending-review-note'></div>").appendTo(panel);
     const grid = $("<div></div>").appendTo(panel);
     const widget = $("<div></div>").appendTo(panel);
-    widget.kendoApprovalManager({kind: kind, entityId: entityId, historyRoute: route}).data("kendoApprovalManager")
+    widget.kendoApprovalManager({kind: kind, entityId: entityId, historyRoute: route, entityRoute: endpointOf(kind)})
+        .data("kendoApprovalManager")
         .bind("changed", function () {
             closeReview();
             loadPending($model.value());

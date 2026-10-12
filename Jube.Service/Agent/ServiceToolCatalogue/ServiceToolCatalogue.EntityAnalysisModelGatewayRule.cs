@@ -61,7 +61,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Soft-deletes a Gateway Rule in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelGatewayRuleResetCounter", OperationKind.Write, true, true,
-                    "Resets the activation and evaluation counters for a Gateway Rule in the caller's tenant to zero.")
+                    "Resets the activation and evaluation counters for a Gateway Rule in the caller's tenant to zero."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelGatewayRuleResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected Gateway Rule for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelGatewayRuleRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected Gateway Rule, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

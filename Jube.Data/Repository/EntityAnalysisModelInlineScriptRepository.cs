@@ -25,29 +25,42 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
 {
-    public class EntityAnalysisModelInlineScriptRepository
+    public class EntityAnalysisModelInlineScriptRepository :
+        VersionedApprovalRepository<EntityAnalysisModelInlineScript, EntityAnalysisModelInlineScriptVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelInlineScriptRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelInlineScriptRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelInlineScriptRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelInlineScriptRepository(DbContext dbContext, int tenantRegistryId) : this(dbContext,
+            tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelInlineScriptRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelInlineScriptRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelInlineScript,
+            nameof(EntityAnalysisModelInlineScriptVersion.EntityAnalysisModelInlineScriptId), tenantRegistryId,
+            userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelInlineScriptRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelInlineScript> LoadForMutationAsync(int id,
+            CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public Task<EntityAnalysisModelInlineScript> GetByNameEntityAnalysisModelIdAsync(string name,

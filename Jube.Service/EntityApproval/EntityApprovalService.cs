@@ -54,7 +54,7 @@ namespace Jube.Service.EntityApproval
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new NotAuthenticatedException("Sign in to act on approvals.");
+                throw new EntityApprovalNotAuthenticatedException("Sign in to act on approvals.");
             }
 
             var tenantRegistryId = await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, userName, token)
@@ -62,7 +62,7 @@ namespace Jube.Service.EntityApproval
 
             if (!tenantRegistryId.HasValue)
             {
-                throw new NotAuthenticatedException("This user does not belong to a tenant.");
+                throw new EntityApprovalNotAuthenticatedException("This user does not belong to a tenant.");
             }
 
             var permissionValidation = await PermissionValidation.CreateAsync(dbContext, userName, log, token)
@@ -410,7 +410,7 @@ namespace Jube.Service.EntityApproval
                     $"EntityApproval: permission denied user={userName} specs=[{string.Join(",", specifications)}]");
             }
 
-            throw new ForbiddenException("Approval requires permission.", specifications);
+            throw new EntityApprovalForbiddenException("Approval requires permission.", specifications);
         }
 
         private async Task<EntityApprovalSubject> LoadCurrentAsync(EntityApprovalKind kind, int entityId,
