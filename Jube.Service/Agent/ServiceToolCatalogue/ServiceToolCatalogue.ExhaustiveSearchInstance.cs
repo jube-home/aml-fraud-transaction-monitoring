@@ -51,7 +51,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Requests that an in-progress or queued training run stop, by Guid."),
                 new ServiceToolDescriptor(
                     "ExhaustiveSearchInstanceDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes an Exhaustive Adaptation in the caller's tenant by id.")
+                    "Soft-deletes an Exhaustive Adaptation in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstanceResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected Exhaustive Adaptation for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstanceRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected Exhaustive Adaptation, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

@@ -57,7 +57,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "EntityAnalysisModelDictionaryKvpUploadCsv", OperationKind.Write, false, false,
                     "Imports CSV files of key,value[,deleteExpiryDate] lines into a Dictionary in the caller's " +
                     "tenant; existing keys are updated, lines that fail are skipped, and one upload record is " +
-                    "written per file.")
+                    "written per file."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryKvpResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected Key Value Pair for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDictionaryKvpRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected Key Value Pair, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

@@ -542,6 +542,7 @@ function approvalMappingForPage() {
 
 function showApprovalManager(data) {
     const mapping = approvalMappingForPage();
+    const approvalEndpoint = $("form[data-approval-endpoint]").data("approvalEndpoint");
 
     if (!mapping || !data || data.id === undefined || data.id === null) {
         hideApprovalManager();
@@ -569,7 +570,8 @@ function showApprovalManager(data) {
     host.kendoApprovalManager({
         kind: mapping.kind,
         entityId: data.id,
-        historyRoute: mapping.historyRoute
+        historyRoute: mapping.historyRoute,
+        entityRoute: approvalEndpoint
     }).data("kendoApprovalManager").bind("changed", function () {
         syncTreeState(data.id);
     });

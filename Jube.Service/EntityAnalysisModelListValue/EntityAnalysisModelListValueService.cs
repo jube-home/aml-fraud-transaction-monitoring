@@ -21,6 +21,7 @@ using Jube.Dto.EntityAnalysisModelListValue;
 using Jube.Resources;
 using Jube.Service.Agent;
 using Jube.Service.Exceptions.EntityAnalysisModelListValue;
+using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
@@ -863,6 +864,165 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     ex);
                 throw;
             }
+        }
+
+        [Description("Resubmits a rejected List Value for approval again, unchanged, opening a fresh approval " +
+                     "cycle without requiring an edit. Use after a rejection was explained and the maker still " +
+                     "wants the same change (including a delete) approved.")]
+        [ServiceOperation("EntityAnalysisModelListValueResubmit", OperationKind.Write, Idempotent = false)]
+        public async Task<ListValuePoco> ResubmitAsync(
+            [Description("Numeric identifier of the List Value to resubmit.")]
+            int id,
+            [Description("Optional note explaining why this is being resubmitted.")]
+            string? note = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelListValue", "Resubmit", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelListValue.Resubmit: entry id={id} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelListValue.Resubmit");
+
+                ListValuePoco saved;
+                try
+                {
+                    saved = await repository.ResubmitAsync(id, note, token).ConfigureAwait(false);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    throw new NotFoundException("The List Value was not found.", ex);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Refused(ex.Message);
+                }
+
+                op.Entity(saved.Id);
+                op.Version(saved.Version.GetValueOrDefault());
+                op.Updated();
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info(
+                        $"EntityAnalysisModelListValue.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
+
+                return saved;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (ApprovalRefusedException)
+            {
+                op.Outcome("refused");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelListValue.Resubmit: unexpected failure id={id} user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        [Description("Retracts a rejected List Value, restoring it to its last approved version (including " +
+                     "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
+                     "Use when the maker agrees with the rejection and wants to abandon the change.")]
+        [ServiceOperation("EntityAnalysisModelListValueRetract", OperationKind.Write, Idempotent = false)]
+        public async Task<ListValuePoco> RetractAsync(
+            [Description("Numeric identifier of the List Value to retract.")]
+            int id,
+            [Description("Optional note explaining why this is being retracted.")]
+            string? note = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelListValue", "Retract", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModelListValue.Retract: entry id={id} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelListValue.Retract");
+
+                ListValuePoco saved;
+                try
+                {
+                    saved = await repository.RetractAsync(id, note, token: token).ConfigureAwait(false);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    throw new NotFoundException("The List Value was not found.", ex);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Refused(ex.Message);
+                }
+
+                op.Entity(saved.Id);
+                op.Version(saved.Version.GetValueOrDefault());
+                op.Updated();
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info(
+                        $"EntityAnalysisModelListValue.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
+
+                return saved;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (ApprovalRefusedException)
+            {
+                op.Outcome("refused");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelListValue.Retract: unexpected failure id={id} user={userName}",
+                    ex);
+                throw;
+            }
+        }
+
+        private static ApprovalRefusedException Refused(string message)
+        {
+            return new ApprovalRefusedException(message, [message]);
         }
 
         private async Task<EntityAnalysisModelListValueCsvUploadResultDto> LoadFileAsync(int entityAnalysisModelListId,

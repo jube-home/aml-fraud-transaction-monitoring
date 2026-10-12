@@ -253,7 +253,7 @@ namespace Jube.Test.Service.EntityApproval
 
             var act = () => service.ApproveAsync(EntityApprovalKind.EntityAnalysisModelRequestXPath, id, 1);
 
-            await act.Should().ThrowAsync<ForbiddenException>();
+            await act.Should().ThrowAsync<EntityApprovalForbiddenException>();
         }
 
         [Fact]
@@ -396,7 +396,7 @@ namespace Jube.Test.Service.EntityApproval
 
             var act = () => service.PendingForKindAsync(EntityApprovalKind.EntityAnalysisModelRequestXPath);
 
-            await act.Should().ThrowAsync<ForbiddenException>();
+            await act.Should().ThrowAsync<EntityApprovalForbiddenException>();
         }
 
         [Fact]
@@ -709,7 +709,7 @@ namespace Jube.Test.Service.EntityApproval
                 await EntityApprovalService.CreateAsync(dbContext, "ZzNoSuchUser", TestLog.NoOp, 1);
             };
 
-            return act.Should().ThrowAsync<NotAuthenticatedException>();
+            return act.Should().ThrowAsync<EntityApprovalNotAuthenticatedException>();
         }
 
         private async Task<int> SeedRequestXPathWithEarlierVersionAsync(int modelId, string earlierXPath,

@@ -51,7 +51,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates a TTL Counter in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelTtlCounterDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a TTL Counter in the caller's tenant by id.")
+                    "Soft-deletes a TTL Counter in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTtlCounterResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected TTL Counter for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTtlCounterRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected TTL Counter, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

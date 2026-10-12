@@ -14,7 +14,12 @@
 namespace Jube.Dto.EntityApproval
 {
     using System.Collections.Generic;
+
     public sealed record EntityApprovalDecisionDto(int Kind, int EntityId, int Version, string? Note);
+
     public sealed record EntityApprovalBulkDto(int Kind, int EntityId);
+
     public sealed record EntityApprovalBulkResultDto(int Approved, IReadOnlyList<string> Refusals);
+
+    public sealed record EntityApprovalActionRequestDto(string? Note);
 }

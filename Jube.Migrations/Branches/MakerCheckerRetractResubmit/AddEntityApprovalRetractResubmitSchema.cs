@@ -11,12 +11,25 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-namespace Jube.Service.Exceptions.EntityApproval
+namespace Jube.Migrations.Branches.MakerCheckerRetractResubmit
 {
-    public sealed class ForbiddenException(string message, int[] requiredSpecifications)
-        : ServiceException(message)
+    using FluentMigrator;
+
+    [Migration(20263107520000)]
+    public class AddEntityApprovalRetractResubmitSchema : Migration
     {
-        public override string Code => "PermissionDenied";
-        public int[] RequiredSpecifications { get; } = requiredSpecifications;
+        public override void Up()
+        {
+            Alter.Table("EntityApproval")
+                .AddColumn("ReturnedDate").AsDateTime2().Nullable()
+                .AddColumn("ReturnedUser").AsString().Nullable()
+                .AddColumn("ReturnedNote").AsCustom("text").Nullable()
+                .AddColumn("ReturnKindId").AsInt32().Nullable()
+                .AddColumn("CarriedForwardFromVersion").AsInt32().Nullable();
+        }
+
+        public override void Down()
+        {
+        }
     }
 }

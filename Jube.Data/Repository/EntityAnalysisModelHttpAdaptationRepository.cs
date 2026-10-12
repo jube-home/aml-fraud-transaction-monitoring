@@ -25,29 +25,42 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
 {
-    public class EntityAnalysisModelHttpAdaptationRepository
+    public class EntityAnalysisModelHttpAdaptationRepository :
+        VersionedApprovalRepository<EntityAnalysisModelHttpAdaptation, EntityAnalysisModelHttpAdaptationVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelHttpAdaptationRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelHttpAdaptationRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelHttpAdaptationRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelHttpAdaptationRepository(DbContext dbContext, int tenantRegistryId) : this(
+            dbContext, tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelHttpAdaptationRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelHttpAdaptationRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelHttpAdaptation,
+            nameof(EntityAnalysisModelHttpAdaptationVersion.EntityAnalysisModelHttpAdaptationId), tenantRegistryId,
+            userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelHttpAdaptationRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelHttpAdaptation> LoadForMutationAsync(int id,
+            CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public Task<bool> ParentModelVisibleAsync(int entityAnalysisModelId, CancellationToken token = default)

@@ -20,11 +20,14 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Data.Query;
+using Jube.Data.Query.Models;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelGatewayRule;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityAnalysisModelGatewayRule;
 using Jube.Service.Exceptions.EntityAnalysisModelGatewayRule;
+using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
@@ -53,15 +56,26 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
 
         private readonly List<int> createdIds = [];
         private readonly List<int> createdModelIds = [];
+        private int tenantRegistryId;
 
-        public Task InitializeAsync()
+        public async Task InitializeAsync()
         {
-            return Task.CompletedTask;
+            await using var dbContext = fx.GetDbContext();
+
+            tenantRegistryId = await dbContext.UserInTenant
+                .Where(w => w.User == fx.Seed.UserWithPermission)
+                .Select(s => s.TenantRegistryId)
+                .FirstAsync();
         }
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
+            await dbContext.EntityApproval.Where(w => createdIds.Contains(w.EntityId ?? 0)
+                                                      && w.EntityApprovalKindId ==
+                                                      (int)EntityApprovalKind.EntityAnalysisModelGatewayRule)
+                .DeleteAsync();
 
             foreach (var id in createdIds)
             {
@@ -247,6 +261,8 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.ResetCounterAsync(seedRow.Id));
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ResubmitAsync(seedRow.Id));
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.RetractAsync(seedRow.Id));
 
             var afterCount = await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>()
                 .CountAsync(w => w.Name!.StartsWith(DatabaseFixture.Prefix));
@@ -635,6 +651,290 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
         }
 
         [Fact]
+        public async Task ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("ResubmitPending")));
+            createdIds.Add(saved.Id);
+
+            await Assert.ThrowsAsync<ApprovalRefusedException>(() => service.ResubmitAsync(saved.Id));
+
+            (await service.GetByIdAsync(saved.Id))!.Version.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task ResubmitOfRejectedVersionBumpsVersionArchivesOldAndKeepsContentAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("ResubmitRejected")));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 1, tenantRegistryId);
+
+            var resubmitted = await service.ResubmitAsync(saved.Id);
+
+            resubmitted.Version.Should().Be(2);
+            resubmitted.Name.Should().Be(saved.Name);
+
+            var auditRows = await dbContext.GetTable<EntityAnalysisModelGatewayRuleVersion>()
+                .Where(w => w.EntityAnalysisModelGatewayRuleId == saved.Id).CountAsync();
+            auditRows.Should().Be(1);
+
+            var rejectionRow = await dbContext.EntityApproval.FirstAsync(w =>
+                w.EntityApprovalKindId == (int)EntityApprovalKind.EntityAnalysisModelGatewayRule
+                && w.EntityId == saved.Id && w.EntityVersion == 1
+                && w.StateId == (int)EntityApprovalState.Rejected);
+            rejectionRow.ReturnedDate.Should().NotBeNull(
+                "resubmitting a rejected version must leave a typed, queryable trace of what happened to the " +
+                "rejection, distinguishing it from an ordinary edit");
+            rejectionRow.ReturnedUser.Should().Be(fx.Seed.UserWithPermission);
+            rejectionRow.ReturnKindId.Should().Be((int)EntityApprovalReturnKind.Resubmitted);
+        }
+
+        [Fact]
+        public async Task ResubmitOfRejectedDeleteKeepsDeletedTrueAndReopensApprovalAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("ResubmitDelete")));
+            createdIds.Add(saved.Id);
+
+            await service.DeleteAsync(saved.Id);
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 2, tenantRegistryId);
+
+            var resubmitted = await service.ResubmitAsync(saved.Id);
+
+            resubmitted.Version.Should().Be(3);
+            resubmitted.Deleted.Should().Be(1,
+                "resubmitting a rejected delete must re-open approval without un-deleting it");
+        }
+
+        [Fact]
+        public async Task RetractOfNonRejectedVersionThrowsApprovalRefusedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("RetractPending")));
+            createdIds.Add(saved.Id);
+
+            await Assert.ThrowsAsync<ApprovalRefusedException>(() => service.RetractAsync(saved.Id));
+        }
+
+        [Fact]
+        public async Task RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("RetractNoBaseline")));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 1, tenantRegistryId);
+
+            await Assert.ThrowsAsync<ApprovalRefusedException>(() => service.RetractAsync(saved.Id));
+        }
+
+        [Fact]
+        public async Task RetractOfRejectedEditRestoresLastApprovedContentAndStampsTheRejectionRetractedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var insertDto = NewDto(modelId, UniqueName("RetractEdit"));
+            insertDto.Priority = 0;
+            var saved = await service.InsertAsync(insertDto);
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 1, tenantRegistryId);
+
+            var updateDto = NewDto(modelId, saved.Name);
+            updateDto.Id = saved.Id;
+            updateDto.Priority = 5;
+            await service.UpdateAsync(updateDto);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 2, tenantRegistryId);
+
+            var retracted = await service.RetractAsync(saved.Id);
+
+            retracted.Version.Should().Be(3);
+            retracted.Priority.Should().Be(0, "retracting abandons the rejected edit and restores the last " +
+                                              "approved content");
+            retracted.Name.Should().Be(saved.Name);
+
+            var rejectionRow = await dbContext.EntityApproval.FirstAsync(w =>
+                w.EntityApprovalKindId == (int)EntityApprovalKind.EntityAnalysisModelGatewayRule
+                && w.EntityId == saved.Id && w.EntityVersion == 2
+                && w.StateId == (int)EntityApprovalState.Rejected);
+            rejectionRow.ReturnedDate.Should().NotBeNull();
+            rejectionRow.ReturnedUser.Should().Be(fx.Seed.UserWithPermission);
+            rejectionRow.ReturnKindId.Should().Be((int)EntityApprovalReturnKind.Retracted);
+
+            await AssertRetractedVersionIsNotPendingAsync(dbContext, saved.Id, retracted.Version.GetValueOrDefault(),
+                1);
+        }
+
+        [Fact]
+        public async Task RetractOfRejectedDeleteUndeletesAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("RetractDelete")));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 1, tenantRegistryId);
+
+            await service.DeleteAsync(saved.Id);
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 2, tenantRegistryId);
+
+            var retracted = await service.RetractAsync(saved.Id);
+
+            retracted.Version.Should().Be(3);
+            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+                "retracting a rejected delete undeletes the record");
+
+            await AssertRetractedVersionIsNotPendingAsync(dbContext, saved.Id, retracted.Version.GetValueOrDefault(),
+                1);
+        }
+
+        [Fact]
+        public async Task RetractOfRejectedReviveAfterApprovedDeleteRestoresTheDeletedBaselineAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("RetractToDeletedBaseline")));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 1, tenantRegistryId);
+
+            await service.DeleteAsync(saved.Id);
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 2, tenantRegistryId);
+
+            var reviveDto = NewDto(modelId, saved.Name);
+            reviveDto.Id = saved.Id;
+            await service.UpdateAsync(reviveDto);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 3, tenantRegistryId);
+
+            var retracted = await service.RetractAsync(saved.Id);
+
+            retracted.Version.Should().Be(4);
+            retracted.Deleted.GetValueOrDefault().Should().Be(1,
+                "the last approved baseline was itself a delete, so retracting the rejected revive must restore " +
+                "that deleted state rather than refusing with 'no approved version to retract to'");
+
+            await AssertRetractedVersionIsNotPendingAsync(dbContext, saved.Id, retracted.Version.GetValueOrDefault(),
+                2);
+        }
+
+        private static async Task AssertRetractedVersionIsNotPendingAsync(DbContext dbContext, int entityId,
+            int retractedVersion, int expectedBaselineVersion)
+        {
+            var rows = await dbContext.EntityApproval
+                .Where(w => w.EntityApprovalKindId == (int)EntityApprovalKind.EntityAnalysisModelGatewayRule
+                            && w.EntityId == entityId)
+                .Select(s => new EntityApprovalRow(s.EntityId!.Value, s.EntityVersion!.Value,
+                    (EntityApprovalState)s.StateId!.Value, s.CreatedUser))
+                .ToListAsync();
+
+            EntityApprovalResolver.IsPending(rows, retractedVersion).Should().BeFalse(
+                "a retracted version restores already-approved content, so it must not show as awaiting approval");
+            EntityApprovalResolver.IsRejected(rows, retractedVersion).Should().BeFalse();
+            EntityApprovalResolver.EffectiveVersion(rows, retractedVersion).Should().Be(retractedVersion);
+
+            var carriedApproval = await dbContext.EntityApproval.FirstAsync(w =>
+                w.EntityApprovalKindId == (int)EntityApprovalKind.EntityAnalysisModelGatewayRule
+                && w.EntityId == entityId && w.EntityVersion == retractedVersion
+                && w.StateId == (int)EntityApprovalState.Approved);
+            carriedApproval.CarriedForwardFromVersion.Should().Be(expectedBaselineVersion,
+                "the carried-forward approval must record which version it was carried from as a typed field, " +
+                "not buried in a free-text note");
+        }
+
+        [Fact]
+        public async Task ResubmitWithANoteStampsResubmittedNoteWithoutClobberingTheRejectionNoteAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("ResubmitNote")));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 1, tenantRegistryId, note: "Original rejection reason.");
+
+            await service.ResubmitAsync(saved.Id, "Resubmitting because the checker misunderstood the change.");
+
+            var rejectionRow = await dbContext.EntityApproval.FirstAsync(w =>
+                w.EntityApprovalKindId == (int)EntityApprovalKind.EntityAnalysisModelGatewayRule
+                && w.EntityId == saved.Id && w.EntityVersion == 1
+                && w.StateId == (int)EntityApprovalState.Rejected);
+
+            rejectionRow.Note.Should().Be("Original rejection reason.",
+                "the checker's original rejection reason must not be overwritten by the maker's resubmit note");
+            rejectionRow.ReturnedNote.Should().Be(
+                "Resubmitting because the checker misunderstood the change.");
+            rejectionRow.ReturnedDate.Should().NotBeNull();
+            rejectionRow.ReturnedUser.Should().Be(fx.Seed.UserWithPermission);
+            rejectionRow.ReturnKindId.Should().Be((int)EntityApprovalReturnKind.Resubmitted);
+        }
+
+        [Fact]
+        public async Task RetractWithANoteStampsRetractedNoteWithoutClobberingTheRejectionNoteAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var insertDto = NewDto(modelId, UniqueName("RetractNote"));
+            var saved = await service.InsertAsync(insertDto);
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 1, tenantRegistryId);
+
+            var updateDto = NewDto(modelId, saved.Name);
+            updateDto.Id = saved.Id;
+            updateDto.Priority = 5;
+            await service.UpdateAsync(updateDto);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+                saved.Id, 2, tenantRegistryId, note: "Original rejection reason.");
+
+            await service.RetractAsync(saved.Id, "I agree with the rejection, reverting my change.");
+
+            var rejectionRow = await dbContext.EntityApproval.FirstAsync(w =>
+                w.EntityApprovalKindId == (int)EntityApprovalKind.EntityAnalysisModelGatewayRule
+                && w.EntityId == saved.Id && w.EntityVersion == 2
+                && w.StateId == (int)EntityApprovalState.Rejected);
+
+            rejectionRow.Note.Should().Be("Original rejection reason.",
+                "the checker's original rejection reason must not be overwritten by the maker's retract note");
+            rejectionRow.ReturnedNote.Should().Be("I agree with the rejection, reverting my change.");
+            rejectionRow.ReturnedDate.Should().NotBeNull();
+            rejectionRow.ReturnedUser.Should().Be(fx.Seed.UserWithPermission);
+            rejectionRow.ReturnKindId.Should().Be((int)EntityApprovalReturnKind.Retracted);
+        }
+
+        [Fact]
         public async Task ActiveAndLockedRoundTripBoolToByteAndBackAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -896,7 +1196,8 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
                 "EntityAnalysisModelGatewayRuleList", "EntityAnalysisModelGatewayRuleGet",
                 "EntityAnalysisModelGatewayRuleGetByEntityAnalysisModelId",
                 "EntityAnalysisModelGatewayRuleCreate", "EntityAnalysisModelGatewayRuleUpdate",
-                "EntityAnalysisModelGatewayRuleDelete", "EntityAnalysisModelGatewayRuleResetCounter"
+                "EntityAnalysisModelGatewayRuleDelete", "EntityAnalysisModelGatewayRuleResetCounter",
+                "EntityAnalysisModelGatewayRuleResubmit", "EntityAnalysisModelGatewayRuleRetract"
             ]);
         }
 

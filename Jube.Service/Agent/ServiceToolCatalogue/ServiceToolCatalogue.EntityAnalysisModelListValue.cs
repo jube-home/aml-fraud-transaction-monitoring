@@ -52,7 +52,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelListValueUploadCsv", OperationKind.Write, false, false,
                     "Loads one or more CSV files of values into a List in the caller's tenant in a single " +
-                    "transaction, recording an upload entry per file; calling twice loads the values twice.")
+                    "transaction, recording an upload entry per file; calling twice loads the values twice."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelListValueResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected List Value for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelListValueRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected List Value, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

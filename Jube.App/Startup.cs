@@ -737,6 +737,7 @@ namespace Jube.App
                                 }
                                 else
                                 {
+                                    OAuthSignInInterstitial.ApplyNoCacheHeaders(context.Response);
                                     context.Response.Redirect(targetRedirectUri);
                                 }
 

@@ -26,29 +26,42 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
 {
-    public class EntityAnalysisModelRequestXpathRepository
+    public class EntityAnalysisModelRequestXpathRepository :
+        VersionedApprovalRepository<EntityAnalysisModelRequestXpath, EntityAnalysisModelRequestXpathVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelRequestXpathRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelRequestXpathRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelRequestXpathRepository(DbContext dbContext)
+        public EntityAnalysisModelRequestXpathRepository(DbContext dbContext, int tenantRegistryId) : this(dbContext,
+            tenantRegistryId, null)
         {
-            this.dbContext = dbContext;
         }
 
-        public EntityAnalysisModelRequestXpathRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelRequestXpathRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelRequestXpathRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelRequestXPath,
+            nameof(EntityAnalysisModelRequestXpathVersion.EntityAnalysisModelRequestXpathId), tenantRegistryId,
+            userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
+        }
+
+        protected override Task<EntityAnalysisModelRequestXpath> LoadForMutationAsync(int id,
+            CancellationToken token)
+        {
+            return GetByIdAsync(id, token);
         }
 
         public Task<EntityAnalysisModelRequestXpath> GetByNameEntityAnalysisModelIdAsync(string name,

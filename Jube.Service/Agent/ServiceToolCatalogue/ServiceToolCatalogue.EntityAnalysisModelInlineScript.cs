@@ -52,7 +52,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates an Inline Script registration in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelInlineScriptDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes an Inline Script registration in the caller's tenant by id.")
+                    "Soft-deletes an Inline Script registration in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineScriptResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected Inline Script registration for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelInlineScriptRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected Inline Script registration, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

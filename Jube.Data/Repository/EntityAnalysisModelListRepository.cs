@@ -26,29 +26,40 @@ namespace Jube.Data.Repository
     using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
 
-    public class EntityAnalysisModelListRepository
+    public class EntityAnalysisModelListRepository :
+        VersionedApprovalRepository<EntityAnalysisModelList, EntityAnalysisModelListVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelListRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelListRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelListRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelListRepository(DbContext dbContext, int tenantRegistryId) : this(dbContext,
+            tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelListRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelListRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelList,
+            nameof(EntityAnalysisModelListVersion.EntityAnalysisModelListId), tenantRegistryId, userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelListRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelList> LoadForMutationAsync(int id, CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public Task<EntityAnalysisModelList> GetByNameEntityAnalysisModelGuidAsync(string name,

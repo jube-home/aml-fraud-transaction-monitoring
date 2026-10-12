@@ -61,7 +61,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Soft-deletes an Activation Rule in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelActivationRuleReset", OperationKind.Write, true, true,
-                    "Resets the ActivationCounter and EvaluationCounter of an Activation Rule to zero.")
+                    "Resets the ActivationCounter and EvaluationCounter of an Activation Rule to zero."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected Activation Rule for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelActivationRuleRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected Activation Rule, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

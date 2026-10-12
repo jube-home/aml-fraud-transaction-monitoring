@@ -154,7 +154,7 @@ function createValueGrid(options) {
         }
         if (status && status.rejected) {
             return deleted
-                ? {label: "Deletion rejected, edit to restore", css: "value-state-rejected", colour: "purple"}
+                ? {label: "Deletion rejected", css: "value-state-rejected", colour: "purple"}
                 : {label: "Rejected", css: "value-state-rejected", colour: "purple"};
         }
         return {label: "Approved", css: "value-state-approved", colour: ""};
@@ -304,18 +304,30 @@ function createValueGrid(options) {
             },
             {
                 title: "",
-                width: 170,
+                width: 300,
                 editable: false,
                 template: function (d) {
                     const status = statusById[d.id];
-                    if (!status || !status.pending) {
+                    if (!status) {
                         return "";
                     }
-                    if (!status.canApprove) {
-                        return "<span class=\"value-state-pending\">Awaiting a checker</span>";
+                    if (status.pending) {
+                        if (!status.canApprove) {
+                            return "<span class=\"value-state-pending\">Awaiting a checker</span>";
+                        }
+                        return "<button type=\"button\" class=\"k-button value-approve\" data-id=\"" + d.id + "\">Approve</button> " +
+                            "<button type=\"button\" class=\"k-button value-reject\" data-id=\"" + d.id + "\">Reject</button>";
                     }
-                    return "<button type=\"button\" class=\"k-button value-approve\" data-id=\"" + d.id + "\">Approve</button> " +
-                        "<button type=\"button\" class=\"k-button value-reject\" data-id=\"" + d.id + "\">Reject</button>";
+                    if (status.rejected) {
+                        let buttons = "<input type=\"text\" class=\"k-textbox value-action-note\" " +
+                            "placeholder=\"Note (optional)\" style=\"width:110px;margin-right:4px;\"/>" +
+                            "<button type=\"button\" class=\"k-button value-resubmit\" data-id=\"" + d.id + "\">Resubmit</button> ";
+                        if (status.effectiveVersion !== null && status.effectiveVersion !== undefined) {
+                            buttons += "<button type=\"button\" class=\"k-button value-retract\" data-id=\"" + d.id + "\">Retract</button>";
+                        }
+                        return buttons;
+                    }
+                    return "";
                 }
             },
             {
@@ -346,6 +358,26 @@ function createValueGrid(options) {
                 version: status.currentVersion,
                 note: null
             }),
+            success: function () {
+                report("");
+                loadStatus();
+            },
+            error: function (xhr) {
+                report(reasonOf(xhr, "The " + action.toLowerCase() + " was refused."));
+            }
+        });
+    });
+
+    host.off("click.valueGridAction").on("click.valueGridAction", ".value-resubmit, .value-retract", function (e) {
+        e.preventDefault();
+        const id = $(this).data("id");
+        const action = $(this).hasClass("value-resubmit") ? "Resubmit" : "Retract";
+        const note = $(this).closest("tr").find(".value-action-note").val() || null;
+        $.ajax({
+            url: options.endpoint + "/" + id + "/" + action,
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({note: note}),
             success: function () {
                 report("");
                 loadStatus();

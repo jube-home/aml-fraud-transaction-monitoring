@@ -19,8 +19,10 @@ using System.Threading.Tasks;
 using FluentValidation.Results;
 using Jube.Data.Context;
 using Jube.Dto.EntityAnalysisModelSanction;
+using Jube.Dto.EntityApproval;
 using Jube.Service.EntityAnalysisModelSanction;
 using Jube.Service.Exceptions.EntityAnalysisModelSanction;
+using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Reactivity.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Builder;
@@ -68,6 +70,18 @@ namespace Jube.App.Endpoints
                 .Produces((int)HttpStatusCode.OK)
                 .Produces((int)HttpStatusCode.NoContent)
                 .WithName("EntityAnalysisModelSanctionDelete");
+
+            group.MapPost("{id:int}/Resubmit", ResubmitAsync)
+                .Produces((int)HttpStatusCode.OK)
+                .Produces<object>((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.NoContent)
+                .WithName("EntityAnalysisModelSanctionResubmit");
+
+            group.MapPost("{id:int}/Retract", RetractAsync)
+                .Produces((int)HttpStatusCode.OK)
+                .Produces<object>((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.NoContent)
+                .WithName("EntityAnalysisModelSanctionRetract");
         }
 
         private static async Task<IResult> GetAsync(
@@ -438,6 +452,152 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"DELETE {Base}/{id}: 500 user={user}", e);
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> ResubmitAsync(
+            int id, [FromBody] EntityApprovalActionRequestDto body, HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/{id}/Resubmit: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+            try
+            {
+                var service = await EntityAnalysisModelSanctionService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, token);
+                var result = await service.ResubmitAsync(id, body?.Note, token);
+                return TypedResults.Ok(result);
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Resubmit: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Resubmit: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ApprovalRefusedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Resubmit: 400 user={user} reason={ex.Message}");
+                }
+
+                return TypedResults.BadRequest(new { message = ex.Message, reasons = ex.Reasons });
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Resubmit: 204 (not found) user={user}");
+                }
+
+                return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/{id}/Resubmit: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/{id}/Resubmit: 500 user={user}", e);
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> RetractAsync(
+            int id, [FromBody] EntityApprovalActionRequestDto body, HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/{id}/Retract: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+            try
+            {
+                var service = await EntityAnalysisModelSanctionService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, token);
+                var result = await service.RetractAsync(id, body?.Note, token);
+                return TypedResults.Ok(result);
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Retract: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Retract: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ApprovalRefusedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Retract: 400 user={user} reason={ex.Message}");
+                }
+
+                return TypedResults.BadRequest(new { message = ex.Message, reasons = ex.Reasons });
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Retract: 204 (not found) user={user}");
+                }
+
+                return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/{id}/Retract: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/{id}/Retract: 500 user={user}", e);
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

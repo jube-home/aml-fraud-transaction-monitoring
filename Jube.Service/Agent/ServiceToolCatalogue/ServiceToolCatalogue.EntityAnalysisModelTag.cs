@@ -48,7 +48,13 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Updates a Tag in the caller's tenant by id."),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelTagDelete", OperationKind.Delete, true, true,
-                    "Soft-deletes a Tag in the caller's tenant by id.")
+                    "Soft-deletes a Tag in the caller's tenant by id."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTagResubmit", OperationKind.Write, false, false,
+                    "Resubmits a rejected Tag for approval again, unchanged, opening a fresh approval cycle."),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelTagRetract", OperationKind.Write, false, false,
+                    "Retracts a rejected Tag, restoring it to its last approved version without a new approval cycle.")
             ]);
         }
     }

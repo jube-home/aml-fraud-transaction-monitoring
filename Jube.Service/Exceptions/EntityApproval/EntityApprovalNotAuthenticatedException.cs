@@ -13,7 +13,7 @@
 
 namespace Jube.Service.Exceptions.EntityApproval
 {
-    public sealed class NotAuthenticatedException(string message) : ServiceException(message)
+    public sealed class EntityApprovalNotAuthenticatedException(string message) : ServiceException(message)
     {
         public override string Code => "NotAuthenticated";
     }

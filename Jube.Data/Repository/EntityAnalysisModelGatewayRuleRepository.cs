@@ -26,29 +26,42 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
 {
-    public class EntityAnalysisModelGatewayRuleRepository
+    public class EntityAnalysisModelGatewayRuleRepository :
+        VersionedApprovalRepository<EntityAnalysisModelGatewayRule, EntityAnalysisModelGatewayRuleVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelGatewayRuleRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelGatewayRuleRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelGatewayRuleRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelGatewayRuleRepository(DbContext dbContext, int tenantRegistryId) : this(dbContext,
+            tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelGatewayRuleRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelGatewayRuleRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
+            nameof(EntityAnalysisModelGatewayRuleVersion.EntityAnalysisModelGatewayRuleId), tenantRegistryId,
+            userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelGatewayRuleRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelGatewayRule> LoadForMutationAsync(int id,
+            CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public Task<bool> ParentModelVisibleAsync(int entityAnalysisModelId, CancellationToken token = default)

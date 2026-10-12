@@ -26,29 +26,42 @@ namespace Jube.Data.Repository
     using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
 
-    public class EntityAnalysisModelDictionaryKvpRepository
+    public class EntityAnalysisModelDictionaryKvpRepository :
+        VersionedApprovalRepository<EntityAnalysisModelDictionaryKvp, EntityAnalysisModelDictionaryKvpVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelDictionaryKvpRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelDictionaryKvpRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelDictionaryKvpRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelDictionaryKvpRepository(DbContext dbContext, int tenantRegistryId) : this(
+            dbContext, tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelDictionaryKvpRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelDictionaryKvpRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
+            nameof(EntityAnalysisModelDictionaryKvpVersion.EntityAnalysisModelDictionaryKvpId), tenantRegistryId,
+            userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelDictionaryKvpRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelDictionaryKvp> LoadForMutationAsync(int id,
+            CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public async Task<IEnumerable<EntityAnalysisModelDictionaryKvp>> GetAsync(CancellationToken token = default)

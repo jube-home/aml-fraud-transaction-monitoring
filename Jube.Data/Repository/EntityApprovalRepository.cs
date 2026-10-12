@@ -102,6 +102,56 @@ namespace Jube.Data.Repository
                 w => w.Id == id && (w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue), token);
         }
 
+        public Task<int> RetractAsync(EntityApprovalKind kind, int entityId, int version, string retractedBy,
+            string note = null, CancellationToken token = default)
+        {
+            var kindId = (int)kind;
+            var stateId = (int)EntityApprovalState.Rejected;
+
+            var query = dbContext.EntityApproval
+                .Where(w => w.EntityApprovalKindId == kindId
+                            && w.EntityId == entityId
+                            && w.EntityVersion == version
+                            && w.StateId == stateId
+                            && w.ReturnedDate == null
+                            && (w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue))
+                .Set(s => s.ReturnedDate, DateTime.UtcNow)
+                .Set(s => s.ReturnedUser, retractedBy)
+                .Set(s => s.ReturnKindId, (int)EntityApprovalReturnKind.Retracted);
+
+            if (note != null)
+            {
+                query = query.Set(s => s.ReturnedNote, note);
+            }
+
+            return query.UpdateAsync(token);
+        }
+
+        public Task<int> ResubmitAsync(EntityApprovalKind kind, int entityId, int version, string resubmittedBy,
+            string note = null, CancellationToken token = default)
+        {
+            var kindId = (int)kind;
+            var stateId = (int)EntityApprovalState.Rejected;
+
+            var query = dbContext.EntityApproval
+                .Where(w => w.EntityApprovalKindId == kindId
+                            && w.EntityId == entityId
+                            && w.EntityVersion == version
+                            && w.StateId == stateId
+                            && w.ReturnedDate == null
+                            && (w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue))
+                .Set(s => s.ReturnedDate, DateTime.UtcNow)
+                .Set(s => s.ReturnedUser, resubmittedBy)
+                .Set(s => s.ReturnKindId, (int)EntityApprovalReturnKind.Resubmitted);
+
+            if (note != null)
+            {
+                query = query.Set(s => s.ReturnedNote, note);
+            }
+
+            return query.UpdateAsync(token);
+        }
+
         public async Task<int> GetMaxIdAsync(int tenantRegistryIdOfWatermark, CancellationToken token = default)
         {
             var max = await dbContext.EntityApproval

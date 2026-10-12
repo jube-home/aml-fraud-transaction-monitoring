@@ -25,6 +25,7 @@ namespace Jube.Service.EntityAnalysisModel
     using System.Threading.Tasks;
     using Agent;
     using Exceptions.EntityAnalysisModel;
+    using Jube.Service.Exceptions.EntityApproval;
     using Jube.Data.Context;
     using Jube.Data.Repository;
     using Jube.Dto.EntityAnalysisModel;
@@ -688,6 +689,161 @@ namespace Jube.Service.EntityAnalysisModel
                 log.Error($"EntityAnalysisModel.Delete: unexpected failure id={id} user={userName}", ex);
                 throw;
             }
+        }
+
+        [Description("Resubmits a rejected Model for approval again, unchanged, opening a fresh approval cycle " +
+                     "without requiring an edit. Use after a rejection was explained and the maker still wants " +
+                     "the same change (including a delete) approved.")]
+        [ServiceOperation("EntityAnalysisModelResubmit", OperationKind.Write, Idempotent = false)]
+        public async Task<ModelPoco> ResubmitAsync(
+            [Description("Numeric identifier of the Model to resubmit.")]
+            int id,
+            [Description("Optional note explaining why this is being resubmitted.")]
+            string? note = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModel", "Resubmit", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModel.Resubmit: entry id={id} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(permissions, "EntityAnalysisModel.Resubmit");
+
+                ModelPoco saved;
+                try
+                {
+                    saved = await repository.ResubmitAsync(id, note, token).ConfigureAwait(false);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    throw new NotFoundException("The model was not found.", ex);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Refused(ex.Message);
+                }
+
+                op.Entity(saved.Id);
+                op.Version(saved.Version.GetValueOrDefault());
+                op.Updated();
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info($"EntityAnalysisModel.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
+
+                return saved;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (ApprovalRefusedException)
+            {
+                op.Outcome("refused");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModel.Resubmit: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Retracts a rejected Model, restoring it to its last approved version (including " +
+                     "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
+                     "Use when the maker agrees with the rejection and wants to abandon the change.")]
+        [ServiceOperation("EntityAnalysisModelRetract", OperationKind.Write, Idempotent = false)]
+        public async Task<ModelPoco> RetractAsync(
+            [Description("Numeric identifier of the Model to retract.")]
+            int id,
+            [Description("Optional note explaining why this is being retracted.")]
+            string? note = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModel", "Retract", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"EntityAnalysisModel.Retract: entry id={id} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted(permissions, "EntityAnalysisModel.Retract");
+
+                ModelPoco saved;
+                try
+                {
+                    saved = await repository.RetractAsync(id, note, token: token).ConfigureAwait(false);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    throw new NotFoundException("The model was not found.", ex);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Refused(ex.Message);
+                }
+
+                op.Entity(saved.Id);
+                op.Version(saved.Version.GetValueOrDefault());
+                op.Updated();
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info($"EntityAnalysisModel.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
+
+                return saved;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (ApprovalRefusedException)
+            {
+                op.Outcome("refused");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModel.Retract: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        private static ApprovalRefusedException Refused(string message)
+        {
+            return new ApprovalRefusedException(message, [message]);
         }
 
         private void EnsurePermitted(int[] specs, string op)

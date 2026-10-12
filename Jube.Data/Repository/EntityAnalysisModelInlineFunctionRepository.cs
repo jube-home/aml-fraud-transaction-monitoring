@@ -25,29 +25,42 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
 {
-    public class EntityAnalysisModelInlineFunctionRepository
+    public class EntityAnalysisModelInlineFunctionRepository :
+        VersionedApprovalRepository<EntityAnalysisModelInlineFunction, EntityAnalysisModelInlineFunctionVersion>
     {
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelInlineFunctionRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelInlineFunctionRepository(DbContext dbContext, string userName) : this(dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId).FirstOrDefault(),
+            userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelInlineFunctionRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelInlineFunctionRepository(DbContext dbContext, int tenantRegistryId) : this(
+            dbContext, tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelInlineFunctionRepository(DbContext dbContext) : this(dbContext, null, null)
+        {
+        }
+
+        private EntityAnalysisModelInlineFunctionRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelInlineFunction,
+            nameof(EntityAnalysisModelInlineFunctionVersion.EntityAnalysisModelInlineFunctionId), tenantRegistryId,
+            userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelInlineFunctionRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelInlineFunction> LoadForMutationAsync(int id,
+            CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return GetByIdAsync(id, token);
         }
 
         public Task<EntityAnalysisModelInlineFunction> GetByNameEntityAnalysisModelIdAsync(string name,
