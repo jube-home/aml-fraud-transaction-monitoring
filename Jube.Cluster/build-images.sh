@@ -31,7 +31,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-if [ ! -d "$REPO_ROOT/.git" ]; then
+if [ ! -e "$REPO_ROOT/.git" ]; then
     echo "ERROR: $REPO_ROOT does not look like the repo root (no .git) - aborting." >&2
     exit 1
 fi
