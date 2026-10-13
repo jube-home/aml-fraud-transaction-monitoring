@@ -61,6 +61,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var script = new EntityAnalysisModelInlineScript
             {
                 Id = 1,
+                Name = code,
                 InlineScriptCode = code,
                 ActivatorDelegate = activator,
                 ExecuteAsyncDelegate = execute
