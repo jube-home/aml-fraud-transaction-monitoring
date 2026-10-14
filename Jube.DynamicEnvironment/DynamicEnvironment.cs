@@ -574,6 +574,9 @@ namespace Jube.DynamicEnvironment
                     "OAuthSignInInterstitial", "False"
                 },
                 {
+                    "OAuthPrompt", null
+                },
+                {
                     "SanctionsLevenshteinMaxDistanceRatio", "0.3"
                 },
                 {

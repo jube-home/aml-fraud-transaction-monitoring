@@ -606,6 +606,9 @@ namespace Jube.App
 
                         OnRedirectToIdentityProvider = context =>
                         {
+                            context.ProtocolMessage.Prompt = OAuthPromptSelector.Resolve(
+                                dynamicEnvironment.AppSettings("OAuthPrompt"), context.ProtocolMessage.Prompt);
+
                             log.Debug(
                                 $"Redirecting to Entra ID. Redirect URI constructed by app: {context.ProtocolMessage.RedirectUri}");
                             return Task.CompletedTask;
