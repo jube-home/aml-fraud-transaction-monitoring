@@ -41,8 +41,15 @@ namespace Jube.App.Code
             response.StatusCode = StatusCodes.Status200OK;
             response.ContentType = "text/html";
             response.ContentLength = 0;
-            response.Headers.CacheControl = "no-store";
+            ApplyNoCacheHeaders(response);
             response.Headers["Refresh"] = $"0; url={target}";
+        }
+
+        public static void ApplyNoCacheHeaders(HttpResponse response)
+        {
+            response.Headers.CacheControl = "no-store, no-cache, must-revalidate, max-age=0";
+            response.Headers.Pragma = "no-cache";
+            response.Headers.Expires = "0";
         }
     }
 }

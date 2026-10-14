@@ -57,8 +57,22 @@ public sealed class OAuthSignInInterstitialTests
         context.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         context.Response.ContentType.Should().Be("text/html");
         context.Response.ContentLength.Should().Be(0);
-        context.Response.Headers.CacheControl.ToString().Should().Be("no-store");
+        context.Response.Headers.CacheControl.ToString().Should().Be("no-store, no-cache, must-revalidate, max-age=0");
+        context.Response.Headers.Pragma.ToString().Should().Be("no-cache");
+        context.Response.Headers.Expires.ToString().Should().Be("0");
         context.Response.Headers["Refresh"].ToString().Should().Be("0; url=/Model/Frame/Exhaustive?modelId=7");
         context.Response.Headers.Location.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void ApplyNoCacheHeaders_SetsCacheControlPragmaAndExpires()
+    {
+        var context = new DefaultHttpContext();
+
+        OAuthSignInInterstitial.ApplyNoCacheHeaders(context.Response);
+
+        context.Response.Headers.CacheControl.ToString().Should().Be("no-store, no-cache, must-revalidate, max-age=0");
+        context.Response.Headers.Pragma.ToString().Should().Be("no-cache");
+        context.Response.Headers.Expires.ToString().Should().Be("0");
     }
 }
