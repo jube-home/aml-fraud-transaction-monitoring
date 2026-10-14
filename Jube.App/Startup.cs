@@ -727,7 +727,18 @@ namespace Jube.App
                                 AuthenticationCookieIssuer.IssueAuthenticationCookies(context.Response,
                                     dynamicEnvironment, userName);
 
-                                context.Response.Redirect(targetRedirectUri);
+                                var useInterstitial = dynamicEnvironment.AppSettings("OAuthSignInInterstitial")
+                                    .Equals("True", StringComparison.OrdinalIgnoreCase);
+
+                                if (useInterstitial && OAuthSignInInterstitial.IsSafeTarget(targetRedirectUri))
+                                {
+                                    OAuthSignInInterstitial.Write(context.Response, targetRedirectUri);
+                                }
+                                else
+                                {
+                                    context.Response.Redirect(targetRedirectUri);
+                                }
+
                                 context.HandleResponse();
                             }
                             catch (Exception ex)
