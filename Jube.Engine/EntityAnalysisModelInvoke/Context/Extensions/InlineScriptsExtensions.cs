@@ -69,22 +69,22 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     if (context.Log.IsDebugEnabled)
                     {
                         context.Log.Debug(
-                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is going to invoke {inlineScript.InlineScriptCode}.");
+                            $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} is going to invoke {inlineScript.Name}.");
                     }
 
-                    context.TraceLog($"is going to invoke inline script {inlineScript.InlineScriptCode}.");
+                    context.TraceLog($"is going to invoke inline script {inlineScript.Name}.");
 
                     var timed = await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(TaskType.InlineScript,
                             async () => await ReflectInlineScriptHelper.ExecuteAsync(inlineScript, context))
                         .ConfigureAwait(false);
-                    items[inlineScript.InlineScriptCode] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
+                    items[inlineScript.Name] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
 
-                    context.TraceLog($"has invoked inline script {inlineScript.InlineScriptCode}.");
+                    context.TraceLog($"has invoked inline script {inlineScript.Name}.");
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
                     context.Log.Error(
-                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has tried to invoke inline script {inlineScript.InlineScriptCode} but it has produced an error as {ex}.");
+                        $"Entity Invoke: GUID {context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} and model {context.EntityAnalysisModel.Instance.Id} has tried to invoke inline script {inlineScript.Name} but it has produced an error as {ex}.");
                 }
             }
         }

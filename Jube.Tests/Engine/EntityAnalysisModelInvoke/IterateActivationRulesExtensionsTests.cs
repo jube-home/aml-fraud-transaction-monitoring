@@ -421,6 +421,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var script = new EntityAnalysisModelInlineScript
             {
                 Id = 1,
+                Name = "Script1",
                 InlineScriptCode = "Script1",
                 ActivatorDelegate = () => new object(),
                 ExecuteAsyncDelegate = (_, _) => Task.FromResult(true)
@@ -452,6 +453,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var script = new EntityAnalysisModelInlineScript
             {
                 Id = 1,
+                Name = "Script1",
                 InlineScriptCode = "Script1",
                 ActivatorDelegate = () => new object(),
                 ExecuteAsyncDelegate = (_, _) => Task.FromResult(false)

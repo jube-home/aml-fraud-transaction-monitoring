@@ -154,7 +154,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                         var (scriptMatched, scriptTiming) =
                             await TimeAsync(() => ReflectInlineScriptHelper.ExecuteAsync(inlineScript, context))
                                 .ConfigureAwait(false);
-                        overrideScriptTimings[inlineScript.InlineScriptCode] = scriptTiming;
+                        overrideScriptTimings[inlineScript.Name] = scriptTiming;
 
                         if (scriptMatched)
                         {
