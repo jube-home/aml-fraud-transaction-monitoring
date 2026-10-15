@@ -635,6 +635,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
+                var modelId = model.Id;
                 EnsurePermitted("EntityAnalysisModelDictionaryKvp.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
@@ -642,7 +643,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 {
                     if (log.IsWarnEnabled)
                     {
-                        log.Warn($"EntityAnalysisModelDictionaryKvp.Update: validation failed id={model.Id} " +
+                        log.Warn($"EntityAnalysisModelDictionaryKvp.Update: validation failed id={modelId} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
                     }
 
@@ -661,7 +662,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                     if (log.IsWarnEnabled)
                     {
                         log.Warn(
-                            $"EntityAnalysisModelDictionaryKvp.Update: id={model.Id} not found, deleted, expired, or not visible to tenant user={userName}");
+                            $"EntityAnalysisModelDictionaryKvp.Update: id={modelId} not found, deleted, expired, or not visible to tenant user={userName}");
                     }
 
                     throw new NotFoundException("The Key Value Pair was not found.", ex);
@@ -671,7 +672,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                     if (log.IsWarnEnabled)
                     {
                         log.Warn(
-                            $"EntityAnalysisModelDictionaryKvp.Update: id={model.Id} raced a duplicate key user={userName}");
+                            $"EntityAnalysisModelDictionaryKvp.Update: id={modelId} raced a duplicate key user={userName}");
                     }
 
                     throw DuplicateKeyException();

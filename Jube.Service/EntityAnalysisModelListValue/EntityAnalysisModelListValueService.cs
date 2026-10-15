@@ -631,6 +631,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
+                var modelId = model.Id;
                 EnsurePermitted("EntityAnalysisModelListValue.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
@@ -638,7 +639,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                 {
                     if (log.IsWarnEnabled)
                     {
-                        log.Warn($"EntityAnalysisModelListValue.Update: validation failed id={model.Id} " +
+                        log.Warn($"EntityAnalysisModelListValue.Update: validation failed id={modelId} " +
                                  $"user={userName} props=[{string.Join(",", results.Errors.Select(e => e.PropertyName).Distinct())}]");
                     }
 
@@ -656,7 +657,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     if (log.IsWarnEnabled)
                     {
                         log.Warn(
-                            $"EntityAnalysisModelListValue.Update: id={model.Id} not found, deleted, expired, or not visible to tenant user={userName}");
+                            $"EntityAnalysisModelListValue.Update: id={modelId} not found, deleted, expired, or not visible to tenant user={userName}");
                     }
 
                     throw new NotFoundException("The List Value was not found.", ex);
@@ -666,7 +667,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     if (log.IsWarnEnabled)
                     {
                         log.Warn(
-                            $"EntityAnalysisModelListValue.Update: id={model.Id} raced a duplicate value user={userName}");
+                            $"EntityAnalysisModelListValue.Update: id={modelId} raced a duplicate value user={userName}");
                     }
 
                     throw DuplicateValueException();
