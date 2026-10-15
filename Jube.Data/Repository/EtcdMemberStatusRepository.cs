@@ -29,6 +29,7 @@ namespace Jube.Data.Repository
         public async Task<EtcdMemberStatus> InsertAsync(EtcdMemberStatus model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -59,30 +60,66 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["leaderChangesTotal"] = rows.Where(w => w.LeaderChangesTotal.HasValue)
-                    .Select(s => (double)s.LeaderChangesTotal!.Value).ToArray(),
-                ["dbSizeBytes"] = rows.Where(w => w.DbSizeBytes.HasValue)
-                    .Select(s => (double)s.DbSizeBytes!.Value).ToArray(),
-                ["dbSizeInUseBytes"] = rows.Where(w => w.DbSizeInUseBytes.HasValue)
-                    .Select(s => (double)s.DbSizeInUseBytes!.Value).ToArray(),
-                ["proposalsCommittedTotal"] = rows.Where(w => w.ProposalsCommittedTotal.HasValue)
-                    .Select(s => (double)s.ProposalsCommittedTotal!.Value).ToArray(),
-                ["proposalsAppliedTotal"] = rows.Where(w => w.ProposalsAppliedTotal.HasValue)
-                    .Select(s => (double)s.ProposalsAppliedTotal!.Value).ToArray(),
-                ["proposalsPendingCount"] = rows.Where(w => w.ProposalsPendingCount.HasValue)
-                    .Select(s => (double)s.ProposalsPendingCount!.Value).ToArray(),
-                ["proposalsFailedTotal"] = rows.Where(w => w.ProposalsFailedTotal.HasValue)
-                    .Select(s => (double)s.ProposalsFailedTotal!.Value).ToArray(),
-                ["walFsyncAvgMicroseconds"] = rows.Where(w => w.WalFsyncAvgMicroseconds.HasValue)
-                    .Select(s => s.WalFsyncAvgMicroseconds!.Value).ToArray(),
-                ["backendCommitAvgMicroseconds"] = rows.Where(w => w.BackendCommitAvgMicroseconds.HasValue)
-                    .Select(s => s.BackendCommitAvgMicroseconds!.Value).ToArray(),
-                ["slowApplyTotal"] = rows.Where(w => w.SlowApplyTotal.HasValue)
-                    .Select(s => (double)s.SlowApplyTotal!.Value).ToArray(),
-                ["slowReadIndexesTotal"] = rows.Where(w => w.SlowReadIndexesTotal.HasValue)
-                    .Select(s => (double)s.SlowReadIndexesTotal!.Value).ToArray(),
-                ["alarmCount"] = rows.Where(w => w.AlarmCount.HasValue)
-                    .Select(s => (double)s.AlarmCount!.Value).ToArray()
+                ["leaderChangesTotal"] =
+                [
+                    .. rows.Where(w => w.LeaderChangesTotal.HasValue)
+                        .Select(s => (double)s.LeaderChangesTotal!.Value)
+                ],
+                ["dbSizeBytes"] =
+                [
+                    .. rows.Where(w => w.DbSizeBytes.HasValue)
+                        .Select(s => (double)s.DbSizeBytes!.Value)
+                ],
+                ["dbSizeInUseBytes"] =
+                [
+                    .. rows.Where(w => w.DbSizeInUseBytes.HasValue)
+                        .Select(s => (double)s.DbSizeInUseBytes!.Value)
+                ],
+                ["proposalsCommittedTotal"] =
+                [
+                    .. rows.Where(w => w.ProposalsCommittedTotal.HasValue)
+                        .Select(s => (double)s.ProposalsCommittedTotal!.Value)
+                ],
+                ["proposalsAppliedTotal"] =
+                [
+                    .. rows.Where(w => w.ProposalsAppliedTotal.HasValue)
+                        .Select(s => (double)s.ProposalsAppliedTotal!.Value)
+                ],
+                ["proposalsPendingCount"] =
+                [
+                    .. rows.Where(w => w.ProposalsPendingCount.HasValue)
+                        .Select(s => (double)s.ProposalsPendingCount!.Value)
+                ],
+                ["proposalsFailedTotal"] =
+                [
+                    .. rows.Where(w => w.ProposalsFailedTotal.HasValue)
+                        .Select(s => (double)s.ProposalsFailedTotal!.Value)
+                ],
+                ["walFsyncAvgMicroseconds"] =
+                [
+                    .. rows.Where(w => w.WalFsyncAvgMicroseconds.HasValue)
+                        .Select(s => s.WalFsyncAvgMicroseconds!.Value)
+                ],
+                ["backendCommitAvgMicroseconds"] =
+                [
+                    .. rows.Where(w => w.BackendCommitAvgMicroseconds.HasValue)
+                        .Select(s => s.BackendCommitAvgMicroseconds!.Value)
+                ],
+                ["slowApplyTotal"] =
+                [
+                    .. rows.Where(w => w.SlowApplyTotal.HasValue)
+                        .Select(s => (double)s.SlowApplyTotal!.Value)
+                ],
+                ["slowReadIndexesTotal"] =
+                [
+                    .. rows.Where(w => w.SlowReadIndexesTotal.HasValue)
+                        .Select(s => (double)s.SlowReadIndexesTotal!.Value)
+                ],
+                ["alarmCount"] =
+                [
+                    .. rows.Where(w => w.AlarmCount.HasValue)
+                        .Select(s => (double)s.AlarmCount!.Value)
+                ]
             });
         }
 
@@ -104,6 +141,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.Endpoint != null && w.Endpoint.ToLower().Contains(lowerSearch)) ||
                     (w.Name != null && w.Name.ToLower().Contains(lowerSearch)) ||
@@ -123,6 +161,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "endpoint" => query.OrderByField(o => o.Endpoint, descending),

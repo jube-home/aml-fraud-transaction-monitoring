@@ -11,14 +11,15 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.Data.Repository;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Archiver;
 using Jube.Engine.Observability;
+using Jube.Engine.Observability.Models;
 
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 {
@@ -75,6 +76,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 {
                     context.Services.Log.Info(
                         $"Graceful Cancellation PersistToActivationWatcherPollingAsync: has produced an error {ex}");
+
                     break;
                 }
                 catch (Exception ex)
@@ -95,6 +97,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             try
             {
                 ArchiveBuffer buffer;
+
                 if (!entityAnalysisModel.Dependencies.BulkInsertMessageBuffers.TryGetValue(threadSequence, out buffer))
                 {
                     token.ThrowIfCancellationRequested();
@@ -131,22 +134,28 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 }
 
                 var flushDueToTimeout = buffer.LastMessage.AddSeconds(10) <= DateTime.UtcNow;
+
                 var flushDueToThreshold = buffer.Archive.Count >
                                           int.Parse(
                                               context.Services.DynamicEnvironment.AppSettings("BulkCopyThreshold"));
+
                 var flushDueToBufferHavingValues = buffer.Archive.Count > 0 || buffer.ArchiveKeys.Count > 0;
 
                 if ((flushDueToTimeout || flushDueToThreshold) && flushDueToBufferHavingValues)
                 {
                     var stopwatch = Stopwatch.StartNew();
+
                     await ArchiverArchiveRepository.BulkCopyArchiveBufferAsync(
                         entityAnalysisModel.Instance.TenantRegistryId,
                         entityAnalysisModel.Instance.Guid
                         , buffer, context.Services.DynamicEnvironment, context.Services.CacheService,
                         context.Services.Log, token).ConfigureAwait(false);
+
                     var bulkCopyDuration = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+
                     entityAnalysisModel.ArchiverStagePerformanceCounters.Record(
                         nameof(ArchiverStage.BulkCopyArchiveBuffer), bulkCopyDuration);
+
                     EngineDiagnostics.ArchiverStageDuration.Record(bulkCopyDuration / 1000.0,
                         new KeyValuePair<string, object>("stage", nameof(ArchiverStage.BulkCopyArchiveBuffer)));
 
@@ -154,11 +163,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                                         context.Services.DynamicEnvironment.AppSettings(
                                                             "ArchiverWarnThresholdMilliseconds")) *
                                                     1000L;
+
                     if (bulkCopyDuration >= warnThresholdMicroseconds)
                     {
                         ArchiverWarningCapture.Enqueue(new ArchiverWarningCaptureRecord(
                             DateTime.UtcNow, entityAnalysisModel.Instance.Guid, entityAnalysisModel.Instance.Name,
                             null, ArchiverStage.BulkCopyArchiveBuffer, bulkCopyDuration));
+
                         EngineDiagnostics.ArchiverWarnCount.Add(1,
                             new KeyValuePair<string, object>("stage", nameof(ArchiverStage.BulkCopyArchiveBuffer)));
                     }

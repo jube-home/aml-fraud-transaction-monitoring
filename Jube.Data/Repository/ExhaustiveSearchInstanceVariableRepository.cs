@@ -11,18 +11,18 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Data.Repository.Interfaces;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using Interface;
-    using LinqToDB;
-    using Poco;
-
     public class ExhaustiveSearchInstanceVariableRepository(DbContext dbContext) : IGenericRepository
     {
         public Task<int> InsertAsync(object arg, CancellationToken token = default)
@@ -39,6 +39,22 @@ namespace Jube.Data.Repository
                 .UpdateAsync(token);
         }
 
+        public async Task<bool> ReallocateAsync(int id, int tenantRegistryId, string name, byte processingTypeId,
+            CancellationToken token = default)
+        {
+            var affected = await dbContext.ExhaustiveSearchInstanceVariable
+                .Where(d => d.Id == id
+                            && d.ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                            && (d.Deleted == 0 || d.Deleted == null)
+                            && (d.ExhaustiveSearchInstance.Deleted == 0
+                                || d.ExhaustiveSearchInstance.Deleted == null))
+                .Set(s => s.Name, name)
+                .Set(s => s.ProcessingTypeId, processingTypeId)
+                .UpdateAsync(token).ConfigureAwait(false);
+
+            return affected > 0;
+        }
+
         public async Task<IEnumerable<ExhaustiveSearchInstanceVariable>> GetByExhaustiveSearchInstanceIdOrderByIdAsync(
             int exhaustiveSearchInstanceId, CancellationToken token = default)
         {
@@ -47,7 +63,8 @@ namespace Jube.Data.Repository
                 .OrderBy(o => o.Id).ToListAsync(token).ConfigureAwait(false);
         }
 
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId, CancellationToken token = default)
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
         {
             return dbContext.ExhaustiveSearchInstanceVariable
                 .Where(d =>

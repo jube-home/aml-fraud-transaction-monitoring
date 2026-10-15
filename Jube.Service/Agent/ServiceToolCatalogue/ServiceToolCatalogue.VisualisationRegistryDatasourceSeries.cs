@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,18 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.VisualisationRegistryDatasourceSeries;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddVisualisationRegistryDatasourceSeries(List<ServiceToolDescriptor> tools) =>
+        static partial void AddVisualisationRegistryDatasourceSeries(List<ServiceToolDescriptor> tools)
+        {
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceSeriesListByVisualisationRegistryDatasourceId",
-                    OperationKind.Read, Idempotent: true, Destructive: false,
+                    OperationKind.Read, true, false,
                     "Lists the series definitions (name and inferred data type of each SQL result column) of a " +
-                    "Visualisation Registry Datasource; server-derived, never user-created.")
+                    "Visualisation Registry Datasource; server-derived, never user-created.",
+                    VisualisationRegistryDatasourceSeriesService.RequiredPermissions)
             ]);
+        }
     }
 }

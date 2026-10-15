@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 320 260" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-4b61d504-t jc-4b61d504-d">
+    <title id="jc-4b61d504-t">Model score</title>
+    <desc id="jc-4b61d504-d">Gauge showing 0.64 on a scale from 0 to 1. Target 0.8.</desc>
+    <rect class="bg" x="0" y="0" width="320" height="260" rx="8"/>
+    <text class="ttl" x="16" y="32">Model score</text>
+    <path class="gtrack" d="M85.05 233.67A106 106 0 1 1 234.95 233.67L222.96 221.68A89.04 89.04 0 1 0 97.04 221.68Z"/>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Score, Value: 0.64, Target: 0.8">
+            <title>Score, Value: 0.64, Target: 0.8</title>
+            <path class="bar m"
+                  d="M85.05 233.67A106 106 0 0 1 224.97 74.96L214.57 88.36A89.04 89.04 0 0 0 97.04 221.68Z"/>
+            <g class="tt">
+                <rect class="tb" x="119.76" y="110.42" width="80.48" height="61" rx="6"/>
+                <rect class="tsw s0" x="129.76" y="119.42" width="9" height="9" rx="2"/>
+                <text class="tx b" x="143.76" y="128.42">Score</text>
+                <text class="tx" x="129.76" y="145.42">Value: 0.64</text>
+                <text class="tx" x="129.76" y="162.42">Target: 0.8</text>
+            </g>
+        </g>
+    </g>
+    <line class="tgt" x1="269.63" y1="141.36" x2="244.98" y2="145.26">
+        <title>Target: 0.8</title>
+    </line>
+    <text class="tk ctr" x="91.04" y="243.68">0</text>
+    <text class="tk ctr" x="228.96" y="243.68">1</text>
+    <text class="big ctr" x="160" y="166.72">0.64</text>
+    <text class="tk ctr" x="160" y="186.72">Score</text>
+</svg>

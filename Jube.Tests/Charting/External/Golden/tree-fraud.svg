@@ -1,0 +1,399 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 640 574" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-d062500a-t jc-d062500a-d">
+    <title id="jc-d062500a-t">Fraud decision tree</title>
+    <desc id="jc-d062500a-d">Decision tree with 9 drawn nodes and 5 leaves. Classes: legitimate, fraud.</desc>
+    <rect class="bg" x="0" y="0" width="640" height="574" rx="8"/>
+    <text class="ttl" x="16" y="32">Fraud decision tree</text>
+    <text class="sub" x="16" y="50">Gini impurity, depth 3</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="71.4" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">legitimate</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="103.4" y="62" width="45.6" height="18"/>
+        <rect class="sw" x="105.4" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="123.4" y="75">fraud</text>
+    </g>
+    <g class="tree" transform="translate(36.76 90)">
+        <g class="mk x0 eg e0 e1 a1 a2 a3 a4 a5" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z ≤ 1.8: yes, Samples: 500 (25% of root), fraud: 267 (53.4%), legitimate: 233 (46.6%)">
+            <title>amount_z ≤ 1.8: yes, Samples: 500 (25% of root), fraud: 267 (53.4%), legitimate: 233 (46.6%)</title>
+            <path class="eh" d="M291.06 46C291.06 72 133.24 72 133.24 98"/>
+            <path class="ep et" d="M291.06 46C291.06 72 133.24 72 133.24 98" stroke-width="2.33"/>
+            <text class="ant ctr" x="167.33" y="78.22">yes</text>
+        </g>
+        <g class="mk x1 eg e1 e2 a2" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h ≤ 4.5: yes, Samples: 310 (15.5% of root), fraud: 170 (54.8%), legitimate: 140 (45.2%)">
+            <title>velocity_1h ≤ 4.5: yes, Samples: 310 (15.5% of root), fraud: 170 (54.8%), legitimate: 140 (45.2%)
+            </title>
+            <path class="eh" d="M133.24 144C133.24 170 49.95 170 49.95 196"/>
+            <path class="ep et" d="M133.24 144C133.24 170 49.95 170 49.95 196" stroke-width="1.9"/>
+            <text class="ant ctr" x="67.94" y="176.22">yes</text>
+        </g>
+        <g class="mk x2 eg e1 e3 a3 a4 a5" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h ≤ 4.5: no, Samples: 190 (9.5% of root), fraud: 97 (51.1%), legitimate: 93 (48.9%)">
+            <title>velocity_1h ≤ 4.5: no, Samples: 190 (9.5% of root), fraud: 97 (51.1%), legitimate: 93 (48.9%)</title>
+            <path class="eh" d="M133.24 144C133.24 170 216.53 170 216.53 196"/>
+            <path class="ep et" d="M133.24 144C133.24 170 216.53 170 216.53 196" stroke-width="1.63"/>
+            <text class="ant ctr" x="198.54" y="176.22">no</text>
+        </g>
+        <g class="mk x3 eg e3 e4 a4" tabindex="0" role="graphics-symbol"
+           aria-label="channel in {ecommerce, atm, wire}: yes, Samples: 120 (6% of root), fraud: 85 (70.8%), legitimate: 35 (29.2%)">
+            <title>channel in {ecommerce, atm, wire}: yes, Samples: 120 (6% of root), fraud: 85 (70.8%), legitimate: 35
+                (29.2%)
+            </title>
+            <path class="eh" d="M216.53 242C216.53 268 158.11 268 158.11 294"/>
+            <path class="ep et" d="M216.53 242C216.53 268 158.11 268 158.11 294" stroke-width="1.47"/>
+            <text class="ant ctr" x="170.73" y="274.22">yes</text>
+        </g>
+        <g class="mk x4 eg e3 e5 a5" tabindex="0" role="graphics-symbol"
+           aria-label="channel in {ecommerce, atm, wire}: no, Samples: 70 (3.5% of root), legitimate: 58 (82.9%), fraud: 12 (17.1%)">
+            <title>channel in {ecommerce, atm, wire}: no, Samples: 70 (3.5% of root), legitimate: 58 (82.9%), fraud: 12
+                (17.1%)
+            </title>
+            <path class="eh" d="M216.53 242C216.53 268 274.95 268 274.95 294"/>
+            <path class="ep et" d="M216.53 242C216.53 268 274.95 268 274.95 294" stroke-width="1.36"/>
+            <text class="ant ctr" x="262.33" y="274.22">no</text>
+        </g>
+        <g class="mk x5 eg e0 e6 a6 a7 a8" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z ≤ 1.8: no, Samples: 1500 (75% of root), legitimate: 1430 (95.3%), fraud: 70 (4.7%)">
+            <title>amount_z ≤ 1.8: no, Samples: 1500 (75% of root), legitimate: 1430 (95.3%), fraud: 70 (4.7%)</title>
+            <path class="eh" d="M291.06 46C291.06 72 448.88 72 448.88 98"/>
+            <path class="ep et" d="M291.06 46C291.06 72 448.88 72 448.88 98" stroke-width="4.58"/>
+            <text class="ant ctr" x="414.79" y="78.22">no</text>
+        </g>
+        <g class="mk x6 eg e6 e7 a7" tabindex="0" role="graphics-symbol"
+           aria-label="account_age_days ≤ 90: yes, Samples: 240 (12% of root), legitimate: 190 (79.2%), fraud: 50 (20.8%)">
+            <title>account_age_days ≤ 90: yes, Samples: 240 (12% of root), legitimate: 190 (79.2%), fraud: 50 (20.8%)
+            </title>
+            <path class="eh" d="M448.88 144C448.88 170 386.05 170 386.05 196"/>
+            <path class="ep et" d="M448.88 144C448.88 170 386.05 170 386.05 196" stroke-width="1.74"/>
+            <text class="ant ctr" x="399.62" y="176.22">yes</text>
+        </g>
+        <g class="mk x7 eg e6 e8 a8" tabindex="0" role="graphics-symbol"
+           aria-label="account_age_days ≤ 90: no, Samples: 1260 (63% of root), legitimate: 1240 (98.4%), fraud: 20 (1.6%)">
+            <title>account_age_days ≤ 90: no, Samples: 1260 (63% of root), legitimate: 1240 (98.4%), fraud: 20 (1.6%)
+            </title>
+            <path class="eh" d="M448.88 144C448.88 170 511.71 170 511.71 196"/>
+            <path class="ep et" d="M448.88 144C448.88 170 511.71 170 511.71 196" stroke-width="4.04"/>
+            <text class="ant ctr" x="498.14" y="176.22">no</text>
+        </g>
+        <g class="mk n0 nd s0 j1 j6 a1 a2 a3 a4 a5 a6 a7 a8" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z ≤ 1.8, Split at depth 0, Samples: 2000 (100% of root), Impurity (gini): 0.28, legitimate: 1663 (83.2%), fraud: 337 (16.9%)">
+            <title>amount_z ≤ 1.8, Split at depth 0, Samples: 2000 (100% of root), Impurity (gini): 0.28, legitimate:
+                1663 (83.2%), fraud: 337 (16.9%)
+            </title>
+            <rect class="nb" x="235.23" y="0" width="111.66" height="46" rx="6"/>
+            <rect class="nt" x="235.23" y="0" width="111.66" height="46" rx="6"/>
+            <text class="lbl ctr" x="291.06" y="15">amount_z ≤ 1.8</text>
+            <text class="kn ctr" x="291.06" y="29">n = 2000 · gini 0.28</text>
+            <rect class="cl s0" x="245.23" y="37" width="76.22" height="4"/>
+            <rect class="cl s1" x="321.45" y="37" width="15.44" height="4"/>
+        </g>
+        <g class="mk n1 nd s1 j0 j2 j3 a2 a3 a4 a5" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h ≤ 4.5, Split at depth 1, Samples: 500 (25% of root), Impurity (gini): 0.498, fraud: 267 (53.4%), legitimate: 233 (46.6%)">
+            <title>velocity_1h ≤ 4.5, Split at depth 1, Samples: 500 (25% of root), Impurity (gini): 0.498, fraud: 267
+                (53.4%), legitimate: 233 (46.6%)
+            </title>
+            <rect class="nb" x="77.41" y="98" width="111.66" height="46" rx="6"/>
+            <rect class="nt" x="77.41" y="98" width="111.66" height="46" rx="6"/>
+            <text class="lbl ctr" x="133.24" y="113">velocity_1h ≤ 4.5</text>
+            <text class="kn ctr" x="133.24" y="127">n = 500 · gini 0.498</text>
+            <rect class="cl s0" x="87.41" y="135" width="42.71" height="4"/>
+            <rect class="cl s1" x="130.12" y="135" width="48.95" height="4"/>
+        </g>
+        <g class="mk n2 nd s1 j1" tabindex="0" role="graphics-symbol"
+           aria-label="fraud 55%, Leaf at depth 2, Samples: 310 (15.5% of root), Impurity (gini): 0.5, fraud: 170 (54.8%), legitimate: 140 (45.2%)">
+            <title>fraud 55%, Leaf at depth 2, Samples: 310 (15.5% of root), Impurity (gini): 0.5, fraud: 170 (54.8%),
+                legitimate: 140 (45.2%)
+            </title>
+            <rect class="nb" x="0" y="196" width="99.9" height="46" rx="16"/>
+            <rect class="nt lf" x="0" y="196" width="99.9" height="46" rx="16"/>
+            <text class="lbl ctr" x="49.95" y="211">fraud 55%</text>
+            <text class="kn ctr" x="49.95" y="225">n = 310 · gini 0.5</text>
+            <rect class="cl s0" x="10" y="233" width="36.08" height="4"/>
+            <rect class="cl s1" x="46.08" y="233" width="43.82" height="4"/>
+        </g>
+        <g class="mk n3 nd s1 j1 j4 j5 a4 a5" tabindex="0" role="graphics-symbol"
+           aria-label="channel in {ecommerce, atm, wire}, Split at depth 2, Samples: 190 (9.5% of root), Impurity (gini): 0.5, fraud: 97 (51.1%), legitimate: 93 (48.9%)">
+            <title>channel in {ecommerce, atm, wire}, Split at depth 2, Samples: 190 (9.5% of root), Impurity (gini):
+                0.5, fraud: 97 (51.1%), legitimate: 93 (48.9%)
+            </title>
+            <rect class="nb" x="113.9" y="196" width="205.26" height="46" rx="6"/>
+            <rect class="nt" x="113.9" y="196" width="205.26" height="46" rx="6"/>
+            <text class="lbl ctr" x="216.53" y="211">channel in {ecommerce, atm, wire}</text>
+            <text class="kn ctr" x="216.53" y="225">n = 190 · gini 0.5</text>
+            <rect class="cl s0" x="123.9" y="233" width="90.68" height="4"/>
+            <rect class="cl s1" x="214.58" y="233" width="94.58" height="4"/>
+        </g>
+        <g class="mk n4 nd s1 j3" tabindex="0" role="graphics-symbol"
+           aria-label="fraud 71%, Leaf at depth 3, Samples: 120 (6% of root), Impurity (gini): 0.41, fraud: 85 (70.8%), legitimate: 35 (29.2%)">
+            <title>fraud 71%, Leaf at depth 3, Samples: 120 (6% of root), Impurity (gini): 0.41, fraud: 85 (70.8%),
+                legitimate: 35 (29.2%)
+            </title>
+            <rect class="nb" x="105.22" y="294" width="105.78" height="46" rx="16"/>
+            <rect class="nt lf" x="105.22" y="294" width="105.78" height="46" rx="16"/>
+            <text class="lbl ctr" x="158.11" y="309">fraud 71%</text>
+            <text class="kn ctr" x="158.11" y="323">n = 120 · gini 0.41</text>
+            <rect class="cl s0" x="115.22" y="331" width="25.02" height="4"/>
+            <rect class="cl s1" x="140.24" y="331" width="60.76" height="4"/>
+        </g>
+        <g class="mk n5 nd s0 j3" tabindex="0" role="graphics-symbol"
+           aria-label="legitimate 83%, Leaf at depth 3, Samples: 70 (3.5% of root), Impurity (gini): 0.28, legitimate: 58 (82.9%), fraud: 12 (17.1%)">
+            <title>legitimate 83%, Leaf at depth 3, Samples: 70 (3.5% of root), Impurity (gini): 0.28, legitimate: 58
+                (82.9%), fraud: 12 (17.1%)
+            </title>
+            <rect class="nb" x="225" y="294" width="99.9" height="46" rx="16"/>
+            <rect class="nt lf" x="225" y="294" width="99.9" height="46" rx="16"/>
+            <text class="lbl ctr" x="274.95" y="309">legitimate 83%</text>
+            <text class="kn ctr" x="274.95" y="323">n = 70 · gini 0.28</text>
+            <rect class="cl s0" x="235" y="331" width="66.2" height="4"/>
+            <rect class="cl s1" x="301.2" y="331" width="13.7" height="4"/>
+        </g>
+        <g class="mk n6 nd s0 j0 j7 j8 a7 a8" tabindex="0" role="graphics-symbol"
+           aria-label="account_age_days ≤ 90, Split at depth 1, Samples: 1500 (75% of root), Impurity (gini): 0.089, legitimate: 1430 (95.3%), fraud: 70 (4.7%)">
+            <title>account_age_days ≤ 90, Split at depth 1, Samples: 1500 (75% of root), Impurity (gini): 0.089,
+                legitimate: 1430 (95.3%), fraud: 70 (4.7%)
+            </title>
+            <rect class="nb" x="376.68" y="98" width="144.39" height="46" rx="6"/>
+            <rect class="nt" x="376.68" y="98" width="144.39" height="46" rx="6"/>
+            <text class="lbl ctr" x="448.88" y="113">account_age_days ≤ 90</text>
+            <text class="kn ctr" x="448.88" y="127">n = 1500 · gini 0.089</text>
+            <rect class="cl s0" x="386.68" y="135" width="118.59" height="4"/>
+            <rect class="cl s1" x="505.27" y="135" width="5.81" height="4"/>
+        </g>
+        <g class="mk n7 nd s0 j6" tabindex="0" role="graphics-symbol"
+           aria-label="legitimate 79%, Leaf at depth 2, Samples: 240 (12% of root), Impurity (gini): 0.33, legitimate: 190 (79.2%), fraud: 50 (20.8%)">
+            <title>legitimate 79%, Leaf at depth 2, Samples: 240 (12% of root), Impurity (gini): 0.33, legitimate: 190
+                (79.2%), fraud: 50 (20.8%)
+            </title>
+            <rect class="nb" x="333.16" y="196" width="105.78" height="46" rx="16"/>
+            <rect class="nt lf" x="333.16" y="196" width="105.78" height="46" rx="16"/>
+            <text class="lbl ctr" x="386.05" y="211">legitimate 79%</text>
+            <text class="kn ctr" x="386.05" y="225">n = 240 · gini 0.33</text>
+            <rect class="cl s0" x="343.16" y="233" width="67.91" height="4"/>
+            <rect class="cl s1" x="411.07" y="233" width="17.87" height="4"/>
+        </g>
+        <g class="mk n8 nd s0 j6" tabindex="0" role="graphics-symbol"
+           aria-label="legitimate 98%, Leaf at depth 2, Samples: 1260 (63% of root), Impurity (gini): 0.026, legitimate: 1240 (98.4%), fraud: 20 (1.6%)">
+            <title>legitimate 98%, Leaf at depth 2, Samples: 1260 (63% of root), Impurity (gini): 0.026, legitimate:
+                1240 (98.4%), fraud: 20 (1.6%)
+            </title>
+            <rect class="nb" x="452.94" y="196" width="117.54" height="46" rx="16"/>
+            <rect class="nt lf" x="452.94" y="196" width="117.54" height="46" rx="16"/>
+            <text class="lbl ctr" x="511.71" y="211">legitimate 98%</text>
+            <text class="kn ctr" x="511.71" y="225">n = 1260 · gini 0.026</text>
+            <rect class="cl s0" x="462.94" y="233" width="95.99" height="4"/>
+            <rect class="cl s1" x="558.93" y="233" width="1.55" height="4"/>
+        </g>
+    </g>
+    <text class="kn" x="36.76" y="552">edge width shows the share of samples</text>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="258.91" y="123" width="167.96" height="78" rx="6"/>
+                <text class="tx b" x="268.91" y="141">amount_z ≤ 1.8: yes</text>
+                <text class="tx" x="268.91" y="158">Samples: 500 (25% of root)</text>
+                <rect class="tsw s1" x="268.91" y="166" width="9" height="9" rx="2"/>
+                <text class="tx" x="282.91" y="175">fraud: 267 (53.4%)</text>
+                <rect class="tsw s0" x="268.91" y="183" width="9" height="9" rx="2"/>
+                <text class="tx" x="282.91" y="192">legitimate: 233 (46.6%)</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="138.36" y="221" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="148.36" y="239">velocity_1h ≤ 4.5: yes</text>
+                <text class="tx" x="148.36" y="256">Samples: 310 (15.5% of root)</text>
+                <rect class="tsw s1" x="148.36" y="264" width="9" height="9" rx="2"/>
+                <text class="tx" x="162.36" y="273">fraud: 170 (54.8%)</text>
+                <rect class="tsw s0" x="148.36" y="281" width="9" height="9" rx="2"/>
+                <text class="tx" x="162.36" y="290">legitimate: 140 (45.2%)</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="221.65" y="221" width="171.08" height="78" rx="6"/>
+                <text class="tx b" x="231.65" y="239">velocity_1h ≤ 4.5: no</text>
+                <text class="tx" x="231.65" y="256">Samples: 190 (9.5% of root)</text>
+                <rect class="tsw s1" x="231.65" y="264" width="9" height="9" rx="2"/>
+                <text class="tx" x="245.65" y="273">fraud: 97 (51.1%)</text>
+                <rect class="tsw s0" x="231.65" y="281" width="9" height="9" rx="2"/>
+                <text class="tx" x="245.65" y="290">legitimate: 93 (48.9%)</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="234.08" y="319" width="251.76" height="78" rx="6"/>
+                <text class="tx b" x="244.08" y="337">channel in {ecommerce, atm, wire}: yes</text>
+                <text class="tx" x="244.08" y="354">Samples: 120 (6% of root)</text>
+                <rect class="tsw s1" x="244.08" y="362" width="9" height="9" rx="2"/>
+                <text class="tx" x="258.08" y="371">fraud: 85 (70.8%)</text>
+                <rect class="tsw s0" x="244.08" y="379" width="9" height="9" rx="2"/>
+                <text class="tx" x="258.08" y="388">legitimate: 35 (29.2%)</text>
+            </g>
+        </g>
+        <g class="tp tx4">
+            <g class="tt">
+                <rect class="tb" x="292.5" y="319" width="244.89" height="78" rx="6"/>
+                <text class="tx b" x="302.5" y="337">channel in {ecommerce, atm, wire}: no</text>
+                <text class="tx" x="302.5" y="354">Samples: 70 (3.5% of root)</text>
+                <rect class="tsw s0" x="302.5" y="362" width="9" height="9" rx="2"/>
+                <text class="tx" x="316.5" y="371">legitimate: 58 (82.9%)</text>
+                <rect class="tsw s1" x="302.5" y="379" width="9" height="9" rx="2"/>
+                <text class="tx" x="316.5" y="388">fraud: 12 (17.1%)</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="416.73" y="123" width="174.68" height="78" rx="6"/>
+                <text class="tx b" x="426.73" y="141">amount_z ≤ 1.8: no</text>
+                <text class="tx" x="426.73" y="158">Samples: 1500 (75% of root)</text>
+                <rect class="tsw s0" x="426.73" y="166" width="9" height="9" rx="2"/>
+                <text class="tx" x="440.73" y="175">legitimate: 1430 (95.3%)</text>
+                <rect class="tsw s1" x="426.73" y="183" width="9" height="9" rx="2"/>
+                <text class="tx" x="440.73" y="192">fraud: 70 (4.7%)</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="258.86" y="221" width="185.36" height="78" rx="6"/>
+                <text class="tx b" x="268.86" y="239">account_age_days ≤ 90: yes</text>
+                <text class="tx" x="268.86" y="256">Samples: 240 (12% of root)</text>
+                <rect class="tsw s0" x="268.86" y="264" width="9" height="9" rx="2"/>
+                <text class="tx" x="282.86" y="273">legitimate: 190 (79.2%)</text>
+                <rect class="tsw s1" x="268.86" y="281" width="9" height="9" rx="2"/>
+                <text class="tx" x="282.86" y="290">fraud: 50 (20.8%)</text>
+            </g>
+        </g>
+        <g class="tp tx7">
+            <g class="tt">
+                <rect class="tb" x="328.56" y="221" width="178.49" height="78" rx="6"/>
+                <text class="tx b" x="338.56" y="239">account_age_days ≤ 90: no</text>
+                <text class="tx" x="338.56" y="256">Samples: 1260 (63% of root)</text>
+                <rect class="tsw s0" x="338.56" y="264" width="9" height="9" rx="2"/>
+                <text class="tx" x="352.56" y="273">legitimate: 1240 (98.4%)</text>
+                <rect class="tsw s1" x="338.56" y="281" width="9" height="9" rx="2"/>
+                <text class="tx" x="352.56" y="290">fraud: 20 (1.6%)</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="393.65" y="57" width="181.4" height="112" rx="6"/>
+                <text class="tx b" x="403.65" y="75">amount_z ≤ 1.8</text>
+                <text class="tx" x="403.65" y="92">Split at depth 0</text>
+                <text class="tx" x="403.65" y="109">Samples: 2000 (100% of root)</text>
+                <text class="tx" x="403.65" y="126">Impurity (gini): 0.28</text>
+                <rect class="tsw s0" x="403.65" y="134" width="9" height="9" rx="2"/>
+                <text class="tx" x="417.65" y="143">legitimate: 1663 (83.2%)</text>
+                <rect class="tsw s1" x="403.65" y="151" width="9" height="9" rx="2"/>
+                <text class="tx" x="417.65" y="160">fraud: 337 (16.9%)</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="235.83" y="155" width="167.96" height="112" rx="6"/>
+                <text class="tx b" x="245.83" y="173">velocity_1h ≤ 4.5</text>
+                <text class="tx" x="245.83" y="190">Split at depth 1</text>
+                <text class="tx" x="245.83" y="207">Samples: 500 (25% of root)</text>
+                <text class="tx" x="245.83" y="224">Impurity (gini): 0.498</text>
+                <rect class="tsw s1" x="245.83" y="232" width="9" height="9" rx="2"/>
+                <text class="tx" x="259.83" y="241">fraud: 267 (53.4%)</text>
+                <rect class="tsw s0" x="245.83" y="249" width="9" height="9" rx="2"/>
+                <text class="tx" x="259.83" y="258">legitimate: 233 (46.6%)</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="146.66" y="253" width="177.8" height="112" rx="6"/>
+                <text class="tx b" x="156.66" y="271">fraud 55%</text>
+                <text class="tx" x="156.66" y="288">Leaf at depth 2</text>
+                <text class="tx" x="156.66" y="305">Samples: 310 (15.5% of root)</text>
+                <text class="tx" x="156.66" y="322">Impurity (gini): 0.5</text>
+                <rect class="tsw s1" x="156.66" y="330" width="9" height="9" rx="2"/>
+                <text class="tx" x="170.66" y="339">fraud: 170 (54.8%)</text>
+                <rect class="tsw s0" x="156.66" y="347" width="9" height="9" rx="2"/>
+                <text class="tx" x="170.66" y="356">legitimate: 140 (45.2%)</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="365.92" y="253" width="224.28" height="112" rx="6"/>
+                <text class="tx b" x="375.92" y="271">channel in {ecommerce, atm, wire}</text>
+                <text class="tx" x="375.92" y="288">Split at depth 2</text>
+                <text class="tx" x="375.92" y="305">Samples: 190 (9.5% of root)</text>
+                <text class="tx" x="375.92" y="322">Impurity (gini): 0.5</text>
+                <rect class="tsw s1" x="375.92" y="330" width="9" height="9" rx="2"/>
+                <text class="tx" x="389.92" y="339">fraud: 97 (51.1%)</text>
+                <rect class="tsw s0" x="375.92" y="347" width="9" height="9" rx="2"/>
+                <text class="tx" x="389.92" y="356">legitimate: 93 (48.9%)</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="257.76" y="351" width="161.24" height="112" rx="6"/>
+                <text class="tx b" x="267.76" y="369">fraud 71%</text>
+                <text class="tx" x="267.76" y="386">Leaf at depth 3</text>
+                <text class="tx" x="267.76" y="403">Samples: 120 (6% of root)</text>
+                <text class="tx" x="267.76" y="420">Impurity (gini): 0.41</text>
+                <rect class="tsw s1" x="267.76" y="428" width="9" height="9" rx="2"/>
+                <text class="tx" x="281.76" y="437">fraud: 85 (70.8%)</text>
+                <rect class="tsw s0" x="267.76" y="445" width="9" height="9" rx="2"/>
+                <text class="tx" x="281.76" y="454">legitimate: 35 (29.2%)</text>
+            </g>
+        </g>
+        <g class="tp tn5">
+            <g class="tt">
+                <rect class="tb" x="371.66" y="351" width="164.36" height="112" rx="6"/>
+                <text class="tx b" x="381.66" y="369">legitimate 83%</text>
+                <text class="tx" x="381.66" y="386">Leaf at depth 3</text>
+                <text class="tx" x="381.66" y="403">Samples: 70 (3.5% of root)</text>
+                <text class="tx" x="381.66" y="420">Impurity (gini): 0.28</text>
+                <rect class="tsw s0" x="381.66" y="428" width="9" height="9" rx="2"/>
+                <text class="tx" x="395.66" y="437">legitimate: 58 (82.9%)</text>
+                <rect class="tsw s1" x="381.66" y="445" width="9" height="9" rx="2"/>
+                <text class="tx" x="395.66" y="454">fraud: 12 (17.1%)</text>
+            </g>
+        </g>
+        <g class="tp tn6">
+            <g class="tt">
+                <rect class="tb" x="373.16" y="155" width="174.68" height="112" rx="6"/>
+                <text class="tx b" x="383.16" y="173">account_age_days ≤ 90</text>
+                <text class="tx" x="383.16" y="190">Split at depth 1</text>
+                <text class="tx" x="383.16" y="207">Samples: 1500 (75% of root)</text>
+                <text class="tx" x="383.16" y="224">Impurity (gini): 0.089</text>
+                <rect class="tsw s0" x="383.16" y="232" width="9" height="9" rx="2"/>
+                <text class="tx" x="397.16" y="241">legitimate: 1430 (95.3%)</text>
+                <rect class="tsw s1" x="383.16" y="249" width="9" height="9" rx="2"/>
+                <text class="tx" x="397.16" y="258">fraud: 70 (4.7%)</text>
+            </g>
+        </g>
+        <g class="tp tn7">
+            <g class="tt">
+                <rect class="tb" x="297.74" y="253" width="167.96" height="112" rx="6"/>
+                <text class="tx b" x="307.74" y="271">legitimate 79%</text>
+                <text class="tx" x="307.74" y="288">Leaf at depth 2</text>
+                <text class="tx" x="307.74" y="305">Samples: 240 (12% of root)</text>
+                <text class="tx" x="307.74" y="322">Impurity (gini): 0.33</text>
+                <rect class="tsw s0" x="307.74" y="330" width="9" height="9" rx="2"/>
+                <text class="tx" x="321.74" y="339">legitimate: 190 (79.2%)</text>
+                <rect class="tsw s1" x="307.74" y="347" width="9" height="9" rx="2"/>
+                <text class="tx" x="321.74" y="356">fraud: 50 (20.8%)</text>
+            </g>
+        </g>
+        <g class="tp tn8">
+            <g class="tt">
+                <rect class="tb" x="422.56" y="253" width="174.68" height="112" rx="6"/>
+                <text class="tx b" x="432.56" y="271">legitimate 98%</text>
+                <text class="tx" x="432.56" y="288">Leaf at depth 2</text>
+                <text class="tx" x="432.56" y="305">Samples: 1260 (63% of root)</text>
+                <text class="tx" x="432.56" y="322">Impurity (gini): 0.026</text>
+                <rect class="tsw s0" x="432.56" y="330" width="9" height="9" rx="2"/>
+                <text class="tx" x="446.56" y="339">legitimate: 1240 (98.4%)</text>
+                <rect class="tsw s1" x="432.56" y="347" width="9" height="9" rx="2"/>
+                <text class="tx" x="446.56" y="356">fraud: 20 (1.6%)</text>
+            </g>
+        </g>
+    </g>
+</svg>

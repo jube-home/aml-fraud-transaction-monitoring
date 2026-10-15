@@ -92,6 +92,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var payloadKey =
                 $"Payload:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{context.EntityAnalysisModel.Instance.Guid:N}";
+
             var field = $"{context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid:N}";
             var raw = await redis.HashGetAsync(payloadKey, field);
 
@@ -135,6 +136,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Amount", "123.45");
+
             context.Snapshot.EntityAnalysisModelInlineScripts.Add(
                 new EntityAnalysisModelInlineScript
                 {
@@ -155,6 +157,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Amount", "123.45");
+
             context.Snapshot.EntityAnalysisModelInlineScripts.Add(
                 new EntityAnalysisModelInlineScript
                 {
@@ -194,6 +197,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "ACC-1");
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
@@ -213,6 +217,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "ACC-1");
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
@@ -232,6 +237,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("UnrelatedField", "should-not-appear");
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath
                 {
@@ -260,6 +266,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var payloadLatestKey =
                 $"PayloadLatest:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{context.EntityAnalysisModel.Instance.Guid:N}:AccountId";
+
             var raw = await redis.HashGetAsync(payloadLatestKey, "ACC-1");
             raw.HasValue.Should().BeTrue();
         }
@@ -289,6 +296,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "ACC-1");
 
             var cacheService = TestCacheService.Create(out var redis);
+
             var searchKeys = new Dictionary<string, DistinctSearchKey>
             {
                 ["AccountId"] = new(),
@@ -304,6 +312,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             (await redis.HashGetAsync($"PayloadLatest:{tenant}:{model:N}:AccountId", "ACC-1"))
                 .HasValue.Should().BeTrue();
+
             (await redis.HashGetAsync($"PayloadLatest:{tenant}:{model:N}:IpAddress", string.Empty))
                 .HasValue.Should().BeTrue();
         }
@@ -317,6 +326,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.ExecuteCacheDbStorage(cacheService, new Dictionary<string, DistinctSearchKey>());
 
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages.Should().NotBeNull();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages!.CacheDbStorage.Should()
                 .NotBeNull();
         }

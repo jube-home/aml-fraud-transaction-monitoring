@@ -15,6 +15,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 {
     using System;
     using System.Collections.Generic;
+    using Models;
 
     public sealed record InvocationContextField(string Name, string Group, string DataType)
     {

@@ -19,7 +19,9 @@ using FluentAssertions;
 using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
 using Jube.Parser;
+using Jube.Parser.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.RuleParser;
 using Xunit;
@@ -44,18 +46,22 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
         {
             var parsed = RuleParse.Execute(text, RuleParse.AbstractionRule, RuleParseTests.Environment(),
                 TestLog.NoOp, RuleParse.EngineReferences(RuleParse.AbstractionRule), engineWrap: true);
+
             parsed.Compiled.Should().BeTrue(parsed.Message);
+
             return parsed;
         }
 
         private static RuleRunInputs Current(double amount, string country)
         {
             var context = InvocationContextBuilder.Blank(1, fields, [], false, now);
+
             InvocationContextBuilder.Overlay(context, new Dictionary<string, string>
             {
                 ["Payload.Amount"] = amount.ToString(CultureInfo.InvariantCulture),
                 ["Payload.Country"] = country
             });
+
             return RuleRunner.ToInputs(context, new Dictionary<string, List<string>>());
         }
 
@@ -65,6 +71,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             document.TryAdd("Amount", amount);
             document.TryAdd("Country", country);
             document.TryAdd(ReferenceDateName, now.AddHours(-hoursAgo));
+
             return document;
         }
 

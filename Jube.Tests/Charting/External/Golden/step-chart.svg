@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-bands" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-31aa074b-t jc-31aa074b-d">
+    <title id="jc-31aa074b-t">Card limit by tier</title>
+    <desc id="jc-31aa074b-d">Step chart with 2 series: Standard, Premium. Y values range from 0 to 5000.</desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Card limit by tier</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="66.72" height="18"/>
+        <rect class="sw" x="16" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="34" y="57">Standard</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="98.72" y="44" width="66.24" height="18"/>
+        <rect class="sw" x="100.72" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="118.72" y="57">Premium</text>
+    </g>
+    <line class="gl" x1="66.64" y1="346" x2="624" y2="346"/>
+    <text class="tk end mid" x="58.64" y="346">0</text>
+    <line class="gl" x1="66.64" y1="291.2" x2="624" y2="291.2"/>
+    <text class="tk end mid" x="58.64" y="291.2">1000</text>
+    <line class="gl" x1="66.64" y1="236.4" x2="624" y2="236.4"/>
+    <text class="tk end mid" x="58.64" y="236.4">2000</text>
+    <line class="gl" x1="66.64" y1="181.6" x2="624" y2="181.6"/>
+    <text class="tk end mid" x="58.64" y="181.6">3000</text>
+    <line class="gl" x1="66.64" y1="126.8" x2="624" y2="126.8"/>
+    <text class="tk end mid" x="58.64" y="126.8">4000</text>
+    <line class="gl" x1="66.64" y1="72" x2="624" y2="72"/>
+    <text class="tk end mid" x="58.64" y="72">5000</text>
+    <text class="tk ctr" x="66.64" y="362">0</text>
+    <text class="tk ctr" x="178.11" y="362">2.5</text>
+    <text class="tk ctr" x="289.58" y="362">5.0</text>
+    <text class="tk ctr" x="401.06" y="362">7.5</text>
+    <text class="tk ctr" x="512.53" y="362">10.0</text>
+    <text class="tk ctr" x="624" y="362">12.5</text>
+    <line class="ax" x1="66.64" y1="346" x2="624" y2="346"/>
+    <g class="sr s0">
+        <path class="ln"
+              d="M66.64 291.2L200.41 291.2L200.41 263.8L334.17 263.8L334.17 263.8L467.94 263.8L467.94 236.4L601.71 236.4L601.71 236.4">
+            <title>Standard</title>
+        </path>
+        <path class="hl"
+              d="M66.64 291.2L200.41 291.2L200.41 263.8L334.17 263.8L334.17 263.8L467.94 263.8L467.94 236.4L601.71 236.4L601.71 236.4"/>
+    </g>
+    <g class="sr s1">
+        <path class="ln"
+              d="M66.64 236.4L155.82 236.4L155.82 154.2L334.17 154.2L334.17 154.2L512.53 154.2L512.53 72L601.71 72L601.71 72">
+            <title>Premium</title>
+        </path>
+        <path class="hl"
+              d="M66.64 236.4L155.82 236.4L155.82 154.2L334.17 154.2L334.17 154.2L512.53 154.2L512.53 72L601.71 72L601.71 72"/>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="0, Standard: 1000, Premium: 2000">
+        <title>0, Standard: 1000, Premium: 2000</title>
+        <rect class="hit" x="66.64" y="72" width="44.59" height="274"/>
+        <line class="vl" x1="66.64" y1="72" x2="66.64" y2="346"/>
+        <circle class="cx s0" cx="66.64" cy="291.2" r="4.5"/>
+        <circle class="cx s1" cx="66.64" cy="236.4" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="78.64" y="206.4" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="88.64" y="224.4">0</text>
+            <rect class="tsw s0" x="88.64" y="232.4" width="9" height="9" rx="2"/>
+            <text class="tx" x="102.64" y="241.4">Standard: 1000</text>
+            <rect class="tsw s1" x="88.64" y="249.4" width="9" height="9" rx="2"/>
+            <text class="tx" x="102.64" y="258.4">Premium: 2000</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2, Standard: 1500, Premium: 3500">
+        <title>2, Standard: 1500, Premium: 3500</title>
+        <rect class="hit" x="111.23" y="72" width="66.88" height="274"/>
+        <line class="vl" x1="155.82" y1="72" x2="155.82" y2="346"/>
+        <circle class="cx s0" cx="155.82" cy="263.8" r="4.5"/>
+        <circle class="cx s1" cx="155.82" cy="154.2" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="167.82" y="124.2" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="177.82" y="142.2">2</text>
+            <rect class="tsw s0" x="177.82" y="150.2" width="9" height="9" rx="2"/>
+            <text class="tx" x="191.82" y="159.2">Standard: 1500</text>
+            <rect class="tsw s1" x="177.82" y="167.2" width="9" height="9" rx="2"/>
+            <text class="tx" x="191.82" y="176.2">Premium: 3500</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="3, Standard: 1500, Premium: 3500">
+        <title>3, Standard: 1500, Premium: 3500</title>
+        <rect class="hit" x="178.11" y="72" width="89.18" height="274"/>
+        <line class="vl" x1="200.41" y1="72" x2="200.41" y2="346"/>
+        <circle class="cx s0" cx="200.41" cy="263.8" r="4.5"/>
+        <circle class="cx s1" cx="200.41" cy="154.2" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="212.41" y="124.2" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="222.41" y="142.2">3</text>
+            <rect class="tsw s0" x="222.41" y="150.2" width="9" height="9" rx="2"/>
+            <text class="tx" x="236.41" y="159.2">Standard: 1500</text>
+            <rect class="tsw s1" x="222.41" y="167.2" width="9" height="9" rx="2"/>
+            <text class="tx" x="236.41" y="176.2">Premium: 3500</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="6, Standard: 1500, Premium: 3500">
+        <title>6, Standard: 1500, Premium: 3500</title>
+        <rect class="hit" x="267.29" y="72" width="133.77" height="274"/>
+        <line class="vl" x1="334.17" y1="72" x2="334.17" y2="346"/>
+        <circle class="cx s0" cx="334.17" cy="263.8" r="4.5"/>
+        <circle class="cx s1" cx="334.17" cy="154.2" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="346.17" y="124.2" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="356.17" y="142.2">6</text>
+            <rect class="tsw s0" x="356.17" y="150.2" width="9" height="9" rx="2"/>
+            <text class="tx" x="370.17" y="159.2">Standard: 1500</text>
+            <rect class="tsw s1" x="356.17" y="167.2" width="9" height="9" rx="2"/>
+            <text class="tx" x="370.17" y="176.2">Premium: 3500</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="9, Standard: 2000, Premium: 5000">
+        <title>9, Standard: 2000, Premium: 5000</title>
+        <rect class="hit" x="401.06" y="72" width="89.18" height="274"/>
+        <line class="vl" x1="467.94" y1="72" x2="467.94" y2="346"/>
+        <circle class="cx s0" cx="467.94" cy="236.4" r="4.5"/>
+        <circle class="cx s1" cx="467.94" cy="72" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="479.94" y="72" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="489.94" y="90">9</text>
+            <rect class="tsw s0" x="489.94" y="98" width="9" height="9" rx="2"/>
+            <text class="tx" x="503.94" y="107">Standard: 2000</text>
+            <rect class="tsw s1" x="489.94" y="115" width="9" height="9" rx="2"/>
+            <text class="tx" x="503.94" y="124">Premium: 5000</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="10, Standard: 2000, Premium: 5000">
+        <title>10, Standard: 2000, Premium: 5000</title>
+        <rect class="hit" x="490.23" y="72" width="66.88" height="274"/>
+        <line class="vl" x1="512.53" y1="72" x2="512.53" y2="346"/>
+        <circle class="cx s0" cx="512.53" cy="236.4" r="4.5"/>
+        <circle class="cx s1" cx="512.53" cy="72" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="384.45" y="72" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="394.45" y="90">10</text>
+            <rect class="tsw s0" x="394.45" y="98" width="9" height="9" rx="2"/>
+            <text class="tx" x="408.45" y="107">Standard: 2000</text>
+            <rect class="tsw s1" x="394.45" y="115" width="9" height="9" rx="2"/>
+            <text class="tx" x="408.45" y="124">Premium: 5000</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="12, Standard: 2000, Premium: 5000">
+        <title>12, Standard: 2000, Premium: 5000</title>
+        <rect class="hit" x="557.12" y="72" width="66.88" height="274"/>
+        <line class="vl" x1="601.71" y1="72" x2="601.71" y2="346"/>
+        <circle class="cx s0" cx="601.71" cy="236.4" r="4.5"/>
+        <circle class="cx s1" cx="601.71" cy="72" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="473.63" y="72" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="483.63" y="90">12</text>
+            <rect class="tsw s0" x="483.63" y="98" width="9" height="9" rx="2"/>
+            <text class="tx" x="497.63" y="107">Standard: 2000</text>
+            <rect class="tsw s1" x="483.63" y="115" width="9" height="9" rx="2"/>
+            <text class="tx" x="497.63" y="124">Premium: 5000</text>
+        </g>
+    </g>
+    <text class="at ctr" x="345.32" y="380">Month</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 209) rotate(-90)">Limit</text>
+</svg>

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -59,6 +61,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddPostgresMetric(tools);
                 AddRedisMetric(tools);
                 AddRedisSlowOperation(tools);
+                AddRedisKeyActivity(tools);
                 AddRedisConnectionMultiplexerMetric(tools);
                 AddPostgresTableStatistics(tools);
                 AddPostgresIndexStatistics(tools);
@@ -78,6 +81,10 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddRedisCallCounter(tools);
                 AddEtcdMemberStatus(tools);
                 AddPatroniMemberStatus(tools);
+                AddEtcdAdministrator(tools);
+                AddPatroniAdministrator(tools);
+                AddDockerAdministrator(tools);
+                AddRedisSentinelAdministrator(tools);
                 AddEtcdClusterEvent(tools);
                 AddPatroniClusterEvent(tools);
                 AddDockerContainerMetric(tools);
@@ -89,6 +96,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddUserLogin(tools);
                 AddUserLogout(tools);
                 AddPostgresActivity(tools);
+                AddPostgresLock(tools);
                 AddPostgresStatementStatistics(tools);
                 AddHttpProcessingCounter(tools);
                 AddEntityAnalysisAsynchronousQueueBalance(tools);
@@ -156,14 +164,17 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddExhaustiveSearchInstancePromotedTrialInstanceQuery(tools);
                 AddExhaustiveSearchInstancePromotedTrialInstanceRoc(tools);
                 AddExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription(tools);
+                AddExhaustiveSearchInstancePromotionHistory(tools);
                 AddExhaustiveSearchInstanceTrialInstanceVariable(tools);
                 AddExhaustiveSearchInstanceTrialInstanceVariableVariance(tools);
                 AddExhaustiveSearchInstanceVariable(tools);
+                AddExhaustiveSearchInstanceVariableStatistics(tools);
                 AddVisualisationRegistryDatasourceCommandExecution(tools);
                 AddTreeChildren(tools);
                 AddSessionCaseJournal(tools);
                 AddSessionCaseSearchCompiledSql(tools);
                 AddCompletions(tools);
+                AddQueryBuilder(tools);
                 AddIcons(tools);
                 AddParser(tools);
                 AddEntityAnalysisModelInvocationContext(tools);
@@ -175,6 +186,15 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 AddEntityAnalysisModelBacktest(tools);
                 AddCaseWorkflowDisplayExecution(tools);
                 AddCaseWorkflowMacroExecution(tools);
+                AddAskJoobyConversation(tools);
+                AddAskJoobyRagChunk(tools);
+                AddAdvancedAnalyticsInstance(tools);
+                AddAdvancedAnalyticsTrainingData(tools);
+                AddAdvancedAnalyticsModel(tools);
+                AddHaProxyReachabilityProbe(tools);
+                AddHaProxyServerStatus(tools);
+                AddOverlayNetworkTaskDrift(tools);
+                AddExhaustiveSearchInstanceTrialInstanceListQuery(tools);
                 all = tools;
 
                 return all;
@@ -189,6 +209,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddEntityAnalysisModelDependency(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelBacktest(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModel(List<ServiceToolDescriptor> tools);
+        static partial void AddAdvancedAnalyticsInstance(List<ServiceToolDescriptor> tools);
+        static partial void AddAdvancedAnalyticsTrainingData(List<ServiceToolDescriptor> tools);
+        static partial void AddAdvancedAnalyticsModel(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelRequestXPath(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelInlineFunction(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisModelInlineScript(List<ServiceToolDescriptor> tools);
@@ -219,6 +242,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddPostgresMetric(List<ServiceToolDescriptor> tools);
         static partial void AddRedisMetric(List<ServiceToolDescriptor> tools);
         static partial void AddRedisSlowOperation(List<ServiceToolDescriptor> tools);
+        static partial void AddRedisKeyActivity(List<ServiceToolDescriptor> tools);
         static partial void AddRedisConnectionMultiplexerMetric(List<ServiceToolDescriptor> tools);
         static partial void AddPostgresTableStatistics(List<ServiceToolDescriptor> tools);
         static partial void AddPostgresIndexStatistics(List<ServiceToolDescriptor> tools);
@@ -238,6 +262,10 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddRedisCallCounter(List<ServiceToolDescriptor> tools);
         static partial void AddEtcdMemberStatus(List<ServiceToolDescriptor> tools);
         static partial void AddPatroniMemberStatus(List<ServiceToolDescriptor> tools);
+        static partial void AddEtcdAdministrator(List<ServiceToolDescriptor> tools);
+        static partial void AddPatroniAdministrator(List<ServiceToolDescriptor> tools);
+        static partial void AddDockerAdministrator(List<ServiceToolDescriptor> tools);
+        static partial void AddRedisSentinelAdministrator(List<ServiceToolDescriptor> tools);
         static partial void AddEtcdClusterEvent(List<ServiceToolDescriptor> tools);
         static partial void AddPatroniClusterEvent(List<ServiceToolDescriptor> tools);
         static partial void AddDockerContainerMetric(List<ServiceToolDescriptor> tools);
@@ -249,6 +277,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddUserLogin(List<ServiceToolDescriptor> tools);
         static partial void AddUserLogout(List<ServiceToolDescriptor> tools);
         static partial void AddPostgresActivity(List<ServiceToolDescriptor> tools);
+        static partial void AddPostgresLock(List<ServiceToolDescriptor> tools);
         static partial void AddPostgresStatementStatistics(List<ServiceToolDescriptor> tools);
         static partial void AddHttpProcessingCounter(List<ServiceToolDescriptor> tools);
         static partial void AddEntityAnalysisAsynchronousQueueBalance(List<ServiceToolDescriptor> tools);
@@ -330,17 +359,27 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
         static partial void AddExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription(
             List<ServiceToolDescriptor> tools);
 
+        static partial void AddExhaustiveSearchInstancePromotionHistory(List<ServiceToolDescriptor> tools);
+
         static partial void AddExhaustiveSearchInstanceTrialInstanceVariable(List<ServiceToolDescriptor> tools);
         static partial void AddExhaustiveSearchInstanceTrialInstanceVariableVariance(List<ServiceToolDescriptor> tools);
         static partial void AddExhaustiveSearchInstanceVariable(List<ServiceToolDescriptor> tools);
+        static partial void AddExhaustiveSearchInstanceVariableStatistics(List<ServiceToolDescriptor> tools);
         static partial void AddVisualisationRegistryDatasourceCommandExecution(List<ServiceToolDescriptor> tools);
         static partial void AddTreeChildren(List<ServiceToolDescriptor> tools);
         static partial void AddSessionCaseJournal(List<ServiceToolDescriptor> tools);
         static partial void AddSessionCaseSearchCompiledSql(List<ServiceToolDescriptor> tools);
         static partial void AddCompletions(List<ServiceToolDescriptor> tools);
+        static partial void AddQueryBuilder(List<ServiceToolDescriptor> tools);
         static partial void AddIcons(List<ServiceToolDescriptor> tools);
         static partial void AddParser(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowDisplayExecution(List<ServiceToolDescriptor> tools);
         static partial void AddCaseWorkflowMacroExecution(List<ServiceToolDescriptor> tools);
+        static partial void AddAskJoobyConversation(List<ServiceToolDescriptor> tools);
+        static partial void AddAskJoobyRagChunk(List<ServiceToolDescriptor> tools);
+        static partial void AddHaProxyReachabilityProbe(List<ServiceToolDescriptor> tools);
+        static partial void AddHaProxyServerStatus(List<ServiceToolDescriptor> tools);
+        static partial void AddOverlayNetworkTaskDrift(List<ServiceToolDescriptor> tools);
+        static partial void AddExhaustiveSearchInstanceTrialInstanceListQuery(List<ServiceToolDescriptor> tools);
     }
 }

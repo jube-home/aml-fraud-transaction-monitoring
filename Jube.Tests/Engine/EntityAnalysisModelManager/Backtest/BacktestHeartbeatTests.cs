@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,13 +32,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Backtest
     public sealed class BacktestHeartbeatTests(DatabaseFixture fx) : IAsyncLifetime
     {
         private static readonly TimeSpan interval = TimeSpan.FromMilliseconds(250);
-
         private int instanceId;
 
         public async Task InitializeAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var now = DateTime.UtcNow;
+
             instanceId = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelBacktestInstance
             {
                 Guid = Guid.NewGuid(),
@@ -62,12 +63,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Backtest
         private async Task<EntityAnalysisModelBacktestInstance> InstanceAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             return await dbContext.EntityAnalysisModelBacktestInstance.SingleAsync(w => w.Id == instanceId);
         }
 
         private async Task SetStatusAsync(BacktestInstanceStatus status)
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.EntityAnalysisModelBacktestInstance.Where(w => w.Id == instanceId)
                 .Set(s => s.Status, (short)status).UpdateAsync();
         }
@@ -192,6 +195,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Backtest
         public async Task AFailedBeatIsRetriedRatherThanEndingTheHeartbeatAsync()
         {
             var calls = 0;
+
             await using (new BacktestHeartbeat(() =>
                          {
                              if (++calls == 1)

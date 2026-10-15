@@ -13,8 +13,6 @@
 
 namespace Jube.Service.Exceptions.EntityAnalysisModel
 {
-    using System;
-
     public sealed class NotFoundException(string message, Exception? inner = null) : ServiceException(message, inner)
     {
         public override string Code => "NotFound";

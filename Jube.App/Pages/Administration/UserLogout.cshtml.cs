@@ -40,10 +40,9 @@ namespace Jube.App.Pages.Administration
 
         public ActionResult OnGet()
         {
-            if (!permissionValidation.Validate(new[]
-                {
+            if (!permissionValidation.Validate([
                     35
-                }))
+                ]))
             {
                 return Forbid();
             }

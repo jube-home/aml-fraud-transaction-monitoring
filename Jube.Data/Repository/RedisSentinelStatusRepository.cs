@@ -30,6 +30,7 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -60,16 +61,31 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["replicationLagSeconds"] = rows.Where(w => w.ReplicationLagSeconds.HasValue)
-                    .Select(s => s.ReplicationLagSeconds!.Value).ToArray(),
-                ["numSlaves"] = rows.Where(w => w.NumSlaves.HasValue)
-                    .Select(s => (double)s.NumSlaves!.Value).ToArray(),
-                ["numOtherSentinels"] = rows.Where(w => w.NumOtherSentinels.HasValue)
-                    .Select(s => (double)s.NumOtherSentinels!.Value).ToArray(),
-                ["quorum"] = rows.Where(w => w.Quorum.HasValue)
-                    .Select(s => (double)s.Quorum!.Value).ToArray(),
-                ["downAfterMilliseconds"] = rows.Where(w => w.DownAfterMilliseconds.HasValue)
-                    .Select(s => (double)s.DownAfterMilliseconds!.Value).ToArray()
+                ["replicationLagSeconds"] =
+                [
+                    .. rows.Where(w => w.ReplicationLagSeconds.HasValue)
+                        .Select(s => s.ReplicationLagSeconds!.Value)
+                ],
+                ["numSlaves"] =
+                [
+                    .. rows.Where(w => w.NumSlaves.HasValue)
+                        .Select(s => (double)s.NumSlaves!.Value)
+                ],
+                ["numOtherSentinels"] =
+                [
+                    .. rows.Where(w => w.NumOtherSentinels.HasValue)
+                        .Select(s => (double)s.NumOtherSentinels!.Value)
+                ],
+                ["quorum"] =
+                [
+                    .. rows.Where(w => w.Quorum.HasValue)
+                        .Select(s => (double)s.Quorum!.Value)
+                ],
+                ["downAfterMilliseconds"] =
+                [
+                    .. rows.Where(w => w.DownAfterMilliseconds.HasValue)
+                        .Select(s => (double)s.DownAfterMilliseconds!.Value)
+                ]
             });
         }
 
@@ -96,6 +112,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.Name != null && w.Name.ToLower().Contains(lowerSearch)) ||
                     (w.Ip != null && w.Ip.ToLower().Contains(lowerSearch)) ||
@@ -115,6 +132,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "entityTypeName" => query.OrderByField(o => o.EntityTypeId, descending),

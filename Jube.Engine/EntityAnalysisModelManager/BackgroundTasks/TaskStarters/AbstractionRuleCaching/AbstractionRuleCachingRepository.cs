@@ -20,22 +20,25 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
     using Data.Poco;
     using Data.Repository;
     using EntityAnalysisModel.Models.Models;
-    using EntityAnalysisModel=EntityAnalysisModel.EntityAnalysisModel;
-    using EntityAnalysisModelAbstractionRule=EntityAnalysisModel.Models.Models.EntityAnalysisModelAbstractionRule;
+    using EntityAnalysisModel = EntityAnalysisModel.EntityAnalysisModel;
+    using EntityAnalysisModelAbstractionRule = EntityAnalysisModel.Models.Models.EntityAnalysisModelAbstractionRule;
 
     public class AbstractionRuleCachingRepository(DbContext dbContext, EntityAnalysisModel entityAnalysisModel)
     {
-        public async Task<int> InsertEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesAsync(int entityAnalysisModelsSearchKeyCalculationInstanceId,
+        public async Task<int> InsertEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesAsync(
+            int entityAnalysisModelsSearchKeyCalculationInstanceId,
             string groupingValue, CancellationToken token = default)
         {
             var value = 0;
+
             try
             {
                 var repository = new EntityAnalysisModelSearchKeyDistinctValueCalculationInstanceRepository(dbContext);
 
                 var model = new EntityAnalysisModelSearchKeyDistinctValueCalculationInstance
                 {
-                    EntityAnalysisModelSearchKeyCalculationInstanceId = entityAnalysisModelsSearchKeyCalculationInstanceId,
+                    EntityAnalysisModelSearchKeyCalculationInstanceId =
+                        entityAnalysisModelsSearchKeyCalculationInstanceId,
                     SearchKeyValue = groupingValue,
                     CreatedDate = DateTime.UtcNow
                 };
@@ -46,24 +49,29 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"InsertEntityAnalysisModelsSearchKeyDistinctValueCalculationInstances: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"InsertEntityAnalysisModelsSearchKeyDistinctValueCalculationInstances: has produced an error {ex}");
             }
 
             return value;
         }
 
         public async Task UpdateEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesEntriesCountAsync(
-            int entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId, int count, CancellationToken token = default)
+            int entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId, int count,
+            CancellationToken token = default)
         {
             try
             {
                 var repository = new EntityAnalysisModelSearchKeyDistinctValueCalculationInstanceRepository(dbContext);
 
-                await repository.UpdateEntriesCountAsync(entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId, count, token).ConfigureAwait(false);
+                await repository
+                    .UpdateEntriesCountAsync(entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId, count,
+                        token).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"UpdateEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesEntriesCountAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"UpdateEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesEntriesCountAsync: has produced an error {ex}");
             }
         }
 
@@ -72,6 +80,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             DateTime toDate, CancellationToken token = default)
         {
             var value = 0;
+
             try
             {
                 var repository = new EntityAnalysisModelSearchKeyCalculationInstanceRepository(dbContext);
@@ -90,7 +99,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"InsertEntityAnalysisModelsSearchKeyCalculationInstancesAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"InsertEntityAnalysisModelsSearchKeyCalculationInstancesAsync: has produced an error {ex}");
             }
 
             return value;
@@ -103,11 +113,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             {
                 var repository = new EntityAnalysisModelSearchKeyCalculationInstanceRepository(dbContext);
 
-                await repository.UpdateDistinctValuesCountAsync(entityAnalysisModelsSearchKeyCalculationInstanceId, count, token).ConfigureAwait(false);
+                await repository
+                    .UpdateDistinctValuesCountAsync(entityAnalysisModelsSearchKeyCalculationInstanceId, count, token)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"UpdateEntityAnalysisModelsSearchKeyCalculationInstancesDistinctValuesAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"UpdateEntityAnalysisModelsSearchKeyCalculationInstancesDistinctValuesAsync: has produced an error {ex}");
             }
         }
 
@@ -118,26 +131,33 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             try
             {
                 var repository = new EntityAnalysisModelSearchKeyCalculationInstanceRepository(dbContext);
-                await repository.UpdateExpiredSearchKeyCacheCountAsync(entityAnalysisModelsSearchKeyCalculationInstanceId, count, token).ConfigureAwait(false);
+                await repository
+                    .UpdateExpiredSearchKeyCacheCountAsync(entityAnalysisModelsSearchKeyCalculationInstanceId, count,
+                        token).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"UpdateEntityAnalysisModelsSearchKeyCalculationInstancesExpiredSearchKeyCacheCountAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"UpdateEntityAnalysisModelsSearchKeyCalculationInstancesExpiredSearchKeyCacheCountAsync: has produced an error {ex}");
             }
         }
 
-        public async Task UpdateEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesAbstractionRulesMatchesAsync(
-            int entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId, CancellationToken token = default)
+        public async Task
+            UpdateEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesAbstractionRulesMatchesAsync(
+                int entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId, CancellationToken token = default)
         {
             try
             {
                 var repository = new EntityAnalysisModelSearchKeyDistinctValueCalculationInstanceRepository(dbContext);
 
-                await repository.UpdateAbstractionRuleMatchesAsync(entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId, token).ConfigureAwait(false);
+                await repository
+                    .UpdateAbstractionRuleMatchesAsync(entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId,
+                        token).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"UpdateEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesAbstractionRulesMatchesAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"UpdateEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesAbstractionRulesMatchesAsync: has produced an error {ex}");
             }
         }
 
@@ -176,41 +196,51 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             {
                 var repository = new EntityAnalysisModelSearchKeyDistinctValueCalculationInstanceRepository(dbContext);
 
-                await repository.UpdateCompletedAsync(entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId, token).ConfigureAwait(false);
+                await repository
+                    .UpdateCompletedAsync(entityAnalysisModelsSearchKeyDistinctValueCalculationInstanceId, token)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"UpdateEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesCompletedAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"UpdateEntityAnalysisModelsSearchKeyDistinctValueCalculationInstancesCompletedAsync: has produced an error {ex}");
             }
         }
 
-        public async Task UpdateEntityAnalysisModelsSearchKeyCalculationInstancesDistinctValuesProcessedValuesCountAsync(
-            int entityAnalysisModelsSearchKeyCalculationInstanceId,
-            int distinctValuesProcessedValuesCount, CancellationToken token = default)
+        public async Task
+            UpdateEntityAnalysisModelsSearchKeyCalculationInstancesDistinctValuesProcessedValuesCountAsync(
+                int entityAnalysisModelsSearchKeyCalculationInstanceId,
+                int distinctValuesProcessedValuesCount, CancellationToken token = default)
         {
             try
             {
                 var repository = new EntityAnalysisModelSearchKeyCalculationInstanceRepository(dbContext);
-                await repository.UpdateDistinctValuesProcessedValuesCountAsync(entityAnalysisModelsSearchKeyCalculationInstanceId,
+
+                await repository.UpdateDistinctValuesProcessedValuesCountAsync(
+                    entityAnalysisModelsSearchKeyCalculationInstanceId,
                     distinctValuesProcessedValuesCount, token).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"UpdateEntityAnalysisModelsSearchKeyCalculationInstancesDistinctValuesProcessedValuesCountAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"UpdateEntityAnalysisModelsSearchKeyCalculationInstancesDistinctValuesProcessedValuesCountAsync: has produced an error {ex}");
             }
         }
 
-        public async Task UpdateEntityAnalysisModelsSearchKeyCalculationInstancesCompletedAsync(int entityAnalysisModelsSearchKeyCalculationInstanceId,
+        public async Task UpdateEntityAnalysisModelsSearchKeyCalculationInstancesCompletedAsync(
+            int entityAnalysisModelsSearchKeyCalculationInstanceId,
             CancellationToken token = default)
         {
             try
             {
                 var repository = new EntityAnalysisModelSearchKeyCalculationInstanceRepository(dbContext);
-                await repository.UpdateCompletedAsync(entityAnalysisModelsSearchKeyCalculationInstanceId, token).ConfigureAwait(false);
+                await repository.UpdateCompletedAsync(entityAnalysisModelsSearchKeyCalculationInstanceId, token)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"UpdateEntityAnalysisModelsSearchKeyCalculationInstancesCompletedAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"UpdateEntityAnalysisModelsSearchKeyCalculationInstancesCompletedAsync: has produced an error {ex}");
             }
         }
     }

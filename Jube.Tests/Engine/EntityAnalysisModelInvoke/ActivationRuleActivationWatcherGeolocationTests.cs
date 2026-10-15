@@ -50,8 +50,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var method = typeof(ActivationRuleActivationWatcherExtensions).GetMethod(methodName,
                 BindingFlags.NonPublic | BindingFlags.Static);
+
             method.Should()
                 .NotBeNull($"{methodName} must still exist with this exact name for this test to mean anything");
+
             return (double)method!.Invoke(null, [context])!;
         }
 
@@ -59,8 +61,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void GetLatitudeReadsFromTheXPathFlaggedWithDataTypeSix()
         {
             var context = NewContext();
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Lat", DataTypeId = 6 });
+
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Lat", 51.5);
 
             InvokePrivateCoordinateMethod(context, "GetLatitude").Should().Be(51.5);
@@ -70,8 +74,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void GetLongitudeReadsFromTheXPathFlaggedWithDataTypeSeven()
         {
             var context = NewContext();
+
             context.Snapshot.EntityAnalysisModelRequestXPaths.Add(
                 new EntityAnalysisModelRequestXPath { Name = "Lon", DataTypeId = 7 });
+
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Lon", -0.12);
 
             InvokePrivateCoordinateMethod(context, "GetLongitude").Should().Be(-0.12);
@@ -81,6 +87,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void GetLongitudeFallsBackToTheInlineScriptPropertyFlaggedLongitudeNotLatitude()
         {
             var context = NewContext();
+
             var script = new EntityAnalysisModelInlineScript
             {
                 Id = 1,
@@ -94,6 +101,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                     }
                 }
             };
+
             context.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("LongitudeField", 12.34);
 
@@ -104,6 +112,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void GetLongitudeDoesNotMatchAPropertyFlaggedLatitudeOnly()
         {
             var context = NewContext();
+
             var script = new EntityAnalysisModelInlineScript
             {
                 Id = 1,
@@ -117,6 +126,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                     }
                 }
             };
+
             context.Snapshot.EntityAnalysisModelInlineScripts.Add(script);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("LatitudeField", 99.0);
 

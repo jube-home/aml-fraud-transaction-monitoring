@@ -1,51 +1,62 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections.Generic;
+using Accord.Math;
+using Accord.Math.Optimization.Losses;
+using Accord.Statistics;
 
 namespace Accord.MachineLearning.DecisionTrees.Pruning
 {
-    using System;
-    using System.Collections.Generic;
-    using Accord.Math;
-    using Accord.Statistics;
-    using Accord.Math.Optimization.Losses;
-
     /// <summary>
-    ///   Error-based pruning.
+    ///     Error-based pruning.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description>
-    ///       Lior Rokach, Oded Maimon. The Data Mining and Knowledge Discovery Handbook,
-    ///       Chapter 9, Decision Trees. Springer, 2nd ed. 2010, XX, 1285 p. 40 illus. 
-    ///       Available at: http://www.ise.bgu.ac.il/faculty/liorr/hbchap9.pdf .</description></item>
-    ///   </list>
-    /// </para>  
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     Lior Rokach, Oded Maimon. The Data Mining and Knowledge Discovery Handbook,
+    ///                     Chapter 9, Decision Trees. Springer, 2nd ed. 2010, XX, 1285 p. 40 illus.
+    ///                     Available at: http://www.ise.bgu.ac.il/faculty/liorr/hbchap9.pdf .
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <code>
+    ///     <code>
     /// // Suppose you have the following input and output data
     /// // and would like to learn the relationship between the
     /// // inputs and outputs by using a Decision Tree:
@@ -95,75 +106,70 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
     /// } while (error &lt; lastError);
     /// </code>
     /// </example>
-    /// 
     public class ErrorBasedPruning
     {
-
-        DecisionTree tree;
-        double[][] inputs;
-        int[] outputs;
-        int[] actual;
-        double limit = 0.01;
+        private readonly double[][] inputs;
+        private readonly int[] outputs;
 
         // stores the index of the samples that 
         // are covered by each node's subtree.
         //
-        Dictionary<DecisionNode, List<int>> subsets;
+        private readonly Dictionary<DecisionNode, List<int>> subsets;
+        private readonly DecisionTree tree;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="ErrorBasedPruning"/> class.
+        ///     Initializes a new instance of the <see cref="ErrorBasedPruning" /> class.
         /// </summary>
-        /// 
         /// <param name="tree">The tree to be pruned.</param>
         /// <param name="inputs">The pruning set inputs.</param>
         /// <param name="outputs">The pruning set outputs.</param>
-        /// 
         public ErrorBasedPruning(DecisionTree tree, double[][] inputs, int[] outputs)
         {
             this.tree = tree;
             this.inputs = inputs;
             this.outputs = outputs;
-            this.subsets = new Dictionary<DecisionNode, List<int>>();
-            this.actual = new int[outputs.Length];
+            subsets = new Dictionary<DecisionNode, List<int>>();
 
             // Create the cache to store how many times a sample
             // passes through each decision node of the tree.
             //
             foreach (var node in tree)
+            {
                 subsets[node] = new List<int>();
+            }
 
             // Compute the entire pruning set and track the path
             // taken by each observation during the reasoning.
             //
-            for (int i = 0; i < inputs.Length; i++)
+            for (var i = 0; i < inputs.Length; i++)
+            {
                 trackDecisions(tree.Root, inputs[i], i);
+            }
         }
 
         /// <summary>
-        ///   Gets or sets the minimum allowed gain threshold
-        ///   to prune the tree. Default is 0.01.
+        ///     Gets or sets the minimum allowed gain threshold
+        ///     to prune the tree. Default is 0.01.
         /// </summary>
-        /// 
-        public double Threshold
-        {
-            get { return limit; }
-            set { limit = value; }
-        }
+        public double Threshold { get; set; } = 0.01;
 
         /// <summary>
-        ///   Computes one pass of the pruning algorithm.
+        ///     Computes one pass of the pruning algorithm.
         /// </summary>
-        /// 
         public double Run()
         {
             // Traverse the tree in bottom-up (post-order) order
-            foreach (DecisionNode node in tree.Traverse(DecisionTreeTraversal.PostOrder))
+            foreach (var node in tree.Traverse(DecisionTreeTraversal.PostOrder))
             {
                 if (node.IsLeaf)
+                {
                     continue;
+                }
 
                 if (compute(node))
+                {
                     break;
+                }
             }
 
             return computeError();
@@ -175,15 +181,13 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
         }
 
         /// <summary>
-        ///   Attempts to prune a node's subtrees.
+        ///     Attempts to prune a node's subtrees.
         /// </summary>
-        /// 
         /// <returns>Whether the current node was changed or not.</returns>
-        /// 
         private bool compute(DecisionNode node)
         {
-            int[] indices = subsets[node].ToArray();
-            int[] outputSubset = outputs.Get(indices);
+            var indices = subsets[node].ToArray();
+            var outputSubset = outputs.Get(indices);
 
             if (indices.Length == 0)
             {
@@ -196,22 +200,22 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
                 return true;
             }
 
-            int size = indices.Length;
+            var size = indices.Length;
 
-            double baselineError = computeError();
+            var baselineError = computeError();
             baselineError = upperBound(baselineError, size);
 
-            int mostCommon = outputSubset.Mode();
-            double pruneError = computeErrorWithoutSubtree(node, mostCommon);
+            var mostCommon = outputSubset.Mode();
+            var pruneError = computeErrorWithoutSubtree(node, mostCommon);
             pruneError = upperBound(pruneError, size);
 
-            DecisionNode maxChild = getMaxChild(node);
-            double replaceError = computeErrorReplacingSubtrees(node, maxChild);
+            var maxChild = getMaxChild(node);
+            var replaceError = computeErrorReplacingSubtrees(node, maxChild);
             replaceError = upperBound(replaceError, size);
 
-            bool changed = false;
-            if (Math.Abs(pruneError - baselineError) < limit ||
-                Math.Abs(replaceError - baselineError) < limit)
+            var changed = false;
+            if (System.Math.Abs(pruneError - baselineError) < Threshold ||
+                System.Math.Abs(replaceError - baselineError) < Threshold)
             {
                 if (replaceError < pruneError)
                 {
@@ -219,7 +223,9 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
                     node.Branches = maxChild.Branches;
                     node.Output = maxChild.Output;
                     foreach (var child in node.Branches)
+                    {
                         child.Parent = node;
+                    }
                 }
                 else
                 {
@@ -231,11 +237,15 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
                 changed = true;
 
                 foreach (var child in node)
+                {
                     subsets[child].Clear();
+                }
 
-                double[][] inputSubset = inputs.Get(indices);
-                for (int i = 0; i < inputSubset.Length; i++)
+                var inputSubset = inputs.Get(indices);
+                for (var i = 0; i < inputSubset.Length; i++)
+                {
                     trackDecisions(node, inputSubset[i], i);
+                }
             }
 
             return changed;
@@ -243,9 +253,8 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
 
         private static double upperBound(double error, int size)
         {
-            return error + 1.96 * Math.Sqrt((error * (1 - error)) / size);
+            return error + 1.96 * System.Math.Sqrt(error * (1 - error) / size);
         }
-
 
         private double computeErrorWithoutSubtree(DecisionNode tree, int mostCommon)
         {
@@ -255,7 +264,7 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
             tree.Branches = null;
             tree.Output = mostCommon;
 
-            double error = computeError();
+            var error = computeError();
 
             tree.Branches = branches;
             tree.Output = output;
@@ -271,7 +280,7 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
             tree.Branches = child.Branches;
             tree.Output = child.Output;
 
-            double error = computeError();
+            var error = computeError();
 
             tree.Branches = branches;
             tree.Output = output;
@@ -282,7 +291,7 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
         private DecisionNode getMaxChild(DecisionNode tree)
         {
             DecisionNode max = null;
-            int maxCount = 0;
+            var maxCount = 0;
 
             foreach (var child in tree.Branches)
             {
@@ -297,10 +306,9 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
             return max;
         }
 
-
         private void trackDecisions(DecisionNode root, double[] input, int index)
         {
-            DecisionNode current = root;
+            var current = root;
 
             while (current != null)
             {
@@ -308,19 +316,19 @@ namespace Accord.MachineLearning.DecisionTrees.Pruning
 
                 if (current.IsLeaf)
                 {
-                    actual[index] = current.Output.HasValue ? current.Output.Value : -1;
                     return;
                 }
 
-                int attribute = current.Branches.AttributeIndex;
+                var attribute = current.Branches.AttributeIndex;
 
                 DecisionNode nextNode = null;
 
-                foreach (DecisionNode branch in current.Branches)
+                foreach (var branch in current.Branches)
                 {
                     if (branch.Compute(input[attribute]))
                     {
-                        nextNode = branch; break;
+                        nextNode = branch;
+                        break;
                     }
                 }
 

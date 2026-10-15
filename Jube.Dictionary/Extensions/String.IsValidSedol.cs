@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static bool IsValidSedol(this string? @this)
         {
             var value = (@this ?? "").Trim().ToUpperInvariant();
+
             if (value.Length != 7 || !char.IsAsciiDigit(value[6]))
             {
                 return false;
@@ -25,9 +26,11 @@ namespace Jube.Dictionary.Extensions
 
             int[] weights = [1, 3, 1, 7, 3, 9];
             var sum = 0;
+
             for (var i = 0; i < 6; i++)
             {
                 var c = value[i];
+
                 if (char.IsAsciiDigit(c))
                 {
                     sum += (c - '0') * weights[i];

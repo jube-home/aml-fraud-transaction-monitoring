@@ -6,8 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Activation Watcher 
 The purpose of the Activation Watcher is to provide a real time ticker of Response Elevations,  subject to the Activation Rule having been set to send messages to the Activation Watcher.
 

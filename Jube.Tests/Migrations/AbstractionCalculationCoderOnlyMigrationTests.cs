@@ -15,15 +15,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using FluentMigrator;
+using Jube.Data.Poco;
 using Jube.Dictionary;
 using Jube.Dictionary.Extensions;
+using Jube.Dto.EntityAnalysisModelAbstractionCalculation;
 using Jube.Migrations.Branches.AbstractionCalculationCoderOnly;
-using Jube.Parser;
 using Jube.Parser.Compiler;
+using Jube.Parser.Models;
 using Jube.Test.Infrastructure;
+using MessagePack;
 using Xunit;
-using Calculation = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelAbstractionCalculation;
-using Migration = Jube.Migrations.Branches.AbstractionCalculationCoderOnly.ConvertArithmeticAbstractionCalculationsToCoder;
+using Calculation =
+    Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelAbstractionCalculation;
+using Migration =
+    Jube.Migrations.Branches.AbstractionCalculationCoderOnly.ConvertArithmeticAbstractionCalculationsToCoder;
 
 namespace Jube.Test.Migrations
 {
@@ -49,7 +55,8 @@ namespace Jube.Test.Migrations
             AbstractionCalculationScriptBuilder.TryBuild(3, "Refunds Sum", "Total Sales Sum", out var script)
                 .Should().BeTrue();
 
-            script.Should().Be("Matched = Abstraction.Refunds_Sum.RatioOf(Abstraction.Total_Sales_Sum).ZeroIfUndefined()");
+            script.Should()
+                .Be("Matched = Abstraction.Refunds_Sum.RatioOf(Abstraction.Total_Sales_Sum).ZeroIfUndefined()");
         }
 
         [Fact]
@@ -99,17 +106,20 @@ namespace Jube.Test.Migrations
         {
             var plan = Migration.Plan(
             [
-                new Migration.Row(1, 3, "Refunds Sum", "Total Sales Sum"),
-                new Migration.Row(2, 1, "Bad-Name", "Right"),
-                new Migration.Row(3, 4, null, "Right"),
-                new Migration.Row(4, 2, "A", "B")
+                new ConvertArithmeticAbstractionCalculationsToCoder.Row(1, 3, "Refunds Sum", "Total Sales Sum"),
+                new ConvertArithmeticAbstractionCalculationsToCoder.Row(2, 1, "Bad-Name", "Right"),
+                new ConvertArithmeticAbstractionCalculationsToCoder.Row(3, 4, null, "Right"),
+                new ConvertArithmeticAbstractionCalculationsToCoder.Row(4, 2, "A", "B")
             ]);
 
             plan.Should().HaveCount(4);
             plan[0].Converted.Should().BeTrue();
             plan[0].Script.Should().Contain("RatioOf");
             plan[1].Converted.Should().BeFalse();
-            plan[1].Script.Should().Be("' Converted from Add: Bad-Name + Right. Rewrite this as a function, then activate it.");
+
+            plan[1].Script.Should()
+                .Be("' Converted from Add: Bad-Name + Right. Rewrite this as a function, then activate it.");
+
             plan[2].Converted.Should().BeFalse();
             plan[2].Script.Should().Contain("(none) * Right");
             plan[3].Converted.Should().BeTrue();
@@ -125,7 +135,8 @@ namespace Jube.Test.Migrations
             string symbol)
         {
             AbstractionCalculationScriptBuilder.BuildPlaceholder(typeId, "Refunds-Sum", "Total.Sales")
-                .Should().Be($"' Converted from {label}: Refunds-Sum {symbol} Total.Sales. Rewrite this as a function, then activate it.");
+                .Should().Be(
+                    $"' Converted from {label}: Refunds-Sum {symbol} Total.Sales. Rewrite this as a function, then activate it.");
         }
 
         [Fact]
@@ -168,9 +179,9 @@ namespace Jube.Test.Migrations
         {
             var plan = Migration.Plan(
             [
-                new Migration.Row(1, 5, "Left", "Right"),
-                new Migration.Row(2, null, "Left", "Right"),
-                new Migration.Row(3, 0, "Left", "Right")
+                new ConvertArithmeticAbstractionCalculationsToCoder.Row(1, 5, "Left", "Right"),
+                new ConvertArithmeticAbstractionCalculationsToCoder.Row(2, null, "Left", "Right"),
+                new ConvertArithmeticAbstractionCalculationsToCoder.Row(3, 0, "Left", "Right")
             ]);
 
             plan.Should().BeEmpty();
@@ -185,8 +196,8 @@ namespace Jube.Test.Migrations
         [Fact]
         public void TheMigrationCarriesAVersionAndHasNoDownStep()
         {
-            var attribute = (FluentMigrator.MigrationAttribute)Attribute.GetCustomAttribute(typeof(Migration),
-                typeof(FluentMigrator.MigrationAttribute))!;
+            var attribute = (MigrationAttribute)Attribute.GetCustomAttribute(typeof(Migration),
+                typeof(MigrationAttribute))!;
 
             attribute.Version.Should().Be(20260921130000);
             typeof(Migration).GetMethod("Down")!.DeclaringType.Should().Be(typeof(Migration));
@@ -198,6 +209,7 @@ namespace Jube.Test.Migrations
             {
                 EntityAnalysisModelsAbstractionRule = [.. abstractionNames]
             };
+
             var rule = parser.TranslateFromDotNotation(new ParsedRule
             {
                 ErrorSpans = [],
@@ -213,17 +225,20 @@ namespace Jube.Test.Migrations
                 .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
                 .Select(a => a.Location)
                 .ToArray();
+
             var compile = new Compile();
             compile.CompileCode(rule.ParsedRuleText, TestLog.NoOp, references, Compile.Language.Vb);
             compile.Success.Should().BeTrue(compile.ErrorsSummary);
 
             var method = compile.CompiledAssembly.GetType("CalculationRule")!.GetMethod("Match")!;
+
             return (Calculation.Match)Delegate.CreateDelegate(typeof(Calculation.Match), method);
         }
 
         private static double Run(Calculation.Match match, params (string, double)[] abstractions)
         {
             var dictionary = new PooledDictionary<string, double>();
+
             foreach (var (name, value) in abstractions)
             {
                 dictionary.TryAdd(name, value);
@@ -239,6 +254,16 @@ namespace Jube.Test.Migrations
             AbstractionCalculationScriptBuilder.TryBuild(typeId, left, right, out var script).Should().BeTrue();
 
             return CompileScript(script, left.Trim().Replace(" ", "_"), right.Trim().Replace(" ", "_"));
+        }
+
+        private static Dictionary<string, int> Keys(Type type)
+        {
+            return type.GetProperties()
+                .Select(p => (p.Name,
+                    Attribute: (KeyAttribute?)Attribute.GetCustomAttribute(p,
+                        typeof(KeyAttribute))))
+                .Where(x => x.Attribute?.IntKey != null)
+                .ToDictionary(x => x.Name, x => x.Attribute!.IntKey!.Value);
         }
 
         [Theory]
@@ -288,6 +313,7 @@ namespace Jube.Test.Migrations
             {
                 EntityAnalysisModelsAbstractionRule = ["Left", "Right"]
             };
+
             AbstractionCalculationScriptBuilder.TryBuild(3, "Left", "Right", out var script);
 
             var rule = parser.TranslateFromDotNotation(new ParsedRule
@@ -303,7 +329,9 @@ namespace Jube.Test.Migrations
         [Fact]
         public void AMigratedScriptNamingAnAbstractionThatDoesNotExistIsRefusedAtTranslation()
         {
-            var parser = new Parser.Parser(TestLog.NoOp, ["Matched"]) { EntityAnalysisModelsAbstractionRule = ["Other"] };
+            var parser = new Parser.Parser(TestLog.NoOp, ["Matched"])
+                { EntityAnalysisModelsAbstractionRule = ["Other"] };
+
             AbstractionCalculationScriptBuilder.TryBuild(1, "Left", "Right", out var script);
 
             var rule = parser.TranslateFromDotNotation(new ParsedRule
@@ -338,8 +366,9 @@ namespace Jube.Test.Migrations
         [Fact]
         public void TheDtoNoLongerExposesTheArithmeticSurface()
         {
-            var names = typeof(Jube.Dto.EntityAnalysisModelAbstractionCalculation.EntityAnalysisModelAbstractionCalculationDto)
-                .GetProperties().Select(p => p.Name).ToList();
+            var names =
+                typeof(EntityAnalysisModelAbstractionCalculationDto)
+                    .GetProperties().Select(p => p.Name).ToList();
 
             names.Should().NotContain("AbstractionCalculationTypeId");
             names.Should().NotContain("EntityAnalysisModelAbstractionNameLeft");
@@ -352,8 +381,8 @@ namespace Jube.Test.Migrations
         {
             foreach (var type in new[]
                      {
-                         typeof(Jube.Data.Poco.EntityAnalysisModelAbstractionCalculation),
-                         typeof(Jube.Data.Poco.EntityAnalysisModelAbstractionCalculationVersion)
+                         typeof(EntityAnalysisModelAbstractionCalculation),
+                         typeof(EntityAnalysisModelAbstractionCalculationVersion)
                      })
             {
                 type.GetProperty("AbstractionCalculationTypeId").Should().BeNull();
@@ -362,18 +391,10 @@ namespace Jube.Test.Migrations
             }
         }
 
-        private static Dictionary<string, int> Keys(Type type)
-        {
-            return type.GetProperties()
-                .Select(p => (p.Name, Attribute: (MessagePack.KeyAttribute?)Attribute.GetCustomAttribute(p, typeof(MessagePack.KeyAttribute))))
-                .Where(x => x.Attribute?.IntKey != null)
-                .ToDictionary(x => x.Name, x => x.Attribute!.IntKey!.Value);
-        }
-
         [Fact]
         public void MessagePackKeysOfTheRemainingPropertiesAreUnchangedSoTheRemovedSlotsAreReserved()
         {
-            var calculation = Keys(typeof(Jube.Data.Poco.EntityAnalysisModelAbstractionCalculation));
+            var calculation = Keys(typeof(EntityAnalysisModelAbstractionCalculation));
 
             calculation["Id"].Should().Be(0);
             calculation["EntityAnalysisModelId"].Should().Be(1);
@@ -392,7 +413,7 @@ namespace Jube.Test.Migrations
         [Fact]
         public void MessagePackKeysOfTheVersionPocoAreUnchangedSoTheRemovedSlotsAreReserved()
         {
-            var version = Keys(typeof(Jube.Data.Poco.EntityAnalysisModelAbstractionCalculationVersion));
+            var version = Keys(typeof(EntityAnalysisModelAbstractionCalculationVersion));
 
             version["Id"].Should().Be(0);
             version["Name"].Should().Be(3);

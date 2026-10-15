@@ -10,6 +10,7 @@ namespace Jube.Dictionary.Extensions
         public static decimal ExtractDecimal(this string @this)
         {
             var sb = new StringBuilder();
+
             for (var i = 0; i < @this.Length; i++)
             {
                 if (char.IsDigit(@this[i]) || @this[i] == '.')

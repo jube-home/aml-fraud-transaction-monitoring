@@ -6,8 +6,6 @@ parent: CLI
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # CLI Concepts
 The Command Line Interface (CLI) is a basic console application that is intended to provide administrative functions from the terminal.  This will develop over time and is intended as a more disciplined means of delivering functionality that would otherwise be SQL (noting a preference to the use of ORMs in code).
 

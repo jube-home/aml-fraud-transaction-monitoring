@@ -18,13 +18,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
-    using Data.Poco;
     using EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
+    using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
     using EngineInlineScript =
         EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript.
         EntityAnalysisModelInlineScript;
     using log4net;
-    using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+    using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 
     public sealed record InlineScriptRunResult(
         bool Compiled,
@@ -81,7 +81,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                     Sanction = inputs.Sanction,
                     ExhaustiveAdaptation = inputs.ExhaustiveAdaptation,
                     HttpAdaptation = inputs.HttpAdaptation,
-                    ArchiveKeys = new List<ArchiveKey>()
+                    ArchiveKeys = []
                 },
                 Log = log,
                 Stopwatch = Stopwatch.StartNew(),
@@ -91,9 +91,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             var stopwatch = Stopwatch.StartNew();
             object instance;
             bool succeeded;
+
             try
             {
                 instance = script.ActivatorDelegate();
+
                 succeeded = await Task.Run(() => script.ExecuteAsyncDelegate(instance, context), token)
                     .WaitAsync(timeout, token).ConfigureAwait(false);
             }
@@ -107,17 +109,20 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             }
 
             var properties = new Dictionary<string, object>(StringComparer.Ordinal);
+
             if (succeeded)
             {
                 foreach (var (name, property) in script.EntityAnalysisModelInlineScriptPropertyAttributes)
                 {
                     var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+
                     if (!supportedTypes.Contains(type))
                     {
                         continue;
                     }
 
                     var value = property.GetValueDelegate(instance);
+
                     if (value != null)
                     {
                         properties[name] = value;

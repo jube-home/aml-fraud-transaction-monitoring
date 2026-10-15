@@ -24,6 +24,7 @@ using Jube.Data.Repository;
 using Jube.Dictionary;
 using Jube.Dto.Query.EntityAnalysisModelBacktest;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload;
 using Jube.Engine.Helpers;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters;
 using Jube.Service.Agent.ServiceToolCatalogue;
@@ -53,19 +54,20 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
                 NullLoggerFactory.Instance);
 
         private static readonly DateTime start = new(2026, 9, 1, 0, 0, 0, DateTimeKind.Utc);
-
         private readonly List<Guid> entries = [];
         private int modelId;
 
         public async Task InitializeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var model = await new EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission).InsertAsync(
                 new Data.Poco.EntityAnalysisModel
                 {
                     Name = $"{DatabaseFixture.Prefix}Bt{Guid.NewGuid():N}"[..40], Guid = Guid.NewGuid(),
                     Active = 1, Locked = 0, Deleted = 0
                 });
+
             modelId = model.Id;
 
             foreach (var (name, dataTypeId) in new[] { ("Amount", 3), ("Country", 1) })
@@ -89,6 +91,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
             {
                 (500, ["Fraud"]), (700, []), (50, ["Fraud", "Reviewed"]), (20, []), (900, ["Fraud"])
             };
+
             for (var i = 0; i < amounts.Length; i++)
             {
                 await ArchiveAsync(dbContext, i, amounts[i].Amount, amounts[i].Tags);
@@ -98,17 +101,23 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.EntityAnalysisModelBacktestInstance.Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelTag>()
                 .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+
             await dbContext.ArchiveTag.Where(w => entries.Contains(w.EntityAnalysisModelInstanceEntryGuid))
                 .DeleteAsync();
             await dbContext.Archive.Where(w => entries.Contains(w.EntityAnalysisModelInstanceEntryGuid)).DeleteAsync();
+
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
+
             await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
         }
 
@@ -116,6 +125,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
         {
             var guid = Guid.NewGuid();
             entries.Add(guid);
+
             var payload = new EntityAnalysisModelInstanceEntryPayload
             {
                 Payload = new DictionaryNoBoxing<string>(),
@@ -211,8 +221,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
             result.Valid.Should().BeTrue(string.Join("; ", result.Errors.Select(e => e.Message)));
             (result.Scanned, result.Evaluated, result.LimitReached).Should().Be((5L, 5L, false));
             (result.Fired, result.NotFired, result.Positives).Should().Be((3L, 2L, 3L));
+
             (result.TruePositives, result.FalsePositives, result.FalseNegatives, result.TrueNegatives).Should()
                 .Be((2L, 1L, 1L, 1L));
+
             result.TruePositiveSamples.Select(s => s.EntryKeyValue).Should().Equal("TX4", "TX0");
             result.FalseNegativeSamples.Should().ContainSingle().Which.EntryKeyValue.Should().Be("TX2");
             result.TagsInSample.Select(t => (t.Name, t.Count)).Should().Equal(("Fraud", 3L), ("Reviewed", 1L));
@@ -222,8 +234,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
         public async Task ADeletedTagNoLongerCountsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.ArchiveTag.Where(w => w.EntityAnalysisModelInstanceEntryGuid == entries[4])
                 .Set(s => s.Deleted, (byte)1).UpdateAsync();
+
             var service = await ServiceAsync(dbContext);
 
             var result = await service.RunRuleAsync(Request());
@@ -237,6 +251,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
             await using var dbContext = fx.GetDbContext();
             var service = await ServiceAsync(dbContext);
             var request = Request();
+
             request.FilterJson =
                 "{\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Amount\",\"operator\":\"greater_or_equal\",\"value\":50}]}";
 
@@ -261,8 +276,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
             var newest = await service.RunRuleAsync(limited);
 
             ranged.Evaluated.Should().Be(3);
+
             (ranged.EarliestReferenceDate, ranged.LatestReferenceDate).Should()
                 .Be((start.AddHours(1), start.AddHours(3)));
+
             newest.Evaluated.Should().Be(2);
             newest.LimitReached.Should().BeTrue();
             newest.EarliestReferenceDate.Should().Be(start.AddHours(3));
@@ -278,6 +295,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
 
             result.Fired.Should().Be(3);
             result.ClassDefined.Should().BeFalse();
+
             (result.TruePositives + result.FalsePositives + result.FalseNegatives + result.TrueNegatives).Should()
                 .Be(0);
         }
@@ -307,16 +325,20 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
             badType.RuleType = "InlineFunction";
             var badRange = Request();
             (badRange.From, badRange.To) = (start.AddDays(1), start);
+
             var badClass = Request(
                 "{\"condition\":\"AND\",\"rules\":[{\"id\":\"Tag.Unknown\",\"operator\":\"equal\",\"value\":\"True\"}]}");
+
             var tooMany = Request();
             tooMany.Limit = 20_000;
 
             (await service.RunRuleAsync(badRule)).Errors.Should().Contain(e => e.ErrorCode == "RuleScriptInvalid");
             (await service.RunRuleAsync(badType)).Errors.Should().ContainSingle(e => e.ErrorCode == "RuleTypeInvalid");
             (await service.RunRuleAsync(badRange)).Errors.Should().ContainSingle(e => e.ErrorCode == "RangeInvalid");
+
             (await service.RunRuleAsync(badClass)).Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "FieldUnknown" && e.PropertyName == "Class.rules[0].id");
+
             (await service.RunRuleAsync(tooMany)).Errors.Should().ContainSingle(e => e.ErrorCode == "LimitTooLarge");
         }
 
@@ -362,6 +384,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
             await using var dbContext = fx.GetDbContext();
             var service = await ServiceAsync(dbContext);
             var submitted = await service.SubmitAsync(Request());
+
             var context = new BackgroundContext
             {
                 Services =
@@ -375,6 +398,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
                     TaskCoordinator = new TaskCoordinator(new CancellationTokenProvider())
                 }
             };
+
             var starter = new BacktestTaskStarter(context, 1);
 
             for (var i = 0;
@@ -397,10 +421,12 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
         {
             await using var dbContext = fx.GetDbContext();
             var direct = await (await ServiceAsync(dbContext)).RunRuleAsync(Request());
+
             var reported = await (await ReportServiceAsync(dbContext, ReportConnectionString(null)))
                 .RunRuleAsync(Request());
 
             reported.Valid.Should().BeTrue(string.Join("; ", reported.Errors.Select(e => e.Message)));
+
             (reported.Scanned, reported.Fired, reported.TruePositives, reported.FalseNegatives).Should()
                 .Be((direct.Scanned, direct.Fired, direct.TruePositives, direct.FalseNegatives));
         }
@@ -410,6 +436,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
         {
             await using var dbContext = fx.GetDbContext();
             var service = await ReportServiceAsync(dbContext, ReportConnectionString("jube_backtest_report_missing"));
+
             var entry = await dbContext.Archive.Where(a => a.EntityAnalysisModelId == modelId)
                 .Select(a => a.EntityAnalysisModelInstanceEntryGuid).FirstAsync();
 
@@ -426,12 +453,15 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
             await using var dbContext = fx.GetDbContext();
             var service = await ServiceAsync(dbContext);
             var missing = await service.SubmitAsync(Request());
+
             await new BacktestTaskStarter(EngineContext(ReportConnectionString("jube_backtest_report_missing")), 1)
                 .RunNextAsync(CancellationToken.None);
+
             var failed = await service.StatusAsync(missing.Instance!.Id);
 
             var working = await service.SubmitAsync(Request());
             var starter = new BacktestTaskStarter(EngineContext(ReportConnectionString(null)), 1);
+
             for (var i = 0;
                  i < 10 && (await service.StatusAsync(working.Instance!.Id)).Status is "Pending" or "Running";
                  i++)

@@ -43,6 +43,10 @@ namespace Jube.App.Endpoints.Query
             group.MapGet("{id:int}", GetAsync)
                 .Produces<List<ExhaustiveSearchInstanceVariableDto>>()
                 .WithName("ExhaustiveSearchInstanceVariableGet");
+
+            group.MapPut("{id:int}/Reallocate", ReallocateAsync)
+                .Produces<ExhaustiveSearchInstanceVariableReallocateDto>()
+                .WithName("ExhaustiveSearchInstanceVariableReallocate");
         }
 
         private static async Task<IResult> GetAsync(int id, HttpContext httpContext, ILog log,
@@ -50,6 +54,7 @@ namespace Jube.App.Endpoints.Query
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/{id}: entry user={user}");
@@ -57,10 +62,12 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ExhaustiveSearchInstanceVariableService
                     .CreateAsync(dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.GetAsync(id, token));
             }
             catch (NotAuthenticatedException)
@@ -93,6 +100,82 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"GET {Base}/{id}: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> ReallocateAsync(int id, ExhaustiveSearchInstanceVariableReallocateDto model,
+            HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"PUT {Base}/{id}/Reallocate: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await ExhaustiveSearchInstanceVariableService
+                    .CreateAsync(dbContext, user, log, stringLocalizerFactory, serviceChangeBus, token);
+
+                return TypedResults.Ok(await service.ReallocateAsync(id, model, token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}/{id}/Reallocate: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}/{id}/Reallocate: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (DtoValidationException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}/{id}/Reallocate: 400 user={user} errors={ex.Result.Errors.Count}");
+                }
+
+                return TypedResults.BadRequest(ex.Result);
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}/{id}/Reallocate: 404 user={user}");
+                }
+
+                return TypedResults.NotFound();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"PUT {Base}/{id}/Reallocate: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"PUT {Base}/{id}/Reallocate: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

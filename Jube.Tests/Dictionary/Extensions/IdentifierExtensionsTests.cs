@@ -57,6 +57,7 @@ namespace Jube.Test.Dictionary.Extensions
         public void LuhnCheckDigitCompletesThePayload(string payload, int expected)
         {
             payload.LuhnCheckDigit().Should().Be(expected);
+
             if (expected >= 0)
             {
                 (payload + expected).IsValidLuhn().Should().BeTrue();

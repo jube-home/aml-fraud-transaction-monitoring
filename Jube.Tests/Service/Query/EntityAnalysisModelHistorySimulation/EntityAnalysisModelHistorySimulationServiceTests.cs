@@ -56,26 +56,32 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
         public Task InitializeAsync()
         {
             coordinator = new TaskCoordinator(new CancellationTokenProvider(), TestLog.NoOp);
+
             cache = new CacheService(
                 Environment.GetEnvironmentVariable("JubeTestRedisConnectionString") ?? "localhost,defaultDatabase=1",
                 Environment.GetEnvironmentVariable("JubeTestConnectionString") ?? string.Empty,
                 new ConcurrentDictionary<Guid,
                     TaskCompletionSource<global::Jube.Cache.Redis.Callback.Callback>>(), 3000, false, false,
                 50_000_000, false, false, false, false, TimeSpan.FromDays(1), false, TestLog.NoOp);
+
             return cache.StartAsync(coordinator, static (_, _) => { });
         }
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             foreach (var id in createdModelIds)
             {
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelTtlCounter>()
                     .Where(w => w.EntityAnalysisModelId == id).DeleteAsync();
+
                 await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.EntityAnalysisModelId == id)
                     .DeleteAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == id)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == id).DeleteAsync();
             }
         }
@@ -98,6 +104,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
                 SearchKeyTtlInterval = "d", SearchKeyTtlIntervalValue = 30, SearchKeyFetchLimit = 100, Deleted = 0,
                 Guid = Guid.NewGuid()
             });
+
             await dbContext.InsertAsync(new EntityAnalysisModelRequestXpath
             {
                 EntityAnalysisModelId = model.Id, Name = "Amount", DataTypeId = 3, XPath = "$.Amount", Active = 1,
@@ -117,6 +124,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
             payload.TryAdd(2, amount);
 
             await cache.CachePayloadRepository.InsertAsync(tenantId, modelGuid, payload, date, guid);
+
             await cache.CachePayloadRepository.InsertPayloadJournalAndLedgerAsync(tenantId, modelGuid, "AccountId",
                 account, date, guid);
         }
@@ -126,10 +134,12 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
         {
             var service = await EntityAnalysisModelInvocationContextService.CreateAsync(dbContext,
                 fx.Seed.UserWithPermission, TestLog.NoOp, localizers, new NullServiceChangeBus());
+
             var context = await service.OverlayAsync(new InvocationContextOverlayDto
                 { Context = await service.BlankAsync(modelId), Values = values });
             context.Errors.Should().BeEmpty();
             context.ReferenceDate = DateTime.UtcNow;
+
             return context;
         }
 
@@ -162,8 +172,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
             await SeedAsync(tenantId, modelGuid, "A1", 7, 2);
             await SeedAsync(tenantId, modelGuid, "A1", 100, 50);
             await SeedAsync(tenantId, modelGuid, "A2", 1000, 1);
+
             var context = await ContextAsync(dbContext, modelId,
                 new() { ["Payload.AccountId"] = "A1", ["Payload.Amount"] = "10" });
+
             var service = await ServiceAsync(dbContext, cache);
 
             var result = await service.AbstractionAggregationAsync(Rule(modelId, functionType), context);
@@ -205,6 +217,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
 
             (await service.AbstractionAggregationAsync(notSearching, context)).Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "NotASearchRule");
+
             (await service.AbstractionAggregationAsync(Rule(modelId, 1), context)).Errors.Should()
                 .ContainSingle(e => e.ErrorCode == "SearchKeyValueUnset");
         }
@@ -214,15 +227,18 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
         {
             await using var dbContext = fx.GetDbContext();
             var (modelId, _, _) = await CreateModelAsync(dbContext);
+
             var counterId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelTtlCounter
             {
                 EntityAnalysisModelId = modelId, Name = "PerAccount", TtlCounterDataName = "AccountId",
                 TtlCounterInterval = "d", TtlCounterValue = 1, OnlineAggregation = 0, Active = 1, Deleted = 0,
                 Guid = Guid.NewGuid()
             });
+
             var service = await ServiceAsync(dbContext, cache);
 
             var unset = await service.TtlCounterValueAsync(counterId, await ContextAsync(dbContext, modelId, new()));
+
             var read = await service.TtlCounterValueAsync(counterId,
                 await ContextAsync(dbContext, modelId, new() { ["Payload.AccountId"] = "Nobody" }));
 

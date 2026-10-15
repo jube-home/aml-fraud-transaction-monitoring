@@ -12,6 +12,7 @@
  */
 
 using System.Collections.Concurrent;
+using Jube.Service.Observability.OtlpDispatchCounters.Models;
 
 namespace Jube.Service.Observability.OtlpDispatchCounters
 {
@@ -25,6 +26,7 @@ namespace Jube.Service.Observability.OtlpDispatchCounters
             var microseconds = (long)(elapsedMilliseconds * 1000.0);
 
             Interlocked.Increment(ref accumulator.Count);
+
             if (success)
             {
                 Interlocked.Increment(ref accumulator.SuccessCount);
@@ -54,6 +56,7 @@ namespace Jube.Service.Observability.OtlpDispatchCounters
             {
                 var count = Interlocked.Exchange(ref accumulator.Count, 0);
                 var droppedCount = Interlocked.Exchange(ref accumulator.DroppedCount, 0);
+
                 if (count == 0 && droppedCount == 0)
                 {
                     continue;
@@ -82,9 +85,11 @@ namespace Jube.Service.Observability.OtlpDispatchCounters
         private static void AccumulateMin(ref long location, long value)
         {
             var initial = Volatile.Read(ref location);
+
             while (value < initial)
             {
                 var previous = Interlocked.CompareExchange(ref location, value, initial);
+
                 if (previous == initial)
                 {
                     return;
@@ -97,9 +102,11 @@ namespace Jube.Service.Observability.OtlpDispatchCounters
         private static void AccumulateMax(ref long location, long value)
         {
             var initial = Volatile.Read(ref location);
+
             while (value > initial)
             {
                 var previous = Interlocked.CompareExchange(ref location, value, initial);
+
                 if (previous == initial)
                 {
                     return;

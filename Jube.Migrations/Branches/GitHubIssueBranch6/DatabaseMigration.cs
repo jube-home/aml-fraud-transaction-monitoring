@@ -1,8 +1,21 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
+using FluentMigrator;
+
 namespace Jube.Migrations.Branches.GitHubIssueBranch6
 {
-    using System;
-    using FluentMigrator;
-
     [Migration(20250405191700)]
     public class DatabaseMigration : Migration
     {
@@ -86,6 +99,10 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
             DropExhaustiveSearchInstancePromotedTrialInstanceVariableHistogram();
         }
 
+        public override void Down()
+        {
+        }
+
         private void UpdateDefaultTenantRegistryAsLandlord()
         {
             Execute.Sql("""UPDATE "TenantRegistry" b SET "Landlord" = 1 WHERE b."Id" = 1;""");
@@ -98,6 +115,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
                 Id = 39,
                 Name = "View Performance Counters"
             });
+
             Insert.IntoTable("RoleRegistryPermission").Row(new
             {
                 RoleRegistryId = 1,
@@ -117,6 +135,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
                 Id = 38,
                 Name = "Allow Preservation Import and Export"
             });
+
             Insert.IntoTable("RoleRegistryPermission").Row(new
             {
                 RoleRegistryId = 1,
@@ -131,12 +150,15 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
 
         private void CreateExhaustiveSearchInstancePromotedTrialInstanceVariable()
         {
-            Alter.Table("ExhaustiveSearchInstancePromotedTrialInstanceVariable").AddColumn("Deleted").AsByte().Nullable();
+            Alter.Table("ExhaustiveSearchInstancePromotedTrialInstanceVariable").AddColumn("Deleted").AsByte()
+                .Nullable();
             Alter.Table("ExhaustiveSearchInstancePromotedTrialInstanceVariable").AddColumn("DeletedDate").AsDateTime2()
                 .Nullable();
-            Alter.Table("ExhaustiveSearchInstancePromotedTrialInstanceVariable").AddColumn("ImportId").AsInt32().Nullable();
+            Alter.Table("ExhaustiveSearchInstancePromotedTrialInstanceVariable").AddColumn("ImportId").AsInt32()
+                .Nullable();
 
-            Create.ForeignKey().FromTable("ExhaustiveSearchInstancePromotedTrialInstanceVariable").ForeignColumn("ImportId")
+            Create.ForeignKey().FromTable("ExhaustiveSearchInstancePromotedTrialInstanceVariable")
+                .ForeignColumn("ImportId")
                 .ToTable("Import").PrimaryColumn("Id");
         }
 
@@ -164,8 +186,10 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
 
         private void CreateExhaustiveSearchInstanceVariableHistogramClassification()
         {
-            Alter.Table("ExhaustiveSearchInstanceVariableHistogramClassification").AddColumn("Deleted").AsByte().Nullable();
-            Alter.Table("ExhaustiveSearchInstanceVariableHistogramClassification").AddColumn("DeletedDate").AsDateTime2()
+            Alter.Table("ExhaustiveSearchInstanceVariableHistogramClassification").AddColumn("Deleted").AsByte()
+                .Nullable();
+            Alter.Table("ExhaustiveSearchInstanceVariableHistogramClassification").AddColumn("DeletedDate")
+                .AsDateTime2()
                 .Nullable();
             Alter.Table("ExhaustiveSearchInstanceVariableHistogramClassification").AddColumn("ImportId").AsInt32()
                 .Nullable();
@@ -188,7 +212,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
         private void CreateExhaustiveSearchInstanceVariableClassification()
         {
             Alter.Table("ExhaustiveSearchInstanceVariableClassification").AddColumn("Deleted").AsByte().Nullable();
-            Alter.Table("ExhaustiveSearchInstanceVariableClassification").AddColumn("DeletedDate").AsDateTime2().Nullable();
+            Alter.Table("ExhaustiveSearchInstanceVariableClassification").AddColumn("DeletedDate").AsDateTime2()
+                .Nullable();
             Alter.Table("ExhaustiveSearchInstanceVariableClassification").AddColumn("ImportId").AsInt32().Nullable();
 
             Create.ForeignKey().FromTable("ExhaustiveSearchInstanceVariableClassification").ForeignColumn("ImportId")
@@ -209,7 +234,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
         {
             Alter.Table("ExhaustiveSearchInstancePromotedTrialInstanceSensitivity").AddColumn("Deleted").AsByte()
                 .Nullable();
-            Alter.Table("ExhaustiveSearchInstancePromotedTrialInstanceSensitivity").AddColumn("DeletedDate").AsDateTime2()
+            Alter.Table("ExhaustiveSearchInstancePromotedTrialInstanceSensitivity").AddColumn("DeletedDate")
+                .AsDateTime2()
                 .Nullable();
             Alter.Table("ExhaustiveSearchInstancePromotedTrialInstanceSensitivity").AddColumn("ImportId").AsInt32()
                 .Nullable();
@@ -249,9 +275,11 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
             Alter.Table("ExhaustiveSearchInstanceTrialInstanceTopologyTrial").AddColumn("Deleted").AsByte().Nullable();
             Alter.Table("ExhaustiveSearchInstanceTrialInstanceTopologyTrial").AddColumn("DeletedDate").AsDateTime2()
                 .Nullable();
-            Alter.Table("ExhaustiveSearchInstanceTrialInstanceTopologyTrial").AddColumn("ImportId").AsInt32().Nullable();
+            Alter.Table("ExhaustiveSearchInstanceTrialInstanceTopologyTrial").AddColumn("ImportId").AsInt32()
+                .Nullable();
 
-            Create.ForeignKey().FromTable("ExhaustiveSearchInstanceTrialInstanceTopologyTrial").ForeignColumn("ImportId")
+            Create.ForeignKey().FromTable("ExhaustiveSearchInstanceTrialInstanceTopologyTrial")
+                .ForeignColumn("ImportId")
                 .ToTable("Import").PrimaryColumn("Id");
         }
 
@@ -283,7 +311,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
         private void CreateExhaustiveSearchInstancePromotedTrialInstance()
         {
             Alter.Table("ExhaustiveSearchInstancePromotedTrialInstance").AddColumn("Deleted").AsByte().Nullable();
-            Alter.Table("ExhaustiveSearchInstancePromotedTrialInstance").AddColumn("DeletedDate").AsDateTime2().Nullable();
+            Alter.Table("ExhaustiveSearchInstancePromotedTrialInstance").AddColumn("DeletedDate").AsDateTime2()
+                .Nullable();
             Alter.Table("ExhaustiveSearchInstancePromotedTrialInstance").AddColumn("ImportId").AsInt32().Nullable();
 
             Create.ForeignKey().FromTable("ExhaustiveSearchInstancePromotedTrialInstance").ForeignColumn("ImportId")
@@ -293,7 +322,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
         private void CreateExhaustiveSearchInstanceTrialInstanceVariable()
         {
             Alter.Table("ExhaustiveSearchInstanceTrialInstanceVariable").AddColumn("Deleted").AsByte().Nullable();
-            Alter.Table("ExhaustiveSearchInstanceTrialInstanceVariable").AddColumn("DeletedDate").AsDateTime2().Nullable();
+            Alter.Table("ExhaustiveSearchInstanceTrialInstanceVariable").AddColumn("DeletedDate").AsDateTime2()
+                .Nullable();
             Alter.Table("ExhaustiveSearchInstanceTrialInstanceVariable").AddColumn("ImportId").AsInt32().Nullable();
 
             Create.ForeignKey().FromTable("ExhaustiveSearchInstanceTrialInstanceVariable").ForeignColumn("ImportId")
@@ -469,7 +499,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
             Create.ForeignKey().FromTable("EntityAnalysisModelActivationRuleSuppression").ForeignColumn("ImportId")
                 .ToTable("Import").PrimaryColumn("Id");
 
-            Alter.Table("EntityAnalysisModelActivationRuleSuppression").AddColumn("UpdatedDate").AsDateTime().Nullable();
+            Alter.Table("EntityAnalysisModelActivationRuleSuppression").AddColumn("UpdatedDate").AsDateTime()
+                .Nullable();
             Alter.Table("EntityAnalysisModelActivationRuleSuppression").AddColumn("UpdatedUser").AsString().Nullable();
 
             Execute.Sql(
@@ -908,19 +939,23 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
                 """UPDATE "EntityAnalysisModelAsynchronousQueueBalance" b SET "EntityAnalysisModelGuid" = a."Guid" FROM "EntityAnalysisModel" a WHERE a."Id" = b."EntityAnalysisModelId";""");
 
             Delete.Column("EntityAnalysisModelId").FromTable("EntityAnalysisModelAsynchronousQueueBalance");
+
             Create.Index().OnTable("EntityAnalysisModelAsynchronousQueueBalance").OnColumn("EntityAnalysisModelGuid")
                 .Ascending();
         }
 
         private void UpdateEntityAnalysisModelProcessingCounter()
         {
-            Alter.Table("EntityAnalysisModelProcessingCounter").AddColumn("EntityAnalysisModelGuid").AsGuid().Nullable();
+            Alter.Table("EntityAnalysisModelProcessingCounter").AddColumn("EntityAnalysisModelGuid").AsGuid()
+                .Nullable();
 
             Execute.Sql(
                 """UPDATE "EntityAnalysisModelProcessingCounter" b SET "EntityAnalysisModelGuid" = a."Guid" FROM "EntityAnalysisModel" a WHERE a."Id" = b."EntityAnalysisModelId";""");
 
             Delete.Column("EntityAnalysisModelId").FromTable("EntityAnalysisModelProcessingCounter");
-            Create.Index().OnTable("EntityAnalysisModelProcessingCounter").OnColumn("EntityAnalysisModelGuid").Ascending();
+
+            Create.Index().OnTable("EntityAnalysisModelProcessingCounter").OnColumn("EntityAnalysisModelGuid")
+                .Ascending();
         }
 
         private void UpdateEntityAnalysisModelSearchKeyCalculationInstance()
@@ -932,7 +967,9 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
                 """UPDATE "EntityAnalysisModelSearchKeyCalculationInstance" b SET "EntityAnalysisModelGuid" = a."Guid" FROM "EntityAnalysisModel" a WHERE a."Id" = b."EntityAnalysisModelId";""");
 
             Delete.Column("EntityAnalysisModelId").FromTable("EntityAnalysisModelSearchKeyCalculationInstance");
-            Create.Index().OnTable("EntityAnalysisModelSearchKeyCalculationInstance").OnColumn("EntityAnalysisModelGuid")
+
+            Create.Index().OnTable("EntityAnalysisModelSearchKeyCalculationInstance")
+                .OnColumn("EntityAnalysisModelGuid")
                 .Ascending();
         }
 
@@ -956,6 +993,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
                 """UPDATE "EntityAnalysisModelActivationRuleSuppression" b SET "EntityAnalysisModelGuid" = a."Guid" FROM "EntityAnalysisModel" a WHERE a."Id" = b."EntityAnalysisModelId";""");
 
             Delete.Column("EntityAnalysisModelId").FromTable("EntityAnalysisModelActivationRuleSuppression");
+
             Create.Index().OnTable("EntityAnalysisModelActivationRuleSuppression").OnColumn("EntityAnalysisModelGuid")
                 .Ascending();
         }
@@ -2094,10 +2132,6 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
             Create.ForeignKey().FromTable("EntityAnalysisModelRequestXpathVersion")
                 .ForeignColumn("EntityAnalysisModelRequestXpathId")
                 .ToTable("EntityAnalysisModelRequestXpath").PrimaryColumn("Id");
-        }
-
-        public override void Down()
-        {
         }
     }
 }

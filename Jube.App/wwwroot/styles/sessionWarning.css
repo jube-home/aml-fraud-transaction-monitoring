@@ -1,0 +1,46 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+/* Fixed, not inline -- appended straight to <body> by SessionWarning.js, so it has to work
+   regardless of which page/layout it lands on rather than relying on any page-specific
+   container. Top-centre and high z-index so it reads as unmissable (the whole point of a
+   compliant session-timeout warning), without covering the main navigation. */
+.jubeSessionWarning {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fdf2e9;
+    border: 1px solid #e8a33d;
+    color: #7a4b06;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.jubeSessionWarningLink {
+    color: #b3540a;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.jubeSessionWarningLink:hover {
+    color: #7a4b06;
+}

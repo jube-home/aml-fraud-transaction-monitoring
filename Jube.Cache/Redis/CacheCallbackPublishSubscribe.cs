@@ -14,7 +14,7 @@
 using System.Collections.Concurrent;
 using System.Net;
 using Jube.Cache.Observability;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using Jube.TaskCancellation;
 using log4net;
 using StackExchange.Redis;
@@ -24,7 +24,6 @@ namespace Jube.Cache.Redis
     public class CacheCallbackPublishSubscribe
     {
         public readonly Task CallbackRemoveSubscriptionTask;
-
         public readonly Task CallbackSetSubscriptionTask;
         public readonly Task CallbackTimeoutTask;
         public readonly ConcurrentDictionary<Guid, TaskCompletionSource<Callback.Callback>> Callbacks;
@@ -48,6 +47,7 @@ namespace Jube.Cache.Redis
             this.log = log;
             this.callbackTimeout = callbackTimeout;
             localCacheInstanceGuidString = Guid.NewGuid().ToString("N");
+
             CallbackSetSubscriptionTask = taskCoordinator.RunAsync("CallbackListenAddAsync",
                 _ => StartCallbackSubscriptionAddAsync(taskCoordinator.CancellationToken));
             CallbackRemoveSubscriptionTask = taskCoordinator.RunAsync("CallbackListenRemoveAsync",
@@ -71,6 +71,7 @@ namespace Jube.Cache.Redis
         private async Task<Task> StartCallbackTimeoutAsync(CancellationToken token)
         {
             const int pollDelay = 1000;
+
             while (!token.IsCancellationRequested)
             {
                 try
@@ -155,6 +156,7 @@ namespace Jube.Cache.Redis
 
                 tcs.TrySetException(
                     new TimeoutException($"Callback {guid} was never received within the configured timeout."));
+
                 Callbacks.TryRemove(pendingCallback);
                 pendingSince.TryRemove(guid, out _);
             }
@@ -173,6 +175,7 @@ namespace Jube.Cache.Redis
             try
             {
                 var splits = channel.Split(":");
+
                 if (splits[1] == Dns.GetHostName() && splits[2] == localCacheInstanceGuidString)
                 {
                     return;

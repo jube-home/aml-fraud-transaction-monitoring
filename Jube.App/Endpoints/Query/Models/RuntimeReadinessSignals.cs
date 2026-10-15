@@ -12,7 +12,7 @@
  */
 
 using Jube.Cache;
-using Jube.Service.Query.Ready;
+using Jube.Service.Query.Ready.Interfaces;
 using Microsoft.Extensions.Hosting;
 
 namespace Jube.App.Endpoints.Query.Models
@@ -23,9 +23,7 @@ namespace Jube.App.Endpoints.Query.Models
         CacheService cacheService) : IReadinessSignals
     {
         public bool StoppingRequested => lifetime.ApplicationStopping.IsCancellationRequested;
-
         public bool EngineReady => engine.Context is { Ready: true };
-
         public bool WatcherStreamReady => cacheService?.CacheActivationWatcherPublishSubscribe is { Ready: true };
     }
 }

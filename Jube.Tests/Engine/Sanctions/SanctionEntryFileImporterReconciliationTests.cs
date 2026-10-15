@@ -45,6 +45,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task InitializeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             sourceId = await dbContext.InsertWithInt32IdentityAsync(new SanctionEntrySource
             {
                 Name = $"{DatabaseFixture.Prefix}SanctionSourceRecon{Guid.NewGuid():N}"[..40],
@@ -73,7 +74,7 @@ namespace Jube.Test.Engine.Sanctions
 
         private async Task<HashSet<string>> LoadAsync(DbContext dbContext, string csv)
         {
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
             using var parser = NewParser(csv);
 
             var result = await SanctionEntryFileImporter.ImportAsync(parser, sourceId, "1", 0, 0,
@@ -100,13 +101,15 @@ namespace Jube.Test.Engine.Sanctions
         public async Task ReloadingTheIdenticalFileASecondTimeLeavesEveryRowUnchangedAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
 
             await LoadAsync(dbContext, ThreeRowCsv);
+
             var beforeIds = (await repository.GetActiveBySanctionEntrySourceIdAsync(sourceId))
                 .Select(e => e.Id).OrderBy(i => i).ToList();
 
             await LoadAsync(dbContext, ThreeRowCsv);
+
             var afterIds = (await repository.GetActiveBySanctionEntrySourceIdAsync(sourceId))
                 .Select(e => e.Id).OrderBy(i => i).ToList();
 
@@ -117,7 +120,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task AReloadWhoseFileNoLongerContainsARowSoftDeletesOnlyThatRowAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
 
             await LoadAsync(dbContext, ThreeRowCsv);
             var seenHashes = await LoadAsync(dbContext, TwoRowCsvWithBravoRemoved);
@@ -140,13 +143,15 @@ namespace Jube.Test.Engine.Sanctions
         public async Task ARowThatReappearsInALaterFileAfterBeingRemovedIsRevivedNotDuplicatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
 
             await LoadAsync(dbContext, ThreeRowCsv);
+
             var originalBravoId = (await repository.GetActiveBySanctionEntrySourceIdAsync(sourceId))
                 .Single(e => e.SanctionEntryReference == "2").Id;
 
             var seenAfterRemoval = await LoadAsync(dbContext, TwoRowCsvWithBravoRemoved);
+
             await SanctionEntryFileImporter.ReconcileRemovedAsync(repository, sourceId, seenAfterRemoval,
                 DatabaseFixture.Prefix, TestLog.NoOp);
 
@@ -165,7 +170,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task ReconcileRemovedAsyncWithEmptyHashesDoesNotWipeOutTheWholeSourceAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
             await LoadAsync(dbContext, ThreeRowCsv);
 
             var removed = await SanctionEntryFileImporter.ReconcileRemovedAsync(repository, sourceId,
@@ -180,7 +185,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task ReconcileRemovedAsyncWithEmptyHashesLogsAtWarnNotInfoAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
             await LoadAsync(dbContext, ThreeRowCsv);
             var log = new TestLog();
 
@@ -195,6 +200,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task ReconcileRemovedAsyncNeverTouchesRowsBelongingToAnotherSourceAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var otherSourceId = await dbContext.InsertWithInt32IdentityAsync(new SanctionEntrySource
             {
                 Name = $"{DatabaseFixture.Prefix}SanctionSourceReconOther{Guid.NewGuid():N}"[..40],
@@ -206,7 +212,8 @@ namespace Jube.Test.Engine.Sanctions
 
             try
             {
-                var repository = new SanctionsEntryRepository(dbContext);
+                var repository = new SanctionEntryRepository(dbContext);
+
                 await repository.UpsertAsync(new SanctionEntry
                 {
                     SanctionEntrySourceId = otherSourceId,
@@ -237,7 +244,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task WhenEveryRowInASourceIsGenuinelyGoneReconcileRemovedAsyncSoftDeletesAllOfThemAsync()
         {
             await using var dbContext = fx.GetDbContext();
-            var repository = new SanctionsEntryRepository(dbContext);
+            var repository = new SanctionEntryRepository(dbContext);
             await LoadAsync(dbContext, ThreeRowCsv);
 
             var removed = await SanctionEntryFileImporter.ReconcileRemovedAsync(repository, sourceId,

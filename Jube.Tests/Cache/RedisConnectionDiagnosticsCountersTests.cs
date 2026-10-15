@@ -13,6 +13,7 @@
 
 using FluentAssertions;
 using Jube.Cache;
+using Jube.Cache.Models;
 using Xunit;
 
 namespace Jube.Test.Cache

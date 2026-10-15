@@ -22,11 +22,23 @@ namespace Jube.Resources
         public const string NameMaxLength = nameof(NameMaxLength);
         public const string NameAlreadyExists = nameof(NameAlreadyExists);
         public const string AnomalyProbabilityRange = nameof(AnomalyProbabilityRange);
+        public const string BaseRateRange = nameof(BaseRateRange);
+        public const string AnomalyContaminationRange = nameof(AnomalyContaminationRange);
+        public const string AnomalyAlgorithmInvalid = nameof(AnomalyAlgorithmInvalid);
+        public const string AnomalyParametersInvalid = nameof(AnomalyParametersInvalid);
         public const string FilterJsonRequired = nameof(FilterJsonRequired);
         public const string FilterSqlRequired = nameof(FilterSqlRequired);
         public const string FilterTokensRequired = nameof(FilterTokensRequired);
         public const string FilterJsonInvalid = nameof(FilterJsonInvalid);
+        public const string CategoricalOptionsInvalid = nameof(CategoricalOptionsInvalid);
         public const string FilterSqlInvalid = nameof(FilterSqlInvalid);
         public const string FilterTokensInvalid = nameof(FilterTokensInvalid);
+        public const string DataSourceInvalid = nameof(DataSourceInvalid);
+        public const string CalibrationMethodInvalid = nameof(CalibrationMethodInvalid);
+        public const string DatasetRequired = nameof(DatasetRequired);
+        public const string DatasetAmbiguous = nameof(DatasetAmbiguous);
+        public const string DatasetNotFound = nameof(DatasetNotFound);
+        public const string DatasetNotPermitted = nameof(DatasetNotPermitted);
+        public const string DatasetFilterRequired = nameof(DatasetFilterRequired);
     }
 }

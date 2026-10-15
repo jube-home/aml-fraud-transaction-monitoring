@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static double RoundToCurrency(this double @this, string? currencyCode)
         {
             var exponent = currencyCode.CurrencyMinorUnitExponent();
+
             if (exponent < 0 || !double.IsFinite(@this) || Math.Abs(@this) >= 1e20)
             {
                 return double.NaN;

@@ -13,7 +13,7 @@
 
 using Jube.Cache.Observability;
 using Jube.Cache.Redis.Interfaces;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 using StackExchange.Redis;
 
@@ -32,6 +32,7 @@ namespace Jube.Cache.Redis
                 {
                     var redisKey = $"Wal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{node}";
                     var redisHSetKey = $"{entityAnalysisModelInstanceEntryGuid:N}";
+
                     await resilientRedisResilientRedisDatabase.HashSetAsync(redisKey, redisHSetKey, bytes)
                         .ConfigureAwait(false);
                 }
@@ -50,6 +51,7 @@ namespace Jube.Cache.Redis
                 try
                 {
                     var redisKey = $"Wal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{node}";
+
                     await resilientRedisResilientRedisDatabase.HashDeleteAsync(redisKey,
                         entityAnalysisModelInstanceEntryGuids.Select(x => (RedisValue)x.ToString("N"))
                             .ToArray()).ConfigureAwait(false);
@@ -66,6 +68,7 @@ namespace Jube.Cache.Redis
             return CacheDiagnostics.RecordAsync("CacheWalRepository.GetWalSizeAsync", () =>
             {
                 var redisKey = $"Wal:{tenantRegistryId}:{entityAnalysisModelGuid:N}:{node}";
+
                 return resilientRedisResilientRedisDatabase.HashLengthAsync(redisKey);
             });
         }

@@ -27,26 +27,6 @@ namespace Jube.Data.Repository
 
     public class ArchiveRepository(DbContext dbContext)
     {
-        public Task<int?> GetTenantRegistryIdByEntityAnalysisModelInstanceEntryGuidAsync(
-            Guid entityAnalysisModelInstanceEntryGuid,
-            CancellationToken token = default)
-        {
-            return dbContext.Archive
-                .Where(w => w.EntityAnalysisModelInstanceEntryGuid == entityAnalysisModelInstanceEntryGuid)
-                .Select(s => s.EntityAnalysisModel.TenantRegistryId)
-                .FirstOrDefaultAsync(token);
-        }
-
-        public Task<Archive> GetByEntityAnalysisModelInstanceEntryGuidAsync(
-            Guid entityAnalysisModelInstanceEntryGuid, int entityAnalysisModelId, int tenantRegistryId,
-            CancellationToken token = default)
-        {
-            return dbContext.Archive.FirstOrDefaultAsync(w =>
-                w.EntityAnalysisModelInstanceEntryGuid == entityAnalysisModelInstanceEntryGuid
-                && w.EntityAnalysisModelId == entityAnalysisModelId
-                && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId, token);
-        }
-
         public async Task<Archive> UpdateTagsByEntityAnalysisModelInstanceEntryGuidAsync(
             Guid entityAnalysisModelInstanceEntryGuid,
             string[] tags,
@@ -149,14 +129,6 @@ namespace Jube.Data.Repository
                 new DataParameter("instances",
                     models.Select(m => m.EntityAnalysisModelsReprocessingRuleInstanceId).ToArray()),
                 new DataParameter("now", DateTime.UtcNow, DataType.DateTime2)).ConfigureAwait(false);
-        }
-
-        public async Task<long> GetCountsByReferenceDateAsync(Guid entityAnalysisModelGuid, DateTime referenceDate,
-            CancellationToken token = default)
-        {
-            return await dbContext.Archive
-                .CountAsync(w => w.EntityAnalysisModel.Guid == entityAnalysisModelGuid
-                                 && w.ReferenceDate >= referenceDate, token).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<string>> GetJsonByEntityAnalysisModelIdRandomLimitAsync(int entityAnalysisModelId,

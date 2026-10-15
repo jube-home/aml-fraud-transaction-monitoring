@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,10 +14,13 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.CaseNote;
+using Jube.Dto.Validation;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseNote;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -26,26 +29,23 @@ using Jube.Validations.Repository.CaseNote;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = global::Jube.Case.Notification;
-using EngineSendHttpEndpoint = global::Jube.Case.SendHttpEndpoint;
+using EngineNotification = Jube.Case.Notification;
+using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 using RulePoco = Jube.Data.Poco.CaseNote;
 using RuleRepository = Jube.Data.Repository.CaseNoteRepository;
 
 namespace Jube.Service.Repository.CaseNote
 {
-    using EntryPayload = Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
-        .EntityAnalysisModelInstanceEntryPayload;
+    using EntryPayload = EntityAnalysisModelInstanceEntryPayload;
     using EntryPayloadExtensions =
-        Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
-        .Extensions.EntityAnalysisModelInstanceEntryPayloadExtensions;
+        EntityAnalysisModelInstanceEntryPayloadExtensions;
 
     public sealed class CaseNoteService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
-        private readonly RuleRepository repository;
         private readonly CaseRepository caseRepository;
         private readonly CaseWorkflowActionRepository caseWorkflowActionRepository;
         private readonly CaseWorkflowStatusRepository caseWorkflowStatusRepository;
@@ -53,6 +53,7 @@ namespace Jube.Service.Repository.CaseNote
         private readonly EngineJsonSerializationHelper jsonSerializationHelper;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -79,6 +80,8 @@ namespace Jube.Service.Repository.CaseNote
             caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
             validator = new CaseNoteDtoValidator(strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseNoteService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -135,6 +138,7 @@ namespace Jube.Service.Repository.CaseNote
         {
             using var op = OperationScope.Start("CaseNote", "Insert", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseNote.Insert: entry user={userName}");
@@ -146,6 +150,7 @@ namespace Jube.Service.Repository.CaseNote
                 EnsurePermitted("CaseNote.Insert");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -159,6 +164,7 @@ namespace Jube.Service.Repository.CaseNote
 
                 var existingCase = await caseRepository.GetByIdActiveOnlyAsync(model.CaseId, token)
                     .ConfigureAwait(false);
+
                 if (existingCase is null)
                 {
                     if (log.IsWarnEnabled)
@@ -171,6 +177,7 @@ namespace Jube.Service.Repository.CaseNote
 
                 var caseWorkflowAction = await caseWorkflowActionRepository
                     .GetByIdActiveOnlyAsync(model.ActionId, token).ConfigureAwait(false);
+
                 if (caseWorkflowAction is null)
                 {
                     if (log.IsWarnEnabled)
@@ -183,6 +190,7 @@ namespace Jube.Service.Repository.CaseNote
 
                 var caseWorkflowStatus = await caseWorkflowStatusRepository
                     .GetByGuidAsync(existingCase.CaseWorkflowStatusGuid, token).ConfigureAwait(false);
+
                 if (caseWorkflowStatus is null)
                 {
                     if (log.IsWarnEnabled)
@@ -297,6 +305,7 @@ namespace Jube.Service.Repository.CaseNote
         {
             using var op = OperationScope.Start("CaseNote", "Validate", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseNote.Validate: entry id={model?.Id} user={userName}");
@@ -309,6 +318,7 @@ namespace Jube.Service.Repository.CaseNote
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -340,6 +350,7 @@ namespace Jube.Service.Repository.CaseNote
         {
             using var op = OperationScope.Start("CaseNote", "GetByCaseKeyValue", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseNote.GetByCaseKeyValue: entry key={key} value={value} user={userName}");
@@ -348,8 +359,10 @@ namespace Jube.Service.Repository.CaseNote
             try
             {
                 EnsurePermitted("CaseNote.GetByCaseKeyValue");
+
                 var dtos = CaseNoteMapper.ToDto(
                     await repository.GetByCaseKeyValueAsync(key, value, token).ConfigureAwait(false));
+
                 foreach (var dto in dtos)
                 {
                     dto.Note = HtmlSanitiser.Sanitise(dto.Note);
@@ -378,8 +391,10 @@ namespace Jube.Service.Repository.CaseNote
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseNote.GetByCaseKeyValue: unexpected failure key={key} value={value} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -388,19 +403,21 @@ namespace Jube.Service.Repository.CaseNote
             Data.Poco.CaseWorkflowStatus caseWorkflowStatus, Data.Poco.CaseWorkflowAction caseWorkflowAction,
             EntryPayload payload)
         {
-            var jObject = Newtonsoft.Json.Linq.JObject.FromObject(caseNote,
+            var jObject = JObject.FromObject(caseNote,
                 jsonSerializationHelper.ArchiveJsonSerializer);
+
             jObject["caseWorkflowActionName"] = caseWorkflowAction.Name;
 
-            var caseJObject = Newtonsoft.Json.Linq.JObject.FromObject(existingCase,
+            var caseJObject = JObject.FromObject(existingCase,
                 jsonSerializationHelper.ArchiveJsonSerializer);
             caseJObject.Remove("json");
             jObject["case"] = caseJObject;
 
             caseJObject["caseWorkflowStatus"] = caseWorkflowStatus.Name;
 
-            var payloadJObject = Newtonsoft.Json.Linq.JObject.FromObject(payload,
+            var payloadJObject = JObject.FromObject(payload,
                 jsonSerializationHelper.ArchiveJsonSerializer);
+
             caseJObject["payload"] = payloadJObject;
 
             return jObject.ToString();

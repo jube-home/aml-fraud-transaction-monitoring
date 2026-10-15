@@ -13,7 +13,7 @@
 
 using Jube.Cache.Observability;
 using Jube.Cache.Redis.Interfaces;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 
 namespace Jube.Cache.Redis

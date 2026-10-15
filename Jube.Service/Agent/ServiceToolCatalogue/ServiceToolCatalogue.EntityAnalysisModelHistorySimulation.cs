@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,21 +11,28 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisModelHistorySimulation;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddEntityAnalysisModelHistorySimulation(List<ServiceToolDescriptor> tools) =>
+        static partial void AddEntityAnalysisModelHistorySimulation(List<ServiceToolDescriptor> tools)
+        {
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
-                    "EntityAnalysisModelHistorySimulationAbstractionAggregation", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Works out an abstraction rule's value for a transaction from cached history, as the engine does."),
+                    "EntityAnalysisModelHistorySimulationAbstractionAggregation", OperationKind.Read, true,
+                    false,
+                    "Works out an abstraction rule's value for a transaction from cached history, as the engine does.",
+                    EntityAnalysisModelHistorySimulationService.RequiredPermissions),
                 new ServiceToolDescriptor(
-                    "EntityAnalysisModelHistorySimulationTtlCounterValue", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Reads a TTL counter's value for a transaction from the cache, as the engine does; increments nothing.")
+                    "EntityAnalysisModelHistorySimulationTtlCounterValue", OperationKind.Read, true,
+                    false,
+                    "Reads a TTL counter's value for a transaction from the cache, as the engine does; increments nothing.",
+                    EntityAnalysisModelHistorySimulationService.RequiredPermissions)
             ]);
+        }
     }
 }

@@ -19,6 +19,7 @@ using Jube.Data.Poco;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -71,12 +72,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 try
                 {
                     object output = null;
+
                     var timed = TaskHelper.MeasureTimeAndMemoryAllocated(TaskType.InlineFunction, () =>
                     {
                         output = ReflectRuleHelper.Execute(inlineFunction, context.Snapshot,
                             context.EntityAnalysisModelInstanceEntryPayload,
                             context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log);
                     });
+
                     items[inlineFunction.Name] = new TaskPerformance(timed.ComputeTime, timed.ThreadMemory);
 
                     context.TraceLog(
@@ -111,7 +114,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             if (inlineFunction.ReturnDataTypeId == 1 && writtenToPayload)
             {
-                context.EntityAnalysisModel.ResolveDictionaryValueForField(context.Snapshot, 
+                context.EntityAnalysisModel.ResolveDictionaryValueForField(context.Snapshot,
                     context.EntityAnalysisModelInstanceEntryPayload, context.Log, inlineFunction.Name);
             }
 

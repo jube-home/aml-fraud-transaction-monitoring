@@ -52,7 +52,6 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceL
         private readonly List<int> createdPromotedIds = [];
         private readonly List<int> createdSearchInstanceIds = [];
         private readonly List<int> createdTrialInstanceIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -75,6 +74,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceL
             {
                 await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
                     .Where(w => w.ExhaustiveSearchInstanceId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id).DeleteAsync();
             }
 
@@ -82,6 +82,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceL
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -98,6 +99,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceL
         private async Task<int> CreateSearchInstanceAsync(DbContext dbContext, string createdUser)
         {
             var modelRepository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var model = await modelRepository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -109,6 +111,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceL
             createdModelIds.Add(model.Id);
 
             var searchInstanceRepository = new ExhaustiveSearchInstanceRepository(dbContext, createdUser);
+
             var searchInstance = await searchInstanceRepository.InsertAsync(new Data.Poco.ExhaustiveSearchInstance
             {
                 Name = $"{DatabaseFixture.Prefix}Search{Guid.NewGuid():N}"[..40],
@@ -120,6 +123,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceL
                 StatusId = 0
             }).ConfigureAwait(false);
             createdSearchInstanceIds.Add(searchInstance.Id);
+
             return searchInstance.Id;
         }
 
@@ -173,6 +177,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceL
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -181,6 +186,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceL
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }

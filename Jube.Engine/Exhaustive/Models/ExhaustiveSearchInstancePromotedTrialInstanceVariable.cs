@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Analytics;
+using Jube.Analytics.Categorical;
+
 namespace Jube.Engine.Exhaustive.Models
 {
     public class ExhaustiveSearchInstancePromotedTrialInstanceVariable
@@ -20,10 +23,14 @@ namespace Jube.Engine.Exhaustive.Models
         public double Mean { get; init; }
         public double Sd { get; init; }
         public byte NormalisationTypeId { get; init; }
+        public CategoricalFieldEncoder CategoricalEncoder { get; init; }
+        public int CategoricalIndicatorIndex { get; init; }
+        public bool IsCategorical => CategoricalEncoder != null;
+        public string CategoricalSourceName => CategoricalEncoder?.SourceName;
 
         public double ZScore(double value)
         {
-            return NormalisationTypeId == 2 ? (value - Mean) / Sd : value;
+            return NormalisationTypeId == 2 ? Standardisation.ZScore(value, Mean, Sd) : value;
         }
     }
 }

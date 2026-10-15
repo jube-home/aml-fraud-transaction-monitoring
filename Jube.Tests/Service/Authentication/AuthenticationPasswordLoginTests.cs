@@ -11,7 +11,6 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.Test.Infrastructure;
 using System;
 using System.Linq;
 using System.Threading;
@@ -19,6 +18,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Dto.Authentication;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Models;
+using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using Xunit;
@@ -256,6 +257,7 @@ public sealed class AuthenticationPasswordLoginTests(DatabaseFixture fx) : Authe
     public async Task UserNameMatchingIsExact_CaseAndWhitespaceSensitiveAsync(string variant)
     {
         var user = await AddUserAsync("CaseUser");
+
         var attempted = variant switch
         {
             "upper" => user.Name.ToUpperInvariant(),
@@ -279,6 +281,7 @@ public sealed class AuthenticationPasswordLoginTests(DatabaseFixture fx) : Authe
 
         (await LoginAsync(user.Name, user.Password.ToUpperInvariant())).Kind
             .Should().Be(AuthenticationOutcomeKind.Unauthorized);
+
         (await LoginAsync(user.Name, user.Password)).Kind.Should().Be(AuthenticationOutcomeKind.Ok);
     }
 
@@ -296,7 +299,6 @@ public sealed class AuthenticationPasswordLoginTests(DatabaseFixture fx) : Authe
 
     [Theory]
     [InlineData("abc")]
-    [InlineData("")]
     [InlineData("3.5")]
     [InlineData("99999999999")]
     public async Task UnparsablePasswordAttemptsSetting_MakesEveryLoginFail_EvenTheCorrectOneAsync(string setting)
@@ -310,11 +312,22 @@ public sealed class AuthenticationPasswordLoginTests(DatabaseFixture fx) : Authe
     }
 
     [Fact]
+    public async Task AnEmptyPasswordAttemptsSetting_IsUnsetAndFallsBackToTheDefault_SoTheCorrectLoginSucceedsAsync()
+    {
+        var user = await AddUserAsync("EmptyConfig");
+
+        var outcome = await LoginAsync(user.Name, user.Password, env: [("PasswordAttempts", "")]);
+
+        outcome.Kind.Should().Be(AuthenticationOutcomeKind.Ok);
+    }
+
+    [Fact]
     public async Task ThePasswordHashingKeyFromTheEnvironmentIsWhatVerifyReceivesAsync()
     {
         var user = await AddUserAsync("KeyFlow", storedHash: FastHashScheme.Stored(DefaultPassword, "other-key"));
 
         (await LoginAsync(user.Name, user.Password)).Kind.Should().Be(AuthenticationOutcomeKind.Unauthorized);
+
         (await LoginAsync(user.Name, user.Password, env: [("PasswordHashingKey", "other-key")])).Kind
             .Should().Be(AuthenticationOutcomeKind.Ok);
     }
@@ -351,6 +364,7 @@ public sealed class AuthenticationPasswordLoginTests(DatabaseFixture fx) : Authe
             "inactive" => await AddUserAsync("IpsFail", u => u.Active = 0),
             _ => await AddUserAsync("IpsFail")
         };
+
         var name = kind == "unknown" ? $"{Prefix}IpsGhost" : user.Name;
         await using var db = Fx.GetDbContext();
 
@@ -386,9 +400,12 @@ public sealed class AuthenticationPasswordLoginTests(DatabaseFixture fx) : Authe
 
         var lines = Audit.Entries.Select(e => e.Message).ToList();
         lines.Should().HaveCount(2);
+
         lines[0].Should().Contain("area=Authentication op=ByUserNamePassword actor=(anonymous)").And
             .Contain("outcome=ok");
+
         lines[1].Should().Contain("outcome=unauthorized");
+
         lines.Should().NotContain(l => l.Contains(user.Password) || l.Contains("wrong-password-marker")
                                                                  || l.Contains(user.Name));
     }
@@ -402,6 +419,7 @@ public sealed class AuthenticationPasswordLoginTests(DatabaseFixture fx) : Authe
             AuthenticationOutcomeKind.NotFound);
         AssertPlainOutcome(await LoginAsync(user.Name, user.Password, env: [NegotiateOn]),
             AuthenticationOutcomeKind.NotFound);
+
         (await HistoryAsync()).Should().BeEmpty();
     }
 }

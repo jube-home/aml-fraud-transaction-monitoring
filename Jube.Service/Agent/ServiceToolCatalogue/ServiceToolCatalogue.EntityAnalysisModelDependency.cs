@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,24 +11,33 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisModelDependency;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddEntityAnalysisModelDependency(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelDependencyDependents", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists every entity that uses an entity, directly or indirectly, and whether deleting it would be refused."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelDependencyDependencies", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists what an entity uses, resolved to the entities it names."),
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelDependencyIssues", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Finds dangling names, uses of inactive entities and unused entities in a model.")
-        ]);
+        static partial void AddEntityAnalysisModelDependency(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDependencyDependents", OperationKind.Read, true,
+                    false,
+                    "Lists every entity that uses an entity, directly or indirectly, and whether deleting it would be refused.",
+                    EntityAnalysisModelDependencyService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDependencyDependencies", OperationKind.Read, true,
+                    false,
+                    "Lists what an entity uses, resolved to the entities it names.",
+                    EntityAnalysisModelDependencyService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelDependencyIssues", OperationKind.Read, true,
+                    false,
+                    "Finds dangling names, uses of inactive entities and unused entities in a model.",
+                    EntityAnalysisModelDependencyService.RequiredPermissions)
+            ]);
+        }
     }
 }

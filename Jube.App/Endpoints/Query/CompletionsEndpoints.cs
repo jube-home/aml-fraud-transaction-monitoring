@@ -17,6 +17,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
+using Jube.Data.Poco;
 using Jube.Dto.Query.Completions;
 using Jube.Service.Exceptions.Query.Completions;
 using Jube.Service.Query.Completions;
@@ -87,6 +88,16 @@ namespace Jube.App.Endpoints.Query
                                 parseTypeId, t)))
                 .Produces<List<CompletionDto>>()
                 .WithName("CompletionsGetByEntityAnalysisModelIdParseTypeId");
+
+            group.MapGet("ByExhaustiveInstanceDataset",
+                    (DatasetKind kind, int id, HttpContext httpContext, ILog log,
+                            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+                            IStringLocalizerFactory localizers, IServiceChangeBus bus, CancellationToken token) =>
+                        RunAsync("ByExhaustiveInstanceDataset", false, httpContext, log, dynamicEnvironment,
+                            localizers, bus, token,
+                            (s, t) => s.GetByExhaustiveInstanceDatasetAsync(kind, id, t)))
+                .Produces<List<CompletionDto>>()
+                .WithName("CompletionsGetByExhaustiveInstanceDataset");
         }
 
         private static async Task<IResult> RunAsync(string route, bool keyNotFoundIsNoContent,
@@ -95,6 +106,7 @@ namespace Jube.App.Endpoints.Query
             Func<CompletionsService, CancellationToken, Task<List<CompletionDto>>> call)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/{route}: entry user={user}");
@@ -102,9 +114,11 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await CompletionsService.CreateAsync(dbContext, user, log, localizers, bus, token);
+
                 return TypedResults.Ok(await call(service, token));
             }
             catch (NotAuthenticatedException)
@@ -159,6 +173,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"GET {Base}/{route}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

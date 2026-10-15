@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
                 : new EntityAnalysisModelHttpAdaptationDto
                 {
                     Id = httpAdaptation.Id,
+                    Guid = httpAdaptation.Guid,
                     EntityAnalysisModelId = httpAdaptation.EntityAnalysisModelId.GetValueOrDefault(),
                     Name = httpAdaptation.Name,
                     Active = httpAdaptation.Active == 1,

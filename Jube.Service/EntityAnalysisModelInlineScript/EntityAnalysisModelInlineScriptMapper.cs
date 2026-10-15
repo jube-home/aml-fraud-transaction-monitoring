@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                 : new EntityAnalysisModelInlineScriptDto
                 {
                     Id = inlineScript.Id,
+                    Guid = inlineScript.Guid,
                     EntityAnalysisModelId = inlineScript.EntityAnalysisModelId.GetValueOrDefault(),
                     Name = inlineScript.Name,
                     Active = inlineScript.Active == 1,

@@ -18,7 +18,6 @@ namespace Jube.Data.Query
     public static class EngineInstanceLiveness
     {
         public const int ToleranceMinutes = 2;
-
         public const int RetentionMinutes = 60;
 
         public static DateTime CutoffFrom(DateTime now)

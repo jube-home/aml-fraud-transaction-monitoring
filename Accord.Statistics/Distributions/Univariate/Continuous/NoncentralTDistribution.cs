@@ -1,62 +1,76 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Math.Optimization;
+using Accord.Statistics.Distributions.Fitting;
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using Accord.Math;
-    using Accord.Math.Optimization;
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Noncentral t-distribution.
+    ///     Noncentral t-distribution.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   As with other noncentrality parameters, the noncentral t-distribution generalizes 
-    ///   a probability distribution – <see cref="TDistribution">Student's t-distribution</see>
-    ///   – using a noncentrality parameter. Whereas the central distribution describes how a
-    ///   test statistic is distributed when the difference tested is null, the noncentral 
-    ///   distribution also describes how <c>t</c> is distributed when the null is false. 
-    ///   This leads to its use in statistics, especially calculating statistical power. The
-    ///   noncentral t-distribution is also known as the singly noncentral t-distribution, and
-    ///   in addition to its primary use in statistical inference, is also used in robust 
-    ///   modeling for data.</para>
-    ///   
-    /// <para>    
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Noncentral_t-distribution">
-    ///       Wikipedia, The Free Encyclopedia. Noncentral t-distribution. Available on:
-    ///       http://en.wikipedia.org/wiki/Noncentral_t-distribution </a></description></item>
-    ///   </list></para>
+    ///     <para>
+    ///         As with other noncentrality parameters, the noncentral t-distribution generalizes
+    ///         a probability distribution – <see cref="TDistribution">Student's t-distribution</see>
+    ///         – using a noncentrality parameter. Whereas the central distribution describes how a
+    ///         test statistic is distributed when the difference tested is null, the noncentral
+    ///         distribution also describes how <c>t</c> is distributed when the null is false.
+    ///         This leads to its use in statistics, especially calculating statistical power. The
+    ///         noncentral t-distribution is also known as the singly noncentral t-distribution, and
+    ///         in addition to its primary use in statistical inference, is also used in robust
+    ///         modeling for data.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://en.wikipedia.org/wiki/Noncentral_t-distribution">
+    ///                         Wikipedia, The Free Encyclopedia. Noncentral t-distribution. Available on:
+    ///                         http://en.wikipedia.org/wiki/Noncentral_t-distribution
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <code>
+    ///     <code>
     ///   var distribution = new NoncentralTDistribution(
     ///         degreesOfFreedom: 4, noncentrality: 2.42);
-    ///
+    /// 
     ///   double mean = distribution.Mean;     // 3.0330202123035104
     ///   double median = distribution.Median; // 2.6034842414893795
     ///   double var = distribution.Variance;  // 4.5135883917583683
@@ -74,39 +88,18 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   string str = distribution.ToString(CultureInfo.InvariantCulture); // T(x; df = 4, μ = 2.42)
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="TDistribution"/>
-    /// <seealso cref="Accord.Statistics.Testing.TTest"/>
-    /// 
+    /// <seealso cref="TDistribution" />
+    /// <seealso cref="Testing.TTest" />
     [Serializable]
     public class NoncentralTDistribution : UnivariateContinuousDistribution, IFormattable
     {
-
-        private double v;
-        private double u;
-
         private double? mode;
 
         /// <summary>
-        ///   Gets the degrees of freedom (v) for the distribution.
+        ///     Initializes a new instance of the <see cref="TDistribution" /> class.
         /// </summary>
-        /// 
-        public double DegreesOfFreedom { get { return v; } }
-
-        /// <summary>
-        ///   Gets the noncentrality parameter μ (mu) for the distribution.
-        /// </summary>
-        /// 
-        public double Noncentrality { get { return u; } }
-
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="TDistribution"/> class.
-        /// </summary>
-        /// 
         /// <param name="degreesOfFreedom">The degrees of freedom v.</param>
         /// <param name="noncentrality">The noncentrality parameter μ (mu).</param>
-        /// 
         public NoncentralTDistribution([Positive] double degreesOfFreedom, [Real] double noncentrality)
         {
             if (degreesOfFreedom <= 0)
@@ -115,89 +108,97 @@ namespace Accord.Statistics.Distributions.Univariate
                     "The number of degrees of freedom must be positive.");
             }
 
-            this.v = degreesOfFreedom;
-            this.u = noncentrality;
+            DegreesOfFreedom = degreesOfFreedom;
+            Noncentrality = noncentrality;
         }
 
+        /// <summary>
+        ///     Gets the degrees of freedom (v) for the distribution.
+        /// </summary>
+        public double DegreesOfFreedom { get; }
 
         /// <summary>
-        ///   Gets the mean for this distribution.
+        ///     Gets the noncentrality parameter μ (mu) for the distribution.
         /// </summary>
-        /// 
+        public double Noncentrality { get; }
+
+        /// <summary>
+        ///     Gets the mean for this distribution.
+        /// </summary>
         /// <remarks>
-        ///   The noncentral t-distribution's mean is defined in terms of
-        ///   the <see cref="Gamma.Function(double)">Gamma function Γ(x)</see> as 
-        ///   <c>μ * sqrt(v/2) * Γ((v - 1) / 2) / Γ(v / 2) for v > 1</c>.
+        ///     The noncentral t-distribution's mean is defined in terms of
+        ///     the <see cref="Gamma.Function(double)">Gamma function Γ(x)</see> as
+        ///     <c>μ * sqrt(v/2) * Γ((v - 1) / 2) / Γ(v / 2) for v > 1</c>.
         /// </remarks>
-        /// 
         public override double Mean
         {
             get
             {
-                if (v > 1)
-                    return u * Math.Sqrt(v / 2.0) * (Gamma.Function((v - 1) / 2)) / Gamma.Function(v / 2);
-                return Double.NaN;
+                if (DegreesOfFreedom > 1)
+                {
+                    return Noncentrality * System.Math.Sqrt(DegreesOfFreedom / 2.0) *
+                        Gamma.Function((DegreesOfFreedom - 1) / 2) / Gamma.Function(DegreesOfFreedom / 2);
+                }
+
+                return double.NaN;
             }
-            set {} //Not Implemented.
+            set { } //Not Implemented.
         }
 
         /// <summary>
-        ///   Gets the variance for this distribution.
+        ///     Gets the variance for this distribution.
         /// </summary>
-        /// 
         /// <remarks>
-        ///   The noncentral t-distribution's variance is defined in terms of
-        ///   the <see cref="Gamma.Function(double)">Gamma function Γ(x)</see> as 
-        ///   <c>a - b * c²</c> in which
-        ///   <c>a = v*(1+μ²) / (v-2)</c>,
-        ///   <c>b = (u² * v) / 2</c> and
-        ///   <c>c = Γ((v - 1) / 2) / Γ(v / 2)</c> for <c>v > 2</c>.
+        ///     The noncentral t-distribution's variance is defined in terms of
+        ///     the <see cref="Gamma.Function(double)">Gamma function Γ(x)</see> as
+        ///     <c>a - b * c²</c> in which
+        ///     <c>a = v*(1+μ²) / (v-2)</c>,
+        ///     <c>b = (u² * v) / 2</c> and
+        ///     <c>c = Γ((v - 1) / 2) / Γ(v / 2)</c> for <c>v > 2</c>.
         /// </remarks>
-        /// 
         public override double Variance
         {
             get
             {
-                if (v > 2)
+                if (DegreesOfFreedom > 2)
                 {
-                    double a = (v * (1 + u * u)) / (v - 2);
-                    double b = (u * u * v) / 2;
-                    double c = Gamma.Function((v - 1) / 2) / Gamma.Function(v / 2);
+                    var a = DegreesOfFreedom * (1 + Noncentrality * Noncentrality) / (DegreesOfFreedom - 2);
+                    var b = Noncentrality * Noncentrality * DegreesOfFreedom / 2;
+                    var c = Gamma.Function((DegreesOfFreedom - 1) / 2) / Gamma.Function(DegreesOfFreedom / 2);
                     return a - b * c * c;
                 }
 
-                return Double.NaN;
+                return double.NaN;
             }
-            set {} //Not Implemented.
+            set { } //Not Implemented.
         }
 
         /// <summary>
-        ///   Gets the mode for this distribution.
+        ///     Gets the mode for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's mode value.
+        ///     The distribution's mode value.
         /// </value>
-        /// 
         public override double Mode
         {
             get
             {
                 if (mode == null)
                 {
-                    if (u == 0)
+                    if (Noncentrality == 0)
                     {
-                        double ratio = Gamma.Function((v + 2) / 2) / Gamma.Function((v + 3) / 3);
-                        mode = Math.Sqrt(2 / v) * ratio * u;
+                        var ratio = Gamma.Function((DegreesOfFreedom + 2) / 2) /
+                                    Gamma.Function((DegreesOfFreedom + 3) / 3);
+                        mode = System.Math.Sqrt(2 / DegreesOfFreedom) * ratio * Noncentrality;
                     }
-                    else if (Double.IsInfinity(u))
+                    else if (double.IsInfinity(Noncentrality))
                     {
-                        mode = Math.Sqrt(v / (v + 1)) * u;
+                        mode = System.Math.Sqrt(DegreesOfFreedom / (DegreesOfFreedom + 1)) * Noncentrality;
                     }
                     else
                     {
-                        double upper = Math.Sqrt((2 * v) / (2 * v + 5)) * u;
-                        double lower = Math.Sqrt(v / (v + 1)) * u;
+                        var upper = System.Math.Sqrt(2 * DegreesOfFreedom / (2 * DegreesOfFreedom + 5)) * Noncentrality;
+                        var lower = System.Math.Sqrt(DegreesOfFreedom / (DegreesOfFreedom + 1)) * Noncentrality;
 
                         if (upper > lower)
                         {
@@ -216,151 +217,131 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Not supported.
+        ///     Not supported.
         /// </summary>
-        /// 
         public override double Entropy
         {
-            get { throw new NotSupportedException(); }
-            set {} //Not Implemented.
+            get => throw new NotSupportedException();
+            set { } //Not Implemented.
         }
 
         /// <summary>
-        ///   Gets the support interval for this distribution.
+        ///     Gets the support interval for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   A <see cref="DoubleRange" /> containing
-        ///   the support interval for this distribution.
+        ///     A <see cref="DoubleRange" /> containing
+        ///     the support interval for this distribution.
         /// </value>
-        /// 
         public override DoubleRange Support
         {
-            get { return new DoubleRange(Double.NegativeInfinity, Double.PositiveInfinity); }
-            set {} //Not Implemented.
+            get => new(double.NegativeInfinity, double.PositiveInfinity);
+            set { } //Not Implemented.
         }
 
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
+        /// <returns>
+        ///     A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString(string format, IFormatProvider formatProvider)
+        {
+            return string.Format(formatProvider, "T(x; df = {0}, μ = {1})",
+                DegreesOfFreedom.ToString(format, formatProvider),
+                Noncentrality.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///     Gets the cumulative distribution function (cdf) for
+        ///     this distribution evaluated at point <c>x</c>.
+        /// </summary>
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <remarks>
-        ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
+        ///     The Cumulative Distribution Function (CDF) describes the cumulative
+        ///     probability that a given value or any value smaller than it will occur.
         /// </remarks>
-        /// 
         /// <example>
-        ///   See <see cref="NoncentralTDistribution"/>.
+        ///     See <see cref="NoncentralTDistribution" />.
         /// </example>
-        /// 
         protected internal override double InnerDistributionFunction(double x)
         {
             return distributionFunctionLowerTail(x, DegreesOfFreedom, Noncentrality);
         }
 
         /// <summary>
-        ///   Gets the probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Gets the probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
+        ///     The probability of <c>x</c> occurring
+        ///     in the current distribution.
         /// </returns>
-        /// 
         /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///     The Probability Density Function (PDF) describes the
+        ///     probability that a given value <c>x</c> will occur.
         /// </remarks>
-        /// 
         /// <example>
-        ///   See <see cref="NoncentralTDistribution"/>.
+        ///     See <see cref="NoncentralTDistribution" />.
         /// </example>
-        /// 
         protected internal override double InnerProbabilityDensityFunction(double x)
         {
-            double u = Noncentrality; // μ
-            double v = DegreesOfFreedom;
-            Func<double, double, double, double> F = distributionFunctionLowerTail;
+            var u = Noncentrality; // μ
+            var v = DegreesOfFreedom;
+            var F = distributionFunctionLowerTail;
 
             if (x != 0)
             {
-                double A = F(x * Math.Sqrt(1 + 2 / v), v + 2, u);
-                double B = F(x, v, u);
-                double C = v / x;
+                var A = F(x * System.Math.Sqrt(1 + 2 / v), v + 2, u);
+                var B = F(x, v, u);
+                var C = v / x;
                 return C * (A - B);
             }
             else
             {
-                double A = Gamma.Function((v + 1) / 2);
-                double B = Math.Sqrt(Math.PI * v) * Gamma.Function(v / 2);
-                double C = Math.Exp(-(u * u) / 2);
-                return (A / B) * C;
+                var A = Gamma.Function((v + 1) / 2);
+                var B = System.Math.Sqrt(System.Math.PI * v) * Gamma.Function(v / 2);
+                var C = System.Math.Exp(-(u * u) / 2);
+                return A / B * C;
             }
         }
 
-
         /// <summary>
-        ///  Not supported.
+        ///     Not supported.
         /// </summary>
-        /// 
-        public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
+        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
             throw new NotSupportedException();
         }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public override object Clone()
         {
             return new NoncentralTDistribution(DegreesOfFreedom, Noncentrality);
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
+        ///     Computes the cumulative probability at <c>t</c> of the
+        ///     non-central T-distribution with DF degrees of freedom
+        ///     and non-centrality parameter.
         /// </summary>
-        /// 
-        /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
-        /// </returns>
-        /// 
-        public override string ToString(string format, IFormatProvider formatProvider)
-        {
-            return String.Format(formatProvider, "T(x; df = {0}, μ = {1})",
-                DegreesOfFreedom.ToString(format, formatProvider),
-                Noncentrality.ToString(format, formatProvider));
-        }
-
-        /// <summary>
-        ///   Computes the cumulative probability at <c>t</c> of the
-        ///   non-central T-distribution with DF degrees of freedom 
-        ///   and non-centrality parameter.
-        /// </summary>
-        /// 
         /// <remarks>
-        ///   This function is based on the original work done by
-        ///   Russell Lent hand John Burkardt, shared under the
-        ///   LGPL license. Original FORTRAN code can be found at:
-        ///   http://people.sc.fsu.edu/~jburkardt/f77_src/asa243/asa243.html
+        ///     This function is based on the original work done by
+        ///     Russell Lent hand John Burkardt, shared under the
+        ///     LGPL license. Original FORTRAN code can be found at:
+        ///     http://people.sc.fsu.edu/~jburkardt/f77_src/asa243/asa243.html
         /// </remarks>
-        /// 
         private static double distributionFunctionLowerTail(double t, double df, double delta)
         {
-            double alnrpi = 0.57236494292470008707;
-            double errmax = 1.0E-10;
-            int itrmax = 100;
-            double r2pi = 0.79788456080286535588;
+            var alnrpi = 0.57236494292470008707;
+            var errmax = 1.0E-10;
+            var itrmax = 100;
+            var r2pi = 0.79788456080286535588;
 
             if (df <= 0.0)
             {
@@ -383,10 +364,13 @@ namespace Accord.Statistics.Distributions.Univariate
             }
 
             // Initialize twin series.
-            double en = 1.0;
-            double x = t * t / (t * t + df);
-            if (Double.IsNaN(x))
+            var en = 1.0;
+            var x = t * t / (t * t + df);
+            if (double.IsNaN(x))
+            {
                 x = 1;
+            }
+
             double value = 0;
 
             if (x <= 0.0)
@@ -395,22 +379,25 @@ namespace Accord.Statistics.Distributions.Univariate
                 value += Normal.Complemented(del);
 
                 if (negdel)
+                {
                     value = 1.0 - value;
+                }
+
                 return value;
             }
 
-            double lambda = del * del;
-            double p = 0.5 * Math.Exp(-0.5 * lambda);
-            double q = r2pi * p * del;
-            double s = 0.5 - p;
-            double a = 0.5;
-            double b = 0.5 * df;
-            double rxb = Math.Pow(1.0 - x, b);
-            double albeta = alnrpi + Gamma.Log(b) - Gamma.Log(a + b);
-            double xodd = Beta.Incomplete(a, b, x);
-            double godd = 2.0 * rxb * Math.Exp(a * Math.Log(x) - albeta);
-            double xeven = 1.0 - rxb;
-            double geven = b * x * rxb;
+            var lambda = del * del;
+            var p = 0.5 * System.Math.Exp(-0.5 * lambda);
+            var q = r2pi * p * del;
+            var s = 0.5 - p;
+            var a = 0.5;
+            var b = 0.5 * df;
+            var rxb = System.Math.Pow(1.0 - x, b);
+            var albeta = alnrpi + Gamma.Log(b) - Gamma.Log(a + b);
+            var xodd = Beta.Incomplete(a, b, x);
+            var godd = 2.0 * rxb * System.Math.Exp(a * System.Math.Log(x) - albeta);
+            var xeven = 1.0 - rxb;
+            var geven = b * x * rxb;
             value = p * xodd + q * xeven;
 
             // Repeat until convergence.
@@ -426,23 +413,28 @@ namespace Accord.Statistics.Distributions.Univariate
                 s = s - p;
                 en = en + 1.0;
                 value = value + p * xodd + q * xeven;
-                double errbd = 2.0 * s * (xodd - godd);
+                var errbd = 2.0 * s * (xodd - godd);
 
-                if (errbd <= errmax || Double.IsNaN(errbd))
+                if (errbd <= errmax || double.IsNaN(errbd))
+                {
                     break;
+                }
 
                 if (itrmax < en)
+                {
                     throw new ConvergenceException("Maximum number of iterations reached.");
+                }
             }
 
             // upper tail of normal cumulative function
             value = value + Normal.Complemented(del);
 
             if (negdel)
+            {
                 value = 1.0 - value;
+            }
 
             return value;
         }
-
     }
 }

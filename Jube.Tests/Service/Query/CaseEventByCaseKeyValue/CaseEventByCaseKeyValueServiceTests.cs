@@ -52,7 +52,6 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -61,19 +60,27 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
 
             await dbContext.GetTable<Data.Poco.CaseEvent>()
                 .Where(w => w.CaseId != null && createdCaseIds.Contains(w.CaseId.Value)).DeleteAsync();
+
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowStatusGuids = dbContext.CaseWorkflowStatus
                 .Where(s => createdCaseWorkflowStatusIds.Contains(s.Id)).Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 .Where(w => caseWorkflowStatusGuids.Contains(w.CaseWorkflowStatusGuid)).DeleteAsync();
+
             var caseWorkflowGuids = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -95,6 +102,7 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
             byte statusDeleted = 0)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, modelOwner);
+
             var model = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -106,6 +114,7 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
             createdModelIds.Add(model.Id);
 
             var workflowGuid = Guid.NewGuid();
+
             var workflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -120,6 +129,7 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
             createdCaseWorkflowIds.Add(workflowId);
 
             var statusGuid = Guid.NewGuid();
+
             var statusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -206,6 +216,7 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
             var key = NewKey();
             var value = Guid.NewGuid().ToString("N");
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, key, value, events);
+
             return (key, value, caseId);
         }
 
@@ -264,9 +275,11 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
             var user = fx.Seed.UserWithPermission;
             var created1 = DateTime.UtcNow.AddMinutes(-10);
             var created2 = DateTime.UtcNow.AddMinutes(-5);
+
             var seeded = await SeedVisibleCaseAsync(dbContext, user,
                 (8, "before-1", "after-1", "creator1", created1),
                 (5, "before-2", "after-2", "creator2", created2));
+
             var service = await BuildServiceAsync(dbContext, user);
 
             var result = await service.GetAsync(seeded.Key, seeded.Value);
@@ -345,10 +358,13 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
             await using var dbContext = fx.GetDbContext();
             var userA = fx.Seed.UserWithPermission;
             var userB = fx.Seed.UserTenantB;
+
             var (workflowGuid, statusGuid) =
                 await CreateWorkflowAsync(dbContext, userB, [userB, userA], [userB, userA]);
+
             var key = NewKey();
             var value = Guid.NewGuid().ToString("N");
+
             await CreateCaseAsync(dbContext, workflowGuid, statusGuid, key, value,
                 (5, null, null, userB, DateTime.UtcNow));
 
@@ -385,12 +401,16 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var user = fx.Seed.UserWithPermission;
+
             var (workflowGuid, statusGuid) = await CreateWorkflowAsync(dbContext, user,
                 [fx.Seed.UserWithoutPermission], [user]);
+
             var key = NewKey();
             var value = Guid.NewGuid().ToString("N");
+
             await CreateCaseAsync(dbContext, workflowGuid, statusGuid, key, value,
                 (5, null, null, user, DateTime.UtcNow));
+
             var service = await BuildServiceAsync(dbContext, user);
 
             (await service.GetAsync(key, value)).Should().BeEmpty();
@@ -401,12 +421,16 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var user = fx.Seed.UserWithPermission;
+
             var (workflowGuid, statusGuid) = await CreateWorkflowAsync(dbContext, user, [user],
                 [fx.Seed.UserWithoutPermission]);
+
             var key = NewKey();
             var value = Guid.NewGuid().ToString("N");
+
             await CreateCaseAsync(dbContext, workflowGuid, statusGuid, key, value,
                 (5, null, null, user, DateTime.UtcNow));
+
             var service = await BuildServiceAsync(dbContext, user);
 
             (await service.GetAsync(key, value)).Should().BeEmpty();
@@ -417,12 +441,16 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var user = fx.Seed.UserWithPermission;
+
             var (workflowGuid, statusGuid) = await CreateWorkflowAsync(dbContext, user, [user], [user],
                 workflowDeleted: 1);
+
             var key = NewKey();
             var value = Guid.NewGuid().ToString("N");
+
             await CreateCaseAsync(dbContext, workflowGuid, statusGuid, key, value,
                 (5, null, null, user, DateTime.UtcNow));
+
             var service = await BuildServiceAsync(dbContext, user);
 
             (await service.GetAsync(key, value)).Should().BeEmpty();
@@ -433,12 +461,16 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var user = fx.Seed.UserWithPermission;
+
             var (workflowGuid, statusGuid) = await CreateWorkflowAsync(dbContext, user, [user], [user],
                 statusDeleted: 1);
+
             var key = NewKey();
             var value = Guid.NewGuid().ToString("N");
+
             await CreateCaseAsync(dbContext, workflowGuid, statusGuid, key, value,
                 (5, null, null, user, DateTime.UtcNow));
+
             var service = await BuildServiceAsync(dbContext, user);
 
             (await service.GetAsync(key, value)).Should().BeEmpty();
@@ -520,6 +552,7 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
         {
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
             var forbiddenService = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,
@@ -545,6 +578,7 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

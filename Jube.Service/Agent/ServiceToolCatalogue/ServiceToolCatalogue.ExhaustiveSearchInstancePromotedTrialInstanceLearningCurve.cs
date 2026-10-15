@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
         static partial void AddExhaustiveSearchInstancePromotedTrialInstanceLearningCurve(
-            List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveGet", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Returns the score-over-time learning curve of an exhaustive search instance's promoted trial instances.")
-        ]);
+            List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveGet", OperationKind.Read, true,
+                    false,
+                    "Returns the score-over-time learning curve of an exhaustive search instance's promoted trial instances.",
+                    ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveService.RequiredPermissions)
+            ]);
+        }
     }
 }

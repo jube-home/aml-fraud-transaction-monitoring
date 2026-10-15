@@ -57,6 +57,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByCurrent: entry user={user}");
@@ -64,10 +65,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelSynchronisationScheduleService.CreateAsync(dbContext, user,
                     log, stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.GetCurrentAsync(token));
             }
             catch (NotAuthenticatedException)
@@ -100,6 +103,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByCurrent: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -110,6 +114,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -117,10 +122,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelSynchronisationScheduleService.CreateAsync(dbContext, user,
                     log, stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.InsertAsync(model, token));
             }
             catch (NotAuthenticatedException)
@@ -162,6 +169,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

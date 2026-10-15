@@ -1,0 +1,440 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     style="--jc-s10:#336699;--jc-o10:#ffffff" role="img" aria-labelledby="many-series-t many-series-d">
+    <title id="many-series-t">Twelve series</title>
+    <desc id="many-series-d">Line chart with 12 series: s1, s2, s3, s4, s5, s6 and 6 more. Y values range from 1 to
+        13.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Twelve series</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="31.2" height="18"/>
+        <rect class="sw" x="16" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="34" y="57">s1</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="63.2" y="44" width="31.2" height="18"/>
+        <rect class="sw" x="65.2" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="83.2" y="57">s2</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="112.4" y="44" width="31.2" height="18"/>
+        <rect class="sw" x="114.4" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="132.4" y="57">s3</text>
+    </g>
+    <g class="lg s3">
+        <rect class="hit" x="161.6" y="44" width="31.2" height="18"/>
+        <rect class="sw" x="163.6" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="181.6" y="57">s4</text>
+    </g>
+    <g class="lg s4">
+        <rect class="hit" x="210.8" y="44" width="31.2" height="18"/>
+        <rect class="sw" x="212.8" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="230.8" y="57">s5</text>
+    </g>
+    <g class="lg s5">
+        <rect class="hit" x="260" y="44" width="31.2" height="18"/>
+        <rect class="sw" x="262" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="280" y="57">s6</text>
+    </g>
+    <g class="lg s6">
+        <rect class="hit" x="309.2" y="44" width="31.2" height="18"/>
+        <rect class="sw" x="311.2" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="329.2" y="57">s7</text>
+    </g>
+    <g class="lg s7">
+        <rect class="hit" x="358.4" y="44" width="31.2" height="18"/>
+        <rect class="sw" x="360.4" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="378.4" y="57">s8</text>
+    </g>
+    <g class="lg s8">
+        <rect class="hit" x="407.6" y="44" width="31.2" height="18"/>
+        <rect class="sw" x="409.6" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="427.6" y="57">s9</text>
+    </g>
+    <g class="lg s9">
+        <rect class="hit" x="456.8" y="44" width="37.92" height="18"/>
+        <rect class="sw" x="458.8" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="476.8" y="57">s10</text>
+    </g>
+    <g class="lg s10">
+        <rect class="hit" x="512.72" y="44" width="37.92" height="18"/>
+        <rect class="sw" x="514.72" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="532.72" y="57">s11</text>
+    </g>
+    <g class="lg s11">
+        <rect class="hit" x="568.64" y="44" width="37.92" height="18"/>
+        <rect class="sw" x="570.64" y="51" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="588.64" y="57">s12</text>
+    </g>
+    <line class="gl" x1="36.32" y1="364" x2="624" y2="364"/>
+    <text class="tk end mid" x="28.32" y="364">0</text>
+    <line class="gl" x1="36.32" y1="322.29" x2="624" y2="322.29"/>
+    <text class="tk end mid" x="28.32" y="322.29">2</text>
+    <line class="gl" x1="36.32" y1="280.57" x2="624" y2="280.57"/>
+    <text class="tk end mid" x="28.32" y="280.57">4</text>
+    <line class="gl" x1="36.32" y1="238.86" x2="624" y2="238.86"/>
+    <text class="tk end mid" x="28.32" y="238.86">6</text>
+    <line class="gl" x1="36.32" y1="197.14" x2="624" y2="197.14"/>
+    <text class="tk end mid" x="28.32" y="197.14">8</text>
+    <line class="gl" x1="36.32" y1="155.43" x2="624" y2="155.43"/>
+    <text class="tk end mid" x="28.32" y="155.43">10</text>
+    <line class="gl" x1="36.32" y1="113.71" x2="624" y2="113.71"/>
+    <text class="tk end mid" x="28.32" y="113.71">12</text>
+    <line class="gl" x1="36.32" y1="72" x2="624" y2="72"/>
+    <text class="tk end mid" x="28.32" y="72">14</text>
+    <text class="tk ctr" x="36.32" y="380">0</text>
+    <text class="tk ctr" x="153.86" y="380">0.2</text>
+    <text class="tk ctr" x="271.39" y="380">0.4</text>
+    <text class="tk ctr" x="388.93" y="380">0.6</text>
+    <text class="tk ctr" x="506.46" y="380">0.8</text>
+    <text class="tk ctr" x="624" y="380">1.0</text>
+    <line class="ax" x1="36.32" y1="364" x2="624" y2="364"/>
+    <g class="sr s0">
+        <path class="ln" d="M36.32 343.14L624 322.29">
+            <title>s1</title>
+        </path>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="s1, X: 0, Y: 1">
+            <title>s1, X: 0, Y: 1</title>
+            <circle class="hit" cx="36.32" cy="343.14" r="9"/>
+            <circle class="pt" cx="36.32" cy="343.14" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="268.64" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s0" x="46.32" y="277.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="286.64">s1</text>
+                <text class="tx" x="46.32" y="303.64">X: 0</text>
+                <text class="tx" x="46.32" y="320.64">Y: 1</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="s1, X: 1, Y: 2">
+            <title>s1, X: 1, Y: 2</title>
+            <circle class="hit" cx="624" cy="322.29" r="9"/>
+            <circle class="pt" cx="624" cy="322.29" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="576.01" y="247.79" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s0" x="586.01" y="256.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="600.01" y="265.79">s1</text>
+                <text class="tx" x="586.01" y="282.79">X: 1</text>
+                <text class="tx" x="586.01" y="299.79">Y: 2</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <path class="ln" d="M36.32 322.29L624 301.43">
+            <title>s2</title>
+        </path>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="s2, X: 0, Y: 2">
+            <title>s2, X: 0, Y: 2</title>
+            <circle class="hit" cx="36.32" cy="322.29" r="9"/>
+            <circle class="pt" cx="36.32" cy="322.29" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="247.79" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s1" x="46.32" y="256.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="265.79">s2</text>
+                <text class="tx" x="46.32" y="282.79">X: 0</text>
+                <text class="tx" x="46.32" y="299.79">Y: 2</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="s2, X: 1, Y: 3">
+            <title>s2, X: 1, Y: 3</title>
+            <circle class="hit" cx="624" cy="301.43" r="9"/>
+            <circle class="pt" cx="624" cy="301.43" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="576.01" y="226.93" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s1" x="586.01" y="235.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="600.01" y="244.93">s2</text>
+                <text class="tx" x="586.01" y="261.93">X: 1</text>
+                <text class="tx" x="586.01" y="278.93">Y: 3</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s2">
+        <path class="ln" d="M36.32 301.43L624 280.57">
+            <title>s3</title>
+        </path>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="s3, X: 0, Y: 3">
+            <title>s3, X: 0, Y: 3</title>
+            <circle class="hit" cx="36.32" cy="301.43" r="9"/>
+            <circle class="pt" cx="36.32" cy="301.43" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="226.93" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s2" x="46.32" y="235.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="244.93">s3</text>
+                <text class="tx" x="46.32" y="261.93">X: 0</text>
+                <text class="tx" x="46.32" y="278.93">Y: 3</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="s3, X: 1, Y: 4">
+            <title>s3, X: 1, Y: 4</title>
+            <circle class="hit" cx="624" cy="280.57" r="9"/>
+            <circle class="pt" cx="624" cy="280.57" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="576.01" y="206.07" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s2" x="586.01" y="215.07" width="9" height="9" rx="2"/>
+                <text class="tx b" x="600.01" y="224.07">s3</text>
+                <text class="tx" x="586.01" y="241.07">X: 1</text>
+                <text class="tx" x="586.01" y="258.07">Y: 4</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s3">
+        <path class="ln" d="M36.32 280.57L624 259.71">
+            <title>s4</title>
+        </path>
+        <g class="mk s3" tabindex="0" role="graphics-symbol" aria-label="s4, X: 0, Y: 4">
+            <title>s4, X: 0, Y: 4</title>
+            <circle class="hit" cx="36.32" cy="280.57" r="9"/>
+            <circle class="pt" cx="36.32" cy="280.57" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="206.07" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s3" x="46.32" y="215.07" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="224.07">s4</text>
+                <text class="tx" x="46.32" y="241.07">X: 0</text>
+                <text class="tx" x="46.32" y="258.07">Y: 4</text>
+            </g>
+        </g>
+        <g class="mk s3" tabindex="0" role="graphics-symbol" aria-label="s4, X: 1, Y: 5">
+            <title>s4, X: 1, Y: 5</title>
+            <circle class="hit" cx="624" cy="259.71" r="9"/>
+            <circle class="pt" cx="624" cy="259.71" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="576.01" y="185.21" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s3" x="586.01" y="194.21" width="9" height="9" rx="2"/>
+                <text class="tx b" x="600.01" y="203.21">s4</text>
+                <text class="tx" x="586.01" y="220.21">X: 1</text>
+                <text class="tx" x="586.01" y="237.21">Y: 5</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s4">
+        <path class="ln" d="M36.32 259.71L624 238.86">
+            <title>s5</title>
+        </path>
+        <g class="mk s4" tabindex="0" role="graphics-symbol" aria-label="s5, X: 0, Y: 5">
+            <title>s5, X: 0, Y: 5</title>
+            <circle class="hit" cx="36.32" cy="259.71" r="9"/>
+            <circle class="pt" cx="36.32" cy="259.71" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="185.21" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s4" x="46.32" y="194.21" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="203.21">s5</text>
+                <text class="tx" x="46.32" y="220.21">X: 0</text>
+                <text class="tx" x="46.32" y="237.21">Y: 5</text>
+            </g>
+        </g>
+        <g class="mk s4" tabindex="0" role="graphics-symbol" aria-label="s5, X: 1, Y: 6">
+            <title>s5, X: 1, Y: 6</title>
+            <circle class="hit" cx="624" cy="238.86" r="9"/>
+            <circle class="pt" cx="624" cy="238.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="576.01" y="164.36" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s4" x="586.01" y="173.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="600.01" y="182.36">s5</text>
+                <text class="tx" x="586.01" y="199.36">X: 1</text>
+                <text class="tx" x="586.01" y="216.36">Y: 6</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s5">
+        <path class="ln" d="M36.32 238.86L624 218">
+            <title>s6</title>
+        </path>
+        <g class="mk s5" tabindex="0" role="graphics-symbol" aria-label="s6, X: 0, Y: 6">
+            <title>s6, X: 0, Y: 6</title>
+            <circle class="hit" cx="36.32" cy="238.86" r="9"/>
+            <circle class="pt" cx="36.32" cy="238.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="164.36" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s5" x="46.32" y="173.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="182.36">s6</text>
+                <text class="tx" x="46.32" y="199.36">X: 0</text>
+                <text class="tx" x="46.32" y="216.36">Y: 6</text>
+            </g>
+        </g>
+        <g class="mk s5" tabindex="0" role="graphics-symbol" aria-label="s6, X: 1, Y: 7">
+            <title>s6, X: 1, Y: 7</title>
+            <circle class="hit" cx="624" cy="218" r="9"/>
+            <circle class="pt" cx="624" cy="218" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="576.01" y="143.5" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s5" x="586.01" y="152.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="600.01" y="161.5">s6</text>
+                <text class="tx" x="586.01" y="178.5">X: 1</text>
+                <text class="tx" x="586.01" y="195.5">Y: 7</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s6">
+        <path class="ln" d="M36.32 218L624 197.14">
+            <title>s7</title>
+        </path>
+        <g class="mk s6" tabindex="0" role="graphics-symbol" aria-label="s7, X: 0, Y: 7">
+            <title>s7, X: 0, Y: 7</title>
+            <circle class="hit" cx="36.32" cy="218" r="9"/>
+            <circle class="pt" cx="36.32" cy="218" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="143.5" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s6" x="46.32" y="152.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="161.5">s7</text>
+                <text class="tx" x="46.32" y="178.5">X: 0</text>
+                <text class="tx" x="46.32" y="195.5">Y: 7</text>
+            </g>
+        </g>
+        <g class="mk s6" tabindex="0" role="graphics-symbol" aria-label="s7, X: 1, Y: 8">
+            <title>s7, X: 1, Y: 8</title>
+            <circle class="hit" cx="624" cy="197.14" r="9"/>
+            <circle class="pt" cx="624" cy="197.14" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="576.01" y="122.64" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s6" x="586.01" y="131.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="600.01" y="140.64">s7</text>
+                <text class="tx" x="586.01" y="157.64">X: 1</text>
+                <text class="tx" x="586.01" y="174.64">Y: 8</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s7">
+        <path class="ln" d="M36.32 197.14L624 176.29">
+            <title>s8</title>
+        </path>
+        <g class="mk s7" tabindex="0" role="graphics-symbol" aria-label="s8, X: 0, Y: 8">
+            <title>s8, X: 0, Y: 8</title>
+            <circle class="hit" cx="36.32" cy="197.14" r="9"/>
+            <circle class="pt" cx="36.32" cy="197.14" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="122.64" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s7" x="46.32" y="131.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="140.64">s8</text>
+                <text class="tx" x="46.32" y="157.64">X: 0</text>
+                <text class="tx" x="46.32" y="174.64">Y: 8</text>
+            </g>
+        </g>
+        <g class="mk s7" tabindex="0" role="graphics-symbol" aria-label="s8, X: 1, Y: 9">
+            <title>s8, X: 1, Y: 9</title>
+            <circle class="hit" cx="624" cy="176.29" r="9"/>
+            <circle class="pt" cx="624" cy="176.29" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="576.01" y="101.79" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s7" x="586.01" y="110.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="600.01" y="119.79">s8</text>
+                <text class="tx" x="586.01" y="136.79">X: 1</text>
+                <text class="tx" x="586.01" y="153.79">Y: 9</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s8">
+        <path class="ln" d="M36.32 176.29L624 155.43">
+            <title>s9</title>
+        </path>
+        <g class="mk s8" tabindex="0" role="graphics-symbol" aria-label="s9, X: 0, Y: 9">
+            <title>s9, X: 0, Y: 9</title>
+            <circle class="hit" cx="36.32" cy="176.29" r="9"/>
+            <circle class="pt" cx="36.32" cy="176.29" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="101.79" width="47.99" height="61" rx="6"/>
+                <rect class="tsw s8" x="46.32" y="110.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="119.79">s9</text>
+                <text class="tx" x="46.32" y="136.79">X: 0</text>
+                <text class="tx" x="46.32" y="153.79">Y: 9</text>
+            </g>
+        </g>
+        <g class="mk s8" tabindex="0" role="graphics-symbol" aria-label="s9, X: 1, Y: 10">
+            <title>s9, X: 1, Y: 10</title>
+            <circle class="hit" cx="624" cy="155.43" r="9"/>
+            <circle class="pt" cx="624" cy="155.43" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="575.92" y="80.93" width="48.08" height="61" rx="6"/>
+                <rect class="tsw s8" x="585.92" y="89.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="599.92" y="98.93">s9</text>
+                <text class="tx" x="585.92" y="115.93">X: 1</text>
+                <text class="tx" x="585.92" y="132.93">Y: 10</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s9">
+        <path class="ln" d="M36.32 155.43L624 134.57">
+            <title>s10</title>
+        </path>
+        <g class="mk s9" tabindex="0" role="graphics-symbol" aria-label="s10, X: 0, Y: 10">
+            <title>s10, X: 0, Y: 10</title>
+            <circle class="hit" cx="36.32" cy="155.43" r="9"/>
+            <circle class="pt" cx="36.32" cy="155.43" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="80.93" width="55.12" height="61" rx="6"/>
+                <rect class="tsw s9" x="46.32" y="89.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="98.93">s10</text>
+                <text class="tx" x="46.32" y="115.93">X: 0</text>
+                <text class="tx" x="46.32" y="132.93">Y: 10</text>
+            </g>
+        </g>
+        <g class="mk s9" tabindex="0" role="graphics-symbol" aria-label="s10, X: 1, Y: 11">
+            <title>s10, X: 1, Y: 11</title>
+            <circle class="hit" cx="624" cy="134.57" r="9"/>
+            <circle class="pt" cx="624" cy="134.57" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="568.88" y="141.07" width="55.12" height="61" rx="6"/>
+                <rect class="tsw s9" x="578.88" y="150.07" width="9" height="9" rx="2"/>
+                <text class="tx b" x="592.88" y="159.07">s10</text>
+                <text class="tx" x="578.88" y="176.07">X: 1</text>
+                <text class="tx" x="578.88" y="193.07">Y: 11</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s10">
+        <path class="ln" d="M36.32 134.57L624 113.71">
+            <title>s11</title>
+        </path>
+        <g class="mk s10" tabindex="0" role="graphics-symbol" aria-label="s11, X: 0, Y: 11">
+            <title>s11, X: 0, Y: 11</title>
+            <circle class="hit" cx="36.32" cy="134.57" r="9"/>
+            <circle class="pt" cx="36.32" cy="134.57" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="141.07" width="55.12" height="61" rx="6"/>
+                <rect class="tsw s10" x="46.32" y="150.07" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="159.07">s11</text>
+                <text class="tx" x="46.32" y="176.07">X: 0</text>
+                <text class="tx" x="46.32" y="193.07">Y: 11</text>
+            </g>
+        </g>
+        <g class="mk s10" tabindex="0" role="graphics-symbol" aria-label="s11, X: 1, Y: 12">
+            <title>s11, X: 1, Y: 12</title>
+            <circle class="hit" cx="624" cy="113.71" r="9"/>
+            <circle class="pt" cx="624" cy="113.71" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="568.88" y="120.21" width="55.12" height="61" rx="6"/>
+                <rect class="tsw s10" x="578.88" y="129.21" width="9" height="9" rx="2"/>
+                <text class="tx b" x="592.88" y="138.21">s11</text>
+                <text class="tx" x="578.88" y="155.21">X: 1</text>
+                <text class="tx" x="578.88" y="172.21">Y: 12</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s11">
+        <path class="ln" d="M36.32 113.71L624 92.86">
+            <title>s12</title>
+        </path>
+        <g class="mk s11" tabindex="0" role="graphics-symbol" aria-label="s12, X: 0, Y: 12">
+            <title>s12, X: 0, Y: 12</title>
+            <circle class="hit" cx="36.32" cy="113.71" r="9"/>
+            <circle class="pt" cx="36.32" cy="113.71" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="36.32" y="120.21" width="55.12" height="61" rx="6"/>
+                <rect class="tsw s11" x="46.32" y="129.21" width="9" height="9" rx="2"/>
+                <text class="tx b" x="60.32" y="138.21">s12</text>
+                <text class="tx" x="46.32" y="155.21">X: 0</text>
+                <text class="tx" x="46.32" y="172.21">Y: 12</text>
+            </g>
+        </g>
+        <g class="mk s11" tabindex="0" role="graphics-symbol" aria-label="s12, X: 1, Y: 13">
+            <title>s12, X: 1, Y: 13</title>
+            <circle class="hit" cx="624" cy="92.86" r="9"/>
+            <circle class="pt" cx="624" cy="92.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="568.88" y="99.36" width="55.12" height="61" rx="6"/>
+                <rect class="tsw s11" x="578.88" y="108.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="592.88" y="117.36">s12</text>
+                <text class="tx" x="578.88" y="134.36">X: 1</text>
+                <text class="tx" x="578.88" y="151.36">Y: 13</text>
+            </g>
+        </g>
+    </g>
+</svg>

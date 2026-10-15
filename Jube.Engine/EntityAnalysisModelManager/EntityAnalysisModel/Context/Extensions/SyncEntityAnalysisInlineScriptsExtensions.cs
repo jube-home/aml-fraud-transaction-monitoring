@@ -51,6 +51,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     var inlineScript =
                         context.EntityAnalysisModels.EntityAnalysisModelInlineScripts.Find(x => x.Id == record.Id);
+
                     if (inlineScript == null)
                     {
                         inlineScript = new EntityAnalysisModelInlineScript();
@@ -198,6 +199,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                         context.EntityAnalysisModels.EntityAnalysisModelInlineScripts.Add(inlineScript);
                         context.Caching.HashCacheAssembly.TryAdd(inlineScriptHash, compile.CompiledAssembly);
+
                         context.Caching.HashCacheAssemblyMetadata.TryAdd(inlineScriptHash,
                             new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes, compile.CompiledAssemblyBinary,
                                 inlineScript.InlineScriptCode));

@@ -14,6 +14,7 @@
 using System.Linq;
 using FluentAssertions;
 using Jube.Parser;
+using Jube.Parser.Models;
 using Xunit;
 
 namespace Jube.Test.RuleParser
@@ -25,6 +26,7 @@ namespace Jube.Test.RuleParser
         public void EveryWordTheParserAllowsIsListedOnceExceptCompilerNames()
         {
             var words = RuleVocabulary.Build(["PadLeft"]).Select(w => w.Name.ToUpperInvariant()).ToList();
+
             var allowed = new Jube.Parser.Parser(null!, ["PadLeft"]).RuleScriptTokens
                 .Where(t => !t.Contains('<') && !t.Contains('$') && !t.StartsWith("get_") && !t.StartsWith("set_"))
                 .Select(t => t.ToUpperInvariant()).Distinct().ToList();
@@ -53,9 +55,11 @@ namespace Jube.Test.RuleParser
             var isMatch = RuleVocabulary.Build([]).Single(w => w.Name == "IsMatch");
 
             isMatch.Kind.Should().Be(RuleWordKind.Function);
+
             isMatch.Overloads.Should().Contain(o =>
                 o.Signature == "<String>.IsMatch(pattern As String) As Boolean" && o.ReceiverType == "String" &&
                 o.ReturnType == "Boolean" && o.Parameters.Count == 1);
+
             isMatch.Overloads.Should().HaveCountGreaterThan(1);
         }
 
@@ -65,6 +69,7 @@ namespace Jube.Test.RuleParser
             var functions = RuleVocabulary.Build([]).Where(w => w.Kind == RuleWordKind.Function).ToList();
 
             functions.Should().HaveCountGreaterThan(100);
+
             functions.SelectMany(f => f.Overloads).Should().OnlyContain(o =>
                 !string.IsNullOrEmpty(o.ReceiverType) && !string.IsNullOrEmpty(o.ReturnType) &&
                 o.Signature.StartsWith("<"));

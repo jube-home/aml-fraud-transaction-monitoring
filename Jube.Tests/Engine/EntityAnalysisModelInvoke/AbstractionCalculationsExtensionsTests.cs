@@ -82,6 +82,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void TheRuleDelegateReceivesEveryUpstreamSource()
         {
             var received = new Dictionary<string, object?>();
+
             var calculation = NewCalculation("FromRule", (data, ttl, abstraction, _, calculations, sanctions, kvp, _) =>
             {
                 received["Data"] = data;
@@ -90,8 +91,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 received["Calculation"] = calculations;
                 received["Sanctions"] = sanctions;
                 received["KVP"] = kvp;
+
                 return 1;
             });
+
             var context = NewContext(calculation);
             var payload = context.EntityAnalysisModelInstanceEntryPayload;
 
@@ -109,8 +112,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ALaterCalculationCanReadAnEarlierOneInTheSameInvocation()
         {
             var first = NewCalculation("First", (_, _, _, _, _, _, _, _) => 21, id: 1);
+
             var second = NewCalculation("Second", (_, _, _, _, calculations, _, _, _) => calculations["First"] * 2,
                 id: 2);
+
             var context = NewContext(first, second);
 
             context.ExecuteAbstractionCalculations();
@@ -122,16 +127,20 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void CalculationsRunInTheOrderTheyAreConfigured()
         {
             var order = new List<string>();
+
             var first = NewCalculation("First", (_, _, _, _, _, _, _, _) =>
             {
                 order.Add("First");
+
                 return 1;
             }, id: 1);
             var second = NewCalculation("Second", (_, _, _, _, _, _, _, _) =>
             {
                 order.Add("Second");
+
                 return 2;
             }, id: 2);
+
             var context = NewContext(first, second);
 
             context.ExecuteAbstractionCalculations();
@@ -190,14 +199,17 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var throwing = NewCalculation("Throws",
                 (_, _, _, _, _, _, _, _) => throw new InvalidOperationException("boom"),
                 id: 1);
+
             var second = NewCalculation("Second", (_, _, _, _, _, _, _, _) => 5, id: 2);
             var context = NewContext(throwing, second);
 
             var act = context.ExecuteAbstractionCalculations;
 
             act.Should().NotThrow();
+
             context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.ContainsKey("Throws").Should()
                 .BeFalse();
+
             context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Second"].Should().Be(5);
         }
 
@@ -211,8 +223,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var act = context.ExecuteAbstractionCalculations;
 
             act.Should().NotThrow();
+
             context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation.ContainsKey("NoScript").Should()
                 .BeFalse();
+
             context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Second"].Should().Be(5);
         }
 

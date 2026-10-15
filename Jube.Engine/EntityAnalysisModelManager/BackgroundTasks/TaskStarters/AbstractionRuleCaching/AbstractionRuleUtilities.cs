@@ -27,7 +27,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
 
     public static class AbstractionRuleUtilities
     {
-        public static bool IsSearchKeyReady(EntityAnalysisModel entityAnalysisModel, DistinctSearchKey distinctSearchKey, ILog log)
+        public static bool IsSearchKeyReady(EntityAnalysisModel entityAnalysisModel,
+            DistinctSearchKey distinctSearchKey, ILog log)
         {
             var ready = false;
 
@@ -47,7 +48,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                             $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} grouping key {distinctSearchKey.SearchKey} is a search key. A check will now be performed to understand when this abstraction rule key was last calculated.");
                     }
 
-                    if (entityAnalysisModel.Dependencies.LastAbstractionRuleCache.TryGetValue(distinctSearchKey.SearchKey, out var value))
+                    if (entityAnalysisModel.Dependencies.LastAbstractionRuleCache.TryGetValue(
+                            distinctSearchKey.SearchKey, out var value))
                     {
                         if (log.IsInfoEnabled)
                         {
@@ -150,13 +152,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             return groupingValues;
         }
 
-        public static double GetAggregateValue(EntityAnalysisModel entityAnalysisModel, DistinctSearchKey distinctSearchKey, string groupingValue,
+        public static double GetAggregateValue(EntityAnalysisModel entityAnalysisModel,
+            DistinctSearchKey distinctSearchKey, string groupingValue,
             ConcurrentDictionary<int, List<DictionaryNoBoxing<string>>> abstractionRuleMatches,
             KeyValuePair<int, List<DictionaryNoBoxing<string>>> abstractionRuleMatch,
             EntityAnalysisModelAbstractionRule abstractionRule,
             EntityAnalysisModelInstanceEntryPayload entityAnalysisModelInstanceEntryPayload)
         {
             var value = 0d;
+
             try
             {
                 var (key, _) = abstractionRuleMatch;

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.QueryBuilder.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,12 @@ using Jube.Data.Query.Models;
 using Jube.Data.QueryBuilder;
 using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
 using Jube.Engine.Helpers;
 using Jube.Parser;
+using Jube.Parser.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.RuleParser;
 using Newtonsoft.Json.Linq;
@@ -53,6 +57,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             environment.HttpAdaptations = [];
             environment.ExhaustiveAdaptations = [];
             environment.ActivationRules = [];
+
             return environment;
         }
 
@@ -67,8 +72,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             };
             payload.Payload.TryAdd("Amount", amount);
             payload.Payload.TryAdd("Country", "GB");
+
             var json = JObject.Parse(Encoding.UTF8.GetString(
                 BuildJsonResponses.BuildFullJson(payload, new JsonSerializationHelper().ArchiveJsonSerializer)));
+
             return new BacktestRow(Guid.NewGuid(), "TX" + index, payload.ReferenceDate, json, tags);
         }
 
@@ -99,7 +106,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
                 ["Tag.Fraud"] = new("Tag.Fraud", BuilderFieldType.Boolean),
                 ["Tag.Reviewed"] = new("Tag.Reviewed", BuilderFieldType.Boolean)
             };
+
             Func<IReadOnlyDictionary<string, object>, bool>? classPredicate = null;
+
             if (classJson != null)
             {
                 var parsed = BuilderProfile.Parse(classJson, fieldTypes);
@@ -116,7 +125,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
         {
             var parsed = RuleParse.Execute(text, type, Environment(), TestLog.NoOp, RuleParse.EngineReferences(type),
                 engineWrap: true, reprocessing: reprocessing);
+
             parsed.Compiled.Should().BeTrue(parsed.Message);
+
             return parsed;
         }
 
@@ -145,8 +156,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
 
             (result.Scanned, result.Evaluated, result.FilteredOut).Should().Be((6, 6, 0));
             (result.Fired, result.NotFired, result.Positives).Should().Be((2, 4, 3));
+
             (result.TruePositives, result.FalsePositives, result.FalseNegatives, result.TrueNegatives).Should()
                 .Be((2, 0, 1, 3));
+
             result.ClassDefined.Should().BeTrue();
             result.TruePositiveSamples.Select(s => s.EntryKeyValue).Should().Equal("TX0", "TX4");
             result.FalseNegativeSamples.Should().ContainSingle().Which.EntryKeyValue.Should().Be("TX2");
@@ -160,6 +173,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             const string classJson = "{\"condition\":\"OR\",\"rules\":[" +
                                      "{\"id\":\"Tag.Reviewed\",\"operator\":\"equal\",\"value\":\"True\"}," +
                                      "{\"id\":\"Payload.Amount\",\"operator\":\"greater\",\"value\":800}]}";
+
             var backtest = Backtest("If (Payload.Amount > 0) Then\n   Return True\nEnd If", classJson: classJson);
 
             await backtest.AddAsync(rows);
@@ -178,6 +192,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             await backtest.AddAsync(rows);
 
             (backtest.Result.Scanned, backtest.Result.FilteredOut, backtest.Result.Evaluated).Should().Be((6, 2, 4));
+
             (backtest.Result.TruePositives, backtest.Result.FalsePositives, backtest.Result.FalseNegatives,
                 backtest.Result.TrueNegatives).Should().Be((2, 1, 1, 0));
         }
@@ -193,6 +208,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             backtest.Result.Scanned.Should().Be(6);
             backtest.Result.Fired.Should().Be(3);
             backtest.Result.ClassDefined.Should().BeFalse();
+
             (backtest.Result.TruePositives + backtest.Result.FalsePositives + backtest.Result.FalseNegatives +
              backtest.Result.TrueNegatives).Should().Be(0);
         }
@@ -220,6 +236,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation
             backtest.Result.RuntimeErrors.Should().Be(2);
             backtest.Result.NotFired.Should().Be(2);
             (backtest.Result.FalseNegatives, backtest.Result.TrueNegatives).Should().Be((1, 1));
+
             backtest.Result.ErrorSamples.Should().HaveCount(2).And
                 .OnlyContain(s => s.Error.StartsWith("KeyNotFoundException"));
         }

@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+using Jube.Service.EntityApproval.Models;
+
 namespace Jube.Service.EntityApproval
 {
     using System;
@@ -19,11 +22,12 @@ namespace Jube.Service.EntityApproval
     using System.Threading;
     using System.Threading.Tasks;
     using Data.Context;
+    using Data.Extensions;
     using Data.Poco;
     using Data.Query;
     using Data.Query.GetEntityApprovalSubjectByEntityIdQuery;
-    using Data.Query.GetEntityApprovalSubjectsByKindQuery;
     using Data.Query.GetEntityApprovalSubjectsByKindAndParentQuery;
+    using Data.Query.GetEntityApprovalSubjectsByKindQuery;
     using Data.Query.GetEntityApprovalSubjectsByModelQuery;
     using Data.Query.Models;
     using Data.Repository;
@@ -37,10 +41,8 @@ namespace Jube.Service.EntityApproval
         public const int AllowApprovalPermission = 44;
         public const int ViewPendingApprovalsPermission = 45;
         private const int MaxNoteLength = 1000;
-
         private static readonly int[] approvePermissions = [AllowApprovalPermission];
         private static readonly int[] viewPermissions = [ViewPendingApprovalsPermission, AllowApprovalPermission];
-
         private readonly DbContext dbContext;
         private readonly int approvalsRequired;
         private readonly ILog log;
@@ -96,6 +98,7 @@ namespace Jube.Service.EntityApproval
 
             var rows = await repository.GetRowsByKindAndEntityIdsAsync(kind, [entityId], token)
                 .ConfigureAwait(false);
+
             var entityRows = rows.Where(r => r.EntityId == entityId).ToList();
 
             if (EntityApprovalResolver.IsRejected(entityRows, version))
@@ -141,6 +144,7 @@ namespace Jube.Service.EntityApproval
 
             var rows = await repository.GetRowsByKindAndEntityIdsAsync(kind, [entityId], token)
                 .ConfigureAwait(false);
+
             var entityRows = rows.Where(r => r.EntityId == entityId).ToList();
 
             if (EntityApprovalResolver.IsRejected(entityRows, version))
@@ -234,6 +238,7 @@ namespace Jube.Service.EntityApproval
 
             var subjects = await new GetEntityApprovalSubjectsByKindAndParentQuery(dbContext, tenantRegistryId)
                 .ExecuteAsync(valueKind, parentId, token).ConfigureAwait(false);
+
             var rows = await repository.GetRowsByKindAndEntityIdsAsync(valueKind,
                 subjects.Select(s => s.EntityId).Distinct().ToList(), token).ConfigureAwait(false);
 
@@ -251,13 +256,27 @@ namespace Jube.Service.EntityApproval
 
             var pending = EntityApprovalResolver.IsPending(entityRows, subject.Version, approvalsRequired);
             var rejected = EntityApprovalResolver.IsRejected(entityRows, subject.Version);
+
             var approvers = entityRows
                 .Where(r => r.EntityVersion == subject.Version && r.State == EntityApprovalState.Approved)
                 .Select(r => r.CreatedUser ?? string.Empty)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
+
             var alreadyApprovedByMe = approvers.Contains(userName, StringComparer.OrdinalIgnoreCase);
             var isMaker = string.Equals(subject.MakerUser, userName, StringComparison.OrdinalIgnoreCase);
+
+            var note = entityRows
+                .Where(r => r.EntityVersion == subject.Version)
+                .Select(r => r.Note)
+                .FirstOrDefault(n => !string.IsNullOrWhiteSpace(n));
+
+            var returnedNote = rejected
+                ? entityRows
+                    .Where(r => r.EntityVersion == subject.Version - 1)
+                    .Select(r => r.ReturnedNote)
+                    .FirstOrDefault(n => !string.IsNullOrWhiteSpace(n))
+                : null;
 
             return new EntityApprovalStatus(
                 kind,
@@ -272,7 +291,9 @@ namespace Jube.Service.EntityApproval
                 approvers.Count,
                 approvalsRequired,
                 pending && !rejected && (!isMaker || permissionValidation.Landlord) && !alreadyApprovedByMe
-                && permissionValidation.Validate(approvePermissions));
+                && permissionValidation.Validate(approvePermissions),
+                note,
+                returnedNote);
         }
 
         public Task<List<EntityApproval>> HistoryAsync(EntityApprovalKind kind, int entityId,
@@ -338,6 +359,7 @@ namespace Jube.Service.EntityApproval
 
             var children = await new GetEntityApprovalSubjectsByKindAndParentQuery(dbContext, tenantRegistryId)
                 .ExecuteAsync(valueKind, parentId, token).ConfigureAwait(false);
+
             var pending = await PendingOfAsync(children, token).ConfigureAwait(false);
 
             var approved = 0;
@@ -354,6 +376,7 @@ namespace Jube.Service.EntityApproval
                     {
                         await ApproveAsync(valueKind, value.EntityId, value.Version, null, token)
                             .ConfigureAwait(false);
+
                         approved++;
                     }
                     catch (ApprovalRefusedException ex)
@@ -380,6 +403,7 @@ namespace Jube.Service.EntityApproval
             foreach (var group in subjects.GroupBy(s => s.Kind))
             {
                 var ids = group.Select(s => s.EntityId).Distinct().ToList();
+
                 var rows = await repository.GetRowsByKindAndEntityIdsAsync(group.Key, ids, token)
                     .ConfigureAwait(false);
 
@@ -479,7 +503,9 @@ namespace Jube.Service.EntityApproval
             {
                 EntityApprovalKind.EntityAnalysisModelList => EntityApprovalKind.EntityAnalysisModelListValue,
                 EntityApprovalKind.EntityAnalysisModelDictionary => EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
-                _ => throw new ApprovalRefusedException("Only lists and dictionaries have values to approve.", [])
+                EntityApprovalKind.EntityAnalysisModel => EntityApprovalKind.AdvancedAnalyticsInstance,
+                _ => throw new ApprovalRefusedException(
+                    "Only lists, dictionaries and models have values to approve.", [])
             };
         }
 

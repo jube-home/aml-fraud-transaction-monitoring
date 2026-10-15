@@ -11,10 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using FluentAssertions;
 using Jube.Cache;
-using Jube.Data.Repository;
+using Jube.Cache.Models;
 using StackExchange.Redis;
 using Xunit;
 
@@ -66,6 +67,7 @@ namespace Jube.Test.Cache
             RedisConnectionEventCapture.TakeDroppedCount();
 
             const int maxQueueLength = 20000;
+
             for (var i = 0; i < maxQueueLength; i++)
             {
                 RedisConnectionEventCapture.Enqueue(NewRecord());

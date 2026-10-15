@@ -78,6 +78,7 @@ namespace Jube.Test.Validations
 
             result.IsValid.Should().BeFalse(
                 "a rule that may be muted is not thereby a rule that may be made to fire");
+
             result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelActivationRuleOverrideDto
                     .EntityAnalysisModelActivationRuleName));
@@ -156,6 +157,7 @@ namespace Jube.Test.Validations
                 EntityAnalysisModelOverrideKind.Suppress));
 
             first.IsValid.Should().BeTrue();
+
             second.IsValid.Should().BeTrue(
                 "an empty Override Key leaves the rule reachable from every override enabled key");
         }
@@ -187,6 +189,7 @@ namespace Jube.Test.Validations
         private async Task<(int Id, Guid Guid)> CreateModelAsync(DbContext dbContext)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission);
+
             var saved = await repository.InsertAsync(new EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -197,6 +200,7 @@ namespace Jube.Test.Validations
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return (saved.Id, saved.Guid);
         }
 
@@ -205,7 +209,9 @@ namespace Jube.Test.Validations
         {
             var repository = new EntityAnalysisModelActivationRuleRepository(dbContext,
                 fx.Seed.UserWithPermission);
+
             var ruleName = $"{DatabaseFixture.Prefix}Rule{Guid.NewGuid():N}"[..40];
+
             var saved = await repository.InsertAsync(new EntityAnalysisModelActivationRule
             {
                 EntityAnalysisModelId = entityAnalysisModelId,
@@ -219,6 +225,7 @@ namespace Jube.Test.Validations
             }).ConfigureAwait(false);
 
             createdActivationRuleIds.Add(saved.Id);
+
             return ruleName;
         }
     }

@@ -17,7 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         public static bool IsValidCurrencyCode(this string? @this)
         {
-            return IsoReferenceData.CurrencyExponents.ContainsKey((@this ?? "").Trim());
+            return IsoReferenceData.currencyExponents.ContainsKey((@this ?? "").Trim());
         }
     }
 }

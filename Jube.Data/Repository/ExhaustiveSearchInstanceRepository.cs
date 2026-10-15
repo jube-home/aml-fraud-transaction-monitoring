@@ -12,6 +12,7 @@
  */
 
 using Jube.Data.Query.GetApprovedEntityQuery;
+using Jube.Data.Repository.Models;
 
 namespace Jube.Data.Repository
 {
@@ -22,9 +23,11 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using AutoMapper;
     using Context;
+    using Extensions;
     using LinqToDB;
     using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
+    using Jube.Data.Helpers;
 
     public class ExhaustiveSearchInstanceRepository :
         VersionedApprovalRepository<ExhaustiveSearchInstance, ExhaustiveSearchInstanceVersion>
@@ -115,6 +118,13 @@ namespace Jube.Data.Repository
                 && w.Id == id, token);
         }
 
+        public Task<ExhaustiveSearchInstance> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.ExhaustiveSearchInstance.FirstOrDefaultAsync(w =>
+                (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                && w.Guid == guid && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<ExhaustiveSearchInstance> InsertAsync(ExhaustiveSearchInstance model,
             CancellationToken token = default)
         {
@@ -176,6 +186,38 @@ namespace Jube.Data.Repository
             return model;
         }
 
+        public async Task<ExhaustiveSearchInstance> SetActiveAsync(int id, bool active,
+            CancellationToken token = default)
+        {
+            var existing = await GetByIdAsync(id, token).ConfigureAwait(false);
+
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var activeByte = Convert.ToByte(active ? 1 : 0);
+            var updatedDate = DateTime.UtcNow;
+
+            var records = await dbContext.ExhaustiveSearchInstance
+                .Where(d =>
+                    (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && d.Id == id
+                    && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.Active, activeByte)
+                .Set(s => s.UpdatedDate, updatedDate)
+                .UpdateAsync(token).ConfigureAwait(false);
+
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            existing.Active = activeByte;
+            existing.UpdatedDate = updatedDate;
+
+            return existing;
+        }
 
         public Task StopAsync(Guid exhaustiveSearchInstanceGuid, CancellationToken token = default)
         {
@@ -207,6 +249,41 @@ namespace Jube.Data.Repository
                     && (d.Deleted == 0 || d.Deleted == null))
                 .Set(s => s.UpdatedDate, DateTime.UtcNow)
                 .Set(s => s.StatusId, statusId)
+                .UpdateAsync(token).ConfigureAwait(false);
+
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
+        }
+
+        public async Task UpdateBootstrapAsync(int id, int rowsAdded, string method, CancellationToken token = default)
+        {
+            var records = await dbContext.ExhaustiveSearchInstance
+                .Where(d =>
+                    (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && d.Id == id
+                    && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.BootstrapRowsAdded, rowsAdded)
+                .Set(s => s.BootstrapMethod, method)
+                .Set(s => s.UpdatedDate, DateTime.UtcNow)
+                .UpdateAsync(token).ConfigureAwait(false);
+
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
+        }
+
+        public async Task UpdateAnomalyReportAsync(int id, string reportJson, CancellationToken token = default)
+        {
+            var records = await dbContext.ExhaustiveSearchInstance
+                .Where(d =>
+                    (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && d.Id == id
+                    && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.AnomalyReportJson, reportJson)
+                .Set(s => s.UpdatedDate, DateTime.UtcNow)
                 .UpdateAsync(token).ConfigureAwait(false);
 
             if (records == 0)
@@ -290,6 +367,37 @@ namespace Jube.Data.Repository
             return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
         }
 
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
+        {
+            return dbContext.ExhaustiveSearchInstance
+                .Where(d =>
+                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
+                    && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.ImportId, importId)
+                .Set(s => s.Deleted, Convert.ToByte(1))
+                .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .UpdateAsync(token);
+        }
+
+        public async Task<IEnumerable<ExhaustiveSearchInstance>> GetApprovedByEntityAnalysisModelIdOrderByIdAsync(
+            int entityAnalysisModelId, int approvalsRequired = 1,
+            CancellationToken token = default)
+        {
+            var current = await dbContext.ExhaustiveSearchInstance
+                .Where(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelId == entityAnalysisModelId)
+                .OrderBy(o => o.Id)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            return await new GetApprovedEntityQuery<ExhaustiveSearchInstance, ExhaustiveSearchInstanceVersion>(
+                    dbContext,
+                    EntityApprovalKind.ExhaustiveSearchInstance,
+                    nameof(ExhaustiveSearchInstanceVersion.ExhaustiveSearchInstanceId), tenantRegistryId)
+                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
+        }
+
         private async Task DeleteVersionedAsync(int id, CancellationToken token)
         {
             var existing = await dbContext.ExhaustiveSearchInstance
@@ -338,37 +446,6 @@ namespace Jube.Data.Repository
             deletedState.Version = (existing.Version ?? 1) + 1;
 
             await dbContext.InsertAsync(deletedState, token: token);
-        }
-
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
-            CancellationToken token = default)
-        {
-            return dbContext.ExhaustiveSearchInstance
-                .Where(d =>
-                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
-                    && (d.Deleted == 0 || d.Deleted == null))
-                .Set(s => s.ImportId, importId)
-                .Set(s => s.Deleted, Convert.ToByte(1))
-                .Set(s => s.DeletedDate, DateTime.UtcNow)
-                .UpdateAsync(token);
-        }
-
-        public async Task<IEnumerable<ExhaustiveSearchInstance>> GetApprovedByEntityAnalysisModelIdOrderByIdAsync(
-            int entityAnalysisModelId, int approvalsRequired = 1,
-            CancellationToken token = default)
-        {
-            var current = await dbContext.ExhaustiveSearchInstance
-                .Where(w =>
-                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                    && w.EntityAnalysisModelId == entityAnalysisModelId)
-                .OrderBy(o => o.Id)
-                .ToListAsync(token).ConfigureAwait(false);
-
-            return await new GetApprovedEntityQuery<ExhaustiveSearchInstance, ExhaustiveSearchInstanceVersion>(
-                    dbContext,
-                    EntityApprovalKind.ExhaustiveSearchInstance,
-                    nameof(ExhaustiveSearchInstanceVersion.ExhaustiveSearchInstanceId), tenantRegistryId)
-                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
     }
 }

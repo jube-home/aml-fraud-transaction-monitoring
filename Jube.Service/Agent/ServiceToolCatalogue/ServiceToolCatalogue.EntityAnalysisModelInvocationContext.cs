@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,29 +11,38 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisModelInvocationContext;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddEntityAnalysisModelInvocationContext(List<ServiceToolDescriptor> tools) =>
+        static partial void AddEntityAnalysisModelInvocationContext(List<ServiceToolDescriptor> tools)
+        {
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
-                    "EntityAnalysisModelInvocationContextBlank", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Returns a blank rule-evaluation context for a model, with every name a rule can use and its defaults."),
+                    "EntityAnalysisModelInvocationContextBlank", OperationKind.Read, true,
+                    false,
+                    "Returns a blank rule-evaluation context for a model, with every name a rule can use and its defaults.",
+                    EntityAnalysisModelInvocationContextService.AuthoringPermissions),
                 new ServiceToolDescriptor(
-                    "EntityAnalysisModelInvocationContextFromRequestJson", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Builds a rule-evaluation context from request JSON with the engine's own extraction; stores nothing."),
+                    "EntityAnalysisModelInvocationContextFromRequestJson", OperationKind.Read, true,
+                    false,
+                    "Builds a rule-evaluation context from request JSON with the engine's own extraction; stores nothing.",
+                    EntityAnalysisModelInvocationContextService.AuthoringPermissions),
                 new ServiceToolDescriptor(
-                    "EntityAnalysisModelInvocationContextFromArchive", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Builds a rule-evaluation context from an archived transaction, with every value as it was."),
+                    "EntityAnalysisModelInvocationContextFromArchive", OperationKind.Read, true,
+                    false,
+                    "Builds a rule-evaluation context from an archived transaction, with every value as it was.",
+                    EntityAnalysisModelInvocationContextService.ArchivePermissions),
                 new ServiceToolDescriptor(
-                    "EntityAnalysisModelInvocationContextOverlay", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Sets values in a rule-evaluation context by completion name, checking each against its data type.")
+                    "EntityAnalysisModelInvocationContextOverlay", OperationKind.Read, true,
+                    false,
+                    "Sets values in a rule-evaluation context by completion name, checking each against its data type.",
+                    EntityAnalysisModelInvocationContextService.AuthoringPermissions)
             ]);
+        }
     }
 }

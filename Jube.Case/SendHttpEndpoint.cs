@@ -18,6 +18,8 @@ namespace Jube.Case
 
     public static class SendHttpEndpoint
     {
+        private static readonly HttpClient httpClient = new();
+
         private static string SafeHost(string httpEndpoint)
         {
             return Uri.TryCreate(httpEndpoint, UriKind.Absolute, out var uri) ? uri.Host : "unparseable-endpoint";
@@ -30,14 +32,13 @@ namespace Jube.Case
                 return;
             }
 
-            using var client = new HttpClient();
             var correlationId = Guid.NewGuid();
 
             try
             {
                 using var content = new StringContent(body, Encoding.UTF8, "application/json");
                 content.Headers.Add("X-Correlation-Id", correlationId.ToString());
-                using var response = await client.PostAsync(httpEndpoint, content).ConfigureAwait(false);
+                using var response = await httpClient.PostAsync(httpEndpoint, content).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
                 await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -56,14 +57,13 @@ namespace Jube.Case
                 return;
             }
 
-            using var client = new HttpClient();
             var correlationId = Guid.NewGuid();
 
             try
             {
                 using var request = new HttpRequestMessage(HttpMethod.Get, httpEndpoint);
                 request.Headers.Add("X-Correlation-Id", correlationId.ToString());
-                using var response = await client.SendAsync(request).ConfigureAwait(false);
+                using var response = await httpClient.SendAsync(request).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
                 await response.Content.ReadAsStringAsync().ConfigureAwait(false);

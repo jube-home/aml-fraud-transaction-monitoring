@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableVariance;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
         static partial void AddExhaustiveSearchInstanceTrialInstanceVariableVariance(
-            List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "ExhaustiveSearchInstanceTrialInstanceVariableVarianceGet", OperationKind.Read,
-                Idempotent: true, Destructive: false,
-                "Lists the multi-collinearity correlations of one Exhaustive Search Instance Variable against its test variables, ordered by absolute correlation rank.")
-        ]);
+            List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstanceTrialInstanceVariableVarianceGet", OperationKind.Read,
+                    true, false,
+                    "Lists the multi-collinearity correlations of one Exhaustive Search Instance Variable against its test variables, ordered by absolute correlation rank.",
+                    ExhaustiveSearchInstanceTrialInstanceVariableVarianceService.RequiredPermissions)
+            ]);
+        }
     }
 }

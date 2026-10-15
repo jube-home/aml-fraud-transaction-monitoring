@@ -11,8 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.Dto.Query.EntityAnalysisModelOverrideQuery;
 using Jube.Dto.Overrides;
+using Jube.Dto.Query.EntityAnalysisModelOverrideQuery;
 
 namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
 {

@@ -68,6 +68,7 @@ namespace Jube.Test.Cache.Redis
 
             await repository.IncrementTtlCounterCacheAsync(1, modelGuid, "AccountId", "555", ttlCounterGuid, 5,
                 DateTime.UtcNow);
+
             var result = await repository.DecrementTtlCounterCacheAsync(1, modelGuid, ttlCounterGuid, "AccountId",
                 "555", 5);
 
@@ -86,11 +87,13 @@ namespace Jube.Test.Cache.Redis
 
             await repository.IncrementTtlCounterCacheAsync(1, modelGuid, "AccountId", "555", ttlCounterGuid, 5,
                 DateTime.UtcNow);
+
             var result = await repository.DecrementTtlCounterCacheAsync(1, modelGuid, ttlCounterGuid, "AccountId",
                 "555", 8);
 
             result.Should().Be(0, "the current implementation clamps an overshoot decrement to zero rather than " +
                                   "reporting the negative value");
+
             var raw = await fake.HashGetAsync($"TtlCounter:1:{modelGuid:N}:{ttlCounterGuid:N}:AccountId", "555");
             raw.HasValue.Should().BeFalse();
         }
@@ -105,6 +108,7 @@ namespace Jube.Test.Cache.Redis
 
             await repository.IncrementTtlCounterCacheAsync(1, modelGuid, "AccountId", "555", ttlCounterGuid, 5,
                 DateTime.UtcNow);
+
             var result = await repository.DecrementTtlCounterCacheAsync(1, modelGuid, ttlCounterGuid, "AccountId",
                 "555", 2);
 

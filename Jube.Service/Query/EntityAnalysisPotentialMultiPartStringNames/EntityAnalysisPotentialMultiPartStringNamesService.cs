@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,9 +13,10 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetEntityAnalysisPotentialMultiPartStringNamesQuery;
 using Jube.Data.Repository;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisPotentialMultiPartStringNames;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -28,11 +29,10 @@ namespace Jube.Service.Query.EntityAnalysisPotentialMultiPartStringNames
     public sealed class EntityAnalysisPotentialMultiPartStringNamesService
     {
         private static readonly int[] permissions = [11, 17, 4, 1];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly global::Jube.Data.Query.GetEntityAnalysisPotentialMultiPartStringNamesQuery query;
+        private readonly GetEntityAnalysisPotentialMultiPartStringNamesQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -50,9 +50,12 @@ namespace Jube.Service.Query.EntityAnalysisPotentialMultiPartStringNames
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetEntityAnalysisPotentialMultiPartStringNamesQuery(dbContext,
+
+            query = new GetEntityAnalysisPotentialMultiPartStringNamesQuery(dbContext,
                 userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisPotentialMultiPartStringNamesService> CreateAsync(DbContext dbContext,
             string? userName,
@@ -136,10 +139,13 @@ namespace Jube.Service.Query.EntityAnalysisPotentialMultiPartStringNames
             Func<Task<IEnumerable<string>>> execute, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
+
             using var op = OperationScope.Start("EntityAnalysisPotentialMultiPartStringNames", operation, userName,
                 tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             var name = $"EntityAnalysisPotentialMultiPartStringNames.{operation}";
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"{name}: entry user={userName} {arguments}");
@@ -150,6 +156,7 @@ namespace Jube.Service.Query.EntityAnalysisPotentialMultiPartStringNames
                 EnsurePermitted(name);
                 var names = (await execute().ConfigureAwait(false)).ToList();
                 op.Rows(names.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"{name}: {names.Count} rows user={userName}");

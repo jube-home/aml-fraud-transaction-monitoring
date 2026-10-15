@@ -1,23 +1,33 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
 // ======================================================================
@@ -28,6 +38,7 @@
 namespace Accord.Math
 {
     using System;
+    using System.Runtime.InteropServices;
     using System.CodeDom.Compiler;
     using Accord.Math;
     using System.Runtime.CompilerServices;
@@ -2003,17 +2014,16 @@ namespace Accord.Math
 #endif
         public static int[,] Exp(this int[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Exp((double)v));
                     }
                 }
             }
@@ -2034,7 +2044,6 @@ namespace Accord.Math
 #endif
         public static int[][] Exp(this int[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2082,17 +2091,16 @@ namespace Accord.Math
 #endif
         public static int[,] Log(this int[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Log((double)v));
                     }
                 }
             }
@@ -2113,7 +2121,6 @@ namespace Accord.Math
 #endif
         public static int[][] Log(this int[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2161,17 +2168,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sign(this int[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v));
                     }
                 }
             }
@@ -2192,7 +2198,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sign(this int[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2240,17 +2245,16 @@ namespace Accord.Math
 #endif
         public static int[,] Abs(this int[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Abs(v));
                     }
                 }
             }
@@ -2271,7 +2275,6 @@ namespace Accord.Math
 #endif
         public static int[][] Abs(this int[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2319,17 +2322,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sqrt(this int[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -2350,7 +2352,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sqrt(this int[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2398,17 +2399,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignSqrt(this int[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -2429,7 +2429,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignSqrt(this int[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2477,17 +2476,16 @@ namespace Accord.Math
 #endif
         public static int[,] Floor(this int[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Floor((double)v));
                     }
                 }
             }
@@ -2508,7 +2506,6 @@ namespace Accord.Math
 #endif
         public static int[][] Floor(this int[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2556,17 +2553,16 @@ namespace Accord.Math
 #endif
         public static int[,] Ceiling(this int[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -2587,7 +2583,6 @@ namespace Accord.Math
 #endif
         public static int[][] Ceiling(this int[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2635,17 +2630,16 @@ namespace Accord.Math
 #endif
         public static int[,] Round(this int[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Round((double)v));
                     }
                 }
             }
@@ -2666,7 +2660,6 @@ namespace Accord.Math
 #endif
         public static int[][] Round(this int[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2714,17 +2707,16 @@ namespace Accord.Math
 #endif
         public static short[,] Exp(this int[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Exp((double)v));
                     }
                 }
             }
@@ -2745,7 +2737,6 @@ namespace Accord.Math
 #endif
         public static short[][] Exp(this int[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2793,17 +2784,16 @@ namespace Accord.Math
 #endif
         public static short[,] Log(this int[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Log((double)v));
                     }
                 }
             }
@@ -2824,7 +2814,6 @@ namespace Accord.Math
 #endif
         public static short[][] Log(this int[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2872,17 +2861,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sign(this int[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v));
                     }
                 }
             }
@@ -2903,7 +2891,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sign(this int[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -2951,17 +2938,16 @@ namespace Accord.Math
 #endif
         public static short[,] Abs(this int[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Abs(v));
                     }
                 }
             }
@@ -2982,7 +2968,6 @@ namespace Accord.Math
 #endif
         public static short[][] Abs(this int[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3030,17 +3015,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sqrt(this int[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -3061,7 +3045,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sqrt(this int[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3109,17 +3092,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignSqrt(this int[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -3140,7 +3122,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignSqrt(this int[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3188,17 +3169,16 @@ namespace Accord.Math
 #endif
         public static short[,] Floor(this int[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Floor((double)v));
                     }
                 }
             }
@@ -3219,7 +3199,6 @@ namespace Accord.Math
 #endif
         public static short[][] Floor(this int[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3267,17 +3246,16 @@ namespace Accord.Math
 #endif
         public static short[,] Ceiling(this int[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -3298,7 +3276,6 @@ namespace Accord.Math
 #endif
         public static short[][] Ceiling(this int[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3346,17 +3323,16 @@ namespace Accord.Math
 #endif
         public static short[,] Round(this int[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Round((double)v));
                     }
                 }
             }
@@ -3377,7 +3353,6 @@ namespace Accord.Math
 #endif
         public static short[][] Round(this int[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3425,17 +3400,16 @@ namespace Accord.Math
 #endif
         public static float[,] Exp(this int[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Exp((double)v));
                     }
                 }
             }
@@ -3456,7 +3430,6 @@ namespace Accord.Math
 #endif
         public static float[][] Exp(this int[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3504,17 +3477,16 @@ namespace Accord.Math
 #endif
         public static float[,] Log(this int[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Log((double)v));
                     }
                 }
             }
@@ -3535,7 +3507,6 @@ namespace Accord.Math
 #endif
         public static float[][] Log(this int[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3583,17 +3554,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sign(this int[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v));
                     }
                 }
             }
@@ -3614,7 +3584,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sign(this int[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3662,17 +3631,16 @@ namespace Accord.Math
 #endif
         public static float[,] Abs(this int[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Abs(v));
                     }
                 }
             }
@@ -3693,7 +3661,6 @@ namespace Accord.Math
 #endif
         public static float[][] Abs(this int[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3741,17 +3708,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sqrt(this int[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -3772,7 +3738,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sqrt(this int[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3820,17 +3785,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignSqrt(this int[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -3851,7 +3815,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignSqrt(this int[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3899,17 +3862,16 @@ namespace Accord.Math
 #endif
         public static float[,] Floor(this int[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Floor((double)v));
                     }
                 }
             }
@@ -3930,7 +3892,6 @@ namespace Accord.Math
 #endif
         public static float[][] Floor(this int[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -3978,17 +3939,16 @@ namespace Accord.Math
 #endif
         public static float[,] Ceiling(this int[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -4009,7 +3969,6 @@ namespace Accord.Math
 #endif
         public static float[][] Ceiling(this int[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4057,17 +4016,16 @@ namespace Accord.Math
 #endif
         public static float[,] Round(this int[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Round((double)v));
                     }
                 }
             }
@@ -4088,7 +4046,6 @@ namespace Accord.Math
 #endif
         public static float[][] Round(this int[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4136,17 +4093,16 @@ namespace Accord.Math
 #endif
         public static double[,] Exp(this int[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Exp((double)v));
                     }
                 }
             }
@@ -4167,7 +4123,6 @@ namespace Accord.Math
 #endif
         public static double[][] Exp(this int[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4215,17 +4170,16 @@ namespace Accord.Math
 #endif
         public static double[,] Log(this int[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Log((double)v));
                     }
                 }
             }
@@ -4246,7 +4200,6 @@ namespace Accord.Math
 #endif
         public static double[][] Log(this int[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4294,17 +4247,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sign(this int[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v));
                     }
                 }
             }
@@ -4325,7 +4277,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sign(this int[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4373,17 +4324,16 @@ namespace Accord.Math
 #endif
         public static double[,] Abs(this int[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Abs(v));
                     }
                 }
             }
@@ -4404,7 +4354,6 @@ namespace Accord.Math
 #endif
         public static double[][] Abs(this int[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4452,17 +4401,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sqrt(this int[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -4483,7 +4431,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sqrt(this int[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4531,17 +4478,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignSqrt(this int[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -4562,7 +4508,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignSqrt(this int[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4610,17 +4555,16 @@ namespace Accord.Math
 #endif
         public static double[,] Floor(this int[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Floor((double)v));
                     }
                 }
             }
@@ -4641,7 +4585,6 @@ namespace Accord.Math
 #endif
         public static double[][] Floor(this int[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4689,17 +4632,16 @@ namespace Accord.Math
 #endif
         public static double[,] Ceiling(this int[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -4720,7 +4662,6 @@ namespace Accord.Math
 #endif
         public static double[][] Ceiling(this int[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4768,17 +4709,16 @@ namespace Accord.Math
 #endif
         public static double[,] Round(this int[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Round((double)v));
                     }
                 }
             }
@@ -4799,7 +4739,6 @@ namespace Accord.Math
 #endif
         public static double[][] Round(this int[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4847,17 +4786,16 @@ namespace Accord.Math
 #endif
         public static long[,] Exp(this int[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Exp((double)v));
                     }
                 }
             }
@@ -4878,7 +4816,6 @@ namespace Accord.Math
 #endif
         public static long[][] Exp(this int[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -4926,17 +4863,16 @@ namespace Accord.Math
 #endif
         public static long[,] Log(this int[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Log((double)v));
                     }
                 }
             }
@@ -4957,7 +4893,6 @@ namespace Accord.Math
 #endif
         public static long[][] Log(this int[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5005,17 +4940,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sign(this int[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v));
                     }
                 }
             }
@@ -5036,7 +4970,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sign(this int[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5084,17 +5017,16 @@ namespace Accord.Math
 #endif
         public static long[,] Abs(this int[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Abs(v));
                     }
                 }
             }
@@ -5115,7 +5047,6 @@ namespace Accord.Math
 #endif
         public static long[][] Abs(this int[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5163,17 +5094,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sqrt(this int[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -5194,7 +5124,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sqrt(this int[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5242,17 +5171,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignSqrt(this int[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -5273,7 +5201,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignSqrt(this int[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5321,17 +5248,16 @@ namespace Accord.Math
 #endif
         public static long[,] Floor(this int[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Floor((double)v));
                     }
                 }
             }
@@ -5352,7 +5278,6 @@ namespace Accord.Math
 #endif
         public static long[][] Floor(this int[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5400,17 +5325,16 @@ namespace Accord.Math
 #endif
         public static long[,] Ceiling(this int[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -5431,7 +5355,6 @@ namespace Accord.Math
 #endif
         public static long[][] Ceiling(this int[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5479,17 +5402,16 @@ namespace Accord.Math
 #endif
         public static long[,] Round(this int[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Round((double)v));
                     }
                 }
             }
@@ -5510,7 +5432,6 @@ namespace Accord.Math
 #endif
         public static long[][] Round(this int[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5558,17 +5479,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Exp(this int[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Exp((double)v));
                     }
                 }
             }
@@ -5589,7 +5509,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Exp(this int[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5637,17 +5556,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Log(this int[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Log((double)v));
                     }
                 }
             }
@@ -5668,7 +5586,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Log(this int[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5716,17 +5633,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sign(this int[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v));
                     }
                 }
             }
@@ -5747,7 +5663,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sign(this int[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5795,17 +5710,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Abs(this int[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Abs(v));
                     }
                 }
             }
@@ -5826,7 +5740,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Abs(this int[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5874,17 +5787,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sqrt(this int[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -5905,7 +5817,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sqrt(this int[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -5953,17 +5864,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignSqrt(this int[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -5984,7 +5894,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignSqrt(this int[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6032,17 +5941,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Floor(this int[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Floor((double)v));
                     }
                 }
             }
@@ -6063,7 +5971,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Floor(this int[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6111,17 +6018,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Ceiling(this int[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -6142,7 +6048,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Ceiling(this int[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6190,17 +6095,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Round(this int[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Round((double)v));
                     }
                 }
             }
@@ -6221,7 +6125,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Round(this int[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6269,17 +6172,16 @@ namespace Accord.Math
 #endif
         public static int[,] Exp(this short[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Exp((double)v));
                     }
                 }
             }
@@ -6300,7 +6202,6 @@ namespace Accord.Math
 #endif
         public static int[][] Exp(this short[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6348,17 +6249,16 @@ namespace Accord.Math
 #endif
         public static int[,] Log(this short[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Log((double)v));
                     }
                 }
             }
@@ -6379,7 +6279,6 @@ namespace Accord.Math
 #endif
         public static int[][] Log(this short[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6427,17 +6326,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sign(this short[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v));
                     }
                 }
             }
@@ -6458,7 +6356,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sign(this short[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6506,17 +6403,16 @@ namespace Accord.Math
 #endif
         public static int[,] Abs(this short[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Abs(v));
                     }
                 }
             }
@@ -6537,7 +6433,6 @@ namespace Accord.Math
 #endif
         public static int[][] Abs(this short[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6585,17 +6480,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sqrt(this short[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -6616,7 +6510,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sqrt(this short[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6664,17 +6557,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignSqrt(this short[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -6695,7 +6587,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignSqrt(this short[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6743,17 +6634,16 @@ namespace Accord.Math
 #endif
         public static int[,] Floor(this short[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Floor((double)v));
                     }
                 }
             }
@@ -6774,7 +6664,6 @@ namespace Accord.Math
 #endif
         public static int[][] Floor(this short[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6822,17 +6711,16 @@ namespace Accord.Math
 #endif
         public static int[,] Ceiling(this short[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -6853,7 +6741,6 @@ namespace Accord.Math
 #endif
         public static int[][] Ceiling(this short[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6901,17 +6788,16 @@ namespace Accord.Math
 #endif
         public static int[,] Round(this short[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Round((double)v));
                     }
                 }
             }
@@ -6932,7 +6818,6 @@ namespace Accord.Math
 #endif
         public static int[][] Round(this short[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -6980,17 +6865,16 @@ namespace Accord.Math
 #endif
         public static short[,] Exp(this short[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Exp((double)v));
                     }
                 }
             }
@@ -7011,7 +6895,6 @@ namespace Accord.Math
 #endif
         public static short[][] Exp(this short[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7059,17 +6942,16 @@ namespace Accord.Math
 #endif
         public static short[,] Log(this short[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Log((double)v));
                     }
                 }
             }
@@ -7090,7 +6972,6 @@ namespace Accord.Math
 #endif
         public static short[][] Log(this short[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7138,17 +7019,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sign(this short[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v));
                     }
                 }
             }
@@ -7169,7 +7049,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sign(this short[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7217,17 +7096,16 @@ namespace Accord.Math
 #endif
         public static short[,] Abs(this short[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Abs(v));
                     }
                 }
             }
@@ -7248,7 +7126,6 @@ namespace Accord.Math
 #endif
         public static short[][] Abs(this short[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7296,17 +7173,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sqrt(this short[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -7327,7 +7203,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sqrt(this short[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7375,17 +7250,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignSqrt(this short[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -7406,7 +7280,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignSqrt(this short[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7454,17 +7327,16 @@ namespace Accord.Math
 #endif
         public static short[,] Floor(this short[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Floor((double)v));
                     }
                 }
             }
@@ -7485,7 +7357,6 @@ namespace Accord.Math
 #endif
         public static short[][] Floor(this short[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7533,17 +7404,16 @@ namespace Accord.Math
 #endif
         public static short[,] Ceiling(this short[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -7564,7 +7434,6 @@ namespace Accord.Math
 #endif
         public static short[][] Ceiling(this short[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7612,17 +7481,16 @@ namespace Accord.Math
 #endif
         public static short[,] Round(this short[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Round((double)v));
                     }
                 }
             }
@@ -7643,7 +7511,6 @@ namespace Accord.Math
 #endif
         public static short[][] Round(this short[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7691,17 +7558,16 @@ namespace Accord.Math
 #endif
         public static float[,] Exp(this short[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Exp((double)v));
                     }
                 }
             }
@@ -7722,7 +7588,6 @@ namespace Accord.Math
 #endif
         public static float[][] Exp(this short[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7770,17 +7635,16 @@ namespace Accord.Math
 #endif
         public static float[,] Log(this short[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Log((double)v));
                     }
                 }
             }
@@ -7801,7 +7665,6 @@ namespace Accord.Math
 #endif
         public static float[][] Log(this short[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7849,17 +7712,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sign(this short[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v));
                     }
                 }
             }
@@ -7880,7 +7742,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sign(this short[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -7928,17 +7789,16 @@ namespace Accord.Math
 #endif
         public static float[,] Abs(this short[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Abs(v));
                     }
                 }
             }
@@ -7959,7 +7819,6 @@ namespace Accord.Math
 #endif
         public static float[][] Abs(this short[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8007,17 +7866,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sqrt(this short[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -8038,7 +7896,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sqrt(this short[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8086,17 +7943,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignSqrt(this short[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -8117,7 +7973,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignSqrt(this short[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8165,17 +8020,16 @@ namespace Accord.Math
 #endif
         public static float[,] Floor(this short[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Floor((double)v));
                     }
                 }
             }
@@ -8196,7 +8050,6 @@ namespace Accord.Math
 #endif
         public static float[][] Floor(this short[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8244,17 +8097,16 @@ namespace Accord.Math
 #endif
         public static float[,] Ceiling(this short[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -8275,7 +8127,6 @@ namespace Accord.Math
 #endif
         public static float[][] Ceiling(this short[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8323,17 +8174,16 @@ namespace Accord.Math
 #endif
         public static float[,] Round(this short[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Round((double)v));
                     }
                 }
             }
@@ -8354,7 +8204,6 @@ namespace Accord.Math
 #endif
         public static float[][] Round(this short[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8402,17 +8251,16 @@ namespace Accord.Math
 #endif
         public static double[,] Exp(this short[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Exp((double)v));
                     }
                 }
             }
@@ -8433,7 +8281,6 @@ namespace Accord.Math
 #endif
         public static double[][] Exp(this short[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8481,17 +8328,16 @@ namespace Accord.Math
 #endif
         public static double[,] Log(this short[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Log((double)v));
                     }
                 }
             }
@@ -8512,7 +8358,6 @@ namespace Accord.Math
 #endif
         public static double[][] Log(this short[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8560,17 +8405,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sign(this short[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v));
                     }
                 }
             }
@@ -8591,7 +8435,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sign(this short[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8639,17 +8482,16 @@ namespace Accord.Math
 #endif
         public static double[,] Abs(this short[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Abs(v));
                     }
                 }
             }
@@ -8670,7 +8512,6 @@ namespace Accord.Math
 #endif
         public static double[][] Abs(this short[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8718,17 +8559,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sqrt(this short[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -8749,7 +8589,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sqrt(this short[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8797,17 +8636,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignSqrt(this short[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -8828,7 +8666,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignSqrt(this short[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8876,17 +8713,16 @@ namespace Accord.Math
 #endif
         public static double[,] Floor(this short[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Floor((double)v));
                     }
                 }
             }
@@ -8907,7 +8743,6 @@ namespace Accord.Math
 #endif
         public static double[][] Floor(this short[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -8955,17 +8790,16 @@ namespace Accord.Math
 #endif
         public static double[,] Ceiling(this short[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -8986,7 +8820,6 @@ namespace Accord.Math
 #endif
         public static double[][] Ceiling(this short[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9034,17 +8867,16 @@ namespace Accord.Math
 #endif
         public static double[,] Round(this short[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Round((double)v));
                     }
                 }
             }
@@ -9065,7 +8897,6 @@ namespace Accord.Math
 #endif
         public static double[][] Round(this short[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9113,17 +8944,16 @@ namespace Accord.Math
 #endif
         public static long[,] Exp(this short[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Exp((double)v));
                     }
                 }
             }
@@ -9144,7 +8974,6 @@ namespace Accord.Math
 #endif
         public static long[][] Exp(this short[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9192,17 +9021,16 @@ namespace Accord.Math
 #endif
         public static long[,] Log(this short[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Log((double)v));
                     }
                 }
             }
@@ -9223,7 +9051,6 @@ namespace Accord.Math
 #endif
         public static long[][] Log(this short[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9271,17 +9098,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sign(this short[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v));
                     }
                 }
             }
@@ -9302,7 +9128,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sign(this short[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9350,17 +9175,16 @@ namespace Accord.Math
 #endif
         public static long[,] Abs(this short[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Abs(v));
                     }
                 }
             }
@@ -9381,7 +9205,6 @@ namespace Accord.Math
 #endif
         public static long[][] Abs(this short[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9429,17 +9252,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sqrt(this short[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -9460,7 +9282,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sqrt(this short[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9508,17 +9329,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignSqrt(this short[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -9539,7 +9359,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignSqrt(this short[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9587,17 +9406,16 @@ namespace Accord.Math
 #endif
         public static long[,] Floor(this short[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Floor((double)v));
                     }
                 }
             }
@@ -9618,7 +9436,6 @@ namespace Accord.Math
 #endif
         public static long[][] Floor(this short[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9666,17 +9483,16 @@ namespace Accord.Math
 #endif
         public static long[,] Ceiling(this short[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -9697,7 +9513,6 @@ namespace Accord.Math
 #endif
         public static long[][] Ceiling(this short[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9745,17 +9560,16 @@ namespace Accord.Math
 #endif
         public static long[,] Round(this short[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Round((double)v));
                     }
                 }
             }
@@ -9776,7 +9590,6 @@ namespace Accord.Math
 #endif
         public static long[][] Round(this short[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9824,17 +9637,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Exp(this short[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Exp((double)v));
                     }
                 }
             }
@@ -9855,7 +9667,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Exp(this short[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9903,17 +9714,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Log(this short[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Log((double)v));
                     }
                 }
             }
@@ -9934,7 +9744,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Log(this short[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -9982,17 +9791,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sign(this short[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v));
                     }
                 }
             }
@@ -10013,7 +9821,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sign(this short[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10061,17 +9868,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Abs(this short[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Abs(v));
                     }
                 }
             }
@@ -10092,7 +9898,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Abs(this short[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10140,17 +9945,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sqrt(this short[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -10171,7 +9975,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sqrt(this short[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10219,17 +10022,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignSqrt(this short[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -10250,7 +10052,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignSqrt(this short[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10298,17 +10099,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Floor(this short[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Floor((double)v));
                     }
                 }
             }
@@ -10329,7 +10129,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Floor(this short[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10377,17 +10176,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Ceiling(this short[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -10408,7 +10206,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Ceiling(this short[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10456,17 +10253,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Round(this short[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Round((double)v));
                     }
                 }
             }
@@ -10487,7 +10283,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Round(this short[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10535,17 +10330,16 @@ namespace Accord.Math
 #endif
         public static int[,] Exp(this float[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Exp((double)v));
                     }
                 }
             }
@@ -10566,7 +10360,6 @@ namespace Accord.Math
 #endif
         public static int[][] Exp(this float[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10614,17 +10407,16 @@ namespace Accord.Math
 #endif
         public static int[,] Log(this float[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Log((double)v));
                     }
                 }
             }
@@ -10645,7 +10437,6 @@ namespace Accord.Math
 #endif
         public static int[][] Log(this float[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10693,17 +10484,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sign(this float[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v));
                     }
                 }
             }
@@ -10724,7 +10514,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sign(this float[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10772,17 +10561,16 @@ namespace Accord.Math
 #endif
         public static int[,] Abs(this float[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Abs(v));
                     }
                 }
             }
@@ -10803,7 +10591,6 @@ namespace Accord.Math
 #endif
         public static int[][] Abs(this float[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10851,17 +10638,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sqrt(this float[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -10882,7 +10668,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sqrt(this float[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -10930,17 +10715,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignSqrt(this float[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -10961,7 +10745,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignSqrt(this float[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11009,17 +10792,16 @@ namespace Accord.Math
 #endif
         public static int[,] Floor(this float[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Floor((double)v));
                     }
                 }
             }
@@ -11040,7 +10822,6 @@ namespace Accord.Math
 #endif
         public static int[][] Floor(this float[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11088,17 +10869,16 @@ namespace Accord.Math
 #endif
         public static int[,] Ceiling(this float[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -11119,7 +10899,6 @@ namespace Accord.Math
 #endif
         public static int[][] Ceiling(this float[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11167,17 +10946,16 @@ namespace Accord.Math
 #endif
         public static int[,] Round(this float[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Round((double)v));
                     }
                 }
             }
@@ -11198,7 +10976,6 @@ namespace Accord.Math
 #endif
         public static int[][] Round(this float[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11246,17 +11023,16 @@ namespace Accord.Math
 #endif
         public static short[,] Exp(this float[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Exp((double)v));
                     }
                 }
             }
@@ -11277,7 +11053,6 @@ namespace Accord.Math
 #endif
         public static short[][] Exp(this float[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11325,17 +11100,16 @@ namespace Accord.Math
 #endif
         public static short[,] Log(this float[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Log((double)v));
                     }
                 }
             }
@@ -11356,7 +11130,6 @@ namespace Accord.Math
 #endif
         public static short[][] Log(this float[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11404,17 +11177,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sign(this float[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v));
                     }
                 }
             }
@@ -11435,7 +11207,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sign(this float[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11483,17 +11254,16 @@ namespace Accord.Math
 #endif
         public static short[,] Abs(this float[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Abs(v));
                     }
                 }
             }
@@ -11514,7 +11284,6 @@ namespace Accord.Math
 #endif
         public static short[][] Abs(this float[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11562,17 +11331,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sqrt(this float[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -11593,7 +11361,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sqrt(this float[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11641,17 +11408,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignSqrt(this float[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -11672,7 +11438,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignSqrt(this float[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11720,17 +11485,16 @@ namespace Accord.Math
 #endif
         public static short[,] Floor(this float[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Floor((double)v));
                     }
                 }
             }
@@ -11751,7 +11515,6 @@ namespace Accord.Math
 #endif
         public static short[][] Floor(this float[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11799,17 +11562,16 @@ namespace Accord.Math
 #endif
         public static short[,] Ceiling(this float[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -11830,7 +11592,6 @@ namespace Accord.Math
 #endif
         public static short[][] Ceiling(this float[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11878,17 +11639,16 @@ namespace Accord.Math
 #endif
         public static short[,] Round(this float[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Round((double)v));
                     }
                 }
             }
@@ -11909,7 +11669,6 @@ namespace Accord.Math
 #endif
         public static short[][] Round(this float[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -11957,17 +11716,16 @@ namespace Accord.Math
 #endif
         public static float[,] Exp(this float[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Exp((double)v));
                     }
                 }
             }
@@ -11988,7 +11746,6 @@ namespace Accord.Math
 #endif
         public static float[][] Exp(this float[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12036,17 +11793,16 @@ namespace Accord.Math
 #endif
         public static float[,] Log(this float[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Log((double)v));
                     }
                 }
             }
@@ -12067,7 +11823,6 @@ namespace Accord.Math
 #endif
         public static float[][] Log(this float[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12115,17 +11870,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sign(this float[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v));
                     }
                 }
             }
@@ -12146,7 +11900,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sign(this float[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12194,17 +11947,16 @@ namespace Accord.Math
 #endif
         public static float[,] Abs(this float[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Abs(v));
                     }
                 }
             }
@@ -12225,7 +11977,6 @@ namespace Accord.Math
 #endif
         public static float[][] Abs(this float[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12273,17 +12024,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sqrt(this float[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -12304,7 +12054,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sqrt(this float[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12352,17 +12101,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignSqrt(this float[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -12383,7 +12131,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignSqrt(this float[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12431,17 +12178,16 @@ namespace Accord.Math
 #endif
         public static float[,] Floor(this float[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Floor((double)v));
                     }
                 }
             }
@@ -12462,7 +12208,6 @@ namespace Accord.Math
 #endif
         public static float[][] Floor(this float[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12510,17 +12255,16 @@ namespace Accord.Math
 #endif
         public static float[,] Ceiling(this float[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -12541,7 +12285,6 @@ namespace Accord.Math
 #endif
         public static float[][] Ceiling(this float[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12589,17 +12332,16 @@ namespace Accord.Math
 #endif
         public static float[,] Round(this float[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Round((double)v));
                     }
                 }
             }
@@ -12620,7 +12362,6 @@ namespace Accord.Math
 #endif
         public static float[][] Round(this float[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12668,17 +12409,16 @@ namespace Accord.Math
 #endif
         public static double[,] Exp(this float[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Exp((double)v));
                     }
                 }
             }
@@ -12699,7 +12439,6 @@ namespace Accord.Math
 #endif
         public static double[][] Exp(this float[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12747,17 +12486,16 @@ namespace Accord.Math
 #endif
         public static double[,] Log(this float[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Log((double)v));
                     }
                 }
             }
@@ -12778,7 +12516,6 @@ namespace Accord.Math
 #endif
         public static double[][] Log(this float[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12826,17 +12563,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sign(this float[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v));
                     }
                 }
             }
@@ -12857,7 +12593,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sign(this float[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12905,17 +12640,16 @@ namespace Accord.Math
 #endif
         public static double[,] Abs(this float[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Abs(v));
                     }
                 }
             }
@@ -12936,7 +12670,6 @@ namespace Accord.Math
 #endif
         public static double[][] Abs(this float[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -12984,17 +12717,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sqrt(this float[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -13015,7 +12747,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sqrt(this float[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13063,17 +12794,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignSqrt(this float[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -13094,7 +12824,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignSqrt(this float[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13142,17 +12871,16 @@ namespace Accord.Math
 #endif
         public static double[,] Floor(this float[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Floor((double)v));
                     }
                 }
             }
@@ -13173,7 +12901,6 @@ namespace Accord.Math
 #endif
         public static double[][] Floor(this float[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13221,17 +12948,16 @@ namespace Accord.Math
 #endif
         public static double[,] Ceiling(this float[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -13252,7 +12978,6 @@ namespace Accord.Math
 #endif
         public static double[][] Ceiling(this float[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13300,17 +13025,16 @@ namespace Accord.Math
 #endif
         public static double[,] Round(this float[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Round((double)v));
                     }
                 }
             }
@@ -13331,7 +13055,6 @@ namespace Accord.Math
 #endif
         public static double[][] Round(this float[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13379,17 +13102,16 @@ namespace Accord.Math
 #endif
         public static long[,] Exp(this float[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Exp((double)v));
                     }
                 }
             }
@@ -13410,7 +13132,6 @@ namespace Accord.Math
 #endif
         public static long[][] Exp(this float[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13458,17 +13179,16 @@ namespace Accord.Math
 #endif
         public static long[,] Log(this float[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Log((double)v));
                     }
                 }
             }
@@ -13489,7 +13209,6 @@ namespace Accord.Math
 #endif
         public static long[][] Log(this float[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13537,17 +13256,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sign(this float[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v));
                     }
                 }
             }
@@ -13568,7 +13286,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sign(this float[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13616,17 +13333,16 @@ namespace Accord.Math
 #endif
         public static long[,] Abs(this float[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Abs(v));
                     }
                 }
             }
@@ -13647,7 +13363,6 @@ namespace Accord.Math
 #endif
         public static long[][] Abs(this float[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13695,17 +13410,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sqrt(this float[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -13726,7 +13440,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sqrt(this float[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13774,17 +13487,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignSqrt(this float[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -13805,7 +13517,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignSqrt(this float[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13853,17 +13564,16 @@ namespace Accord.Math
 #endif
         public static long[,] Floor(this float[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Floor((double)v));
                     }
                 }
             }
@@ -13884,7 +13594,6 @@ namespace Accord.Math
 #endif
         public static long[][] Floor(this float[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -13932,17 +13641,16 @@ namespace Accord.Math
 #endif
         public static long[,] Ceiling(this float[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -13963,7 +13671,6 @@ namespace Accord.Math
 #endif
         public static long[][] Ceiling(this float[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14011,17 +13718,16 @@ namespace Accord.Math
 #endif
         public static long[,] Round(this float[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Round((double)v));
                     }
                 }
             }
@@ -14042,7 +13748,6 @@ namespace Accord.Math
 #endif
         public static long[][] Round(this float[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14090,17 +13795,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Exp(this float[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Exp((double)v));
                     }
                 }
             }
@@ -14121,7 +13825,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Exp(this float[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14169,17 +13872,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Log(this float[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Log((double)v));
                     }
                 }
             }
@@ -14200,7 +13902,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Log(this float[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14248,17 +13949,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sign(this float[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v));
                     }
                 }
             }
@@ -14279,7 +13979,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sign(this float[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14327,17 +14026,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Abs(this float[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Abs(v));
                     }
                 }
             }
@@ -14358,7 +14056,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Abs(this float[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14406,17 +14103,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sqrt(this float[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -14437,7 +14133,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sqrt(this float[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14485,17 +14180,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignSqrt(this float[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -14516,7 +14210,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignSqrt(this float[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14564,17 +14257,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Floor(this float[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Floor((double)v));
                     }
                 }
             }
@@ -14595,7 +14287,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Floor(this float[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14643,17 +14334,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Ceiling(this float[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -14674,7 +14364,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Ceiling(this float[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14722,17 +14411,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Round(this float[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Round((double)v));
                     }
                 }
             }
@@ -14753,7 +14441,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Round(this float[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14801,17 +14488,16 @@ namespace Accord.Math
 #endif
         public static int[,] Exp(this double[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Exp((double)v));
                     }
                 }
             }
@@ -14832,7 +14518,6 @@ namespace Accord.Math
 #endif
         public static int[][] Exp(this double[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14880,17 +14565,16 @@ namespace Accord.Math
 #endif
         public static int[,] Log(this double[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Log((double)v));
                     }
                 }
             }
@@ -14911,7 +14595,6 @@ namespace Accord.Math
 #endif
         public static int[][] Log(this double[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -14959,17 +14642,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sign(this double[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v));
                     }
                 }
             }
@@ -14990,7 +14672,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sign(this double[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15038,17 +14719,16 @@ namespace Accord.Math
 #endif
         public static int[,] Abs(this double[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Abs(v));
                     }
                 }
             }
@@ -15069,7 +14749,6 @@ namespace Accord.Math
 #endif
         public static int[][] Abs(this double[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15117,17 +14796,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sqrt(this double[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -15148,7 +14826,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sqrt(this double[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15196,17 +14873,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignSqrt(this double[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -15227,7 +14903,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignSqrt(this double[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15275,17 +14950,16 @@ namespace Accord.Math
 #endif
         public static int[,] Floor(this double[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Floor((double)v));
                     }
                 }
             }
@@ -15306,7 +14980,6 @@ namespace Accord.Math
 #endif
         public static int[][] Floor(this double[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15354,17 +15027,16 @@ namespace Accord.Math
 #endif
         public static int[,] Ceiling(this double[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -15385,7 +15057,6 @@ namespace Accord.Math
 #endif
         public static int[][] Ceiling(this double[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15433,17 +15104,16 @@ namespace Accord.Math
 #endif
         public static int[,] Round(this double[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Round((double)v));
                     }
                 }
             }
@@ -15464,7 +15134,6 @@ namespace Accord.Math
 #endif
         public static int[][] Round(this double[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15512,17 +15181,16 @@ namespace Accord.Math
 #endif
         public static short[,] Exp(this double[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Exp((double)v));
                     }
                 }
             }
@@ -15543,7 +15211,6 @@ namespace Accord.Math
 #endif
         public static short[][] Exp(this double[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15591,17 +15258,16 @@ namespace Accord.Math
 #endif
         public static short[,] Log(this double[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Log((double)v));
                     }
                 }
             }
@@ -15622,7 +15288,6 @@ namespace Accord.Math
 #endif
         public static short[][] Log(this double[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15670,17 +15335,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sign(this double[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v));
                     }
                 }
             }
@@ -15701,7 +15365,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sign(this double[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15749,17 +15412,16 @@ namespace Accord.Math
 #endif
         public static short[,] Abs(this double[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Abs(v));
                     }
                 }
             }
@@ -15780,7 +15442,6 @@ namespace Accord.Math
 #endif
         public static short[][] Abs(this double[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15828,17 +15489,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sqrt(this double[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -15859,7 +15519,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sqrt(this double[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15907,17 +15566,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignSqrt(this double[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -15938,7 +15596,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignSqrt(this double[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -15986,17 +15643,16 @@ namespace Accord.Math
 #endif
         public static short[,] Floor(this double[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Floor((double)v));
                     }
                 }
             }
@@ -16017,7 +15673,6 @@ namespace Accord.Math
 #endif
         public static short[][] Floor(this double[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16065,17 +15720,16 @@ namespace Accord.Math
 #endif
         public static short[,] Ceiling(this double[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -16096,7 +15750,6 @@ namespace Accord.Math
 #endif
         public static short[][] Ceiling(this double[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16144,17 +15797,16 @@ namespace Accord.Math
 #endif
         public static short[,] Round(this double[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Round((double)v));
                     }
                 }
             }
@@ -16175,7 +15827,6 @@ namespace Accord.Math
 #endif
         public static short[][] Round(this double[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16223,17 +15874,16 @@ namespace Accord.Math
 #endif
         public static float[,] Exp(this double[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Exp((double)v));
                     }
                 }
             }
@@ -16254,7 +15904,6 @@ namespace Accord.Math
 #endif
         public static float[][] Exp(this double[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16302,17 +15951,16 @@ namespace Accord.Math
 #endif
         public static float[,] Log(this double[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Log((double)v));
                     }
                 }
             }
@@ -16333,7 +15981,6 @@ namespace Accord.Math
 #endif
         public static float[][] Log(this double[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16381,17 +16028,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sign(this double[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v));
                     }
                 }
             }
@@ -16412,7 +16058,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sign(this double[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16460,17 +16105,16 @@ namespace Accord.Math
 #endif
         public static float[,] Abs(this double[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Abs(v));
                     }
                 }
             }
@@ -16491,7 +16135,6 @@ namespace Accord.Math
 #endif
         public static float[][] Abs(this double[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16539,17 +16182,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sqrt(this double[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -16570,7 +16212,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sqrt(this double[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16618,17 +16259,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignSqrt(this double[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -16649,7 +16289,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignSqrt(this double[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16697,17 +16336,16 @@ namespace Accord.Math
 #endif
         public static float[,] Floor(this double[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Floor((double)v));
                     }
                 }
             }
@@ -16728,7 +16366,6 @@ namespace Accord.Math
 #endif
         public static float[][] Floor(this double[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16776,17 +16413,16 @@ namespace Accord.Math
 #endif
         public static float[,] Ceiling(this double[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -16807,7 +16443,6 @@ namespace Accord.Math
 #endif
         public static float[][] Ceiling(this double[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16855,17 +16490,16 @@ namespace Accord.Math
 #endif
         public static float[,] Round(this double[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Round((double)v));
                     }
                 }
             }
@@ -16886,7 +16520,6 @@ namespace Accord.Math
 #endif
         public static float[][] Round(this double[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -16934,17 +16567,16 @@ namespace Accord.Math
 #endif
         public static double[,] Exp(this double[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Exp((double)v));
                     }
                 }
             }
@@ -16965,7 +16597,6 @@ namespace Accord.Math
 #endif
         public static double[][] Exp(this double[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17013,17 +16644,16 @@ namespace Accord.Math
 #endif
         public static double[,] Log(this double[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Log((double)v));
                     }
                 }
             }
@@ -17044,7 +16674,6 @@ namespace Accord.Math
 #endif
         public static double[][] Log(this double[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17092,17 +16721,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sign(this double[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v));
                     }
                 }
             }
@@ -17123,7 +16751,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sign(this double[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17171,17 +16798,16 @@ namespace Accord.Math
 #endif
         public static double[,] Abs(this double[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Abs(v));
                     }
                 }
             }
@@ -17202,7 +16828,6 @@ namespace Accord.Math
 #endif
         public static double[][] Abs(this double[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17250,17 +16875,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sqrt(this double[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -17281,7 +16905,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sqrt(this double[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17329,17 +16952,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignSqrt(this double[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -17360,7 +16982,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignSqrt(this double[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17408,17 +17029,16 @@ namespace Accord.Math
 #endif
         public static double[,] Floor(this double[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Floor((double)v));
                     }
                 }
             }
@@ -17439,7 +17059,6 @@ namespace Accord.Math
 #endif
         public static double[][] Floor(this double[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17487,17 +17106,16 @@ namespace Accord.Math
 #endif
         public static double[,] Ceiling(this double[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -17518,7 +17136,6 @@ namespace Accord.Math
 #endif
         public static double[][] Ceiling(this double[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17566,17 +17183,16 @@ namespace Accord.Math
 #endif
         public static double[,] Round(this double[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Round((double)v));
                     }
                 }
             }
@@ -17597,7 +17213,6 @@ namespace Accord.Math
 #endif
         public static double[][] Round(this double[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17645,17 +17260,16 @@ namespace Accord.Math
 #endif
         public static long[,] Exp(this double[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Exp((double)v));
                     }
                 }
             }
@@ -17676,7 +17290,6 @@ namespace Accord.Math
 #endif
         public static long[][] Exp(this double[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17724,17 +17337,16 @@ namespace Accord.Math
 #endif
         public static long[,] Log(this double[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Log((double)v));
                     }
                 }
             }
@@ -17755,7 +17367,6 @@ namespace Accord.Math
 #endif
         public static long[][] Log(this double[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17803,17 +17414,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sign(this double[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v));
                     }
                 }
             }
@@ -17834,7 +17444,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sign(this double[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17882,17 +17491,16 @@ namespace Accord.Math
 #endif
         public static long[,] Abs(this double[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Abs(v));
                     }
                 }
             }
@@ -17913,7 +17521,6 @@ namespace Accord.Math
 #endif
         public static long[][] Abs(this double[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -17961,17 +17568,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sqrt(this double[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -17992,7 +17598,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sqrt(this double[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18040,17 +17645,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignSqrt(this double[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -18071,7 +17675,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignSqrt(this double[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18119,17 +17722,16 @@ namespace Accord.Math
 #endif
         public static long[,] Floor(this double[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Floor((double)v));
                     }
                 }
             }
@@ -18150,7 +17752,6 @@ namespace Accord.Math
 #endif
         public static long[][] Floor(this double[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18198,17 +17799,16 @@ namespace Accord.Math
 #endif
         public static long[,] Ceiling(this double[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -18229,7 +17829,6 @@ namespace Accord.Math
 #endif
         public static long[][] Ceiling(this double[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18277,17 +17876,16 @@ namespace Accord.Math
 #endif
         public static long[,] Round(this double[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Round((double)v));
                     }
                 }
             }
@@ -18308,7 +17906,6 @@ namespace Accord.Math
 #endif
         public static long[][] Round(this double[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18356,17 +17953,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Exp(this double[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Exp((double)v));
                     }
                 }
             }
@@ -18387,7 +17983,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Exp(this double[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18435,17 +18030,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Log(this double[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Log((double)v));
                     }
                 }
             }
@@ -18466,7 +18060,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Log(this double[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18514,17 +18107,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sign(this double[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v));
                     }
                 }
             }
@@ -18545,7 +18137,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sign(this double[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18593,17 +18184,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Abs(this double[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Abs(v));
                     }
                 }
             }
@@ -18624,7 +18214,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Abs(this double[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18672,17 +18261,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sqrt(this double[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -18703,7 +18291,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sqrt(this double[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18751,17 +18338,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignSqrt(this double[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -18782,7 +18368,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignSqrt(this double[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18830,17 +18415,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Floor(this double[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Floor((double)v));
                     }
                 }
             }
@@ -18861,7 +18445,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Floor(this double[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18909,17 +18492,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Ceiling(this double[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -18940,7 +18522,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Ceiling(this double[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -18988,17 +18569,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Round(this double[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Round((double)v));
                     }
                 }
             }
@@ -19019,7 +18599,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Round(this double[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19067,17 +18646,16 @@ namespace Accord.Math
 #endif
         public static int[,] Exp(this long[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Exp((double)v));
                     }
                 }
             }
@@ -19098,7 +18676,6 @@ namespace Accord.Math
 #endif
         public static int[][] Exp(this long[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19146,17 +18723,16 @@ namespace Accord.Math
 #endif
         public static int[,] Log(this long[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Log((double)v));
                     }
                 }
             }
@@ -19177,7 +18753,6 @@ namespace Accord.Math
 #endif
         public static int[][] Log(this long[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19225,17 +18800,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sign(this long[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v));
                     }
                 }
             }
@@ -19256,7 +18830,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sign(this long[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19304,17 +18877,16 @@ namespace Accord.Math
 #endif
         public static int[,] Abs(this long[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Abs(v));
                     }
                 }
             }
@@ -19335,7 +18907,6 @@ namespace Accord.Math
 #endif
         public static int[][] Abs(this long[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19383,17 +18954,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sqrt(this long[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -19414,7 +18984,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sqrt(this long[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19462,17 +19031,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignSqrt(this long[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -19493,7 +19061,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignSqrt(this long[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19541,17 +19108,16 @@ namespace Accord.Math
 #endif
         public static int[,] Floor(this long[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Floor((double)v));
                     }
                 }
             }
@@ -19572,7 +19138,6 @@ namespace Accord.Math
 #endif
         public static int[][] Floor(this long[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19620,17 +19185,16 @@ namespace Accord.Math
 #endif
         public static int[,] Ceiling(this long[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -19651,7 +19215,6 @@ namespace Accord.Math
 #endif
         public static int[][] Ceiling(this long[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19699,17 +19262,16 @@ namespace Accord.Math
 #endif
         public static int[,] Round(this long[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Round((double)v));
                     }
                 }
             }
@@ -19730,7 +19292,6 @@ namespace Accord.Math
 #endif
         public static int[][] Round(this long[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19778,17 +19339,16 @@ namespace Accord.Math
 #endif
         public static short[,] Exp(this long[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Exp((double)v));
                     }
                 }
             }
@@ -19809,7 +19369,6 @@ namespace Accord.Math
 #endif
         public static short[][] Exp(this long[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19857,17 +19416,16 @@ namespace Accord.Math
 #endif
         public static short[,] Log(this long[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Log((double)v));
                     }
                 }
             }
@@ -19888,7 +19446,6 @@ namespace Accord.Math
 #endif
         public static short[][] Log(this long[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -19936,17 +19493,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sign(this long[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v));
                     }
                 }
             }
@@ -19967,7 +19523,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sign(this long[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20015,17 +19570,16 @@ namespace Accord.Math
 #endif
         public static short[,] Abs(this long[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Abs(v));
                     }
                 }
             }
@@ -20046,7 +19600,6 @@ namespace Accord.Math
 #endif
         public static short[][] Abs(this long[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20094,17 +19647,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sqrt(this long[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -20125,7 +19677,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sqrt(this long[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20173,17 +19724,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignSqrt(this long[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -20204,7 +19754,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignSqrt(this long[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20252,17 +19801,16 @@ namespace Accord.Math
 #endif
         public static short[,] Floor(this long[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Floor((double)v));
                     }
                 }
             }
@@ -20283,7 +19831,6 @@ namespace Accord.Math
 #endif
         public static short[][] Floor(this long[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20331,17 +19878,16 @@ namespace Accord.Math
 #endif
         public static short[,] Ceiling(this long[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -20362,7 +19908,6 @@ namespace Accord.Math
 #endif
         public static short[][] Ceiling(this long[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20410,17 +19955,16 @@ namespace Accord.Math
 #endif
         public static short[,] Round(this long[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Round((double)v));
                     }
                 }
             }
@@ -20441,7 +19985,6 @@ namespace Accord.Math
 #endif
         public static short[][] Round(this long[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20489,17 +20032,16 @@ namespace Accord.Math
 #endif
         public static float[,] Exp(this long[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Exp((double)v));
                     }
                 }
             }
@@ -20520,7 +20062,6 @@ namespace Accord.Math
 #endif
         public static float[][] Exp(this long[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20568,17 +20109,16 @@ namespace Accord.Math
 #endif
         public static float[,] Log(this long[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Log((double)v));
                     }
                 }
             }
@@ -20599,7 +20139,6 @@ namespace Accord.Math
 #endif
         public static float[][] Log(this long[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20647,17 +20186,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sign(this long[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v));
                     }
                 }
             }
@@ -20678,7 +20216,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sign(this long[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20726,17 +20263,16 @@ namespace Accord.Math
 #endif
         public static float[,] Abs(this long[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Abs(v));
                     }
                 }
             }
@@ -20757,7 +20293,6 @@ namespace Accord.Math
 #endif
         public static float[][] Abs(this long[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20805,17 +20340,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sqrt(this long[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -20836,7 +20370,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sqrt(this long[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20884,17 +20417,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignSqrt(this long[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -20915,7 +20447,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignSqrt(this long[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -20963,17 +20494,16 @@ namespace Accord.Math
 #endif
         public static float[,] Floor(this long[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Floor((double)v));
                     }
                 }
             }
@@ -20994,7 +20524,6 @@ namespace Accord.Math
 #endif
         public static float[][] Floor(this long[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21042,17 +20571,16 @@ namespace Accord.Math
 #endif
         public static float[,] Ceiling(this long[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -21073,7 +20601,6 @@ namespace Accord.Math
 #endif
         public static float[][] Ceiling(this long[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21121,17 +20648,16 @@ namespace Accord.Math
 #endif
         public static float[,] Round(this long[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Round((double)v));
                     }
                 }
             }
@@ -21152,7 +20678,6 @@ namespace Accord.Math
 #endif
         public static float[][] Round(this long[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21200,17 +20725,16 @@ namespace Accord.Math
 #endif
         public static double[,] Exp(this long[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Exp((double)v));
                     }
                 }
             }
@@ -21231,7 +20755,6 @@ namespace Accord.Math
 #endif
         public static double[][] Exp(this long[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21279,17 +20802,16 @@ namespace Accord.Math
 #endif
         public static double[,] Log(this long[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Log((double)v));
                     }
                 }
             }
@@ -21310,7 +20832,6 @@ namespace Accord.Math
 #endif
         public static double[][] Log(this long[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21358,17 +20879,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sign(this long[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v));
                     }
                 }
             }
@@ -21389,7 +20909,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sign(this long[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21437,17 +20956,16 @@ namespace Accord.Math
 #endif
         public static double[,] Abs(this long[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Abs(v));
                     }
                 }
             }
@@ -21468,7 +20986,6 @@ namespace Accord.Math
 #endif
         public static double[][] Abs(this long[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21516,17 +21033,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sqrt(this long[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -21547,7 +21063,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sqrt(this long[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21595,17 +21110,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignSqrt(this long[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -21626,7 +21140,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignSqrt(this long[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21674,17 +21187,16 @@ namespace Accord.Math
 #endif
         public static double[,] Floor(this long[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Floor((double)v));
                     }
                 }
             }
@@ -21705,7 +21217,6 @@ namespace Accord.Math
 #endif
         public static double[][] Floor(this long[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21753,17 +21264,16 @@ namespace Accord.Math
 #endif
         public static double[,] Ceiling(this long[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -21784,7 +21294,6 @@ namespace Accord.Math
 #endif
         public static double[][] Ceiling(this long[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21832,17 +21341,16 @@ namespace Accord.Math
 #endif
         public static double[,] Round(this long[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Round((double)v));
                     }
                 }
             }
@@ -21863,7 +21371,6 @@ namespace Accord.Math
 #endif
         public static double[][] Round(this long[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21911,17 +21418,16 @@ namespace Accord.Math
 #endif
         public static long[,] Exp(this long[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Exp((double)v));
                     }
                 }
             }
@@ -21942,7 +21448,6 @@ namespace Accord.Math
 #endif
         public static long[][] Exp(this long[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -21990,17 +21495,16 @@ namespace Accord.Math
 #endif
         public static long[,] Log(this long[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Log((double)v));
                     }
                 }
             }
@@ -22021,7 +21525,6 @@ namespace Accord.Math
 #endif
         public static long[][] Log(this long[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22069,17 +21572,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sign(this long[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v));
                     }
                 }
             }
@@ -22100,7 +21602,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sign(this long[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22148,17 +21649,16 @@ namespace Accord.Math
 #endif
         public static long[,] Abs(this long[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Abs(v));
                     }
                 }
             }
@@ -22179,7 +21679,6 @@ namespace Accord.Math
 #endif
         public static long[][] Abs(this long[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22227,17 +21726,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sqrt(this long[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -22258,7 +21756,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sqrt(this long[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22306,17 +21803,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignSqrt(this long[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -22337,7 +21833,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignSqrt(this long[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22385,17 +21880,16 @@ namespace Accord.Math
 #endif
         public static long[,] Floor(this long[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Floor((double)v));
                     }
                 }
             }
@@ -22416,7 +21910,6 @@ namespace Accord.Math
 #endif
         public static long[][] Floor(this long[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22464,17 +21957,16 @@ namespace Accord.Math
 #endif
         public static long[,] Ceiling(this long[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -22495,7 +21987,6 @@ namespace Accord.Math
 #endif
         public static long[][] Ceiling(this long[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22543,17 +22034,16 @@ namespace Accord.Math
 #endif
         public static long[,] Round(this long[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Round((double)v));
                     }
                 }
             }
@@ -22574,7 +22064,6 @@ namespace Accord.Math
 #endif
         public static long[][] Round(this long[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22622,17 +22111,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Exp(this long[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Exp((double)v));
                     }
                 }
             }
@@ -22653,7 +22141,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Exp(this long[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22701,17 +22188,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Log(this long[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Log((double)v));
                     }
                 }
             }
@@ -22732,7 +22218,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Log(this long[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22780,17 +22265,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sign(this long[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v));
                     }
                 }
             }
@@ -22811,7 +22295,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sign(this long[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22859,17 +22342,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Abs(this long[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Abs(v));
                     }
                 }
             }
@@ -22890,7 +22372,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Abs(this long[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -22938,17 +22419,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sqrt(this long[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -22969,7 +22449,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sqrt(this long[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23017,17 +22496,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignSqrt(this long[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -23048,7 +22526,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignSqrt(this long[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23096,17 +22573,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Floor(this long[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Floor((double)v));
                     }
                 }
             }
@@ -23127,7 +22603,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Floor(this long[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23175,17 +22650,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Ceiling(this long[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -23206,7 +22680,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Ceiling(this long[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23254,17 +22727,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Round(this long[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Round((double)v));
                     }
                 }
             }
@@ -23285,7 +22757,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Round(this long[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23333,17 +22804,16 @@ namespace Accord.Math
 #endif
         public static int[,] Exp(this decimal[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Exp((double)v));
                     }
                 }
             }
@@ -23364,7 +22834,6 @@ namespace Accord.Math
 #endif
         public static int[][] Exp(this decimal[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23412,17 +22881,16 @@ namespace Accord.Math
 #endif
         public static int[,] Log(this decimal[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Log((double)v));
                     }
                 }
             }
@@ -23443,7 +22911,6 @@ namespace Accord.Math
 #endif
         public static int[][] Log(this decimal[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23491,17 +22958,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sign(this decimal[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v));
                     }
                 }
             }
@@ -23522,7 +22988,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sign(this decimal[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23570,17 +23035,16 @@ namespace Accord.Math
 #endif
         public static int[,] Abs(this decimal[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Abs(v));
                     }
                 }
             }
@@ -23601,7 +23065,6 @@ namespace Accord.Math
 #endif
         public static int[][] Abs(this decimal[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23649,17 +23112,16 @@ namespace Accord.Math
 #endif
         public static int[,] Sqrt(this decimal[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -23680,7 +23142,6 @@ namespace Accord.Math
 #endif
         public static int[][] Sqrt(this decimal[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23728,17 +23189,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignSqrt(this decimal[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -23759,7 +23219,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignSqrt(this decimal[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23807,17 +23266,16 @@ namespace Accord.Math
 #endif
         public static int[,] Floor(this decimal[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Floor((double)v));
                     }
                 }
             }
@@ -23838,7 +23296,6 @@ namespace Accord.Math
 #endif
         public static int[][] Floor(this decimal[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23886,17 +23343,16 @@ namespace Accord.Math
 #endif
         public static int[,] Ceiling(this decimal[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -23917,7 +23373,6 @@ namespace Accord.Math
 #endif
         public static int[][] Ceiling(this decimal[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -23965,17 +23420,16 @@ namespace Accord.Math
 #endif
         public static int[,] Round(this decimal[,] value, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Round((double)v));
                     }
                 }
             }
@@ -23996,7 +23450,6 @@ namespace Accord.Math
 #endif
         public static int[][] Round(this decimal[][] value, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24044,17 +23497,16 @@ namespace Accord.Math
 #endif
         public static short[,] Exp(this decimal[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Exp((double)v));
                     }
                 }
             }
@@ -24075,7 +23527,6 @@ namespace Accord.Math
 #endif
         public static short[][] Exp(this decimal[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24123,17 +23574,16 @@ namespace Accord.Math
 #endif
         public static short[,] Log(this decimal[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Log((double)v));
                     }
                 }
             }
@@ -24154,7 +23604,6 @@ namespace Accord.Math
 #endif
         public static short[][] Log(this decimal[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24202,17 +23651,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sign(this decimal[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v));
                     }
                 }
             }
@@ -24233,7 +23681,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sign(this decimal[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24281,17 +23728,16 @@ namespace Accord.Math
 #endif
         public static short[,] Abs(this decimal[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Abs(v));
                     }
                 }
             }
@@ -24312,7 +23758,6 @@ namespace Accord.Math
 #endif
         public static short[][] Abs(this decimal[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24360,17 +23805,16 @@ namespace Accord.Math
 #endif
         public static short[,] Sqrt(this decimal[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -24391,7 +23835,6 @@ namespace Accord.Math
 #endif
         public static short[][] Sqrt(this decimal[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24439,17 +23882,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignSqrt(this decimal[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -24470,7 +23912,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignSqrt(this decimal[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24518,17 +23959,16 @@ namespace Accord.Math
 #endif
         public static short[,] Floor(this decimal[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Floor((double)v));
                     }
                 }
             }
@@ -24549,7 +23989,6 @@ namespace Accord.Math
 #endif
         public static short[][] Floor(this decimal[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24597,17 +24036,16 @@ namespace Accord.Math
 #endif
         public static short[,] Ceiling(this decimal[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -24628,7 +24066,6 @@ namespace Accord.Math
 #endif
         public static short[][] Ceiling(this decimal[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24676,17 +24113,16 @@ namespace Accord.Math
 #endif
         public static short[,] Round(this decimal[,] value, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Round((double)v));
                     }
                 }
             }
@@ -24707,7 +24143,6 @@ namespace Accord.Math
 #endif
         public static short[][] Round(this decimal[][] value, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24755,17 +24190,16 @@ namespace Accord.Math
 #endif
         public static float[,] Exp(this decimal[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Exp((double)v));
                     }
                 }
             }
@@ -24786,7 +24220,6 @@ namespace Accord.Math
 #endif
         public static float[][] Exp(this decimal[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24834,17 +24267,16 @@ namespace Accord.Math
 #endif
         public static float[,] Log(this decimal[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Log((double)v));
                     }
                 }
             }
@@ -24865,7 +24297,6 @@ namespace Accord.Math
 #endif
         public static float[][] Log(this decimal[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24913,17 +24344,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sign(this decimal[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v));
                     }
                 }
             }
@@ -24944,7 +24374,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sign(this decimal[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -24992,17 +24421,16 @@ namespace Accord.Math
 #endif
         public static float[,] Abs(this decimal[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Abs(v));
                     }
                 }
             }
@@ -25023,7 +24451,6 @@ namespace Accord.Math
 #endif
         public static float[][] Abs(this decimal[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25071,17 +24498,16 @@ namespace Accord.Math
 #endif
         public static float[,] Sqrt(this decimal[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -25102,7 +24528,6 @@ namespace Accord.Math
 #endif
         public static float[][] Sqrt(this decimal[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25150,17 +24575,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignSqrt(this decimal[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -25181,7 +24605,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignSqrt(this decimal[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25229,17 +24652,16 @@ namespace Accord.Math
 #endif
         public static float[,] Floor(this decimal[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Floor((double)v));
                     }
                 }
             }
@@ -25260,7 +24682,6 @@ namespace Accord.Math
 #endif
         public static float[][] Floor(this decimal[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25308,17 +24729,16 @@ namespace Accord.Math
 #endif
         public static float[,] Ceiling(this decimal[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -25339,7 +24759,6 @@ namespace Accord.Math
 #endif
         public static float[][] Ceiling(this decimal[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25387,17 +24806,16 @@ namespace Accord.Math
 #endif
         public static float[,] Round(this decimal[,] value, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Round((double)v));
                     }
                 }
             }
@@ -25418,7 +24836,6 @@ namespace Accord.Math
 #endif
         public static float[][] Round(this decimal[][] value, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25466,17 +24883,16 @@ namespace Accord.Math
 #endif
         public static double[,] Exp(this decimal[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Exp((double)v));
                     }
                 }
             }
@@ -25497,7 +24913,6 @@ namespace Accord.Math
 #endif
         public static double[][] Exp(this decimal[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25545,17 +24960,16 @@ namespace Accord.Math
 #endif
         public static double[,] Log(this decimal[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Log((double)v));
                     }
                 }
             }
@@ -25576,7 +24990,6 @@ namespace Accord.Math
 #endif
         public static double[][] Log(this decimal[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25624,17 +25037,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sign(this decimal[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v));
                     }
                 }
             }
@@ -25655,7 +25067,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sign(this decimal[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25703,17 +25114,16 @@ namespace Accord.Math
 #endif
         public static double[,] Abs(this decimal[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Abs(v));
                     }
                 }
             }
@@ -25734,7 +25144,6 @@ namespace Accord.Math
 #endif
         public static double[][] Abs(this decimal[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25782,17 +25191,16 @@ namespace Accord.Math
 #endif
         public static double[,] Sqrt(this decimal[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -25813,7 +25221,6 @@ namespace Accord.Math
 #endif
         public static double[][] Sqrt(this decimal[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25861,17 +25268,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignSqrt(this decimal[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -25892,7 +25298,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignSqrt(this decimal[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -25940,17 +25345,16 @@ namespace Accord.Math
 #endif
         public static double[,] Floor(this decimal[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Floor((double)v));
                     }
                 }
             }
@@ -25971,7 +25375,6 @@ namespace Accord.Math
 #endif
         public static double[][] Floor(this decimal[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26019,17 +25422,16 @@ namespace Accord.Math
 #endif
         public static double[,] Ceiling(this decimal[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -26050,7 +25452,6 @@ namespace Accord.Math
 #endif
         public static double[][] Ceiling(this decimal[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26098,17 +25499,16 @@ namespace Accord.Math
 #endif
         public static double[,] Round(this decimal[,] value, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Round((double)v));
                     }
                 }
             }
@@ -26129,7 +25529,6 @@ namespace Accord.Math
 #endif
         public static double[][] Round(this decimal[][] value, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26177,17 +25576,16 @@ namespace Accord.Math
 #endif
         public static long[,] Exp(this decimal[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Exp((double)v));
                     }
                 }
             }
@@ -26208,7 +25606,6 @@ namespace Accord.Math
 #endif
         public static long[][] Exp(this decimal[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26256,17 +25653,16 @@ namespace Accord.Math
 #endif
         public static long[,] Log(this decimal[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Log((double)v));
                     }
                 }
             }
@@ -26287,7 +25683,6 @@ namespace Accord.Math
 #endif
         public static long[][] Log(this decimal[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26335,17 +25730,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sign(this decimal[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v));
                     }
                 }
             }
@@ -26366,7 +25760,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sign(this decimal[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26414,17 +25807,16 @@ namespace Accord.Math
 #endif
         public static long[,] Abs(this decimal[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Abs(v));
                     }
                 }
             }
@@ -26445,7 +25837,6 @@ namespace Accord.Math
 #endif
         public static long[][] Abs(this decimal[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26493,17 +25884,16 @@ namespace Accord.Math
 #endif
         public static long[,] Sqrt(this decimal[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -26524,7 +25914,6 @@ namespace Accord.Math
 #endif
         public static long[][] Sqrt(this decimal[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26572,17 +25961,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignSqrt(this decimal[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -26603,7 +25991,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignSqrt(this decimal[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26651,17 +26038,16 @@ namespace Accord.Math
 #endif
         public static long[,] Floor(this decimal[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Floor((double)v));
                     }
                 }
             }
@@ -26682,7 +26068,6 @@ namespace Accord.Math
 #endif
         public static long[][] Floor(this decimal[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26730,17 +26115,16 @@ namespace Accord.Math
 #endif
         public static long[,] Ceiling(this decimal[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -26761,7 +26145,6 @@ namespace Accord.Math
 #endif
         public static long[][] Ceiling(this decimal[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26809,17 +26192,16 @@ namespace Accord.Math
 #endif
         public static long[,] Round(this decimal[,] value, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Round((double)v));
                     }
                 }
             }
@@ -26840,7 +26222,6 @@ namespace Accord.Math
 #endif
         public static long[][] Round(this decimal[][] value, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26888,17 +26269,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Exp(this decimal[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Exp((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Exp((double)v));
                     }
                 }
             }
@@ -26919,7 +26299,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Exp(this decimal[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -26967,17 +26346,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Log(this decimal[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Log((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Log((double)v));
                     }
                 }
             }
@@ -26998,7 +26376,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Log(this decimal[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -27046,17 +26423,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sign(this decimal[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v));
                     }
                 }
             }
@@ -27077,7 +26453,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sign(this decimal[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -27125,17 +26500,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Abs(this decimal[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Abs(v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Abs(v));
                     }
                 }
             }
@@ -27156,7 +26530,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Abs(this decimal[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -27204,17 +26577,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Sqrt(this decimal[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sqrt((double)v));
                     }
                 }
             }
@@ -27235,7 +26607,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Sqrt(this decimal[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -27283,17 +26654,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignSqrt(this decimal[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Sqrt((double)v));
                     }
                 }
             }
@@ -27314,7 +26684,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignSqrt(this decimal[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -27362,17 +26731,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Floor(this decimal[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Floor((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Floor((double)v));
                     }
                 }
             }
@@ -27393,7 +26761,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Floor(this decimal[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -27441,17 +26808,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Ceiling(this decimal[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Ceiling((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Ceiling((double)v));
                     }
                 }
             }
@@ -27472,7 +26838,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Ceiling(this decimal[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -27520,17 +26885,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Round(this decimal[,] value, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Round((double)v));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Round((double)v));
                     }
                 }
             }
@@ -27551,7 +26915,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Round(this decimal[][] value, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28129,17 +27492,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignedPow(this int[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28161,7 +27523,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignedPow(this int[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28211,17 +27572,16 @@ namespace Accord.Math
 #endif
         public static int[,] Pow(this int[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28243,7 +27603,6 @@ namespace Accord.Math
 #endif
         public static int[][] Pow(this int[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28293,17 +27652,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignedPow(this int[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28325,7 +27683,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignedPow(this int[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28375,17 +27732,16 @@ namespace Accord.Math
 #endif
         public static short[,] Pow(this int[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28407,7 +27763,6 @@ namespace Accord.Math
 #endif
         public static short[][] Pow(this int[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28457,17 +27812,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignedPow(this int[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28489,7 +27843,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignedPow(this int[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28539,17 +27892,16 @@ namespace Accord.Math
 #endif
         public static float[,] Pow(this int[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28571,7 +27923,6 @@ namespace Accord.Math
 #endif
         public static float[][] Pow(this int[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28621,17 +27972,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignedPow(this int[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28653,7 +28003,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignedPow(this int[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28703,17 +28052,16 @@ namespace Accord.Math
 #endif
         public static double[,] Pow(this int[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28735,7 +28083,6 @@ namespace Accord.Math
 #endif
         public static double[][] Pow(this int[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28785,17 +28132,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignedPow(this int[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28817,7 +28163,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignedPow(this int[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28867,17 +28212,16 @@ namespace Accord.Math
 #endif
         public static long[,] Pow(this int[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28899,7 +28243,6 @@ namespace Accord.Math
 #endif
         public static long[][] Pow(this int[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -28949,17 +28292,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignedPow(this int[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -28981,7 +28323,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignedPow(this int[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29031,17 +28372,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Pow(this int[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (int* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29063,7 +28403,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Pow(this int[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29113,17 +28452,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignedPow(this short[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29145,7 +28483,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignedPow(this short[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29195,17 +28532,16 @@ namespace Accord.Math
 #endif
         public static int[,] Pow(this short[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29227,7 +28563,6 @@ namespace Accord.Math
 #endif
         public static int[][] Pow(this short[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29277,17 +28612,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignedPow(this short[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29309,7 +28643,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignedPow(this short[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29359,17 +28692,16 @@ namespace Accord.Math
 #endif
         public static short[,] Pow(this short[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29391,7 +28723,6 @@ namespace Accord.Math
 #endif
         public static short[][] Pow(this short[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29441,17 +28772,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignedPow(this short[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29473,7 +28803,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignedPow(this short[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29523,17 +28852,16 @@ namespace Accord.Math
 #endif
         public static float[,] Pow(this short[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29555,7 +28883,6 @@ namespace Accord.Math
 #endif
         public static float[][] Pow(this short[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29605,17 +28932,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignedPow(this short[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29637,7 +28963,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignedPow(this short[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29687,17 +29012,16 @@ namespace Accord.Math
 #endif
         public static double[,] Pow(this short[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29719,7 +29043,6 @@ namespace Accord.Math
 #endif
         public static double[][] Pow(this short[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29769,17 +29092,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignedPow(this short[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29801,7 +29123,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignedPow(this short[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29851,17 +29172,16 @@ namespace Accord.Math
 #endif
         public static long[,] Pow(this short[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29883,7 +29203,6 @@ namespace Accord.Math
 #endif
         public static long[][] Pow(this short[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -29933,17 +29252,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignedPow(this short[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -29965,7 +29283,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignedPow(this short[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30015,17 +29332,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Pow(this short[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (short* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30047,7 +29363,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Pow(this short[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30097,17 +29412,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignedPow(this float[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30129,7 +29443,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignedPow(this float[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30179,17 +29492,16 @@ namespace Accord.Math
 #endif
         public static int[,] Pow(this float[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30211,7 +29523,6 @@ namespace Accord.Math
 #endif
         public static int[][] Pow(this float[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30261,17 +29572,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignedPow(this float[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30293,7 +29603,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignedPow(this float[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30343,17 +29652,16 @@ namespace Accord.Math
 #endif
         public static short[,] Pow(this float[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30375,7 +29683,6 @@ namespace Accord.Math
 #endif
         public static short[][] Pow(this float[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30425,17 +29732,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignedPow(this float[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30457,7 +29763,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignedPow(this float[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30507,17 +29812,16 @@ namespace Accord.Math
 #endif
         public static float[,] Pow(this float[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30539,7 +29843,6 @@ namespace Accord.Math
 #endif
         public static float[][] Pow(this float[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30589,17 +29892,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignedPow(this float[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30621,7 +29923,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignedPow(this float[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30671,17 +29972,16 @@ namespace Accord.Math
 #endif
         public static double[,] Pow(this float[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30703,7 +30003,6 @@ namespace Accord.Math
 #endif
         public static double[][] Pow(this float[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30753,17 +30052,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignedPow(this float[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30785,7 +30083,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignedPow(this float[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30835,17 +30132,16 @@ namespace Accord.Math
 #endif
         public static long[,] Pow(this float[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30867,7 +30163,6 @@ namespace Accord.Math
 #endif
         public static long[][] Pow(this float[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30917,17 +30212,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignedPow(this float[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -30949,7 +30243,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignedPow(this float[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -30999,17 +30292,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Pow(this float[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (float* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31031,7 +30323,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Pow(this float[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31081,17 +30372,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignedPow(this double[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31113,7 +30403,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignedPow(this double[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31163,17 +30452,16 @@ namespace Accord.Math
 #endif
         public static int[,] Pow(this double[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31195,7 +30483,6 @@ namespace Accord.Math
 #endif
         public static int[][] Pow(this double[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31245,17 +30532,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignedPow(this double[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31277,7 +30563,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignedPow(this double[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31327,17 +30612,16 @@ namespace Accord.Math
 #endif
         public static short[,] Pow(this double[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31359,7 +30643,6 @@ namespace Accord.Math
 #endif
         public static short[][] Pow(this double[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31409,17 +30692,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignedPow(this double[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31441,7 +30723,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignedPow(this double[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31491,17 +30772,16 @@ namespace Accord.Math
 #endif
         public static float[,] Pow(this double[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31523,7 +30803,6 @@ namespace Accord.Math
 #endif
         public static float[][] Pow(this double[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31573,17 +30852,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignedPow(this double[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31605,7 +30883,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignedPow(this double[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31655,17 +30932,16 @@ namespace Accord.Math
 #endif
         public static double[,] Pow(this double[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31687,7 +30963,6 @@ namespace Accord.Math
 #endif
         public static double[][] Pow(this double[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31737,17 +31012,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignedPow(this double[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31769,7 +31043,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignedPow(this double[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31819,17 +31092,16 @@ namespace Accord.Math
 #endif
         public static long[,] Pow(this double[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31851,7 +31123,6 @@ namespace Accord.Math
 #endif
         public static long[][] Pow(this double[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31901,17 +31172,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignedPow(this double[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -31933,7 +31203,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignedPow(this double[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -31983,17 +31252,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Pow(this double[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (double* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32015,7 +31283,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Pow(this double[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32065,17 +31332,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignedPow(this long[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32097,7 +31363,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignedPow(this long[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32147,17 +31412,16 @@ namespace Accord.Math
 #endif
         public static int[,] Pow(this long[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32179,7 +31443,6 @@ namespace Accord.Math
 #endif
         public static int[][] Pow(this long[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32229,17 +31492,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignedPow(this long[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32261,7 +31523,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignedPow(this long[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32311,17 +31572,16 @@ namespace Accord.Math
 #endif
         public static short[,] Pow(this long[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32343,7 +31603,6 @@ namespace Accord.Math
 #endif
         public static short[][] Pow(this long[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32393,17 +31652,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignedPow(this long[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32425,7 +31683,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignedPow(this long[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32475,17 +31732,16 @@ namespace Accord.Math
 #endif
         public static float[,] Pow(this long[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32507,7 +31763,6 @@ namespace Accord.Math
 #endif
         public static float[][] Pow(this long[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32557,17 +31812,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignedPow(this long[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32589,7 +31843,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignedPow(this long[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32639,17 +31892,16 @@ namespace Accord.Math
 #endif
         public static double[,] Pow(this long[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32671,7 +31923,6 @@ namespace Accord.Math
 #endif
         public static double[][] Pow(this long[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32721,17 +31972,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignedPow(this long[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32753,7 +32003,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignedPow(this long[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32803,17 +32052,16 @@ namespace Accord.Math
 #endif
         public static long[,] Pow(this long[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32835,7 +32083,6 @@ namespace Accord.Math
 #endif
         public static long[][] Pow(this long[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32885,17 +32132,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignedPow(this long[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32917,7 +32163,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignedPow(this long[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -32967,17 +32212,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Pow(this long[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (long* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<long> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -32999,7 +32243,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Pow(this long[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33049,17 +32292,16 @@ namespace Accord.Math
 #endif
         public static int[,] SignedPow(this decimal[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33081,7 +32323,6 @@ namespace Accord.Math
 #endif
         public static int[][] SignedPow(this decimal[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33131,17 +32372,16 @@ namespace Accord.Math
 #endif
         public static int[,] Pow(this decimal[,] value, double y, int[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (int)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (int)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33163,7 +32403,6 @@ namespace Accord.Math
 #endif
         public static int[][] Pow(this decimal[][] value, double y, int[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33213,17 +32452,16 @@ namespace Accord.Math
 #endif
         public static short[,] SignedPow(this decimal[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33245,7 +32483,6 @@ namespace Accord.Math
 #endif
         public static short[][] SignedPow(this decimal[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33295,17 +32532,16 @@ namespace Accord.Math
 #endif
         public static short[,] Pow(this decimal[,] value, double y, short[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (short)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (short)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33327,7 +32563,6 @@ namespace Accord.Math
 #endif
         public static short[][] Pow(this decimal[][] value, double y, short[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33377,17 +32612,16 @@ namespace Accord.Math
 #endif
         public static float[,] SignedPow(this decimal[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33409,7 +32643,6 @@ namespace Accord.Math
 #endif
         public static float[][] SignedPow(this decimal[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33459,17 +32692,16 @@ namespace Accord.Math
 #endif
         public static float[,] Pow(this decimal[,] value, double y, float[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (float)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (float)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33491,7 +32723,6 @@ namespace Accord.Math
 #endif
         public static float[][] Pow(this decimal[][] value, double y, float[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33541,17 +32772,16 @@ namespace Accord.Math
 #endif
         public static double[,] SignedPow(this decimal[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33573,7 +32803,6 @@ namespace Accord.Math
 #endif
         public static double[][] SignedPow(this decimal[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33623,17 +32852,16 @@ namespace Accord.Math
 #endif
         public static double[,] Pow(this decimal[,] value, double y, double[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (double)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (double)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33655,7 +32883,6 @@ namespace Accord.Math
 #endif
         public static double[][] Pow(this decimal[][] value, double y, double[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33705,17 +32932,16 @@ namespace Accord.Math
 #endif
         public static long[,] SignedPow(this decimal[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33737,7 +32963,6 @@ namespace Accord.Math
 #endif
         public static long[][] SignedPow(this decimal[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33787,17 +33012,16 @@ namespace Accord.Math
 #endif
         public static long[,] Pow(this decimal[,] value, double y, long[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (long* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<long> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, long>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (long)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (long)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33819,7 +33043,6 @@ namespace Accord.Math
 #endif
         public static long[][] Pow(this decimal[][] value, double y, long[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33869,17 +33092,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] SignedPow(this decimal[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Sign(v) * Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33901,7 +33123,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] SignedPow(this decimal[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -33951,17 +33172,16 @@ namespace Accord.Math
 #endif
         public static decimal[,] Pow(this decimal[,] value, double y, decimal[,] result)
         {
-            unsafe
             {
-                fixed (decimal* ptrV = value)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrV = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)value)), value.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pv = ptrV;
-                    var pr = ptrR;
+                    int pv = 0;
+                    int pr = 0;
                     for (int j = 0; j < result.Length; j++, pv++, pr++)
                     {
-                        var v = *pv;
-                        *pr = (decimal)(Math.Pow((double)Math.Abs(v), y));
+                        var v = ptrV[pv];
+                        ptrR[pr] = (decimal)(Math.Pow((double)Math.Abs(v), y));
                     }
                 }
             }
@@ -33983,7 +33203,6 @@ namespace Accord.Math
 #endif
         public static decimal[][] Pow(this decimal[][] value, double y, decimal[][] result)
         {
-            unsafe 
             {
                 for (int i = 0; i < value.Length; i++)
                 {

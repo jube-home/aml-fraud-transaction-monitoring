@@ -138,6 +138,7 @@ namespace Jube.Test.Engine.Sanctions
         public void CalculateFirstAndLastAreSameElementForSingleMatch()
         {
             var returns = Returns(4);
+
             SanctionAggregationCalculator.CalculateFirst(returns).Should()
                 .Be(SanctionAggregationCalculator.CalculateLast(returns));
         }

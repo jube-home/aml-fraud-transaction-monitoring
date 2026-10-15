@@ -35,6 +35,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                              .Where(m => m.Instance.TenantRegistryId == tenantRegistryId).ToList())
                 {
                     var state = EngineModelStateBuilder.FromModel(model, instance, now);
+
                     await repository.UpsertAsync(instance, tenantRegistryId, model.Instance.Id,
                         JsonConvert.SerializeObject(state), context.Services.CancellationToken).ConfigureAwait(false);
                 }

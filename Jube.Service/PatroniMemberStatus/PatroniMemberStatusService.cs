@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -18,7 +18,7 @@ using Jube.Data.Repository;
 using Jube.Dto.PatroniMemberStatus;
 using Jube.Dto.Payload;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.PatroniMemberStatus;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.PatroniMemberStatus
     public sealed class PatroniMemberStatusService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
@@ -55,6 +54,9 @@ namespace Jube.Service.PatroniMemberStatus
             this.permissionValidation = permissionValidation;
             repository = new PatroniMemberStatusRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<PatroniMemberStatusService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -142,12 +144,16 @@ namespace Jube.Service.PatroniMemberStatus
         {
             using var op = OperationScope.Start("PatroniMemberStatus", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PatroniMemberStatus.List: entry take={clampedTake} user={userName}");
@@ -176,6 +182,7 @@ namespace Jube.Service.PatroniMemberStatus
                     .ConfigureAwait(false);
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"PatroniMemberStatus.List: {dtos.Count} rows user={userName}");
@@ -191,6 +198,7 @@ namespace Jube.Service.PatroniMemberStatus
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"PatroniMemberStatus.List: cancelled user={userName}");

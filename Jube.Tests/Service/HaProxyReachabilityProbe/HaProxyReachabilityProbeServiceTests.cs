@@ -85,6 +85,7 @@ namespace Jube.Test.Service.HaProxyReachabilityProbe
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -233,10 +234,12 @@ namespace Jube.Test.Service.HaProxyReachabilityProbe
 
             var ascending = await service.ListAsync(search: instance, sortField: "connectMicroseconds",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.ConnectMicroseconds).Should().Equal(1000, 2000, 3000);
 
             var descending = await service.ListAsync(search: instance, sortField: "connectMicroseconds",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.ConnectMicroseconds).Should().Equal(3000, 2000, 1000);
         }
 
@@ -249,6 +252,7 @@ namespace Jube.Test.Service.HaProxyReachabilityProbe
             await CreateEntryAsync(dbContext, instance, connectMicroseconds: 2000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: instance, sortField: "connectMicroseconds",
                 sortDirection: "banana");
 
@@ -276,6 +280,7 @@ namespace Jube.Test.Service.HaProxyReachabilityProbe
         {
             await using var dbContext = fx.GetDbContext();
             var instance = $"{DatabaseFixture.Prefix}Instance{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, instance);

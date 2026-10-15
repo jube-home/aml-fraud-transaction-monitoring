@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static int LuhnCheckDigit(this string? @this)
         {
             var digits = (@this ?? "").Replace(" ", "");
+
             if (digits.Length == 0 || !digits.All(char.IsAsciiDigit))
             {
                 return -1;
@@ -25,12 +26,15 @@ namespace Jube.Dictionary.Extensions
 
             var sum = 0;
             var doubleDigit = true;
+
             for (var i = digits.Length - 1; i >= 0; i--)
             {
                 var digit = digits[i] - '0';
+
                 if (doubleDigit)
                 {
                     digit *= 2;
+
                     if (digit > 9)
                     {
                         digit -= 9;

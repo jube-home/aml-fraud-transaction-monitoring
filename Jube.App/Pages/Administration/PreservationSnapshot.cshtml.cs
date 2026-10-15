@@ -43,18 +43,16 @@ namespace Jube.App.Pages.Administration
 
         public ActionResult OnGet()
         {
-            if (!permissionValidation.Validate(new[]
-                {
+            if (!permissionValidation.Validate([
                     38
-                }))
+                ]))
             {
                 return Forbid();
             }
 
-            CanImport = permissionValidation.Validate(new[]
-            {
+            CanImport = permissionValidation.Validate([
                 63
-            });
+            ]);
 
             return new PageResult();
         }

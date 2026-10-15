@@ -18,8 +18,10 @@ using FluentAssertions;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Engine.Integrity;
+using Jube.Engine.Integrity.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelIntegrity;
 using Jube.Service.Query.EntityAnalysisModelIntegrity;
+using Jube.Service.Query.EntityAnalysisModelIntegrity.Interfaces;
 using Jube.Service.Reactivity;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -52,12 +54,14 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
         public async Task InitializeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var model = await new EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission).InsertAsync(
                 new Data.Poco.EntityAnalysisModel
                 {
                     Name = $"{DatabaseFixture.Prefix}Int{Guid.NewGuid():N}"[..40], Guid = Guid.NewGuid(),
                     Active = 1, Locked = 0, Deleted = 0, EnableTtlCounter = 0
                 });
+
             (modelId, modelGuid, tenantRegistryId) = (model.Id, model.Guid, model.TenantRegistryId!.Value);
 
             accountIdField = await dbContext.InsertWithInt32IdentityAsync(new EntityAnalysisModelRequestXpath
@@ -66,11 +70,13 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
                 Active = 1, Cache = 1, Deleted = 0, Guid = Guid.NewGuid(), SearchKey = 1,
                 SearchKeyTtlInterval = "h", SearchKeyTtlIntervalValue = 12
             });
+
             ttlCounterId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelTtlCounter
             {
                 EntityAnalysisModelId = modelId, Name = "PerAccount", TtlCounterDataName = "AccountId",
                 TtlCounterInterval = "d", TtlCounterValue = 1, Active = 1, Deleted = 0, Guid = Guid.NewGuid()
             });
+
             activationRuleId = await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.EntityAnalysisModelActivationRule
                 {
@@ -79,22 +85,26 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
                                       "   Return True\nEnd If",
                     Active = 1, Deleted = 0, Guid = Guid.NewGuid()
                 });
+
             await dbContext.InsertAsync(new Data.Poco.EntityAnalysisModelGatewayRule
             {
                 EntityAnalysisModelId = modelId, Name = "Broken", RuleScriptTypeId = 2,
                 CoderRuleScript = "If (Payload.AccountId = \"1\") Then\n   Return True\nEnd If", Active = 1,
                 Deleted = 0, Guid = Guid.NewGuid(), Compiled = 0, CompileError = "BC30451: boom"
             });
+
             await dbContext.InsertAsync(new Data.Poco.EntityAnalysisModelAbstractionRule
             {
                 EntityAnalysisModelId = modelId, Name = "CountWeek", Search = 1, SearchKey = "AccountId",
                 SearchInterval = "d", SearchValue = 7, SearchFunctionTypeId = 1, RuleScriptTypeId = 2,
                 CoderRuleScript = "Return True", Active = 1, Deleted = 0, Guid = Guid.NewGuid()
             });
+
             await dbContext.InsertAsync(new Data.Poco.EntityAnalysisModelList
             {
                 EntityAnalysisModelGuid = modelGuid, Name = "Unused", Active = 1, Deleted = 0, Guid = Guid.NewGuid()
             });
+
             await dbContext.InsertAsync(new EntityAnalysisModelSynchronisationNodeStatusEntry
             {
                 Instance = instance, TenantRegistryId = tenantRegistryId, HeartbeatDate = DateTime.UtcNow,
@@ -105,10 +115,12 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.EntityAnalysisModelEngineSnapshot.Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
             await dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry.Where(w => w.Instance == instance)
                 .DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                 .Where(w => w.EntityAnalysisModelGuid == modelGuid).DeleteAsync();
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelAbstractionRule>()
@@ -119,10 +131,13 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
                 .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelTtlCounter>()
                 .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
+
             await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                 .DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
         }
 
@@ -149,15 +164,19 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
             report.EntityAnalysisModelId.Should().Be(modelId);
             report.EngineSource.Should().Be("Unavailable");
             var codes = report.Checks.Select(c => c.Code).ToList();
+
             codes.Should().Contain([
                 nameof(IntegrityCode.DependencyDangling), nameof(IntegrityCode.EngineCompileFailed),
                 nameof(IntegrityCode.TtlCountersDisabled), nameof(IntegrityCode.SearchKeyTtlShortensWindow),
                 nameof(IntegrityCode.EntityUnreferenced), nameof(IntegrityCode.EngineStateUnavailable)
             ]);
+
             report.Checks.Single(c => c.Code == nameof(IntegrityCode.EngineCompileFailed)).EntityName.Should()
                 .Be("Broken");
+
             report.Checks.Select(c => c.Severity == "Error" ? 0 : c.Severity == "Warning" ? 1 : 2).Should()
                 .BeInAscendingOrder();
+
             report.Errors.Should().Be(report.Checks.Count(c => c.Severity == "Error"));
         }
 
@@ -165,25 +184,32 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
         public async Task ARecordedSnapshotIsComparedWithTheActiveEntitiesAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await new EntityAnalysisModelEngineSnapshotRepository(dbContext).UpsertAsync(instance, tenantRegistryId,
                 modelId, JsonConvert.SerializeObject(State(instance, true,
                     new EngineLoadedEntity("RequestXPath", accountIdField, "AccountId"),
                     new EngineLoadedEntity("TtlCounter", ttlCounterId, "PerAccount"),
                     new EngineLoadedEntity("GatewayRule", -1, "Removed"))));
+
             var service = await ServiceAsync(dbContext);
 
             var report = await service.CheckAsync(modelId);
             var engine = await service.EngineStateAsync(modelId);
 
             report.EngineSource.Should().Be("Snapshot");
+
             report.Checks.Should().Contain(c => c.Code == nameof(IntegrityCode.EngineEntityNotLoaded) &&
                                                 c.EntityId == activationRuleId);
+
             report.Checks.Should().Contain(c => c.Code == nameof(IntegrityCode.EngineEntityStale) &&
                                                 c.EntityName == "Removed");
+
             engine.Source.Should().Be("Snapshot");
             engine.Nodes.Should().Contain(n => n.Instance == instance);
+
             engine.Instances.Should().ContainSingle(i => i.Instance == instance && i.Started).Which.Loaded
-                .Select(l => (l.Kind, l.Count)).Should().BeEquivalentTo([("GatewayRule", 1), ("RequestXPath", 1), ("TtlCounter", 1)
+                .Select(l => (l.Kind, l.Count)).Should().BeEquivalentTo([
+                    ("GatewayRule", 1), ("RequestXPath", 1), ("TtlCounter", 1)
                 ]);
         }
 
@@ -195,6 +221,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
 
             await repository.UpsertAsync(instance, tenantRegistryId, modelId, JsonConvert.SerializeObject(
                 State(instance, false)));
+
             await repository.UpsertAsync(instance, tenantRegistryId, modelId, JsonConvert.SerializeObject(
                 State(instance, true)));
 
@@ -207,8 +234,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
         public async Task AnInProcessEngineIsPreferredToItsOwnSnapshotAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await new EntityAnalysisModelEngineSnapshotRepository(dbContext).UpsertAsync(instance, tenantRegistryId,
                 modelId, JsonConvert.SerializeObject(State(instance, false)));
+
             var source = new FakeEngineStateSource(instance, State(instance, true));
             var service = await ServiceAsync(dbContext, source);
 
@@ -232,8 +261,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
             whole.Nodes.Should().Contain(n => n.Id == "Missing:TTLCounter.Missing");
             whole.MaxNodes.Should().Be(150);
             focused.Focus.Should().Be($"TtlCounter:{ttlCounterId}");
+
             focused.Nodes.Select(n => n.Id).Should().BeEquivalentTo($"TtlCounter:{ttlCounterId}",
                 $"RequestXPath:{accountIdField}", $"ActivationRule:{activationRuleId}");
+
             await Assert.ThrowsAsync<NotFoundException>(() => service.GraphAsync(modelId, "TtlCounter", -5));
         }
 
@@ -253,8 +284,16 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
 
             await Assert.ThrowsAsync<NotFoundException>(async () =>
                 await (await ServiceAsync(dbContext, userName: fx.Seed.UserTenantB)).CheckAsync(modelId));
+
             await Assert.ThrowsAsync<ForbiddenException>(async () =>
                 await (await ServiceAsync(dbContext, userName: fx.Seed.UserWithoutPermission)).ModelsAsync());
+        }
+
+        [Fact]
+        public void EveryCodeHasADescription()
+        {
+            Enum.GetValues<IntegrityCode>()
+                .Should().OnlyContain(c => IntegrityCodeText.Describe(c) != c.ToString());
         }
     }
 }

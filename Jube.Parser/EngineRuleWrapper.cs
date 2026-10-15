@@ -11,11 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Linq;
+using System.Text;
+
 namespace Jube.Parser
 {
-    using System.Linq;
-    using System.Text;
-
     public sealed record EngineWrappedRule(string Text, string ClassName, int LineOffset, int CharOffset);
 
     public static class EngineRuleWrapper
@@ -43,7 +43,7 @@ namespace Jube.Parser
         public static EngineWrappedRule ActivationRule(string ruleText, bool tryCatch = true)
         {
             return Build([.. imports, "Jube.HttpAdaptationProtocol"], "ActivationRule",
-                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of string,double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean",
+                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of string,double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),AdvancedAnalyticsAdaptation As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean",
                 "Dim Matched as Boolean", ruleText, tryCatch);
         }
 
@@ -65,6 +65,7 @@ namespace Jube.Parser
             string declaration, string ruleText, bool tryCatch)
         {
             var sb = new StringBuilder();
+
             foreach (var name in importNames)
             {
                 sb.Append("Imports ").Append(name).Append("\r\n");
@@ -73,6 +74,7 @@ namespace Jube.Parser
             sb.Append("Public Class ").Append(className).Append("\r\n");
             sb.Append(signature).Append("\r\n");
             sb.Append(declaration).Append("\r\n");
+
             if (tryCatch)
             {
                 sb.Append("Try\r\n");
@@ -81,6 +83,7 @@ namespace Jube.Parser
             var charOffset = sb.Length;
             var lineOffset = sb.ToString().Count(c => c == '\n');
             sb.Append(ruleText).Append("\r\n");
+
             if (tryCatch)
             {
                 sb.Append("Catch ex As Exception\r\n");
@@ -92,6 +95,7 @@ namespace Jube.Parser
             sb.Append("\r\n");
             sb.Append("End Function\r\n");
             sb.Append("End Class\r\n");
+
             return new EngineWrappedRule(sb.ToString(), className, lineOffset, charOffset);
         }
     }

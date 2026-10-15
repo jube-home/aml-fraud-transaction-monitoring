@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,20 +11,28 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.UserRegistryApiKey;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddUserRegistryApiKey(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "UserRegistryApiKeyListByUserRegistryId", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists the API keys issued against a UserRegistry, masked to an 8-character display prefix."),
-            new ServiceToolDescriptor(
-                "UserRegistryApiKeyDelete", OperationKind.Delete, Idempotent: true, Destructive: true,
-                "Revokes an API key; reversible only by direct database action. A repeat call on an " +
-                "already-revoked key succeeds as a no-op if it was fully removed, or is reported not-found if " +
-                "it belongs to another tenant.")
-        ]);
+        static partial void AddUserRegistryApiKey(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "UserRegistryApiKeyListByUserRegistryId", OperationKind.Read, true, false,
+                    "Lists the API keys issued against a UserRegistry, masked to an 8-character display prefix.",
+                    UserRegistryApiKeyService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "UserRegistryApiKeyDelete", OperationKind.Delete, true, true,
+                    "Revokes an API key; reversible only by direct database action. A repeat call on an " +
+                    "already-revoked key succeeds as a no-op if it was fully removed, or is reported not-found if " +
+                    "it belongs to another tenant.",
+                    UserRegistryApiKeyService.RequiredPermissions)
+            ]);
+        }
     }
 }

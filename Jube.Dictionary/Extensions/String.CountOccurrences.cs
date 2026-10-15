@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static int CountOccurrences(this string? @this, string? value)
         {
             var text = @this ?? "";
+
             if (string.IsNullOrEmpty(value))
             {
                 return 0;
@@ -25,6 +26,7 @@ namespace Jube.Dictionary.Extensions
 
             var count = 0;
             var index = text.IndexOf(value, StringComparison.Ordinal);
+
             while (index >= 0)
             {
                 count++;

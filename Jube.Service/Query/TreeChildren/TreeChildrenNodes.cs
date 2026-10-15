@@ -11,7 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
+using Jube.Service.Query.TreeChildren.Models;
 
 namespace Jube.Service.Query.TreeChildren
 {

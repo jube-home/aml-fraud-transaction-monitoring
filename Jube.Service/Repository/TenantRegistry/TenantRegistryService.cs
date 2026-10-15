@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,10 +15,11 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.TenantRegistry;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.TenantRegistry;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -33,7 +34,6 @@ namespace Jube.Service.Repository.TenantRegistry
     public sealed class TenantRegistryService
     {
         private const int MaxListTake = 200;
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -58,6 +58,9 @@ namespace Jube.Service.Repository.TenantRegistry
             repository = new RuleRepository(dbContext, userName);
             validator = new TenantRegistryDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => [];
+        public static bool RequiresLandlord => true;
 
         public static Task<TenantRegistryService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -110,6 +113,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "List", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.List: entry user={userName}");
@@ -120,6 +124,7 @@ namespace Jube.Service.Repository.TenantRegistry
                 EnsureLandlord("TenantRegistry.List");
                 var dtos = TenantRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"TenantRegistry.List: {dtos.Count} rows user={userName}");
@@ -135,6 +140,7 @@ namespace Jube.Service.Repository.TenantRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"TenantRegistry.List: cancelled user={userName}");
@@ -160,6 +166,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "ListByFilter", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.ListByFilter: entry filter={filter} user={userName}");
@@ -168,9 +175,11 @@ namespace Jube.Service.Repository.TenantRegistry
             try
             {
                 EnsureLandlord("TenantRegistry.ListByFilter");
+
                 var dtos = TenantRegistryMapper.ToDto(
                     await repository.GetByFilterAsync(filter ?? string.Empty, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"TenantRegistry.ListByFilter: {dtos.Count} rows filter={filter} user={userName}");
@@ -186,6 +195,7 @@ namespace Jube.Service.Repository.TenantRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"TenantRegistry.ListByFilter: cancelled user={userName}");
@@ -213,6 +223,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "List", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.List: entry user={userName} take={take} afterId={afterId}");
@@ -222,10 +233,12 @@ namespace Jube.Service.Repository.TenantRegistry
             {
                 EnsureLandlord("TenantRegistry.List");
                 var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
                 var all = TenantRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false))
                     .OrderBy(d => d.Id)
                     .Where(d => afterId == null || d.Id > afterId)
                     .ToList();
+
                 var page = all.Take(clampedTake).ToList();
                 op.Rows(page.Count);
 
@@ -259,6 +272,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.FilterFields: entry user={userName}");
@@ -270,6 +284,7 @@ namespace Jube.Service.Repository.TenantRegistry
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<TenantRegistryDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -309,6 +324,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -320,6 +336,7 @@ namespace Jube.Service.Repository.TenantRegistry
                 var rows = TenantRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -356,6 +373,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.Count: entry groupBy={groupBy} user={userName}");
@@ -367,6 +385,7 @@ namespace Jube.Service.Repository.TenantRegistry
                 var rows = TenantRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -396,6 +415,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "Get", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.Get: entry id={id} user={userName}");
@@ -406,6 +426,7 @@ namespace Jube.Service.Repository.TenantRegistry
                 EnsureLandlord("TenantRegistry.Get");
                 var entity = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
                 var dto = TenantRegistryMapper.ToDto(entity);
+
                 if (entity == null && log.IsDebugEnabled)
                 {
                     log.Debug($"TenantRegistry.Get: id={id} not found user={userName}");
@@ -437,6 +458,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "Insert", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.Insert: entry user={userName} name={model?.Name}");
@@ -448,6 +470,7 @@ namespace Jube.Service.Repository.TenantRegistry
                 EnsureLandlord("TenantRegistry.Insert");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -505,6 +528,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "Validate", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.Validate: entry id={model?.Id} user={userName}");
@@ -517,6 +541,7 @@ namespace Jube.Service.Repository.TenantRegistry
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -543,6 +568,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "Update", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.Update: entry id={model?.Id} user={userName}");
@@ -554,6 +580,7 @@ namespace Jube.Service.Repository.TenantRegistry
                 EnsureLandlord("TenantRegistry.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -591,6 +618,7 @@ namespace Jube.Service.Repository.TenantRegistry
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"TenantRegistry.Update: id={model?.Id} not found or locked user={userName}");
@@ -621,6 +649,7 @@ namespace Jube.Service.Repository.TenantRegistry
         {
             using var op = OperationScope.Start("TenantRegistry", "Delete", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"TenantRegistry.Delete: entry id={id} user={userName}");
@@ -646,6 +675,7 @@ namespace Jube.Service.Repository.TenantRegistry
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"TenantRegistry.Delete: id={id} not found or locked user={userName}");

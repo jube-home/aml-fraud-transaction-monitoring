@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using Jube.Dictionary;
-using Jube.Dictionary.Models;
 using Jube.Engine.EntityAnalysisModelInvoke.Extraction;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Test.Infrastructure;
@@ -37,7 +36,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
                     ReferenceDateName = "TxnDateTime"
                 }
             };
+
             model.Snapshot.EntityAnalysisModelRequestXPaths.AddRange(xPaths);
+
             return model;
         }
 
@@ -59,6 +60,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
             entry["EntityAnalysisModelInstanceEntryGuid"] = new InternalValue(Guid.NewGuid());
             entry.Add("TxnId", "0987654321");
             entry.Add("TxnDateTime", new DateTime(2018, 08, 19, 21, 41, 37, DateTimeKind.Utc));
+
             return entry;
         }
 
@@ -71,6 +73,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
             var context = NewExtractor(model).CreateContext(entry, 0);
 
             context.EntityAnalysisModelInstanceEntryPayload.EntityInstanceEntryId.Should().Be("0987654321");
+
             context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.Should()
                 .Be(new DateTime(2018, 08, 19, 21, 41, 37, DateTimeKind.Utc));
         }
@@ -215,6 +218,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
         {
             var model = NewModel();
             var availableModels = new Dictionary<int, EntityAnalysisModel> { [1] = model };
+
             var extractor = new EntityAnalysisModelDictionaryNoBoxingExtractor(model, availableModels,
                 TestDynamicEnvironment.Create(), TestLog.NoOp);
 

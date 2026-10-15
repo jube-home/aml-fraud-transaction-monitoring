@@ -13,8 +13,8 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using log4net;
 
 namespace Jube.Service.Observability

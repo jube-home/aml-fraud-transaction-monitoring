@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Cache.Redis;
 using Jube.Cache.Redis.Serialization;
-using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack;
+using Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack.Models;
 using Jube.Dictionary;
 using Jube.Test.Infrastructure;
 using MessagePack;
@@ -59,6 +59,7 @@ namespace Jube.Test.Cache.Redis
         private static byte[] SerializeEnvelope(DictionaryNoBoxing<int> payload)
         {
             var envelope = new EnvelopeDictionaryNoBoxing<int> { Version = 1, Data = payload };
+
             return MessagePackSerializer.Serialize(envelope,
                 MessagePackSerializerOptionsHelper.EnveloperMessagePackSerializerWithCompressionOptions(false));
         }
@@ -79,6 +80,7 @@ namespace Jube.Test.Cache.Redis
         {
             var repository = CreateRepository(new FakeHybridResilientRedisDatabase(), new TestLog(),
                 hostName: "host-a", localCacheInstanceGuidStringOverride: "guid-a");
+
             var keyPayload = "Payload:1:abc";
             var hSetKey = "entry-1";
             var channel = RedisChannel.Pattern($"HashSet:host-a:guid-a:{keyPayload}:{hSetKey}");
@@ -86,8 +88,10 @@ namespace Jube.Test.Cache.Redis
             repository.HandleHashSetMessage(channel, new byte[] { 1, 2, 3 });
 
             var localCacheForPayloadKey = repository.GetLocalCacheEntry(keyPayload);
+
             localCacheForPayloadKey.HashSetSubscriptions.Should().Be(0,
                 "a message whose embedded host/instance-guid match this instance should be filtered out");
+
             localCacheForPayloadKey.LruCacheConcurrentSizedDictionary.TryGetValue(hSetKey, out _).Should().BeFalse();
         }
 
@@ -96,6 +100,7 @@ namespace Jube.Test.Cache.Redis
         {
             var repository = CreateRepository(new FakeHybridResilientRedisDatabase(), new TestLog(),
                 hostName: "host-a", localCacheInstanceGuidStringOverride: "guid-a");
+
             var keyPayload = "Payload:1:abc";
             var hSetKey = "entry-1";
             var channel = RedisChannel.Pattern($"HashSet:host-b:guid-b:{keyPayload}:{hSetKey}");
@@ -105,8 +110,10 @@ namespace Jube.Test.Cache.Redis
 
             var localCacheForPayloadKey = repository.GetLocalCacheEntry(keyPayload);
             localCacheForPayloadKey.HashSetSubscriptions.Should().Be(1);
+
             localCacheForPayloadKey.LruCacheConcurrentSizedDictionary.TryGetValue(hSetKey, out var cached)
                 .Should().BeTrue();
+
             cached.Should().Equal(value);
         }
 
@@ -115,6 +122,7 @@ namespace Jube.Test.Cache.Redis
         {
             var repository = CreateRepository(new FakeHybridResilientRedisDatabase(), new TestLog(),
                 hostName: "host-a", localCacheInstanceGuidStringOverride: "guid-a");
+
             var keyPayload = "Payload:1:abc";
             var hSetKey = "entry-1";
 
@@ -125,6 +133,7 @@ namespace Jube.Test.Cache.Redis
             repository.HandleHashRemoveMessage(channel, hSetKey);
 
             entry.HashRemoveSubscription.Should().Be(0);
+
             entry.LruCacheConcurrentSizedDictionary.TryGetValue(hSetKey, out _).Should().BeTrue(
                 "the message should have been ignored as self-originated, leaving the entry in place");
         }
@@ -134,6 +143,7 @@ namespace Jube.Test.Cache.Redis
         {
             var repository = CreateRepository(new FakeHybridResilientRedisDatabase(), new TestLog(),
                 hostName: "host-a", localCacheInstanceGuidStringOverride: "guid-a");
+
             var keyPayload = "Payload:1:abc";
             var hSetKey = "entry-1";
 
@@ -201,6 +211,7 @@ namespace Jube.Test.Cache.Redis
         {
             var repository = CreateRepository(new FakeHybridResilientRedisDatabase(), new TestLog(),
                 false);
+
             var entry = repository.GetLocalCacheEntry("Payload:1:abc");
 
             repository.DeleteFromLocalCache(entry, "k", false);
@@ -227,6 +238,7 @@ namespace Jube.Test.Cache.Redis
             var hitBytes = SerializeEnvelope(hitPayload);
 
             var entry = repository.GetLocalCacheEntry(keyPayload);
+
             repository.AddToLruCacheConcurrentSizedDictionaryForLocalCacheInstanceKey(entry, $"{hitGuid:N}",
                 hitBytes);
 
@@ -271,6 +283,7 @@ namespace Jube.Test.Cache.Redis
                 [new RedisValue($"{entryGuid:N}")], Guid.NewGuid());
 
             result[$"{entryGuid:N}"][1].AsString().Should().Be("value");
+
             entry.Misses.Should().Be(1,
                 "localCache:false means every request counts as a miss, even though a value happened to be stashed in the (unused) local cache dictionary");
         }

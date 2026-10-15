@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,16 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.CaseWorkflowPriority;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseWorkflowPriority(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseWorkflowPriorityList", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists the fixed Case priority levels (High, Medium, Low) -- the same for every Case Workflow " +
-                "and every tenant.")
-        ]);
+        static partial void AddCaseWorkflowPriority(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseWorkflowPriorityList", OperationKind.Read, true, false,
+                    "Lists the fixed Case priority levels (High, Medium, Low) -- the same for every Case Workflow " +
+                    "and every tenant.",
+                    CaseWorkflowPriorityService.RequiredPermissions)
+            ]);
+        }
     }
 }

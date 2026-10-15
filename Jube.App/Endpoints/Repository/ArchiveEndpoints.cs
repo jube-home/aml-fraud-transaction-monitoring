@@ -53,6 +53,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PUT {Base}/tag: entry user={user}");
@@ -60,11 +61,14 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await ArchiveService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, token);
+
                 await service.TagAsync(model, token);
+
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
@@ -115,6 +119,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"PUT {Base}/tag: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

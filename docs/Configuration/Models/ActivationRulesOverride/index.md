@@ -6,9 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Activation Rules Override
 
 In the previous procedure the Response Elevation was set as the result of an Activation Rule matching. Response
@@ -45,11 +42,11 @@ Update the Request XPath to create a new version including the Enable Override f
 Synchronise the models to ensure that the override is recognised in the real-time processing. Override is available in
 the top level menu:
 
-![Image](SuppressionMenuItem.png)
+![Image](OverrideMenuItem.png)
 
 To add an override at the model level, which will suppress on all rules, navigate to the Override page:
 
-![Image](SuppressionPage.png)
+![Image](OverridePage.png)
 
 It can be seen in the Override Key drop down that the distinct list of all Request XPath elements designated for
 suppression:
@@ -60,7 +57,7 @@ It follows that the override value must be for the IP for which suppression is r
 simply type in the IP in the Override Key Value. The Override Key Value, and the Override Key itself, are each limited
 to 256 characters:
 
-![Image](SearchForIPInSuppression.png)
+![Image](SearchForIPInOverride.png)
 
 Click the Fetch button to return suppression for the IP 123.456.789.200:
 
@@ -69,7 +66,7 @@ Click the Fetch button to return suppression for the IP 123.456.789.200:
 Upon clicking the Fetch button, all models will be returned for which IP is eligible, overlay with a switch to indicate
 the override status for the IP 123.456.789.200:
 
-![Image](SuppressionReturnForIPModel.png)
+![Image](OverrideReturnForIPModel.png)
 
 To suppress for the IP value 123.456.789.200, simply toggle the switch next to the model name to indicate that all
 Activation Rules belonging to the model should be suppressed:
@@ -121,13 +118,13 @@ It can be seen that the Response Elevation is zero - as it has been suppressed -
 To remove the override, simply toggle off the switch after having fetched the IP of 123.456.789.200 from the override
 tab:
 
-![Image](ToggleOffSuppressionAtModelLevel.png)
+![Image](ToggleOffOverrideAtModelLevel.png)
 
 To validate removal of suppression, repeat the HTTP POST to
 endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
 for response as follows:
 
-![Image](SuppressionRestored.png)
+![Image](OverrideRestored.png)
 
 It can be seen that the Response Elevation is now active - given that the override has now been removed.
 
@@ -135,7 +132,7 @@ It is also possible to specify just a specific activation rule for suppression.
 
 To expose the Activation Rules rolling up to model, click on the arrow to the left hand side of the grid:
 
-![Image](ExpandSuppressionForActivationRules.png)
+![Image](ExpandOverrideForActivationRules.png)
 
 Click on the arrow to expand Activation Rules:
 

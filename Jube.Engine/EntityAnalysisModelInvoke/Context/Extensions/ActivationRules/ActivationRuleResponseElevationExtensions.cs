@@ -25,6 +25,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             bool suppressed)
         {
             var startingHighWaterMark = responseElevationHighWaterMark;
+
             context.TraceLog(
                 $"will begin processing of response elevation for activation " +
                 $"rule {evaluateActivationRule.Id}. " +
@@ -41,6 +42,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             if (responseElevationHighWaterMark > evaluateActivationRule.ResponseElevation)
             {
                 var unchangedHighWaterMark = responseElevationHighWaterMark;
+
                 context.TraceLog(
                     $"response elevation for activation rule {evaluateActivationRule.Id} is less than the current largest Response Elevation {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation} which is {unchangedHighWaterMark} and will not be processed.");
 
@@ -50,6 +52,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
             responseElevationHighWaterMark = evaluateActivationRule.ResponseElevation;
 
             var updatedHighWaterMark = responseElevationHighWaterMark;
+
             context.TraceLog(
                 $"response elevation for activation rule {evaluateActivationRule.Id} is the current largest Response Elevation {context.EntityAnalysisModelInstanceEntryPayload.ResponseElevation} but is less than the new value of {updatedHighWaterMark} so it will be elevated. Will be tested against certain other model constraints.");
 
@@ -83,6 +86,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                         responseElevationHighWaterMark;
 
                     var carriedForwardHighWaterMark = responseElevationHighWaterMark;
+
                     context.TraceLog(
                         $"the response elevation has tested the limits and the response elevation is being carried forward as {carriedForwardHighWaterMark}.");
                 }

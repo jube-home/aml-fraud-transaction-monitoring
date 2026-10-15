@@ -16,8 +16,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Data.Helpers;
     using Data.Repository;
-    using Data.SyntaxTree;
     using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
 
     public static class SyncEntityAnalysisModelInlineScriptsExtensions
@@ -25,6 +25,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
         public static async Task<Context> SyncEntityAnalysisModelInlineScriptsAsync(this Context context)
         {
             var shadowEntityAnalysisModelInlineScriptProperties = new Dictionary<string, int>();
+
             try
             {
                 foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
@@ -55,6 +56,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     }
 
                     var shadowEntityAnalysisModelInlineScripts = new List<EntityAnalysisModelInlineScript>();
+
                     foreach (var record in records)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();
@@ -187,6 +189,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     context.Services.Parser.EntityAnalysisModelInlineScriptProperties =
                         shadowEntityAnalysisModelInlineScriptProperties;
+
                     context.Snapshots.Builder(key, value).EntityAnalysisModelInlineScripts =
                         shadowEntityAnalysisModelInlineScripts;
 

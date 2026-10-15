@@ -25,6 +25,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using Jube.Engine.Models;
     using Parser;
     using Parser.Compiler;
+    using Parser.Models;
 
     public static class SyncEntityAnalysisModelAbstractionRulesExtensions
     {
@@ -434,6 +435,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             context.Services.CancellationToken.ThrowIfCancellationRequested();
 
                             var hasRuleScript = false;
+
                             var parsedRule = new ParsedRule
                             {
                                 ErrorSpans = []
@@ -587,12 +589,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                                 modelAbstractionRule.AbstractionRuleCompile =
                                     valueHash;
+
                                 var classType =
                                     modelAbstractionRule.AbstractionRuleCompile.GetType("AbstractionRule");
+
                                 var methodInfo = classType.GetMethod("Match");
+
                                 modelAbstractionRule.AbstractionRuleCompileDelegate =
                                     (EntityAnalysisModelAbstractionRule.Match)Delegate.CreateDelegate(
                                         typeof(EntityAnalysisModelAbstractionRule.Match), methodInfo);
+
                                 shadowEntityModelAbstractionRule.Add(modelAbstractionRule);
 
                                 await repository.UpdateCompileStatusAsync(modelAbstractionRule.Id, true, null,
@@ -613,6 +619,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
 
                                 var compile = new Compile();
+
                                 compile.CompileCode(abstractionRuleScript.ToString(), context.Services.Log,
                                 [
                                     Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),

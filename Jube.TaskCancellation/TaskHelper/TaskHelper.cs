@@ -12,6 +12,7 @@
  */
 
 using System.Diagnostics;
+using Jube.TaskCancellation.TaskHelper.Models;
 using log4net;
 
 namespace Jube.TaskCancellation.TaskHelper
@@ -31,12 +32,14 @@ namespace Jube.TaskCancellation.TaskHelper
                 if (log == null)
                 {
                     await taskFunc().ConfigureAwait(false);
+
                     return BuildResult(taskType, sw, startBytes, false);
                 }
 
                 try
                 {
                     await taskFunc().ConfigureAwait(false);
+
                     return BuildResult(taskType, sw, startBytes, false);
                 }
                 catch (Exception ex)
@@ -61,17 +64,20 @@ namespace Jube.TaskCancellation.TaskHelper
             if (log == null)
             {
                 action();
+
                 return BuildResult(taskType, sw, startBytes, false);
             }
 
             try
             {
                 action();
+
                 return BuildResult(taskType, sw, startBytes, false);
             }
             catch (Exception ex)
             {
                 log.Error($"TaskHelper: {taskType} faulted after {sw.Elapsed.TotalMilliseconds:F1}ms, as {ex}.");
+
                 return BuildResult(taskType, sw, startBytes, true);
             }
         }
@@ -82,12 +88,14 @@ namespace Jube.TaskCancellation.TaskHelper
             sw.Stop();
 
             var bytesAllocated = endBytes - startBytes;
+
             if (bytesAllocated < 0)
             {
                 bytesAllocated = endBytes;
             }
 
             var elapsedMicroseconds = (long)(sw.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+
             return new TimedTaskResult(taskType, elapsedMicroseconds, bytesAllocated, faulted);
         }
 

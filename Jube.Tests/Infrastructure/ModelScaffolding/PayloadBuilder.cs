@@ -34,6 +34,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         {
             var index = fields.FindIndex(f => f.Key == name);
             var field = new KeyValuePair<string, string>(name, value);
+
             if (index >= 0)
             {
                 fields[index] = field;
@@ -49,6 +50,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         public PayloadBuilder Without(string name)
         {
             fields.RemoveAll(f => f.Key == name);
+
             return this;
         }
 
@@ -60,9 +62,11 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         private string ToJson()
         {
             using var stream = new MemoryStream();
+
             using (var writer = new Utf8JsonWriter(stream))
             {
                 writer.WriteStartObject();
+
                 foreach (var (key, value) in fields)
                 {
                     writer.WriteString(key, value);

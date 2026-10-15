@@ -50,7 +50,6 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQ
         private readonly List<int> createdPromotedIds = [];
         private readonly List<int> createdSearchInstanceIds = [];
         private readonly List<int> createdTrialInstanceIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -73,6 +72,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQ
             {
                 await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
                     .Where(w => w.ExhaustiveSearchInstanceId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id).DeleteAsync();
             }
 
@@ -80,6 +80,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQ
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -118,6 +119,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQ
                     StatusId = 0
                 });
             createdSearchInstanceIds.Add(searchInstance.Id);
+
             return searchInstance.Id;
         }
 
@@ -133,6 +135,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQ
             createdTrialInstanceIds.Add(trial.Id);
 
             var createdDate = DateTime.UtcNow;
+
             var promoted = await new ExhaustiveSearchInstancePromotedTrialInstanceRepository(dbContext).InsertAsync(
                 new ExhaustiveSearchInstancePromotedTrialInstance
                 {
@@ -144,6 +147,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQ
                     CreatedDate = createdDate
                 });
             createdPromotedIds.Add(promoted.Id);
+
             return (promoted.Id, createdDate);
         }
 
@@ -202,8 +206,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQ
             await using var dbContext = fx.GetDbContext();
             var searchId = await CreateSearchInstanceAsync(dbContext, fx.Seed.UserWithPermission);
             var (id, createdDate) = await CreatePromotedAsync(dbContext, searchId, 0.8125, 7, true, "{\"a\":1}");
+
             var trialId = await dbContext.GetTable<ExhaustiveSearchInstancePromotedTrialInstance>()
                 .Where(w => w.Id == id).Select(s => s.ExhaustiveSearchInstanceTrialInstanceId).FirstAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(searchId);
@@ -214,8 +220,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQ
             dto.Active.Should().BeTrue();
             dto.Score.Should().Be(0.8125);
             dto.TopologyComplexity.Should().Be(7);
+
             Newtonsoft.Json.Linq.JToken.DeepEquals(Newtonsoft.Json.Linq.JToken.Parse(dto.Json.Required()),
                 Newtonsoft.Json.Linq.JToken.Parse("{\"a\":1}")).Should().BeTrue();
+
             dto.CreatedDate.Should().BeCloseTo(createdDate, TimeSpan.FromSeconds(2));
         }
 

@@ -1,43 +1,52 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace Accord.Math.Optimization
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq.Expressions;
-    using System.Text.RegularExpressions;
-    using Accord.Compat;
-
     internal static class QuadraticExpressionParser
     {
         public static string ToVariable(this int num, char prefix = 'x')
         {
-            string number = num.ToString();
-            char[] chars = new char[number.Length + 1];
+            var number = num.ToString();
+            var chars = new char[number.Length + 1];
             chars[0] = prefix;
 
-            for (int i = 0; i < number.Length; i++)
+            for (var i = 0; i < number.Length; i++)
             {
                 chars[i + 1] = (char)(number[i] + (0x2080 - '0'));
             }
@@ -47,44 +56,52 @@ namespace Accord.Math.Optimization
 
         public static Dictionary<Tuple<string, string>, double> ParseString(string f, CultureInfo culture)
         {
-            f = f.Replace("*", String.Empty).Replace(" ", String.Empty);
+            f = f.Replace("*", string.Empty).Replace(" ", string.Empty);
 
             var terms = new Dictionary<Tuple<string, string>, double>();
 
-            Regex replaceQuad = new Regex(@"([a-zA-Z])(²)");
+            var replaceQuad = new Regex(@"([a-zA-Z])(²)");
             f = replaceQuad.Replace(f, "$1$1");
 
 
-            string separator = culture.NumberFormat.NumberDecimalSeparator;
+            var separator = culture.NumberFormat.NumberDecimalSeparator;
 
-            Regex r = new Regex(@"[\-\+]?[\s]*((\d*\" + separator + @"{0,1}\d+)|[a-zA-Z][²]?)+");
-            Regex number = new Regex(@"\d*\" + separator + @"{0,1}\d+");
-            Regex symbol = new Regex(@"[a-zA-Z]");
+            var r = new Regex(@"[\-\+]?[\s]*((\d*\" + separator + @"{0,1}\d+)|[a-zA-Z][²]?)+");
+            var number = new Regex(@"\d*\" + separator + @"{0,1}\d+");
+            var symbol = new Regex(@"[a-zA-Z]");
 
 
-            MatchCollection matches = r.Matches(f, 0);
+            var matches = r.Matches(f, 0);
 
             foreach (Match m in matches)
             {
-                string term = m.Value;
+                var term = m.Value;
 
-                double scalar = (term[0] == '-') ? -1 : 1;
+                double scalar = term[0] == '-' ? -1 : 1;
 
                 // Extract value
-                MatchCollection coeff = number.Matches(term);
+                var coeff = number.Matches(term);
 
                 foreach (Match c in coeff)
-                    scalar *= Double.Parse(c.Value, culture);
+                {
+                    scalar *= double.Parse(c.Value, culture);
+                }
 
                 // Extract symbols
-                MatchCollection symbols = symbol.Matches(term);
+                var symbols = symbol.Matches(term);
 
                 if (symbols.Count == 1)
+                {
                     terms.Add(Tuple.Create(symbols[0].Value, (string)null), scalar);
+                }
                 else if (symbols.Count == 2)
+                {
                     terms.Add(Tuple.Create(symbols[0].Value, symbols[1].Value), scalar);
+                }
                 else
+                {
                     terms.Add(Tuple.Create((string)null, (string)null), scalar);
+                }
             }
 
             return terms;
@@ -92,17 +109,19 @@ namespace Accord.Math.Optimization
 
         public static Tuple<string, string> ParseExpression(
             Dictionary<Tuple<string, string>, double> terms,
-            Expression expr, out double scalar, 
+            Expression expr, out double scalar,
             bool dontAdd = false)
         {
             scalar = 0;
 
             if (expr == null)
+            {
                 return null;
+            }
 
-            BinaryExpression eb = expr as BinaryExpression;
-            MemberExpression em = expr as MemberExpression;
-            UnaryExpression eu = expr as UnaryExpression;
+            var eb = expr as BinaryExpression;
+            var em = expr as MemberExpression;
+            var eu = expr as UnaryExpression;
 
             if (em != null) // member expression
             {
@@ -110,20 +129,21 @@ namespace Accord.Math.Optimization
                 terms[term] = 1;
                 return term;
             }
-            else if (eb != null) // binary expression
+
+            if (eb != null) // binary expression
             {
                 if (expr.NodeType == ExpressionType.Multiply)
                 {
                     // This could be either a constant*expression, expression*constant or expression*expression
-                    ConstantExpression c = eb.Left as ConstantExpression ?? eb.Right as ConstantExpression;
+                    var c = eb.Left as ConstantExpression ?? eb.Right as ConstantExpression;
 
-                    MemberExpression lm = eb.Left as MemberExpression;
-                    BinaryExpression lb = eb.Left as BinaryExpression;
-                    UnaryExpression lu = eb.Left as UnaryExpression;
+                    var lm = eb.Left as MemberExpression;
+                    var lb = eb.Left as BinaryExpression;
+                    var lu = eb.Left as UnaryExpression;
 
-                    MemberExpression rm = eb.Right as MemberExpression;
-                    BinaryExpression rb = eb.Right as BinaryExpression;
-                    UnaryExpression ru = eb.Right as UnaryExpression;
+                    var rm = eb.Right as MemberExpression;
+                    var rb = eb.Right as BinaryExpression;
+                    var ru = eb.Right as UnaryExpression;
 
 
                     if (c != null)
@@ -134,45 +154,56 @@ namespace Accord.Math.Optimization
                         if ((lm ?? rm) != null)
                         {
                             var term = Tuple.Create((lm ?? rm).Member.Name, (string)null);
-                            if (!dontAdd) terms[term] = scalar;
+                            if (!dontAdd)
+                            {
+                                terms[term] = scalar;
+                            }
+
                             return term;
                         }
-                        else if ((lb ?? rb ?? (Expression)lm ?? lu) != null)
+
+                        if ((lb ?? rb ?? (Expression)lm ?? lu) != null)
                         {
-                            double n;
-                            var term = ParseExpression(terms, lb ?? lu ?? (Expression)rb ?? ru, out n);
-                            if (!dontAdd) terms[term] = scalar;
+                            var term = ParseExpression(terms, lb ?? lu ?? (Expression)rb ?? ru, out _);
+                            if (!dontAdd)
+                            {
+                                terms[term] = scalar;
+                            }
+
                             return term;
                         }
-                        else throw new FormatException("Unexpected expression.");
+
+                        throw new FormatException("Unexpected expression.");
                     }
-                    else
+
+                    // This is x * x
+                    if (lm != null && rm != null)
                     {
-                        // This is x * x
-                        if (lm != null && rm != null)
-                        {
-                            scalar = 1;
-                            return addTuple(terms, scalar, lm.Member.Name, rm.Member.Name);
-                        }
-                        else if ((lb ?? rb ?? lu ?? (Expression)ru) != null && (lm ?? rm) != null)
-                        {
-                            // This is expression * x
-                            var term = ParseExpression(terms, (lb ?? rb ?? lu ?? (Expression)ru), out scalar, dontAdd: true);
-                            return addTuple(terms, scalar, term.Item1, (lm ?? rm).Member.Name);
-                        }
-                        else throw new FormatException("Unexpected expression.");
+                        scalar = 1;
+                        return addTuple(terms, scalar, lm.Member.Name, rm.Member.Name);
                     }
+
+                    if ((lb ?? rb ?? lu ?? (Expression)ru) != null && (lm ?? rm) != null)
+                    {
+                        // This is expression * x
+                        var term = ParseExpression(terms, lb ?? rb ?? lu ?? (Expression)ru, out scalar,
+                            true);
+                        return addTuple(terms, scalar, term.Item1, (lm ?? rm).Member.Name);
+                    }
+
+                    throw new FormatException("Unexpected expression.");
                 }
-                else if (expr.NodeType == ExpressionType.Add)
+
+                if (expr.NodeType == ExpressionType.Add)
                 {
                     // This could be an expression + term, a term + expression or an expression + expression
-                    BinaryExpression lb = eb.Left as BinaryExpression;
-                    MemberExpression lm = eb.Left as MemberExpression;
-                    UnaryExpression lu = eb.Left as UnaryExpression;
+                    var lb = eb.Left as BinaryExpression;
+                    var lm = eb.Left as MemberExpression;
+                    var lu = eb.Left as UnaryExpression;
 
-                    BinaryExpression rb = eb.Right as BinaryExpression;
-                    MemberExpression rm = eb.Right as MemberExpression;
-                    ConstantExpression rc = eb.Right as ConstantExpression;
+                    var rb = eb.Right as BinaryExpression;
+                    var rm = eb.Right as MemberExpression;
+                    var rc = eb.Right as ConstantExpression;
 
                     scalar = 1;
                     if (lb != null)
@@ -183,13 +214,18 @@ namespace Accord.Math.Optimization
                     {
                         var term = Tuple.Create(lm.Member.Name, (string)null);
                         if (!dontAdd)
+                        {
                             terms[term] = scalar;
+                        }
                     }
                     else if (lu != null)
                     {
                         ParseExpression(terms, lu, out scalar);
                     }
-                    else throw new FormatException("Unexpected expression.");
+                    else
+                    {
+                        throw new FormatException("Unexpected expression.");
+                    }
 
                     scalar = 1;
                     if (rb != null)
@@ -200,29 +236,35 @@ namespace Accord.Math.Optimization
                     {
                         var term = Tuple.Create(rm.Member.Name, (string)null);
                         if (!dontAdd)
+                        {
                             terms[term] = scalar;
+                        }
                     }
                     else if (rc != null)
                     {
                         scalar = (double)rc.Value;
                         var term = Tuple.Create((string)null, (string)null);
                         if (!dontAdd)
+                        {
                             terms[term] = scalar;
+                        }
                     }
-                    else throw new FormatException("Unexpected expression.");
-
+                    else
+                    {
+                        throw new FormatException("Unexpected expression.");
+                    }
                 }
                 else if (expr.NodeType == ExpressionType.Subtract)
                 {
                     // This could be an expression - term, a term - expression or an expression - expression
-                    BinaryExpression lb = eb.Left as BinaryExpression;
-                    MemberExpression lm = eb.Left as MemberExpression;
-                    UnaryExpression lu = eb.Left as UnaryExpression;
+                    var lb = eb.Left as BinaryExpression;
+                    var lm = eb.Left as MemberExpression;
+                    var lu = eb.Left as UnaryExpression;
 
-                    BinaryExpression rb = eb.Right as BinaryExpression;
-                    MemberExpression rm = eb.Right as MemberExpression;
+                    var rb = eb.Right as BinaryExpression;
+                    var rm = eb.Right as MemberExpression;
 
-                    ConstantExpression rc = eb.Right as ConstantExpression;
+                    var rc = eb.Right as ConstantExpression;
 
 
                     if (lb != null)
@@ -233,13 +275,19 @@ namespace Accord.Math.Optimization
                     {
                         scalar = 1;
                         var term = Tuple.Create(lm.Member.Name, (string)null);
-                        if (!dontAdd) terms[term] = scalar;
+                        if (!dontAdd)
+                        {
+                            terms[term] = scalar;
+                        }
                     }
                     else if (lu != null)
                     {
                         ParseExpression(terms, lu, out scalar);
                     }
-                    else throw new FormatException("Unexpected expression.");
+                    else
+                    {
+                        throw new FormatException("Unexpected expression.");
+                    }
 
                     if (rb != null)
                     {
@@ -250,7 +298,10 @@ namespace Accord.Math.Optimization
                     {
                         scalar = -1;
                         var term = Tuple.Create(rm.Member.Name, (string)null);
-                        if (!dontAdd) terms[term] = scalar;
+                        if (!dontAdd)
+                        {
+                            terms[term] = scalar;
+                        }
                     }
                     else if (rc != null)
                     {
@@ -258,52 +309,80 @@ namespace Accord.Math.Optimization
                         var term = Tuple.Create((string)null, (string)null);
                         terms[term] = -scalar;
                     }
-                    else throw new FormatException("Unexpected expression.");
+                    else
+                    {
+                        throw new FormatException("Unexpected expression.");
+                    }
                 }
             }
             else if (eu != null) // unary expression
             {
                 if (expr.NodeType == ExpressionType.UnaryPlus)
                 {
-                    BinaryExpression lb = eu.Operand as BinaryExpression;
-                    MemberExpression lm = eu.Operand as MemberExpression;
+                    var lb = eu.Operand as BinaryExpression;
+                    var lm = eu.Operand as MemberExpression;
 
                     if (lm != null)
                     {
                         scalar = 1;
                         var term = Tuple.Create(lm.Member.Name, (string)null);
-                        if (!dontAdd) terms[term] = scalar;
+                        if (!dontAdd)
+                        {
+                            terms[term] = scalar;
+                        }
+
                         return term;
                     }
-                    else if (lb != null)
+
+                    if (lb != null)
                     {
                         var term = ParseExpression(terms, lb, out scalar);
-                        if (!dontAdd) terms[term] = scalar;
+                        if (!dontAdd)
+                        {
+                            terms[term] = scalar;
+                        }
                     }
-                    else throw new FormatException("Unexpected expression.");
+                    else
+                    {
+                        throw new FormatException("Unexpected expression.");
+                    }
                 }
                 else if (expr.NodeType == ExpressionType.Negate)
                 {
-                    BinaryExpression lb = eu.Operand as BinaryExpression;
-                    MemberExpression lm = eu.Operand as MemberExpression;
+                    var lb = eu.Operand as BinaryExpression;
+                    var lm = eu.Operand as MemberExpression;
 
                     if (lm != null)
                     {
                         scalar = -1;
                         var term = Tuple.Create(lm.Member.Name, (string)null);
-                        if (!dontAdd) terms[term] = scalar;
+                        if (!dontAdd)
+                        {
+                            terms[term] = scalar;
+                        }
+
                         return term;
                     }
-                    else if (lb != null)
+
+                    if (lb != null)
                     {
                         var term = ParseExpression(terms, lb, out scalar);
                         terms[term] = -scalar;
                     }
-                    else throw new FormatException("Unexpected expression.");
+                    else
+                    {
+                        throw new FormatException("Unexpected expression.");
+                    }
                 }
-                else throw new FormatException("Unexpected expression.");
+                else
+                {
+                    throw new FormatException("Unexpected expression.");
+                }
             }
-            else throw new FormatException("Unexpected expression.");
+            else
+            {
+                throw new FormatException("Unexpected expression.");
+            }
 
             return null;
         }
@@ -311,12 +390,14 @@ namespace Accord.Math.Optimization
         private static Tuple<string, string> addTuple(Dictionary<Tuple<string, string>,
             double> terms, double v, string v1, string v2)
         {
-
             var t1 = Tuple.Create(v1, v2);
             var t2 = Tuple.Create(v2, v1);
 
             if (!terms.ContainsKey(t1) && !terms.ContainsKey(t2))
+            {
                 terms[t1] = v;
+            }
+
             return t1;
         }
     }

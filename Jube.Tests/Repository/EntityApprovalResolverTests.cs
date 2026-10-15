@@ -11,12 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System.Collections.Generic;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Jube.Data.Query;
 using Jube.Data.Query.Models;
-using Jube.Data.Repository;
 using Xunit;
 
 namespace Jube.Test.Repository
@@ -24,14 +24,16 @@ namespace Jube.Test.Repository
     [Trait("Category", "Unit")]
     public class EntityApprovalResolverTests
     {
-        private static EntityApprovalRow Approved(int version, string user = "checker", int entityId = 1)
+        private static EntityApprovalRow Approved(int version, string user = "checker", int entityId = 1,
+            string? note = null, string? returnedNote = null)
         {
-            return new EntityApprovalRow(entityId, version, EntityApprovalState.Approved, user);
+            return new EntityApprovalRow(entityId, version, EntityApprovalState.Approved, user, note, returnedNote);
         }
 
-        private static EntityApprovalRow Rejected(int version, string user = "checker", int entityId = 1)
+        private static EntityApprovalRow Rejected(int version, string user = "checker", int entityId = 1,
+            string? note = null, string? returnedNote = null)
         {
-            return new EntityApprovalRow(entityId, version, EntityApprovalState.Rejected, user);
+            return new EntityApprovalRow(entityId, version, EntityApprovalState.Rejected, user, note, returnedNote);
         }
 
         [Fact]

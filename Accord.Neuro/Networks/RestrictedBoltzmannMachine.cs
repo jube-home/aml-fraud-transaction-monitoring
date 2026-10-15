@@ -1,39 +1,46 @@
-﻿// Accord Neural Net Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Neuro.ActivationFunctions;
+using Accord.Neuro.Layers;
 
 namespace Accord.Neuro.Networks
 {
-    using System;
-    using Accord.Neuro.ActivationFunctions;
-    using Accord.Neuro.Layers;
-    using Accord.Neuro.Neurons;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Restricted Boltzmann Machine.
+    ///     Restricted Boltzmann Machine.
     /// </summary>
-    /// 
     /// <example>
-    ///   <code>
+    ///     <code>
     ///   // Create some sample inputs and outputs. Note that the
     ///   // first four vectors belong to one class, and the other
     ///   // four belong to another (you should see that the 1s
@@ -97,202 +104,165 @@ namespace Accord.Neuro.Networks
     ///   // neuron and the second class.
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="Accord.Neuro.Learning.ContrastiveDivergenceLearning"/>
-    /// <seealso cref="BernoulliFunction"/>
-    /// 
+    /// <seealso cref="Learning.ContrastiveDivergenceLearning" />
+    /// <seealso cref="BernoulliFunction" />
     [Serializable]
     public class RestrictedBoltzmannMachine : ActivationNetwork
     {
-
-        private StochasticLayer visible;
-        private StochasticLayer hidden;
-
         /// <summary>
-        ///   Gets the visible layer of the machine.
+        ///     Creates a new <see cref="RestrictedBoltzmannMachine" />.
         /// </summary>
-        /// 
-        public StochasticLayer Visible
-        {
-            get { return visible; }
-        }
-
-        /// <summary>
-        ///   Gets the hidden layer of the machine.
-        /// </summary>
-        /// 
-        public StochasticLayer Hidden
-        {
-            get { return hidden; }
-        }
-
-
-        /// <summary>
-        ///   Creates a new <see cref="RestrictedBoltzmannMachine"/>.
-        /// </summary>
-        /// 
         /// <param name="inputsCount">The number of inputs for the machine.</param>
         /// <param name="hiddenNeurons">The number of hidden neurons in the machine.</param>
-        /// 
         public RestrictedBoltzmannMachine(int inputsCount, int hiddenNeurons)
-            : this(new BernoulliFunction(alpha: 1), inputsCount, hiddenNeurons) { }
-
-        /// <summary>
-        ///   Creates a new <see cref="RestrictedBoltzmannMachine"/>.
-        /// </summary>
-        /// 
-        /// <param name="hidden">The hidden layer to be added in the machine.</param>
-        /// <param name="visible">The visible layer to be added in the machine.</param>
-        /// 
-        public RestrictedBoltzmannMachine(StochasticLayer hidden, StochasticLayer visible)
-            : base(null, hidden.InputsCount, null,0)
+            : this(new BernoulliFunction(1), inputsCount, hiddenNeurons)
         {
-            this.hidden = hidden;
-            this.visible = visible;
-
-            base.layers[0] = hidden;
         }
 
         /// <summary>
-        ///   Creates a new <see cref="RestrictedBoltzmannMachine"/>.
+        ///     Creates a new <see cref="RestrictedBoltzmannMachine" />.
         /// </summary>
-        /// 
+        /// <param name="hidden">The hidden layer to be added in the machine.</param>
+        /// <param name="visible">The visible layer to be added in the machine.</param>
+        public RestrictedBoltzmannMachine(StochasticLayer hidden, StochasticLayer visible)
+            : base(null, hidden.InputsCount, null, 0)
+        {
+            this.Hidden = hidden;
+            this.Visible = visible;
+
+            layers[0] = hidden;
+        }
+
+        /// <summary>
+        ///     Creates a new <see cref="RestrictedBoltzmannMachine" />.
+        /// </summary>
         /// <param name="function">The activation function to use in the network neurons.</param>
         /// <param name="inputsCount">The number of inputs for the machine.</param>
         /// <param name="hiddenNeurons">The number of hidden neurons in the machine.</param>
-        /// 
         public RestrictedBoltzmannMachine(IStochasticFunction function, int inputsCount, int hiddenNeurons)
-            : base(function, inputsCount, null,1)
+            : base(function, inputsCount, null, 1)
         {
-            this.visible = new StochasticLayer(function, inputsCount, hiddenNeurons);
-            this.hidden = new StochasticLayer(function, hiddenNeurons, inputsCount);
+            Visible = new StochasticLayer(function, inputsCount, hiddenNeurons);
+            Hidden = new StochasticLayer(function, hiddenNeurons, inputsCount);
 
-            base.layers[0] = hidden;
+            layers[0] = Hidden;
         }
 
+        /// <summary>
+        ///     Gets the visible layer of the machine.
+        /// </summary>
+        public StochasticLayer Visible { get; }
 
         /// <summary>
-        ///   Compute output vector of the network.
+        ///     Gets the hidden layer of the machine.
         /// </summary>
-        /// 
+        public StochasticLayer Hidden { get; }
+
+        /// <summary>
+        ///     Compute output vector of the network.
+        /// </summary>
         /// <param name="input">Input vector.</param>
-        /// 
         /// <returns>
-        ///   Returns network's output vector.
+        ///     Returns network's output vector.
         /// </returns>
-        /// 
         public override double[] Compute(double[] input)
         {
-            return hidden.Compute(input);
+            return Hidden.Compute(input);
         }
 
         /// <summary>
-        ///   Reconstructs a input vector for a given output.
+        ///     Reconstructs a input vector for a given output.
         /// </summary>
-        /// 
         /// <param name="output">The output vector.</param>
-        /// 
         /// <returns>
-        ///   Returns a probable input vector which may 
-        ///   have originated the given output.
+        ///     Returns a probable input vector which may
+        ///     have originated the given output.
         /// </returns>
-        /// 
         public double[] Reconstruct(double[] output)
         {
-            return visible.Compute(output);
+            return Visible.Compute(output);
         }
 
         /// <summary>
-        ///   Samples an output vector from the network
-        ///   given an input vector.
+        ///     Samples an output vector from the network
+        ///     given an input vector.
         /// </summary>
-        /// 
         /// <param name="input">An input vector.</param>
-        /// 
         /// <returns>
-        ///   A possible output considering the
-        ///   stochastic activations of the network.
+        ///     A possible output considering the
+        ///     stochastic activations of the network.
         /// </returns>
-        /// 
         public double[] GenerateOutput(double[] input)
         {
-            return hidden.Generate(input);
+            return Hidden.Generate(input);
         }
 
         /// <summary>
-        ///   Samples an input vector from the network
-        ///   given an output vector.
+        ///     Samples an input vector from the network
+        ///     given an output vector.
         /// </summary>
-        /// 
         /// <param name="output">An output vector.</param>
-        /// 
         /// <returns>
-        ///   A possible reconstruction considering the
-        ///   stochastic activations of the network.
+        ///     A possible reconstruction considering the
+        ///     stochastic activations of the network.
         /// </returns>
-        /// 
         public double[] GenerateInput(double[] output)
         {
-            return visible.Generate(output);
+            return Visible.Generate(output);
         }
 
-
         /// <summary>
-        ///   Constructs a Gaussian-Bernoulli network with 
-        ///   visible Gaussian units and hidden Bernoulli units.
+        ///     Constructs a Gaussian-Bernoulli network with
+        ///     visible Gaussian units and hidden Bernoulli units.
         /// </summary>
-        /// 
         /// <param name="inputsCount">The number of inputs for the machine.</param>
         /// <param name="hiddenNeurons">The number of hidden neurons in the machine.</param>
-        /// 
         /// <returns>A Gaussian-Bernoulli Restricted Boltzmann Machine</returns>
-        /// 
         public static RestrictedBoltzmannMachine CreateGaussianBernoulli(int inputsCount, int hiddenNeurons)
         {
-            RestrictedBoltzmannMachine network = new RestrictedBoltzmannMachine(inputsCount, hiddenNeurons);
+            var network = new RestrictedBoltzmannMachine(inputsCount, hiddenNeurons);
 
             foreach (var neuron in network.Visible.Neurons)
+            {
                 neuron.ActivationFunction = new GaussianFunction();
+            }
 
             return network;
         }
 
         /// <summary>
-        ///   Creates a new <see cref="ActivationNetwork"/> from this instance.
+        ///     Creates a new <see cref="ActivationNetwork" /> from this instance.
         /// </summary>
-        /// 
         /// <param name="outputs">The number of output neurons in the last layer.</param>
-        /// 
-        /// <returns>An <see cref="ActivationNetwork"/> containing this network.</returns>
-        /// 
+        /// <returns>An <see cref="ActivationNetwork" /> containing this network.</returns>
         public ActivationNetwork ToActivationNetwork(int outputs)
         {
-            return ToActivationNetwork(new SigmoidFunction(alpha: 1), outputs);
+            return ToActivationNetwork(new SigmoidFunction(1), outputs);
         }
 
         /// <summary>
-        ///   Creates a new <see cref="ActivationNetwork"/> from this instance.
+        ///     Creates a new <see cref="ActivationNetwork" /> from this instance.
         /// </summary>
-        /// 
         /// <param name="outputs">The number of output neurons in the last layer.</param>
         /// <param name="function">The activation function to use in the last layer.</param>
-        /// 
-        /// <returns>An <see cref="ActivationNetwork"/> containing this network.</returns>
-        /// 
+        /// <returns>An <see cref="ActivationNetwork" /> containing this network.</returns>
         public ActivationNetwork ToActivationNetwork(IActivationFunction function, int outputs)
         {
-            ActivationNetwork ann = new ActivationNetwork(function,
-                inputsCount, null,hidden.Neurons.Length, outputs);
+            var ann = new ActivationNetwork(function,
+                inputsCount, null, Hidden.Neurons.Length, outputs);
 
             // For each neuron
-            for (int i = 0; i < hidden.Neurons.Length; i++)
+            for (var i = 0; i < Hidden.Neurons.Length; i++)
             {
-                ActivationNeuron aneuron = ann.Layers[0].Neurons[i] as ActivationNeuron;
-                StochasticNeuron sneuron = hidden.Neurons[i];
+                var aneuron = ann.Layers[0].Neurons[i] as ActivationNeuron;
+                var sneuron = Hidden.Neurons[i];
 
                 // For each weight
-                for (int j = 0; j < sneuron.Weights.Length; j++)
+                for (var j = 0; j < sneuron.Weights.Length; j++)
+                {
                     aneuron.Weights[j] = sneuron.Weights[j];
+                }
+
                 aneuron.Threshold = sneuron.Threshold;
                 aneuron.ActivationFunction = sneuron.ActivationFunction;
             }
@@ -301,10 +271,9 @@ namespace Accord.Neuro.Networks
         }
 
         /// <summary>
-        ///   Updates the weights of the visible layer by copying
-        ///   the reverse of the weights in the hidden layer.
+        ///     Updates the weights of the visible layer by copying
+        ///     the reverse of the weights in the hidden layer.
         /// </summary>
-        /// 
         public void UpdateVisibleWeights()
         {
             Visible.CopyReversedWeightsFrom(Hidden);

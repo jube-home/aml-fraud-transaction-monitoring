@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,15 +11,30 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisModelOverrideQuery;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddEntityAnalysisModelOverrideQuery(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelOverrideQueryGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists tenant models supporting override on a key, flagging active overrides for a key value.")
-        ]);
+        static partial void AddEntityAnalysisModelOverrideQuery(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelOverrideQueryGet", OperationKind.Read, true, false,
+                    "Lists tenant models supporting override on a key, flagging active overrides for a key value.",
+                    EntityAnalysisModelOverrideQueryService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelOverrideQueryGetKeys", OperationKind.Read, true, false,
+                    "Lists the override keys available for a Model in the caller's tenant.",
+                    EntityAnalysisModelOverrideQueryService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelOverrideQueryGetValues", OperationKind.Read, true, false,
+                    "Lists the values held against an override key for a Model in the caller's tenant.",
+                    EntityAnalysisModelOverrideQueryService.RequiredPermissions)
+            ]);
+        }
     }
 }

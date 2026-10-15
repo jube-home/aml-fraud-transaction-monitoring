@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -17,7 +17,7 @@ using Jube.Data.Repository;
 using Jube.Dto.Payload;
 using Jube.Dto.UserLogout;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.UserLogout;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -53,6 +53,8 @@ namespace Jube.Service.UserLogout
             this.permissionValidation = permissionValidation;
             repository = new UserLogoutRepository(dbContext, permissionValidation.Landlord ? null : tenantRegistryId);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<UserLogoutService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -134,12 +136,16 @@ namespace Jube.Service.UserLogout
         {
             using var op = OperationScope.Start("UserLogout", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserLogout.List: entry take={clampedTake} user={userName}");
@@ -151,14 +157,17 @@ namespace Jube.Service.UserLogout
 
                 var rows = await repository.GetLastAsync(clampedTake, from, to, search, clampedSamplePercentage,
                     sortField, sortDirection, token).ConfigureAwait(false);
+
                 var total = await repository.CountAsync(from, to, search, clampedSamplePercentage, token)
                     .ConfigureAwait(false);
+
                 var statistics = await repository.GetStatisticsAsync(from, to, search, clampedSamplePercentage,
                     MaxListTake, token).ConfigureAwait(false);
 
                 var dtos = rows.Select(r =>
                 {
                     var created = r.CreatedDate.GetValueOrDefault();
+
                     return new UserLogoutDto(
                         r.Id, created, r.CreatedUser, r.TenantRegistryId, r.ReasonId, DescribeReason(r.ReasonId),
                         r.OutcomeId, DescribeOutcome(r.OutcomeId), r.RemoteIp, r.LocalIp, r.UserAgent,
@@ -170,6 +179,7 @@ namespace Jube.Service.UserLogout
                 }).ToList();
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserLogout.List: {dtos.Count} rows user={userName}");
@@ -185,6 +195,7 @@ namespace Jube.Service.UserLogout
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserLogout.List: cancelled user={userName}");

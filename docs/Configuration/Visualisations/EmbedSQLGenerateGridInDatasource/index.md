@@ -6,9 +6,6 @@ parent: Visualisations
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Embed SQL and Generate Grid in Datasource
 
 Datasource's are the tiles inside the Visualisation which are in their core SQL statements executed against the database

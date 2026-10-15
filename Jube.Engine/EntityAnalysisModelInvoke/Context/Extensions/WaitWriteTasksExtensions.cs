@@ -17,7 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.Observability;
-using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -43,6 +43,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     EngineDiagnostics.InvokeTaskFaultedCount.Add(1,
                         new KeyValuePair<string, object>("task.type", pendingWriteTasksResult.TaskType.ToString()),
                         new KeyValuePair<string, object>("task.direction", "write"));
+
                     continue;
                 }
 
@@ -52,36 +53,43 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                         invokeTaskPerformance.TaskWrapperStats.Write.CachePayloadLatestUpsertAsync =
                             new TaskPerformance(pendingWriteTasksResult.ComputeTime,
                                 pendingWriteTasksResult.ThreadMemory);
+
                         break;
                     case TaskType.CachePayloadUpsertAsync:
                         invokeTaskPerformance.TaskWrapperStats.Write.CachePayloadUpsertAsync =
                             new TaskPerformance(pendingWriteTasksResult.ComputeTime,
                                 pendingWriteTasksResult.ThreadMemory);
+
                         break;
                     case TaskType.CachePayloadInsertAsync:
                         invokeTaskPerformance.TaskWrapperStats.Write.CachePayloadInsertAsync =
                             new TaskPerformance(pendingWriteTasksResult.ComputeTime,
                                 pendingWriteTasksResult.ThreadMemory);
+
                         break;
                     case TaskType.CacheTtlCounterEntryUpsertAsync:
                         invokeTaskPerformance.TaskWrapperStats.Write.CacheTtlCounterEntryUpsertAsync =
                             new TaskPerformance(pendingWriteTasksResult.ComputeTime,
                                 pendingWriteTasksResult.ThreadMemory);
+
                         break;
                     case TaskType.CacheTtlCounterEntryIncrementAsync:
                         invokeTaskPerformance.TaskWrapperStats.Write.CacheTtlCounterEntryIncrementAsync =
                             new TaskPerformance(pendingWriteTasksResult.ComputeTime,
                                 pendingWriteTasksResult.ThreadMemory);
+
                         break;
                     case TaskType.CacheSanctionInsertAsync:
                         invokeTaskPerformance.TaskWrapperStats.Write.CacheSanctionInsertAsync =
                             new TaskPerformance(pendingWriteTasksResult.ComputeTime,
                                 pendingWriteTasksResult.ThreadMemory);
+
                         break;
                     case TaskType.UpsertReferenceDateAsync:
                         invokeTaskPerformance.TaskWrapperStats.Write.UpsertReferenceDateAsync =
                             new TaskPerformance(pendingWriteTasksResult.ComputeTime,
                                 pendingWriteTasksResult.ThreadMemory);
+
                         break;
                 }
             }
@@ -89,6 +97,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             if (context.LogSampled)
             {
                 invokeTaskPerformance.Stages ??= new InvokeStagePerformance();
+
                 invokeTaskPerformance.Stages.JoinWriteTasks = new StageDuration
                 {
                     DurationMicroseconds = (long)(joinStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency))

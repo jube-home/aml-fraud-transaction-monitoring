@@ -50,6 +50,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         context.Services.CancellationToken).ConfigureAwait(false);
 
                     var shadowEntityAnalysisModelAdaptations = new List<EntityAnalysisModelHttpAdaptation>();
+
                     foreach (var record in records)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();

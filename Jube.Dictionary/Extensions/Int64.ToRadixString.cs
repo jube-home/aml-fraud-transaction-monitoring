@@ -31,6 +31,7 @@ namespace Jube.Dictionary.Extensions
             var negative = @this < 0;
             var magnitude = negative ? (ulong)(-(@this + 1)) + 1 : (ulong)@this;
             var builder = new System.Text.StringBuilder();
+
             while (magnitude > 0)
             {
                 builder.Insert(0, digits[(int)(magnitude % (ulong)radix)]);

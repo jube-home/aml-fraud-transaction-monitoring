@@ -21,6 +21,7 @@ namespace Jube.Data.Repository
     using Context;
     using LinqToDB;
     using Poco;
+    using Jube.Data.Helpers;
 
     public class CaseWorkflowFormRoleRepository
     {
@@ -32,6 +33,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -81,6 +83,7 @@ namespace Jube.Data.Repository
             var existing = await dbContext.CaseWorkflowFormRole.FirstOrDefaultAsync(w =>
                 w.CaseWorkflowFormGuid == model.CaseWorkflowFormGuid && w.RoleRegistryGuid == model.RoleRegistryGuid
                                                                      && (w.Deleted == 0 || w.Deleted == null), token);
+
             if (existing != null)
             {
                 return existing;
@@ -90,6 +93,7 @@ namespace Jube.Data.Repository
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
+
             try
             {
                 model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
@@ -101,6 +105,7 @@ namespace Jube.Data.Repository
                                                                              model.RoleRegistryGuid
                                                                              && (w.Deleted == 0 || w.Deleted == null),
                     token);
+
                 if (raced == null)
                 {
                     throw;

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,16 +13,18 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetEntityAnalysisModelTaskPerformanceCounterListQuery;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.EntityAnalysisModelTaskPerformanceCounter;
 using Jube.Dto.Payload;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.EntityAnalysisModelTaskPerformanceCounter;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
-using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -31,12 +33,11 @@ namespace Jube.Service.EntityAnalysisModelTaskPerformanceCounter
     public sealed class EntityAnalysisModelTaskPerformanceCounterService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly EntityAnalysisModelTaskPerformanceCounterRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -48,13 +49,16 @@ namespace Jube.Service.EntityAnalysisModelTaskPerformanceCounter
         {
             this.log = log;
             this.auditLog = auditLog;
+            this.dbContext = dbContext;
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            repository = new EntityAnalysisModelTaskPerformanceCounterRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<EntityAnalysisModelTaskPerformanceCounterService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -144,12 +148,16 @@ namespace Jube.Service.EntityAnalysisModelTaskPerformanceCounter
         {
             using var op = OperationScope.Start("EntityAnalysisModelTaskPerformanceCounter", "List", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelTaskPerformanceCounter.List: entry take={clampedTake} user={userName}");
@@ -159,12 +167,13 @@ namespace Jube.Service.EntityAnalysisModelTaskPerformanceCounter
             {
                 EnsurePermitted("EntityAnalysisModelTaskPerformanceCounter.List");
 
-                var rows = await repository
-                    .GetLastAsync(permissionValidation.Landlord, clampedTake, from, to, directionId, taskTypeId,
-                        clampedSamplePercentage, sortField, sortDirection, token)
+                var result = await new GetEntityAnalysisModelTaskPerformanceCounterListQuery(dbContext,
+                        tenantRegistryId)
+                    .ExecuteAsync(permissionValidation.Landlord, clampedTake, from, to, directionId, taskTypeId,
+                        clampedSamplePercentage, MaxListTake, sortField, sortDirection, token)
                     .ConfigureAwait(false);
 
-                var dtos = rows.Select(r => new EntityAnalysisModelTaskPerformanceCounterDto(
+                var dtos = result.Rows.Select(r => new EntityAnalysisModelTaskPerformanceCounterDto(
                     r.Id, r.EntityAnalysisModelGuid, r.EntityAnalysisModelName, r.DirectionId.GetValueOrDefault(),
                     DescribeDirection((TaskDirection)r.DirectionId.GetValueOrDefault()),
                     r.TaskTypeId.GetValueOrDefault(), DescribeTaskType((TaskType)r.TaskTypeId.GetValueOrDefault()),
@@ -173,17 +182,12 @@ namespace Jube.Service.EntityAnalysisModelTaskPerformanceCounter
                     r.MinAllocatedBytes.GetValueOrDefault(), r.MaxAllocatedBytes.GetValueOrDefault(),
                     r.InvokeCount.GetValueOrDefault(), r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
 
-                var total = await repository
-                    .CountAsync(permissionValidation.Landlord, from, to, directionId, taskTypeId,
-                        clampedSamplePercentage, token)
-                    .ConfigureAwait(false);
+                var total = result.Total;
 
-                var statistics = await repository
-                    .GetStatisticsAsync(permissionValidation.Landlord, from, to, directionId, taskTypeId,
-                        clampedSamplePercentage, MaxListTake, token)
-                    .ConfigureAwait(false);
+                var statistics = result.Statistics;
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelTaskPerformanceCounter.List: {dtos.Count} rows user={userName}");
@@ -199,6 +203,7 @@ namespace Jube.Service.EntityAnalysisModelTaskPerformanceCounter
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"EntityAnalysisModelTaskPerformanceCounter.List: cancelled user={userName}");

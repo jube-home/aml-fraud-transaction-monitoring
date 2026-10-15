@@ -1,58 +1,72 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Diagnostics;
+using Accord.Math;
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using System;
-    using Accord.Math;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Shift Log-Logistic distribution.
+    ///     Shift Log-Logistic distribution.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   The shifted log-logistic distribution is a probability distribution also known as
-    ///   the generalized log-logistic or the three-parameter log-logistic distribution. It
-    ///   has also been called the generalized logistic distribution, but this conflicts with
-    ///   other uses of the term: see generalized logistic distribution.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Shifted_log-logistic_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Shifted log-logistic distribution. Available on: 
-    ///       http://en.wikipedia.org/wiki/Shifted_log-logistic_distribution </a></description></item>
-    ///   </list></para> 
+    ///     <para>
+    ///         The shifted log-logistic distribution is a probability distribution also known as
+    ///         the generalized log-logistic or the three-parameter log-logistic distribution. It
+    ///         has also been called the generalized logistic distribution, but this conflicts with
+    ///         other uses of the term: see generalized logistic distribution.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://en.wikipedia.org/wiki/Shifted_log-logistic_distribution">
+    ///                         Wikipedia, The Free Encyclopedia. Shifted log-logistic distribution. Available on:
+    ///                         http://en.wikipedia.org/wiki/Shifted_log-logistic_distribution
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <para>
-    ///   This examples shows how to create a Shifted Log-Logistic distribution,
-    ///   compute some of its properties and generate a number of random samples
-    ///   from it.</para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         This examples shows how to create a Shifted Log-Logistic distribution,
+    ///         compute some of its properties and generate a number of random samples
+    ///         from it.
+    ///     </para>
+    ///     <code>
     /// // Create a LLD3 distribution with μ = 0.0, scale = 0.42, and shape = 0.1
     /// var log = new ShiftedLogLogisticDistribution(location: 0, scale: 0.42, shape: 0.1);
     /// 
@@ -74,315 +88,281 @@ namespace Accord.Statistics.Distributions.Univariate
     /// string str = log.ToString(CultureInfo.InvariantCulture); // LLD3(x; μ = 0, σ = 0.42, ξ = 0.1)
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="LogisticDistribution"/>
-    /// <seealso cref="ParetoDistribution"/>
-    /// 
+    /// <seealso cref="LogisticDistribution" />
+    /// <seealso cref="ParetoDistribution" />
     [Serializable]
     public class ShiftedLogLogisticDistribution : UnivariateContinuousDistribution
     {
-
         // Distribution parameters
-        private double mu;    // location μ (real)
-        private double sigma; // scale σ    (positive)
-        private double ksi;   // shape ξ    (real)
 
         /// <summary>
-        ///   Constructs a Shifted Log-Logistic distribution
-        ///   with zero location, unit scale, and zero shape.
+        ///     Constructs a Shifted Log-Logistic distribution
+        ///     with zero location, unit scale, and zero shape.
         /// </summary>
-        /// 
         public ShiftedLogLogisticDistribution()
         {
             initialize(0, 1, 0);
         }
 
         /// <summary>
-        ///   Constructs a Shifted Log-Logistic distribution
-        ///   with the given location, unit scale and zero shape.
+        ///     Constructs a Shifted Log-Logistic distribution
+        ///     with the given location, unit scale and zero shape.
         /// </summary>
-        /// 
         /// <param name="location">The distribution's location value μ (mu).</param>
-        /// 
         public ShiftedLogLogisticDistribution([Real] double location)
         {
             initialize(location, 1, 0);
         }
 
         /// <summary>
-        ///   Constructs a Shifted Log-Logistic distribution
-        ///   with the given location and scale and zero shape.
+        ///     Constructs a Shifted Log-Logistic distribution
+        ///     with the given location and scale and zero shape.
         /// </summary>
-        /// 
         /// <param name="location">The distribution's location value μ (mu).</param>
         /// <param name="scale">The distribution's scale value σ (sigma).</param>
-        /// 
         public ShiftedLogLogisticDistribution([Real] double location, [Positive] double scale)
         {
             if (scale <= 0)
+            {
                 throw new ArgumentOutOfRangeException("scale", "Scale must be positive.");
+            }
 
             initialize(location, scale, 0);
         }
 
         /// <summary>
-        ///   Constructs a Shifted Log-Logistic distribution
-        ///   with the given location and scale and zero shape.
+        ///     Constructs a Shifted Log-Logistic distribution
+        ///     with the given location and scale and zero shape.
         /// </summary>
-        /// 
         /// <param name="location">The distribution's location value μ (mu).</param>
         /// <param name="scale">The distribution's scale value s.</param>
         /// <param name="shape">The distribution's shape value ξ (ksi).</param>
-        /// 
         public ShiftedLogLogisticDistribution([Real] double location, [Positive] double scale, [Real] double shape)
         {
             if (scale <= 0)
+            {
                 throw new ArgumentOutOfRangeException("scale", "Scale must be positive.");
+            }
 
             initialize(location, scale, shape);
         }
 
-
-
         /// <summary>
-        ///   Gets the mean for this distribution.
+        ///     Gets the mean for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's mean value.
+        ///     The distribution's mean value.
         /// </value>
-        /// 
         public override double Mean
         {
             get
             {
-                if (ksi == 0)
-                    return mu;
-
-                double b = Math.PI * ksi;
-                double a = sigma / ksi;
-                return mu + a * b * Special.Cosec(b) - a * 1;
-            }
-            set {} //Not Implemented.
-        }
-
-        /// <summary>
-        ///   Gets the distribution's location value μ (mu).
-        /// </summary>
-        /// 
-        public double Location
-        {
-            get { return mu; }
-        }
-
-        /// <summary>
-        ///   Gets the distribution's scale value (σ).
-        /// </summary>
-        /// 
-        public double Scale
-        {
-            get { return sigma; }
-        }
-
-        /// <summary>
-        ///   Gets the distribution's shape value (ξ).
-        /// </summary>
-        /// 
-        public double Shape
-        {
-            get { return ksi; }
-        }
-
-        /// <summary>
-        ///   Gets the median for this distribution.
-        /// </summary>
-        /// 
-        /// <value>
-        ///   The distribution's median value.
-        /// </value>
-        /// 
-        public override double Median
-        {
-            get
-            {
-                Accord.Diagnostics.Debug.Assert(mu.IsEqual(base.Median, 1e-5));
-                return mu;
-            }
-        }
-
-        /// <summary>
-        ///   Gets the variance for this distribution.
-        /// </summary>
-        /// 
-        /// <value>
-        ///   The distribution's variance.
-        /// </value>
-        /// 
-        public override double Variance
-        {
-            get
-            {
-                if (ksi == 0)
+                if (Shape == 0)
                 {
-                    // lim x->0  ((b^2)/(x^2))*(2*pi*x csc(2*pi*x) - (pi*x*csc(pi*x))^2)
-                    // http://www.wolframalpha.com/input/?i=lim+x-%3E0++%28a+%2B+%28%28b%5E2%29%2F%28x%5E2%29%29*%282*pi*x+csc%282*pi*x%29+-+%28pi*x*csc%28pi*x%29%29%5E2%29%29
-                    return sigma * sigma * Math.PI * Math.PI / 3.0;
+                    return Location;
                 }
-                else
-                {
-                    double pb = Math.PI * ksi;
-                    double a = (sigma * sigma) / (ksi * ksi);
-                    double b = 2 * pb * Special.Cosec(2 * pb);
-                    double c = pb * Special.Cosec(pb);
 
-                    return a * (b - c * c);
-                }
-            }
-            set {} //Not Implemented.
-        }
-
-        /// <summary>
-        ///   Gets the mode for this distribution.
-        /// </summary>
-        /// 
-        /// <value>
-        ///   The distribution's mode value.
-        /// </value>
-        /// 
-        public override double Mode
-        {
-            get
-            {
-                if (ksi == 0)
-                    return mu;
-
-                return mu + (sigma / ksi) * (Math.Pow((1 - ksi) / (1 + ksi), ksi) - 1);
+                var b = System.Math.PI * Shape;
+                var a = Scale / Shape;
+                return Location + a * b * Special.Cosec(b) - a * 1;
             }
             set { } //Not Implemented.
         }
 
         /// <summary>
-        ///   Not supported.
+        ///     Gets the distribution's location value μ (mu).
         /// </summary>
-        /// 
-        public override double Entropy
+        public double Location { get; private set; }
+
+        /// <summary>
+        ///     Gets the distribution's scale value (σ).
+        /// </summary>
+        public double Scale { get; private set; }
+
+        /// <summary>
+        ///     Gets the distribution's shape value (ξ).
+        /// </summary>
+        public double Shape { get; private set; }
+
+        /// <summary>
+        ///     Gets the median for this distribution.
+        /// </summary>
+        /// <value>
+        ///     The distribution's median value.
+        /// </value>
+        public override double Median
         {
-            get { throw new NotSupportedException(); }
-            set {} //Not Implemented.
+            get
+            {
+                Debug.Assert(Location.IsEqual(base.Median, 1e-5));
+                return Location;
+            }
         }
 
         /// <summary>
-        ///   Gets the support interval for this distribution.
+        ///     Gets the variance for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   A <see cref="DoubleRange" /> containing
-        ///   the support interval for this distribution.
+        ///     The distribution's variance.
         /// </value>
-        /// 
+        public override double Variance
+        {
+            get
+            {
+                if (Shape == 0)
+                {
+                    // lim x->0  ((b^2)/(x^2))*(2*pi*x csc(2*pi*x) - (pi*x*csc(pi*x))^2)
+                    // http://www.wolframalpha.com/input/?i=lim+x-%3E0++%28a+%2B+%28%28b%5E2%29%2F%28x%5E2%29%29*%282*pi*x+csc%282*pi*x%29+-+%28pi*x*csc%28pi*x%29%29%5E2%29%29
+                    return Scale * Scale * System.Math.PI * System.Math.PI / 3.0;
+                }
+
+                var pb = System.Math.PI * Shape;
+                var a = Scale * Scale / (Shape * Shape);
+                var b = 2 * pb * Special.Cosec(2 * pb);
+                var c = pb * Special.Cosec(pb);
+
+                return a * (b - c * c);
+            }
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Gets the mode for this distribution.
+        /// </summary>
+        /// <value>
+        ///     The distribution's mode value.
+        /// </value>
+        public override double Mode
+        {
+            get
+            {
+                if (Shape == 0)
+                {
+                    return Location;
+                }
+
+                return Location + Scale / Shape * (System.Math.Pow((1 - Shape) / (1 + Shape), Shape) - 1);
+            }
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Not supported.
+        /// </summary>
+        public override double Entropy
+        {
+            get => throw new NotSupportedException();
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Gets the support interval for this distribution.
+        /// </summary>
+        /// <value>
+        ///     A <see cref="DoubleRange" /> containing
+        ///     the support interval for this distribution.
+        /// </value>
         public override DoubleRange Support
         {
             get
             {
-                if (ksi > 0)
-                    return new DoubleRange(mu - sigma / ksi, Double.PositiveInfinity);
+                if (Shape > 0)
+                {
+                    return new DoubleRange(Location - Scale / Shape, double.PositiveInfinity);
+                }
 
-                if (ksi < 0)
-                    return new DoubleRange(Double.NegativeInfinity, mu - sigma / ksi);
+                if (Shape < 0)
+                {
+                    return new DoubleRange(double.NegativeInfinity, Location - Scale / Shape);
+                }
 
                 // if (ksi == 0)
-                return new DoubleRange(Double.NegativeInfinity, Double.PositiveInfinity);
+                return new DoubleRange(double.NegativeInfinity, double.PositiveInfinity);
             }
-            set {} //Not Implemented.
+            set { } //Not Implemented.
         }
 
-
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Gets the cumulative distribution function (cdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         protected internal override double InnerDistributionFunction(double x)
         {
-            if (ksi > 0 && x < mu - sigma / ksi)
+            if (Shape > 0 && x < Location - Scale / Shape)
+            {
                 return 0;
+            }
 
-            double z = (x - mu) / sigma;
+            var z = (x - Location) / Scale;
 
-            if (ksi == 0)
-                return 1 / (1 + Math.Exp(-z));
+            if (Shape == 0)
+            {
+                return 1 / (1 + System.Math.Exp(-z));
+            }
 
-            return 1 / (1 + Math.Pow(1 + ksi * z, -1 / ksi));
+            return 1 / (1 + System.Math.Pow(1 + Shape * z, -1 / Shape));
         }
 
         /// <summary>
-        ///   Gets the probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Gets the probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
+        ///     The probability of <c>x</c> occurring
+        ///     in the current distribution.
         /// </returns>
-        /// 
         protected internal override double InnerProbabilityDensityFunction(double x)
         {
-            double z = (x - mu) / sigma;
+            var z = (x - Location) / Scale;
 
             double a, b;
 
-            if (ksi == 0)
+            if (Shape == 0)
             {
-                a = Math.Exp(-z);
-                b = (1 + a);
+                a = System.Math.Exp(-z);
+                b = 1 + a;
             }
             else
             {
-                a = Math.Pow(1 + ksi * z, -1 / ksi - 1);
-                b = 1 + Math.Pow(1 + ksi * z, -1 / ksi);
+                a = System.Math.Pow(1 + Shape * z, -1 / Shape - 1);
+                b = 1 + System.Math.Pow(1 + Shape * z, -1 / Shape);
             }
 
-            return a / (sigma * b * b);
+            return a / (Scale * b * b);
         }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public override object Clone()
         {
-            return new ShiftedLogLogisticDistribution(mu, sigma, ksi);
+            return new ShiftedLogLogisticDistribution(Location, Scale, Shape);
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        /// 
         public override string ToString(string format, IFormatProvider formatProvider)
         {
-            return String.Format(formatProvider, "LLD3(x; μ = {0}, σ = {1}, ξ = {2})",
-                mu.ToString(format, formatProvider),
-                sigma.ToString(format, formatProvider),
-                ksi.ToString(format, formatProvider));
+            return string.Format(formatProvider, "LLD3(x; μ = {0}, σ = {1}, ξ = {2})",
+                Location.ToString(format, formatProvider),
+                Scale.ToString(format, formatProvider),
+                Shape.ToString(format, formatProvider));
         }
-
 
         private void initialize(double mean, double scale, double shape)
         {
-            this.mu = mean;
-            this.sigma = scale;
-            this.ksi = shape;
+            Location = mean;
+            Scale = scale;
+            Shape = shape;
         }
     }
 }

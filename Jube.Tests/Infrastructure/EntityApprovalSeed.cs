@@ -11,13 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
-using Jube.Data.Repository;
 using LinqToDB;
 
 namespace Jube.Test.Infrastructure

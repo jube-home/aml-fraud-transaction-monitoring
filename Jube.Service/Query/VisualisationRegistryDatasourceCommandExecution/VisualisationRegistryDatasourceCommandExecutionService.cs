@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,9 +16,11 @@ using System.Diagnostics;
 using System.Globalization;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Data.Query.GetByVisualisationRegistryDatasourceCommandExecutionQuery;
 using Jube.Data.Repository;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
+using Jube.Service.DynamicSql;
 using Jube.Service.Exceptions.Query.VisualisationRegistryDatasourceCommandExecution;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -32,13 +34,12 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
     public sealed class VisualisationRegistryDatasourceCommandExecutionService
     {
         private static readonly int[] permissions = [28, 1];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly global::Jube.Data.Query.GetByVisualisationRegistryDatasourceCommandExecutionQuery query;
+        private readonly GetByVisualisationRegistryDatasourceCommandExecutionQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -58,11 +59,14 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             this.dynamicEnvironment = dynamicEnvironment;
-            query = new global::Jube.Data.Query.GetByVisualisationRegistryDatasourceCommandExecutionQuery(dbContext,
+
+            query = new GetByVisualisationRegistryDatasourceCommandExecutionQuery(dbContext,
                 userName, log,
                 dynamicEnvironment.AppSettings("ReportConnectionString") ??
                 dynamicEnvironment.AppSettings("ConnectionString"));
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<VisualisationRegistryDatasourceCommandExecutionService> CreateAsync(DbContext dbContext,
             string? userName,
@@ -136,6 +140,7 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
             using var op = OperationScope.Start("VisualisationRegistryDatasourceCommandExecution", "Execute", userName,
                 tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"VisualisationRegistryDatasourceCommandExecution.Execute: entry user={userName} id={id}");
@@ -148,6 +153,7 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
 
                 var visibleDatasource = await new VisualisationRegistryDatasourceRepository(dbContext, userName)
                     .GetByIdActiveOnlyAsync(id, token).ConfigureAwait(false);
+
                 if (visibleDatasource == null)
                 {
                     if (log.IsWarnEnabled)
@@ -157,6 +163,7 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                     }
 
                     op.Rows(0);
+
                     return [];
                 }
 
@@ -164,16 +171,21 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                     parameter =>
                         (int)(parameter.SelectToken("id") ?? throw new ArgumentException("A parameter has no id.")),
                     parameter => parameter.SelectToken("value"));
+
                 var parametersByName = await ParametersByNameAsync(id, parametersByParsedId, token)
                     .ConfigureAwait(false);
 
                 string? error = null;
                 var values = new List<IDictionary<string, object>>();
                 var sw = new Stopwatch();
+
                 try
                 {
                     sw.Start();
-                    values = await query.ExecuteAsync(id, parametersByName, token).ConfigureAwait(false);
+
+                    values = await query.ExecuteAsync(id, parametersByName, AllowedTablesOrNullForDenyMode(), token)
+                        .ConfigureAwait(false);
+
                     sw.Stop();
                 }
                 catch (Exception ex)
@@ -185,6 +197,7 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                 await StoreAuditAsync(id, values, error, sw, parametersByParsedId, token).ConfigureAwait(false);
 
                 op.Rows(values.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -206,8 +219,10 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"VisualisationRegistryDatasourceCommandExecution.Execute: unexpected failure user={userName}", ex);
+
                 throw;
             }
         }
@@ -227,9 +242,11 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                 }, token).ConfigureAwait(false);
 
             var parameterRepository = new VisualisationRegistryDatasourceExecutionLogParameterRepository(dbContext);
+
             var knownParameterIds = (await new VisualisationRegistryParameterRepository(dbContext, userName)
                     .GetByVisualisationRegistryDatasourceIdAsync(id, token).ConfigureAwait(false))
                 .Select(p => p.Id).ToHashSet();
+
             foreach (var parameter in parametersByParsedId.Where(p => knownParameterIds.Contains(p.Key)))
             {
                 await parameterRepository.InsertAsync(new VisualisationRegistryDatasourceExecutionLogParameter
@@ -248,9 +265,11 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                 .GetByVisualisationRegistryDatasourceIdAsync(id, token).ConfigureAwait(false);
 
             var parametersByName = new Dictionary<string, object>();
+
             foreach (var parameter in parametersByParsedId)
             {
                 var registryParameter = registryParameters.FirstOrDefault(f => f.Id == parameter.Key);
+
                 if (registryParameter == null)
                 {
                     continue;
@@ -265,11 +284,13 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                         parametersByName.Add(cleanName, value == null
                             ? int.Parse(registryParameter.DefaultValue, CultureInfo.InvariantCulture)
                             : int.Parse(value.ToString(), CultureInfo.InvariantCulture));
+
                         break;
                     case 3:
                         parametersByName.Add(cleanName, value == null
                             ? double.Parse(registryParameter.DefaultValue, CultureInfo.InvariantCulture)
                             : double.Parse(value.ToString(), CultureInfo.InvariantCulture));
+
                         break;
                     case 4:
                         parametersByName.Add(cleanName, value == null
@@ -283,20 +304,34 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                                 out var dto)
                                 ? dto.UtcDateTime
                                 : DateTime.UtcNow);
+
                         break;
                     case 5:
                         parametersByName.Add(cleanName, value == null
                             ? byte.Parse(registryParameter.DefaultValue, CultureInfo.InvariantCulture)
                             : byte.Parse(value.ToString(), CultureInfo.InvariantCulture));
+
                         break;
                     default:
                         parametersByName.Add(cleanName,
                             value == null ? registryParameter.DefaultValue : value.ToString());
+
                         break;
                 }
             }
 
             return parametersByName;
+        }
+
+        private IReadOnlyDictionary<string, string>? AllowedTablesOrNullForDenyMode()
+        {
+            if (!dynamicEnvironment.AppSettings("EnableVisualisationDatasourceTableAllowList")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            return DynamicSqlTableAccess.BuildVisualisationAllowedTables(userName, permissionValidation.Validate);
         }
 
         private void EnsurePermitted(string op)

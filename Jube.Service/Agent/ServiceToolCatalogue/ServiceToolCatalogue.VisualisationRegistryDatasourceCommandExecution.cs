@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddVisualisationRegistryDatasourceCommandExecution(List<ServiceToolDescriptor> tools) =>
+        static partial void AddVisualisationRegistryDatasourceCommandExecution(List<ServiceToolDescriptor> tools)
+        {
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
-                    "VisualisationRegistryDatasourceCommandExecutionExecute", OperationKind.Read, Idempotent: true,
-                    Destructive: false,
-                    "Executes a Visualisation Registry Datasource command with caller-supplied parameter values and returns its rows.")
+                    "VisualisationRegistryDatasourceCommandExecutionExecute", OperationKind.Read, true,
+                    false,
+                    "Executes a Visualisation Registry Datasource command with caller-supplied parameter values and returns its rows.",
+                    VisualisationRegistryDatasourceCommandExecutionService.RequiredPermissions)
             ]);
+        }
     }
 }

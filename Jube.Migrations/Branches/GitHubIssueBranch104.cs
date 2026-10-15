@@ -34,15 +34,18 @@ namespace Jube.Migrations.Branches
             InvalidateSessionCaseSearchCompiledSql();
         }
 
+        public override void Down()
+        {
+        }
+
         private void InvalidateSessionCaseSearchCompiledSql()
         {
-
-            Execute.Sql("UPDATE \"SessionCaseSearchCompiledSql\" SET \"Rebuild\" = 1 WHERE \"Rebuild\" = 0 OR \"Rebuild\" IS NULL;");
+            Execute.Sql(
+                "UPDATE \"SessionCaseSearchCompiledSql\" SET \"Rebuild\" = 1 WHERE \"Rebuild\" = 0 OR \"Rebuild\" IS NULL;");
         }
 
         private void CreateVisualisationRegistryParameterRole()
         {
-
             Create.Table("VisualisationRegistryParameterRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -56,7 +59,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("VisualisationRegistryParameterRole").OnColumn("VisualisationRegistryParameterGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("VisualisationRegistryParameterRole").OnColumn("VisualisationRegistryParameterGuid")
+                .Ascending().OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "VisualisationRegistryParameterRole"("RoleRegistryGuid", 
@@ -83,7 +87,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateVisualisationRegistryDatasourceRole()
         {
-
             Create.Table("VisualisationRegistryDatasourceRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -97,7 +100,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("VisualisationRegistryDatasourceRole").OnColumn("VisualisationRegistryDatasourceGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("VisualisationRegistryDatasourceRole")
+                .OnColumn("VisualisationRegistryDatasourceGuid").Ascending().OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "VisualisationRegistryDatasourceRole"("RoleRegistryGuid", 
@@ -124,7 +128,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateVisualisationRegistryRole()
         {
-
             Create.Table("VisualisationRegistryRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -138,7 +141,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("VisualisationRegistryRole").OnColumn("VisualisationRegistryGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("VisualisationRegistryRole").OnColumn("VisualisationRegistryGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "VisualisationRegistryRole"("RoleRegistryGuid", 
@@ -165,7 +169,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateCaseWorkflowFilterRole()
         {
-
             Create.Table("CaseWorkflowFilterRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -179,7 +182,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("CaseWorkflowFilterRole").OnColumn("CaseWorkflowFilterGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("CaseWorkflowFilterRole").OnColumn("CaseWorkflowFilterGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "CaseWorkflowFilterRole"("RoleRegistryGuid", 
@@ -206,7 +210,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateCaseWorkflowXPathRole()
         {
-
             Create.Table("CaseWorkflowXPathRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -220,7 +223,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("CaseWorkflowXPathRole").OnColumn("CaseWorkflowXPathGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("CaseWorkflowXPathRole").OnColumn("CaseWorkflowXPathGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "CaseWorkflowXPathRole"("RoleRegistryGuid", 
@@ -247,7 +251,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateCaseWorkflowDisplayRole()
         {
-
             Create.Table("CaseWorkflowDisplayRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -261,7 +264,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("CaseWorkflowDisplayRole").OnColumn("CaseWorkflowDisplayGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("CaseWorkflowDisplayRole").OnColumn("CaseWorkflowDisplayGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "CaseWorkflowDisplayRole"("RoleRegistryGuid", 
@@ -286,7 +290,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateCaseWorkflowActionRole()
         {
-
             Create.Table("CaseWorkflowActionRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -300,7 +303,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("CaseWorkflowActionRole").OnColumn("CaseWorkflowActionGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("CaseWorkflowActionRole").OnColumn("CaseWorkflowActionGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "CaseWorkflowActionRole"("RoleRegistryGuid",
@@ -327,7 +331,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateCaseWorkflowFormRole()
         {
-
             Create.Table("CaseWorkflowFormRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -341,7 +344,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("CaseWorkflowFormRole").OnColumn("CaseWorkflowFormGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("CaseWorkflowFormRole").OnColumn("CaseWorkflowFormGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "CaseWorkflowFormRole"("RoleRegistryGuid", 
@@ -368,7 +372,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateCaseWorkflowMacroRole()
         {
-
             Create.Table("CaseWorkflowMacroRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -382,7 +385,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("CaseWorkflowMacroRole").OnColumn("CaseWorkflowMacroGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("CaseWorkflowMacroRole").OnColumn("CaseWorkflowMacroGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "CaseWorkflowMacroRole"("RoleRegistryGuid", 
@@ -409,7 +413,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateCaseWorkflowStatusRole()
         {
-
             Create.Table("CaseWorkflowStatusRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -423,7 +426,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("CaseWorkflowStatusRole").OnColumn("CaseWorkflowStatusGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("CaseWorkflowStatusRole").OnColumn("CaseWorkflowStatusGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "CaseWorkflowStatusRole"("RoleRegistryGuid", 
@@ -448,7 +452,6 @@ namespace Jube.Migrations.Branches
 
         private void CreateCaseWorkflowRole()
         {
-
             Create.Table("CaseWorkflowRole")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsGuid().Nullable()
@@ -462,7 +465,8 @@ namespace Jube.Migrations.Branches
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("CaseWorkflowRole").OnColumn("CaseWorkflowGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("CaseWorkflowRole").OnColumn("CaseWorkflowGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "CaseWorkflowRole"("RoleRegistryGuid", 
@@ -485,11 +489,6 @@ namespace Jube.Migrations.Branches
                          and r."Deleted" is null
                         or r."Deleted" = 0
                         """);
-        }
-
-        public override void Down()
-        {
-
         }
     }
 }

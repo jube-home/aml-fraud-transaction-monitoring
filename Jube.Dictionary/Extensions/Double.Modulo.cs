@@ -23,6 +23,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var remainder = @this % divisor;
+
             if (remainder != 0 && (remainder < 0) != (divisor < 0))
             {
                 remainder += divisor;

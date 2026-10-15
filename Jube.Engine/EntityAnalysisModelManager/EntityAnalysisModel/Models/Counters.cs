@@ -13,6 +13,11 @@
 
 using System;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
 {
     public class Counters
@@ -36,7 +41,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public int ModelInvokeGatewayCounter;
         public int ModelResponseElevationCounter;
         public long ModelTotalResponseTime;
-
         public int ResponseElevationCount;
         public int ResponseElevationFrequencyLimitCounter;
         public int ResponseElevationValueLimitCounter;

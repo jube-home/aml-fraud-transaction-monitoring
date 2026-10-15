@@ -27,6 +27,7 @@ using Jube.Service.Exceptions.Repository.CaseWorkflowXPath;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.CaseWorkflowXPath;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -56,7 +57,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
         private readonly List<int> createdModelIds = [];
         private readonly List<int> createdRoleRegistryIds = [];
         private readonly List<string> createdUserNames = [];
-
         private string userXPathA = string.Empty;
         private string userXPathB = string.Empty;
 
@@ -79,29 +79,40 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
 
             var caseWorkflowXPathGuids1 = dbContext.CaseWorkflowXPath.Where(s => createdXPathIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowXPathRole>()
                 .Where(w => caseWorkflowXPathGuids1.Contains(w.CaseWorkflowXPathGuid)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowXPathVersion>()
                 .Where(w => w.CaseWorkflowXPathId != null && createdXPathIds.Contains(w.CaseWorkflowXPathId.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflowXPath.Where(w => createdXPathIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowGuids2 = dbContext.CaseWorkflow.Where(s => createdWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids2.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowVersion>()
                 .Where(w => w.CaseWorkflowId != null && createdWorkflowIds.Contains(w.CaseWorkflowId.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflow.Where(w => createdWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
 
             await dbContext.UserInTenant.Where(w => createdUserNames.Contains(w.User)).DeleteAsync();
             await dbContext.UserRegistry.Where(w => createdUserNames.Contains(w.Name)).DeleteAsync();
+
             await dbContext.RoleRegistryPermission
                 .Where(w => w.RoleRegistryId != null && createdRoleRegistryIds.Contains(w.RoleRegistryId.Value))
                 .DeleteAsync();
+
             await dbContext.RoleRegistry.Where(w => createdRoleRegistryIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -110,6 +121,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
         {
             var suffix = Guid.NewGuid().ToString("N")[..8];
             var roleGuid = Guid.NewGuid();
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleGuid,
@@ -138,6 +150,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             });
 
             var userName = $"{DatabaseFixture.Prefix}UserXPath{label}{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -160,6 +173,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             });
 
             createdUserNames.Add(userName);
+
             return userName;
         }
 
@@ -174,6 +188,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -184,6 +199,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -205,6 +221,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             }).ConfigureAwait(false);
 
             createdWorkflowIds.Add(workflowId);
+
             return workflowId;
         }
 
@@ -309,6 +326,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
 
             log.Entries.Should()
                 .Contain(e => e.Level == "WARN" && e.Message.Contains(fx.Seed.UserWithoutPermission));
+
             log.Entries.Should().NotContain(e => e.Level == "ERROR");
         }
 
@@ -357,8 +375,10 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext, userXPathA);
             var workflowId = await CreateWorkflowAsync(dbContext, modelId, userXPathA);
+
             await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId)
                 .Set(w => w.Deleted, (byte)1).UpdateAsync();
+
             var service = await BuildServiceAsync(dbContext, userXPathA);
 
             await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(ValidDto(workflowId)));
@@ -576,6 +596,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             {
                 await dbContext.CaseWorkflowXPath.Where(w => w.Id == created.Id)
                     .Set(w => w.ImportId, (int?)null).UpdateAsync();
+
                 await dbContext.GetTable<Data.Poco.Import>().Where(w => w.Id == importId).DeleteAsync();
             }
         }
@@ -603,6 +624,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
 
             var created = await service.InsertAsync(ValidDto(workflowId));
             createdXPathIds.Add(created.Id);
+
             await dbContext.CaseWorkflowXPath.Where(w => w.Id == created.Id)
                 .Set(w => w.Locked, (byte)1).UpdateAsync();
 
@@ -710,6 +732,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
 
             var created = await service.InsertAsync(ValidDto(workflowId));
             createdXPathIds.Add(created.Id);
+
             await dbContext.CaseWorkflowXPath.Where(w => w.Id == created.Id)
                 .Set(w => w.Locked, (byte)1).UpdateAsync();
 
@@ -785,8 +808,10 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext, userXPathA);
             var workflowId = await CreateWorkflowAsync(dbContext, modelId, userXPathA);
+
             var workflowGuid = await dbContext.CaseWorkflow.Where(w => w.Id == workflowId)
                 .Select(w => w.Guid).FirstAsync();
+
             var ownerService = await BuildServiceAsync(dbContext, userXPathA);
             var dto = ValidDto(workflowId);
             dto.Drill = true;
@@ -979,6 +1004,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
         public async Task InsertWithBlankNameUsesFrenchMessageUnderFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

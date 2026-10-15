@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.ExhaustiveSearchInstancePromotedTrialInstance;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.ExhaustiveSearchInstancePromotedTrialInstance;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
     public sealed class ExhaustiveSearchInstancePromotedTrialInstanceService
     {
         private static readonly int[] writePermissions = [14];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -56,6 +55,8 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
             repository = new RuleRepository(dbContext, userName);
             validator = new ExhaustiveSearchInstancePromotedTrialInstanceDtoValidator(strings);
         }
+
+        public static IReadOnlyList<int> WritePermissions => writePermissions;
 
         public static Task<ExhaustiveSearchInstancePromotedTrialInstanceService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -118,6 +119,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
         {
             using var op = OperationScope.Start("ExhaustiveSearchInstancePromotedTrialInstance", "Update", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -130,6 +132,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
                 EnsurePermitted(writePermissions, "ExhaustiveSearchInstancePromotedTrialInstance.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -187,6 +190,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -198,9 +202,11 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"ExhaustiveSearchInstancePromotedTrialInstance.Update: unexpected failure id={model?.Id} user={userName}",
                     ex);
+
                 throw;
             }
         }

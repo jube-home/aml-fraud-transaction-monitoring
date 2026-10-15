@@ -11,46 +11,62 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Poco;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion;
 
 namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion
 {
-    using DataDto = global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceConfusionQuery.Dto;
-
     public static class ExhaustiveSearchInstancePromotedTrialInstanceConfusionMapper
     {
-        public static ExhaustiveSearchInstancePromotedTrialInstanceConfusionDto ToDto(DataDto source)
+        public static ExhaustiveSearchInstancePromotedTrialInstanceConfusionDto ToDto(
+            ExhaustiveSearchInstancePromotedTrialInstance? source)
         {
+            var truePositive = source?.TruePositive.GetValueOrDefault() ?? 0;
+            var trueNegative = source?.TrueNegative.GetValueOrDefault() ?? 0;
+            var falsePositive = source?.FalsePositive.GetValueOrDefault() ?? 0;
+            var falseNegative = source?.FalseNegative.GetValueOrDefault() ?? 0;
+
+            var tableTotal = truePositive + trueNegative + falsePositive + falseNegative;
+            var positiveRowTotal = truePositive + falseNegative;
+            var positiveColumnTotal = truePositive + falsePositive;
+            var negativeRowTotal = falsePositive + trueNegative;
+            var negativeColumnTotal = falseNegative + trueNegative;
+
             return new ExhaustiveSearchInstancePromotedTrialInstanceConfusionDto
             {
-                Id = source.Id,
-                Score = FiniteNumber.Of(source.Score),
-                FalsePositive = source.FalsePositive,
-                TruePositive = source.TruePositive,
-                FalseNegative = source.FalseNegative,
-                TrueNegative = source.TrueNegative,
-                TableTotal = source.TableTotal,
-                PositiveRowTotal = source.PositiveRowTotal,
-                PositiveColumnTotal = source.PositiveColumnTotal,
-                NegativeRowTotal = source.NegativeRowTotal,
-                NegativeColumnTotal = source.NegativeColumnTotal,
-                PositiveRowTableTotal = FiniteNumber.Of(source.PositiveRowTableTotal),
-                PositiveColumnTableTotal = FiniteNumber.Of(source.PositiveColumnTableTotal),
-                NegativeRowTableTotal = FiniteNumber.Of(source.NegativeRowTableTotal),
-                NegativeColumnTableTotal = FiniteNumber.Of(source.NegativeColumnTableTotal),
-                TruePositiveRowTotal = FiniteNumber.Of(source.TruePositiveRowTotal),
-                TruePositiveColumnTotal = FiniteNumber.Of(source.TruePositiveColumnTotal),
-                TruePositiveTableTotal = FiniteNumber.Of(source.TruePositiveTableTotal),
-                FalsePositiveRowTotal = FiniteNumber.Of(source.FalsePositiveRowTotal),
-                FalsePositiveColumnTotal = FiniteNumber.Of(source.FalsePositiveColumnTotal),
-                FalsePositiveTableTotal = FiniteNumber.Of(source.FalsePositiveTableTotal),
-                FalseNegativeRowTotal = FiniteNumber.Of(source.FalseNegativeRowTotal),
-                FalseNegativeColumnTotal = FiniteNumber.Of(source.FalseNegativeColumnTotal),
-                FalseNegativeTableTotal = FiniteNumber.Of(source.FalseNegativeTableTotal),
-                TrueNegativeRowTotal = FiniteNumber.Of(source.TrueNegativeRowTotal),
-                TrueNegativeColumnTotal = FiniteNumber.Of(source.TrueNegativeColumnTotal),
-                TrueNegativeTableTotal = FiniteNumber.Of(source.TrueNegativeTableTotal)
+                Id = source?.Id ?? 0,
+                Score = FiniteNumber.Of(source?.Score.GetValueOrDefault() ?? 0),
+                FalsePositive = falsePositive,
+                TruePositive = truePositive,
+                FalseNegative = falseNegative,
+                TrueNegative = trueNegative,
+                TableTotal = tableTotal,
+                PositiveRowTotal = positiveRowTotal,
+                PositiveColumnTotal = positiveColumnTotal,
+                NegativeRowTotal = negativeRowTotal,
+                NegativeColumnTotal = negativeColumnTotal,
+                PositiveRowTableTotal = FiniteNumber.Of(Ratio(positiveRowTotal, tableTotal)),
+                PositiveColumnTableTotal = FiniteNumber.Of(Ratio(positiveColumnTotal, tableTotal)),
+                NegativeRowTableTotal = FiniteNumber.Of(Ratio(negativeRowTotal, tableTotal)),
+                NegativeColumnTableTotal = FiniteNumber.Of(Ratio(negativeColumnTotal, tableTotal)),
+                TruePositiveRowTotal = FiniteNumber.Of(Ratio(truePositive, positiveRowTotal)),
+                TruePositiveColumnTotal = FiniteNumber.Of(Ratio(truePositive, positiveColumnTotal)),
+                TruePositiveTableTotal = FiniteNumber.Of(Ratio(truePositive, tableTotal)),
+                FalsePositiveRowTotal = FiniteNumber.Of(Ratio(falsePositive, negativeRowTotal)),
+                FalsePositiveColumnTotal = FiniteNumber.Of(Ratio(falsePositive, positiveColumnTotal)),
+                FalsePositiveTableTotal = FiniteNumber.Of(Ratio(falsePositive, tableTotal)),
+                FalseNegativeRowTotal = FiniteNumber.Of(Ratio(falseNegative, positiveRowTotal)),
+                FalseNegativeColumnTotal = FiniteNumber.Of(Ratio(falseNegative, negativeColumnTotal)),
+                FalseNegativeTableTotal = FiniteNumber.Of(Ratio(falseNegative, tableTotal)),
+                TrueNegativeRowTotal = FiniteNumber.Of(Ratio(trueNegative, negativeRowTotal)),
+                TrueNegativeColumnTotal = FiniteNumber.Of(Ratio(trueNegative, negativeColumnTotal)),
+                TrueNegativeTableTotal = FiniteNumber.Of(Ratio(trueNegative, tableTotal))
             };
+        }
+
+        private static double Ratio(double numerator, int denominator)
+        {
+            return denominator == 0 ? 0d : Math.Round(numerator / denominator, 2);
         }
     }
 }

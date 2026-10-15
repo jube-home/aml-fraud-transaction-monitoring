@@ -24,10 +24,13 @@ namespace Jube.Migrations.Branches
             ChangeDataTypeForEntityAnalysisModelGatewayRulePriority();
             UpdateVbInlineScript();
         }
-        
+
+        public override void Down()
+        {
+        }
+
         private void UpdateVbInlineScript()
         {
-
             const string code = """
                                 Imports System
                                 Imports System.Net.Http
@@ -71,26 +74,19 @@ namespace Jube.Migrations.Branches
                 Id = 1
             });
         }
-        
+
         private void AddPriorityToEntityAnalysisModelActivationRule()
         {
-
             Alter.Table("EntityAnalysisModelActivationRule").AddColumn("Priority").AsDouble().Nullable();
             Alter.Table("EntityAnalysisModelActivationRuleVersion").AddColumn("Priority").AsDouble().Nullable();
-            Update.Table("EntityAnalysisModelActivationRule").Set(new {Priority = 0}).AllRows();
-            Update.Table("EntityAnalysisModelActivationRuleVersion").Set(new {Priority = 0}).AllRows();
+            Update.Table("EntityAnalysisModelActivationRule").Set(new { Priority = 0 }).AllRows();
+            Update.Table("EntityAnalysisModelActivationRuleVersion").Set(new { Priority = 0 }).AllRows();
         }
-        
+
         private void ChangeDataTypeForEntityAnalysisModelGatewayRulePriority()
         {
-
             Alter.Table("EntityAnalysisModelGatewayRule").AlterColumn("Priority").AsDouble();
             Alter.Table("EntityAnalysisModelGatewayRuleVersion").AlterColumn("Priority").AsDouble();
-        }
-
-        public override void Down()
-        {
-
         }
     }
 }

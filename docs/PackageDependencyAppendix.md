@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Package Dependency Appendix
-nav_order: 6
+nav_order: 11
 ---
 
 # Appendix: Package Dependency Inventory
@@ -77,7 +77,7 @@ nav_order: 6
 - xunit.runner.visualstudio — 2.4.3 — NuGet (test)
 - YamlDotNet — 16.3.0 — NuGet
 
-*Note: the Accord.\* projects (Core, Genetic, MachineLearning, Math, Math.Core, Neuro, Statistics) are vendored source forks compiled in-tree, not NuGet references — no `PackageReference` entries exist in them.*
+*Note: the Accord.\* projects (Core, Genetic, MachineLearning, Math, Math.Core, Neuro, Statistics) are vendored source forks compiled in-tree, not NuGet references — no `PackageReference` entries exist in them.
 
 ## B. wwwroot Client-Side Dependencies (`Jube.App/wwwroot`) — non-NuGet, vendored static assets
 

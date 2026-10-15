@@ -12,8 +12,8 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
-using Jube.Dto.Query.CaseById;
 using Jube.Data.Query.CaseQuery.Dto;
+using Jube.Dto.Query.CaseById;
 using Jube.Service.Security;
 
 namespace Jube.Service.Query.CaseById

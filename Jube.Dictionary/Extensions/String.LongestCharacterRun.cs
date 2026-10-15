@@ -20,6 +20,7 @@ namespace Jube.Dictionary.Extensions
             var value = @this ?? "";
             var longest = 0;
             var current = 0;
+
             for (var i = 0; i < value.Length; i++)
             {
                 current = i > 0 && value[i] == value[i - 1] ? current + 1 : 1;

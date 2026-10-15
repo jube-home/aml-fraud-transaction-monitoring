@@ -23,6 +23,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var frequencies = new Dictionary<char, int>();
+
             foreach (var c in @this)
             {
                 frequencies[c] = frequencies.GetValueOrDefault(c) + 1;

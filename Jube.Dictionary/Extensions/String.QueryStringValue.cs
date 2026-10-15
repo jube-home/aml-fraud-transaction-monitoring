@@ -19,12 +19,14 @@ namespace Jube.Dictionary.Extensions
         {
             var value = @this ?? "";
             var questionMark = value.IndexOf('?');
+
             if (questionMark >= 0)
             {
                 value = value.Substring(questionMark + 1);
             }
 
             var hash = value.IndexOf('#');
+
             if (hash >= 0)
             {
                 value = value.Substring(0, hash);
@@ -34,6 +36,7 @@ namespace Jube.Dictionary.Extensions
             {
                 var equals = pair.IndexOf('=');
                 var name = Uri.UnescapeDataString((equals < 0 ? pair : pair.Substring(0, equals)).Replace('+', ' '));
+
                 if (string.Equals(name, key, StringComparison.Ordinal))
                 {
                     return equals < 0 ? "" : Uri.UnescapeDataString(pair.Substring(equals + 1).Replace('+', ' '));

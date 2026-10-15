@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,30 +11,46 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.Completions;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCompletions(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CompletionsGetByCaseWorkflowId", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Gets the payload field completions for the model behind a case workflow, by workflow Id."),
-            new ServiceToolDescriptor(
-                "CompletionsGetByCaseWorkflowGuidIncludingDeleted", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Gets the payload field completions for the model behind a case workflow, by workflow Guid, including deleted workflows."),
-            new ServiceToolDescriptor(
-                "CompletionsGetByCaseWorkflowIdIncludingDeleted", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Gets the payload field completions for the model behind a case workflow, by workflow Id, including deleted workflows."),
-            new ServiceToolDescriptor(
-                "CompletionsGetByEntityAnalysisModelId", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Gets the payload field completions for an entity analysis model, for reporting."),
-            new ServiceToolDescriptor(
-                "CompletionsGetByEntityAnalysisModelIdParseTypeId", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Gets the payload field completions for an entity analysis model and parse type.")
-        ]);
+        static partial void AddCompletions(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CompletionsGetByCaseWorkflowId", OperationKind.Read, true, false,
+                    "Gets the payload field completions for the model behind a case workflow, by workflow Id.",
+                    CompletionsService.ByCaseWorkflowIdPermissions),
+                new ServiceToolDescriptor(
+                    "CompletionsGetByCaseWorkflowGuidIncludingDeleted", OperationKind.Read, true,
+                    false,
+                    "Gets the payload field completions for the model behind a case workflow, by workflow Guid, including deleted workflows.",
+                    CompletionsService.IncludingDeletedPermissions),
+                new ServiceToolDescriptor(
+                    "CompletionsGetByCaseWorkflowIdIncludingDeleted", OperationKind.Read, true,
+                    false,
+                    "Gets the payload field completions for the model behind a case workflow, by workflow Id, including deleted workflows.",
+                    CompletionsService.IncludingDeletedPermissions),
+                new ServiceToolDescriptor(
+                    "CompletionsGetByEntityAnalysisModelId", OperationKind.Read, true, false,
+                    "Gets the payload field completions for an entity analysis model, for reporting.",
+                    CompletionsService.ByEntityAnalysisModelIdPermissions),
+                new ServiceToolDescriptor(
+                    "CompletionsGetByEntityAnalysisModelIdParseTypeId", OperationKind.Read, true,
+                    false,
+                    "Gets the payload field completions for an entity analysis model and parse type.",
+                    CompletionsService.ByParseTypePermissions),
+                new ServiceToolDescriptor(
+                    "CompletionsGetByExhaustiveInstanceDataset", OperationKind.Read, true,
+                    false,
+                    "Gets filter builder completions for every column of a confirmed uploaded Exhaustive dataset.",
+                    CompletionsService.ByExhaustiveInstanceDatasetPermissions)
+            ]);
+        }
     }
 }

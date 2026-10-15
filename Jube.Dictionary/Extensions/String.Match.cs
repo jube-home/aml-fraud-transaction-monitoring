@@ -14,12 +14,12 @@ namespace Jube.Dictionary.Extensions
         {
             public Match Match(String pattern)
             {
-                return Regex.Match(input, pattern, RegexOptions.None, RegexSupport.MatchTimeout);
+                return Regex.Match(input, pattern, RegexOptions.None, RegexSupport.matchTimeout);
             }
 
             public Match Match(String pattern, RegexOptions options)
             {
-                return Regex.Match(input, pattern, options, RegexSupport.MatchTimeout);
+                return Regex.Match(input, pattern, options, RegexSupport.matchTimeout);
             }
         }
     }

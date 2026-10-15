@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -17,11 +17,11 @@ using System.Globalization;
 using System.Text;
 using Jube.Data.Context;
 using Jube.Data.Poco;
-using Jube.Data.Repository;
 using Jube.Data.Reporting;
+using Jube.Data.Repository;
 using Jube.Dto.Query.EntityAnalysisModelSample;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelSample;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -33,7 +33,10 @@ using Newtonsoft.Json.Linq;
 
 namespace Jube.Service.Query.EntityAnalysisModelSample
 {
-    using FieldQuery = global::Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
+    using Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
+    using FieldQuery =
+        Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery.
+        GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
 
     public sealed class EntityAnalysisModelSampleService
     {
@@ -76,6 +79,8 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
             executionLogRepository = new EntityAnalysisModelSampleExecutionLogRepository(dbContext);
             query = new FieldQuery(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelSampleService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -134,6 +139,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
         {
             using var op = OperationScope.Start("EntityAnalysisModelSample", "Execute", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSample.Execute: entry user={userName}");
@@ -145,6 +151,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
                 EnsurePermitted("EntityAnalysisModelSample.Execute");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     throw new DtoValidationException(results);
@@ -169,6 +176,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
                 };
 
                 var sw = Stopwatch.StartNew();
+
                 try
                 {
                     var completions = (await query.ExecuteAsync(entityAnalysisModel.Id, 5, true, token)
@@ -178,6 +186,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
                                            ?? dynamicEnvironment.AppSettings("ConnectionString");
 
                     List<JObject> jsonObjects;
+
                     using (var postgres = new Postgres(connectionString, log))
                     {
                         jsonObjects = await postgres.ExecuteReturnOnlyJsonFromArchiveSampleAsync(
@@ -196,6 +205,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
                     await executionLogRepository.InsertAsync(executionLog, token).ConfigureAwait(false);
 
                     op.Rows(jsonObjects.Count);
+
                     return new EntityAnalysisModelSampleFileDto(
                         Encoding.UTF8.GetBytes(csv),
                         $"sample_{entityAnalysisModel.Id}_{DateTime.UtcNow:yyyyMMddHHmmss}.csv",
@@ -242,7 +252,8 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
             }
         }
 
-        private string BuildCsv(FieldQuery.Dto[] completions, IEnumerable<JObject> jsonObjects)
+        private string BuildCsv(GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQueryDto[] completions,
+            IEnumerable<JObject> jsonObjects)
         {
             var sb = new StringBuilder();
 
@@ -275,7 +286,8 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
             return sb.ToString();
         }
 
-        private string ExtractValue(FieldQuery.Dto completion, JToken? jToken)
+        private string ExtractValue(GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQueryDto completion,
+            JToken? jToken)
         {
             if (jToken == null)
             {

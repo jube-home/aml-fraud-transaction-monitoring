@@ -32,6 +32,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
             EntityAnalysisModelAbstractionRule abstractionRule, ILog log)
         {
             double abstractionValue;
+
             try
             {
                 if (log.IsDebugEnabled)
@@ -238,9 +239,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
             }
 
             double abstractionValue;
+
             try
             {
                 var lastElement = cacheDocumentsList[^1];
+
                 if (lastElement.TryGetValue(abstractionRule.SearchFunctionKey, out var value))
                 {
                     abstractionValue = value.AsDouble();
@@ -311,6 +314,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
             var lastElement = cacheDocumentsList[^1];
 
             DateTime sinceTestDate;
+
             if (lastElement.TryGetValue(abstractionRule.SearchFunctionKey, out var testDateValue) &&
                 DateTimeOffset.TryParse(testDateValue.ToString(), CultureInfo.InvariantCulture,
                     DateTimeStyles.AssumeUniversal, out var dto))
@@ -372,9 +376,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
             ILog log)
         {
             var values = new double[cacheDocumentsList.Count];
+
             for (var i = 0; i < cacheDocumentsList.Count; i++)
             {
                 var document = cacheDocumentsList[i];
+
                 if (!document.TryGetValue(abstractionRule.SearchFunctionKey, out var value))
                 {
                     continue;

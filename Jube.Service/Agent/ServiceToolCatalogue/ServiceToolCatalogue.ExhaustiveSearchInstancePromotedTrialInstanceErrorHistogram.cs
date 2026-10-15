@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
         static partial void AddExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram(
-            List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramGet", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Returns a ten-bin histogram of prediction errors of the active promoted trial instance of an exhaustive search instance.")
-        ]);
+            List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramGet", OperationKind.Read, true,
+                    false,
+                    "Returns a ten-bin histogram of prediction errors of the active promoted trial instance of an exhaustive search instance.",
+                    ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramService.RequiredPermissions)
+            ]);
+        }
     }
 }

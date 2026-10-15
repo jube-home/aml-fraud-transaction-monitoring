@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetCaseEventByCaseKeyValueQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.CaseEventByCaseKeyValue;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.CaseEventByCaseKeyValue;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,11 +30,10 @@ namespace Jube.Service.Query.CaseEventByCaseKeyValue
     public sealed class CaseEventByCaseKeyValueService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly global::Jube.Data.Query.GetCaseEventByCaseKeyValueQuery query;
+        private readonly GetCaseEventByCaseKeyValueQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -50,8 +50,10 @@ namespace Jube.Service.Query.CaseEventByCaseKeyValue
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetCaseEventByCaseKeyValueQuery(dbContext, userName);
+            query = new GetCaseEventByCaseKeyValueQuery(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseEventByCaseKeyValueService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -111,6 +113,7 @@ namespace Jube.Service.Query.CaseEventByCaseKeyValue
         {
             using var op = OperationScope.Start("CaseEventByCaseKeyValue", "Get", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseEventByCaseKeyValue.Get: entry user={userName}");
@@ -119,9 +122,11 @@ namespace Jube.Service.Query.CaseEventByCaseKeyValue
             try
             {
                 EnsurePermitted("CaseEventByCaseKeyValue.Get");
+
                 var dtos = CaseEventByCaseKeyValueMapper.ToDto(await query.ExecuteAsync(key, value, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseEventByCaseKeyValue.Get: {dtos.Count} rows user={userName}");

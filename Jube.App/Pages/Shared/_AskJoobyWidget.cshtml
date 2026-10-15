@@ -1,0 +1,60 @@
+﻿@* Copyright (C) 2022-present Jube Holdings Limited
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ *@
+@{
+    string askJoobyPageContextJson;
+    try
+    {
+        var entries = new Dictionary<string, object>();
+        foreach (var pair in ViewData)
+        {
+            if (pair.Value is not null)
+            {
+                entries[pair.Key] = pair.Value;
+            }
+        }
+
+        askJoobyPageContextJson = System.Text.Json.JsonSerializer.Serialize(entries);
+    }
+    catch
+    {
+        askJoobyPageContextJson = "{}";
+    }
+}
+<script>
+    const AskJoobyPageContext = @Html.Raw(askJoobyPageContextJson);
+
+    window.AskJoobySetPageContext = function (pageName, state, record) {
+        AskJoobyPageContext.pageName = pageName;
+        AskJoobyPageContext.state = state;
+        AskJoobyPageContext.record = record === undefined ? null : record;
+    };
+</script>
+<button type="button" id="askJoobyWidgetLauncher" aria-label="Open chat" aria-expanded="false">
+    <img src="/images/askjooby-launcher-closed.png" alt="" class="askJoobyLauncherIcon askJoobyLauncherIconClosed">
+    <img src="/images/askjooby-launcher-open.png" alt="" class="askJoobyLauncherIcon askJoobyLauncherIconOpen">
+</button>
+<div id="askJoobyWidgetPanel" style="display: none;">
+    <div id="askJoobyWidgetHeader">
+        <span>Jooby</span>
+        <button type="button" id="askJoobyWidgetNew" title="New conversation">+</button>
+    </div>
+    <div id="askJoobyWidgetTranscript"></div>
+    <div id="askJoobyWidgetComposer">
+        <textarea id="askJoobyWidgetInput" placeholder="Ask Jooby..." rows="1"></textarea>
+        <button type="button" id="askJoobyWidgetSend">Send</button>
+    </div>
+</div>
+<script src="/js/AskJooby/AskJoobyStreamClient.js"></script>
+<script src="/js/AskJooby/AskJoobyMarkdown.js" asp-append-version="true"></script>
+<script src="/js/AskJooby/AskJoobyToolIcons.js" asp-append-version="true"></script>
+<script src="/js/AskJooby/AskJoobyWidget.js" asp-append-version="true"></script>

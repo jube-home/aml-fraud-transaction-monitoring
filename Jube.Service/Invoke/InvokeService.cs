@@ -14,33 +14,49 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using Jube.Analytics.Datasets;
+using Jube.Analytics.Datasets.Models;
+using Jube.Cache.Redis.Callback;
 using Jube.Data.Context;
+using Jube.Data.Poco;
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery;
+using Jube.Data.Repository;
+using Jube.Data.Security;
 using Jube.Dto.Invoke;
 using Jube.Dto.Repository.Archive;
+using Jube.Engine.AdvancedAnalytics.Extensions;
+using Jube.Engine.AdvancedAnalytics.Models;
 using Jube.Engine.BackgroundTasks.TaskStarters.Models;
+using Jube.Engine.EntityAnalysisModelInvoke;
 using Jube.Engine.EntityAnalysisModelInvoke.Exceptions;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
 using Jube.Engine.Exhaustive.Extensions;
 using Jube.Engine.Sanctions;
 using Jube.Service.Exceptions.Invoke;
+using Jube.Service.Repository.ExhaustiveInstanceDataset;
 using Jube.Validations.Invoke;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Localization;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ExhaustiveSearchInstance = Jube.Engine.Exhaustive.Models.ExhaustiveSearchInstance;
 
 namespace Jube.Service.Invoke
 {
     public sealed class InvokeService
     {
-        private readonly global::Jube.DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
-        private readonly global::Jube.Engine.Engine? engine;
+        internal const int ExhaustivePermissionSpecificationId = 16;
+        internal const int AdvancedAnalyticsRecallPermissionSpecificationId = 46;
         private readonly Func<DbContext>? dbContextFactory;
+        private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
+        private readonly Engine.Engine? engine;
+        private readonly IStringLocalizer localiser;
         private readonly ILog log;
         private readonly string? userName;
-        private readonly IStringLocalizer localiser;
 
-        public InvokeService(global::Jube.Engine.Engine? engine,
-            global::Jube.DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log, string? userName,
+        public InvokeService(Engine.Engine? engine,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log, string? userName,
             IStringLocalizer localiser, Func<DbContext>? dbContextFactory = null)
         {
             this.localiser = localiser;
@@ -80,10 +96,12 @@ namespace Jube.Service.Invoke
 
                 var waited = Stopwatch.StartNew();
                 var timeoutSeconds = Math.Clamp(timeout ?? 30000, 0, 30000);
+
                 var tcs = engine.Context.Services.CacheService.CacheCallbackPublishSubscribe.Callbacks.GetOrAdd(guid,
                     // ReSharper disable once RedundantNameQualifier
-                    _ => new TaskCompletionSource<global::Jube.Cache.Redis.Callback.Callback>(
+                    _ => new TaskCompletionSource<Callback>(
                         TaskCreationOptions.RunContinuationsAsynchronously));
+
                 var callback = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(timeoutSeconds), token);
 
                 if (!await CallerBelongsToTenantOfCallbackAsync(callback.TenantRegistryId, token)
@@ -93,14 +111,17 @@ namespace Jube.Service.Invoke
                         dynamicEnvironment.AppSettings("CallbackTimeout"), out var configured)
                         ? configured
                         : 1000;
+
                     var remaining = TimeSpan.FromMilliseconds(
                         Math.Min(timeoutSeconds * 1000.0, callbackTimeoutMilliseconds)) - waited.Elapsed;
+
                     if (remaining > TimeSpan.Zero)
                     {
                         await Task.Delay(remaining, token).ConfigureAwait(false);
                     }
 
                     Interlocked.Increment(ref engine.Context.Counters.HttpCounterCallbackTimeout);
+
                     return InvokeResult.Empty(408);
                 }
 
@@ -141,9 +162,139 @@ namespace Jube.Service.Invoke
             }
 
             await using var dbContext = dbContextFactory();
+
             return await dbContext.UserInTenant.AnyAsync(
                     w => w.User == userName && w.TenantRegistryId == tenantRegistryId, token)
                 .ConfigureAwait(false);
+        }
+
+        private async Task<bool> CallerMayRecallAsync(
+            Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel model,
+            int permissionSpecificationId = ExhaustivePermissionSpecificationId)
+        {
+            if (userName != null && model.Snapshot.Users.Contains(userName))
+            {
+                return true;
+            }
+
+            if (dbContextFactory == null || string.IsNullOrWhiteSpace(userName))
+            {
+                return false;
+            }
+
+            if (!await CallerBelongsToTenantOfCallbackAsync(model.Instance.TenantRegistryId, CancellationToken.None)
+                    .ConfigureAwait(false))
+            {
+                return false;
+            }
+
+            await using var dbContext = dbContextFactory();
+
+            var permissions = await new PermissionValidation()
+                .GetPermissionsAsync(dbContext, userName, log).ConfigureAwait(false);
+
+            return permissions.Permissions.Contains(permissionSpecificationId);
+        }
+
+        private async Task<(ExhaustiveSearchInstance? Exhaustive, InvokeResult? Failure)>
+            ResolveExhaustiveForDirectInvokeAsync(Guid guid, CancellationToken token = default)
+        {
+            var foundExhaustive = engine!.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                .ActiveEntityAnalysisModels
+                .Where(w => w.Value.Snapshot.ExhaustiveModels.Any(a => a.Guid == guid)).ToList();
+
+            foreach (var (_, value) in foundExhaustive)
+            {
+                if (!await CallerMayRecallAsync(value).ConfigureAwait(false))
+                {
+                    continue;
+                }
+
+                return (value.Snapshot.ExhaustiveModels.First(a => a.Guid == guid), null);
+            }
+
+            if (foundExhaustive.Count > 0)
+            {
+                return (null, InvokeResult.Forbidden());
+            }
+
+            return await HydrateExhaustiveForDirectInvokeAsync(guid, token).ConfigureAwait(false);
+        }
+
+        private async Task<(ExhaustiveSearchInstance? Exhaustive, InvokeResult? Failure)>
+            HydrateExhaustiveForDirectInvokeAsync(Guid guid, CancellationToken token)
+        {
+            if (dbContextFactory == null || string.IsNullOrWhiteSpace(userName))
+            {
+                return (null, InvokeResult.Empty(404));
+            }
+
+            await using var dbContext = dbContextFactory();
+
+            var record = await new ExhaustiveSearchInstanceRepository(dbContext).GetByGuidAsync(guid, token)
+                .ConfigureAwait(false);
+
+            if (record?.EntityAnalysisModelId == null)
+            {
+                return (null, InvokeResult.Empty(404));
+            }
+
+            var entityAnalysisModel = await dbContext.EntityAnalysisModel
+                .FirstOrDefaultAsync(w => w.Id == record.EntityAnalysisModelId.Value
+                                          && (w.Deleted == null || w.Deleted == 0), token).ConfigureAwait(false);
+
+            if (entityAnalysisModel?.TenantRegistryId == null)
+            {
+                return (null, InvokeResult.Empty(404));
+            }
+
+            if (!await CallerBelongsToTenantOfCallbackAsync(entityAnalysisModel.TenantRegistryId.Value, token)
+                    .ConfigureAwait(false))
+            {
+                return (null, InvokeResult.Forbidden());
+            }
+
+            var mayUseModel = await (
+                    from u in dbContext.UserRegistry
+                    join rr in dbContext.RoleRegistry on u.RoleRegistryGuid equals rr.Guid
+                    join r in dbContext.EntityAnalysisModelRole on rr.Guid equals r.RoleRegistryGuid
+                    where u.Name == userName && u.Active == 1 && (u.Deleted == 0 || u.Deleted == null)
+                          && (rr.Deleted == 0 || rr.Deleted == null)
+                          && (r.Deleted == 0 || r.Deleted == null)
+                          && r.EntityAnalysisModelGuid == entityAnalysisModel.Guid
+                    select r)
+                .AnyAsync(token).ConfigureAwait(false);
+
+            if (!mayUseModel)
+            {
+                var permissions = await new PermissionValidation()
+                    .GetPermissionsAsync(dbContext, userName, log).ConfigureAwait(false);
+
+                if (!permissions.Permissions.Contains(ExhaustivePermissionSpecificationId))
+                {
+                    return (null, InvokeResult.Forbidden());
+                }
+            }
+
+            var promoted = await new ExhaustiveSearchInstancePromotedTrialInstanceRepository(dbContext)
+                .GetLastActiveByExhaustiveSearchInstanceIdAsync(record.Id, token).ConfigureAwait(false);
+
+            if (promoted == null)
+            {
+                return (null, InvokeResult.Empty(404));
+            }
+
+            var variableRows = await new GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(dbContext)
+                .ExecuteByExhaustiveSearchInstanceTrialInstanceIdAsync(
+                    promoted.ExhaustiveSearchInstanceTrialInstanceId.GetValueOrDefault(), token)
+                .ConfigureAwait(false);
+
+            var exhaustive = SyncExhaustiveSearchInstancesExtensions.BuildExhaustiveModel(record, promoted,
+                variableRows,
+                engine!.Context.JsonSerializationHelper.DeserializeTopologyNetworkJsonSerializerSettings,
+                ex => log.Error($"Exhaustive Recall: GUID {guid} failed to load the promoted network as {ex}."));
+
+            return (exhaustive, null);
         }
 
         public InvokeResult Sanction(SanctionSearchRequestDto request)
@@ -163,15 +314,18 @@ namespace Jube.Service.Invoke
                 }
 
                 var validationResult = new SanctionSearchRequestDtoValidator(localiser).Validate(request);
+
                 if (!validationResult.IsValid)
                 {
                     throw new DtoValidationException(validationResult);
                 }
 
                 var multiPartString = request.MultiPartString ?? string.Empty;
+
                 var distance = string.IsNullOrWhiteSpace(request.Distance)
                     ? 0
                     : int.Parse(request.Distance, CultureInfo.InvariantCulture);
+
                 var maxDistanceRatio = ParseOptionalDouble(request.MaxDistanceRatio);
                 var maxCoverageRatio = ParseOptionalDouble(request.MaxCoverageRatio);
 
@@ -363,6 +517,7 @@ namespace Jube.Service.Invoke
                 var maxRequestBytes = int.Parse(dynamicEnvironment.AppSettings("MaxInvokeControllerRequestBytes"));
 
                 MemoryStream ms;
+
                 try
                 {
                     ms = await readBodyAsync(maxRequestBytes).ConfigureAwait(false);
@@ -384,6 +539,7 @@ namespace Jube.Service.Invoke
                     }
 
                     var async = false;
+
                     if (asyncRouteValue != null)
                     {
                         async = asyncRouteValue.Equals("Async", StringComparison.OrdinalIgnoreCase);
@@ -423,12 +579,11 @@ namespace Jube.Service.Invoke
                             try
                             {
                                 // ReSharper disable once RedundantNameQualifier
-                                var context = await global::Jube.Engine.EntityAnalysisModelInvoke
-                                    .EntityAnalysisModelInvoke.InvokeAsync(
-                                        value,
-                                        ms,
-                                        maxRequestBytes,
-                                        async).ConfigureAwait(false);
+                                var context = await EntityAnalysisModelInvoke.InvokeAsync(
+                                    value,
+                                    ms,
+                                    maxRequestBytes,
+                                    async).ConfigureAwait(false);
 
                                 var bytes = context.ImplicitAsyncTimedOut
                                     ? context.ImplicitAsyncTimeoutResponseJson
@@ -442,6 +597,7 @@ namespace Jube.Service.Invoke
                                         $"HTTP Handler Entity: The engine processed the request for model id {value.Instance.Id} but produced no response as it hit an error (see the engine log). Returning 500.");
 
                                     Interlocked.Increment(ref engine.Context.Counters.HttpCounterAllError);
+
                                     return InvokeResult.Empty(500);
                                 }
 
@@ -463,7 +619,7 @@ namespace Jube.Service.Invoke
                             {
                                 return InvokeResult.Json(400, "Empty POST body.");
                             }
-                            catch (Newtonsoft.Json.JsonException ex)
+                            catch (JsonException ex)
                             {
                                 if (log.IsWarnEnabled)
                                 {
@@ -495,6 +651,7 @@ namespace Jube.Service.Invoke
                 catch (Exception ex)
                 {
                     log.Error($"HTTP Handler Entity: Error as {ex}.  Returning 500.");
+
                     return InvokeResult.Empty(500);
                 }
             }
@@ -523,13 +680,26 @@ namespace Jube.Service.Invoke
             }
         }
 
-        private static bool RecallBodyHasValidTypes(
-            global::Jube.Engine.Exhaustive.Models.ExhaustiveSearchInstance exhaustive, JObject recallBody)
+        internal static bool RecallBodyHasValidTypes(
+            ExhaustiveSearchInstance exhaustive, JObject recallBody)
         {
             foreach (var variable in exhaustive.NetworkVariablesInOrder)
             {
-                if (!recallBody.TryGetValue(variable.Name, StringComparison.Ordinal, out var token))
+                if (!recallBody.TryGetValue(variable.IsCategorical ? variable.CategoricalSourceName : variable.Name,
+                        StringComparison.Ordinal, out var token))
                 {
+                    continue;
+                }
+
+                if (variable.IsCategorical)
+                {
+                    if (token.Type is JTokenType.Object or JTokenType.Array or JTokenType.Constructor
+                            or JTokenType.Property or JTokenType.Comment or JTokenType.Raw or JTokenType.Bytes
+                        || (token.Type == JTokenType.Float && !double.IsFinite(token.Value<double>())))
+                    {
+                        return false;
+                    }
+
                     continue;
                 }
 
@@ -570,6 +740,7 @@ namespace Jube.Service.Invoke
                 Interlocked.Increment(ref engine.Context.Counters.HttpCounterExhaustive);
 
                 MemoryStream ms;
+
                 try
                 {
                     ms = await readBodyAsync(
@@ -595,59 +766,60 @@ namespace Jube.Service.Invoke
                     log.Info($"Exhaustive Recall:  Recall received for {guid}.  Invoking handler.");
                 }
 
-                var foundExhaustive = engine.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
-                    .ActiveEntityAnalysisModels
-                    .Where(w => w.Value.Snapshot.ExhaustiveModels.Any(a => a.Guid == guid)).ToList();
+                var (exhaustive, failure) = await ResolveExhaustiveForDirectInvokeAsync(guid).ConfigureAwait(false);
 
-                if (foundExhaustive.Count == 0)
+                if (failure != null || exhaustive == null)
                 {
-                    return InvokeResult.Empty(404);
+                    return failure ?? InvokeResult.Empty(404);
                 }
 
-                foreach (var (_, value) in foundExhaustive)
+                JObject recallBody;
+
+                try
                 {
-                    if (!value.Snapshot.Users.Contains(userName))
-                    {
-                        continue;
-                    }
-
-                    JObject recallBody;
-                    try
-                    {
-                        recallBody = JObject.Parse(Encoding.UTF8.GetString(ms.ToArray()));
-                    }
-                    catch (Newtonsoft.Json.JsonException)
-                    {
-                        return InvokeResult.Json(400, "Malformed JSON in POST body.");
-                    }
-
-                    var exhaustive = value.Snapshot.ExhaustiveModels.First(a => a.Guid == guid);
-                    if (!RecallBodyHasValidTypes(exhaustive, recallBody))
-                    {
-                        return InvokeResult.Json(400, "Exhaustive recall input has an invalid shape or types.");
-                    }
-
-                    var recalled = engine.Context.RecallExhaustive(guid, recallBody);
-                    if (!double.IsFinite(recalled))
-                    {
-                        log.Error($"Exhaustive Recall: The recall for {guid} was not a finite number.  Returning 500.");
-
-                        Interlocked.Increment(ref engine.Context.Counters.HttpCounterAllError);
-                        return InvokeResult.Empty(500);
-                    }
-
-                    var response = Math.Round(recalled, 2);
-
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info(
-                            $"Exhaustive Recall:  Has invoked the handler and returned a value of {value}.  Returning.");
-                    }
-
-                    return InvokeResult.Json(200, response);
+                    recallBody = JObject.Parse(Encoding.UTF8.GetString(ms.ToArray()));
+                }
+                catch (JsonException)
+                {
+                    return InvokeResult.Json(400, "Malformed JSON in POST body.");
                 }
 
-                return InvokeResult.Forbidden();
+                if (!RecallBodyHasValidTypes(exhaustive, recallBody))
+                {
+                    return InvokeResult.Json(400, "Exhaustive recall input has an invalid shape or types.");
+                }
+
+                var (recalled, relevance) = engine.Context.RecallExhaustiveWithExplainability(exhaustive, recallBody);
+
+                if (!double.IsFinite(recalled))
+                {
+                    log.Error($"Exhaustive Recall: The recall for {guid} was not a finite number.  Returning 500.");
+
+                    Interlocked.Increment(ref engine.Context.Counters.HttpCounterAllError);
+
+                    return InvokeResult.Empty(500);
+                }
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info(
+                        $"Exhaustive Recall:  Has invoked the handler and returned a value of {recalled}.  Returning.");
+                }
+
+                var response = new ExhaustiveRecallDto
+                {
+                    Score = Math.Round(recalled, 4),
+                    BaseValue = relevance?.BaseValue ?? 0,
+                    Relevance = relevance?.Variables.Select(v => new ExhaustiveRecallVariableRelevanceDto
+                    {
+                        Name = v.Name,
+                        ConnectionWeight = v.ConnectionWeight,
+                        LrpRelevance = v.LrpRelevance
+                    }).ToList() ?? [],
+                    NodeRelevance = relevance?.NodeRelevance.Select(l => l.ToList()).ToList() ?? []
+                };
+
+                return InvokeResult.Json(200, response);
             }
             catch (ClientRequestException ex)
             {
@@ -663,6 +835,334 @@ namespace Jube.Service.Invoke
             catch (Exception ex)
             {
                 log.Error($"Exhaustive Recall:  An error has been raised as {ex}.  Returning 500.");
+
+                if (engine?.Context != null)
+                {
+                    engine.Context.Counters.HttpCounterAllError += 1;
+                }
+
+                return InvokeResult.Empty(500);
+            }
+        }
+
+        public async Task<InvokeResult> ExhaustiveSearchInstanceBatchAsync(string? guidRouteValue, DatasetKind kind,
+            Stream body, CancellationToken token = default)
+        {
+            try
+            {
+                if (!PublicInvokeEnabled())
+                {
+                    return InvokeResult.Empty(404);
+                }
+
+                if (engine?.Context is not { Ready: true })
+                {
+                    return InvokeResult.Empty(503);
+                }
+
+                if (!Guid.TryParse(guidRouteValue, out var guid))
+                {
+                    return InvokeResult.Empty(404);
+                }
+
+                var (exhaustive, failure) = await ResolveExhaustiveForDirectInvokeAsync(guid, token)
+                    .ConfigureAwait(false);
+
+                if (failure != null || exhaustive == null)
+                {
+                    return failure ?? InvokeResult.Empty(404);
+                }
+
+                var limits = DatasetLimitsFactory.FromEnvironment(dynamicEnvironment) with
+                {
+                    MaxRows = MaxBatchRecallRows()
+                };
+
+                var rows = new List<(long RowNumber, DatasetCell[] Cells)>();
+
+                ValueTask SinkAsync(DatasetRow row, CancellationToken _)
+                {
+                    rows.Add((row.RowNumber, (DatasetCell[])row.Cells.Clone()));
+
+                    return ValueTask.CompletedTask;
+                }
+
+                DatasetParseReport report;
+
+                try
+                {
+                    report = kind == DatasetKind.Csv
+                        ? await DatasetCsvParser.ParseAsync(body, limits, SinkAsync, token).ConfigureAwait(false)
+                        : await DatasetJsonParser.ParseAsync(body, limits, SinkAsync, token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    return InvokeResult.Json(400, new { code = "UploadRejected", message = ex.Message });
+                }
+
+                if (!report.Success)
+                {
+                    return InvokeResult.Json(400, new
+                    {
+                        code = "UploadRejected",
+                        errors = report.Errors.Select(e => e.Message).ToList()
+                    });
+                }
+
+                var headers = report.Columns.Select(c => c.Header).ToArray();
+
+                var result = new ExhaustiveBatchRecallResultDto
+                {
+                    RowCount = report.RowCount,
+                    Warnings = report.Warnings
+                };
+
+                foreach (var variable in exhaustive.NetworkVariablesInOrder)
+                {
+                    var key = variable.IsCategorical ? variable.CategoricalSourceName : variable.Name;
+
+                    (headers.Contains(key, StringComparer.Ordinal) ? result.MappedVariables : result.UnmappedVariables)
+                        .Add(key);
+                }
+
+                foreach (var (rowNumber, cells) in rows)
+                {
+                    var jObject = new JObject();
+
+                    for (var i = 0; i < headers.Length && i < cells.Length; i++)
+                    {
+                        jObject[headers[i]] = cells[i].Kind switch
+                        {
+                            DatasetCellKind.Number => new JValue(cells[i].Number),
+                            DatasetCellKind.Text => new JValue(cells[i].Text),
+                            _ => JValue.CreateNull()
+                        };
+                    }
+
+                    if (!RecallBodyHasValidTypes(exhaustive, jObject))
+                    {
+                        result.Rows.Add(new ExhaustiveBatchRecallRowDto
+                        {
+                            RowNumber = rowNumber,
+                            Error = "One or more mapped values could not be interpreted as the trained variable's " +
+                                    "type."
+                        });
+
+                        continue;
+                    }
+
+                    var (recalled, relevance) = engine.Context.RecallExhaustiveWithExplainability(exhaustive, jObject);
+
+                    if (!double.IsFinite(recalled))
+                    {
+                        result.Rows.Add(new ExhaustiveBatchRecallRowDto
+                        {
+                            RowNumber = rowNumber,
+                            Error = "The recall for this row was not a finite number."
+                        });
+
+                        continue;
+                    }
+
+                    result.Rows.Add(new ExhaustiveBatchRecallRowDto
+                    {
+                        RowNumber = rowNumber,
+                        Score = Math.Round(recalled, 4),
+                        BaseValue = relevance?.BaseValue ?? 0,
+                        Relevance = relevance?.Variables.Select(v => new ExhaustiveRecallVariableRelevanceDto
+                        {
+                            Name = v.Name,
+                            ConnectionWeight = v.ConnectionWeight,
+                            LrpRelevance = v.LrpRelevance
+                        }).ToList() ?? []
+                    });
+
+                    result.ScoredCount++;
+                }
+
+                return InvokeResult.Json(200, result);
+            }
+            catch (ClientRequestException ex)
+            {
+                return InvokeResult.Empty(ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exhaustive Batch Recall:  An error has been raised as {ex}.  Returning 500.");
+
+                if (engine?.Context != null)
+                {
+                    engine.Context.Counters.HttpCounterAllError += 1;
+                }
+
+                return InvokeResult.Empty(500);
+            }
+        }
+
+        private int MaxBatchRecallRows()
+        {
+            return int.TryParse(dynamicEnvironment.AppSettings("ExhaustiveBatchRecallMaxRows"),
+                out var parsed) && parsed > 0
+                ? parsed
+                : 2000;
+        }
+
+        internal static bool RecallBodyHasValidTypesForAdvancedAnalytics(
+            AdvancedAnalyticsModel model, JObject recallBody)
+        {
+            foreach (var variable in model.VariablesInOrder)
+            {
+                if (!recallBody.TryGetValue(variable.Name, StringComparison.Ordinal, out var token))
+                {
+                    continue;
+                }
+
+                var valid = token.Type switch
+                {
+                    JTokenType.Integer => true,
+                    JTokenType.Float => double.IsFinite(token.Value<double>()),
+                    JTokenType.Boolean or JTokenType.Null => true,
+                    JTokenType.String => double.TryParse(token.Value<string>(),
+                        NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) && double.IsFinite(parsed),
+                    _ => false
+                };
+
+                if (!valid)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public async Task<InvokeResult> AdvancedAnalyticsAsync(string? guidRouteValue,
+            Func<int, Task<MemoryStream>> readBodyAsync)
+        {
+            try
+            {
+                if (!PublicInvokeEnabled())
+                {
+                    return InvokeResult.Empty(404);
+                }
+
+                if (engine?.Context is not { Ready: true })
+                {
+                    return InvokeResult.Empty(503);
+                }
+
+                MemoryStream ms;
+
+                try
+                {
+                    ms = await readBodyAsync(
+                        int.Parse(dynamicEnvironment.AppSettings("MaxInvokeControllerRequestBytes"))
+                    ).ConfigureAwait(false);
+                }
+                catch (ExceededBytesException)
+                {
+                    return InvokeResult.Json(400, "Exceeded the maximum allowed bytes in POST body.");
+                }
+                catch (ZeroBytesException)
+                {
+                    return InvokeResult.Json(400, "Empty POST body.");
+                }
+
+                if (!Guid.TryParse(guidRouteValue, out var guid))
+                {
+                    return InvokeResult.Empty(404);
+                }
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info($"Advanced Analytics Recall: Recall received for {guid}. Invoking handler.");
+                }
+
+                var found = engine.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                    .ActiveEntityAnalysisModels
+                    .Where(w => w.Value.Snapshot.AdvancedAnalyticsModels.Any(a => a.Guid == guid)).ToList();
+
+                if (found.Count == 0)
+                {
+                    return InvokeResult.Empty(404);
+                }
+
+                foreach (var (_, value) in found)
+                {
+                    if (!await CallerMayRecallAsync(value, AdvancedAnalyticsRecallPermissionSpecificationId)
+                            .ConfigureAwait(false))
+                    {
+                        continue;
+                    }
+
+                    JObject recallBody;
+
+                    try
+                    {
+                        recallBody = JObject.Parse(Encoding.UTF8.GetString(ms.ToArray()));
+                    }
+                    catch (JsonException)
+                    {
+                        return InvokeResult.Json(400, "Advanced Analytics recall input is not valid JSON.");
+                    }
+
+                    var model = value.Snapshot.AdvancedAnalyticsModels.First(a => a.Guid == guid);
+
+                    if (!RecallBodyHasValidTypesForAdvancedAnalytics(model, recallBody))
+                    {
+                        return InvokeResult.Json(400, "Advanced Analytics recall input has an invalid shape or types.");
+                    }
+
+                    var (score, adaptation) = engine.Context.RecallAdvancedAnalyticsWithExplainability(guid,
+                        recallBody);
+
+                    if (!double.IsFinite(score))
+                    {
+                        log.Error(
+                            $"Advanced Analytics Recall: The recall for {guid} was not a finite number. Returning 500.");
+
+                        engine.Context.Counters.HttpCounterAllError += 1;
+
+                        return InvokeResult.Empty(500);
+                    }
+
+                    var response = new AdvancedAnalyticsRecallDto
+                    {
+                        Score = Math.Round(score, 4),
+                        BaseValue = adaptation?.Contribution?.BaseValue,
+                        Contribution = adaptation?.Contribution?.Items.Select(i =>
+                            new AdvancedAnalyticsRecallContributionDto
+                            {
+                                Name = i.Name,
+                                Weight = i.Weight,
+                                Significance = i.Significance,
+                                Source = i.Source
+                            }).ToList() ?? []
+                    };
+
+                    return InvokeResult.Json(200, response);
+                }
+
+                return InvokeResult.Forbidden();
+            }
+            catch (ClientRequestException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn(
+                        $"Advanced Analytics Recall: Client did not complete the request body as {ex.Message}. " +
+                        $"Returning {ex.StatusCode}.");
+                }
+
+                return InvokeResult.Empty(ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Advanced Analytics Recall: An error has been raised as {ex}. Returning 500.");
 
                 if (engine?.Context != null)
                 {

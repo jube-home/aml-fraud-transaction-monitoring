@@ -14,7 +14,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Engine.BackgroundTasks.Context.Models
 {
@@ -36,6 +39,7 @@ namespace Jube.Engine.BackgroundTasks.Context.Models
         public Task InfrastructureHealthMetricsPurgeTask { get; set; }
         public Task TaggingTask { get; set; }
         public Task ExhaustiveTrainingTask { get; set; }
+        public Task AdvancedAnalyticsTrainingTask { get; set; }
 
         // ReSharper disable once CollectionNeverQueried.Global
         public List<Task> CaseCreationTasks { get; } = [];

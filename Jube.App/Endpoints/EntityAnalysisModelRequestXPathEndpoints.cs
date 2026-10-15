@@ -103,6 +103,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}: entry user={user}");
@@ -110,11 +111,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.GetAsync(token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -147,6 +151,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -158,6 +163,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByEntityAnalysisModelId/{entityAnalysisModelId}: entry user={user}");
@@ -165,11 +171,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.GetByEntityAnalysisModelIdAsync(entityAnalysisModelId, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -204,6 +213,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByEntityAnalysisModelId/{entityAnalysisModelId}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -215,6 +225,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByCasesWorkflowId/{casesWorkflowId}: entry user={user}");
@@ -222,11 +233,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.GetByCasesWorkflowIdAsync(casesWorkflowId, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -259,6 +273,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByCasesWorkflowId/{casesWorkflowId}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -269,6 +284,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByOverrideKey: entry user={user}");
@@ -276,11 +292,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.GetByOverrideKeyAsync(token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -313,6 +332,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByOverrideKey: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -323,6 +343,7 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -331,12 +352,15 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var result =
                     await service.GetByEntityAnalysisModelIdByDataTypeAsync(entityAnalysisModelId, dataTypeId, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -374,6 +398,7 @@ namespace Jube.App.Endpoints
                 log.Error(
                     $"GET {Base}/ByEntityAnalysisModelId/{entityAnalysisModelId}/ByStringIntegerFloatDataType: 500 user={user}",
                     e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -384,6 +409,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/{id}: entry user={user}");
@@ -391,11 +417,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.GetByIdAsync(id, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -428,6 +457,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -438,6 +468,7 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -445,11 +476,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.InsertAsync(model, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -491,6 +525,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -501,6 +536,7 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PUT {Base}: entry user={user}");
@@ -508,11 +544,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.UpdateAsync(model, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -563,6 +602,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"PUT {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -573,6 +613,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"DELETE {Base}/{id}: entry user={user}");
@@ -580,11 +621,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelRequestXPathService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
                 await service.DeleteAsync(id, token);
+
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
@@ -635,6 +679,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"DELETE {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

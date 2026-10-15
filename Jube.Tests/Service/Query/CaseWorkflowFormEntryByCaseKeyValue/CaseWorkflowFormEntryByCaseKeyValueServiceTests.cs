@@ -50,7 +50,6 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<int> createdEntryIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -60,18 +59,25 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
             await dbContext.CaseWorkflowFormEntry.Where(w => createdEntryIds.Contains(w.Id)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflowForm.Where(w => createdCaseWorkflowFormIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowStatusGuids = dbContext.CaseWorkflowStatus
                 .Where(s => createdCaseWorkflowStatusIds.Contains(s.Id)).Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 .Where(w => caseWorkflowStatusGuids.Contains(w.CaseWorkflowStatusGuid)).DeleteAsync();
+
             var caseWorkflowGuids = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -91,6 +97,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
             byte? modelDeleted = 0, string? createdUser = null)
         {
             var repository = new Data.Repository.EntityAnalysisModelRepository(dbContext, tenantUser);
+
             var model = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -102,6 +109,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
             createdModelIds.Add(model.Id);
 
             var caseWorkflowGuid = Guid.NewGuid();
+
             var caseWorkflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -116,6 +124,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
             createdCaseWorkflowIds.Add(caseWorkflowId);
 
             var caseWorkflowStatusGuid = Guid.NewGuid();
+
             var caseWorkflowStatusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -157,6 +166,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
             }
 
             var formName = $"{DatabaseFixture.Prefix}Form{Guid.NewGuid():N}"[..40];
+
             var formId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowForm
             {
                 Name = formName,
@@ -183,6 +193,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
             createdCaseIds.Add(caseId);
 
             var entryCreated = DateTime.UtcNow;
+
             var entryId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowFormEntry
             {
                 CaseId = caseId,
@@ -226,6 +237,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -234,6 +246,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -255,8 +268,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var key = NewKey();
+
             await CreateEntryAsync(dbContext, fx.Seed.UserWithoutPermission, fx.Seed.UserWithoutPermission,
                 fx.Seed.UserWithoutPermission, key, "v");
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetAsync(key, "v"));
@@ -277,8 +292,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
             row.CaseId.Should().Be(created.CaseId);
             row.Name.Should().Be(created.FormName);
             row.CreatedUser.Should().Be(fx.Seed.UserWithPermission);
+
             row.CreatedDate.UtcDateTime.Should().Be(
                 new DateTime(created.CreatedDate.Ticks - created.CreatedDate.Ticks % 10, DateTimeKind.Utc));
+
             row.CreatedDate.Offset.Should().Be(TimeSpan.Zero);
             row.ResponseStatusId.Should().Be(0);
         }
@@ -325,8 +342,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var key = NewKey();
+
             await CreateEntryAsync(dbContext, fx.Seed.UserTenantB, fx.Seed.UserTenantB, fx.Seed.UserTenantB, key,
                 "shared");
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(key, "shared")).Should().BeEmpty();
@@ -337,8 +356,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var key = NewKey();
+
             await CreateEntryAsync(dbContext, fx.Seed.UserTenantB, fx.Seed.UserWithPermission,
                 fx.Seed.UserWithPermission, key, "shared");
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(key, "shared")).Should().BeEmpty();
@@ -361,6 +382,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
             await using var dbContext = fx.GetDbContext();
             var key = NewKey();
             var a = await CreateVisibleToUserAAsync(dbContext, key, "shared");
+
             var b = await CreateEntryAsync(dbContext, fx.Seed.UserTenantB, fx.Seed.UserTenantB,
                 fx.Seed.UserTenantB, key, "shared");
 
@@ -398,8 +420,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var key = NewKey();
+
             await CreateEntryAsync(dbContext, fx.Seed.UserWithPermission, fx.Seed.UserWithoutPermission,
                 fx.Seed.UserWithPermission, key, "v");
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(key, "v")).Should().BeEmpty();
@@ -414,8 +438,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
         {
             await using var dbContext = fx.GetDbContext();
             var key = NewKey();
+
             await CreateEntryAsync(dbContext, fx.Seed.UserWithPermission, fx.Seed.UserWithPermission,
                 fx.Seed.UserWithPermission, key, "v", workflowDeleted, statusDeleted, modelDeleted);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.GetAsync(key, "v")).Should().BeEmpty();

@@ -30,6 +30,7 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -60,76 +61,166 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["timeoutMilliseconds"] = rows.Where(w => w.TimeoutMilliseconds.HasValue)
-                    .Select(s => (double)s.TimeoutMilliseconds!.Value).ToArray(),
-                ["endPointCount"] = rows.Where(w => w.EndPointCount.HasValue)
-                    .Select(s => (double)s.EndPointCount!.Value).ToArray(),
-                ["connectedEndPointCount"] = rows.Where(w => w.ConnectedEndPointCount.HasValue)
-                    .Select(s => (double)s.ConnectedEndPointCount!.Value).ToArray(),
-                ["totalOperationCount"] = rows.Where(w => w.TotalOperationCount.HasValue)
-                    .Select(s => (double)s.TotalOperationCount!.Value).ToArray(),
-                ["totalOutstanding"] = rows.Where(w => w.TotalOutstanding.HasValue)
-                    .Select(s => (double)s.TotalOutstanding!.Value).ToArray(),
-                ["interactivePendingUnsentItems"] = rows.Where(w => w.InteractivePendingUnsentItems.HasValue)
-                    .Select(s => (double)s.InteractivePendingUnsentItems!.Value).ToArray(),
-                ["interactiveSentItemsAwaitingResponse"] = rows
-                    .Where(w => w.InteractiveSentItemsAwaitingResponse.HasValue)
-                    .Select(s => (double)s.InteractiveSentItemsAwaitingResponse!.Value).ToArray(),
-                ["interactiveResponsesAwaitingAsyncCompletion"] = rows
-                    .Where(w => w.InteractiveResponsesAwaitingAsyncCompletion.HasValue)
-                    .Select(s => (double)s.InteractiveResponsesAwaitingAsyncCompletion!.Value).ToArray(),
-                ["interactiveTotalOutstanding"] = rows.Where(w => w.InteractiveTotalOutstanding.HasValue)
-                    .Select(s => (double)s.InteractiveTotalOutstanding!.Value).ToArray(),
-                ["interactiveCompletedAsynchronously"] = rows
-                    .Where(w => w.InteractiveCompletedAsynchronously.HasValue)
-                    .Select(s => (double)s.InteractiveCompletedAsynchronously!.Value).ToArray(),
-                ["interactiveCompletedSynchronously"] = rows
-                    .Where(w => w.InteractiveCompletedSynchronously.HasValue)
-                    .Select(s => (double)s.InteractiveCompletedSynchronously!.Value).ToArray(),
-                ["interactiveFailedAsynchronously"] = rows.Where(w => w.InteractiveFailedAsynchronously.HasValue)
-                    .Select(s => (double)s.InteractiveFailedAsynchronously!.Value).ToArray(),
-                ["interactiveNonPreferredEndpointCount"] = rows
-                    .Where(w => w.InteractiveNonPreferredEndpointCount.HasValue)
-                    .Select(s => (double)s.InteractiveNonPreferredEndpointCount!.Value).ToArray(),
-                ["interactiveSocketCount"] = rows.Where(w => w.InteractiveSocketCount.HasValue)
-                    .Select(s => (double)s.InteractiveSocketCount!.Value).ToArray(),
-                ["interactiveWriterCount"] = rows.Where(w => w.InteractiveWriterCount.HasValue)
-                    .Select(s => (double)s.InteractiveWriterCount!.Value).ToArray(),
-                ["subscriptionPendingUnsentItems"] = rows.Where(w => w.SubscriptionPendingUnsentItems.HasValue)
-                    .Select(s => (double)s.SubscriptionPendingUnsentItems!.Value).ToArray(),
-                ["subscriptionSentItemsAwaitingResponse"] = rows
-                    .Where(w => w.SubscriptionSentItemsAwaitingResponse.HasValue)
-                    .Select(s => (double)s.SubscriptionSentItemsAwaitingResponse!.Value).ToArray(),
-                ["subscriptionResponsesAwaitingAsyncCompletion"] = rows
-                    .Where(w => w.SubscriptionResponsesAwaitingAsyncCompletion.HasValue)
-                    .Select(s => (double)s.SubscriptionResponsesAwaitingAsyncCompletion!.Value).ToArray(),
-                ["subscriptionTotalOutstanding"] = rows.Where(w => w.SubscriptionTotalOutstanding.HasValue)
-                    .Select(s => (double)s.SubscriptionTotalOutstanding!.Value).ToArray(),
-                ["subscriptionCompletedAsynchronously"] = rows
-                    .Where(w => w.SubscriptionCompletedAsynchronously.HasValue)
-                    .Select(s => (double)s.SubscriptionCompletedAsynchronously!.Value).ToArray(),
-                ["subscriptionCompletedSynchronously"] = rows
-                    .Where(w => w.SubscriptionCompletedSynchronously.HasValue)
-                    .Select(s => (double)s.SubscriptionCompletedSynchronously!.Value).ToArray(),
-                ["subscriptionFailedAsynchronously"] = rows.Where(w => w.SubscriptionFailedAsynchronously.HasValue)
-                    .Select(s => (double)s.SubscriptionFailedAsynchronously!.Value).ToArray(),
-                ["subscriptionSocketCount"] = rows.Where(w => w.SubscriptionSocketCount.HasValue)
-                    .Select(s => (double)s.SubscriptionSocketCount!.Value).ToArray(),
-                ["subscriptionCount"] = rows.Where(w => w.SubscriptionCount.HasValue)
-                    .Select(s => (double)s.SubscriptionCount!.Value).ToArray(),
-                ["connectionFailedCount"] = rows.Where(w => w.ConnectionFailedCount.HasValue)
-                    .Select(s => (double)s.ConnectionFailedCount!.Value).ToArray(),
-                ["connectionRestoredCount"] = rows.Where(w => w.ConnectionRestoredCount.HasValue)
-                    .Select(s => (double)s.ConnectionRestoredCount!.Value).ToArray(),
-                ["errorMessageCount"] = rows.Where(w => w.ErrorMessageCount.HasValue)
-                    .Select(s => (double)s.ErrorMessageCount!.Value).ToArray(),
-                ["internalErrorCount"] = rows.Where(w => w.InternalErrorCount.HasValue)
-                    .Select(s => (double)s.InternalErrorCount!.Value).ToArray(),
-                ["configurationChangedCount"] = rows.Where(w => w.ConfigurationChangedCount.HasValue)
-                    .Select(s => (double)s.ConfigurationChangedCount!.Value).ToArray(),
-                ["configurationChangedBroadcastCount"] = rows
-                    .Where(w => w.ConfigurationChangedBroadcastCount.HasValue)
-                    .Select(s => (double)s.ConfigurationChangedBroadcastCount!.Value).ToArray()
+                ["timeoutMilliseconds"] =
+                [
+                    .. rows.Where(w => w.TimeoutMilliseconds.HasValue)
+                        .Select(s => (double)s.TimeoutMilliseconds!.Value)
+                ],
+                ["endPointCount"] =
+                [
+                    .. rows.Where(w => w.EndPointCount.HasValue)
+                        .Select(s => (double)s.EndPointCount!.Value)
+                ],
+                ["connectedEndPointCount"] =
+                [
+                    .. rows.Where(w => w.ConnectedEndPointCount.HasValue)
+                        .Select(s => (double)s.ConnectedEndPointCount!.Value)
+                ],
+                ["totalOperationCount"] =
+                [
+                    .. rows.Where(w => w.TotalOperationCount.HasValue)
+                        .Select(s => (double)s.TotalOperationCount!.Value)
+                ],
+                ["totalOutstanding"] =
+                [
+                    .. rows.Where(w => w.TotalOutstanding.HasValue)
+                        .Select(s => (double)s.TotalOutstanding!.Value)
+                ],
+                ["interactivePendingUnsentItems"] =
+                [
+                    .. rows.Where(w => w.InteractivePendingUnsentItems.HasValue)
+                        .Select(s => (double)s.InteractivePendingUnsentItems!.Value)
+                ],
+                ["interactiveSentItemsAwaitingResponse"] =
+                [
+                    .. rows
+                        .Where(w => w.InteractiveSentItemsAwaitingResponse.HasValue)
+                        .Select(s => (double)s.InteractiveSentItemsAwaitingResponse!.Value)
+                ],
+                ["interactiveResponsesAwaitingAsyncCompletion"] =
+                [
+                    .. rows
+                        .Where(w => w.InteractiveResponsesAwaitingAsyncCompletion.HasValue)
+                        .Select(s => (double)s.InteractiveResponsesAwaitingAsyncCompletion!.Value)
+                ],
+                ["interactiveTotalOutstanding"] =
+                [
+                    .. rows.Where(w => w.InteractiveTotalOutstanding.HasValue)
+                        .Select(s => (double)s.InteractiveTotalOutstanding!.Value)
+                ],
+                ["interactiveCompletedAsynchronously"] =
+                [
+                    .. rows
+                        .Where(w => w.InteractiveCompletedAsynchronously.HasValue)
+                        .Select(s => (double)s.InteractiveCompletedAsynchronously!.Value)
+                ],
+                ["interactiveCompletedSynchronously"] =
+                [
+                    .. rows
+                        .Where(w => w.InteractiveCompletedSynchronously.HasValue)
+                        .Select(s => (double)s.InteractiveCompletedSynchronously!.Value)
+                ],
+                ["interactiveFailedAsynchronously"] =
+                [
+                    .. rows.Where(w => w.InteractiveFailedAsynchronously.HasValue)
+                        .Select(s => (double)s.InteractiveFailedAsynchronously!.Value)
+                ],
+                ["interactiveNonPreferredEndpointCount"] =
+                [
+                    .. rows
+                        .Where(w => w.InteractiveNonPreferredEndpointCount.HasValue)
+                        .Select(s => (double)s.InteractiveNonPreferredEndpointCount!.Value)
+                ],
+                ["interactiveSocketCount"] =
+                [
+                    .. rows.Where(w => w.InteractiveSocketCount.HasValue)
+                        .Select(s => (double)s.InteractiveSocketCount!.Value)
+                ],
+                ["interactiveWriterCount"] =
+                [
+                    .. rows.Where(w => w.InteractiveWriterCount.HasValue)
+                        .Select(s => (double)s.InteractiveWriterCount!.Value)
+                ],
+                ["subscriptionPendingUnsentItems"] =
+                [
+                    .. rows.Where(w => w.SubscriptionPendingUnsentItems.HasValue)
+                        .Select(s => (double)s.SubscriptionPendingUnsentItems!.Value)
+                ],
+                ["subscriptionSentItemsAwaitingResponse"] =
+                [
+                    .. rows
+                        .Where(w => w.SubscriptionSentItemsAwaitingResponse.HasValue)
+                        .Select(s => (double)s.SubscriptionSentItemsAwaitingResponse!.Value)
+                ],
+                ["subscriptionResponsesAwaitingAsyncCompletion"] =
+                [
+                    .. rows
+                        .Where(w => w.SubscriptionResponsesAwaitingAsyncCompletion.HasValue)
+                        .Select(s => (double)s.SubscriptionResponsesAwaitingAsyncCompletion!.Value)
+                ],
+                ["subscriptionTotalOutstanding"] =
+                [
+                    .. rows.Where(w => w.SubscriptionTotalOutstanding.HasValue)
+                        .Select(s => (double)s.SubscriptionTotalOutstanding!.Value)
+                ],
+                ["subscriptionCompletedAsynchronously"] =
+                [
+                    .. rows
+                        .Where(w => w.SubscriptionCompletedAsynchronously.HasValue)
+                        .Select(s => (double)s.SubscriptionCompletedAsynchronously!.Value)
+                ],
+                ["subscriptionCompletedSynchronously"] =
+                [
+                    .. rows
+                        .Where(w => w.SubscriptionCompletedSynchronously.HasValue)
+                        .Select(s => (double)s.SubscriptionCompletedSynchronously!.Value)
+                ],
+                ["subscriptionFailedAsynchronously"] =
+                [
+                    .. rows.Where(w => w.SubscriptionFailedAsynchronously.HasValue)
+                        .Select(s => (double)s.SubscriptionFailedAsynchronously!.Value)
+                ],
+                ["subscriptionSocketCount"] =
+                [
+                    .. rows.Where(w => w.SubscriptionSocketCount.HasValue)
+                        .Select(s => (double)s.SubscriptionSocketCount!.Value)
+                ],
+                ["subscriptionCount"] =
+                [
+                    .. rows.Where(w => w.SubscriptionCount.HasValue)
+                        .Select(s => (double)s.SubscriptionCount!.Value)
+                ],
+                ["connectionFailedCount"] =
+                [
+                    .. rows.Where(w => w.ConnectionFailedCount.HasValue)
+                        .Select(s => (double)s.ConnectionFailedCount!.Value)
+                ],
+                ["connectionRestoredCount"] =
+                [
+                    .. rows.Where(w => w.ConnectionRestoredCount.HasValue)
+                        .Select(s => (double)s.ConnectionRestoredCount!.Value)
+                ],
+                ["errorMessageCount"] =
+                [
+                    .. rows.Where(w => w.ErrorMessageCount.HasValue)
+                        .Select(s => (double)s.ErrorMessageCount!.Value)
+                ],
+                ["internalErrorCount"] =
+                [
+                    .. rows.Where(w => w.InternalErrorCount.HasValue)
+                        .Select(s => (double)s.InternalErrorCount!.Value)
+                ],
+                ["configurationChangedCount"] =
+                [
+                    .. rows.Where(w => w.ConfigurationChangedCount.HasValue)
+                        .Select(s => (double)s.ConfigurationChangedCount!.Value)
+                ],
+                ["configurationChangedBroadcastCount"] =
+                [
+                    .. rows
+                        .Where(w => w.ConfigurationChangedBroadcastCount.HasValue)
+                        .Select(s => (double)s.ConfigurationChangedBroadcastCount!.Value)
+                ]
             });
         }
 
@@ -151,6 +242,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     w.Instance.ToLower().Contains(lowerSearch) ||
                     (w.ClientName != null && w.ClientName.ToLower().Contains(lowerSearch)));
@@ -168,6 +260,7 @@ namespace Jube.Data.Repository
             IQueryable<RedisConnectionMultiplexerMetric> query, string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "instance" => query.OrderByField(o => o.Instance, descending),

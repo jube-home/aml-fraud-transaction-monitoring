@@ -6,8 +6,6 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Working Skim, Lock and Next
 In practical life case management is intended for use by several users, and it is plausible that several user may try and take the case at exactly the same moment,  thus causing duplication of work when users collide in the same case. For multi-user case working it is advisable to use the Skim function rather than the Fetch function.  The skim function will automatically take the very first case qualifying for the Cases Workflow Filter, and open it in the case page, automatically setting the locked status and locked user to establish case ownership.
 

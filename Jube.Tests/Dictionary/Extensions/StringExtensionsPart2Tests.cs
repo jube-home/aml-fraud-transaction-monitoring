@@ -422,20 +422,20 @@ namespace Jube.Test.Dictionary.Extensions
         [InlineData("::1", false)]
         public void IsValidIpAcceptsWellFormedIpv4AndRejectsOutOfRangeOrNonIpv4Input(string input, bool expected)
         {
-            input.IsValidIP().Should().Be(expected);
+            input.IsValidIp().Should().Be(expected);
         }
 
         [Fact]
         public void IsValidIpRejectsALeadingZeroAsTheEntireFirstOctetEvenThoughZeroIsAValidOctetValue()
         {
-            "0.0.0.0".IsValidIP().Should().BeFalse();
-            "1.0.0.0".IsValidIP().Should().BeTrue();
+            "0.0.0.0".IsValidIp().Should().BeFalse();
+            "1.0.0.0".IsValidIp().Should().BeTrue();
         }
 
         [Fact]
         public void IsValidIpAcceptsThreeDigitLeadingZeroFormsBecauseItMatchesTextNotNumericValue()
         {
-            "001.002.003.004".IsValidIP().Should().BeTrue();
+            "001.002.003.004".IsValidIp().Should().BeTrue();
         }
 
         [Theory]

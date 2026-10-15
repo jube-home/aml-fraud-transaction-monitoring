@@ -23,7 +23,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion;
 using Jube.Service.Observability;
 using Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion;
@@ -55,7 +55,6 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceC
         private readonly List<int> createdPromotedIds = [];
         private readonly List<int> createdSearchInstanceIds = [];
         private readonly List<int> createdTrialInstanceIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -85,6 +84,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceC
             {
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                     .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -188,6 +188,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceC
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -196,6 +197,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceC
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -235,7 +237,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceC
 
             var dto = await service.GetAsync(id);
 
-            dto.Id.Should().Be(0);
+            dto.Id.Should().Be(createdPromotedIds.Last());
             dto.Score.Should().Be(0.7);
             dto.TruePositive.Should().Be(10);
             dto.TrueNegative.Should().Be(20);
@@ -374,8 +376,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceC
         public async Task GetAsyncReturnsAllZeroWhenOnlyInactiveExistsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var id = await SeedSearchInstanceAsync(dbContext, fx.Seed.UserWithPermission, withActive: false,
                 withInactive: true);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var dto = await service.GetAsync(id);
@@ -464,6 +468,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceC
             activities.Should().ContainSingle(a =>
                     a.OperationName == "ExhaustiveSearchInstancePromotedTrialInstanceConfusion.Get")
                 .Subject.GetTagItem("jube.outcome").Should().Be("ok");
+
             collector.GetMeasurementSnapshot().Should()
                 .ContainSingle(m => (string)m.Tags["operation"].Required() == "Get");
         }
@@ -501,6 +506,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceC
             var attribute = typeof(ExhaustiveSearchInstancePromotedTrialInstanceConfusionService)
                 .GetMethod(nameof(ExhaustiveSearchInstancePromotedTrialInstanceConfusionService.GetAsync)).Required()
                 .GetCustomAttribute<ServiceOperationAttribute>();
+
             attribute = attribute.Required();
 
             attribute.Should().NotBeNull();

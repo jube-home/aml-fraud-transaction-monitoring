@@ -89,6 +89,33 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         [Fact]
+        public async Task ReturnsNullWhenThisIsAReprocessingRunAsync()
+        {
+            var context = NewContext();
+            context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelReprocessingRuleInstanceId = 4;
+            var rule = NewRule();
+
+            var result = await context.ActivationRuleCreateCaseObjectAsync(rule, false, null);
+
+            result.Should().BeNull(
+                "a reprocessing run replays transactions that have already happened, so creating a case "
+                + "from one puts historic work into a live analyst queue at whatever rate the run matches");
+        }
+
+        [Fact]
+        public async Task StillCreatesACaseOnAnOrdinaryRunAfterTheReprocessingGuardAsync()
+        {
+            var context = NewContext();
+            var rule = NewRule();
+
+            var result = await context.ActivationRuleCreateCaseObjectAsync(rule, false, null);
+
+            (result is null).Should().BeFalse(
+                "the guard must distinguish a reprocessing run from an ordinary one, not switch case "
+                + "creation off altogether");
+        }
+
+        [Fact]
         public async Task PopulatesTenantAndCaseWorkflowIdentifiersFromTheRuleAsync()
         {
             var context = NewContext();
@@ -98,8 +125,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var result = await context.ActivationRuleCreateCaseObjectAsync(rule, false, null);
 
             result.TenantRegistryId.Should().Be(77);
+
             result.EntityAnalysisModelInstanceEntryGuid.Should()
                 .Be(context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid);
+
             result.CaseWorkflowGuid.Should().Be(rule.CaseWorkflowGuid);
             result.CaseWorkflowStatusGuid.Should().Be(rule.CaseWorkflowStatusGuid);
         }
@@ -119,6 +148,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var result = await context.ActivationRuleCreateCaseObjectAsync(rule, false, null);
 
             result.SuspendBypass.Should().BeTrue();
+
             var expected = interval switch
             {
                 'n' => before.AddMinutes(value),
@@ -127,6 +157,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 'm' => before.AddMonths(value),
                 _ => before
             };
+
             result.SuspendBypassDate.Should().BeCloseTo(expected, TimeSpan.FromSeconds(5));
         }
 
@@ -210,6 +241,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             {
                 ["ActivationRuleIdempotency"] = "True"
             });
+
             var cacheService = TestCacheService.Create(out _);
             var rule = NewRule();
             rule.Guid = Guid.NewGuid();
@@ -228,6 +260,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             {
                 ["ActivationRuleIdempotency"] = "True"
             });
+
             var cacheService = TestCacheService.Create(out _);
             var rule = NewRule();
             rule.Guid = Guid.NewGuid();
@@ -245,6 +278,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             {
                 ["ActivationRuleIdempotency"] = "True"
             });
+
             var cacheService = TestCacheService.Create(out _);
             var ruleOne = NewRule();
             ruleOne.Guid = Guid.NewGuid();

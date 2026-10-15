@@ -24,6 +24,7 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.CaseWorkflowFilter;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.CaseWorkflowFilter;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -48,7 +49,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFilter
         private readonly List<int> createdFilterIds = [];
         private readonly List<int> createdWorkflowIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -60,20 +60,28 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFilter
 
             await dbContext.GetTable<Data.Poco.CaseWorkflowFilterRole>()
                 .Where(w => filterGuids.Contains(w.CaseWorkflowFilterGuid)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowFilterVersion>()
                 .Where(w => w.CaseWorkflowFilterId != null && createdFilterIds.Contains(w.CaseWorkflowFilterId.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflowFilter.Where(w => createdFilterIds.Contains(w.Id)).DeleteAsync();
+
             var workflowGuids = dbContext.CaseWorkflow.Where(s => createdWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => workflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowVersion>()
                 .Where(w => w.CaseWorkflowId != null && createdWorkflowIds.Contains(w.CaseWorkflowId.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflow.Where(w => createdWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -88,6 +96,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFilter
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -98,6 +107,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFilter
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -119,6 +129,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFilter
             }).ConfigureAwait(false);
 
             createdWorkflowIds.Add(workflowId);
+
             return workflowId;
         }
 
@@ -369,6 +380,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFilter
             {
                 await dbContext.CaseWorkflowFilter.Where(w => w.Id == created.Id)
                     .Set(w => w.ImportId, (int?)null).UpdateAsync();
+
                 await dbContext.GetTable<Data.Poco.Import>().Where(w => w.Id == importId).DeleteAsync();
             }
         }

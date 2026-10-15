@@ -13,6 +13,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="FluentAssertions" Version="6.12.0"/>
+        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.9.0"/>
         <PackageReference Include="Microsoft.Extensions.Diagnostics.Testing" Version="10.9.0"/>
         <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.0"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1"/>
@@ -33,6 +34,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Jube.App\Jube.App.csproj"/>
+        <ProjectReference Include="..\Jube.Analytics\Jube.Analytics.csproj"/>
+        <ProjectReference Include="..\Jube.Charting\Jube.Charting.csproj"/>
         <ProjectReference Include="..\Jube.Cache\Jube.Cache.csproj"/>
         <ProjectReference Include="..\Jube.Cryptography\Jube.Cryptography.csproj"/>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
@@ -52,10 +55,30 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Include="NetworkGolden\topologies.json"/>
+        <EmbeddedResource Include="Preservation\KeyBaseline.txt"/>
+        <EmbeddedResource Include="NetworkGolden\expected.json"/>
+        <EmbeddedResource Include="Charting\Golden\*.svg"/>
+        <EmbeddedResource Include="Charting\Diagrams\Golden\*.svg"/>
+        <EmbeddedResource Include="Charting\More\Golden\*.svg"/>
+        <EmbeddedResource Include="Charting\Performance\Golden\*.svg"/>
+        <EmbeddedResource Include="ModelDiagrams\Fixtures\*.json"/>
+        <EmbeddedResource Include="ModelDiagrams\Golden\*.svg"/>
+        <EmbeddedResource Include="Charting\External\Golden\*.svg"/>
+        <EmbeddedResource Include="Charting\External\Golden\jube-charting.css"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <AdditionalFiles Include="Exhaustive\Mock.csv">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AdditionalFiles>
+        <AdditionalFiles Include="Exhaustive\MockCategorical.csv">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
         <AdditionalFiles Include="sdn.csv">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
+        <AdditionalFiles Include="Exhaustive\Datasets\CreditRisk.csv">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AdditionalFiles>
     </ItemGroup>

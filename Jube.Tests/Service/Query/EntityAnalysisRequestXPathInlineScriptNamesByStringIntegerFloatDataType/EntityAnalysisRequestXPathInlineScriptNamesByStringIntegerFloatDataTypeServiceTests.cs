@@ -57,7 +57,6 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
         private readonly List<int> modelScriptIds = [];
         private readonly List<int> scriptIds = [];
         private readonly List<int> xpathIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -107,6 +106,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
                 CreatedUser = DatabaseFixture.Prefix
             });
             modelIds.Add(id);
+
             return id;
         }
 
@@ -158,6 +158,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
                 CreatedDate = DateTime.UtcNow
             });
             scriptIds.Add(scriptId);
+
             modelScriptIds.Add(await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.EntityAnalysisModelInlineScript
                 {
@@ -197,6 +198,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -205,6 +207,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -255,6 +258,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
             int permissionSpecificationId)
         {
             var suffix = Guid.NewGuid().ToString("N")[..8];
+
             var tenantId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.TenantRegistry
             {
                 Name = $"{DatabaseFixture.Prefix}XqTenant{suffix}", Active = 1, Locked = 0, Deleted = 0,
@@ -262,6 +266,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
             });
             createdTenantIds.Add(tenantId);
             var roleGuid = Guid.NewGuid();
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleGuid, Name = $"{DatabaseFixture.Prefix}XqRole{suffix}", Active = 1, Locked = 0,
@@ -269,13 +274,16 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
                 CreatedUser = DatabaseFixture.Prefix
             });
             createdRoleIds.Add(roleId);
+
             await dbContext.InsertAsync(new Data.Poco.RoleRegistryPermission
             {
                 Guid = Guid.NewGuid(), PermissionSpecificationId = permissionSpecificationId,
                 RoleRegistryId = roleId, Active = 1, Locked = 0, Deleted = 0, Version = 1,
                 CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
             });
+
             var userName = $"{DatabaseFixture.Prefix}XqUser{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(), RoleRegistryGuid = roleGuid, Name = userName,
@@ -283,8 +291,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
                 PasswordLocked = 0, Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             });
+
             createdUserNames.Add(userName);
             await dbContext.InsertAsync(new Data.Poco.UserInTenant { User = userName, TenantRegistryId = tenantId });
+
             return userName;
         }
 
@@ -307,18 +317,22 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
 
             result.Select(r => r.Name).Should().Equal("FnString", "ScriptFloat", "ScriptString", "XpFloatPlain",
                 "XpStringKey");
+
             Map(result, "XpStringKey").Should().BeEquivalentTo(
                 new EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeDto
                     { Name = "XpStringKey", DataTypeId = 1, SearchKey = true });
+
             Map(result, "XpFloatPlain").Should().BeEquivalentTo(
                 new EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeDto
                     { Name = "XpFloatPlain", DataTypeId = 3, SearchKey = false });
             Map(result, "ScriptString").Should().BeEquivalentTo(
                 new EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeDto
                     { Name = "ScriptString", DataTypeId = 1, SearchKey = false });
+
             Map(result, "ScriptFloat").Should().BeEquivalentTo(
                 new EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeDto
                     { Name = "ScriptFloat", DataTypeId = 3, SearchKey = true });
+
             Map(result, "FnString").Should().BeEquivalentTo(
                 new EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeDto
                     { Name = "FnString", DataTypeId = 1, SearchKey = false });
@@ -402,6 +416,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByS
             (await serviceA.GetAsync(modelB)).Should().BeEmpty();
             (await serviceB.GetAsync(modelA)).Should().BeEmpty();
             (await serviceA.GetAsync(modelA)).Select(r => r.Name).Should().Equal("FnOnlyA", "OnlyA");
+
             (await serviceB.GetAsync(modelB)).Select(r => r.Name).Should()
                 .Equal("FnOnlyB", "OnlyB", "ScriptFloat", "ScriptString");
         }

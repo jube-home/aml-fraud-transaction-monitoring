@@ -67,6 +67,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("EntityAnalysisModelAsynchronousQueueBalance", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

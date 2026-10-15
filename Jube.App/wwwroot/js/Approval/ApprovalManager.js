@@ -385,11 +385,9 @@ var ApprovalKinds = {
                         field: "note",
                         title: "Checker note",
                         template: function (d) {
-                            if (d.pending) {
-                                return "<input type=\"text\" class=\"k-textbox approval-note\" placeholder=\"Note (optional)\"/>";
-                            }
-
-                            return d.note ? kendo.htmlEncode(d.note) : "";
+                            return d.pending
+                                ? "<input type=\"text\" class=\"k-textbox approval-note\" placeholder=\"Note (optional)\" autocomplete=\"off\"/>"
+                                : kendo.htmlEncode(d.note || "");
                         }
                     },
                     {

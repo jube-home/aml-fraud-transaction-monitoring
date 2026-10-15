@@ -6,9 +6,6 @@ parent: API
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # HTTP API Performance Trace
 
 Every invocation carries an `invokeTaskPerformance` object alongside its normal result, capturing where the time and

@@ -13,7 +13,10 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
@@ -22,9 +25,7 @@ namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
     public class ModelIntegrityReportDto
     {
         [Description("The model checked.")] public int EntityAnalysisModelId { get; set; }
-
         [Description("The model's name.")] public string? ModelName { get; set; }
-
         [Description("When the checks ran.")] public DateTime CheckedDate { get; set; }
 
         [Description("Where the engine's state came from: InProcess (the engine in this process), Snapshot (what " +

@@ -1,0 +1,416 @@
+{
+  "inputCount": 4,
+  "outputClasses": 2,
+  "attributes": [
+    {
+      "name": "0",
+      "nature": "Continuous"
+    },
+    {
+      "name": "1",
+      "nature": "Continuous"
+    },
+    {
+      "name": "2",
+      "nature": "Continuous"
+    },
+    {
+      "name": "3",
+      "nature": "Continuous"
+    }
+  ],
+  "trees": [
+    {
+      "root": {
+        "attributeIndex": 0,
+        "branches": [
+          {
+            "comparison": "LessThanOrEqual",
+            "value": 1.9215132725292414,
+            "attributeIndex": 2,
+            "branches": [
+              {
+                "comparison": "LessThanOrEqual",
+                "value": 0.03180727666793734,
+                "output": 1
+              },
+              {
+                "comparison": "GreaterThan",
+                "value": 0.03180727666793734,
+                "attributeIndex": 1,
+                "branches": [
+                  {
+                    "comparison": "LessThanOrEqual",
+                    "value": 1.6557819049366664,
+                    "attributeIndex": 3,
+                    "branches": [
+                      {
+                        "comparison": "LessThanOrEqual",
+                        "value": 0.7624810525507113,
+                        "output": 0
+                      },
+                      {
+                        "comparison": "GreaterThan",
+                        "value": 0.7624810525507113,
+                        "attributeIndex": 3,
+                        "branches": [
+                          {
+                            "comparison": "LessThanOrEqual",
+                            "value": 0.8727771043185037,
+                            "attributeIndex": 0,
+                            "branches": [
+                              {
+                                "comparison": "LessThanOrEqual",
+                                "value": 1.4955714585937425,
+                                "output": 0
+                              },
+                              {
+                                "comparison": "GreaterThan",
+                                "value": 1.4955714585937425,
+                                "output": 1
+                              }
+                            ]
+                          },
+                          {
+                            "comparison": "GreaterThan",
+                            "value": 0.8727771043185037,
+                            "output": 0
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "comparison": "GreaterThan",
+                    "value": 1.6557819049366664,
+                    "attributeIndex": 1,
+                    "branches": [
+                      {
+                        "comparison": "LessThanOrEqual",
+                        "value": 1.8650027562933986,
+                        "attributeIndex": 0,
+                        "branches": [
+                          {
+                            "comparison": "LessThanOrEqual",
+                            "value": 1.756332478023289,
+                            "output": 1
+                          },
+                          {
+                            "comparison": "GreaterThan",
+                            "value": 1.756332478023289,
+                            "output": 0
+                          }
+                        ]
+                      },
+                      {
+                        "comparison": "GreaterThan",
+                        "value": 1.8650027562933986,
+                        "output": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "comparison": "GreaterThan",
+            "value": 1.9215132725292414,
+            "output": 1
+          }
+        ]
+      }
+    },
+    {
+      "root": {
+        "attributeIndex": 0,
+        "branches": [
+          {
+            "comparison": "LessThanOrEqual",
+            "value": 1.9089310374851016,
+            "attributeIndex": 3,
+            "branches": [
+              {
+                "comparison": "LessThanOrEqual",
+                "value": 0.017496261288177346,
+                "output": 1
+              },
+              {
+                "comparison": "GreaterThan",
+                "value": 0.017496261288177346,
+                "attributeIndex": 2,
+                "branches": [
+                  {
+                    "comparison": "LessThanOrEqual",
+                    "value": 0.03564237641899029,
+                    "output": 1
+                  },
+                  {
+                    "comparison": "GreaterThan",
+                    "value": 0.03564237641899029,
+                    "attributeIndex": 0,
+                    "branches": [
+                      {
+                        "comparison": "LessThanOrEqual",
+                        "value": 1.4955714585937425,
+                        "output": 0
+                      },
+                      {
+                        "comparison": "GreaterThan",
+                        "value": 1.4955714585937425,
+                        "attributeIndex": 1,
+                        "branches": [
+                          {
+                            "comparison": "LessThanOrEqual",
+                            "value": 1.0727506857471312,
+                            "output": 1
+                          },
+                          {
+                            "comparison": "GreaterThan",
+                            "value": 1.0727506857471312,
+                            "attributeIndex": 2,
+                            "branches": [
+                              {
+                                "comparison": "LessThanOrEqual",
+                                "value": 0.16797451333514163,
+                                "output": 1
+                              },
+                              {
+                                "comparison": "GreaterThan",
+                                "value": 0.16797451333514163,
+                                "attributeIndex": 1,
+                                "branches": [
+                                  {
+                                    "comparison": "LessThanOrEqual",
+                                    "value": 1.6557819049366664,
+                                    "output": 0
+                                  },
+                                  {
+                                    "comparison": "GreaterThan",
+                                    "value": 1.6557819049366664,
+                                    "attributeIndex": 2,
+                                    "branches": [
+                                      {
+                                        "comparison": "LessThanOrEqual",
+                                        "value": 2.3054005954439756,
+                                        "output": 0
+                                      },
+                                      {
+                                        "comparison": "GreaterThan",
+                                        "value": 2.3054005954439756,
+                                        "output": 1
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "comparison": "GreaterThan",
+            "value": 1.9089310374851016,
+            "output": 1
+          }
+        ]
+      }
+    },
+    {
+      "root": {
+        "attributeIndex": 0,
+        "branches": [
+          {
+            "comparison": "LessThanOrEqual",
+            "value": 1.890815792205192,
+            "attributeIndex": 0,
+            "branches": [
+              {
+                "comparison": "LessThanOrEqual",
+                "value": 1.4648965674987513,
+                "output": 0
+              },
+              {
+                "comparison": "GreaterThan",
+                "value": 1.4648965674987513,
+                "attributeIndex": 2,
+                "branches": [
+                  {
+                    "comparison": "LessThanOrEqual",
+                    "value": 3.016747103778993,
+                    "attributeIndex": 1,
+                    "branches": [
+                      {
+                        "comparison": "LessThanOrEqual",
+                        "value": 1.8444858069040282,
+                        "attributeIndex": 3,
+                        "branches": [
+                          {
+                            "comparison": "LessThanOrEqual",
+                            "value": 0.8727771043185037,
+                            "attributeIndex": 0,
+                            "branches": [
+                              {
+                                "comparison": "LessThanOrEqual",
+                                "value": 1.756332478023289,
+                                "output": 1
+                              },
+                              {
+                                "comparison": "GreaterThan",
+                                "value": 1.756332478023289,
+                                "attributeIndex": 1,
+                                "branches": [
+                                  {
+                                    "comparison": "LessThanOrEqual",
+                                    "value": 1.5393913003100972,
+                                    "output": 1
+                                  },
+                                  {
+                                    "comparison": "GreaterThan",
+                                    "value": 1.5393913003100972,
+                                    "attributeIndex": 2,
+                                    "branches": [
+                                      {
+                                        "comparison": "LessThanOrEqual",
+                                        "value": 0.4201290108822887,
+                                        "output": 1
+                                      },
+                                      {
+                                        "comparison": "GreaterThan",
+                                        "value": 0.4201290108822887,
+                                        "output": 0
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "comparison": "GreaterThan",
+                            "value": 0.8727771043185037,
+                            "output": 0
+                          }
+                        ]
+                      },
+                      {
+                        "comparison": "GreaterThan",
+                        "value": 1.8444858069040282,
+                        "output": 0
+                      }
+                    ]
+                  },
+                  {
+                    "comparison": "GreaterThan",
+                    "value": 3.016747103778993,
+                    "output": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "comparison": "GreaterThan",
+            "value": 1.890815792205192,
+            "output": 1
+          }
+        ]
+      }
+    },
+    {
+      "root": {
+        "attributeIndex": 0,
+        "branches": [
+          {
+            "comparison": "LessThanOrEqual",
+            "value": 1.8514741887810984,
+            "attributeIndex": 3,
+            "branches": [
+              {
+                "comparison": "LessThanOrEqual",
+                "value": 0.017496261288177346,
+                "output": 1
+              },
+              {
+                "comparison": "GreaterThan",
+                "value": 0.017496261288177346,
+                "attributeIndex": 0,
+                "branches": [
+                  {
+                    "comparison": "LessThanOrEqual",
+                    "value": 1.4655734355168293,
+                    "output": 0
+                  },
+                  {
+                    "comparison": "GreaterThan",
+                    "value": 1.4655734355168293,
+                    "attributeIndex": 2,
+                    "branches": [
+                      {
+                        "comparison": "LessThanOrEqual",
+                        "value": 0.3936744271282453,
+                        "output": 1
+                      },
+                      {
+                        "comparison": "GreaterThan",
+                        "value": 0.3936744271282453,
+                        "attributeIndex": 0,
+                        "branches": [
+                          {
+                            "comparison": "LessThanOrEqual",
+                            "value": 1.540586328036425,
+                            "output": 1
+                          },
+                          {
+                            "comparison": "GreaterThan",
+                            "value": 1.540586328036425,
+                            "attributeIndex": 1,
+                            "branches": [
+                              {
+                                "comparison": "LessThanOrEqual",
+                                "value": 1.7232769034212814,
+                                "output": 0
+                              },
+                              {
+                                "comparison": "GreaterThan",
+                                "value": 1.7232769034212814,
+                                "attributeIndex": 1,
+                                "branches": [
+                                  {
+                                    "comparison": "LessThanOrEqual",
+                                    "value": 1.8444858069040282,
+                                    "output": 1
+                                  },
+                                  {
+                                    "comparison": "GreaterThan",
+                                    "value": 1.8444858069040282,
+                                    "output": 0
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "comparison": "GreaterThan",
+            "value": 1.8514741887810984,
+            "output": 1
+          }
+        ]
+      }
+    }
+  ]
+}

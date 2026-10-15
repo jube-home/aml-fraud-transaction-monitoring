@@ -1,56 +1,62 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections.Generic;
 
 namespace Accord.Math.Comparers
 {
-    using System.Collections.Generic;
-    using System;
-
     /// <summary>
-    ///   Directions for the General Comparer.
+    ///     Directions for the General Comparer.
     /// </summary>
-    /// 
     public enum ComparerDirection
     {
         /// <summary>
-        ///   Sorting will be performed in ascending order.
+        ///     Sorting will be performed in ascending order.
         /// </summary>
-        /// 
         Ascending = +1,
 
         /// <summary>
-        ///   Sorting will be performed in descending order.
+        ///     Sorting will be performed in descending order.
         /// </summary>
-        /// 
         Descending = -1
-    };
+    }
 
     /// <summary>
-    ///   General comparer which supports multiple 
-    ///   directions and comparison of absolute values.
+    ///     General comparer which supports multiple
+    ///     directions and comparison of absolute values.
     /// </summary>
-    /// 
     /// <example>
-    /// <code>
+    ///     <code>
     ///   // Assume we have values to sort
     ///   double[] values = { 0, -5, 3, 1, 8 };
     ///   
@@ -60,61 +66,51 @@ namespace Accord.Math.Comparers
     ///   // Result will be { 0, 1, 3, 5, 8 }.
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="ElementComparer{T}"/>
-    /// <seealso cref="ArrayComparer{T}"/>
-    /// <seealso cref="GeneralComparer"/>
-    /// <seealso cref="CustomComparer{T}"/>
-    /// 
+    /// <seealso cref="ElementComparer{T}" />
+    /// <seealso cref="ArrayComparer{T}" />
+    /// <seealso cref="GeneralComparer" />
+    /// <seealso cref="CustomComparer{T}" />
     public class GeneralComparer : IComparer<double>, IComparer<int>
     {
-        Func<double, double> map;
+        private readonly Func<double, double> map;
         private int direction = 1;
 
         /// <summary>
-        ///   Gets or sets the sorting direction
-        ///   used by this comparer.
+        ///     Constructs a new General Comparer.
         /// </summary>
-        /// 
-        public ComparerDirection Direction
+        /// <param name="direction">The direction to compare.</param>
+        public GeneralComparer(ComparerDirection direction)
+            : this(direction, false)
         {
-            get { return (ComparerDirection)direction; }
-            set { direction = (int)value; }
         }
 
         /// <summary>
-        ///   Constructs a new General Comparer.
+        ///     Constructs a new General Comparer.
         /// </summary>
-        /// 
-        /// <param name="direction">The direction to compare.</param>
-        /// 
-        public GeneralComparer(ComparerDirection direction)
-            : this(direction, false) { }
-
-        /// <summary>
-        ///   Constructs a new General Comparer.
-        /// </summary>
-        /// 
         /// <param name="direction">The direction to compare.</param>
         /// <param name="useAbsoluteValues">True to compare absolute values, false otherwise. Default is false.</param>
-        /// 
         public GeneralComparer(ComparerDirection direction, bool useAbsoluteValues)
         {
             if (useAbsoluteValues)
-                this.map = Math.Abs;
-            else this.map = (a) => a;
+            {
+                map = System.Math.Abs;
+            }
+            else
+            {
+                map = a => a;
+            }
 
             this.direction = (int)direction;
         }
 
         /// <summary>
-        ///   Constructs a new General Comparer.
+        ///     Constructs a new General Comparer.
         /// </summary>
-        /// 
         /// <param name="direction">The direction to compare.</param>
-        /// <param name="map">The mapping function which will be applied to
-        ///   each vector element prior to any comparisons.</param>
-        /// 
+        /// <param name="map">
+        ///     The mapping function which will be applied to
+        ///     each vector element prior to any comparisons.
+        /// </param>
         public GeneralComparer(ComparerDirection direction, Func<double, double> map)
         {
             this.map = map;
@@ -122,39 +118,43 @@ namespace Accord.Math.Comparers
         }
 
         /// <summary>
-        ///   Compares two objects and returns a value indicating whether one is less than,
-        ///    equal to, or greater than the other.
+        ///     Gets or sets the sorting direction
+        ///     used by this comparer.
         /// </summary>
-        /// 
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// 
-        public int Compare(double x, double y)
+        public ComparerDirection Direction
         {
-            return direction * (map(x).CompareTo(map(y)));
+            get => (ComparerDirection)direction;
+            set => direction = (int)value;
         }
 
         /// <summary>
-        ///   Compares two objects and returns a value indicating whether one is less than,
-        ///    equal to, or greater than the other.
+        ///     Compares two objects and returns a value indicating whether one is less than,
+        ///     equal to, or greater than the other.
         /// </summary>
-        /// 
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
-        /// 
-        public int Compare(int x, int y)
+        public int Compare(double x, double y)
         {
-            return direction * (map(x).CompareTo(map(y)));
+            return direction * map(x).CompareTo(map(y));
         }
 
+        /// <summary>
+        ///     Compares two objects and returns a value indicating whether one is less than,
+        ///     equal to, or greater than the other.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        public int Compare(int x, int y)
+        {
+            return direction * map(x).CompareTo(map(y));
+        }
     }
 
     /// <summary>
-    ///   General comparer which supports multiple sorting directions.
+    ///     General comparer which supports multiple sorting directions.
     /// </summary>
-    /// 
     /// <example>
-    /// <code>
+    ///     <code>
     ///   // Assume we have values to sort
     ///   double[] values = { 0, -5, 3, 1, 8 };
     ///   
@@ -164,50 +164,42 @@ namespace Accord.Math.Comparers
     ///   // Result will be { 8, 5, 3, 1, 0 }.
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="ElementComparer{T}"/>
-    /// <seealso cref="ArrayComparer{T}"/>
-    /// <seealso cref="GeneralComparer"/>
-    /// <seealso cref="CustomComparer{T}"/>
-    /// 
+    /// <seealso cref="ElementComparer{T}" />
+    /// <seealso cref="ArrayComparer{T}" />
+    /// <seealso cref="GeneralComparer" />
+    /// <seealso cref="CustomComparer{T}" />
     public class GeneralComparer<T> : IComparer<T> where T : IComparable<T>
     {
         private int direction = 1;
 
         /// <summary>
-        ///   Gets or sets the sorting direction
-        ///   used by this comparer.
+        ///     Constructs a new General Comparer.
         /// </summary>
-        /// 
-        public ComparerDirection Direction
-        {
-            get { return (ComparerDirection)direction; }
-            set { direction = (int)value; }
-        }
-
-        /// <summary>
-        ///   Constructs a new General Comparer.
-        /// </summary>
-        /// 
         /// <param name="direction">The direction to compare.</param>
-        /// 
         public GeneralComparer(ComparerDirection direction)
         {
             this.direction = (int)direction;
         }
 
         /// <summary>
-        ///   Compares two objects and returns a value indicating whether one is less than,
-        ///    equal to, or greater than the other.
+        ///     Gets or sets the sorting direction
+        ///     used by this comparer.
         /// </summary>
-        /// 
-        /// <param name="x">The first object to compare.</param>
-        /// <param name="y">The second object to compare.</param>
-        /// 
-        public int Compare(T x, T y)
+        public ComparerDirection Direction
         {
-            return direction * x.CompareTo(y);
+            get => (ComparerDirection)direction;
+            set => direction = (int)value;
         }
 
+        /// <summary>
+        ///     Compares two objects and returns a value indicating whether one is less than,
+        ///     equal to, or greater than the other.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        public int Compare(T x, T y)
+        {
+            return direction * Comparer<T>.Default.Compare(x, y);
+        }
     }
 }

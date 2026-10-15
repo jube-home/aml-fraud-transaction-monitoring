@@ -19,12 +19,14 @@ namespace Jube.Dictionary.Extensions
         {
             var value = (@this ?? "").Trim().TrimEnd('.');
             var atIndex = value.LastIndexOf('@');
+
             if (atIndex >= 0)
             {
                 value = value.Substring(atIndex + 1);
             }
 
             var dotIndex = value.LastIndexOf('.');
+
             return dotIndex < 0 || dotIndex == value.Length - 1 ? "" : value.Substring(dotIndex + 1).ToLowerInvariant();
         }
     }

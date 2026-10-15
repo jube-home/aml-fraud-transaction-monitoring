@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 480 300" preserveAspectRatio="xMidYMid meet" width="480"
+     height="300" data-theme="dark" role="img" aria-labelledby="dark-fixed-t dark-fixed-d">
+    <title id="dark-fixed-t">Dark fixed</title>
+    <desc id="dark-fixed-d">Bar chart with 1 series: Count. 2 categories, vertical bars. Values range from 0 to 5.
+    </desc>
+    <rect class="bg" x="0" y="0" width="480" height="300" rx="8"/>
+    <text class="ttl" x="16" y="32">Dark fixed</text>
+    <line class="gl" x1="30.16" y1="264" x2="464" y2="264"/>
+    <text class="tk end mid" x="22.16" y="264">0</text>
+    <line class="gl" x1="30.16" y1="220.8" x2="464" y2="220.8"/>
+    <text class="tk end mid" x="22.16" y="220.8">1</text>
+    <line class="gl" x1="30.16" y1="177.6" x2="464" y2="177.6"/>
+    <text class="tk end mid" x="22.16" y="177.6">2</text>
+    <line class="gl" x1="30.16" y1="134.4" x2="464" y2="134.4"/>
+    <text class="tk end mid" x="22.16" y="134.4">3</text>
+    <line class="gl" x1="30.16" y1="91.2" x2="464" y2="91.2"/>
+    <text class="tk end mid" x="22.16" y="91.2">4</text>
+    <line class="gl" x1="30.16" y1="48" x2="464" y2="48"/>
+    <text class="tk end mid" x="22.16" y="48">5</text>
+    <line class="ax" x1="30.16" y1="264" x2="464" y2="264"/>
+    <text class="tk ctr" x="138.62" y="280">a</text>
+    <text class="tk ctr" x="355.54" y="280">b</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="a, Count: 3">
+            <title>a, Count: 3</title>
+            <path class="bar m"
+                  d="M57.28 264L57.28 138.4A4 4 0 0 1 61.28 134.4L215.97 134.4A4 4 0 0 1 219.97 138.4L219.97 264Z"/>
+            <g class="tt">
+                <rect class="tb" x="99.18" y="82.4" width="78.88" height="44" rx="6"/>
+                <text class="tx b" x="109.18" y="100.4">a</text>
+                <rect class="tsw s0" x="109.18" y="108.4" width="9" height="9" rx="2"/>
+                <text class="tx" x="123.18" y="117.4">Count: 3</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="b, Count: 5">
+            <title>b, Count: 5</title>
+            <path class="bar m" d="M274.2 264L274.2 52A4 4 0 0 1 278.2 48L432.89 48A4 4 0 0 1 436.89 52L436.89 264Z"/>
+            <g class="tt">
+                <rect class="tb" x="316.1" y="56" width="78.88" height="44" rx="6"/>
+                <text class="tx b" x="326.1" y="74">b</text>
+                <rect class="tsw s0" x="326.1" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="340.1" y="91">Count: 5</text>
+            </g>
+        </g>
+    </g>
+</svg>

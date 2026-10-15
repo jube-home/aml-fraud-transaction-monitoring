@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,10 +14,13 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.CaseWorkflowFormEntry;
+using Jube.Dto.Validation;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseWorkflowFormEntry;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -26,34 +29,32 @@ using Jube.Validations.Repository.CaseWorkflowFormEntry;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = global::Jube.Case.Notification;
-using EngineSendHttpEndpoint = global::Jube.Case.SendHttpEndpoint;
+using EngineNotification = Jube.Case.Notification;
+using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 using RulePoco = Jube.Data.Poco.CaseWorkflowFormEntry;
 using RuleRepository = Jube.Data.Repository.CaseWorkflowFormEntryRepository;
 
 namespace Jube.Service.Repository.CaseWorkflowFormEntry
 {
-    using EntryPayload = Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
-        .EntityAnalysisModelInstanceEntryPayload;
+    using EntryPayload = EntityAnalysisModelInstanceEntryPayload;
     using EntryPayloadExtensions =
-        Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
-        .Extensions.EntityAnalysisModelInstanceEntryPayloadExtensions;
+        EntityAnalysisModelInstanceEntryPayloadExtensions;
 
     public sealed class CaseWorkflowFormEntryService
     {
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
-        private readonly RuleRepository repository;
-        private readonly CaseWorkflowFormEntryValueRepository entryValueRepository;
         private readonly CaseRepository caseRepository;
         private readonly CaseWorkflowFormRepository caseWorkflowFormRepository;
         private readonly CaseWorkflowStatusRepository caseWorkflowStatusRepository;
         private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
+        private readonly CaseWorkflowFormEntryValueRepository entryValueRepository;
         private readonly EngineJsonSerializationHelper jsonSerializationHelper;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -81,6 +82,8 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
             caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
             validator = new CaseWorkflowFormEntryDtoValidator(strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowFormEntryService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -138,6 +141,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
         {
             using var op = OperationScope.Start("CaseWorkflowFormEntry", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowFormEntry.Insert: entry user={userName}");
@@ -149,6 +153,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
                 EnsurePermitted("CaseWorkflowFormEntry.Insert");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -162,6 +167,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
 
                 var existingCase = await caseRepository.GetByIdActiveOnlyAsync(model.CaseId, token)
                     .ConfigureAwait(false);
+
                 if (existingCase is null)
                 {
                     if (log.IsWarnEnabled)
@@ -175,6 +181,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
 
                 var caseWorkflowStatus = await caseWorkflowStatusRepository
                     .GetByGuidAsync(existingCase.CaseWorkflowStatusGuid, token).ConfigureAwait(false);
+
                 if (caseWorkflowStatus is null)
                 {
                     if (log.IsWarnEnabled)
@@ -189,6 +196,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
                 var caseWorkflowForm = await caseWorkflowFormRepository
                     .GetByIdActiveForCaseWorkflowGuidAsync(model.CaseWorkflowFormId, existingCase.CaseWorkflowGuid,
                         token).ConfigureAwait(false);
+
                 if (caseWorkflowForm is null)
                 {
                     if (log.IsWarnEnabled)
@@ -310,6 +318,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
         {
             using var op = OperationScope.Start("CaseWorkflowFormEntry", "Validate", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowFormEntry.Validate: entry id={model?.Id} user={userName}");
@@ -322,6 +331,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -352,6 +362,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
         {
             using var op = OperationScope.Start("CaseWorkflowFormEntry", "GetByCaseKeyValue", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowFormEntry.GetByCaseKeyValue: entry key={key} value={value} user={userName}");
@@ -360,6 +371,7 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
             try
             {
                 EnsurePermitted("CaseWorkflowFormEntry.GetByCaseKeyValue");
+
                 var dtos = CaseWorkflowFormEntryMapper.ToDto(
                     await repository.GetByCaseKeyValueActiveOnlyAsync(key, value, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
@@ -385,8 +397,10 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowFormEntry.GetByCaseKeyValue: unexpected failure key={key} value={value} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -395,21 +409,23 @@ namespace Jube.Service.Repository.CaseWorkflowFormEntry
             Data.Poco.Case existingCase, Data.Poco.CaseWorkflowStatus caseWorkflowStatus,
             Data.Poco.CaseWorkflowForm caseWorkflowForm, EntryPayload payload)
         {
-            var jObject = Newtonsoft.Json.Linq.JObject.FromObject(entry,
+            var jObject = JObject.FromObject(entry,
                 jsonSerializationHelper.ArchiveJsonSerializer);
-            var payloadJObject = Newtonsoft.Json.Linq.JObject.FromObject(formPayload);
+
+            var payloadJObject = JObject.FromObject(formPayload);
             jObject["payload"] = payloadJObject;
             jObject["caseWorkflowFormName"] = caseWorkflowForm.Name;
 
-            var caseJObject = Newtonsoft.Json.Linq.JObject.FromObject(existingCase,
+            var caseJObject = JObject.FromObject(existingCase,
                 jsonSerializationHelper.ArchiveJsonSerializer);
             caseJObject.Remove("json");
             jObject["case"] = caseJObject;
 
             caseJObject["caseWorkflowStatus"] = caseWorkflowStatus.Name;
 
-            var casePayloadJObject = Newtonsoft.Json.Linq.JObject.FromObject(payload,
+            var casePayloadJObject = JObject.FromObject(payload,
                 jsonSerializationHelper.ArchiveJsonSerializer);
+
             caseJObject["payload"] = casePayloadJObject;
 
             return jObject.ToString();

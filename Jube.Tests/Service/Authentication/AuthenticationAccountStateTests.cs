@@ -18,11 +18,12 @@ using FluentAssertions;
 using Jube.Data.Poco;
 using Jube.Dto.Authentication;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Models;
 using Jube.Service.Exceptions.Authentication;
 using Jube.Test.Infrastructure.DatabaseFixture;
-using AuthEngine = Jube.Service.Authentication.Authentication;
 using LinqToDB;
 using Xunit;
+using AuthEngine = Jube.Service.Authentication.Authentication;
 
 namespace Jube.Test.Service.Authentication;
 
@@ -158,6 +159,7 @@ public sealed class AuthenticationAccountStateTests(DatabaseFixture fx) : Authen
     public async Task UserInBothTenants_AuthenticatesOnceAsync()
     {
         var user = await AddUserAsync("Both");
+
         await using (var db = Fx.GetDbContext())
         {
             await db.InsertAsync(new UserInTenant { User = user.Name, TenantRegistryId = TenantBId });
@@ -182,6 +184,7 @@ public sealed class AuthenticationAccountStateTests(DatabaseFixture fx) : Authen
     public async Task UserOfADisabledTenant_CanStillAuthenticateAsync(string state)
     {
         var user = await AddUserAsync("DisabledTenant");
+
         await SetTenantAsync(t =>
         {
             switch (state)
@@ -199,6 +202,7 @@ public sealed class AuthenticationAccountStateTests(DatabaseFixture fx) : Authen
     public async Task UserWhoseRoleIsDeleted_CanStillAuthenticateAsync()
     {
         var user = await AddUserAsync("DeletedRole");
+
         await using (var db = Fx.GetDbContext())
         {
             await db.RoleRegistry.Where(w => w.TenantRegistryId == TenantAId).Set(s => s.Deleted, (byte)1)
@@ -253,6 +257,7 @@ public sealed class AuthenticationAccountStateTests(DatabaseFixture fx) : Authen
             "deleted" => await AddUserAsync("Enum", u => u.Deleted = 1),
             _ => await AddUserAsync("Enum")
         };
+
         var name = reason == "unknown" ? $"{Prefix}Nobody" : user.Name;
         var password = reason == "wrong" ? "wrong-password" : user.Password;
 
@@ -276,6 +281,7 @@ public sealed class AuthenticationAccountStateTests(DatabaseFixture fx) : Authen
             "locked" => await AddUserAsync("Timing", u => u.PasswordLocked = 1),
             _ => await AddUserAsync("Timing")
         };
+
         var name = branch == "unknown" ? $"{Prefix}TimingUnknown" : user.Name;
 
         var outcome = await LoginAsync(name, "wrong-password");
@@ -319,6 +325,7 @@ public sealed class AuthenticationAccountStateTests(DatabaseFixture fx) : Authen
             "locked" => await AddUserAsync("DummyAuth", u => u.PasswordLocked = 1),
             _ => await AddUserAsync("DummyAuth")
         };
+
         var name = branch == "unknown" ? $"{Prefix}DummyUnknown" : user.Name;
 
         var outcome = await LoginAsync(name, AuthEngine.DummyPassword);

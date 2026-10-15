@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelList
                 : new EntityAnalysisModelListDto
                 {
                     Id = list.Id,
+                    Guid = list.Guid,
                     EntityAnalysisModelGuid = list.EntityAnalysisModelGuid,
                     Name = list.Name,
                     Active = list.Active == 1,

@@ -16,11 +16,12 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Jube.Dictionary;
-using Jube.Parser;
 using Jube.Parser.Compiler;
+using Jube.Parser.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
-using Calculation = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelAbstractionCalculation;
+using Calculation =
+    Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelAbstractionCalculation;
 
 namespace Jube.Test.RuleParser
 {
@@ -51,6 +52,7 @@ namespace Jube.Test.RuleParser
         private static Calculation.Match CompileAsTheEngineDoes(string ruleText, Parser.Parser? parser = null)
         {
             parser ??= NewParser();
+
             var rule = parser.TranslateFromDotNotation(new ParsedRule
             {
                 ErrorSpans = [],
@@ -72,12 +74,14 @@ namespace Jube.Test.RuleParser
             compile.Success.Should().BeTrue(compile.ErrorsSummary);
 
             var method = compile.CompiledAssembly.GetType("CalculationRule")!.GetMethod("Match")!;
+
             return (Calculation.Match)Delegate.CreateDelegate(typeof(Calculation.Match), method);
         }
 
         private static PooledDictionary<string, double> Numbers(params (string, double)[] values)
         {
             var dictionary = new PooledDictionary<string, double>();
+
             foreach (var (name, value) in values)
             {
                 dictionary.TryAdd(name, value);
@@ -158,7 +162,8 @@ namespace Jube.Test.RuleParser
         [Fact]
         public void AFluentCalculationOverAnEarlierCalculationAndASanctionRuns()
         {
-            var match = CompileAsTheEngineDoes("Matched = AbstractionCalculation.Earlier.ImbalanceWith(Sanction.Party)");
+            var match = CompileAsTheEngineDoes(
+                "Matched = AbstractionCalculation.Earlier.ImbalanceWith(Sanction.Party)");
 
             Run(match).Should().BeApproximately((3d - 2d) / (3d + 2d), 1e-12);
         }
@@ -175,6 +180,7 @@ namespace Jube.Test.RuleParser
         public void APayloadReferenceToAnUnknownFieldIsRefusedAtParseTime()
         {
             var parser = NewParser();
+
             var rule = parser.TranslateFromDotNotation(new ParsedRule
             {
                 ErrorSpans = [],
@@ -189,6 +195,7 @@ namespace Jube.Test.RuleParser
         public void ATtlCounterReferenceToAnUnknownCounterIsRefusedAtParseTime()
         {
             var parser = NewParser();
+
             var rule = parser.TranslateFromDotNotation(new ParsedRule
             {
                 ErrorSpans = [],

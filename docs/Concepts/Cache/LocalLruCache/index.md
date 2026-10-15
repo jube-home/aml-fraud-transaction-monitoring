@@ -6,8 +6,6 @@ parent: Cache
 grand_parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Local Least Recently Used (LRU) Cache
 
 As introduced in the architecture section of this documentation, the real-time performance of the platform is in large

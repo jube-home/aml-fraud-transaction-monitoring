@@ -20,6 +20,7 @@ namespace Jube.Dictionary.Extensions
             var value = (@this ?? "").Trim().ToLowerInvariant();
 
             var atIndex = value.IndexOf('@');
+
             if (atIndex < 0)
             {
                 return value;
@@ -29,6 +30,7 @@ namespace Jube.Dictionary.Extensions
             var domainPart = value.Substring(atIndex);
 
             var plusIndex = localPart.IndexOf('+');
+
             if (plusIndex >= 0)
             {
                 localPart = localPart.Substring(0, plusIndex);

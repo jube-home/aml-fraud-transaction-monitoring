@@ -6,8 +6,6 @@ parent: Deploying with Jube Cluster
 grand_parent: Getting Started
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Deploying with Jube Cluster
 
 [Deploying with Docker](../../DeployingWithDocker/index.html) covers a single-node deployment, which is the right
@@ -452,9 +450,11 @@ docker node update --label-add zone=host3 <hostname3>
 
 Validate the labels landed correctly:
 
+{% raw %}
 ```bash
 docker node ls -q | xargs docker node inspect -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
 ```
+{% endraw %}
 
 > If running on a single host for evaluation, comment out the placement constraints in the compose file's Jube
 > services first - otherwise Swarm has nowhere to schedule the tiebreaker role and scaling will simply fail to find
@@ -511,6 +511,15 @@ missing](../../../Concepts/EnvironmentVariables/index.html). `ENCRYPTION_KEY` an
 require no such manual step - both flow into `jube-api`/`jube-jobs`/`jube-ui` automatically via the `[@Key@]` Docker
 Secrets tokenisation pattern (see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)), the same
 as the passwords and `JWT_KEY`/`API_HMAC_KEY` above.
+
+`secrets-init.sh` also prompts for the one credential it cannot generate, your inference provider's API key, and stores
+it as the `ASK_JOOBY_API_KEY` secret (set `AskJoobyApiKey` in the shell beforehand to skip the prompt; the answer is
+not echoed and is not printed in the closing block). A blank answer stores the placeholder `not-needed`, because Docker
+refuses empty secrets and that is what Jube sends to a keyless endpoint anyway. The secret reaches `jube-ui`,
+`jube-api` and `jube-jobs` as `AskJoobyApiKey=[@ASK_JOOBY_API_KEY@]`. Ask Jooby itself stays off until
+`EnableAskJooby` is exported as `True` before the stack deploy (`EnableAskJooby=${EnableAskJooby:-False}` in the
+compose file). The embedding, reranker, validation and AI analysis keys all inherit this one key when unset, so they
+are overrides for a role served by a different provider and need no entry here.
 
 ## Every Deploy (Fresh or After Full Reset)
 
@@ -872,6 +881,7 @@ docker volume prune
 
 ## Diagnostics — Network
 
+{% raw %}
 ```bash
 # Overlay networks
 docker network ls --filter driver=overlay
@@ -892,6 +902,7 @@ ip addr show
 # A container's internal overlay IP
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container-id>
 ```
+{% endraw %}
 
 > Containers are reachable via the published host IP and port. Internal `10.x.x.x` overlay addresses are not
 > routable from the host - always use the published host port, not the overlay IP, when connecting from outside a

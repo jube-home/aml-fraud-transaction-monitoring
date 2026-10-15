@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,12 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery;
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery;
+using Jube.Data.Repository;
 using Jube.Dto.Query.EntityAnalysisModelSynchronisationNodeStatusEntries;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelSynchronisationNodeStatusEntries;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,11 +30,10 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
     public sealed class EntityAnalysisModelSynchronisationNodeStatusEntriesService
     {
         private static readonly int[] permissions = [5];
-
         private readonly ILog auditLog;
-        private readonly GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery query;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -50,9 +50,12 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
+
             query = new GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery(
                 dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelSynchronisationNodeStatusEntriesService> CreateAsync(
             DbContext dbContext, string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -81,7 +84,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
                     strings[EntityAnalysisModelSynchronisationNodeStatusEntriesResources.NotAuthenticated]);
             }
 
-            var resolvedTenantRegistryId = await Data.Repository.UserInTenantRepository
+            var resolvedTenantRegistryId = await UserInTenantRepository
                 .GetTenantRegistryIdAsync(dbContext, userName, token).ConfigureAwait(false);
 
             if (resolvedTenantRegistryId is null)
@@ -114,6 +117,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
         {
             using var op = OperationScope.Start("EntityAnalysisModelSynchronisationNodeStatusEntries", "Get",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"EntityAnalysisModelSynchronisationNodeStatusEntries.Get: entry user={userName}");
@@ -126,6 +130,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
 
                 var dtos = EntityAnalysisModelSynchronisationNodeStatusEntriesMapper.ToDto(result);
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -147,9 +152,11 @@ namespace Jube.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisModelSynchronisationNodeStatusEntries.Get: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }

@@ -1,0 +1,1249 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-facet" viewBox="0 0 720 520" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-7e42706f-t jc-7e42706f-d">
+    <title id="jc-7e42706f-t">Hourly volume by channel</title>
+    <desc id="jc-7e42706f-d">Small multiples of 4 panels: Card, Transfer, Cash, Online.</desc>
+    <rect class="bg" x="0" y="0" width="720" height="520" rx="8"/>
+    <text class="ttl" x="16" y="32">Hourly volume by channel</text>
+    <rect class="fst" x="38" y="48" width="328" height="22" rx="4"/>
+    <text class="fsl" x="46" y="63">Card</text>
+    <svg x="38" y="70" xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 328 192"
+         preserveAspectRatio="xMidYMid meet" width="328" height="192" role="img"
+         aria-labelledby="jc-7e42706f-p0-t jc-7e42706f-p0-d">
+        <title id="jc-7e42706f-p0-t">Chart</title>
+        <desc id="jc-7e42706f-p0-d">Line chart with 1 series: Card. Y values range from 19.79 to 83.92.</desc>
+        <line class="gl" x1="42.48" y1="156" x2="312" y2="156"/>
+        <text class="tk end mid" x="34.48" y="156">0</text>
+        <line class="gl" x1="42.48" y1="80.57" x2="312" y2="80.57"/>
+        <text class="tk end mid" x="34.48" y="80.57">200</text>
+        <text class="tk ctr" x="42.48" y="172">0</text>
+        <text class="tk ctr" x="150.29" y="172">10</text>
+        <text class="tk ctr" x="258.1" y="172">20</text>
+        <line class="ax" x1="42.48" y1="156" x2="312" y2="156"/>
+        <g class="sr s0">
+            <path class="ln"
+                  d="M42.48 145.14L53.26 141.21L64.04 138.36L74.82 136.88L85.6 135.64L96.38 133.29L107.16 129.67L117.95 126.11L128.73 124.35L139.51 125.05L150.29 127.24L161.07 129.23L171.85 130.15L182.63 130.69L193.41 132.35L204.19 135.92L214.97 140.61L225.75 144.61L236.53 146.56L247.32 146.66L258.1 146.35L268.88 146.88L279.66 148.09L290.44 148.54">
+                <title>Card</title>
+            </path>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 0, Y: 28.79">
+                <title>Card, X: 0, Y: 28.79</title>
+                <circle class="hit" cx="42.48" cy="145.14" r="9"/>
+                <circle class="pt" cx="42.48" cy="145.14" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="70.64" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="79.64" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="88.64">Card</text>
+                    <text class="tx" x="52.48" y="105.64">X: 0</text>
+                    <text class="tx" x="52.48" y="122.64">Y: 28.79</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 1, Y: 39.21">
+                <title>Card, X: 1, Y: 39.21</title>
+                <circle class="hit" cx="53.26" cy="141.21" r="9"/>
+                <circle class="pt" cx="53.26" cy="141.21" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="66.71" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="75.71" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="84.71">Card</text>
+                    <text class="tx" x="52.48" y="101.71">X: 1</text>
+                    <text class="tx" x="52.48" y="118.71">Y: 39.21</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 2, Y: 46.78">
+                <title>Card, X: 2, Y: 46.78</title>
+                <circle class="hit" cx="64.04" cy="138.36" r="9"/>
+                <circle class="pt" cx="64.04" cy="138.36" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="63.86" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="72.86" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="81.86">Card</text>
+                    <text class="tx" x="52.48" y="98.86">X: 2</text>
+                    <text class="tx" x="52.48" y="115.86">Y: 46.78</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 3, Y: 50.71">
+                <title>Card, X: 3, Y: 50.71</title>
+                <circle class="hit" cx="74.82" cy="136.88" r="9"/>
+                <circle class="pt" cx="74.82" cy="136.88" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.5" y="62.38" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.5" y="71.38" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.5" y="80.38">Card</text>
+                    <text class="tx" x="52.5" y="97.38">X: 3</text>
+                    <text class="tx" x="52.5" y="114.38">Y: 50.71</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 4, Y: 53.98">
+                <title>Card, X: 4, Y: 53.98</title>
+                <circle class="hit" cx="85.6" cy="135.64" r="9"/>
+                <circle class="pt" cx="85.6" cy="135.64" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="53.28" y="61.14" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="63.28" y="70.14" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="77.28" y="79.14">Card</text>
+                    <text class="tx" x="63.28" y="96.14">X: 4</text>
+                    <text class="tx" x="63.28" y="113.14">Y: 53.98</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 5, Y: 60.21">
+                <title>Card, X: 5, Y: 60.21</title>
+                <circle class="hit" cx="96.38" cy="133.29" r="9"/>
+                <circle class="pt" cx="96.38" cy="133.29" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="64.06" y="58.79" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="74.06" y="67.79" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="88.06" y="76.79">Card</text>
+                    <text class="tx" x="74.06" y="93.79">X: 5</text>
+                    <text class="tx" x="74.06" y="110.79">Y: 60.21</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 6, Y: 69.82">
+                <title>Card, X: 6, Y: 69.82</title>
+                <circle class="hit" cx="107.16" cy="129.67" r="9"/>
+                <circle class="pt" cx="107.16" cy="129.67" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="74.84" y="55.17" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="84.84" y="64.17" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="98.84" y="73.17">Card</text>
+                    <text class="tx" x="84.84" y="90.17">X: 6</text>
+                    <text class="tx" x="84.84" y="107.17">Y: 69.82</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 7, Y: 79.27">
+                <title>Card, X: 7, Y: 79.27</title>
+                <circle class="hit" cx="117.95" cy="126.11" r="9"/>
+                <circle class="pt" cx="117.95" cy="126.11" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="85.63" y="51.61" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="95.63" y="60.61" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="109.63" y="69.61">Card</text>
+                    <text class="tx" x="95.63" y="86.61">X: 7</text>
+                    <text class="tx" x="95.63" y="103.61">Y: 79.27</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 8, Y: 83.92">
+                <title>Card, X: 8, Y: 83.92</title>
+                <circle class="hit" cx="128.73" cy="124.35" r="9"/>
+                <circle class="pt" cx="128.73" cy="124.35" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="96.41" y="49.85" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="106.41" y="58.85" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="120.41" y="67.85">Card</text>
+                    <text class="tx" x="106.41" y="84.85">X: 8</text>
+                    <text class="tx" x="106.41" y="101.85">Y: 83.92</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 9, Y: 82.06">
+                <title>Card, X: 9, Y: 82.06</title>
+                <circle class="hit" cx="139.51" cy="125.05" r="9"/>
+                <circle class="pt" cx="139.51" cy="125.05" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="107.19" y="50.55" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="117.19" y="59.55" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="131.19" y="68.55">Card</text>
+                    <text class="tx" x="117.19" y="85.55">X: 9</text>
+                    <text class="tx" x="117.19" y="102.55">Y: 82.06</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 10, Y: 76.26">
+                <title>Card, X: 10, Y: 76.26</title>
+                <circle class="hit" cx="150.29" cy="127.24" r="9"/>
+                <circle class="pt" cx="150.29" cy="127.24" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="117.97" y="52.74" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="127.97" y="61.74" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="141.97" y="70.74">Card</text>
+                    <text class="tx" x="127.97" y="87.74">X: 10</text>
+                    <text class="tx" x="127.97" y="104.74">Y: 76.26</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 11, Y: 70.98">
+                <title>Card, X: 11, Y: 70.98</title>
+                <circle class="hit" cx="161.07" cy="129.23" r="9"/>
+                <circle class="pt" cx="161.07" cy="129.23" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="128.75" y="54.73" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="138.75" y="63.73" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="152.75" y="72.73">Card</text>
+                    <text class="tx" x="138.75" y="89.73">X: 11</text>
+                    <text class="tx" x="138.75" y="106.73">Y: 70.98</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 12, Y: 68.53">
+                <title>Card, X: 12, Y: 68.53</title>
+                <circle class="hit" cx="171.85" cy="130.15" r="9"/>
+                <circle class="pt" cx="171.85" cy="130.15" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="139.53" y="55.65" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="149.53" y="64.65" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="163.53" y="73.65">Card</text>
+                    <text class="tx" x="149.53" y="90.65">X: 12</text>
+                    <text class="tx" x="149.53" y="107.65">Y: 68.53</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 13, Y: 67.1">
+                <title>Card, X: 13, Y: 67.1</title>
+                <circle class="hit" cx="182.63" cy="130.69" r="9"/>
+                <circle class="pt" cx="182.63" cy="130.69" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="152.27" y="56.19" width="60.71" height="61" rx="6"/>
+                    <rect class="tsw s0" x="162.27" y="65.19" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="176.27" y="74.19">Card</text>
+                    <text class="tx" x="162.27" y="91.19">X: 13</text>
+                    <text class="tx" x="162.27" y="108.19">Y: 67.1</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 14, Y: 62.72">
+                <title>Card, X: 14, Y: 62.72</title>
+                <circle class="hit" cx="193.41" cy="132.35" r="9"/>
+                <circle class="pt" cx="193.41" cy="132.35" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="161.09" y="57.85" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="171.09" y="66.85" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="185.09" y="75.85">Card</text>
+                    <text class="tx" x="171.09" y="92.85">X: 14</text>
+                    <text class="tx" x="171.09" y="109.85">Y: 62.72</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 15, Y: 53.25">
+                <title>Card, X: 15, Y: 53.25</title>
+                <circle class="hit" cx="204.19" cy="135.92" r="9"/>
+                <circle class="pt" cx="204.19" cy="135.92" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="171.87" y="61.42" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="181.87" y="70.42" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="195.87" y="79.42">Card</text>
+                    <text class="tx" x="181.87" y="96.42">X: 15</text>
+                    <text class="tx" x="181.87" y="113.42">Y: 53.25</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 16, Y: 40.8">
+                <title>Card, X: 16, Y: 40.8</title>
+                <circle class="hit" cx="214.97" cy="140.61" r="9"/>
+                <circle class="pt" cx="214.97" cy="140.61" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="184.62" y="66.11" width="60.71" height="61" rx="6"/>
+                    <rect class="tsw s0" x="194.62" y="75.11" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="208.62" y="84.11">Card</text>
+                    <text class="tx" x="194.62" y="101.11">X: 16</text>
+                    <text class="tx" x="194.62" y="118.11">Y: 40.8</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 17, Y: 30.19">
+                <title>Card, X: 17, Y: 30.19</title>
+                <circle class="hit" cx="225.75" cy="144.61" r="9"/>
+                <circle class="pt" cx="225.75" cy="144.61" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="193.43" y="70.11" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="203.43" y="79.11" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="217.43" y="88.11">Card</text>
+                    <text class="tx" x="203.43" y="105.11">X: 17</text>
+                    <text class="tx" x="203.43" y="122.11">Y: 30.19</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 18, Y: 25.03">
+                <title>Card, X: 18, Y: 25.03</title>
+                <circle class="hit" cx="236.53" cy="146.56" r="9"/>
+                <circle class="pt" cx="236.53" cy="146.56" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="204.21" y="72.06" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="214.21" y="81.06" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="228.21" y="90.06">Card</text>
+                    <text class="tx" x="214.21" y="107.06">X: 18</text>
+                    <text class="tx" x="214.21" y="124.06">Y: 25.03</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 19, Y: 24.77">
+                <title>Card, X: 19, Y: 24.77</title>
+                <circle class="hit" cx="247.32" cy="146.66" r="9"/>
+                <circle class="pt" cx="247.32" cy="146.66" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="215" y="72.16" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="225" y="81.16" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="239" y="90.16">Card</text>
+                    <text class="tx" x="225" y="107.16">X: 19</text>
+                    <text class="tx" x="225" y="124.16">Y: 24.77</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 20, Y: 25.59">
+                <title>Card, X: 20, Y: 25.59</title>
+                <circle class="hit" cx="258.1" cy="146.35" r="9"/>
+                <circle class="pt" cx="258.1" cy="146.35" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="225.78" y="71.85" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="235.78" y="80.85" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="249.78" y="89.85">Card</text>
+                    <text class="tx" x="235.78" y="106.85">X: 20</text>
+                    <text class="tx" x="235.78" y="123.85">Y: 25.59</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 21, Y: 24.18">
+                <title>Card, X: 21, Y: 24.18</title>
+                <circle class="hit" cx="268.88" cy="146.88" r="9"/>
+                <circle class="pt" cx="268.88" cy="146.88" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="236.56" y="72.38" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="246.56" y="81.38" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="260.56" y="90.38">Card</text>
+                    <text class="tx" x="246.56" y="107.38">X: 21</text>
+                    <text class="tx" x="246.56" y="124.38">Y: 24.18</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 22, Y: 20.98">
+                <title>Card, X: 22, Y: 20.98</title>
+                <circle class="hit" cx="279.66" cy="148.09" r="9"/>
+                <circle class="pt" cx="279.66" cy="148.09" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="247.34" y="73.59" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="257.34" y="82.59" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="271.34" y="91.59">Card</text>
+                    <text class="tx" x="257.34" y="108.59">X: 22</text>
+                    <text class="tx" x="257.34" y="125.59">Y: 20.98</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card, X: 23, Y: 19.79">
+                <title>Card, X: 23, Y: 19.79</title>
+                <circle class="hit" cx="290.44" cy="148.54" r="9"/>
+                <circle class="pt" cx="290.44" cy="148.54" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="247.36" y="74.04" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="257.36" y="83.04" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="271.36" y="92.04">Card</text>
+                    <text class="tx" x="257.36" y="109.04">X: 23</text>
+                    <text class="tx" x="257.36" y="126.04">Y: 19.79</text>
+                </g>
+            </g>
+        </g>
+    </svg>
+    <rect class="fst" x="376" y="48" width="328" height="22" rx="4"/>
+    <text class="fsl" x="384" y="63">Transfer</text>
+    <svg x="376" y="70" xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 328 192"
+         preserveAspectRatio="xMidYMid meet" width="328" height="192" role="img"
+         aria-labelledby="jc-7e42706f-p1-t jc-7e42706f-p1-d">
+        <title id="jc-7e42706f-p1-t">Chart</title>
+        <desc id="jc-7e42706f-p1-d">Line chart with 1 series: Transfer. Y values range from 40 to 161.8.</desc>
+        <line class="gl" x1="42.48" y1="156" x2="312" y2="156"/>
+        <text class="tk end mid" x="34.48" y="156">0</text>
+        <line class="gl" x1="42.48" y1="80.57" x2="312" y2="80.57"/>
+        <text class="tk end mid" x="34.48" y="80.57">200</text>
+        <text class="tk ctr" x="42.48" y="172">0</text>
+        <text class="tk ctr" x="150.29" y="172">10</text>
+        <text class="tk ctr" x="258.1" y="172">20</text>
+        <line class="ax" x1="42.48" y1="156" x2="312" y2="156"/>
+        <g class="sr s0">
+            <path class="ln"
+                  d="M42.48 140.91L53.26 138.43L64.04 139.31L74.82 134.81L85.6 127.73L96.38 125.17L107.16 119.3L117.95 110.56L128.73 107.51L139.51 103.7L150.29 96.97L161.07 96.44L171.85 97.36L182.63 94.99L193.41 98.18L204.19 104.15L214.97 105.93L225.75 111.43L236.53 120.16L247.32 123.58L258.1 128.19L268.88 136.01L279.66 137.85L290.44 138.44">
+                <title>Transfer</title>
+            </path>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 0, Y: 40">
+                <title>Transfer, X: 0, Y: 40</title>
+                <circle class="hit" cx="42.48" cy="140.91" r="9"/>
+                <circle class="pt" cx="42.48" cy="140.91" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="66.41" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="75.41" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="84.41">Transfer</text>
+                    <text class="tx" x="52.48" y="101.41">X: 0</text>
+                    <text class="tx" x="52.48" y="118.41">Y: 40</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 1, Y: 46.59">
+                <title>Transfer, X: 1, Y: 46.59</title>
+                <circle class="hit" cx="53.26" cy="138.43" r="9"/>
+                <circle class="pt" cx="53.26" cy="138.43" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="63.93" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="72.93" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="81.93">Transfer</text>
+                    <text class="tx" x="52.48" y="98.93">X: 1</text>
+                    <text class="tx" x="52.48" y="115.93">Y: 46.59</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 2, Y: 44.25">
+                <title>Transfer, X: 2, Y: 44.25</title>
+                <circle class="hit" cx="64.04" cy="139.31" r="9"/>
+                <circle class="pt" cx="64.04" cy="139.31" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="64.81" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="73.81" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="82.81">Transfer</text>
+                    <text class="tx" x="52.48" y="99.81">X: 2</text>
+                    <text class="tx" x="52.48" y="116.81">Y: 44.25</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 3, Y: 56.18">
+                <title>Transfer, X: 3, Y: 56.18</title>
+                <circle class="hit" cx="74.82" cy="134.81" r="9"/>
+                <circle class="pt" cx="74.82" cy="134.81" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="60.31" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="69.31" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="78.31">Transfer</text>
+                    <text class="tx" x="52.48" y="95.31">X: 3</text>
+                    <text class="tx" x="52.48" y="112.31">Y: 56.18</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 4, Y: 74.95">
+                <title>Transfer, X: 4, Y: 74.95</title>
+                <circle class="hit" cx="85.6" cy="127.73" r="9"/>
+                <circle class="pt" cx="85.6" cy="127.73" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="44.05" y="53.23" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="54.05" y="62.23" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="68.05" y="71.23">Transfer</text>
+                    <text class="tx" x="54.05" y="88.23">X: 4</text>
+                    <text class="tx" x="54.05" y="105.23">Y: 74.95</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 5, Y: 81.75">
+                <title>Transfer, X: 5, Y: 81.75</title>
+                <circle class="hit" cx="96.38" cy="125.17" r="9"/>
+                <circle class="pt" cx="96.38" cy="125.17" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="54.83" y="50.67" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="64.83" y="59.67" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="78.83" y="68.67">Transfer</text>
+                    <text class="tx" x="64.83" y="85.67">X: 5</text>
+                    <text class="tx" x="64.83" y="102.67">Y: 81.75</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 6, Y: 97.32">
+                <title>Transfer, X: 6, Y: 97.32</title>
+                <circle class="hit" cx="107.16" cy="119.3" r="9"/>
+                <circle class="pt" cx="107.16" cy="119.3" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="65.62" y="44.8" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="75.62" y="53.8" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="89.62" y="62.8">Transfer</text>
+                    <text class="tx" x="75.62" y="79.8">X: 6</text>
+                    <text class="tx" x="75.62" y="96.8">Y: 97.32</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 7, Y: 120.5">
+                <title>Transfer, X: 7, Y: 120.5</title>
+                <circle class="hit" cx="117.95" cy="110.56" r="9"/>
+                <circle class="pt" cx="117.95" cy="110.56" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="76.4" y="36.06" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="86.4" y="45.06" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="100.4" y="54.06">Transfer</text>
+                    <text class="tx" x="86.4" y="71.06">X: 7</text>
+                    <text class="tx" x="86.4" y="88.06">Y: 120.5</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 8, Y: 128.6">
+                <title>Transfer, X: 8, Y: 128.6</title>
+                <circle class="hit" cx="128.73" cy="107.51" r="9"/>
+                <circle class="pt" cx="128.73" cy="107.51" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="87.18" y="33.01" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="97.18" y="42.01" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="111.18" y="51.01">Transfer</text>
+                    <text class="tx" x="97.18" y="68.01">X: 8</text>
+                    <text class="tx" x="97.18" y="85.01">Y: 128.6</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 9, Y: 138.7">
+                <title>Transfer, X: 9, Y: 138.7</title>
+                <circle class="hit" cx="139.51" cy="103.7" r="9"/>
+                <circle class="pt" cx="139.51" cy="103.7" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="97.96" y="29.2" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="107.96" y="38.2" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="121.96" y="47.2">Transfer</text>
+                    <text class="tx" x="107.96" y="64.2">X: 9</text>
+                    <text class="tx" x="107.96" y="81.2">Y: 138.7</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 10, Y: 156.5">
+                <title>Transfer, X: 10, Y: 156.5</title>
+                <circle class="hit" cx="150.29" cy="96.97" r="9"/>
+                <circle class="pt" cx="150.29" cy="96.97" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="108.74" y="24" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="118.74" y="33" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="132.74" y="42">Transfer</text>
+                    <text class="tx" x="118.74" y="59">X: 10</text>
+                    <text class="tx" x="118.74" y="76">Y: 156.5</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 11, Y: 157.9">
+                <title>Transfer, X: 11, Y: 157.9</title>
+                <circle class="hit" cx="161.07" cy="96.44" r="9"/>
+                <circle class="pt" cx="161.07" cy="96.44" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="119.52" y="24" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="129.52" y="33" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="143.52" y="42">Transfer</text>
+                    <text class="tx" x="129.52" y="59">X: 11</text>
+                    <text class="tx" x="129.52" y="76">Y: 157.9</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 12, Y: 155.5">
+                <title>Transfer, X: 12, Y: 155.5</title>
+                <circle class="hit" cx="171.85" cy="97.36" r="9"/>
+                <circle class="pt" cx="171.85" cy="97.36" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="130.3" y="24" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="140.3" y="33" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="154.3" y="42">Transfer</text>
+                    <text class="tx" x="140.3" y="59">X: 12</text>
+                    <text class="tx" x="140.3" y="76">Y: 155.5</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 13, Y: 161.8">
+                <title>Transfer, X: 13, Y: 161.8</title>
+                <circle class="hit" cx="182.63" cy="94.99" r="9"/>
+                <circle class="pt" cx="182.63" cy="94.99" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="141.08" y="24" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="151.08" y="33" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="165.08" y="42">Transfer</text>
+                    <text class="tx" x="151.08" y="59">X: 13</text>
+                    <text class="tx" x="151.08" y="76">Y: 161.8</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 14, Y: 153.3">
+                <title>Transfer, X: 14, Y: 153.3</title>
+                <circle class="hit" cx="193.41" cy="98.18" r="9"/>
+                <circle class="pt" cx="193.41" cy="98.18" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="151.86" y="24" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="161.86" y="33" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="175.86" y="42">Transfer</text>
+                    <text class="tx" x="161.86" y="59">X: 14</text>
+                    <text class="tx" x="161.86" y="76">Y: 153.3</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 15, Y: 137.5">
+                <title>Transfer, X: 15, Y: 137.5</title>
+                <circle class="hit" cx="204.19" cy="104.15" r="9"/>
+                <circle class="pt" cx="204.19" cy="104.15" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="162.64" y="29.65" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="172.64" y="38.65" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="186.64" y="47.65">Transfer</text>
+                    <text class="tx" x="172.64" y="64.65">X: 15</text>
+                    <text class="tx" x="172.64" y="81.65">Y: 137.5</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 16, Y: 132.8">
+                <title>Transfer, X: 16, Y: 132.8</title>
+                <circle class="hit" cx="214.97" cy="105.93" r="9"/>
+                <circle class="pt" cx="214.97" cy="105.93" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="173.42" y="31.43" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="183.42" y="40.43" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="197.42" y="49.43">Transfer</text>
+                    <text class="tx" x="183.42" y="66.43">X: 16</text>
+                    <text class="tx" x="183.42" y="83.43">Y: 132.8</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 17, Y: 118.2">
+                <title>Transfer, X: 17, Y: 118.2</title>
+                <circle class="hit" cx="225.75" cy="111.43" r="9"/>
+                <circle class="pt" cx="225.75" cy="111.43" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="184.2" y="36.93" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="194.2" y="45.93" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="208.2" y="54.93">Transfer</text>
+                    <text class="tx" x="194.2" y="71.93">X: 17</text>
+                    <text class="tx" x="194.2" y="88.93">Y: 118.2</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 18, Y: 95.04">
+                <title>Transfer, X: 18, Y: 95.04</title>
+                <circle class="hit" cx="236.53" cy="120.16" r="9"/>
+                <circle class="pt" cx="236.53" cy="120.16" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="194.98" y="45.66" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="204.98" y="54.66" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="218.98" y="63.66">Transfer</text>
+                    <text class="tx" x="204.98" y="80.66">X: 18</text>
+                    <text class="tx" x="204.98" y="97.66">Y: 95.04</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 19, Y: 85.95">
+                <title>Transfer, X: 19, Y: 85.95</title>
+                <circle class="hit" cx="247.32" cy="123.58" r="9"/>
+                <circle class="pt" cx="247.32" cy="123.58" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="205.77" y="49.08" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="215.77" y="58.08" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="229.77" y="67.08">Transfer</text>
+                    <text class="tx" x="215.77" y="84.08">X: 19</text>
+                    <text class="tx" x="215.77" y="101.08">Y: 85.95</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 20, Y: 73.73">
+                <title>Transfer, X: 20, Y: 73.73</title>
+                <circle class="hit" cx="258.1" cy="128.19" r="9"/>
+                <circle class="pt" cx="258.1" cy="128.19" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="216.55" y="53.69" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="226.55" y="62.69" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="240.55" y="71.69">Transfer</text>
+                    <text class="tx" x="226.55" y="88.69">X: 20</text>
+                    <text class="tx" x="226.55" y="105.69">Y: 73.73</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 21, Y: 52.99">
+                <title>Transfer, X: 21, Y: 52.99</title>
+                <circle class="hit" cx="268.88" cy="136.01" r="9"/>
+                <circle class="pt" cx="268.88" cy="136.01" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="227.33" y="61.51" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="237.33" y="70.51" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="251.33" y="79.51">Transfer</text>
+                    <text class="tx" x="237.33" y="96.51">X: 21</text>
+                    <text class="tx" x="237.33" y="113.51">Y: 52.99</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 22, Y: 48.13">
+                <title>Transfer, X: 22, Y: 48.13</title>
+                <circle class="hit" cx="279.66" cy="137.85" r="9"/>
+                <circle class="pt" cx="279.66" cy="137.85" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="228.9" y="63.35" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="238.9" y="72.35" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="252.9" y="81.35">Transfer</text>
+                    <text class="tx" x="238.9" y="98.35">X: 22</text>
+                    <text class="tx" x="238.9" y="115.35">Y: 48.13</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, X: 23, Y: 46.55">
+                <title>Transfer, X: 23, Y: 46.55</title>
+                <circle class="hit" cx="290.44" cy="138.44" r="9"/>
+                <circle class="pt" cx="290.44" cy="138.44" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="228.9" y="63.94" width="83.1" height="61" rx="6"/>
+                    <rect class="tsw s0" x="238.9" y="72.94" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="252.9" y="81.94">Transfer</text>
+                    <text class="tx" x="238.9" y="98.94">X: 23</text>
+                    <text class="tx" x="238.9" y="115.94">Y: 46.55</text>
+                </g>
+            </g>
+        </g>
+    </svg>
+    <rect class="fst" x="38" y="272" width="328" height="22" rx="4"/>
+    <text class="fsl" x="46" y="287">Cash</text>
+    <svg x="38" y="294" xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 328 192"
+         preserveAspectRatio="xMidYMid meet" width="328" height="192" role="img"
+         aria-labelledby="jc-7e42706f-p2-t jc-7e42706f-p2-d">
+        <title id="jc-7e42706f-p2-t">Chart</title>
+        <desc id="jc-7e42706f-p2-d">Line chart with 1 series: Cash. Y values range from 60.38 to 244.3.</desc>
+        <line class="gl" x1="42.48" y1="156" x2="312" y2="156"/>
+        <text class="tk end mid" x="34.48" y="156">0</text>
+        <line class="gl" x1="42.48" y1="80.57" x2="312" y2="80.57"/>
+        <text class="tk end mid" x="34.48" y="80.57">200</text>
+        <text class="tk ctr" x="42.48" y="172">0</text>
+        <text class="tk ctr" x="150.29" y="172">10</text>
+        <text class="tk ctr" x="258.1" y="172">20</text>
+        <line class="ax" x1="42.48" y1="156" x2="312" y2="156"/>
+        <g class="sr s0">
+            <path class="ln"
+                  d="M42.48 123.43L53.26 128.56L64.04 132.74L74.82 132.59L85.6 133.23L96.38 127.6L107.16 124.85L117.95 114.82L128.73 109.92L139.51 97.63L150.29 92.51L161.07 80.57L171.85 77.3L182.63 68.22L193.41 68.37L204.19 63.88L214.97 68.09L225.75 68.77L236.53 76.48L247.32 81.63L258.1 91.22L268.88 99.11L279.66 108.26L290.44 116.62">
+                <title>Cash</title>
+            </path>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 0, Y: 86.36">
+                <title>Cash, X: 0, Y: 86.36</title>
+                <circle class="hit" cx="42.48" cy="123.43" r="9"/>
+                <circle class="pt" cx="42.48" cy="123.43" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="48.93" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="57.93" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="66.93">Cash</text>
+                    <text class="tx" x="52.48" y="83.93">X: 0</text>
+                    <text class="tx" x="52.48" y="100.93">Y: 86.36</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 1, Y: 72.76">
+                <title>Cash, X: 1, Y: 72.76</title>
+                <circle class="hit" cx="53.26" cy="128.56" r="9"/>
+                <circle class="pt" cx="53.26" cy="128.56" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="54.06" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="63.06" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="72.06">Cash</text>
+                    <text class="tx" x="52.48" y="89.06">X: 1</text>
+                    <text class="tx" x="52.48" y="106.06">Y: 72.76</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 2, Y: 61.67">
+                <title>Cash, X: 2, Y: 61.67</title>
+                <circle class="hit" cx="64.04" cy="132.74" r="9"/>
+                <circle class="pt" cx="64.04" cy="132.74" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="58.24" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="67.24" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="76.24">Cash</text>
+                    <text class="tx" x="52.48" y="93.24">X: 2</text>
+                    <text class="tx" x="52.48" y="110.24">Y: 61.67</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 3, Y: 62.06">
+                <title>Cash, X: 3, Y: 62.06</title>
+                <circle class="hit" cx="74.82" cy="132.59" r="9"/>
+                <circle class="pt" cx="74.82" cy="132.59" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.5" y="58.09" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.5" y="67.09" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.5" y="76.09">Cash</text>
+                    <text class="tx" x="52.5" y="93.09">X: 3</text>
+                    <text class="tx" x="52.5" y="110.09">Y: 62.06</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 4, Y: 60.38">
+                <title>Cash, X: 4, Y: 60.38</title>
+                <circle class="hit" cx="85.6" cy="133.23" r="9"/>
+                <circle class="pt" cx="85.6" cy="133.23" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="53.28" y="58.73" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="63.28" y="67.73" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="77.28" y="76.73">Cash</text>
+                    <text class="tx" x="63.28" y="93.73">X: 4</text>
+                    <text class="tx" x="63.28" y="110.73">Y: 60.38</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 5, Y: 75.31">
+                <title>Cash, X: 5, Y: 75.31</title>
+                <circle class="hit" cx="96.38" cy="127.6" r="9"/>
+                <circle class="pt" cx="96.38" cy="127.6" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="64.06" y="53.1" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="74.06" y="62.1" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="88.06" y="71.1">Cash</text>
+                    <text class="tx" x="74.06" y="88.1">X: 5</text>
+                    <text class="tx" x="74.06" y="105.1">Y: 75.31</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 6, Y: 82.61">
+                <title>Cash, X: 6, Y: 82.61</title>
+                <circle class="hit" cx="107.16" cy="124.85" r="9"/>
+                <circle class="pt" cx="107.16" cy="124.85" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="74.84" y="50.35" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="84.84" y="59.35" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="98.84" y="68.35">Cash</text>
+                    <text class="tx" x="84.84" y="85.35">X: 6</text>
+                    <text class="tx" x="84.84" y="102.35">Y: 82.61</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 7, Y: 109.2">
+                <title>Cash, X: 7, Y: 109.2</title>
+                <circle class="hit" cx="117.95" cy="114.82" r="9"/>
+                <circle class="pt" cx="117.95" cy="114.82" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="85.63" y="40.32" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="95.63" y="49.32" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="109.63" y="58.32">Cash</text>
+                    <text class="tx" x="95.63" y="75.32">X: 7</text>
+                    <text class="tx" x="95.63" y="92.32">Y: 109.2</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 8, Y: 122.2">
+                <title>Cash, X: 8, Y: 122.2</title>
+                <circle class="hit" cx="128.73" cy="109.92" r="9"/>
+                <circle class="pt" cx="128.73" cy="109.92" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="96.41" y="35.42" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="106.41" y="44.42" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="120.41" y="53.42">Cash</text>
+                    <text class="tx" x="106.41" y="70.42">X: 8</text>
+                    <text class="tx" x="106.41" y="87.42">Y: 122.2</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 9, Y: 154.8">
+                <title>Cash, X: 9, Y: 154.8</title>
+                <circle class="hit" cx="139.51" cy="97.63" r="9"/>
+                <circle class="pt" cx="139.51" cy="97.63" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="107.19" y="24" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="117.19" y="33" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="131.19" y="42">Cash</text>
+                    <text class="tx" x="117.19" y="59">X: 9</text>
+                    <text class="tx" x="117.19" y="76">Y: 154.8</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 10, Y: 168.4">
+                <title>Cash, X: 10, Y: 168.4</title>
+                <circle class="hit" cx="150.29" cy="92.51" r="9"/>
+                <circle class="pt" cx="150.29" cy="92.51" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="117.97" y="24" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="127.97" y="33" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="141.97" y="42">Cash</text>
+                    <text class="tx" x="127.97" y="59">X: 10</text>
+                    <text class="tx" x="127.97" y="76">Y: 168.4</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 11, Y: 200">
+                <title>Cash, X: 11, Y: 200</title>
+                <circle class="hit" cx="161.07" cy="80.57" r="9"/>
+                <circle class="pt" cx="161.07" cy="80.57" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="129.44" y="87.07" width="63.26" height="61" rx="6"/>
+                    <rect class="tsw s0" x="139.44" y="96.07" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="153.44" y="105.07">Cash</text>
+                    <text class="tx" x="139.44" y="122.07">X: 11</text>
+                    <text class="tx" x="139.44" y="139.07">Y: 200</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 12, Y: 208.7">
+                <title>Cash, X: 12, Y: 208.7</title>
+                <circle class="hit" cx="171.85" cy="77.3" r="9"/>
+                <circle class="pt" cx="171.85" cy="77.3" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="139.53" y="83.8" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="149.53" y="92.8" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="163.53" y="101.8">Cash</text>
+                    <text class="tx" x="149.53" y="118.8">X: 12</text>
+                    <text class="tx" x="149.53" y="135.8">Y: 208.7</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 13, Y: 232.8">
+                <title>Cash, X: 13, Y: 232.8</title>
+                <circle class="hit" cx="182.63" cy="68.22" r="9"/>
+                <circle class="pt" cx="182.63" cy="68.22" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="150.31" y="74.72" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="160.31" y="83.72" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="174.31" y="92.72">Cash</text>
+                    <text class="tx" x="160.31" y="109.72">X: 13</text>
+                    <text class="tx" x="160.31" y="126.72">Y: 232.8</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 14, Y: 232.4">
+                <title>Cash, X: 14, Y: 232.4</title>
+                <circle class="hit" cx="193.41" cy="68.37" r="9"/>
+                <circle class="pt" cx="193.41" cy="68.37" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="161.09" y="74.87" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="171.09" y="83.87" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="185.09" y="92.87">Cash</text>
+                    <text class="tx" x="171.09" y="109.87">X: 14</text>
+                    <text class="tx" x="171.09" y="126.87">Y: 232.4</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 15, Y: 244.3">
+                <title>Cash, X: 15, Y: 244.3</title>
+                <circle class="hit" cx="204.19" cy="63.88" r="9"/>
+                <circle class="pt" cx="204.19" cy="63.88" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="171.87" y="70.38" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="181.87" y="79.38" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="195.87" y="88.38">Cash</text>
+                    <text class="tx" x="181.87" y="105.38">X: 15</text>
+                    <text class="tx" x="181.87" y="122.38">Y: 244.3</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 16, Y: 233.1">
+                <title>Cash, X: 16, Y: 233.1</title>
+                <circle class="hit" cx="214.97" cy="68.09" r="9"/>
+                <circle class="pt" cx="214.97" cy="68.09" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="182.65" y="74.59" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="192.65" y="83.59" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="206.65" y="92.59">Cash</text>
+                    <text class="tx" x="192.65" y="109.59">X: 16</text>
+                    <text class="tx" x="192.65" y="126.59">Y: 233.1</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 17, Y: 231.3">
+                <title>Cash, X: 17, Y: 231.3</title>
+                <circle class="hit" cx="225.75" cy="68.77" r="9"/>
+                <circle class="pt" cx="225.75" cy="68.77" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="193.43" y="75.27" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="203.43" y="84.27" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="217.43" y="93.27">Cash</text>
+                    <text class="tx" x="203.43" y="110.27">X: 17</text>
+                    <text class="tx" x="203.43" y="127.27">Y: 231.3</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 18, Y: 210.8">
+                <title>Cash, X: 18, Y: 210.8</title>
+                <circle class="hit" cx="236.53" cy="76.48" r="9"/>
+                <circle class="pt" cx="236.53" cy="76.48" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="204.21" y="82.98" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="214.21" y="91.98" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="228.21" y="100.98">Cash</text>
+                    <text class="tx" x="214.21" y="117.98">X: 18</text>
+                    <text class="tx" x="214.21" y="134.98">Y: 210.8</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 19, Y: 197.2">
+                <title>Cash, X: 19, Y: 197.2</title>
+                <circle class="hit" cx="247.32" cy="81.63" r="9"/>
+                <circle class="pt" cx="247.32" cy="81.63" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="215" y="88.13" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="225" y="97.13" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="239" y="106.13">Cash</text>
+                    <text class="tx" x="225" y="123.13">X: 19</text>
+                    <text class="tx" x="225" y="140.13">Y: 197.2</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 20, Y: 171.8">
+                <title>Cash, X: 20, Y: 171.8</title>
+                <circle class="hit" cx="258.1" cy="91.22" r="9"/>
+                <circle class="pt" cx="258.1" cy="91.22" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="225.78" y="95" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="235.78" y="104" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="249.78" y="113">Cash</text>
+                    <text class="tx" x="235.78" y="130">X: 20</text>
+                    <text class="tx" x="235.78" y="147">Y: 171.8</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 21, Y: 150.8">
+                <title>Cash, X: 21, Y: 150.8</title>
+                <circle class="hit" cx="268.88" cy="99.11" r="9"/>
+                <circle class="pt" cx="268.88" cy="99.11" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="236.56" y="24.61" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="246.56" y="33.61" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="260.56" y="42.61">Cash</text>
+                    <text class="tx" x="246.56" y="59.61">X: 21</text>
+                    <text class="tx" x="246.56" y="76.61">Y: 150.8</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 22, Y: 126.6">
+                <title>Cash, X: 22, Y: 126.6</title>
+                <circle class="hit" cx="279.66" cy="108.26" r="9"/>
+                <circle class="pt" cx="279.66" cy="108.26" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="247.34" y="33.76" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="257.34" y="42.76" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="271.34" y="51.76">Cash</text>
+                    <text class="tx" x="257.34" y="68.76">X: 22</text>
+                    <text class="tx" x="257.34" y="85.76">Y: 126.6</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cash, X: 23, Y: 104.4">
+                <title>Cash, X: 23, Y: 104.4</title>
+                <circle class="hit" cx="290.44" cy="116.62" r="9"/>
+                <circle class="pt" cx="290.44" cy="116.62" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="247.36" y="42.12" width="64.64" height="61" rx="6"/>
+                    <rect class="tsw s0" x="257.36" y="51.12" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="271.36" y="60.12">Cash</text>
+                    <text class="tx" x="257.36" y="77.12">X: 23</text>
+                    <text class="tx" x="257.36" y="94.12">Y: 104.4</text>
+                </g>
+            </g>
+        </g>
+    </svg>
+    <rect class="fst" x="376" y="272" width="328" height="22" rx="4"/>
+    <text class="fsl" x="384" y="287">Online</text>
+    <svg x="376" y="294" xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 328 192"
+         preserveAspectRatio="xMidYMid meet" width="328" height="192" role="img"
+         aria-labelledby="jc-7e42706f-p3-t jc-7e42706f-p3-d">
+        <title id="jc-7e42706f-p3-t">Chart</title>
+        <desc id="jc-7e42706f-p3-d">Line chart with 1 series: Online. Y values range from 75.47 to 321.3.</desc>
+        <line class="gl" x1="42.48" y1="156" x2="312" y2="156"/>
+        <text class="tk end mid" x="34.48" y="156">0</text>
+        <line class="gl" x1="42.48" y1="80.57" x2="312" y2="80.57"/>
+        <text class="tk end mid" x="34.48" y="80.57">200</text>
+        <text class="tk ctr" x="42.48" y="172">0</text>
+        <text class="tk ctr" x="150.29" y="172">10</text>
+        <text class="tk ctr" x="258.1" y="172">20</text>
+        <line class="ax" x1="42.48" y1="156" x2="312" y2="156"/>
+        <g class="sr s0">
+            <path class="ln"
+                  d="M42.48 80.57L53.26 93.71L64.04 101.33L74.82 113.58L85.6 120.31L96.38 122.56L107.16 127.54L117.95 123.78L128.73 118.73L139.51 114.44L150.29 101.79L161.07 92.25L171.85 82.02L182.63 67L193.41 58.93L204.19 49.14L214.97 39.64L225.75 38.55L236.53 34.84L247.32 35.79L258.1 43.25L268.88 47.19L279.66 57.88L290.44 70.33">
+                <title>Online</title>
+            </path>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 0, Y: 200">
+                <title>Online, X: 0, Y: 200</title>
+                <circle class="hit" cx="42.48" cy="80.57" r="9"/>
+                <circle class="pt" cx="42.48" cy="80.57" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="87.07" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="96.07" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="105.07">Online</text>
+                    <text class="tx" x="52.48" y="122.07">X: 0</text>
+                    <text class="tx" x="52.48" y="139.07">Y: 200</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 1, Y: 165.2">
+                <title>Online, X: 1, Y: 165.2</title>
+                <circle class="hit" cx="53.26" cy="93.71" r="9"/>
+                <circle class="pt" cx="53.26" cy="93.71" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="24" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="33" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="42">Online</text>
+                    <text class="tx" x="52.48" y="59">X: 1</text>
+                    <text class="tx" x="52.48" y="76">Y: 165.2</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 2, Y: 144.9">
+                <title>Online, X: 2, Y: 144.9</title>
+                <circle class="hit" cx="64.04" cy="101.33" r="9"/>
+                <circle class="pt" cx="64.04" cy="101.33" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="26.83" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="35.83" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="44.83">Online</text>
+                    <text class="tx" x="52.48" y="61.83">X: 2</text>
+                    <text class="tx" x="52.48" y="78.83">Y: 144.9</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 3, Y: 112.5">
+                <title>Online, X: 3, Y: 112.5</title>
+                <circle class="hit" cx="74.82" cy="113.58" r="9"/>
+                <circle class="pt" cx="74.82" cy="113.58" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="42.48" y="39.08" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="52.48" y="48.08" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="66.48" y="57.08">Online</text>
+                    <text class="tx" x="52.48" y="74.08">X: 3</text>
+                    <text class="tx" x="52.48" y="91.08">Y: 112.5</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 4, Y: 94.64">
+                <title>Online, X: 4, Y: 94.64</title>
+                <circle class="hit" cx="85.6" cy="120.31" r="9"/>
+                <circle class="pt" cx="85.6" cy="120.31" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="50.67" y="45.81" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="60.67" y="54.81" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="74.67" y="63.81">Online</text>
+                    <text class="tx" x="60.67" y="80.81">X: 4</text>
+                    <text class="tx" x="60.67" y="97.81">Y: 94.64</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 5, Y: 88.65">
+                <title>Online, X: 5, Y: 88.65</title>
+                <circle class="hit" cx="96.38" cy="122.56" r="9"/>
+                <circle class="pt" cx="96.38" cy="122.56" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="61.45" y="48.06" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="71.45" y="57.06" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="85.45" y="66.06">Online</text>
+                    <text class="tx" x="71.45" y="83.06">X: 5</text>
+                    <text class="tx" x="71.45" y="100.06">Y: 88.65</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 6, Y: 75.47">
+                <title>Online, X: 6, Y: 75.47</title>
+                <circle class="hit" cx="107.16" cy="127.54" r="9"/>
+                <circle class="pt" cx="107.16" cy="127.54" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="72.23" y="53.04" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="82.23" y="62.04" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="96.23" y="71.04">Online</text>
+                    <text class="tx" x="82.23" y="88.04">X: 6</text>
+                    <text class="tx" x="82.23" y="105.04">Y: 75.47</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 7, Y: 85.44">
+                <title>Online, X: 7, Y: 85.44</title>
+                <circle class="hit" cx="117.95" cy="123.78" r="9"/>
+                <circle class="pt" cx="117.95" cy="123.78" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="83.01" y="49.28" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="93.01" y="58.28" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="107.01" y="67.28">Online</text>
+                    <text class="tx" x="93.01" y="84.28">X: 7</text>
+                    <text class="tx" x="93.01" y="101.28">Y: 85.44</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 8, Y: 98.83">
+                <title>Online, X: 8, Y: 98.83</title>
+                <circle class="hit" cx="128.73" cy="118.73" r="9"/>
+                <circle class="pt" cx="128.73" cy="118.73" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="93.79" y="44.23" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="103.79" y="53.23" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="117.79" y="62.23">Online</text>
+                    <text class="tx" x="103.79" y="79.23">X: 8</text>
+                    <text class="tx" x="103.79" y="96.23">Y: 98.83</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 9, Y: 110.2">
+                <title>Online, X: 9, Y: 110.2</title>
+                <circle class="hit" cx="139.51" cy="114.44" r="9"/>
+                <circle class="pt" cx="139.51" cy="114.44" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="104.57" y="39.94" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="114.57" y="48.94" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="128.57" y="57.94">Online</text>
+                    <text class="tx" x="114.57" y="74.94">X: 9</text>
+                    <text class="tx" x="114.57" y="91.94">Y: 110.2</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 10, Y: 143.7">
+                <title>Online, X: 10, Y: 143.7</title>
+                <circle class="hit" cx="150.29" cy="101.79" r="9"/>
+                <circle class="pt" cx="150.29" cy="101.79" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="115.35" y="27.29" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="125.35" y="36.29" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="139.35" y="45.29">Online</text>
+                    <text class="tx" x="125.35" y="62.29">X: 10</text>
+                    <text class="tx" x="125.35" y="79.29">Y: 143.7</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 11, Y: 169">
+                <title>Online, X: 11, Y: 169</title>
+                <circle class="hit" cx="161.07" cy="92.25" r="9"/>
+                <circle class="pt" cx="161.07" cy="92.25" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="126.13" y="95" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="136.13" y="104" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="150.13" y="113">Online</text>
+                    <text class="tx" x="136.13" y="130">X: 11</text>
+                    <text class="tx" x="136.13" y="147">Y: 169</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 12, Y: 196.2">
+                <title>Online, X: 12, Y: 196.2</title>
+                <circle class="hit" cx="171.85" cy="82.02" r="9"/>
+                <circle class="pt" cx="171.85" cy="82.02" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="136.91" y="88.52" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="146.91" y="97.52" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="160.91" y="106.52">Online</text>
+                    <text class="tx" x="146.91" y="123.52">X: 12</text>
+                    <text class="tx" x="146.91" y="140.52">Y: 196.2</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 13, Y: 236">
+                <title>Online, X: 13, Y: 236</title>
+                <circle class="hit" cx="182.63" cy="67" r="9"/>
+                <circle class="pt" cx="182.63" cy="67" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="147.7" y="73.5" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="157.7" y="82.5" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="171.7" y="91.5">Online</text>
+                    <text class="tx" x="157.7" y="108.5">X: 13</text>
+                    <text class="tx" x="157.7" y="125.5">Y: 236</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 14, Y: 257.4">
+                <title>Online, X: 14, Y: 257.4</title>
+                <circle class="hit" cx="193.41" cy="58.93" r="9"/>
+                <circle class="pt" cx="193.41" cy="58.93" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="158.48" y="65.43" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="168.48" y="74.43" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="182.48" y="83.43">Online</text>
+                    <text class="tx" x="168.48" y="100.43">X: 14</text>
+                    <text class="tx" x="168.48" y="117.43">Y: 257.4</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 15, Y: 283.3">
+                <title>Online, X: 15, Y: 283.3</title>
+                <circle class="hit" cx="204.19" cy="49.14" r="9"/>
+                <circle class="pt" cx="204.19" cy="49.14" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="169.26" y="55.64" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="179.26" y="64.64" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="193.26" y="73.64">Online</text>
+                    <text class="tx" x="179.26" y="90.64">X: 15</text>
+                    <text class="tx" x="179.26" y="107.64">Y: 283.3</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 16, Y: 308.5">
+                <title>Online, X: 16, Y: 308.5</title>
+                <circle class="hit" cx="214.97" cy="39.64" r="9"/>
+                <circle class="pt" cx="214.97" cy="39.64" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="180.04" y="46.14" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="190.04" y="55.14" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="204.04" y="64.14">Online</text>
+                    <text class="tx" x="190.04" y="81.14">X: 16</text>
+                    <text class="tx" x="190.04" y="98.14">Y: 308.5</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 17, Y: 311.4">
+                <title>Online, X: 17, Y: 311.4</title>
+                <circle class="hit" cx="225.75" cy="38.55" r="9"/>
+                <circle class="pt" cx="225.75" cy="38.55" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="190.82" y="45.05" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="200.82" y="54.05" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="214.82" y="63.05">Online</text>
+                    <text class="tx" x="200.82" y="80.05">X: 17</text>
+                    <text class="tx" x="200.82" y="97.05">Y: 311.4</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 18, Y: 321.3">
+                <title>Online, X: 18, Y: 321.3</title>
+                <circle class="hit" cx="236.53" cy="34.84" r="9"/>
+                <circle class="pt" cx="236.53" cy="34.84" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="201.6" y="41.34" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="211.6" y="50.34" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="225.6" y="59.34">Online</text>
+                    <text class="tx" x="211.6" y="76.34">X: 18</text>
+                    <text class="tx" x="211.6" y="93.34">Y: 321.3</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 19, Y: 318.7">
+                <title>Online, X: 19, Y: 318.7</title>
+                <circle class="hit" cx="247.32" cy="35.79" r="9"/>
+                <circle class="pt" cx="247.32" cy="35.79" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="212.38" y="42.29" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="222.38" y="51.29" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="236.38" y="60.29">Online</text>
+                    <text class="tx" x="222.38" y="77.29">X: 19</text>
+                    <text class="tx" x="222.38" y="94.29">Y: 318.7</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 20, Y: 299">
+                <title>Online, X: 20, Y: 299</title>
+                <circle class="hit" cx="258.1" cy="43.25" r="9"/>
+                <circle class="pt" cx="258.1" cy="43.25" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="223.16" y="49.75" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="233.16" y="58.75" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="247.16" y="67.75">Online</text>
+                    <text class="tx" x="233.16" y="84.75">X: 20</text>
+                    <text class="tx" x="233.16" y="101.75">Y: 299</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 21, Y: 288.5">
+                <title>Online, X: 21, Y: 288.5</title>
+                <circle class="hit" cx="268.88" cy="47.19" r="9"/>
+                <circle class="pt" cx="268.88" cy="47.19" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="233.94" y="53.69" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="243.94" y="62.69" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="257.94" y="71.69">Online</text>
+                    <text class="tx" x="243.94" y="88.69">X: 21</text>
+                    <text class="tx" x="243.94" y="105.69">Y: 288.5</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 22, Y: 260.2">
+                <title>Online, X: 22, Y: 260.2</title>
+                <circle class="hit" cx="279.66" cy="57.88" r="9"/>
+                <circle class="pt" cx="279.66" cy="57.88" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="242.13" y="64.38" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="252.13" y="73.38" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="266.13" y="82.38">Online</text>
+                    <text class="tx" x="252.13" y="99.38">X: 22</text>
+                    <text class="tx" x="252.13" y="116.38">Y: 260.2</text>
+                </g>
+            </g>
+            <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Online, X: 23, Y: 227.2">
+                <title>Online, X: 23, Y: 227.2</title>
+                <circle class="hit" cx="290.44" cy="70.33" r="9"/>
+                <circle class="pt" cx="290.44" cy="70.33" r="3.5"/>
+                <g class="tt">
+                    <rect class="tb" x="242.13" y="76.83" width="69.87" height="61" rx="6"/>
+                    <rect class="tsw s0" x="252.13" y="85.83" width="9" height="9" rx="2"/>
+                    <text class="tx b" x="266.13" y="94.83">Online</text>
+                    <text class="tx" x="252.13" y="111.83">X: 23</text>
+                    <text class="tx" x="252.13" y="128.83">Y: 227.2</text>
+                </g>
+            </g>
+        </g>
+    </svg>
+    <text class="at ctr" x="371" y="500">Hour of day</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 267) rotate(-90)">Transactions</text>
+</svg>

@@ -51,12 +51,12 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
 
         private readonly List<int> createdEntryIds = [];
         private readonly List<int> createdScheduleIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
                 .Where(w => createdEntryIds.Contains(w.Id)).DeleteAsync();
             await dbContext.EntityAnalysisModelSynchronisationSchedule
@@ -79,6 +79,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
         private async Task InsertScheduleAsync(int tenantRegistryId, DateTime scheduleDate)
         {
             await using var dbContext = fx.GetDbContext();
+
             createdScheduleIds.Add(await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.EntityAnalysisModelSynchronisationSchedule
                 {
@@ -93,6 +94,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
             DateTime? synchronised)
         {
             await using var dbContext = fx.GetDbContext();
+
             createdEntryIds.Add(await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.EntityAnalysisModelSynchronisationNodeStatusEntry
                 {
@@ -119,6 +121,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
 
             await InsertScheduleAsync(tenantB, now.AddMinutes(-5));
             await InsertEntryAsync(tenantB, $"{tag}-B", now.AddSeconds(-5), now);
+
             return (tenantA, tenantB, tag);
         }
 
@@ -144,6 +147,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -152,6 +156,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -180,6 +185,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
 
             result.Should().NotBeNull();
             var mine = result.Required().Where(w => w.Instance != null && w.Instance.StartsWith(tag)).ToList();
+
             mine.Select(s => s.Instance).Should()
                 .BeEquivalentTo($"{tag}-pending", $"{tag}-synced-stale", $"{tag}-never");
 
@@ -251,6 +257,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
             fromA.Required().Where(w => w.Instance != null && w.Instance.StartsWith(tag)).Select(s => s.Instance)
                 .Should()
                 .NotContain($"{tag}-B").And.NotBeEmpty();
+
             fromB.Required().Where(w => w.Instance != null && w.Instance.StartsWith(tag)).Select(s => s.Instance)
                 .Should()
                 .BeEquivalentTo($"{tag}-B");
@@ -402,6 +409,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");
@@ -413,6 +421,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEn
 
                 var frenchLocalizer =
                     localizers.Create(typeof(EntityAnalysisModelSynchronisationNodeStatusEntriesResources));
+
                 ex.Message.Should()
                     .Be(frenchLocalizer[EntityAnalysisModelSynchronisationNodeStatusEntriesResources.PermissionDenied]
                         .Value);

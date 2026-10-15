@@ -11,15 +11,16 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Jube.Engine.EntityAnalysisModelInvoke.Extraction;
+using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
+using Newtonsoft.Json.Linq;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using Extraction;
-    using Newtonsoft.Json.Linq;
-
     public sealed record RequestField(string Name, string XPath, int DataTypeId, string DefaultValue, bool Encrypted);
 
     public sealed record RequestReferences(
@@ -30,24 +31,25 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
     public static class InvocationContextBuilder
     {
         public const string Extraction = "Extraction";
+        public const string AbstractionRulesWithSearchKeys = "AbstractionRulesWithSearchKeys";
+        public const string HttpAdaptations = "HttpAdaptations";
         private const string InlineFunctions = "InlineFunctions";
         private const string InlineScripts = "InlineScripts";
         private const string GatewayRules = "GatewayRules";
         private const string DictionaryLookups = "DictionaryLookups";
         private const string Sanctions = "Sanctions";
         private const string TtlCounters = "TtlCounters";
-        public const string AbstractionRulesWithSearchKeys = "AbstractionRulesWithSearchKeys";
         private const string AbstractionRulesWithoutSearchKeys = "AbstractionRulesWithoutSearchKeys";
         private const string AbstractionCalculations = "AbstractionCalculations";
         private const string ExhaustiveAdaptations = "ExhaustiveAdaptations";
-        public const string HttpAdaptations = "HttpAdaptations";
+        private const string AdvancedAnalyticsAdaptations = "AdvancedAnalyticsAdaptations";
         private const string ActivationRules = "ActivationRules";
 
         private static readonly string[] valueStages =
         [
             Extraction, InlineFunctions, InlineScripts, GatewayRules, DictionaryLookups, Sanctions, TtlCounters,
             AbstractionRulesWithSearchKeys, AbstractionRulesWithoutSearchKeys, AbstractionCalculations,
-            ExhaustiveAdaptations, HttpAdaptations, ActivationRules
+            ExhaustiveAdaptations, AdvancedAnalyticsAdaptations, HttpAdaptations, ActivationRules
         ];
 
         private static readonly (string Stage, string Note)[] excludedStages =
@@ -71,6 +73,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             ["Sanction"] = "sanction",
             ["AbstractionCalculation"] = "abstractionCalculation",
             ["ExhaustiveAdaptation"] = "exhaustiveAdaptation",
+            ["AdvancedAnalyticsAdaptation"] = "advancedAnalyticsAdaptation",
             ["HTTPAdaptation"] = "httpAdaptation",
             ["Dictionary"] = "dictionary",
             ["Activation"] = "activation"
@@ -85,6 +88,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 EntityAnalysisModelId = entityAnalysisModelId,
                 Source = InvocationContextSource.Blank
             };
+
             var defaults = requestFields
                 .Where(r => !string.IsNullOrEmpty(r.DefaultValue))
                 .GroupBy(r => "Payload." + r.Name)
@@ -105,6 +109,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 
             AddStages(context, _ => (InvocationStageStatus.NotComputed,
                 "Not computed; set the values this stage would produce with an overlay."));
+
             return context;
         }
 
@@ -146,6 +151,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 _ => (InvocationStageStatus.NotComputed,
                     "Not computed; set the values this stage would produce with an overlay.")
             });
+
             return context;
         }
 
@@ -172,6 +178,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 
             AddStages(context, _ => (InvocationStageStatus.FromArchive,
                 "Values as they were when the transaction was invoked and archived."));
+
             return context;
         }
 
@@ -182,9 +189,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             ArgumentNullException.ThrowIfNull(values);
 
             var errors = new List<string>();
+
             foreach (var (rawName, text) in values)
             {
                 var name = rawName ?? string.Empty;
+
                 if (!context.Values.TryGetValue(name, out var existing))
                 {
                     errors.Add($"'{name}' is not a name in this model's context.");
@@ -219,23 +228,30 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 case "integer":
                     var intOk = int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i);
                     value = intOk ? i : null;
+
                     return intOk;
                 case "double":
                     var doubleOk = double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture,
                         out var d);
+
                     value = doubleOk ? d : null;
+
                     return doubleOk;
                 case "datetime":
                     var dateOk = DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture,
                         DateTimeStyles.AssumeUniversal, out var dt);
+
                     value = dateOk ? dt.UtcDateTime : null;
+
                     return dateOk;
                 case "boolean":
                     var boolOk = bool.TryParse(text, out var b) || text is "0" or "1";
                     value = boolOk ? b || text == "1" : null;
+
                     return boolOk;
                 default:
                     value = text;
+
                     return true;
             }
         }
@@ -256,6 +272,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             bool assumeLocal, DateTime utcNow)
         {
             var selection = RequestFieldExtraction.Select(json, request.XPath, request.DefaultValue);
+
             if (selection.Value == null)
             {
                 return new InvocationValue(field, null, InvocationValueOrigin.Unset,
@@ -274,6 +291,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             var note = request.Encrypted
                 ? "The engine encrypts this field before rules see it; the plain value is shown."
                 : null;
+
             return new InvocationValue(field, converted,
                 selection.DefaultFallback ? InvocationValueOrigin.Default : InvocationValueOrigin.Extracted, note);
         }
@@ -292,10 +310,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             }
 
             var token = group[field.Key];
+
             if (field.Namespace == "HTTPAdaptation" && token is JObject adaptation)
             {
                 var error = adaptation["error"]?.ToString();
                 token = adaptation["value"];
+
                 if (token == null || token.Type == JTokenType.Null)
                 {
                     return new InvocationValue(field, null, InvocationValueOrigin.Archive,
@@ -312,6 +332,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             var text = token.Type == JTokenType.Date
                 ? token.Value<DateTime>().ToString("o", CultureInfo.InvariantCulture)
                 : token.ToString();
+
             return TryConvertText(field.DataType, text, out var converted)
                 ? new InvocationValue(field, converted, InvocationValueOrigin.Archive)
                 : new InvocationValue(field, text, InvocationValueOrigin.Archive,

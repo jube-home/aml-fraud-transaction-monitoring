@@ -32,55 +32,6 @@ namespace Jube.Data.Repository
             return dbContext.BulkCopyAsync(models, token);
         }
 
-        private IQueryable<OtlpDispatchCounter> BuildFilteredQuery(DateTime? from, DateTime? to, int? signalId,
-            double? samplePercentage)
-        {
-            var query = dbContext.OtlpDispatchCounter.AsQueryable();
-
-            if (from.HasValue)
-            {
-                query = query.Where(w => w.CreatedDate >= from.Value);
-            }
-
-            if (to.HasValue)
-            {
-                query = query.Where(w => w.CreatedDate <= to.Value);
-            }
-
-            if (signalId.HasValue)
-            {
-                query = query.Where(w => w.SignalId == signalId.Value);
-            }
-
-            if (samplePercentage.HasValue)
-            {
-                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
-            }
-
-            return query;
-        }
-
-        private static IOrderedQueryable<OtlpDispatchCounter> ApplySort(
-            IQueryable<OtlpDispatchCounter> query, string sortField, string sortDirection)
-        {
-            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
-            return sortField switch
-            {
-                "signalName" => query.OrderByField(o => o.SignalId, descending),
-                "count" => query.OrderByField(o => o.Count, descending),
-                "successCount" => query.OrderByField(o => o.SuccessCount, descending),
-                "failureCount" => query.OrderByField(o => o.FailureCount, descending),
-                "itemCount" => query.OrderByField(o => o.ItemCount, descending),
-                "droppedCount" => query.OrderByField(o => o.DroppedCount, descending),
-                "totalMicroseconds" => query.OrderByField(o => o.TotalMicroseconds, descending),
-                "minMicroseconds" => query.OrderByField(o => o.MinMicroseconds, descending),
-                "maxMicroseconds" => query.OrderByField(o => o.MaxMicroseconds, descending),
-                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
-                "instance" => query.OrderByField(o => o.Instance, descending),
-                _ => query.OrderByField(o => o.Id, true)
-            };
-        }
-
         public async Task<IEnumerable<OtlpDispatchCounter>> GetLastAsync(int take, DateTime? from, DateTime? to,
             int? signalId, double? samplePercentage, string sortField, string sortDirection,
             CancellationToken token = default)
@@ -141,6 +92,56 @@ namespace Jube.Data.Repository
                 ["minMicroseconds"] = minMicroseconds,
                 ["maxMicroseconds"] = maxMicroseconds
             });
+        }
+
+        private IQueryable<OtlpDispatchCounter> BuildFilteredQuery(DateTime? from, DateTime? to, int? signalId,
+            double? samplePercentage)
+        {
+            var query = dbContext.OtlpDispatchCounter.AsQueryable();
+
+            if (from.HasValue)
+            {
+                query = query.Where(w => w.CreatedDate >= from.Value);
+            }
+
+            if (to.HasValue)
+            {
+                query = query.Where(w => w.CreatedDate <= to.Value);
+            }
+
+            if (signalId.HasValue)
+            {
+                query = query.Where(w => w.SignalId == signalId.Value);
+            }
+
+            if (samplePercentage.HasValue)
+            {
+                query = query.Where(w => RandomSample.Predicate(samplePercentage.Value));
+            }
+
+            return query;
+        }
+
+        private static IOrderedQueryable<OtlpDispatchCounter> ApplySort(
+            IQueryable<OtlpDispatchCounter> query, string sortField, string sortDirection)
+        {
+            var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
+            return sortField switch
+            {
+                "signalName" => query.OrderByField(o => o.SignalId, descending),
+                "count" => query.OrderByField(o => o.Count, descending),
+                "successCount" => query.OrderByField(o => o.SuccessCount, descending),
+                "failureCount" => query.OrderByField(o => o.FailureCount, descending),
+                "itemCount" => query.OrderByField(o => o.ItemCount, descending),
+                "droppedCount" => query.OrderByField(o => o.DroppedCount, descending),
+                "totalMicroseconds" => query.OrderByField(o => o.TotalMicroseconds, descending),
+                "minMicroseconds" => query.OrderByField(o => o.MinMicroseconds, descending),
+                "maxMicroseconds" => query.OrderByField(o => o.MaxMicroseconds, descending),
+                "createdDate" => query.OrderByField(o => o.CreatedDate, descending),
+                "instance" => query.OrderByField(o => o.Instance, descending),
+                _ => query.OrderByField(o => o.Id, true)
+            };
         }
     }
 }

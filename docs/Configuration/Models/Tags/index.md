@@ -6,8 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Tags
 Jube will likely drive decisions via Response Elevation,  and as with all such systems, may be prone to error.
 

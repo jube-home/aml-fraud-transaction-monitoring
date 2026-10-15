@@ -21,6 +21,7 @@ using Jube.Cache;
 using Jube.Data.Poco;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
@@ -234,6 +235,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             var ttlCounters =
                 context.Snapshot.ModelTtlCounters.FindAll(x => !x.OnlineAggregation);
+
             var tasks = ttlCounters.Select(async ttlCounter =>
             {
                 var timed = await TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(

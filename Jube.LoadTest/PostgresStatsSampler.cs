@@ -37,8 +37,8 @@ namespace Jube.LoadTest
                                           FROM pg_stat_database d
                                           WHERE d.datname = current_database()
                                           """;
-        private readonly Stopwatch sinceLastSample = new Stopwatch();
 
+        private readonly Stopwatch sinceLastSample = new Stopwatch();
         private NpgsqlConnection? connection;
         private (long Commits, long Rollbacks, long BlksHit, long BlksRead, long TempBytes)? lastSample;
 
@@ -77,15 +77,19 @@ namespace Jube.LoadTest
                 var blksRead = reader.GetInt64(4);
                 var tempBytes = await reader.IsDBNullAsync(5, token).ConfigureAwait(false) ? 0 : reader.GetInt64(5);
                 var isReplica = reader.GetBoolean(6);
-                var standbyLagSeconds = await reader.IsDBNullAsync(7, token).ConfigureAwait(false) ? 0.0 : reader.GetDouble(7);
-                var maxReplicaLagSeconds = await reader.IsDBNullAsync(8, token).ConfigureAwait(false) ? 0.0 : reader.GetDouble(8);
+                var standbyLagSeconds = await reader.IsDBNullAsync(7, token).ConfigureAwait(false)
+                    ? 0.0
+                    : reader.GetDouble(7);
+                var maxReplicaLagSeconds = await reader.IsDBNullAsync(8, token).ConfigureAwait(false)
+                    ? 0.0
+                    : reader.GetDouble(8);
                 var replicaCount = reader.GetInt64(9);
 
                 double txnPerSec = 0;
                 double cacheHitPct = 0;
                 double tempMiBPerSec = 0;
 
-                if (lastSample is {} last)
+                if (lastSample is { } last)
                 {
                     var elapsedSeconds = sinceLastSample.Elapsed.TotalSeconds;
                     var txnDelta = commits - last.Commits + (rollbacks - last.Rollbacks);
@@ -109,7 +113,8 @@ namespace Jube.LoadTest
             }
             catch (Exception ex)
             {
-                await Console.Error.WriteLineAsync($"postgres stats sampling failed: {ex.Message}").ConfigureAwait(false);
+                await Console.Error.WriteLineAsync($"postgres stats sampling failed: {ex.Message}")
+                    .ConfigureAwait(false);
 
                 if (connection != null)
                 {

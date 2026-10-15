@@ -30,6 +30,7 @@ namespace Jube.App.Code.Waf
             ArgumentNullException.ThrowIfNull(request);
 
             var ruleSet = registry.Current;
+
             if (ruleSet.Signatures.Count == 0 || request.Fields.Count == 0)
             {
                 return WafInspectionResult.None;
@@ -70,6 +71,7 @@ namespace Jube.App.Code.Waf
                     }
 
                     matches ??= [];
+
                     var match = new WafMatch(signature.Id, signature.Name, signature.Category, field.Field,
                         Truncate(field.Value), signature.Drop);
                     matches.Add(match);

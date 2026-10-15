@@ -29,6 +29,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                 : new EntityAnalysisModelAbstractionCalculationDto
                 {
                     Id = abstractionCalculation.Id,
+                    Guid = abstractionCalculation.Guid,
                     EntityAnalysisModelId = abstractionCalculation.EntityAnalysisModelId.GetValueOrDefault(),
                     Name = abstractionCalculation.Name,
                     Active = abstractionCalculation.Active == 1,

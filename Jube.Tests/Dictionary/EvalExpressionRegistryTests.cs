@@ -303,6 +303,7 @@ namespace Jube.Test.Dictionary
             {
                 EvalExpressionRegistry.Register("StartProcess", "System.Diagnostics.Process.Start(value) != null",
                     5);
+
                 "x".Eval<bool>("StartProcess");
             };
 

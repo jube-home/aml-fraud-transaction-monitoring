@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -20,12 +21,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jube.Cache;
 using Jube.Data.Poco;
-using Jube.Data.Repository;
 using Jube.Engine.BackgroundTasks.TaskStarters.Case;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload;
 using Jube.Engine.Helpers;
 using Jube.Engine.Observability;
+using Jube.Engine.Observability.Models;
 using log4net;
 
 namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Archiver
@@ -52,18 +54,24 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                 if (payload.ArchiveJson.Length == 0)
                 {
                     var stopwatch = Stopwatch.StartNew();
+
                     payload.ArchiveJson =
                         BuildJsonResponses.BuildFullJson(payload, jsonSerializationHelper.ArchiveJsonSerializer);
+
                     var duration = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+
                     entityAnalysisModel.ArchiverStagePerformanceCounters.Record(
                         nameof(ArchiverStage.BuildArchiveJson), duration);
+
                     EngineDiagnostics.ArchiverStageDuration.Record(duration / 1000.0,
                         new KeyValuePair<string, object>("stage", nameof(ArchiverStage.BuildArchiveJson)));
+
                     if (duration >= warnThresholdMicroseconds)
                     {
                         ArchiverWarningCapture.Enqueue(new ArchiverWarningCaptureRecord(
                             DateTime.UtcNow, entityAnalysisModel.Instance.Guid, entityAnalysisModel.Instance.Name,
                             payload.EntityAnalysisModelInstanceEntryGuid, ArchiverStage.BuildArchiveJson, duration));
+
                         EngineDiagnostics.ArchiverWarnCount.Add(1,
                             new KeyValuePair<string, object>("stage", nameof(ArchiverStage.BuildArchiveJson)));
                     }
@@ -79,6 +87,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                     {
                         await CaseProcessing.CreateAsync(dynamicEnvironment, payload.CreateCase, log,
                             jsonSerializationHelper, payload, token);
+
                         // ReSharper disable once RedundantAssignment
                         payload.CreateCase = null;
                     }
@@ -89,16 +98,20 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                     }
 
                     var duration = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+
                     entityAnalysisModel.ArchiverStagePerformanceCounters.Record(
                         nameof(ArchiverStage.CaseCreationDispatch), duration);
+
                     EngineDiagnostics.ArchiverStageDuration.Record(duration / 1000.0,
                         new KeyValuePair<string, object>("stage", nameof(ArchiverStage.CaseCreationDispatch)));
+
                     if (duration >= warnThresholdMicroseconds)
                     {
                         ArchiverWarningCapture.Enqueue(new ArchiverWarningCaptureRecord(
                             DateTime.UtcNow, entityAnalysisModel.Instance.Guid, entityAnalysisModel.Instance.Name,
                             payload.EntityAnalysisModelInstanceEntryGuid, ArchiverStage.CaseCreationDispatch,
                             duration));
+
                         EngineDiagnostics.ArchiverWarnCount.Add(1,
                             new KeyValuePair<string, object>("stage", nameof(ArchiverStage.CaseCreationDispatch)));
                     }
@@ -132,16 +145,20 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                 }
 
                 var archiveDuration = (long)(archiveStopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency));
+
                 entityAnalysisModel.ArchiverStagePerformanceCounters.Record(
                     nameof(ArchiverStage.RdbmsArchiveWrite), archiveDuration);
+
                 EngineDiagnostics.ArchiverStageDuration.Record(archiveDuration / 1000.0,
                     new KeyValuePair<string, object>("stage", nameof(ArchiverStage.RdbmsArchiveWrite)));
+
                 if (archiveDuration >= warnThresholdMicroseconds)
                 {
                     ArchiverWarningCapture.Enqueue(new ArchiverWarningCaptureRecord(
                         DateTime.UtcNow, entityAnalysisModel.Instance.Guid, entityAnalysisModel.Instance.Name,
                         payload.EntityAnalysisModelInstanceEntryGuid, ArchiverStage.RdbmsArchiveWrite,
                         archiveDuration));
+
                     EngineDiagnostics.ArchiverWarnCount.Add(1,
                         new KeyValuePair<string, object>("stage", nameof(ArchiverStage.RdbmsArchiveWrite)));
                 }

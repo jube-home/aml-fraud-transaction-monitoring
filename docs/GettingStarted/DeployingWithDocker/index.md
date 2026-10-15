@@ -5,9 +5,6 @@ nav_order: 1
 parent: Getting Started
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Deploying with Docker
 
 Docker is the supported way to get Jube running - a `docker-compose.yml` file at the root of the repository
@@ -31,6 +28,8 @@ export DockerComposeJWTKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%
 export DockerComposeApiHmacKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 export DockerComposePasswordHashingKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 export DockerComposeElementSymmetricEncryptionKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
+export DockerComposeEnableAskJooby=False
+export DockerComposeAskJoobyApiKey=SimplyPasteInYourDigitalOceanServerlessInferenceKeyHere
 docker compose up -d
 ```
 
@@ -47,7 +46,15 @@ keys - see [Environment Variables](../../Concepts/EnvironmentVariables/index.htm
 `ElementSymmetricEncryptionKey` ships with a well-known placeholder default - leaving it unchanged means any value
 encrypted via the Inline Script AES helper (see
 [Field Level Encryption](../../Concepts/FieldEncryption/index.html)) is trivially reversible by anyone with a copy
-of this documentation. None of these five values are hardcoded anywhere in `docker-compose.yml` itself - every
+of this documentation. The last two exports are optional. Ask Jooby is off (`DockerComposeEnableAskJooby=False`) until it is set to `True`, and
+`DockerComposeAskJoobyApiKey` is where the key goes: paste in your DigitalOcean Serverless Inference key, as
+`AskJoobyApiEndpoint` and `AskJoobyEmbeddingApiEndpoint` default to DigitalOcean Gradient. It is the only key Ask Jooby
+needs, as the embedding, reranker and AI analysis roles all inherit it, so there are no separate exports for them. A
+deployment that serves one of those roles from a different provider can add the matching `AskJoobyEmbeddingApiKey`,
+`AskJoobyRerankerApiKey` or `AskJoobyAiAnalysisApiKey` Environment Variable to the `jube` service. Like the other secrets, the two exports above are
+interpolated by Docker Compose from the shell rather than written into `docker-compose.yml`.
+
+None of these five values are hardcoded anywhere in `docker-compose.yml` itself - every
 secret the compose file needs comes from the shell Environment at `docker compose up` time.
 
 The export-then-`docker compose up` pattern above passes secrets as plain shell Environment Variables,
@@ -106,10 +113,9 @@ restricted user needs DDL rights, since Migration can instead run under a separa
 `MigrationConnectionString` (falling back to `ConnectionString` when unset) - see
 [Environment Variables](../../Concepts/EnvironmentVariables/index.html).
 
-`docker-compose.yml` does not yet wire these restricted users in by default - running `CreateUsers.sql` from
-Jube.Cluster means also updating the compose file's connection strings and Postgres user setup by hand. Consider whether
-this should become part of the default compose stack, or stay a documented manual hardening step for production
-deployments specifically. The simple `docker-compose.yml` is not intended for production use, at least without
+`docker-compose.yml` does not wire these restricted users in by default - running `CreateUsers.sql` from
+Jube.Cluster means also updating the compose file's connection strings and Postgres user setup by hand, a manual
+hardening step for production deployments specifically. The simple `docker-compose.yml` is not intended for production use, at least without
 significant
 hardening.
 

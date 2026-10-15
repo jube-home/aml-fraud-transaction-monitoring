@@ -11,41 +11,37 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Accord.MachineLearning.VectorMachines;
+using Accord.Statistics.Kernels;
+using Jube.Data.Context;
+using Jube.Data.Repository.Interfaces;
+using Jube.Engine.Exhaustive.Algorithms.Models;
+using Jube.Engine.Exhaustive.Anomaly;
+using Jube.Engine.Exhaustive.Preparation;
+using Jube.Engine.Exhaustive.Stages;
+using Jube.Engine.Exhaustive.Stages.Models;
+using Jube.Engine.Exhaustive.Statistics;
+using Jube.Engine.Helpers;
+using log4net;
+using Jube.Data.Query.GetNextExhaustiveSearchInstanceQuery;
+
 namespace Jube.Engine.Exhaustive
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Accord.MachineLearning.VectorMachines;
-    using Accord.Math;
-    using Accord.Statistics;
-    using Accord.Statistics.Distributions.Univariate;
-    using Accord.Statistics.Kernels;
-    using Accord.Statistics.Visualizations;
-    using Algorithms;
-    using Algorithms.Models;
-    using Data.Context;
-    using Data.Poco;
-    using Data.Query;
-    using Data.Repository;
-    using Data.Repository.Interface;
-    using Dictionary;
-    using DynamicEnvironment;
-    using EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using Helpers;
-    using log4net;
-    using Utilities;
-    using Performance = Algorithms.Performance;
-
     public class Training(
         ILog log,
-        DynamicEnvironment environment,
+        DynamicEnvironment.DynamicEnvironment environment,
         JsonSerializationHelper jsonSerializationHelper)
     {
-        private readonly Random seeded = new Random(Environment.TickCount ^ Guid.NewGuid().GetHashCode());
+        internal Func<DbContext, CancellationToken, Task<GetNextExhaustiveSearchInstanceQueryDto>> fetchNext =
+            (context, cancellationToken) =>
+                new GetNextExhaustiveSearchInstanceQuery(context).ExecuteAsync(cancellationToken);
+
+        internal TimeSpan pollDelay = TimeSpan.FromMilliseconds(60000);
+        internal Random seeded = new(Environment.TickCount ^ Guid.NewGuid().GetHashCode());
 
         public async Task StartAsync(CancellationToken token = default)
         {
@@ -64,8 +60,6 @@ namespace Jube.Engine.Exhaustive
 
                     try
                     {
-                        var queryNext = new GetNextExhaustiveSearchInstanceQuery(dbContext);
-
                         if (log.IsInfoEnabled)
                         {
                             log.Info(
@@ -74,11 +68,12 @@ namespace Jube.Engine.Exhaustive
                                 "or in the absence of an Exhaustive Instance to create one.");
                         }
 
-                        var exhaustiveSearchInstance = await queryNext.ExecuteAsync(token).ConfigureAwait(false);
+                        var exhaustiveSearchInstance = await fetchNext(dbContext, token).ConfigureAwait(false);
 
                         if (exhaustiveSearchInstance != null)
                         {
-                            if (!await ExecuteAsync(exhaustiveSearchInstance, dbContext, token).ConfigureAwait(false))
+                            if (!await RunOneInstanceAsync(exhaustiveSearchInstance, dbContext, token)
+                                    .ConfigureAwait(false))
                             {
                                 if (log.IsInfoEnabled)
                                 {
@@ -118,7 +113,7 @@ namespace Jube.Engine.Exhaustive
                             await dbContext.DisposeAsync().ConfigureAwait(false);
                         }
 
-                        await Task.Delay(60000, token).ConfigureAwait(false);
+                        await Task.Delay(pollDelay, token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -147,7 +142,7 @@ namespace Jube.Engine.Exhaustive
                         log.Error(
                             $"Exhaustive Training: Has experienced an error as {ex}  waiting to poll again.  Closing database context.");
 
-                        await Task.Delay(60000, token).ConfigureAwait(false);
+                        await Task.Delay(pollDelay, token).ConfigureAwait(false);
                     }
                 }
             }
@@ -161,443 +156,70 @@ namespace Jube.Engine.Exhaustive
             }
         }
 
-        private async Task<bool> ExecuteAsync(GetNextExhaustiveSearchInstanceQuery.Dto exhaustiveSearchInstance,
+        internal async Task<bool> RunOneInstanceAsync(GetNextExhaustiveSearchInstanceQueryDto exhaustiveSearchInstance,
             DbContext dbContext, CancellationToken token = default)
         {
-            var repositoryExhaustiveSearchInstance = new ExhaustiveSearchInstanceRepository(dbContext);
+            var run = new InstanceRun(exhaustiveSearchInstance, dbContext, token);
 
-            var repositoryExhaustiveSearchInstanceVariables =
-                new ExhaustiveSearchInstanceVariableRepository(dbContext);
-
-            var repositoryExhaustiveSearchInstanceVariableHistograms =
-                new ExhaustiveSearchInstanceVariableHistogramRepository(dbContext);
-
-            var repositoryExhaustiveSearchInstanceVariableMultiCollinearities =
-                new ExhaustiveSearchInstanceVariableMultiColiniarityRepository(dbContext);
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    $"Exhaustive Training: Found Exhaustive Search Instance ID {exhaustiveSearchInstance.Id}.  " +
-                    $"Updating Status to 1 for pickup.");
-            }
-
-            var mockData = false;
-            if (environment.AppSettings("UseMockDataExhaustive")
-                .Equals("True", StringComparison.OrdinalIgnoreCase))
-            {
-                await LoadMockDataAsync(dbContext, exhaustiveSearchInstance.EntityAnalysisModelId, token)
-                    .ConfigureAwait(false);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Found Exhaustive Search Instance ID {exhaustiveSearchInstance.Id}.  Is loading mock data.");
-                }
-
-                mockData = true;
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Found Exhaustive Search Instance ID {exhaustiveSearchInstance.Id}.  Will use mock data for this training.");
-                }
-            }
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    $"Exhaustive Training: Set status to 1 for {exhaustiveSearchInstance.Id}. Starting");
-            }
-
-            if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                    exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
+            if (!await new SampleStage(log, environment, jsonSerializationHelper).ExecuteAsync(run)
+                    .ConfigureAwait(false))
             {
                 return false;
             }
 
-            await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 1, token)
-                .ConfigureAwait(false);
-
-            double[][] data;
-            Dictionary<int, Variable> variables;
-
-            if (exhaustiveSearchInstance.Anomaly)
-            {
-                (variables, data) = await Extraction.GetSampleDataAsync(dbContext,
-                    exhaustiveSearchInstance.TenantRegistryId,
-                    exhaustiveSearchInstance.EntityAnalysisModelId,
-                    mockData, token).ConfigureAwait(false);
-            }
-            else
-            {
-                var getSampleDataResponse = await Extraction.GetSampleDataAsync(dbContext,
-                    exhaustiveSearchInstance.TenantRegistryId,
-                    exhaustiveSearchInstance.EntityAnalysisModelId,
-                    exhaustiveSearchInstance.FilterJson,
-                    exhaustiveSearchInstance.FilterTokens,
-                    mockData, log,
-                    environment.AppSettings("ReportConnectionString"), token).ConfigureAwait(false);
-
-                variables = getSampleDataResponse.Item1;
-                data = getSampleDataResponse.Item2;
-            }
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    $"Exhaustive Training: Fetched data and there are {data.Length} records " +
-                    $"for {exhaustiveSearchInstance.Id} updating status to 2 for calculating base statistics.");
-            }
-
-            if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                    exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
+            if (!await new BaseStatisticsStage(log).ExecuteAsync(run).ConfigureAwait(false))
             {
                 return false;
             }
 
-            await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 2, token)
-                .ConfigureAwait(false);
-
-            await CalculateStatisticsAsync(exhaustiveSearchInstance.Id, variables, data,
-                repositoryExhaustiveSearchInstanceVariables,
-                repositoryExhaustiveSearchInstanceVariableHistograms, token).ConfigureAwait(false);
-
-            double[] outputs = null;
-            double[] cloneOfOutputsFromAnomaly = null;
-            var classCount = 0;
-            if (exhaustiveSearchInstance.Anomaly)
-            {
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Trained One Class Support Vector Machine " +
-                        $"for {exhaustiveSearchInstance.Id} updating status to 3 for unsupervised training data normalisation.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
-                {
-                    return false;
-                }
-
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 3, token)
-                    .ConfigureAwait(false);
-
-                var copyOfDataForUnsupervised = NormaliseData(variables, data.Copy());
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Trained One Class Support Vector Machine " +
-                        $"for {exhaustiveSearchInstance.Id} updating status to 4 for unsupervised training.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
-                {
-                    return false;
-                }
-
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 4, token)
-                    .ConfigureAwait(false);
-
-                var anomaly = Unsupervised.Learn(copyOfDataForUnsupervised, log);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Trained One Class Support Vector Machine " +
-                        $"for {exhaustiveSearchInstance.Id} updating status to 5 for unsupervised training recall.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
-                {
-                    return false;
-                }
-
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 5, token)
-                    .ConfigureAwait(false);
-
-                outputs = GetClassVariableByAnomaly(anomaly, copyOfDataForUnsupervised,
-                    exhaustiveSearchInstance.AnomalyProbability);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Recalled One Class Support Vector Machine.  Summing class count for {exhaustiveSearchInstance.Id}.");
-                }
-
-                classCount = (int)outputs.Sum();
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: found {classCount} class for {exhaustiveSearchInstance.Id}.");
-                }
-
-                var onlyOutputWithClassificationForData =
-                    OnlyOutputWithClassificationForData(classCount, outputs, data);
-
-                var repositoryExhaustiveSearchInstanceVariablesAnomaly =
-                    new ExhaustiveSearchInstanceVariableAnomalyRepository(dbContext);
-
-                var repositoryExhaustiveSearchInstanceVariableHistogramsAnomaly =
-                    new ExhaustiveSearchInstanceVariableHistogramAnomalyRepository(dbContext);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Trained One Class Support Vector Machine " +
-                        $"for {exhaustiveSearchInstance.Id} updating status to 6 for unsupervised " +
-                        $"training recall statistics calculation.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
-                {
-                    return false;
-                }
-
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 6, token)
-                    .ConfigureAwait(false);
-
-                await CalculateStatisticsAsync(exhaustiveSearchInstance.Id, variables,
-                    onlyOutputWithClassificationForData,
-                    repositoryExhaustiveSearchInstanceVariablesAnomaly,
-                    repositoryExhaustiveSearchInstanceVariableHistogramsAnomaly, token).ConfigureAwait(false);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        "Is about to clone the array of anomaly detection values.  This is useful for storing training data so it can be observed which values were anomaly and not overriden by filter.");
-                }
-
-                cloneOfOutputsFromAnomaly = (double[])outputs.Clone();
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        "Has cloned the array of anomaly detection values.");
-                }
-            }
-
-            if (exhaustiveSearchInstance.Filter)
-            {
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Switched to create a classification " +
-                        $"from data for {exhaustiveSearchInstance.Id} updating status to 7 for filtering.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
-                {
-                    return false;
-                }
-
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 7, token)
-                    .ConfigureAwait(false);
-
-                var (dataClassificationFilter, outputsClassificationFilter) =
-                    await Extraction.GetClassDataAsync(dbContext,
-                        exhaustiveSearchInstance.EntityAnalysisModelId,
-                        exhaustiveSearchInstance.FilterSql,
-                        exhaustiveSearchInstance.FilterTokens,
-                        variables,
-                        mockData, log,
-                        environment.AppSettings("ReportConnectionString"), token).ConfigureAwait(false);
-
-                var repositoryExhaustiveSearchInstanceVariablesClassification =
-                    new ExhaustiveSearchInstanceVariableClassificationRepository(dbContext);
-
-                var repositoryExhaustiveSearchInstanceVariableHistogramsClassification =
-                    new ExhaustiveSearchInstanceVariableHistogramClassificationRepository(dbContext);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Switched to create a classification " +
-                        $"from data for {exhaustiveSearchInstance.Id} updating status to 8 " +
-                        $"for filtering statistics calculation.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
-                {
-                    return false;
-                }
-
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 8, token)
-                    .ConfigureAwait(false);
-
-                await CalculateStatisticsAsync(exhaustiveSearchInstance.Id, variables, dataClassificationFilter,
-                    repositoryExhaustiveSearchInstanceVariablesClassification,
-                    repositoryExhaustiveSearchInstanceVariableHistogramsClassification, token).ConfigureAwait(false);
-
-                Append(data, dataClassificationFilter, out data, out outputs);
-
-                classCount += (int)outputsClassificationFilter.Sum();
-            }
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    $"Exhaustive Training: Recalled Filter and found {classCount} further " +
-                    $"class for {exhaustiveSearchInstance.Id} updating status to 9 for shuffling.");
-            }
-
-            if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                    exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
+            if (!await new AnomalyDetectionStage(log, environment).ExecuteAsync(run).ConfigureAwait(false))
             {
                 return false;
             }
 
-            await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 9, token)
-                .ConfigureAwait(false);
-
-            if (classCount > 0)
+            if (!await new FilterStage(log, environment).ExecuteAsync(run).ConfigureAwait(false))
             {
-                Shuffle(data, outputs, out data, out outputs);
+                return false;
+            }
 
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Finished shuffling {exhaustiveSearchInstance.Id} " +
-                        $"updating status to 10 for normalising.");
-                }
+            if (!await new ClassHistogramStage(log).ExecuteAsync(run).ConfigureAwait(false))
+            {
+                return false;
+            }
 
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
-                {
-                    return false;
-                }
+            if (!await new PrepareStage(log, seeded).ExecuteAsync(run).ConfigureAwait(false))
+            {
+                return false;
+            }
 
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 10, token)
-                    .ConfigureAwait(false);
+            var repositoryExhaustiveSearchInstance = run.RepositoryInstance;
 
-                data = NormaliseData(variables, data);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Updating status to 11 for {exhaustiveSearchInstance.Id} " +
-                        $"for over sampling.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
+            if (run.ClassCount > 0)
+            {
+                if (!await new BootstrapStage(log, seeded).ExecuteAsync(run).ConfigureAwait(false))
                 {
                     return false;
                 }
 
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 11, token)
-                    .ConfigureAwait(false);
-
-                DatasetSymmetry(data, outputs, out data, out outputs);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Has made the dataset symmetric for {exhaustiveSearchInstance.Id} " +
-                        $"updating status to 12 for storing training data.  " +
-                        $"Dataset has a length of {outputs.Length} with {outputs.Sum()} class value of 1. Is about to store final training data.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
+                if (!await new StoreStage(log).ExecuteAsync(run).ConfigureAwait(false))
                 {
                     return false;
                 }
 
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 12, token)
-                    .ConfigureAwait(false);
-
-                await StoreDataAsync(dbContext, outputs, exhaustiveSearchInstance, data, cloneOfOutputsFromAnomaly,
-                    token).ConfigureAwait(false);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info("Has stored final training data.  Updating status to 13 for correlation analysis.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
+                if (!await new CorrelationStage(log).ExecuteAsync(run).ConfigureAwait(false))
                 {
                     return false;
                 }
 
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 13, token)
-                    .ConfigureAwait(false);
-
-                await CalculateCorrelationsAsync(variables, data, outputs,
-                    repositoryExhaustiveSearchInstanceVariables, token).ConfigureAwait(false);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Processed correlations for {exhaustiveSearchInstance.Id} " +
-                        $"updating status to 14 for multi-co-linearity.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
+                if (!await new MulticollinearityStage(log).ExecuteAsync(run).ConfigureAwait(false))
                 {
                     return false;
                 }
 
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 14, token)
-                    .ConfigureAwait(false);
-
-                variables = await CalculateMulticollinearityAsync(variables, data,
-                    repositoryExhaustiveSearchInstanceVariableMultiCollinearities, token).ConfigureAwait(false);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Inspected multi-co-linearity " +
-                        $"for {exhaustiveSearchInstance.Id} updating status to 15 for supervised learning.");
-                }
-
-                if (await IsStoppingOrStoppedOrCancelledAsync(repositoryExhaustiveSearchInstance,
-                        exhaustiveSearchInstance.Id, token).ConfigureAwait(false))
+                if (!await new SupervisedStage(log, environment, jsonSerializationHelper, seeded).ExecuteAsync(run)
+                        .ConfigureAwait(false))
                 {
                     return false;
-                }
-
-                await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 15, token)
-                    .ConfigureAwait(false);
-
-                var supervised = new Supervised(environment, repositoryExhaustiveSearchInstance,
-                    exhaustiveSearchInstance.Id, jsonSerializationHelper,
-                    seeded,
-                    variables, data, outputs, dbContext, log);
-
-                if (await supervised.TrainAsync(token).ConfigureAwait(false))
-                {
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info(
-                            $"Exhaustive Training: Finished training {exhaustiveSearchInstance.Id} " +
-                            $"updating status to 16 for finished.");
-                    }
-
-                    await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 16, token)
-                        .ConfigureAwait(false);
-                }
-                else
-                {
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info(
-                            $"Exhaustive Training: Stopped training {exhaustiveSearchInstance.Id} " +
-                            $"updating status to 19 for stopped.");
-                    }
-
-                    await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 19, token)
-                        .ConfigureAwait(false);
                 }
             }
             else
@@ -615,1007 +237,70 @@ namespace Jube.Engine.Exhaustive
 
             await repositoryExhaustiveSearchInstance.UpdateCompletedAsync(exhaustiveSearchInstance.Id, token)
                 .ConfigureAwait(false);
+
             return true;
         }
 
-        private static async Task<bool> IsStoppingOrStoppedOrCancelledAsync(
-            ExhaustiveSearchInstanceRepository repositoryExhaustiveSearchInstance,
-            int exhaustiveSearchInstanceId, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-
-            if (await repositoryExhaustiveSearchInstance.IsStoppingOrStoppedAsync(exhaustiveSearchInstanceId, token)
-                    .ConfigureAwait(false))
-            {
-                return false;
-            }
-
-            await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstanceId, 19, token)
-                .ConfigureAwait(false);
-            return true;
-        }
-
-        private static async Task StoreDataAsync(DbContext dbContext, double[] outputs,
-            GetNextExhaustiveSearchInstanceQuery.Dto exhaustiveSearchInstance, double[][] data,
-            double[] cloneOfOutputsFromAnomaly, CancellationToken token = default)
-        {
-            var exhaustiveSearchInstanceDataRepository = new ExhaustiveSearchInstanceDataRepository(dbContext);
-            for (var i = 0; i < outputs.Length; i++)
-            {
-                var exhaustiveSearchInstanceData = new ExhaustiveSearchInstanceData
-                {
-                    Dependent = outputs[i],
-                    ExhaustiveSearchInstanceId = exhaustiveSearchInstance.Id,
-                    Independent = data[i],
-                    Anomaly = cloneOfOutputsFromAnomaly != null ? cloneOfOutputsFromAnomaly[i] : 0
-                };
-
-                await exhaustiveSearchInstanceDataRepository.InsertAsync(exhaustiveSearchInstanceData, token)
-                    .ConfigureAwait(false);
-            }
-        }
-
-        private async Task CalculateCorrelationsAsync(Dictionary<int, Variable> variables, double[][] data,
-            double[] outputs, ExhaustiveSearchInstanceVariableRepository repository, CancellationToken token = default)
-        {
-            for (var i = 0; i < variables.Count - 1; i++)
-            {
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: About to calculate correlation for ExhaustiveSearch Instance Variable Id {variables[i].ExhaustiveSearchInstanceVariableId}.");
-                }
-
-                var independent = data.GetColumn(i);
-                variables[i].Correlation = Performance.SpearmansCoeff(outputs, independent);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Calculated correlation as {variables[i].Correlation} for Exhaustive Search Instance Variable Id {variables[i].ExhaustiveSearchInstanceVariableId}.  Will proceed to rank them.");
-                }
-            }
-
-            var sortedCorrelations = from c in variables
-                orderby Math.Abs(Math.Round(c.Value.Correlation, 2)) descending
-                select c;
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    "Exhaustive Training: Ranked correlations.  Will store them alongside the existing variable record with ranking.");
-            }
-
-            var variableSequence = 0;
-            foreach (var (_, value) in sortedCorrelations)
-            {
-                log.Info(
-                    $"Exhaustive Training: Ranked correlations.  Will proceed to store the correlation for Exhaustive Search Instance Variable Id {value.ExhaustiveSearchInstanceVariableId}.");
-
-                await repository.UpdateCorrelationAsync(value.ExhaustiveSearchInstanceVariableId,
-                    value.Correlation, variableSequence, token).ConfigureAwait(false);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Ranked correlations. Has stored correlation for {value.ExhaustiveSearchInstanceVariableId}.");
-                }
-
-                variableSequence += 1;
-            }
-        }
-
-        private void DatasetSymmetry(double[][] inData, double[] inOutputs, out double[][] outData,
+        internal void DatasetSymmetry(double[][] inData, double[] inOutputs, out double[][] outData,
             out double[] outOutputs)
         {
-            var countPositive = (int)inOutputs.Sum();
-            var countNegative = inOutputs.Length - countPositive;
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    $"Exhaustive Training: There are {countPositive} values in the affirmative and {countNegative} values in the negative.");
-            }
-
-            var remove = new List<int>();
-            if (countNegative != countPositive)
-            {
-                int removeCount;
-                int removeValue;
-                if (countNegative > countPositive)
-                {
-                    removeCount = countNegative - countPositive;
-                    removeValue = 0;
-
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info(
-                            $"The dataset is not symmetric and requires {removeCount} affirmative values to be removed.");
-                    }
-                }
-                else
-                {
-                    removeCount = countPositive - countNegative;
-                    removeValue = 1;
-
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info(
-                            $"Exhaustive Training: The dataset is not symmetric and requires {removeCount} negative values to be removed.");
-                    }
-                }
-
-                while (removeCount > 0)
-                {
-                    var randomRow = seeded.Next(0, inOutputs.Length - 1);
-
-                    if (!(Math.Abs(inOutputs[randomRow] - removeValue) < 0.0001))
-                    {
-                        continue;
-                    }
-
-                    remove.Add(randomRow);
-
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info($"Exhaustive Training: Removed Record {randomRow} from the dataset.");
-                    }
-
-                    removeCount -= 1;
-                }
-            }
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info($"Exhaustive Training: Is about to rebuild the array given {remove.Count} records to remove.");
-            }
-
-            var symmetricData = new List<double[]>();
-            var symmetricOutputs = new List<double>();
-            for (var i = 0; i < inOutputs.Length - 1; i++)
-            {
-                if (remove.Contains(i))
-                {
-                    continue;
-                }
-
-                symmetricData.Add(inData[i]);
-                symmetricOutputs.Add(inOutputs[i]);
-            }
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    $"Exhaustive Training: Has rebuilt the array and it is now {symmetricOutputs.Count} records long. Setting output variables.");
-            }
-
-            outData = symmetricData.ToArray();
-            outOutputs = symmetricOutputs.ToArray();
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info("Exhaustive Training: Set output variables. Symmetry concluded.");
-            }
+            new DatasetBalancer(log, seeded).DatasetSymmetry(inData, inOutputs, out outData, out outOutputs);
         }
 
-        private double[] GetClassVariableByAnomaly(SupportVectorMachine<Gaussian> model,
+        internal void DatasetSymmetry(double[][] inData, double[] inOutputs, int targetPerClass,
+            out double[][] outData, out double[] outOutputs)
+        {
+            new DatasetBalancer(log, seeded).DatasetSymmetry(inData, inOutputs, targetPerClass, out outData,
+                out outOutputs);
+        }
+
+        internal double[] GetClassVariableByAnomaly(SupportVectorMachine<Gaussian> model,
             double[][] data,
             double probability)
         {
-            var outputs = new double[data.Length];
-
-            for (var i = 0; i < data.Length - 1; i++)
-            {
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Processing row {i}.");
-                }
-
-                var p = model.Probability(data[i]);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Processed row {i} and returned probability {p}.");
-                }
-
-                outputs[i] = p < probability ? 1 : 0;
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Processed row {i} and created class {outputs[i]}.");
-                }
-            }
-
-            return outputs;
+            return new AnomalyClassifier(log).GetClassVariableByAnomaly(model, data, probability);
         }
 
-        private double[][] NormaliseData(Dictionary<int, Variable> variables, double[][] data)
+        internal double[][] NormaliseData(Dictionary<int, Variable> variables, double[][] data)
         {
-            for (var i = 0; i < data.Length - 1; i++)
-            {
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Starting to normalise row {i}.");
-                }
-
-                for (var j = 0; j < variables.Count; j++)
-                {
-                    if (variables[j].NormalisationType == 2)
-                    {
-                        data[i][j] = (data[i][j] - variables[j].Mean) / variables[j].Sd;
-                    }
-                }
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Finished normalising row {i}.");
-                }
-            }
-
-            return data;
+            return new Normalisation(log).NormaliseData(variables, data);
         }
 
-        private static double[][] OnlyOutputWithClassificationForData(int classCount, double[] outputs, double[][] data)
+        internal static double[][] OnlyOutputWithClassificationForData(int classCount, double[] outputs,
+            double[][] data)
         {
-            var filteredData = new double[classCount][];
-            var j = 0;
-            for (var i = 0; i < outputs.Length - 1; i++)
-            {
-                if (!(Math.Abs(outputs[i] - 1) < 0.0001))
-                {
-                    continue;
-                }
-
-                filteredData[j] = data[i];
-                j += 1;
-            }
-
-            return filteredData;
+            return DatasetShaper.OnlyOutputWithClassificationForData(classCount, outputs, data);
         }
 
-        private static double SwapNanInfinityToZero(double value)
+        internal static void Shuffle(Random r, double[][] existingData,
+            double[] existingOutputs,
+            out double[][] newData,
+            out double[] outputs)
         {
-            if (Double.IsNaN(value))
-            {
-                return 0;
-            }
-
-            if (Double.IsInfinity(value))
-            {
-                return 0;
-            }
-
-            return value;
+            DatasetShaper.Shuffle(r, existingData, existingOutputs, out newData, out outputs);
         }
 
-        private async Task CalculateStatisticsAsync(int exhaustiveSearchInstanceId, Dictionary<int, Variable> variables,
+        internal Task CalculateStatisticsAsync(int exhaustiveSearchInstanceId, Dictionary<int, Variable> variables,
             double[][] data,
             IGenericRepository repositoryVariables,
             IGenericRepository repositoryHistogram,
             CancellationToken token
         )
         {
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    $"Exhaustive Training: Is starting calculation of statistics for Exhaustive Search Instance {exhaustiveSearchInstanceId}.  There are {variables.Count} variables.");
-            }
-
-            for (var i = 0; i < variables.Count - 1; i++)
-            {
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Processing variable {i} for Exhaustive Search Instance {exhaustiveSearchInstanceId}.  There are {variables.Count} variables.");
-                }
-
-                var variableData = data.GetColumn(i);
-
-                var modelExhaustiveSearchInstanceVariableClassification =
-                    new ExhaustiveSearchInstanceVariableClassification();
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                modelExhaustiveSearchInstanceVariableClassification.Mean = SwapNanInfinityToZero(variableData.Mean());
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Variable Mean: {modelExhaustiveSearchInstanceVariableClassification.Mean} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                modelExhaustiveSearchInstanceVariableClassification.Mode = SwapNanInfinityToZero(variableData.Mode());
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Variable Mode: {modelExhaustiveSearchInstanceVariableClassification.Mean} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                modelExhaustiveSearchInstanceVariableClassification.Maximum = SwapNanInfinityToZero(variableData.Max());
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Variable Maximum: {modelExhaustiveSearchInstanceVariableClassification.Maximum} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                modelExhaustiveSearchInstanceVariableClassification.Minimum = SwapNanInfinityToZero(variableData.Min());
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Variable Minimum: {modelExhaustiveSearchInstanceVariableClassification.Minimum} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                modelExhaustiveSearchInstanceVariableClassification.Kurtosis =
-                    SwapNanInfinityToZero(variableData.Kurtosis());
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Variable Kurtosis: {modelExhaustiveSearchInstanceVariableClassification.Kurtosis} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                modelExhaustiveSearchInstanceVariableClassification.Skewness =
-                    SwapNanInfinityToZero(variableData.Skewness());
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Variable Skewness: {modelExhaustiveSearchInstanceVariableClassification.Skewness} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                variableData.Quartiles(out var q1, out var q3);
-                modelExhaustiveSearchInstanceVariableClassification.Iqr = SwapNanInfinityToZero(q3 - q1);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Variable Iqr: {modelExhaustiveSearchInstanceVariableClassification.Iqr} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                modelExhaustiveSearchInstanceVariableClassification.StandardDeviation =
-                    SwapNanInfinityToZero(variableData.StandardDeviation());
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Variable Standard Deviation: {modelExhaustiveSearchInstanceVariableClassification.StandardDeviation} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                var distinctDoubles = new List<double>();
-                foreach (var value in variableData)
-                {
-                    if (!distinctDoubles.Contains(value))
-                    {
-                        distinctDoubles.Add(value);
-                    }
-                }
-
-                modelExhaustiveSearchInstanceVariableClassification.DistinctValues = distinctDoubles.Count;
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Variable Distinct Values: {modelExhaustiveSearchInstanceVariableClassification.DistinctValues} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                const int maxBins = 20;
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Maximum number of bins is {maxBins} and will proceed to calculate the optimal number of bins for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                var numberOfBins = 0.0d;
-                try
-                {
-                    if (Math.Abs(modelExhaustiveSearchInstanceVariableClassification.Maximum.Value - 1) < 0.0001 &
-                        modelExhaustiveSearchInstanceVariableClassification.Minimum.Value == 0 &
-                        modelExhaustiveSearchInstanceVariableClassification.DistinctValues.Value == 2)
-                    {
-                        numberOfBins = 2;
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Variable is inferred to be binary with 2 bins for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                        }
-                    }
-                    else if (numberOfBins > modelExhaustiveSearchInstanceVariableClassification.DistinctValues.Value)
-                    {
-                        numberOfBins = modelExhaustiveSearchInstanceVariableClassification.DistinctValues.Value;
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Variable is set to distinct values of {modelExhaustiveSearchInstanceVariableClassification.DistinctValues.Value} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                        }
-                    }
-                    else if (modelExhaustiveSearchInstanceVariableClassification.Iqr.Value == 0)
-                    {
-                        numberOfBins = maxBins;
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Variable is set to distinct values of {modelExhaustiveSearchInstanceVariableClassification.DistinctValues.Value} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                        }
-                    }
-                    else
-                    {
-                        numberOfBins = Math.Round(1d + 3.3d * Math.Log(data.Length));
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Has used Sturges Rule to create {numberOfBins} bins for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                        }
-                    }
-
-                    if (numberOfBins > maxBins)
-                    {
-                        numberOfBins = maxBins;
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Has clipped to {numberOfBins} bins for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                        }
-                    }
-                }
-                catch (Exception ex) when (ex is not OperationCanceledException)
-                {
-                    numberOfBins = maxBins;
-
-                    log.Error(
-                        $"Exhaustive Training: Has {numberOfBins} bins for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id} after exception of {ex}.");
-                }
-
-                modelExhaustiveSearchInstanceVariableClassification.Bins = (int)numberOfBins;
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Number of Bins Values: {modelExhaustiveSearchInstanceVariableClassification.Bins} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id}.");
-                }
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id} inserted and is about to compute histogram with {modelExhaustiveSearchInstanceVariableClassification.Bins} bins.");
-                }
-
-                var histogram = new Histogram();
-                histogram.Compute(variableData);
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id} has computed histogram with {modelExhaustiveSearchInstanceVariableClassification.Bins} bins.  Will proceed to process bins.");
-                }
-
-                var binSequence = 0;
-                if (repositoryVariables.GetType() == typeof(ExhaustiveSearchInstanceVariableRepository))
-                {
-                    variables[i].Mean =
-                        modelExhaustiveSearchInstanceVariableClassification.Mean
-                            .Value;
-                    variables[i].Mode = modelExhaustiveSearchInstanceVariableClassification.Mode.Value;
-                    variables[i].Max = modelExhaustiveSearchInstanceVariableClassification.Maximum.Value;
-                    variables[i].Min = modelExhaustiveSearchInstanceVariableClassification.Minimum.Value;
-                    variables[i].Kurtosis = modelExhaustiveSearchInstanceVariableClassification.Kurtosis.Value;
-                    variables[i].Skewness = modelExhaustiveSearchInstanceVariableClassification.Skewness.Value;
-                    variables[i].Iqr = modelExhaustiveSearchInstanceVariableClassification.Iqr.Value;
-                    variables[i].Sd = modelExhaustiveSearchInstanceVariableClassification.StandardDeviation.Value;
-                    variables[i].DistinctCount =
-                        modelExhaustiveSearchInstanceVariableClassification.DistinctValues.Value;
-                    variables[i].Bins = modelExhaustiveSearchInstanceVariableClassification.Bins.Value;
-
-                    var modelExhaustiveSearchInstanceVariable = new ExhaustiveSearchInstanceVariable
-                    {
-                        ExhaustiveSearchInstanceId = exhaustiveSearchInstanceId,
-                        VariableSequence = i,
-                        Name = variables[i].Name,
-                        ProcessingTypeId = variables[i].ProcessingTypeId,
-                        Mode = modelExhaustiveSearchInstanceVariableClassification.Mode,
-                        Mean = modelExhaustiveSearchInstanceVariableClassification.Mean,
-                        StandardDeviation = modelExhaustiveSearchInstanceVariableClassification.StandardDeviation,
-                        Kurtosis = modelExhaustiveSearchInstanceVariableClassification.Kurtosis,
-                        Skewness = modelExhaustiveSearchInstanceVariableClassification.Skewness,
-                        Maximum = modelExhaustiveSearchInstanceVariableClassification.Maximum,
-                        Minimum = modelExhaustiveSearchInstanceVariableClassification.Minimum,
-                        Iqr = modelExhaustiveSearchInstanceVariableClassification.Iqr,
-                        DistinctValues = modelExhaustiveSearchInstanceVariableClassification.DistinctValues,
-                        Bins = modelExhaustiveSearchInstanceVariableClassification.Bins
-                    };
-
-                    if (variables[i].Max is 0)
-                    {
-                        variables[i].NormalisationType = 0;
-                    }
-                    else if (variables[i].Min == 0 && Math.Abs(variables[i].Max - 1) < 0.0001)
-                    {
-                        variables[i].NormalisationType = 1;
-                    }
-                    else
-                    {
-                        variables[i].NormalisationType = 2;
-                    }
-
-                    modelExhaustiveSearchInstanceVariable.NormalisationTypeId = variables[i].NormalisationType;
-
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info(
-                            $"Exhaustive Training: Variable Normalisation Type: {modelExhaustiveSearchInstanceVariable.NormalisationTypeId} for Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariable.Id}.");
-                    }
-
-                    var minNormalised = ZScore(variables[i].Min, variables[i].Mean, variables[i].Sd,
-                        variables[i].NormalisationType);
-
-                    var maxNormalised = ZScore(variables[i].Max, variables[i].Mean, variables[i].Sd,
-                        variables[i].NormalisationType);
-
-                    if (variables[i].Mode == 0)
-                    {
-                        var meanNormalised = ZScore(variables[i].Mean, variables[i].Mean, variables[i].Sd,
-                            variables[i].NormalisationType);
-
-                        if (variables[i].Mean == 0)
-                        {
-                            if (variables[i].Min < variables[i].Max)
-                            {
-                                variables[i].TriangularDistribution = new TriangularDistribution(minNormalised,
-                                    maxNormalised, meanNormalised);
-                            }
-                        }
-                        else
-                        {
-                            variables[i].TriangularDistribution = new TriangularDistribution(minNormalised,
-                                maxNormalised, 0.01d);
-                        }
-                    }
-                    else
-                    {
-                        var modeNormalised = ZScore(variables[i].Mode, variables[i].Mean, variables[i].Sd,
-                            variables[i].NormalisationType);
-
-                        if (variables[i].Min < variables[i].Max)
-                        {
-                            variables[i].TriangularDistribution = new TriangularDistribution(minNormalised,
-                                maxNormalised, modeNormalised);
-                        }
-                    }
-
-                    variables[i].ExhaustiveSearchInstanceVariableId =
-                        await repositoryVariables.InsertAsync(modelExhaustiveSearchInstanceVariable, token)
-                            .ConfigureAwait(false);
-
-                    foreach (var histogramBin in histogram.Bins)
-                    {
-                        var modelExhaustiveSearchInstanceVariableHistogram =
-                            new ExhaustiveSearchInstanceVariableHistogram
-                            {
-                                BinSequence = binSequence,
-                                BinRangeStart = histogramBin.Range.Min,
-                                BinRangeEnd = histogramBin.Range.Max,
-                                ExhaustiveSearchInstanceVariableId = variables[i].ExhaustiveSearchInstanceVariableId,
-                                Frequency = histogramBin.Value
-                            };
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id} bin {binSequence} has start: {modelExhaustiveSearchInstanceVariableHistogram.BinRangeStart}, end {modelExhaustiveSearchInstanceVariableHistogram.BinRangeEnd} and frequency of {modelExhaustiveSearchInstanceVariableHistogram.Frequency}.");
-                        }
-
-                        await repositoryHistogram.InsertAsync(modelExhaustiveSearchInstanceVariableHistogram, token)
-                            .ConfigureAwait(false);
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id} bin {binSequence} inserted will move next bin.");
-                        }
-
-                        binSequence += 1;
-                    }
-                }
-                else if (repositoryVariables.GetType() ==
-                         typeof(ExhaustiveSearchInstanceVariableClassificationRepository))
-                {
-                    modelExhaustiveSearchInstanceVariableClassification.ExhaustiveSearchInstanceVariableId
-                        = variables[i].ExhaustiveSearchInstanceVariableId;
-
-                    var exhaustiveSearchInstanceVariableClassificationId =
-                        await repositoryVariables
-                            .InsertAsync(modelExhaustiveSearchInstanceVariableClassification, token)
-                            .ConfigureAwait(false);
-
-                    foreach (var histogramBin in histogram.Bins)
-                    {
-                        var modelExhaustiveSearchInstanceVariableHistogram =
-                            new ExhaustiveSearchInstanceVariableHistogramClassification
-                            {
-                                BinSequence = binSequence,
-                                BinRangeStart = histogramBin.Range.Min,
-                                BinRangeEnd = histogramBin.Range.Max,
-                                ExhaustiveSearchInstanceVariableClassificationId =
-                                    exhaustiveSearchInstanceVariableClassificationId,
-                                Frequency = histogramBin.Value
-                            };
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id} bin {binSequence} has start: {modelExhaustiveSearchInstanceVariableHistogram.BinRangeStart}, end {modelExhaustiveSearchInstanceVariableHistogram.BinRangeEnd} and frequency of {modelExhaustiveSearchInstanceVariableHistogram.Frequency}.");
-                        }
-
-                        await repositoryHistogram.InsertAsync(modelExhaustiveSearchInstanceVariableHistogram, token)
-                            .ConfigureAwait(false);
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id} bin {binSequence} inserted will move next bin.");
-                        }
-
-                        binSequence += 1;
-                    }
-                }
-                else
-                {
-                    var modelExhaustiveSearchInstanceVariableAnomaly = new ExhaustiveSearchInstanceVariableAnomaly
-                    {
-                        Mode = modelExhaustiveSearchInstanceVariableClassification.Mode,
-                        Mean = modelExhaustiveSearchInstanceVariableClassification.Mean,
-                        StandardDeviation = modelExhaustiveSearchInstanceVariableClassification.StandardDeviation,
-                        Kurtosis = modelExhaustiveSearchInstanceVariableClassification.Kurtosis,
-                        Skewness = modelExhaustiveSearchInstanceVariableClassification.Skewness,
-                        Maximum = modelExhaustiveSearchInstanceVariableClassification.Maximum,
-                        Minimum = modelExhaustiveSearchInstanceVariableClassification.Minimum,
-                        Iqr = modelExhaustiveSearchInstanceVariableClassification.Iqr,
-                        DistinctValues = modelExhaustiveSearchInstanceVariableClassification.DistinctValues,
-                        Bins = modelExhaustiveSearchInstanceVariableClassification.Bins,
-                        ExhaustiveSearchInstanceVariableId = variables[i].ExhaustiveSearchInstanceVariableId
-                    };
-
-                    var exhaustiveSearchInstanceVariableAnomalyId =
-                        await repositoryVariables.InsertAsync(modelExhaustiveSearchInstanceVariableAnomaly, token)
-                            .ConfigureAwait(false);
-
-                    foreach (var histogramBin in histogram.Bins)
-                    {
-                        var modelExhaustiveSearchInstanceVariableHistogram =
-                            new ExhaustiveSearchInstanceVariableHistogramAnomaly
-                            {
-                                BinSequence = binSequence,
-                                BinRangeStart = histogramBin.Range.Min,
-                                BinRangeEnd = histogramBin.Range.Max,
-                                ExhaustiveSearchInstanceVariableAnomalyId = exhaustiveSearchInstanceVariableAnomalyId,
-                                Frequency = histogramBin.Value
-                            };
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id} bin {binSequence} has start: {modelExhaustiveSearchInstanceVariableHistogram.BinRangeStart}, end {modelExhaustiveSearchInstanceVariableHistogram.BinRangeEnd} and frequency of {modelExhaustiveSearchInstanceVariableHistogram.Frequency}.");
-                        }
-
-                        await repositoryHistogram.InsertAsync(modelExhaustiveSearchInstanceVariableHistogram, token)
-                            .ConfigureAwait(false);
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Exhaustive Search Instance Variable ID {modelExhaustiveSearchInstanceVariableClassification.Id} bin {binSequence} inserted will move next bin.");
-                        }
-
-                        binSequence += 1;
-                    }
-                }
-            }
+            return new StatisticsCalculator(log).CalculateStatisticsAsync(exhaustiveSearchInstanceId, variables, data,
+                repositoryVariables, repositoryHistogram, token);
         }
 
-        private async Task<Dictionary<int, Variable>> CalculateMulticollinearityAsync(
-            Dictionary<int, Variable> variables, double[][] data,
-            ExhaustiveSearchInstanceVariableMultiColiniarityRepository repository, CancellationToken token = default)
+        internal Task CalculateStatisticsAsync(int exhaustiveSearchInstanceId, Dictionary<int, Variable> variables,
+            double[][] data,
+            StatisticsTarget target,
+            IGenericRepository repositoryVariables,
+            IGenericRepository repositoryHistogram,
+            CancellationToken token
+        )
         {
-            for (var i = 0; i < variables.Count - 1; i++)
-            {
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Exhaustive Search Instance Variable ID {variables[i].ExhaustiveSearchInstanceVariableId} will evaluate for strong correlations to this variable.");
-                }
-
-                var crossCorrelations = new Dictionary<int, double>();
-                for (var j = 0; j < variables.Count - 1; j++)
-                {
-                    if (i != j)
-                    {
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Exhaustive Search Instance Variable ID {variables[i].ExhaustiveSearchInstanceVariableId} will evaluate correlation against {variables[j].ExhaustiveSearchInstanceVariableId}.");
-                        }
-
-                        var correlation = Performance.SpearmansCoeff(data.GetColumn(i), data.GetColumn(j));
-                        crossCorrelations.Add(j, correlation);
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Exhaustive Search Instance Variable ID {variables[i].ExhaustiveSearchInstanceVariableId} has evaluated correlation against {variables[j].ExhaustiveSearchInstanceVariableId} and returned {correlation}.");
-                        }
-                    }
-                    else
-                    {
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info(
-                                $"Exhaustive Training: Exhaustive Search Instance Variable ID {variables[i].ExhaustiveSearchInstanceVariableId} will not evaluate to itself.");
-                        }
-                    }
-                }
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Exhaustive Search Instance Variable ID {variables[i].ExhaustiveSearchInstanceVariableId} will sort correlations for ranking.");
-                }
-
-                var sortedCrossCorrelations = from pair in crossCorrelations
-                    orderby Math.Abs(Math.Round(pair.Value, 2)) descending
-                    select pair;
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info(
-                        $"Exhaustive Training: Exhaustive Search Instance Variable ID {variables[i].ExhaustiveSearchInstanceVariableId} has sorted correlations for ranking. Will insert these correlations into the database.");
-                }
-
-                var seqCrossCorrelation = 1;
-                foreach (var (key, value) in sortedCrossCorrelations)
-                {
-                    var model = new ExhaustiveSearchInstanceVariableMultiCollinearity
-                    {
-                        ExhaustiveSearchInstanceVariableId = variables[i].ExhaustiveSearchInstanceVariableId,
-                        TestExhaustiveSearchInstanceVariableId = variables[key].ExhaustiveSearchInstanceVariableId,
-                        Correlation = value,
-                        CorrelationAbsRank = seqCrossCorrelation
-                    };
-
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info(
-                            $"Exhaustive Training: Exhaustive Search Instance Variable ID {variables[i].ExhaustiveSearchInstanceVariableId} will insert correlation for test key {variables[key].ExhaustiveSearchInstanceVariableId}.");
-                    }
-
-                    await repository.InsertAsync(model, token).ConfigureAwait(false);
-
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info(
-                            $"Exhaustive Training: Exhaustive Search Instance Variable ID {variables[i].ExhaustiveSearchInstanceVariableId} has inserted correlation for test key {variables[key].ExhaustiveSearchInstanceVariableId} and will proceed to next test correlation.");
-                    }
-
-                    seqCrossCorrelation += 1;
-                }
-            }
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    "Exhaustive Training: Has concluded calculation of correlation for each correlation,  have updated variables and will return.");
-            }
-
-            return variables;
-        }
-
-        private async Task LoadMockDataAsync(DbContext dbContext, int entityAnalysisModelId,
-            CancellationToken token = default)
-        {
-            var repository = new MockArchiveRepository(dbContext);
-
-            if (log.IsInfoEnabled)
-            {
-                log.Info("Exhaustive Training: Will delete the MockArchive table for mock data.");
-            }
-
-            var count = await repository.GetLoadedCountAsync(entityAnalysisModelId, token).ConfigureAwait(false);
-
-            if (count > 0)
-            {
-                if (log.IsInfoEnabled)
-                {
-                    log.Info($"Exhaustive Training: Data Already Loaded for ModelID: {entityAnalysisModelId}.");
-                }
-
-                return;
-            }
-
-            var variables = new List<string>();
-
-            var iRow = 1;
-
-            var lines = Mock.Get().Split("\n");
-            foreach (var line in lines)
-            {
-                if (log.IsInfoEnabled)
-                {
-                    log.Info($"Exhaustive Training:Found line data {line}.");
-                }
-
-                var splitsString = line.Split(",");
-                if (iRow > 1)
-                {
-                    try
-                    {
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info($"Exhaustive Training:Found line at line {iRow} {splitsString.Length} splits.");
-                        }
-
-                        var splitsDouble = new double[splitsString.Length];
-
-                        var row = new EntityAnalysisModelInstanceEntryPayload
-                        {
-                            Tag = [],
-                            Abstraction = new PooledDictionary<string, double>(splitsString.Length)
-                        };
-
-                        for (var i = 0; i < splitsString.Length - 1; i++)
-                        {
-                            splitsDouble[i] = Double.Parse(splitsString[i]);
-
-                            if (i == 0)
-                            {
-                                row.Tag = splitsDouble[i] > 0 ? ["Fraud"] : [];
-                            }
-                            else
-                            {
-                                row.Abstraction.Add(variables[i], splitsDouble[i]);
-                            }
-                        }
-
-                        var model = new MockArchive
-                        {
-                            EntityAnalysisModelId = entityAnalysisModelId,
-                            EntryKeyValue = iRow.ToString(),
-                            ResponseElevation = 0,
-                            EntityAnalysisModelActivationRuleId = 0,
-                            ActivationRuleCount = 0,
-                            CreatedDate = DateTime.UtcNow,
-                            ReferenceDate = DateTime.UtcNow,
-                            EntityAnalysisModelInstanceEntryGuid = Guid.NewGuid(),
-                            Json = Encoding.UTF8.GetString(BuildJsonResponses.BuildFullJson(row,
-                                jsonSerializationHelper.ArchiveJsonSerializer))
-                        };
-
-                        await repository.InsertAsync(model, token).ConfigureAwait(false);
-
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info($"Exhaustive Training:Found line {line} has been added to the array.");
-                        }
-                    }
-                    catch (Exception ex) when (ex is not OperationCanceledException)
-                    {
-                        log.Error($"Exhaustive Training: Line {iRow} has caused an exception {ex}.");
-                    }
-                }
-                else
-                {
-                    if (log.IsInfoEnabled)
-                    {
-                        log.Info($"Exhaustive Training:Found header data {line}.");
-                    }
-
-                    foreach (var split in line.Split(","))
-                    {
-                        if (log.IsInfoEnabled)
-                        {
-                            log.Info("Exhaustive Training:Adding variable.");
-                        }
-
-                        variables.Add(split);
-                    }
-                }
-
-                iRow += 1;
-
-                if (log.IsInfoEnabled)
-                {
-                    log.Info($"Exhaustive Training:Concluded line {line}.");
-                }
-            }
-
-            switch (log.IsInfoEnabled)
-            {
-                case false:
-                    return;
-                case true:
-                    log.Info(
-                        $"Exhaustive Training:Concluded and created array of length {iRow} will cast and return array.");
-                    break;
-            }
-        }
-
-        private static double ZScore(double value, double mean, double sd, int normalisationTypeId)
-        {
-            try
-            {
-                if (normalisationTypeId == 2)
-                {
-                    return (value - mean) / sd;
-                }
-
-                return value;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        private static void Append(double[][] existingData,
-            double[][] existingDataClassification,
-            out double[][] data,
-            out double[] outputs)
-        {
-            var appendedData = new double[existingData.Length + existingDataClassification.Length][];
-            existingData.CopyTo(appendedData, 0);
-            existingDataClassification.CopyTo(appendedData, existingData.Length);
-
-            var existingOutputs = Enumerable.Repeat(0, existingData.Length).ToArray();
-            var existingOutputsClassification = Enumerable.Repeat(1, existingDataClassification.Length).ToArray();
-
-            var appendedOutputs = new double[existingData.Length + existingOutputsClassification.Length];
-            existingOutputs.CopyTo(appendedOutputs, 0);
-            existingOutputsClassification.CopyTo(appendedOutputs, existingOutputs.Length);
-
-            data = appendedData;
-            outputs = appendedOutputs;
-        }
-
-        private static void Shuffle(double[][] existingData,
-            double[] existingOutputs,
-            out double[][] newData,
-            out double[] outputs)
-        {
-            var shuffleArray = new int[existingOutputs.Length];
-            for (var i = 0; i < shuffleArray.Length; i++)
-            {
-                shuffleArray[i] = i;
-            }
-
-            var r = new Random();
-            shuffleArray = shuffleArray.OrderBy(_ => r.Next()).ToArray();
-
-            var newDataAfterShuffle = new double[shuffleArray.Length][];
-            var outputsAfterShuffle = new double[shuffleArray.Length];
-
-            for (var i = 0; i < shuffleArray.Length; i++)
-            {
-                newDataAfterShuffle[i] = existingData[shuffleArray[i]];
-                outputsAfterShuffle[i] = existingOutputs[shuffleArray[i]];
-            }
-
-            newData = newDataAfterShuffle;
-            outputs = outputsAfterShuffle;
+            return new StatisticsCalculator(log).CalculateStatisticsAsync(exhaustiveSearchInstanceId, variables, data,
+                target, repositoryVariables, repositoryHistogram, token);
         }
     }
 }

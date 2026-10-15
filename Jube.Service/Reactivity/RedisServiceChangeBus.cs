@@ -12,6 +12,7 @@
  */
 
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 
 namespace Jube.Service.Reactivity
 {
@@ -30,6 +31,7 @@ namespace Jube.Service.Reactivity
             var subscriber = connectionMultiplexer.GetSubscriber();
             var channel = RedisChannel.Literal(ChannelPrefix + change.TenantRegistryId);
             var json = JsonSerializer.Serialize(change);
+
             return subscriber.PublishAsync(channel, json);
         }
 
@@ -40,10 +42,12 @@ namespace Jube.Service.Reactivity
 
 #pragma warning disable VSTHRD101
 #pragma warning disable AsyncFixer03
+
             subscriber.Subscribe(pattern, (receivedOnChannel, value) =>
             {
                 var json = (string?)value;
                 var change = json is null ? null : JsonSerializer.Deserialize<ServiceChangeEvent>(json);
+
                 if (change != null)
                 {
                     _ = handler(change);

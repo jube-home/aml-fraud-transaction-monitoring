@@ -6,8 +6,6 @@ parent: Visualisations
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Logging in Visualisation Datasource
 On each recall of a Visualisation datasource there is extensive logging in the database for the purpose of capturing user inputs, the time taken to process the SQL and an errors returned by the database.
 

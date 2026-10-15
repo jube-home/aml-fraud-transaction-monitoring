@@ -21,6 +21,7 @@ using Jube.Dto.Repository.CaseNote;
 using Jube.Service.Exceptions.Repository.CaseNote;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.CaseNote;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -45,14 +46,12 @@ namespace Jube.Test.Service.Repository.CaseNote
                 NullLoggerFactory.Instance);
 
         private static readonly EngineJsonSerializationHelper jsonSerializationHelper = new();
-
         private readonly List<int> createdCaseNoteIds = [];
         private readonly List<int> createdCaseIds = [];
         private readonly List<int> createdCaseWorkflowActionIds = [];
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -61,25 +60,35 @@ namespace Jube.Test.Service.Repository.CaseNote
 
             await dbContext.CaseNote.Where(w => createdCaseNoteIds.Contains(w.Id)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowActionGuids1 = dbContext.CaseWorkflowAction
                 .Where(a => createdCaseWorkflowActionIds.Contains(a.Id))
                 .Select(a => a.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowActionRole>()
                 .Where(w => caseWorkflowActionGuids1.Contains(w.CaseWorkflowActionGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowAction.Where(w => createdCaseWorkflowActionIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowStatusGuids2 = dbContext.CaseWorkflowStatus
                 .Where(s => createdCaseWorkflowStatusIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 .Where(w => caseWorkflowStatusGuids2.Contains(w.CaseWorkflowStatusGuid)).DeleteAsync();
+
             var caseWorkflowGuids3 = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids3.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -104,6 +113,7 @@ namespace Jube.Test.Service.Repository.CaseNote
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new Data.Repository.EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -114,6 +124,7 @@ namespace Jube.Test.Service.Repository.CaseNote
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -126,6 +137,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 .Where(u => u.Name == userName).Select(u => u.RoleRegistryGuid).FirstAsync();
 
             var caseWorkflowGuid = Guid.NewGuid();
+
             var caseWorkflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -150,6 +162,7 @@ namespace Jube.Test.Service.Repository.CaseNote
             });
 
             var caseWorkflowStatusGuid = Guid.NewGuid();
+
             var caseWorkflowStatusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -187,6 +200,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 .Where(u => u.Name == userName).Select(u => u.RoleRegistryGuid).FirstAsync();
 
             var actionGuid = Guid.NewGuid();
+
             var actionId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowAction
             {
                 Name = $"{DatabaseFixture.Prefix}Action{Guid.NewGuid():N}"[..40],
@@ -228,6 +242,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CreatedDate = DateTime.UtcNow,
             });
             createdCaseIds.Add(caseId);
+
             return caseId;
         }
 
@@ -254,6 +269,7 @@ namespace Jube.Test.Service.Repository.CaseNote
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
             var act = () => service.InsertAsync(new CaseNoteDto
             {
                 Note = "note",
@@ -264,6 +280,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CaseKeyValue = "acc-1",
                 Payload = "{}",
             });
+
             await act.Should().ThrowAsync<ForbiddenException>();
         }
 
@@ -281,6 +298,7 @@ namespace Jube.Test.Service.Repository.CaseNote
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseNoteDto
             {
                 Note = "",
@@ -291,6 +309,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CaseKeyValue = "acc-1",
                 Payload = "{}",
             });
+
             await act.Should().ThrowAsync<DtoValidationException>();
         }
 
@@ -299,6 +318,7 @@ namespace Jube.Test.Service.Repository.CaseNote
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseNoteDto
             {
                 Note = "note",
@@ -309,6 +329,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CaseKeyValue = "acc-1",
                 Payload = "{}",
             });
+
             await act.Should().ThrowAsync<DtoValidationException>();
         }
 
@@ -317,6 +338,7 @@ namespace Jube.Test.Service.Repository.CaseNote
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseNoteDto
             {
                 Note = "note",
@@ -327,6 +349,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CaseKeyValue = "acc-1",
                 Payload = "",
             });
+
             await act.Should().ThrowAsync<DtoValidationException>();
         }
 
@@ -335,6 +358,7 @@ namespace Jube.Test.Service.Repository.CaseNote
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseNoteDto
             {
                 Note = "note",
@@ -345,6 +369,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CaseKeyValue = "acc-1",
                 Payload = "{}",
             });
+
             await act.Should().ThrowAsync<NotFoundException>();
         }
 
@@ -352,13 +377,17 @@ namespace Jube.Test.Service.Repository.CaseNote
         public async Task InsertWithUnknownActionIdThrowsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid,
                 "account", caseKeyValue);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseNoteDto
             {
                 Note = "note",
@@ -369,6 +398,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CaseKeyValue = caseKeyValue,
                 Payload = "{}",
             });
+
             await act.Should().ThrowAsync<NotFoundException>();
         }
 
@@ -376,14 +406,19 @@ namespace Jube.Test.Service.Repository.CaseNote
         public async Task InsertForCaseInAnotherTenantThrowsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserTenantB);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid,
                 "account", caseKeyValue);
+
             var actionId = await CreateWorkflowActionAsync(dbContext, fx.Seed.UserTenantB, workflowGuid);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var act = () => service.InsertAsync(new CaseNoteDto
             {
                 Note = "note",
@@ -394,6 +429,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CaseKeyValue = caseKeyValue,
                 Payload = "{}",
             });
+
             await act.Should().ThrowAsync<NotFoundException>();
         }
 
@@ -401,14 +437,19 @@ namespace Jube.Test.Service.Repository.CaseNote
         public async Task InsertPersistsAndReturnsNoteWithServerAssignedFieldsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid,
                 "account", caseKeyValue);
+
             var actionId = await CreateWorkflowActionAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var saved = await service.InsertAsync(new CaseNoteDto
             {
                 Note = "A note about this case.",
@@ -437,15 +478,20 @@ namespace Jube.Test.Service.Repository.CaseNote
         public async Task InsertPublishesCreatedChangeEventAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid,
                 "account", caseKeyValue);
+
             var actionId = await CreateWorkflowActionAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
 
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
             var saved = await service.InsertAsync(new CaseNoteDto
             {
                 Note = "note",
@@ -470,6 +516,7 @@ namespace Jube.Test.Service.Repository.CaseNote
             await using var dbContext = fx.GetDbContext();
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
             var act = () => service.InsertAsync(new CaseNoteDto
             {
                 Note = "",
@@ -480,6 +527,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CaseKeyValue = "acc-1",
                 Payload = "{}",
             });
+
             await act.Should().ThrowAsync<DtoValidationException>();
             bus.Published.Should().BeEmpty();
         }
@@ -488,14 +536,19 @@ namespace Jube.Test.Service.Repository.CaseNote
         public async Task GetByCaseKeyValueReturnsNewestFirstAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid,
                 "account", caseKeyValue);
+
             var actionId = await CreateWorkflowActionAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var first = await service.InsertAsync(new CaseNoteDto
             {
                 Note = "first",
@@ -507,6 +560,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 Payload = "{}",
             });
             createdCaseNoteIds.Add(first.Id);
+
             var second = await service.InsertAsync(new CaseNoteDto
             {
                 Note = "second",
@@ -532,11 +586,14 @@ namespace Jube.Test.Service.Repository.CaseNote
             await using var dbContext = fx.GetDbContext();
             var (workflowGuidB, statusGuidB, _) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserTenantB);
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             var caseIdB = await CreateCaseAsync(dbContext, workflowGuidB, statusGuidB,
                 "account", caseKeyValue);
+
             var actionIdB = await CreateWorkflowActionAsync(dbContext, fx.Seed.UserTenantB, workflowGuidB);
 
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
             var noteB = await serviceB.InsertAsync(new CaseNoteDto
             {
                 Note = "tenant b note",
@@ -582,6 +639,7 @@ namespace Jube.Test.Service.Repository.CaseNote
             await using var dbContext = fx.GetDbContext();
             var capturingLog = new TestLog();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission, log: capturingLog);
+
             var act = () => service.InsertAsync(new CaseNoteDto
             {
                 Note = "note",
@@ -592,6 +650,7 @@ namespace Jube.Test.Service.Repository.CaseNote
                 CaseKeyValue = "acc-1",
                 Payload = "{}",
             });
+
             await act.Should().ThrowAsync<ForbiddenException>();
 
             capturingLog.Entries.Should().Contain(e => e.Level == "WARN");
@@ -602,15 +661,20 @@ namespace Jube.Test.Service.Repository.CaseNote
         public async Task InsertLogsOneAuditRecordOnSuccessAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (workflowGuid, statusGuid, _) =
                 await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
             var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+
             var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid,
                 "account", caseKeyValue);
+
             var actionId = await CreateWorkflowActionAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
 
             var capturingAuditLog = new TestLog();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, auditLog: capturingAuditLog);
+
             var saved = await service.InsertAsync(new CaseNoteDto
             {
                 Note = "note",

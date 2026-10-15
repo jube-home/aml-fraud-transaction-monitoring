@@ -18,6 +18,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation.Results;
+using Jube.App.Code;
 using Jube.Data.Context;
 using Jube.Data.Query;
 using Jube.Dto.EntityAnalysisModelListValue;
@@ -89,7 +90,7 @@ namespace Jube.App.Endpoints
 
             endpoints.MapPost(CsvUploadBase, UploadCsvAsync)
                 .RequireAuthorization()
-                .DisableAntiforgery()
+                .ValidateAntiforgeryForCookieSessions()
                 .WithTags("EntityAnalysisModelListValue")
                 .Produces((int)HttpStatusCode.OK)
                 .Produces((int)HttpStatusCode.Forbidden)
@@ -108,6 +109,7 @@ namespace Jube.App.Endpoints
             if (httpContext.Request.HasFormContentType)
             {
                 var form = await httpContext.Request.ReadFormAsync();
+
                 if (form.TryGetValue("entityAnalysisModelListId", out var formValue) &&
                     int.TryParse(formValue, out var formId))
                 {
@@ -125,6 +127,7 @@ namespace Jube.App.Endpoints
         {
             var user = httpContext.User.Identity?.Name;
             var entityAnalysisModelListId = await ResolveListIdAsync(httpContext);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -133,7 +136,9 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             var streams = new List<Stream>();
+
             try
             {
                 var service = await EntityAnalysisModelListValueService.CreateAsync(dbContext, user, log,
@@ -141,10 +146,12 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
                 var dtos = new List<EntityAnalysisModelListValueCsvFileDto>();
+
                 foreach (var file in files)
                 {
                     var stream = file.OpenReadStream();
                     streams.Add(stream);
+
                     dtos.Add(new EntityAnalysisModelListValueCsvFileDto
                     {
                         FileName = file.FileName, Length = file.Length, Content = stream
@@ -152,6 +159,7 @@ namespace Jube.App.Endpoints
                 }
 
                 await service.UploadCsvAsync(entityAnalysisModelListId, dtos, token);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.OK);
             }
             catch (NotAuthenticatedException)
@@ -194,6 +202,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"POST {CsvUploadBase}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
             finally
@@ -216,6 +225,7 @@ namespace Jube.App.Endpoints
             if (httpContext.Request.HasFormContentType)
             {
                 var form = await httpContext.Request.ReadFormAsync();
+
                 if (form.TryGetValue("id", out var formValue) && int.TryParse(formValue, out var formId))
                 {
                     return formId;
@@ -231,6 +241,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}: entry user={user}");
@@ -238,12 +249,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelListValueService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus,
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.GetAsync(token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -276,6 +289,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -301,6 +315,7 @@ namespace Jube.App.Endpoints
         {
             var user = httpContext.User.Identity?.Name;
             var entityAnalysisModelListId = ResolveEntityAnalysisModelListId(httpContext);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByEntityAnalysisModelListId/{entityAnalysisModelListId}: entry user={user}");
@@ -308,6 +323,7 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelListValueService.CreateAsync(dbContext, user, log,
@@ -315,6 +331,7 @@ namespace Jube.App.Endpoints
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.GetByEntityAnalysisModelListIdAsync(entityAnalysisModelListId, token,
                     IncludeDeletedOf(httpContext));
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -349,6 +366,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByEntityAnalysisModelListId/{entityAnalysisModelListId}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -359,6 +377,7 @@ namespace Jube.App.Endpoints
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/{id}: entry user={user}");
@@ -366,12 +385,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelListValueService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus,
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.GetByIdAsync(id, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -404,6 +425,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/{id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -414,6 +436,7 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -421,12 +444,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelListValueService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus,
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.InsertAsync(model, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -468,6 +493,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -478,6 +504,7 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"PUT {Base}: entry user={user}");
@@ -485,12 +512,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelListValueService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus,
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 var result = await service.UpdateAsync(model, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -541,6 +570,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"PUT {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -553,6 +583,7 @@ namespace Jube.App.Endpoints
             var user = httpContext.User.Identity?.Name;
 
             var id = await ResolveIdAsync(httpContext);
+
             if (id is null)
             {
                 if (log.IsWarnEnabled)
@@ -570,12 +601,14 @@ namespace Jube.App.Endpoints
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await EntityAnalysisModelListValueService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus,
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
                 await service.DeleteAsync(id.Value, token);
+
                 return TypedResults.Ok();
             }
             catch (NotAuthenticatedException)
@@ -617,6 +650,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"DELETE {Base}?id={id}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

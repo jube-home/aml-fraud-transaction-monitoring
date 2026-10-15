@@ -24,12 +24,14 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using Jube.Engine.Models;
     using Parser;
     using Parser.Compiler;
+    using Parser.Models;
 
     public static class SyncEntityAnalysisModelInlineFunctionsExtensions
     {
         public static async Task<Context> SyncEntityAnalysisModelInlineFunctionsAsync(this Context context)
         {
             var shadowEntityAnalysisModelsInlineFunctions = new Dictionary<string, int>();
+
             try
             {
                 foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
@@ -61,6 +63,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     }
 
                     var shadowEntityAnalysisModelInlineFunctions = new List<EntityAnalysisModelInlineFunction>();
+
                     foreach (var record in records)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();
@@ -201,6 +204,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             context.Services.CancellationToken.ThrowIfCancellationRequested();
 
                             var hasRuleScript = false;
+
                             if (record.FunctionScript != null)
                             {
                                 var parsedRule = new ParsedRule
@@ -208,6 +212,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     OriginalRuleText = record.FunctionScript,
                                     ErrorSpans = []
                                 };
+
                                 parsedRule = context.Services.Parser.TranslateFromDotNotation(parsedRule);
                                 parsedRule = context.Services.Parser.Parse(parsedRule);
 
@@ -267,7 +272,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     var classType =
                                         entityAnalysisModelInlineFunction.FunctionCalculationCompile.GetType(
                                             "InlineFunction");
+
                                     var methodInfo = classType.GetMethod("Match");
+
                                     entityAnalysisModelInlineFunction.FunctionCalculationCompileDelegate =
                                         (EntityAnalysisModelInlineFunction.Match)Delegate.CreateDelegate(
                                             typeof(EntityAnalysisModelInlineFunction.Match),
@@ -294,6 +301,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     }
 
                                     var compile = new Compile();
+
                                     compile.CompileCode(activationRuleScript.ToString(), context.Services.Log,
                                     [
                                         Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),
@@ -321,7 +329,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         var classType =
                                             entityAnalysisModelInlineFunction.FunctionCalculationCompile.GetType(
                                                 "InlineFunction");
+
                                         var methodInfo = classType.GetMethod("Match");
+
                                         entityAnalysisModelInlineFunction.FunctionCalculationCompileDelegate =
                                             (EntityAnalysisModelInlineFunction.Match)Delegate.CreateDelegate(
                                                 typeof(EntityAnalysisModelInlineFunction.Match),
@@ -329,9 +339,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                                         context.Caching.HashCacheAssembly.TryAdd(activationRuleScriptHash,
                                             compile.CompiledAssembly);
+
                                         context.Caching.HashCacheAssemblyMetadata.TryAdd(activationRuleScriptHash,
                                             new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
                                                 compile.CompiledAssemblyBinary, activationRuleScript.ToString()));
+
                                         shadowEntityAnalysisModelInlineFunctions.Add(entityAnalysisModelInlineFunction);
 
                                         await new EntityAnalysisModelInlineFunctionRepository(
@@ -381,6 +393,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                     context.Services.Parser.EntityAnalysisModelsInlineFunctions =
                         shadowEntityAnalysisModelsInlineFunctions;
+
                     context.Snapshots.Builder(key, value).EntityAnalysisModelInlineFunctions =
                         shadowEntityAnalysisModelInlineFunctions;
 

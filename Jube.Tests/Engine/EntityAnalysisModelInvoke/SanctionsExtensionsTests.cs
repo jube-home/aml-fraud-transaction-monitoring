@@ -152,6 +152,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var (context, _) = NewContextWithRedis(
                 NewSanctionCheck("SDN", 0),
                 NewSanctionCheck("BOE", 0));
+
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
 
@@ -171,8 +172,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             await context.ExecuteSanctionsAsync();
 
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages.Should().NotBeNull();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages!.Sanctions.Should()
                 .NotBeNull();
+
             context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages.Sanctions!.Items
                 .Should().ContainKey("SDN");
         }
@@ -189,6 +192,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var redisKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
                            $"{context.EntityAnalysisModel.Instance.Guid:N}";
+
             var stored = await redis.HashGetAsync(redisKey, "Osama bin Laden:1");
             stored.HasValue.Should().BeTrue();
         }
@@ -205,6 +209,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var redisKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
                            $"{context.EntityAnalysisModel.Instance.Guid:N}";
+
             var stored = await redis.HashGetAsync(redisKey, "Completely Different:0");
             stored.HasValue.Should().BeFalse();
         }
@@ -218,6 +223,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             await context.EntityAnalysisModel.Services.CacheService.CacheSanctionRepository.InsertAsync(
                 context.EntityAnalysisModel.Instance.TenantRegistryId, context.EntityAnalysisModel.Instance.Guid,
                 "Osama bin Laden", check.Distance, 0.42);
+
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
 
             await context.ExecuteSanctionsAsync();
@@ -235,14 +241,17 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var redisKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
                            $"{context.EntityAnalysisModel.Instance.Guid:N}";
+
             var stale = new Sanction
             {
                 Value = 999,
                 CreatedDate = DateTime.UtcNow.AddSeconds(-61)
             };
+
             var bytes = MessagePackSerializer.Serialize(stale,
                 MessagePackSerializerOptionsHelper
                     .StandardMessagePackSerializerWithCompressionOptions(false));
+
             await redis.HashSetAsync(redisKey, "Osama bin Laden:0", bytes);
 
             await context.ExecuteSanctionsAsync();
@@ -255,9 +264,11 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var check = NewSanctionCheck(distance: 0, cacheInterval: 'h', cacheValue: 1);
             var (context, _) = NewContextWithRedis(check);
+
             await context.EntityAnalysisModel.Services.CacheService.CacheSanctionRepository.InsertAsync(
                 context.EntityAnalysisModel.Instance.TenantRegistryId, context.EntityAnalysisModel.Instance.Guid,
                 "Osama bin Laden", check.Distance, null);
+
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
 
@@ -281,6 +292,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             var redisKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
                            $"{context.EntityAnalysisModel.Instance.Guid:N}";
+
             (await redis.HashGetAsync(redisKey, "Osama bin Ladenn:3")).HasValue.Should().BeTrue();
             (await redis.HashGetAsync(redisKey, "Osama bin Ladenn:1")).HasValue.Should().BeTrue();
 

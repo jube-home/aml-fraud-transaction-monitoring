@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseWorkflowXPathRole;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseWorkflowXPathRole;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.Repository.CaseWorkflowXPathRole
     public sealed class CaseWorkflowXPathRoleService
     {
         private static readonly int[] permissions = [20];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -56,6 +55,8 @@ namespace Jube.Service.Repository.CaseWorkflowXPathRole
             repository = new RuleRepository(dbContext, userName);
             validator = new CaseWorkflowXPathRoleDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowXPathRoleService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -110,6 +111,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPathRole
         {
             using var op = OperationScope.Start("CaseWorkflowXPathRole", "ListByCaseWorkflowXPathGuid", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPathRole.ListByCaseWorkflowXPathGuid: entry guid={guid} user={userName}");
@@ -118,9 +120,11 @@ namespace Jube.Service.Repository.CaseWorkflowXPathRole
             try
             {
                 EnsurePermitted("CaseWorkflowXPathRole.ListByCaseWorkflowXPathGuid", permissions);
+
                 var dtos = CaseWorkflowXPathRoleMapper.ToDto(
                     await repository.GetByCaseWorkflowXPathGuidAsync(guid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowXPathRole.ListByCaseWorkflowXPathGuid: {dtos.Count} rows guid={guid} " +
@@ -142,8 +146,10 @@ namespace Jube.Service.Repository.CaseWorkflowXPathRole
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowXPathRole.ListByCaseWorkflowXPathGuid: unexpected failure guid={guid} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -155,6 +161,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPathRole
         {
             using var op = OperationScope.Start("CaseWorkflowXPathRole", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPathRole.Insert: entry user={userName} " +
@@ -168,6 +175,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPathRole
                 EnsurePermitted("CaseWorkflowXPathRole.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -228,6 +236,7 @@ namespace Jube.Service.Repository.CaseWorkflowXPathRole
         {
             using var op = OperationScope.Start("CaseWorkflowXPathRole", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowXPathRole.Delete: entry id={id} user={userName}");

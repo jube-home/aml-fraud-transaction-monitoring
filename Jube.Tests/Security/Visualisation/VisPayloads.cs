@@ -62,6 +62,7 @@ internal static class VisPayloads
     private static string CaseMix(string value)
     {
         var chars = value.ToCharArray();
+
         for (var i = 0; i < chars.Length; i += 2)
         {
             chars[i] = char.ToUpperInvariant(chars[i]);
@@ -78,6 +79,7 @@ internal static class VisPayloads
     public static IReadOnlyList<string> Sql(int take = 240)
     {
         var all = new List<string>();
+
         foreach (var opener in openers)
         {
             foreach (var body in bodies)
@@ -91,6 +93,7 @@ internal static class VisPayloads
 
         var stride = Math.Max(1, all.Count / Math.Max(1, take / 4));
         var picked = new List<string>();
+
         for (var i = 0; i < all.Count; i += stride)
         {
             picked.AddRange(Mutate(all[i]).Where((_, index) => index % 3 == picked.Count % 3 || index == 0));
@@ -113,7 +116,9 @@ internal static class VisPayloads
             "1%20OR%201=1", "1;select%201", "%27", "%22", "%3Cscript%3E", "{id}", "*", "%", "%zz", "\u00E9",
             "%E2%80%AE", "%EF%BB%BF", new string('9', 400), new string('a', 4000)
         };
+
         list.AddRange(Sql(60).Select(Uri.EscapeDataString));
+
         return list;
     }
 

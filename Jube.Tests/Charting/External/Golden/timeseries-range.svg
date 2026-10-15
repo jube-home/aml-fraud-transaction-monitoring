@@ -1,0 +1,669 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-bands" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-94ee4c42-t jc-94ee4c42-d">
+    <title id="jc-94ee4c42-t">Volume with range selector</title>
+    <desc id="jc-94ee4c42-d">Time series chart with 1 series: Volume. Y values range from 1189 to 1786.</desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Volume with range selector</text>
+    <line class="gl" x1="66.64" y1="284" x2="624" y2="284"/>
+    <text class="tk end mid" x="58.64" y="284">1100</text>
+    <line class="gl" x1="66.64" y1="250.29" x2="624" y2="250.29"/>
+    <text class="tk end mid" x="58.64" y="250.29">1200</text>
+    <line class="gl" x1="66.64" y1="216.57" x2="624" y2="216.57"/>
+    <text class="tk end mid" x="58.64" y="216.57">1300</text>
+    <line class="gl" x1="66.64" y1="182.86" x2="624" y2="182.86"/>
+    <text class="tk end mid" x="58.64" y="182.86">1400</text>
+    <line class="gl" x1="66.64" y1="149.14" x2="624" y2="149.14"/>
+    <text class="tk end mid" x="58.64" y="149.14">1500</text>
+    <line class="gl" x1="66.64" y1="115.43" x2="624" y2="115.43"/>
+    <text class="tk end mid" x="58.64" y="115.43">1600</text>
+    <line class="gl" x1="66.64" y1="81.71" x2="624" y2="81.71"/>
+    <text class="tk end mid" x="58.64" y="81.71">1700</text>
+    <line class="gl" x1="66.64" y1="48" x2="624" y2="48"/>
+    <text class="tk end mid" x="58.64" y="48">1800</text>
+    <text class="tk ctr" x="100.08" y="300">Mar 5</text>
+    <text class="tk ctr" x="178.11" y="300">Mar 12</text>
+    <text class="tk ctr" x="256.14" y="300">Mar 19</text>
+    <text class="tk ctr" x="334.17" y="300">Mar 26</text>
+    <text class="tk ctr" x="412.2" y="300">Apr 2</text>
+    <text class="tk ctr" x="490.23" y="300">Apr 9</text>
+    <text class="tk ctr" x="568.26" y="300">Apr 16</text>
+    <line class="ax" x1="66.64" y1="284" x2="624" y2="284"/>
+    <g class="sr s0">
+        <path class="ln"
+              d="M66.64 228.89L77.79 254.01L88.93 239.2L100.08 193.58L111.23 149.45L122.38 137.96L133.52 165.62L144.67 209.39L155.82 234.09L166.96 218.89L178.11 173.04L189.26 128.92L200.41 117.57L211.55 145.35L222.7 189.14L233.85 213.76L245 198.52L256.14 152.83L267.29 109.07L278.44 98.21L289.58 126.46L300.73 170.58L311.88 195.45L323.03 180.48L334.17 135.22L345.32 92.08L356.47 81.95L367.61 110.87L378.76 155.52L389.91 180.78L401.06 166.21L412.2 121.47L423.35 79.02L434.5 69.65L445.64 99.24L456.79 144.37L467.94 169.95L479.09 155.68L490.23 111.34L501.38 69.42L512.53 60.62L523.68 90.66L534.82 136.03L545.97 161.67L557.12 147.41L568.26 103.17L579.41 61.46L590.56 52.89L601.71 83.03L612.85 128.28L624 153.62">
+            <title>Volume</title>
+        </path>
+        <path class="hl"
+              d="M66.64 228.89L77.79 254.01L88.93 239.2L100.08 193.58L111.23 149.45L122.38 137.96L133.52 165.62L144.67 209.39L155.82 234.09L166.96 218.89L178.11 173.04L189.26 128.92L200.41 117.57L211.55 145.35L222.7 189.14L233.85 213.76L245 198.52L256.14 152.83L267.29 109.07L278.44 98.21L289.58 126.46L300.73 170.58L311.88 195.45L323.03 180.48L334.17 135.22L345.32 92.08L356.47 81.95L367.61 110.87L378.76 155.52L389.91 180.78L401.06 166.21L412.2 121.47L423.35 79.02L434.5 69.65L445.64 99.24L456.79 144.37L467.94 169.95L479.09 155.68L490.23 111.34L501.38 69.42L512.53 60.62L523.68 90.66L534.82 136.03L545.97 161.67L557.12 147.41L568.26 103.17L579.41 61.46L590.56 52.89L601.71 83.03L612.85 128.28L624 153.62"/>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-02, Volume: 1263">
+        <title>2026-03-02, Volume: 1263</title>
+        <rect class="hit" x="66.64" y="48" width="5.57" height="236"/>
+        <line class="vl" x1="66.64" y1="48" x2="66.64" y2="284"/>
+        <circle class="cx s0" cx="66.64" cy="228.89" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="78.64" y="206.89" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="88.64" y="224.89">2026-03-02</text>
+            <rect class="tsw s0" x="88.64" y="232.89" width="9" height="9" rx="2"/>
+            <text class="tx" x="102.64" y="241.89">Volume: 1263</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-03, Volume: 1189">
+        <title>2026-03-03, Volume: 1189</title>
+        <rect class="hit" x="72.21" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="77.79" y1="48" x2="77.79" y2="284"/>
+        <circle class="cx s0" cx="77.79" cy="254.01" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="89.79" y="232.01" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="99.79" y="250.01">2026-03-03</text>
+            <rect class="tsw s0" x="99.79" y="258.01" width="9" height="9" rx="2"/>
+            <text class="tx" x="113.79" y="267.01">Volume: 1189</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-04, Volume: 1233">
+        <title>2026-03-04, Volume: 1233</title>
+        <rect class="hit" x="83.36" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="88.93" y1="48" x2="88.93" y2="284"/>
+        <circle class="cx s0" cx="88.93" cy="239.2" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="100.93" y="217.2" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="110.93" y="235.2">2026-03-04</text>
+            <rect class="tsw s0" x="110.93" y="243.2" width="9" height="9" rx="2"/>
+            <text class="tx" x="124.93" y="252.2">Volume: 1233</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-05, Volume: 1368">
+        <title>2026-03-05, Volume: 1368</title>
+        <rect class="hit" x="94.51" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="100.08" y1="48" x2="100.08" y2="284"/>
+        <circle class="cx s0" cx="100.08" cy="193.58" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="112.08" y="171.58" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="122.08" y="189.58">2026-03-05</text>
+            <rect class="tsw s0" x="122.08" y="197.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="136.08" y="206.58">Volume: 1368</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-06, Volume: 1499">
+        <title>2026-03-06, Volume: 1499</title>
+        <rect class="hit" x="105.66" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="111.23" y1="48" x2="111.23" y2="284"/>
+        <circle class="cx s0" cx="111.23" cy="149.45" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.23" y="127.45" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="133.23" y="145.45">2026-03-06</text>
+            <rect class="tsw s0" x="133.23" y="153.45" width="9" height="9" rx="2"/>
+            <text class="tx" x="147.23" y="162.45">Volume: 1499</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-07, Volume: 1533">
+        <title>2026-03-07, Volume: 1533</title>
+        <rect class="hit" x="116.8" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="122.38" y1="48" x2="122.38" y2="284"/>
+        <circle class="cx s0" cx="122.38" cy="137.96" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="134.38" y="115.96" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="144.38" y="133.96">2026-03-07</text>
+            <rect class="tsw s0" x="144.38" y="141.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="158.38" y="150.96">Volume: 1533</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-08, Volume: 1451">
+        <title>2026-03-08, Volume: 1451</title>
+        <rect class="hit" x="127.95" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="133.52" y1="48" x2="133.52" y2="284"/>
+        <circle class="cx s0" cx="133.52" cy="165.62" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="145.52" y="143.62" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="155.52" y="161.62">2026-03-08</text>
+            <rect class="tsw s0" x="155.52" y="169.62" width="9" height="9" rx="2"/>
+            <text class="tx" x="169.52" y="178.62">Volume: 1451</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-09, Volume: 1321">
+        <title>2026-03-09, Volume: 1321</title>
+        <rect class="hit" x="139.1" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="144.67" y1="48" x2="144.67" y2="284"/>
+        <circle class="cx s0" cx="144.67" cy="209.39" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="156.67" y="187.39" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="166.67" y="205.39">2026-03-09</text>
+            <rect class="tsw s0" x="166.67" y="213.39" width="9" height="9" rx="2"/>
+            <text class="tx" x="180.67" y="222.39">Volume: 1321</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-10, Volume: 1248">
+        <title>2026-03-10, Volume: 1248</title>
+        <rect class="hit" x="150.24" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="155.82" y1="48" x2="155.82" y2="284"/>
+        <circle class="cx s0" cx="155.82" cy="234.09" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="167.82" y="212.09" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="177.82" y="230.09">2026-03-10</text>
+            <rect class="tsw s0" x="177.82" y="238.09" width="9" height="9" rx="2"/>
+            <text class="tx" x="191.82" y="247.09">Volume: 1248</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-11, Volume: 1293">
+        <title>2026-03-11, Volume: 1293</title>
+        <rect class="hit" x="161.39" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="166.96" y1="48" x2="166.96" y2="284"/>
+        <circle class="cx s0" cx="166.96" cy="218.89" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="178.96" y="196.89" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="188.96" y="214.89">2026-03-11</text>
+            <rect class="tsw s0" x="188.96" y="222.89" width="9" height="9" rx="2"/>
+            <text class="tx" x="202.96" y="231.89">Volume: 1293</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-12, Volume: 1429">
+        <title>2026-03-12, Volume: 1429</title>
+        <rect class="hit" x="172.54" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="178.11" y1="48" x2="178.11" y2="284"/>
+        <circle class="cx s0" cx="178.11" cy="173.04" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="190.11" y="151.04" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="200.11" y="169.04">2026-03-12</text>
+            <rect class="tsw s0" x="200.11" y="177.04" width="9" height="9" rx="2"/>
+            <text class="tx" x="214.11" y="186.04">Volume: 1429</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-13, Volume: 1560">
+        <title>2026-03-13, Volume: 1560</title>
+        <rect class="hit" x="183.69" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="189.26" y1="48" x2="189.26" y2="284"/>
+        <circle class="cx s0" cx="189.26" cy="128.92" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="201.26" y="106.92" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="211.26" y="124.92">2026-03-13</text>
+            <rect class="tsw s0" x="211.26" y="132.92" width="9" height="9" rx="2"/>
+            <text class="tx" x="225.26" y="141.92">Volume: 1560</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-14, Volume: 1594">
+        <title>2026-03-14, Volume: 1594</title>
+        <rect class="hit" x="194.83" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="200.41" y1="48" x2="200.41" y2="284"/>
+        <circle class="cx s0" cx="200.41" cy="117.57" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="212.41" y="95.57" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="222.41" y="113.57">2026-03-14</text>
+            <rect class="tsw s0" x="222.41" y="121.57" width="9" height="9" rx="2"/>
+            <text class="tx" x="236.41" y="130.57">Volume: 1594</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-15, Volume: 1511">
+        <title>2026-03-15, Volume: 1511</title>
+        <rect class="hit" x="205.98" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="211.55" y1="48" x2="211.55" y2="284"/>
+        <circle class="cx s0" cx="211.55" cy="145.35" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="223.55" y="123.35" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="233.55" y="141.35">2026-03-15</text>
+            <rect class="tsw s0" x="233.55" y="149.35" width="9" height="9" rx="2"/>
+            <text class="tx" x="247.55" y="158.35">Volume: 1511</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-16, Volume: 1381">
+        <title>2026-03-16, Volume: 1381</title>
+        <rect class="hit" x="217.13" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="222.7" y1="48" x2="222.7" y2="284"/>
+        <circle class="cx s0" cx="222.7" cy="189.14" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="234.7" y="167.14" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="244.7" y="185.14">2026-03-16</text>
+            <rect class="tsw s0" x="244.7" y="193.14" width="9" height="9" rx="2"/>
+            <text class="tx" x="258.7" y="202.14">Volume: 1381</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-17, Volume: 1308">
+        <title>2026-03-17, Volume: 1308</title>
+        <rect class="hit" x="228.27" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="233.85" y1="48" x2="233.85" y2="284"/>
+        <circle class="cx s0" cx="233.85" cy="213.76" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="245.85" y="191.76" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="255.85" y="209.76">2026-03-17</text>
+            <rect class="tsw s0" x="255.85" y="217.76" width="9" height="9" rx="2"/>
+            <text class="tx" x="269.85" y="226.76">Volume: 1308</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-18, Volume: 1354">
+        <title>2026-03-18, Volume: 1354</title>
+        <rect class="hit" x="239.42" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="245" y1="48" x2="245" y2="284"/>
+        <circle class="cx s0" cx="245" cy="198.52" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="257" y="176.52" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="267" y="194.52">2026-03-18</text>
+            <rect class="tsw s0" x="267" y="202.52" width="9" height="9" rx="2"/>
+            <text class="tx" x="281" y="211.52">Volume: 1354</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-19, Volume: 1489">
+        <title>2026-03-19, Volume: 1489</title>
+        <rect class="hit" x="250.57" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="256.14" y1="48" x2="256.14" y2="284"/>
+        <circle class="cx s0" cx="256.14" cy="152.83" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="268.14" y="130.83" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="278.14" y="148.83">2026-03-19</text>
+            <rect class="tsw s0" x="278.14" y="156.83" width="9" height="9" rx="2"/>
+            <text class="tx" x="292.14" y="165.83">Volume: 1489</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-20, Volume: 1619">
+        <title>2026-03-20, Volume: 1619</title>
+        <rect class="hit" x="261.72" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="267.29" y1="48" x2="267.29" y2="284"/>
+        <circle class="cx s0" cx="267.29" cy="109.07" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="279.29" y="87.07" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="289.29" y="105.07">2026-03-20</text>
+            <rect class="tsw s0" x="289.29" y="113.07" width="9" height="9" rx="2"/>
+            <text class="tx" x="303.29" y="122.07">Volume: 1619</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-21, Volume: 1651">
+        <title>2026-03-21, Volume: 1651</title>
+        <rect class="hit" x="272.86" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="278.44" y1="48" x2="278.44" y2="284"/>
+        <circle class="cx s0" cx="278.44" cy="98.21" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="290.44" y="76.21" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="300.44" y="94.21">2026-03-21</text>
+            <rect class="tsw s0" x="300.44" y="102.21" width="9" height="9" rx="2"/>
+            <text class="tx" x="314.44" y="111.21">Volume: 1651</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-22, Volume: 1567">
+        <title>2026-03-22, Volume: 1567</title>
+        <rect class="hit" x="284.01" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="289.58" y1="48" x2="289.58" y2="284"/>
+        <circle class="cx s0" cx="289.58" cy="126.46" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="301.58" y="104.46" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="311.58" y="122.46">2026-03-22</text>
+            <rect class="tsw s0" x="311.58" y="130.46" width="9" height="9" rx="2"/>
+            <text class="tx" x="325.58" y="139.46">Volume: 1567</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-23, Volume: 1436">
+        <title>2026-03-23, Volume: 1436</title>
+        <rect class="hit" x="295.16" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="300.73" y1="48" x2="300.73" y2="284"/>
+        <circle class="cx s0" cx="300.73" cy="170.58" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="312.73" y="148.58" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="322.73" y="166.58">2026-03-23</text>
+            <rect class="tsw s0" x="322.73" y="174.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="336.73" y="183.58">Volume: 1436</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-24, Volume: 1363">
+        <title>2026-03-24, Volume: 1363</title>
+        <rect class="hit" x="306.3" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="311.88" y1="48" x2="311.88" y2="284"/>
+        <circle class="cx s0" cx="311.88" cy="195.45" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="323.88" y="173.45" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="333.88" y="191.45">2026-03-24</text>
+            <rect class="tsw s0" x="333.88" y="199.45" width="9" height="9" rx="2"/>
+            <text class="tx" x="347.88" y="208.45">Volume: 1363</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-25, Volume: 1407">
+        <title>2026-03-25, Volume: 1407</title>
+        <rect class="hit" x="317.45" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="323.03" y1="48" x2="323.03" y2="284"/>
+        <circle class="cx s0" cx="323.03" cy="180.48" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="335.03" y="158.48" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="345.03" y="176.48">2026-03-25</text>
+            <rect class="tsw s0" x="345.03" y="184.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="359.03" y="193.48">Volume: 1407</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-26, Volume: 1541">
+        <title>2026-03-26, Volume: 1541</title>
+        <rect class="hit" x="328.6" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="334.17" y1="48" x2="334.17" y2="284"/>
+        <circle class="cx s0" cx="334.17" cy="135.22" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="346.17" y="113.22" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="356.17" y="131.22">2026-03-26</text>
+            <rect class="tsw s0" x="356.17" y="139.22" width="9" height="9" rx="2"/>
+            <text class="tx" x="370.17" y="148.22">Volume: 1541</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-27, Volume: 1669">
+        <title>2026-03-27, Volume: 1669</title>
+        <rect class="hit" x="339.75" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="345.32" y1="48" x2="345.32" y2="284"/>
+        <circle class="cx s0" cx="345.32" cy="92.08" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="357.32" y="70.08" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="367.32" y="88.08">2026-03-27</text>
+            <rect class="tsw s0" x="367.32" y="96.08" width="9" height="9" rx="2"/>
+            <text class="tx" x="381.32" y="105.08">Volume: 1669</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-28, Volume: 1699">
+        <title>2026-03-28, Volume: 1699</title>
+        <rect class="hit" x="350.89" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="356.47" y1="48" x2="356.47" y2="284"/>
+        <circle class="cx s0" cx="356.47" cy="81.95" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="368.47" y="59.95" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="378.47" y="77.95">2026-03-28</text>
+            <rect class="tsw s0" x="378.47" y="85.95" width="9" height="9" rx="2"/>
+            <text class="tx" x="392.47" y="94.95">Volume: 1699</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-29, Volume: 1614">
+        <title>2026-03-29, Volume: 1614</title>
+        <rect class="hit" x="362.04" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="367.61" y1="48" x2="367.61" y2="284"/>
+        <circle class="cx s0" cx="367.61" cy="110.87" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="379.61" y="88.87" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="389.61" y="106.87">2026-03-29</text>
+            <rect class="tsw s0" x="389.61" y="114.87" width="9" height="9" rx="2"/>
+            <text class="tx" x="403.61" y="123.87">Volume: 1614</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-30, Volume: 1481">
+        <title>2026-03-30, Volume: 1481</title>
+        <rect class="hit" x="373.19" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="378.76" y1="48" x2="378.76" y2="284"/>
+        <circle class="cx s0" cx="378.76" cy="155.52" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="390.76" y="133.52" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="400.76" y="151.52">2026-03-30</text>
+            <rect class="tsw s0" x="400.76" y="159.52" width="9" height="9" rx="2"/>
+            <text class="tx" x="414.76" y="168.52">Volume: 1481</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-03-31, Volume: 1406">
+        <title>2026-03-31, Volume: 1406</title>
+        <rect class="hit" x="384.34" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="389.91" y1="48" x2="389.91" y2="284"/>
+        <circle class="cx s0" cx="389.91" cy="180.78" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="401.91" y="158.78" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="411.91" y="176.78">2026-03-31</text>
+            <rect class="tsw s0" x="411.91" y="184.78" width="9" height="9" rx="2"/>
+            <text class="tx" x="425.91" y="193.78">Volume: 1406</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-01, Volume: 1449">
+        <title>2026-04-01, Volume: 1449</title>
+        <rect class="hit" x="395.48" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="401.06" y1="48" x2="401.06" y2="284"/>
+        <circle class="cx s0" cx="401.06" cy="166.21" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="413.06" y="144.21" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="423.06" y="162.21">2026-04-01</text>
+            <rect class="tsw s0" x="423.06" y="170.21" width="9" height="9" rx="2"/>
+            <text class="tx" x="437.06" y="179.21">Volume: 1449</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-02, Volume: 1582">
+        <title>2026-04-02, Volume: 1582</title>
+        <rect class="hit" x="406.63" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="412.2" y1="48" x2="412.2" y2="284"/>
+        <circle class="cx s0" cx="412.2" cy="121.47" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="424.2" y="99.47" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="434.2" y="117.47">2026-04-02</text>
+            <rect class="tsw s0" x="434.2" y="125.47" width="9" height="9" rx="2"/>
+            <text class="tx" x="448.2" y="134.47">Volume: 1582</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-03, Volume: 1708">
+        <title>2026-04-03, Volume: 1708</title>
+        <rect class="hit" x="417.78" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="423.35" y1="48" x2="423.35" y2="284"/>
+        <circle class="cx s0" cx="423.35" cy="79.02" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="435.35" y="57.02" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="445.35" y="75.02">2026-04-03</text>
+            <rect class="tsw s0" x="445.35" y="83.02" width="9" height="9" rx="2"/>
+            <text class="tx" x="459.35" y="92.02">Volume: 1708</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-04, Volume: 1736">
+        <title>2026-04-04, Volume: 1736</title>
+        <rect class="hit" x="428.92" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="434.5" y1="48" x2="434.5" y2="284"/>
+        <circle class="cx s0" cx="434.5" cy="69.65" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="446.5" y="48" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="456.5" y="66">2026-04-04</text>
+            <rect class="tsw s0" x="456.5" y="74" width="9" height="9" rx="2"/>
+            <text class="tx" x="470.5" y="83">Volume: 1736</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-05, Volume: 1648">
+        <title>2026-04-05, Volume: 1648</title>
+        <rect class="hit" x="440.07" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="445.64" y1="48" x2="445.64" y2="284"/>
+        <circle class="cx s0" cx="445.64" cy="99.24" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="457.64" y="77.24" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="467.64" y="95.24">2026-04-05</text>
+            <rect class="tsw s0" x="467.64" y="103.24" width="9" height="9" rx="2"/>
+            <text class="tx" x="481.64" y="112.24">Volume: 1648</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-06, Volume: 1514">
+        <title>2026-04-06, Volume: 1514</title>
+        <rect class="hit" x="451.22" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="456.79" y1="48" x2="456.79" y2="284"/>
+        <circle class="cx s0" cx="456.79" cy="144.37" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="468.79" y="122.37" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="478.79" y="140.37">2026-04-06</text>
+            <rect class="tsw s0" x="478.79" y="148.37" width="9" height="9" rx="2"/>
+            <text class="tx" x="492.79" y="157.37">Volume: 1514</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-07, Volume: 1438">
+        <title>2026-04-07, Volume: 1438</title>
+        <rect class="hit" x="462.37" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="467.94" y1="48" x2="467.94" y2="284"/>
+        <circle class="cx s0" cx="467.94" cy="169.95" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="479.94" y="147.95" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="489.94" y="165.95">2026-04-07</text>
+            <rect class="tsw s0" x="489.94" y="173.95" width="9" height="9" rx="2"/>
+            <text class="tx" x="503.94" y="182.95">Volume: 1438</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-08, Volume: 1481">
+        <title>2026-04-08, Volume: 1481</title>
+        <rect class="hit" x="473.51" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="479.09" y1="48" x2="479.09" y2="284"/>
+        <circle class="cx s0" cx="479.09" cy="155.68" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="491.09" y="133.68" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="501.09" y="151.68">2026-04-08</text>
+            <rect class="tsw s0" x="501.09" y="159.68" width="9" height="9" rx="2"/>
+            <text class="tx" x="515.09" y="168.68">Volume: 1481</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-09, Volume: 1612">
+        <title>2026-04-09, Volume: 1612</title>
+        <rect class="hit" x="484.66" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="490.23" y1="48" x2="490.23" y2="284"/>
+        <circle class="cx s0" cx="490.23" cy="111.34" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="502.23" y="89.34" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="512.23" y="107.34">2026-04-09</text>
+            <rect class="tsw s0" x="512.23" y="115.34" width="9" height="9" rx="2"/>
+            <text class="tx" x="526.23" y="124.34">Volume: 1612</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-10, Volume: 1736">
+        <title>2026-04-10, Volume: 1736</title>
+        <rect class="hit" x="495.81" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="501.38" y1="48" x2="501.38" y2="284"/>
+        <circle class="cx s0" cx="501.38" cy="69.42" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="513.38" y="48" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="523.38" y="66">2026-04-10</text>
+            <rect class="tsw s0" x="523.38" y="74" width="9" height="9" rx="2"/>
+            <text class="tx" x="537.38" y="83">Volume: 1736</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-11, Volume: 1763">
+        <title>2026-04-11, Volume: 1763</title>
+        <rect class="hit" x="506.95" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="512.53" y1="48" x2="512.53" y2="284"/>
+        <circle class="cx s0" cx="512.53" cy="60.62" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="392.49" y="48" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="402.49" y="66">2026-04-11</text>
+            <rect class="tsw s0" x="402.49" y="74" width="9" height="9" rx="2"/>
+            <text class="tx" x="416.49" y="83">Volume: 1763</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-12, Volume: 1673">
+        <title>2026-04-12, Volume: 1673</title>
+        <rect class="hit" x="518.1" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="523.68" y1="48" x2="523.68" y2="284"/>
+        <circle class="cx s0" cx="523.68" cy="90.66" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="403.64" y="68.66" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="413.64" y="86.66">2026-04-12</text>
+            <rect class="tsw s0" x="413.64" y="94.66" width="9" height="9" rx="2"/>
+            <text class="tx" x="427.64" y="103.66">Volume: 1673</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-13, Volume: 1539">
+        <title>2026-04-13, Volume: 1539</title>
+        <rect class="hit" x="529.25" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="534.82" y1="48" x2="534.82" y2="284"/>
+        <circle class="cx s0" cx="534.82" cy="136.03" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="414.78" y="114.03" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="424.78" y="132.03">2026-04-13</text>
+            <rect class="tsw s0" x="424.78" y="140.03" width="9" height="9" rx="2"/>
+            <text class="tx" x="438.78" y="149.03">Volume: 1539</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-14, Volume: 1463">
+        <title>2026-04-14, Volume: 1463</title>
+        <rect class="hit" x="540.4" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="545.97" y1="48" x2="545.97" y2="284"/>
+        <circle class="cx s0" cx="545.97" cy="161.67" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="425.93" y="139.67" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="435.93" y="157.67">2026-04-14</text>
+            <rect class="tsw s0" x="435.93" y="165.67" width="9" height="9" rx="2"/>
+            <text class="tx" x="449.93" y="174.67">Volume: 1463</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-15, Volume: 1505">
+        <title>2026-04-15, Volume: 1505</title>
+        <rect class="hit" x="551.54" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="557.12" y1="48" x2="557.12" y2="284"/>
+        <circle class="cx s0" cx="557.12" cy="147.41" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="437.08" y="125.41" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="447.08" y="143.41">2026-04-15</text>
+            <rect class="tsw s0" x="447.08" y="151.41" width="9" height="9" rx="2"/>
+            <text class="tx" x="461.08" y="160.41">Volume: 1505</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-16, Volume: 1636">
+        <title>2026-04-16, Volume: 1636</title>
+        <rect class="hit" x="562.69" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="568.26" y1="48" x2="568.26" y2="284"/>
+        <circle class="cx s0" cx="568.26" cy="103.17" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="448.22" y="81.17" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="458.22" y="99.17">2026-04-16</text>
+            <rect class="tsw s0" x="458.22" y="107.17" width="9" height="9" rx="2"/>
+            <text class="tx" x="472.22" y="116.17">Volume: 1636</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-17, Volume: 1760">
+        <title>2026-04-17, Volume: 1760</title>
+        <rect class="hit" x="573.84" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="579.41" y1="48" x2="579.41" y2="284"/>
+        <circle class="cx s0" cx="579.41" cy="61.46" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="459.37" y="48" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="469.37" y="66">2026-04-17</text>
+            <rect class="tsw s0" x="469.37" y="74" width="9" height="9" rx="2"/>
+            <text class="tx" x="483.37" y="83">Volume: 1760</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-18, Volume: 1786">
+        <title>2026-04-18, Volume: 1786</title>
+        <rect class="hit" x="584.98" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="590.56" y1="48" x2="590.56" y2="284"/>
+        <circle class="cx s0" cx="590.56" cy="52.89" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="470.52" y="48" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="480.52" y="66">2026-04-18</text>
+            <rect class="tsw s0" x="480.52" y="74" width="9" height="9" rx="2"/>
+            <text class="tx" x="494.52" y="83">Volume: 1786</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-19, Volume: 1696">
+        <title>2026-04-19, Volume: 1696</title>
+        <rect class="hit" x="596.13" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="601.71" y1="48" x2="601.71" y2="284"/>
+        <circle class="cx s0" cx="601.71" cy="83.03" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="481.67" y="61.03" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="491.67" y="79.03">2026-04-19</text>
+            <rect class="tsw s0" x="491.67" y="87.03" width="9" height="9" rx="2"/>
+            <text class="tx" x="505.67" y="96.03">Volume: 1696</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-20, Volume: 1562">
+        <title>2026-04-20, Volume: 1562</title>
+        <rect class="hit" x="607.28" y="48" width="11.15" height="236"/>
+        <line class="vl" x1="612.85" y1="48" x2="612.85" y2="284"/>
+        <circle class="cx s0" cx="612.85" cy="128.28" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="492.81" y="106.28" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="502.81" y="124.28">2026-04-20</text>
+            <rect class="tsw s0" x="502.81" y="132.28" width="9" height="9" rx="2"/>
+            <text class="tx" x="516.81" y="141.28">Volume: 1562</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2026-04-21, Volume: 1487">
+        <title>2026-04-21, Volume: 1487</title>
+        <rect class="hit" x="618.43" y="48" width="5.57" height="236"/>
+        <line class="vl" x1="624" y1="48" x2="624" y2="284"/>
+        <circle class="cx s0" cx="624" cy="153.62" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="503.96" y="131.62" width="108.04" height="44" rx="6"/>
+            <text class="tx b" x="513.96" y="149.62">2026-04-21</text>
+            <rect class="tsw s0" x="513.96" y="157.62" width="9" height="9" rx="2"/>
+            <text class="tx" x="527.96" y="166.62">Volume: 1487</text>
+        </g>
+    </g>
+    <rect class="rsb" x="66.64" y="312" width="557.36" height="46" rx="3"/>
+    <path class="rsl s0"
+          d="M66.64 350.73L69.75 346.85L72.87 345.71L75.98 347.97L79.09 351.75L82.21 354L85.32 352.85L88.44 348.98L91.55 345.13L94.66 344.02L97.78 346.32L100.89 350.13L104 352.4L107.12 351.27L110.23 347.43L113.35 343.63L116.46 342.58L119.57 344.94L122.69 348.79L125.8 351.1L128.91 350L132.03 346.21L135.14 342.46L138.26 341.48L141.37 343.9L144.48 347.8L147.6 350.13L150.71 349.06L153.82 345.3L156.94 341.6L160.05 340.68L163.17 343.14L166.28 347.06L169.39 349.41L172.51 348.34L175.62 344.59L178.73 340.91L181.85 340.01L184.96 342.48L188.08 346.4L191.19 348.73L194.3 347.64L197.42 343.86L200.53 340.17L203.64 339.26L206.76 341.73L209.87 345.61L212.99 347.89L216.1 346.74L219.21 342.92L222.33 339.2L225.44 338.26L228.55 340.69L231.67 344.53L234.78 346.74L237.9 345.53L241.01 341.65L244.12 337.89L247.24 336.92L250.35 339.32L253.46 343.1L256.58 345.26L259.69 343.99L262.81 340.07L265.92 336.28L269.03 335.3L272.15 337.67L275.26 341.43L278.37 343.55L281.49 342.24L284.6 338.31L287.72 334.52L290.83 333.54L293.94 335.93L297.06 339.69L300.17 341.8L303.28 340.5L306.4 336.57L309.51 332.81L312.63 331.88L315.74 334.31L318.85 338.1L321.97 340.23L325.08 338.95L328.19 335.06L331.31 331.35L334.42 330.48L337.54 332.97L340.65 336.8L343.76 338.97L346.88 337.72L349.99 333.88L353.1 330.23L356.22 329.43L359.33 331.97L362.45 335.85L365.56 338.04L368.67 336.82L371.79 333.01L374.9 329.41L378.01 328.65L381.13 331.23L384.24 335.13L387.36 337.33L390.47 336.11L393.58 332.31L396.7 328.73L399.81 327.99L402.92 330.58L406.04 334.46L409.15 336.64L412.27 335.39L415.38 331.56L418.49 327.97L421.61 327.22L424.72 329.79L427.83 333.64L430.95 335.76L434.06 334.45L437.18 330.59L440.29 326.96L443.4 326.19L446.52 328.72L449.63 332.51L452.74 334.57L455.86 333.2L458.97 329.28L462.09 325.61L465.2 324.81L468.31 327.3L471.43 331.05L474.54 333.05L477.65 331.62L480.77 327.66L483.88 323.98L487 323.16L490.11 325.63L493.22 329.35L496.34 331.32L499.45 329.86L502.56 325.89L505.68 322.21L508.79 321.41L511.91 323.9L515.02 327.62L518.13 329.58L521.25 328.12L524.36 324.17L527.47 320.53L530.59 319.77L533.7 322.3L536.82 326.05L539.93 328.04L543.04 326.61L546.16 322.7L549.27 319.12L552.38 318.42L555.5 321.01L558.61 324.8L561.73 326.82L564.84 325.43L567.95 321.56L571.07 318.04L574.18 317.41L577.29 320.05L580.41 323.88L583.52 325.92L586.64 324.55L589.75 320.73L592.86 317.25L595.98 316.66L599.09 319.34L602.2 323.18L605.32 325.22L608.43 323.85L611.55 320.03L614.66 316.57L617.77 316L620.89 318.68L624 322.5"/>
+    <rect class="rsd" x="66.64" y="312" width="186.82" height="46"/>
+    <rect class="rsd" x="409.15" y="312" width="214.85" height="46"/>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Selected: 2026-03-02 to 2026-04-21">
+        <title>Selected: 2026-03-02 to 2026-04-21</title>
+        <rect class="rsw" x="253.46" y="312" width="155.69" height="46"/>
+        <rect class="rsh" x="250.46" y="325" width="6" height="20" rx="2"/>
+        <rect class="rsh" x="406.15" y="325" width="6" height="20" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="223.63" y="257" width="215.36" height="27" rx="6"/>
+            <text class="tx" x="233.63" y="275">Selected: 2026-03-02 to 2026-04-21</text>
+        </g>
+    </g>
+    <text class="tk" x="66.64" y="371">2026-01-01</text>
+    <text class="tk end" x="624" y="371">2026-06-29</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 166) rotate(-90)">Transactions</text>
+</svg>

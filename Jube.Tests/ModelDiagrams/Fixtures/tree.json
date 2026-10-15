@@ -1,0 +1,85 @@
+{
+  "inputCount": 4,
+  "outputClasses": 2,
+  "attributes": [
+    {
+      "name": "0",
+      "nature": "Continuous"
+    },
+    {
+      "name": "1",
+      "nature": "Continuous"
+    },
+    {
+      "name": "2",
+      "nature": "Continuous"
+    },
+    {
+      "name": "3",
+      "nature": "Continuous"
+    }
+  ],
+  "root": {
+    "attributeIndex": 0,
+    "branches": [
+      {
+        "comparison": "LessThanOrEqual",
+        "value": 1.9190875870031712,
+        "attributeIndex": 3,
+        "branches": [
+          {
+            "comparison": "LessThanOrEqual",
+            "value": 0.017496261288177346,
+            "attributeIndex": 1,
+            "branches": [
+              {
+                "comparison": "LessThanOrEqual",
+                "value": 1.0449354674177873,
+                "output": 0
+              },
+              {
+                "comparison": "GreaterThan",
+                "value": 1.0449354674177873,
+                "output": 1
+              }
+            ]
+          },
+          {
+            "comparison": "GreaterThan",
+            "value": 0.017496261288177346,
+            "attributeIndex": 2,
+            "branches": [
+              {
+                "comparison": "LessThanOrEqual",
+                "value": 0.03180727666793734,
+                "output": 1
+              },
+              {
+                "comparison": "GreaterThan",
+                "value": 0.03180727666793734,
+                "attributeIndex": 1,
+                "branches": [
+                  {
+                    "comparison": "LessThanOrEqual",
+                    "value": 1.0449354674177873,
+                    "output": 0
+                  },
+                  {
+                    "comparison": "GreaterThan",
+                    "value": 1.0449354674177873,
+                    "output": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "comparison": "GreaterThan",
+        "value": 1.9190875870031712,
+        "output": 1
+      }
+    ]
+  }
+}

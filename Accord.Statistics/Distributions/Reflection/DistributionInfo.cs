@@ -1,86 +1,110 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Accord.Statistics.Distributions.Fitting;
+using Accord.Statistics.Distributions.Multivariate;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Statistics.Distributions.Reflection
 {
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.Statistics.Distributions.Multivariate;
-    using Accord.Statistics.Distributions.Univariate;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
-    using Accord.Compat;
-    using System.Threading.Tasks;
-
     /// <summary>
-    ///   Discovers the parameters of a <see cref="IDistribution">probability distribution</see>
-    ///   and helps determine their range and whether then can be constructed automatically from
-    ///   their indicated parameter ranges.
+    ///     Discovers the parameters of a <see cref="IDistribution">probability distribution</see>
+    ///     and helps determine their range and whether then can be constructed automatically from
+    ///     their indicated parameter ranges.
     /// </summary>
-    /// 
     public class DistributionInfo
     {
         private bool? isBuildable;
 
         /// <summary>
-        ///   Gets the distribution's type information.
+        ///     Initializes a new instance of the <see cref="DistributionInfo" /> class.
         /// </summary>
-        /// 
+        /// <param name="type">The type for the distribution.</param>
+        public DistributionInfo(Type type)
+        {
+            var baseType = typeof(IDistribution);
+#if NETSTANDARD
+            var typeDesc = type.GetTypeInfo();
+            if (!baseType.GetTypeInfo().IsAssignableFrom(typeDesc) || typeDesc.IsAbstract || typeDesc.IsInterface)
+                throw new ArgumentException("The type must be a concrete class implementing IDistribution.", "type");
+#else
+            if (!baseType.IsAssignableFrom(type) || type.IsAbstract || type.IsInterface)
+            {
+                throw new ArgumentException("The type must be a concrete class implementing IDistribution.", "type");
+            }
+#endif
+            DistributionType = type;
+            Name = GetDistributionName(type);
+        }
+
+        /// <summary>
+        ///     Gets the distribution's type information.
+        /// </summary>
         public Type DistributionType { get; protected set; }
 
         /// <summary>
-        ///   Gets the name of this distribution in a more human-readable form.
+        ///     Gets the name of this distribution in a more human-readable form.
         /// </summary>
-        /// 
         public string Name { get; protected set; }
 
         /// <summary>
-        ///   Gets a value indicating whether it is possible to discover enough
-        ///   information about this constructor such that the distribution can
-        ///   be constructed using reflection.
+        ///     Gets a value indicating whether it is possible to discover enough
+        ///     information about this constructor such that the distribution can
+        ///     be constructed using reflection.
         /// </summary>
-        /// 
         /// <value><c>true</c> if this instance is buildable; otherwise, <c>false</c>.</value>
-        /// 
         public bool IsBuildable
         {
             get
             {
                 if (isBuildable == null)
+                {
                     isBuildable = GetConstructors().Any(x => x.IsBuildable);
+                }
+
                 return isBuildable.Value;
             }
         }
 
         /// <summary>
-        ///   Gets a value indicating whether the distribution modeled by <see cref="DistributionType"/> is a discrete-valued distribution.
-        ///   Discrete distributions are assumed to inherit from <see cref="UnivariateDiscreteDistribution"/> or 
-        ///   <see cref="MultivariateDiscreteDistribution"/>.
+        ///     Gets a value indicating whether the distribution modeled by <see cref="DistributionType" /> is a discrete-valued
+        ///     distribution.
+        ///     Discrete distributions are assumed to inherit from <see cref="UnivariateDiscreteDistribution" /> or
+        ///     <see cref="MultivariateDiscreteDistribution" />.
         /// </summary>
-        /// 
         public bool IsDiscrete
         {
             get
@@ -91,17 +115,17 @@ namespace Accord.Statistics.Distributions.Reflection
                   || typeof(MultivariateDiscreteDistribution).GetTypeInfo().IsAssignableFrom(distributionTypeInfo);
 #else
                 return typeof(UnivariateDiscreteDistribution).IsAssignableFrom(DistributionType)
-                  || typeof(MultivariateDiscreteDistribution).IsAssignableFrom(DistributionType);
+                       || typeof(MultivariateDiscreteDistribution).IsAssignableFrom(DistributionType);
 #endif
             }
         }
 
         /// <summary>
-        ///   Gets a value indicating whether the distribution modeled by <see cref="DistributionType"/> is a continuous-valued distribution.
-        ///   Discrete distributions are assumed to inherit from <see cref="UnivariateContinuousDistribution"/> or 
-        ///   <see cref="MultivariateContinuousDistribution"/>.
+        ///     Gets a value indicating whether the distribution modeled by <see cref="DistributionType" /> is a continuous-valued
+        ///     distribution.
+        ///     Discrete distributions are assumed to inherit from <see cref="UnivariateContinuousDistribution" /> or
+        ///     <see cref="MultivariateContinuousDistribution" />.
         /// </summary>
-        /// 
         public bool IsContinuous
         {
             get
@@ -112,16 +136,15 @@ namespace Accord.Statistics.Distributions.Reflection
                   || typeof(MultivariateContinuousDistribution).GetTypeInfo().IsAssignableFrom(distributionTypeInfo);
 #else
                 return typeof(UnivariateContinuousDistribution).IsAssignableFrom(DistributionType)
-                  || typeof(MultivariateContinuousDistribution).IsAssignableFrom(DistributionType);
+                       || typeof(MultivariateContinuousDistribution).IsAssignableFrom(DistributionType);
 #endif
             }
         }
 
         /// <summary>
-        ///   Gets a value indicating whether the distribution modeled by <see cref="DistributionType"/> is univariate.
-        ///   A distribution is assumed to be univariate if it implements the <see cref="IUnivariateDistribution"/> interface.
+        ///     Gets a value indicating whether the distribution modeled by <see cref="DistributionType" /> is univariate.
+        ///     A distribution is assumed to be univariate if it implements the <see cref="IUnivariateDistribution" /> interface.
         /// </summary>
-        /// 
         public bool IsUnivariate
         {
 #if NETSTANDARD
@@ -132,10 +155,9 @@ namespace Accord.Statistics.Distributions.Reflection
         }
 
         /// <summary>
-        ///   Gets a value indicating whether the distribution modeled by <see cref="DistributionType"/> is multivariate.
-        ///   A distribution is assumed to be univariate if it implements the <see cref="IMultivariateDistribution"/> interface.
+        ///     Gets a value indicating whether the distribution modeled by <see cref="DistributionType" /> is multivariate.
+        ///     A distribution is assumed to be univariate if it implements the <see cref="IMultivariateDistribution" /> interface.
         /// </summary>
-        /// 
         public bool IsMultivariate
         {
 #if NETSTANDARD
@@ -146,30 +168,8 @@ namespace Accord.Statistics.Distributions.Reflection
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DistributionInfo" /> class.
+        ///     Gets the public constructors of the distribution.
         /// </summary>
-        /// 
-        /// <param name="type">The type for the distribution.</param>
-        /// 
-        public DistributionInfo(Type type)
-        {
-            Type baseType = typeof(IDistribution);
-#if NETSTANDARD
-            var typeDesc = type.GetTypeInfo();
-            if (!baseType.GetTypeInfo().IsAssignableFrom(typeDesc) || typeDesc.IsAbstract || typeDesc.IsInterface)
-                throw new ArgumentException("type");
-#else
-            if (!baseType.IsAssignableFrom(type) || type.IsAbstract || type.IsInterface)
-                throw new ArgumentException("type");
-#endif
-            this.DistributionType = type;
-            this.Name = GetDistributionName(type);
-        }
-
-        /// <summary>
-        ///   Gets the public constructors of the distribution.
-        /// </summary>
-        /// 
         public DistributionConstructorInfo[] GetConstructors()
         {
 #if NETSTANDARD
@@ -181,55 +181,58 @@ namespace Accord.Statistics.Distributions.Reflection
                     constructors.Add(new DistributionConstructorInfo(ctor));
 #else
             var constructors = new List<DistributionConstructorInfo>();
-            foreach (ConstructorInfo ctor in DistributionType.GetConstructors())
+            foreach (var ctor in DistributionType.GetConstructors())
+            {
                 constructors.Add(new DistributionConstructorInfo(ctor));
+            }
 #endif
 
             return constructors.ToArray();
         }
 
         /// <summary>
-        ///   Gets the fitting options object that are expected by the distribution, if any. An
-        ///   Accord.NET distribution object can be fitted to a set of observed values. However,
-        ///   some distributions have different settings on how this fitting can be done. This
-        ///   function creates an object that contains those possible settings that can be configured
-        ///   for a given distribution type.
+        ///     Gets the fitting options object that are expected by the distribution, if any. An
+        ///     Accord.NET distribution object can be fitted to a set of observed values. However,
+        ///     some distributions have different settings on how this fitting can be done. This
+        ///     function creates an object that contains those possible settings that can be configured
+        ///     for a given distribution type.
         /// </summary>
-        /// 
         public IFittingOptions GetFittingOptions()
         {
             return GetFittingOptions(DistributionType);
         }
 
         /// <summary>
-        ///   Gets the name of the distribution modeled by a given Accord.NET type. 
-        ///   The name is returned in a normalized form (i.e. given a type whose name
-        ///   is  NormalDistribution, the function would return "Normal").
+        ///     Gets the name of the distribution modeled by a given Accord.NET type.
+        ///     The name is returned in a normalized form (i.e. given a type whose name
+        ///     is  NormalDistribution, the function would return "Normal").
         /// </summary>
-        /// 
         public static string GetDistributionName(Type type)
         {
             // Extract the real distribution name from the class name
-            string name = type.Name;
+            var name = type.Name;
 
             if (name.Contains('`'))
-                name = name.Remove(name.IndexOf("`"));
+            {
+                name = name.Remove(name.IndexOf("`", StringComparison.Ordinal));
+            }
 
             // Remove the trailing "Distribution" from the name
             if (name.EndsWith("Distribution"))
-                name = name.Remove(name.IndexOf("Distribution"));
+            {
+                name = name.Remove(name.IndexOf("Distribution", StringComparison.Ordinal));
+            }
 
             return name.Trim();
         }
 
         /// <summary>
-        ///   Gets the fitting options object that are expected by one distribution, if any. An
-        ///   Accord.NET distribution object can be fit to a set of observed values. However,
-        ///   some distributions have different settings on how this fitting can be done. This
-        ///   function creates an object that contains those possible settings that can be configured
-        ///   for a given distribution type.
+        ///     Gets the fitting options object that are expected by one distribution, if any. An
+        ///     Accord.NET distribution object can be fit to a set of observed values. However,
+        ///     some distributions have different settings on how this fitting can be done. This
+        ///     function creates an object that contains those possible settings that can be configured
+        ///     for a given distribution type.
         /// </summary>
-        /// 
         public static IFittingOptions GetFittingOptions(Type type)
         {
             // Try to create a fitting options object
@@ -247,22 +250,27 @@ namespace Accord.Statistics.Distributions.Reflection
             var interfaces = type.GetInterfaces()
                 .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IFittableDistribution<,>));
 
-            foreach (Type i in interfaces)
-                foreach (Type arg in i.GetGenericArguments())
+            foreach (var i in interfaces)
+            {
+                foreach (var arg in i.GetGenericArguments())
+                {
                     if (fittingOptions.IsAssignableFrom(arg) && arg != fittingOptions)
+                    {
                         return (IFittingOptions)Activator.CreateInstance(arg);
+                    }
+                }
+            }
 #endif
             return null;
         }
 
         /// <summary>
-        ///   Gets the fitting options object that are expected by one distribution, if any. An
-        ///   Accord.NET distribution object can be fit to a set of observed values. However,
-        ///   some distributions have different settings on how this fitting can be done. This
-        ///   function creates an object that contains those possible settings that can be configured
-        ///   for a given distribution type.
+        ///     Gets the fitting options object that are expected by one distribution, if any. An
+        ///     Accord.NET distribution object can be fit to a set of observed values. However,
+        ///     some distributions have different settings on how this fitting can be done. This
+        ///     function creates an object that contains those possible settings that can be configured
+        ///     for a given distribution type.
         /// </summary>
-        /// 
         public static IFittingOptions GetFittingOptions<T>()
         {
             return GetFittingOptions(typeof(T));
@@ -289,13 +297,12 @@ namespace Accord.Statistics.Distributions.Reflection
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
         /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
             return Name;
         }
-
     }
 }

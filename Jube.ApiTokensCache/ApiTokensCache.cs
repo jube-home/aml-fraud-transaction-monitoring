@@ -27,12 +27,15 @@ namespace Jube.ApiTokensCache
         private readonly ConcurrentDictionary<string, byte> apiKeys = new ConcurrentDictionary<string, byte>();
         private readonly DynamicEnvironment dynamicEnvironment;
         private readonly ILog log;
+
         public ApiTokensCache(ILog log, DynamicEnvironment dynamicEnvironment, CacheService cacheService)
         {
             this.log = log;
             this.dynamicEnvironment = dynamicEnvironment;
-            cacheService.CacheUserRegistryApiKeyRepository.OnCaseUserRegistryApiKeySetEvent += OnCaseUserRegistryApiKeySetEvent;
-            cacheService.CacheUserRegistryApiKeyRepository.OnCaseUserRegistryApiKeyRemoveEvent += OnCaseUserRegistryApiKeyRemoveEvent;
+            cacheService.CacheUserRegistryApiKeyRepository.OnCaseUserRegistryApiKeySetEvent +=
+                OnCaseUserRegistryApiKeySetEvent;
+            cacheService.CacheUserRegistryApiKeyRepository.OnCaseUserRegistryApiKeyRemoveEvent +=
+                OnCaseUserRegistryApiKeyRemoveEvent;
         }
 
         private void OnCaseUserRegistryApiKeySetEvent(object? sender, CaseUserRegistryKeyEventArguments e)
@@ -75,7 +78,8 @@ namespace Jube.ApiTokensCache
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"ApiTokensCache StartAsync: Could not fetch API tokens for batch refresh: {ex}. Waiting for retry.");
+                    log.Error(
+                        $"ApiTokensCache StartAsync: Could not fetch API tokens for batch refresh: {ex}. Waiting for retry.");
 
                     try
                     {
@@ -93,6 +97,7 @@ namespace Jube.ApiTokensCache
         {
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             var repository = new UserRegistryApiKeyRepository(dbContext);
 
             var allKeysFromRepository = (await repository.GetAllAsync(token))

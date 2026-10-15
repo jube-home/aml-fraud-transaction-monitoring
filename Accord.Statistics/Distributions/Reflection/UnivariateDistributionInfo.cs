@@ -1,94 +1,96 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Accord.Statistics.Distributions.Reflection
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
-    using Accord.Compat;
-    using System.Threading.Tasks;
-
     /// <summary>
-    ///   Discovers the parameters of a <see cref="IUnivariateDistribution">univariate probability 
-    ///   distribution</see> and helps determine their range and whether then can be constructed 
-    ///   automatically from their indicated parameter ranges.
+    ///     Discovers the parameters of a
+    ///     <see cref="IUnivariateDistribution">
+    ///         univariate probability
+    ///         distribution
+    ///     </see>
+    ///     and helps determine their range and whether then can be constructed
+    ///     automatically from their indicated parameter ranges.
     /// </summary>
-    /// 
     public class UnivariateDistributionInfo : DistributionInfo
     {
         /// <summary>
-        ///   Initializes a new instance of the <see cref="UnivariateDistributionInfo"/> class.
+        ///     Initializes a new instance of the <see cref="UnivariateDistributionInfo" /> class.
         /// </summary>
-        /// 
         /// <param name="type">The type for the distribution.</param>
-        /// 
         public UnivariateDistributionInfo(Type type)
             : base(type)
         {
         }
 
         /// <summary>
-        ///   Gets an array containing all univariate distributions 
-        ///   by inspecting Accord.NET assemblies using reflection.
+        ///     Gets an array containing all univariate distributions
+        ///     by inspecting Accord.NET assemblies using reflection.
         /// </summary>
-        /// 
         public static IEnumerable<UnivariateDistributionInfo> GetUnivariateDistributions(bool buildableOnly = false)
         {
             var distributions = GetDistributionsInheritingFromBaseType(typeof(IUnivariateDistribution))
                 .Select(p => new UnivariateDistributionInfo(p));
 
             if (buildableOnly)
+            {
                 distributions = distributions.Where(d => d.IsBuildable);
+            }
 
             return distributions;
         }
 
         /// <summary>
-        ///   Creates a new instance of the distribution using the given arguments.
+        ///     Creates a new instance of the distribution using the given arguments.
         /// </summary>
-        /// 
         /// <param name="arguments">The arguments to be passed to the distribution's constructor.</param>
-        /// 
         public IUnivariateDistribution CreateInstance(Dictionary<DistributionParameterInfo, object> arguments)
         {
-            IUnivariateDistribution distribution = null;
-
             var parameters = new object[arguments.Count];
-            foreach (KeyValuePair<DistributionParameterInfo, object> p in arguments)
+            foreach (var p in arguments)
             {
-                Type paramType = p.Key.ParameterInfo.ParameterType;
+                var paramType = p.Key.ParameterInfo.ParameterType;
 #if NETSTANDARD
                 if (paramType.GetTypeInfo().IsEnum)
 #else
                 if (paramType.IsEnum)
 #endif
                 {
-                    int i = (int)Convert.ChangeType(p.Value, typeof(int));
-                    object v = Enum.ToObject(paramType, i);
+                    var i = (int)Convert.ChangeType(p.Value, typeof(int));
+                    var v = Enum.ToObject(paramType, i);
                     parameters[p.Key.Position] = v;
                 }
                 else
@@ -97,16 +99,16 @@ namespace Accord.Statistics.Distributions.Reflection
                 }
             }
 
-            distribution = (IUnivariateDistribution)Activator.CreateInstance(this.DistributionType, parameters);
+            var distribution =
+                (IUnivariateDistribution)Activator.CreateInstance(DistributionType, parameters);
 
             return distribution;
         }
 
         /// <summary>
-        ///   Creates a new instance of the distribution using default arguments, 
-        ///   if the distribution declared them using parameter attributes.
+        ///     Creates a new instance of the distribution using default arguments,
+        ///     if the distribution declared them using parameter attributes.
         /// </summary>
-        /// 
         public static T CreateInstance<T>()
         {
             var info = new UnivariateDistributionInfo(typeof(T));
@@ -121,10 +123,11 @@ namespace Accord.Statistics.Distributions.Reflection
 
             // Select the minimum value for the parameters
             foreach (var parameter in ctor.GetParameters())
+            {
                 arguments[parameter] = parameter.DefaultValue;
+            }
 
             return (T)info.CreateInstance(arguments);
         }
     }
-
 }

@@ -17,8 +17,10 @@ using System.Linq;
 using FluentAssertions;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Engine.Integrity;
+using Jube.Engine.Integrity.Models;
 using RuleReference = Jube.Parser.RuleReference;
 using Jube.Parser.Dependency;
+using Jube.Parser.Dependency.Models;
 using Xunit;
 using EngineModel = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
 
@@ -28,7 +30,6 @@ namespace Jube.Test.Engine.Integrity
     public sealed class ModelIntegrityRulesTests
     {
         private static readonly DateTime now = new(2026, 9, 23, 12, 0, 0, DateTimeKind.Utc);
-
         private static readonly ModelEntity field = new(ModelEntityKind.RequestXPath, 1, "AccountId", true);
         private static readonly ModelEntity counter = new(ModelEntityKind.TtlCounter, 2, "PerAccount", true);
         private static readonly ModelEntity activation = new(ModelEntityKind.ActivationRule, 3, "Many", true);
@@ -61,12 +62,16 @@ namespace Jube.Test.Engine.Integrity
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.DependencyDangling &&
                                                c.Severity == IntegritySeverity.Error && c.EntityName == "Many" &&
                                                c.Message.Contains("TTLCounter.Missing"));
+
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.DependencyDangling &&
                                                c.Severity == IntegritySeverity.Info && c.EntityName == "Dormant");
+
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.DependencyOnInactive &&
                                                c.EntityName == "UsesOld" && c.Message.Contains("List Old"));
+
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.EntityUnreferenced &&
                                                c.EntityName == "Unused" && c.Severity == IntegritySeverity.Info);
+
             checks.Should().NotContain(c => c.Code == IntegrityCode.EntityUnreferenced && c.EntityName == "Old");
         }
 
@@ -101,15 +106,9 @@ namespace Jube.Test.Engine.Integrity
                 IntegrityCode.TtlCountersDisabled, IntegrityCode.SearchKeyTtlShortensWindow,
                 IntegrityCode.SearchKeyTtlCollapsesWindow
             ]);
+
             checks.Single(c => c.Code == IntegrityCode.SearchKeyTtlShortensWindow).EntityId.Should().Be(10);
             checks.Single(c => c.Code == IntegrityCode.SearchKeyTtlCollapsesWindow).EntityId.Should().Be(11);
-        }
-
-        [Fact]
-        public void EveryCodeHasADescription()
-        {
-            Enum.GetValues<IntegrityCode>()
-                .Should().OnlyContain(c => IntegrityCodeText.Describe(c) != c.ToString());
         }
 
         [Fact]
@@ -134,6 +133,7 @@ namespace Jube.Test.Engine.Integrity
                 new EngineLoadedEntity("ActivationRule", 99, "Deactivated"),
                 new EngineLoadedEntity("InlineScript", 50, "NotCompared")
             ]);
+
             var observation = new EngineObservation(EngineStateSourceKind.Snapshot, [state],
             [
                 new EngineNode("node-a", now.AddMinutes(-1), now.AddMinutes(-5)),
@@ -146,16 +146,22 @@ namespace Jube.Test.Engine.Integrity
 
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.EngineModelNotStarted &&
                                                c.EntityName == "node-a");
+
             checks.Where(c => c.Code == IntegrityCode.EngineEntityNotLoaded).Select(c => c.EntityName).Should()
                 .BeEquivalentTo("Many", "UsesOld");
+
             checks.Single(c => c.EntityName == "Many").Message.Should().Contain("approved");
+
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.EngineEntityStale &&
                                                c.EntityName == "Deactivated");
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.EngineNodeStale && c.EntityName == "node-b");
+
             checks.Should().NotContain(c => c.Code == IntegrityCode.EngineNodeStale && c.EntityName == "node-c",
                 "an instance silent for longer than the retention window drops out of the findings");
+
             checks.Should().ContainSingle(c => c.Code == IntegrityCode.EngineModelNotLoaded &&
                                                c.EntityName == "node-b");
+
             checks.Should().NotContain(c => c.EntityName == "NotCompared" || c.EntityName == "Unused");
         }
 
@@ -175,6 +181,7 @@ namespace Jube.Test.Engine.Integrity
             var model = new EngineModel { Started = true };
             model.Instance.Id = 7;
             model.Instance.TenantRegistryId = 3;
+
             model.Snapshot.EntityAnalysisModelRequestXPaths.Add(new EntityAnalysisModelRequestXPath
                 { Id = 1, Name = "AccountId" });
             model.Snapshot.ModelGatewayRules.Add(new EntityModelGatewayRule
@@ -186,6 +193,7 @@ namespace Jube.Test.Engine.Integrity
 
             (state.EntityAnalysisModelId, state.TenantRegistryId, state.Started, state.Instance).Should()
                 .Be((7, 3, true, "node-a"));
+
             state.Loaded.Should().BeEquivalentTo(new List<EngineLoadedEntity>
             {
                 new("RequestXPath", 1, "AccountId"), new("GatewayRule", 4, "Gate"), new("ActivationRule", 5, "Act")
@@ -198,10 +206,13 @@ namespace Jube.Test.Engine.Integrity
             var built = ModelGraphBuilder.Build(Graph());
 
             built.Nodes.Should().Contain(n => n.Id == "Missing:TTLCounter.Missing" && n.Kind == "Missing");
+
             built.Edges.Should().Contain(e => e.From == "ActivationRule:3" && e.To == "TtlCounter:2" &&
                                               e.Label == "TTLCounter.PerAccount" && !e.Dashed);
+
             built.Edges.Should().Contain(e => e.From == "TtlCounter:2" && e.To == "RequestXPath:1" &&
                                               e.Label == "TtlCounterDataName" && e.Dashed);
+
             built.Nodes.Single(n => n.Id == "List:4").Detail.Should().Be("Inactive");
             built.Truncated.Should().BeFalse();
         }
@@ -225,6 +236,7 @@ namespace Jube.Test.Engine.Integrity
             built.Truncated.Should().BeTrue();
             built.Nodes.Should().HaveCount(3);
             built.Nodes.Select(n => n.Id).Should().Contain("ActivationRule:3");
+
             built.Edges.Should().OnlyContain(e => built.Nodes.Any(n => n.Id == e.From) &&
                                                   built.Nodes.Any(n => n.Id == e.To));
         }

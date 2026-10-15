@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Jube.AskJooby</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AgentGuard" Version="0.11.0"/>
+        <PackageReference Include="AgentGuard.Onnx" Version="0.11.0"/>
+        <PackageReference Include="DiffPlex" Version="1.9.0"/>
+        <PackageReference Include="Microsoft.Agents.AI" Version="1.20.0"/>
+        <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.20.0"/>
+        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.9.0"/>
+    </ItemGroup>
+
+</Project>

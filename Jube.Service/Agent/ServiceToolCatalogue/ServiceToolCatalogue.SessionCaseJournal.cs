@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,18 +11,26 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.SessionCaseJournal;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddSessionCaseJournal(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "SessionCaseJournalGetByCaseWorkflowGuid", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Gets the calling user's own saved journal (e.g. case grid column layout) for a CaseWorkflow."),
-            new ServiceToolDescriptor(
-                "SessionCaseJournalCreate", OperationKind.Write, Idempotent: true, Destructive: false,
-                "Saves the calling user's own journal for a CaseWorkflow, replacing any earlier save.")
-        ]);
+        static partial void AddSessionCaseJournal(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "SessionCaseJournalGetByCaseWorkflowGuid", OperationKind.Read, true, false,
+                    "Gets the calling user's own saved journal (e.g. case grid column layout) for a CaseWorkflow.",
+                    SessionCaseJournalService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "SessionCaseJournalCreate", OperationKind.Write, true, false,
+                    "Saves the calling user's own journal for a CaseWorkflow, replacing any earlier save.",
+                    SessionCaseJournalService.RequiredPermissions)
+            ]);
+        }
     }
 }

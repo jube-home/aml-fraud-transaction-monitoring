@@ -63,6 +63,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             var stages = context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Stages ??=
                 new InvokeStagePerformance();
+
             stages.BuildArchivePayload = new StageDuration
             {
                 DurationMicroseconds = (long)(stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency))
@@ -76,6 +77,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             if (context.StartBytesUsed.HasValue)
             {
                 var currentBytes = GC.GetAllocatedBytesForCurrentThread();
+
                 context.EntityAnalysisModelInstanceEntryPayload.InvokeTaskPerformance.Memory =
                     currentBytes - context.StartBytesUsed.Value;
 

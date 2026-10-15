@@ -65,7 +65,7 @@ namespace Jube.Service.Query.VersionHistory
             {
                 if (property.CanRead && fields.Contains(property.Name) && IsSimple(property.PropertyType))
                 {
-                    projected[property.Name] = property.GetValue(row);
+                    projected[property.Name] = StampUtc(property.GetValue(row));
                 }
             }
 
@@ -82,6 +82,13 @@ namespace Jube.Service.Query.VersionHistory
                 .Select(c => new VersionFieldChange(c.PropertyName, VersionText.Shorten(c.FromValue),
                     VersionText.Shorten(c.ToValue)))
                 .ToList();
+        }
+
+        private static object? StampUtc(object? value)
+        {
+            return value is DateTime { Kind: DateTimeKind.Unspecified } dateTime
+                ? DateTime.SpecifyKind(dateTime, DateTimeKind.Utc)
+                : value;
         }
 
         private static bool IsSimple(Type type)

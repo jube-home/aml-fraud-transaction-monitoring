@@ -30,6 +30,7 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -60,14 +61,26 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["writeLagSeconds"] = rows.Where(w => w.WriteLagSeconds.HasValue)
-                    .Select(s => s.WriteLagSeconds!.Value).ToArray(),
-                ["flushLagSeconds"] = rows.Where(w => w.FlushLagSeconds.HasValue)
-                    .Select(s => s.FlushLagSeconds!.Value).ToArray(),
-                ["replayLagSeconds"] = rows.Where(w => w.ReplayLagSeconds.HasValue)
-                    .Select(s => s.ReplayLagSeconds!.Value).ToArray(),
-                ["syncPriority"] = rows.Where(w => w.SyncPriority.HasValue)
-                    .Select(s => (double)s.SyncPriority!.Value).ToArray()
+                ["writeLagSeconds"] =
+                [
+                    .. rows.Where(w => w.WriteLagSeconds.HasValue)
+                        .Select(s => s.WriteLagSeconds!.Value)
+                ],
+                ["flushLagSeconds"] =
+                [
+                    .. rows.Where(w => w.FlushLagSeconds.HasValue)
+                        .Select(s => s.FlushLagSeconds!.Value)
+                ],
+                ["replayLagSeconds"] =
+                [
+                    .. rows.Where(w => w.ReplayLagSeconds.HasValue)
+                        .Select(s => s.ReplayLagSeconds!.Value)
+                ],
+                ["syncPriority"] =
+                [
+                    .. rows.Where(w => w.SyncPriority.HasValue)
+                        .Select(s => (double)s.SyncPriority!.Value)
+                ]
             });
         }
 
@@ -89,6 +102,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.UserName != null && w.UserName.ToLower().Contains(lowerSearch)) ||
                     (w.ApplicationName != null && w.ApplicationName.ToLower().Contains(lowerSearch)) ||
@@ -109,6 +123,7 @@ namespace Jube.Data.Repository
             IQueryable<PostgresReplicationStatus> query, string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "userName" => query.OrderByField(o => o.UserName, descending),

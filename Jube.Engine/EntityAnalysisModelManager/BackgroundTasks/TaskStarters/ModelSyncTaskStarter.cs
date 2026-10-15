@@ -140,9 +140,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext.ConfigureTokenParserForSecurityAsync()
                                     .ConfigureAwait(false);
+
                                 await entityAnalysisModelContext
                                     .SyncEntityAnalysisModelsAsync(scheduledModel.TenantRegistryId)
                                     .ConfigureAwait(false);
+
                                 await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync()
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync()
@@ -169,6 +171,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncExhaustiveSearchInstancesAsync()
                                     .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncAdvancedAnalyticsInstancesAsync()
+                                    .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncEntityAnalysisModelActivationRulesAsync()
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncEntityAnalysisModelTagsAsync()
@@ -176,8 +180,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 await entityAnalysisModelContext.SyncOverridesAsync().ConfigureAwait(false);
                                 await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync()
                                     .ConfigureAwait(false);
+
                                 entityAnalysisModelContext.Snapshots.Publish();
                                 await entityAnalysisModelContext.StartupModelAsync().ConfigureAwait(false);
+
                                 await entityAnalysisModelContext.ConfirmSyncAsync(scheduledModel.TenantRegistryId)
                                     .ConfigureAwait(false);
                                 await entityAnalysisModelContext
@@ -186,8 +192,28 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                 lastSynchronisedWatermarks[scheduledModel.TenantRegistryId] = watermark;
                                 context.EntityAnalysisModels.EntityModelsHasLoadedForStartup = true;
                             }
+                            else
+                            {
+                                await entityAnalysisModelContext.ConfigureTokenParserForSecurityAsync()
+                                    .ConfigureAwait(false);
+
+                                await entityAnalysisModelContext.SyncExhaustiveSearchInstancesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncAdvancedAnalyticsInstancesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelListsAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelDictionariesAsync()
+                                    .ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncOverridesAsync().ConfigureAwait(false);
+                                await entityAnalysisModelContext.SyncEntityAnalysisModelApiUsersAsync()
+                                    .ConfigureAwait(false);
+
+                                entityAnalysisModelContext.Snapshots.Publish();
+                            }
 
                             await entityAnalysisModelContext.StoreRuleCounterValuesAsync().ConfigureAwait(false);
+
                             await entityAnalysisModelContext
                                 .HeartbeatThisModelAsync(scheduledModel.TenantRegistryId).ConfigureAwait(false);
                         }

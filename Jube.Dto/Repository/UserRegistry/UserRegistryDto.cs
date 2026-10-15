@@ -15,7 +15,11 @@ using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Repository.UserRegistry
 {
     [FormEndpoint("UserRegistry")]
@@ -43,13 +47,6 @@ namespace Jube.Dto.Repository.UserRegistry
         [ListColumn(Order = 20, Title = "Email")]
         public string? Email { get; set; }
 
-        [Description("When true, the user may authenticate. When false, sign-in is refused regardless of " +
-                     "password correctness.")]
-        [FormField(Group = "Identity", Order = 40, Widget = "switch")]
-        [NewDefault(false)]
-        [ListColumn(Order = 30, Title = "Active")]
-        public bool Active { get; set; }
-
         [Description("When true, a temporary password issued by the password reset action is additionally " +
                      "salted with the user's Name and SHA-256 hashed before Argon2 hashing (the 'wire' " +
                      "password format some client integrations expect). Does not change how the password is " +
@@ -70,6 +67,10 @@ namespace Jube.Dto.Repository.UserRegistry
         [ListColumn(Hidden = true)]
         public int Id { get; set; }
 
+        [Description("Globally-addressable identifier for this row, stable across environments and the form "
+                     + "in which every other area refers to it. Server-assigned. Read-only.")]
+        public Guid Guid { get; set; }
+
         [Description("User who created this account. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
         public string? CreatedUser { get; set; }
@@ -89,5 +90,12 @@ namespace Jube.Dto.Repository.UserRegistry
         [FormField(Group = "Audit", Order = 50, ReadOnly = true)]
         [ListColumn(Hidden = true)]
         public int InheritedId { get; set; }
+
+        [Description("When true, the user may authenticate. When false, sign-in is refused regardless of " +
+                     "password correctness.")]
+        [FormField(Group = "Identity", Order = 40, Widget = "switch")]
+        [NewDefault(false)]
+        [ListColumn(Order = 30, Title = "Active")]
+        public bool Active { get; set; }
     }
 }

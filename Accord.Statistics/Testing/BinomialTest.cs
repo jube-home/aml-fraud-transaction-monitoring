@@ -1,63 +1,76 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace Accord.Statistics.Testing
 {
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Distributions.Univariate;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Binomial test.
+    ///     Binomial test.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   In statistics, the binomial test is an exact test of the statistical significance
-    ///   of deviations from a theoretically expected distribution of observations into two
-    ///   categories. The most common use of the binomial test is in the case where the null
-    ///   hypothesis is that two categories are equally likely to occur (such as a coin toss).</para>
-    /// <para>
-    ///   When there are more than two categories, and an exact test is required, the
-    ///   <see cref="MultinomialTest"> multinomial test</see>, based on the multinomial
-    ///   distribution, must be used instead of the binomial test.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Binomial_test">
-    ///        Wikipedia, The Free Encyclopedia. Binomial-Test. Available from:
-    ///        http://en.wikipedia.org/wiki/Binomial_test </a></description></item>
-    ///   </list></para>
+    ///     <para>
+    ///         In statistics, the binomial test is an exact test of the statistical significance
+    ///         of deviations from a theoretically expected distribution of observations into two
+    ///         categories. The most common use of the binomial test is in the case where the null
+    ///         hypothesis is that two categories are equally likely to occur (such as a coin toss).
+    ///     </para>
+    ///     <para>
+    ///         When there are more than two categories, and an exact test is required, the
+    ///         <see cref="MultinomialTest"> multinomial test</see>, based on the multinomial
+    ///         distribution, must be used instead of the binomial test.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://en.wikipedia.org/wiki/Binomial_test">
+    ///                         Wikipedia, The Free Encyclopedia. Binomial-Test. Available from:
+    ///                         http://en.wikipedia.org/wiki/Binomial_test
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    ///   <para>
-    ///     This is the second example from Wikipedia's page on hypothesis testing. In this example, 
-    ///     a person is tested for clairvoyance (ability of gaining information about something through
-    ///     extra sensory perception; detecting something without using the known human senses.</para>
-    ///     
-    /// <code>
+    ///     <para>
+    ///         This is the second example from Wikipedia's page on hypothesis testing. In this example,
+    ///         a person is tested for clairvoyance (ability of gaining information about something through
+    ///         extra sensory perception; detecting something without using the known human senses.
+    ///     </para>
+    ///     <code>
     /// // A person is shown the reverse of a playing card 25 times and is
     /// // asked which of the four suits the card belongs to. Every time
     /// // the person correctly guesses the suit of the card, we count this
@@ -82,100 +95,98 @@ namespace Accord.Statistics.Testing
     /// Console.WriteLine("Significant? " + test.Significant); // True.
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="Accord.Statistics.Distributions.Univariate.BinomialDistribution"/>
-    /// 
+    /// <seealso cref="BinomialDistribution" />
     [Serializable]
     public class BinomialTest : HypothesisTest<BinomialDistribution>
     {
-
         /// <summary>
-        ///   Gets the alternative hypothesis under test. If the test is
-        ///   <see cref="IHypothesisTest.Significant"/>, the null hypothesis can be rejected
-        ///   in favor of this alternative hypothesis.
+        ///     Tests the probability of two outcomes in a series of experiments.
         /// </summary>
-        /// 
-        public OneSampleHypothesis Hypothesis { get; protected set; }
-
-        /// <summary>
-        ///   Tests the probability of two outcomes in a series of experiments.
-        /// </summary>
-        /// 
         /// <param name="trials">The experimental trials.</param>
         /// <param name="hypothesizedProbability">The hypothesized occurrence probability.</param>
         /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
-        /// 
         public BinomialTest(bool[] trials, double hypothesizedProbability = 0.5,
             OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
         {
-
-            if (trials == null) throw new ArgumentNullException("trials");
+            if (trials == null)
+            {
+                throw new ArgumentNullException("trials");
+            }
 
             if (hypothesizedProbability < 0 || hypothesizedProbability > 1.0)
+            {
                 throw new ArgumentOutOfRangeException("hypothesizedProbability");
+            }
 
-            int successes = 0;
+            var successes = 0;
 
-            for (int i = 0; i < trials.Length; i++)
-                if (trials[i]) successes++;
+            for (var i = 0; i < trials.Length; i++)
+            {
+                if (trials[i])
+                {
+                    successes++;
+                }
+            }
 
             Compute(successes, trials.Length, hypothesizedProbability, alternate);
         }
 
         /// <summary>
-        ///   Tests the probability of two outcomes in a series of experiments.
+        ///     Tests the probability of two outcomes in a series of experiments.
         /// </summary>
-        /// 
         /// <param name="successes">The number of successes in the trials.</param>
         /// <param name="trials">The total number of experimental trials.</param>
         /// <param name="hypothesizedProbability">The hypothesized occurrence probability.</param>
         /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
-        /// 
         public BinomialTest(int successes, int trials, double hypothesizedProbability = 0.5,
             OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
         {
             if (successes > trials)
+            {
                 throw new ArgumentOutOfRangeException("successes");
+            }
 
             if (hypothesizedProbability < 0 || hypothesizedProbability > 1.0)
+            {
                 throw new ArgumentOutOfRangeException("hypothesizedProbability");
+            }
 
             Compute(successes, trials, hypothesizedProbability, alternate);
         }
 
-
         /// <summary>
-        ///   Creates a Binomial test.
+        ///     Creates a Binomial test.
         /// </summary>
-        /// 
         protected BinomialTest()
         {
         }
 
+        /// <summary>
+        ///     Gets the alternative hypothesis under test. If the test is
+        ///     <see cref="IHypothesisTest.Significant" />, the null hypothesis can be rejected
+        ///     in favor of this alternative hypothesis.
+        /// </summary>
+        public OneSampleHypothesis Hypothesis { get; protected set; }
 
         /// <summary>
-        ///   Computes the Binomial test.
+        ///     Computes the Binomial test.
         /// </summary>
-        /// 
         protected void Compute(double statistic, int m, double p, OneSampleHypothesis alternate)
         {
-            this.Statistic = statistic;
-            this.StatisticDistribution = new BinomialDistribution(m, p);
-            this.Hypothesis = alternate;
-            this.Tail = (DistributionTail)alternate;
-            this.PValue = StatisticToPValue(Statistic);
+            Statistic = statistic;
+            StatisticDistribution = new BinomialDistribution(m, p);
+            Hypothesis = alternate;
+            Tail = (DistributionTail)alternate;
+            PValue = StatisticToPValue(Statistic);
 
-            this.OnSizeChanged();
+            OnSizeChanged();
         }
 
         /// <summary>
-        ///   Converts a given test statistic to a p-value.
+        ///     Converts a given test statistic to a p-value.
         /// </summary>
-        /// 
         /// <param name="x">The value of the test statistic.</param>
-        /// 
         /// <returns>The p-value for the given statistic.</returns>
-        /// 
         public override double StatisticToPValue(double x)
         {
             double p;
@@ -186,7 +197,7 @@ namespace Accord.Statistics.Testing
                     break;
 
                 case DistributionTail.OneUpper:
-                    p = StatisticDistribution.ComplementaryDistributionFunction((int)x, inclusive: true);
+                    p = StatisticDistribution.ComplementaryDistributionFunction((int)x, true);
                     break;
 
                 case DistributionTail.OneLower:
@@ -196,17 +207,15 @@ namespace Accord.Statistics.Testing
                 default:
                     throw new InvalidOperationException();
             }
+
             return p;
         }
 
         /// <summary>
-        ///   Converts a given p-value to a test statistic.
+        ///     Converts a given p-value to a test statistic.
         /// </summary>
-        /// 
         /// <param name="p">The p-value.</param>
-        /// 
         /// <returns>The test statistic which would generate the given p-value.</returns>
-        /// 
         public override double PValueToStatistic(double p)
         {
             double b;
@@ -227,61 +236,41 @@ namespace Accord.Statistics.Testing
             return b;
         }
 
-
         /// <summary>
-        ///   Computes the two-tail probability using the Wilson-Sterne rule,
-        ///   which defines the tail of the distribution based on a ordering
-        ///   of the null probabilities of X. (Smirnoff, 2003)
+        ///     Computes the two-tail probability using the Wilson-Sterne rule,
+        ///     which defines the tail of the distribution based on a ordering
+        ///     of the null probabilities of X. (Smirnoff, 2003)
         /// </summary>
-        /// 
         /// <remarks>
-        ///   References: Jeffrey S. Simonoff, Analyzing 
-        ///   Categorical Data, Springer, 2003 (pg 64).
+        ///     References: Jeffrey S. Simonoff, Analyzing
+        ///     Categorical Data, Springer, 2003 (pg 64).
         /// </remarks>
-        /// 
         private double wilsonSterne(double x)
         {
-            double mean = StatisticDistribution.Mean;
+            var mean = StatisticDistribution.Mean;
 
             if (x == mean)
-                return 1;
-
-
-            int trials = StatisticDistribution.NumberOfTrials;
-
-            // Construct a map of values and point probabilities
-            double[] probabilities = new double[trials];
-
-
-            for (int i = 0; i < probabilities.Length; i++)
-                probabilities[i] = StatisticDistribution.ProbabilityMassFunction(i);
-
-
-            int[] values;
-
-            // Build the ordered Wilson-Sterne table
-            probabilities.Sort(out values);
-
-
-            // Now, compute the cumulative probability
-            double[] cumulative = new double[trials];
-            cumulative[0] = probabilities[0];
-            for (int i = 1; i < cumulative.Length; i++)
-                cumulative[i] += cumulative[i - 1] + probabilities[i];
-
-            int v = 0;
-            for (int i = 0; i < values.Length; i++)
             {
-                if (values[i] == (int)x)
-                {
-                    v = i;
-                    while (v < probabilities.Length && probabilities[i] == probabilities[v]) v++;
-                }
+                return 1;
             }
 
 
-            return cumulative[v - 1];
-        }
+            var trials = StatisticDistribution.NumberOfTrials;
 
+            var observed = StatisticDistribution.ProbabilityMassFunction((int)x);
+            var threshold = observed * (1.0 + 1e-7);
+
+            double sum = 0;
+            for (var i = 0; i <= trials; i++)
+            {
+                var p = StatisticDistribution.ProbabilityMassFunction(i);
+                if (p <= threshold)
+                {
+                    sum += p;
+                }
+            }
+
+            return System.Math.Min(1.0, sum);
+        }
     }
 }

@@ -47,6 +47,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
     protected static string BuildQuery(IEnumerable<KeyValuePair<string, string>> pairs)
     {
         var text = string.Join("&", pairs.Select(p => p.Key + "=" + p.Value));
+
         return text.Length == 0 ? string.Empty : "?" + text;
     }
 
@@ -60,6 +61,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
         try
         {
             using var doc = JsonDocument.Parse(response.Body);
+
             return doc.RootElement.ValueKind == JsonValueKind.Object &&
                    doc.RootElement.EnumerateObject().Any(p =>
                        p.Name.Equals("rows", StringComparison.OrdinalIgnoreCase) &&
@@ -140,9 +142,11 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
             var r = await GetAsClientAsync(As(user));
             run.Expect(r.Status == 200, r, "AUTHORISED-REFUSED", $"{user} is a landlord and must get 200");
             run.Expect(r.Status != 200 || IsRow(r), r, "SHAPE", "expected {rows,total,statistics}");
+
             run.Expect(
                 r.Status != 200 || (r.ContentType ?? string.Empty).Contains("json", StringComparison.OrdinalIgnoreCase),
                 r, "CONTENT-TYPE", "list must be JSON");
+
             run.Expect(!ContainsSecret(r.Body), r, "SECRET-IN-BODY", "credential-shaped text in the list");
             var bearer = await GetAsClientAsync(As(user).AsBearer());
             run.Expect(bearer.Status == 200, bearer, "AUTHORISED-BEARER", "bearer form must also work");
@@ -200,6 +204,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
             };
 
             var distinct = values.Distinct().ToList();
+
             if (!area.Parameters.Contains("take"))
             {
                 distinct = [.. distinct.Where((_, i) => i % 4 == 0 || i < 30)];
@@ -209,6 +214,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
             {
                 var encoded = MonitoringPayloads.Enc(value);
                 work.Add((parameter, value, BuildQuery([new(parameter, encoded)])));
+
                 if (value.Length < 200 && parameter is "search" or "sortField")
                 {
                     work.Add((parameter, value, BuildQuery([new(parameter, MonitoringPayloads.Enc(encoded))])));
@@ -241,6 +247,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
         await run.ForEachAsync(work, async item =>
         {
             var query = item.Query;
+
             if (area.Parameters.Contains("take") && item.Param != "take" && item.Param != "all" &&
                 !query.Contains("take"))
             {
@@ -248,13 +255,17 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
             }
 
             var r = run.Check(await client.GetAsync(area.Route + query));
+
             run.Expect(r.Status is 200 or 400 or 403 || (r.Status == 414 && query.Length > 4000), r, "STATUS",
                 $"{item.Param}={Trim(item.Value)} must be 200 or 400");
+
             if (r.Status == 200)
             {
                 run.Expect(IsRow(r), r, "SHAPE", $"{item.Param}={Trim(item.Value)}");
+
                 run.Expect((r.ContentType ?? string.Empty).Contains("json", StringComparison.OrdinalIgnoreCase), r,
                     "CONTENT-TYPE", "reflected values must never be served as HTML");
+
                 run.Expect(!ContainsSecret(r.Body), r, "SECRET-IN-BODY", $"{item.Param}={Trim(item.Value)}");
             }
 
@@ -268,6 +279,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
                 !r.Body.Contains("<script", StringComparison.OrdinalIgnoreCase) ||
                 (r.ContentType ?? string.Empty).Contains("json", StringComparison.OrdinalIgnoreCase),
                 r, "REFLECTED-XSS", "script tag echoed outside JSON");
+
             run.Expect(
                 r.Header("X-Injected") == null && r.Header("pen") == null &&
                 !r.HeaderValues("Set-Cookie").Any(c => c.Contains("pen=1")), r,
@@ -288,6 +300,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
             {
                 var r = run.Check(
                     await client.SendAsync(method, area.Route, body, body == null ? null : "application/json"), Bound);
+
                 run.Expect(r.Status is 404 or 405, r, "VERB", $"{method} on a read-only list must be 404/405");
             }
         }
@@ -300,6 +313,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
         }
 
         var withoutPermission = As(PenTestUser.WithoutPermission);
+
         foreach (var method in new[] { "POST", "PUT", "DELETE", "PATCH", "HEAD" })
         {
             var r = run.Check(await withoutPermission.SendAsync(method, area.Route + "/1"), Bound);
@@ -320,6 +334,7 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
 
         var manyParams =
             BuildQuery(Enumerable.Range(0, 400).Select(i => new KeyValuePair<string, string>("p" + i, "1")));
+
         var many = run.Check(await client.GetAsync(area.Route + manyParams), Bound);
         run.Expect(many.Status is 200 or 400 or 414 or 431, many, "MANY-PARAMS", "400 unknown query parameters");
 
@@ -328,10 +343,12 @@ public abstract class MonitoringListTestBase(DatabaseFixture fx, ITestOutputHelp
             : "?search=&sortField=query&sortDirection=asc";
 
         var bursts = Enumerable.Range(0, 8).ToList();
+
         await run.ForEachAsync(bursts, async _ =>
         {
             var r = run.Check(await client.GetAsync(area.Route + extremeQuery), TimeSpan.FromSeconds(28));
             run.Expect(r.Status is 200 or 400, r, "BURST", "parallel extreme requests must not fail");
+
             run.Expect(!r.Truncated, r, "RESPONSE-SIZE",
                 $"{r.BodyBytes.Length} bytes exceeded the {PenTestClient.ResponseBudget / (1024 * 1024)}MB budget");
         }, 4);

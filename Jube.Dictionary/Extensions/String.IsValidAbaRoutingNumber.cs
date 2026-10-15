@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static bool IsValidAbaRoutingNumber(this string? @this)
         {
             var value = (@this ?? "").Trim();
+
             if (value.Length != 9 || !value.All(char.IsAsciiDigit))
             {
                 return false;
@@ -25,6 +26,7 @@ namespace Jube.Dictionary.Extensions
 
             var d = value.Select(c => c - '0').ToArray();
             var sum = 3 * (d[0] + d[3] + d[6]) + 7 * (d[1] + d[4] + d[7]) + (d[2] + d[5] + d[8]);
+
             return sum % 10 == 0 && sum > 0;
         }
     }

@@ -312,6 +312,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway", sum: 1000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: metricName, sortField: "sum",
                 sortDirection: ascendingKeyword);
 
@@ -337,8 +338,10 @@ namespace Jube.Test.Service.OpenTelemetryMetric
         {
             await using var dbContext = fx.GetDbContext();
             var metricName = $"{DatabaseFixture.Prefix}Metric{Guid.NewGuid():N}";
+
             await CreateEntryAsync(dbContext, metricName, "stage=Gateway",
                 DateTime.UtcNow.AddMinutes(-30));
+
             await CreateEntryAsync(dbContext, metricName, "stage=Activation", DateTime.UtcNow);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -354,6 +357,7 @@ namespace Jube.Test.Service.OpenTelemetryMetric
         {
             await using var dbContext = fx.GetDbContext();
             var metricName = $"{DatabaseFixture.Prefix}Metric{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, metricName, "stage=Gateway");

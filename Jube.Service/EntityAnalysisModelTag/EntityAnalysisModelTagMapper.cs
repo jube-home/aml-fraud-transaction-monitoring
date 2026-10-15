@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelTag
                 : new EntityAnalysisModelTagDto
                 {
                     Id = tag.Id,
+                    Guid = tag.Guid,
                     EntityAnalysisModelId = tag.EntityAnalysisModelId.GetValueOrDefault(),
                     Name = tag.Name,
                     Active = tag.Active == 1,

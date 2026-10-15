@@ -11,62 +11,42 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Dynamic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Extensions;
+using Jube.Dictionary;
+using Jube.ResilientNpgsqlConnection;
+using Jube.ResilientNpgsqlConnection.Extensions.Jube.ResilientNpgsqlConnection;
+using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Npgsql;
+using NpgsqlTypes;
+
 namespace Jube.Data.Reporting
 {
-    using Jube.Data.Reporting.Models;
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.Common;
-    using System.Dynamic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Dictionary;
-    using Extension;
-    using log4net;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using Npgsql;
-    using NpgsqlTypes;
-    using ResilientNpgsqlConnection;
-    using ResilientNpgsqlConnection.Extensions.Jube.ResilientNpgsqlConnection;
-
     public class Postgres : IDisposable
     {
-        private readonly ResilientNpgsqlConnection connection;
-        private readonly bool blockProtectedRelations;
-        private bool disposed;
-
-        public static int StatementTimeoutSeconds { get; set; } = 30;
-
         public const int MaximumRows = 100000;
-
-        private static string GuardedConnectionString(string connectionString)
-        {
-            var builder = new NpgsqlConnectionStringBuilder(connectionString);
-            var settings =
-                $"-c default_transaction_read_only=on -c statement_timeout={StatementTimeoutSeconds * 1000} -c lock_timeout=5000";
-            builder.Options = string.IsNullOrWhiteSpace(builder.Options) ? settings : builder.Options + " " + settings;
-            return builder.ConnectionString;
-        }
-
-        private async Task<GuardScope> BeginGuardAsync(CancellationToken token)
-        {
-            await using (var begin = new ResilientNpgsqlCommand(connection,
-                             $"BEGIN READ ONLY; SET LOCAL statement_timeout = {StatementTimeoutSeconds * 1000}; SET LOCAL lock_timeout = 5000"))
-            {
-                await begin.ExecuteNonQueryAsync(token).ConfigureAwait(false);
-            }
-
-            return new GuardScope(connection);
-        }
+        private readonly bool blockProtectedRelations;
+        private readonly ResilientNpgsqlConnection.ResilientNpgsqlConnection connection;
+        private bool disposed;
 
         public Postgres(string connectionString, ILog log, bool blockProtectedRelations = false,
             int? maxRetries = null)
         {
             this.blockProtectedRelations = blockProtectedRelations;
-            connection = new ResilientNpgsqlConnection(GuardedConnectionString(connectionString), log, maxRetries);
+
+            connection =
+                new ResilientNpgsqlConnection.ResilientNpgsqlConnection(GuardedConnectionString(connectionString), log,
+                    maxRetries);
+
             try
             {
                 connection.Open();
@@ -77,6 +57,8 @@ namespace Jube.Data.Reporting
                 throw;
             }
         }
+
+        public static int StatementTimeoutSeconds { get; set; } = 30;
 
         public void Dispose()
         {
@@ -111,6 +93,42 @@ namespace Jube.Data.Reporting
                 CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo, token).ConfigureAwait(false);
 
             var schema = reader.GetColumnSchema();
+
+            foreach (var col in schema)
+            {
+                values.Add(col.ColumnName, col.DataTypeName ?? "unknown");
+            }
+
+            return values;
+        }
+
+        public async Task<Dictionary<string, string>> IntrospectWithTableTokenSwitchAsync(string sql,
+            Dictionary<string, object> parameters, IReadOnlyDictionary<string, string> allowedTables,
+            CancellationToken token = default)
+        {
+            var rewrittenSql = PostgresSqlValidator.RewriteTableReferencesPreservingNamedParameters(sql,
+                allowedTables);
+
+            var values = new Dictionary<string, string>();
+            var wrapSql = $"SELECT * FROM ({rewrittenSql}) b LIMIT 0";
+
+            PostgresSqlValidator.AssertSelectOnly(wrapSql, blockProtectedRelations, true);
+
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
+            await using var command = new ResilientNpgsqlCommand(connection, wrapSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
+
+            foreach (var (key, value) in parameters.Where(parameter => rewrittenSql.Contains("@" + parameter.Key)))
+            {
+                command.Parameters.AddWithValue(key, value);
+            }
+
+            await using var reader = await command.ExecuteReaderAsync(
+                CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo, token).ConfigureAwait(false);
+
+            var schema = reader.GetColumnSchema();
+
             foreach (var col in schema)
             {
                 values.Add(col.ColumnName, col.DataTypeName ?? "unknown");
@@ -141,6 +159,7 @@ namespace Jube.Data.Reporting
                 CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo, token).ConfigureAwait(false);
 
             var schema = reader.GetColumnSchema();
+
             foreach (var col in schema)
             {
                 values.Add(col.ColumnName, col.DataTypeName ?? "unknown");
@@ -166,23 +185,40 @@ namespace Jube.Data.Reporting
             await command.PrepareAsync(token);
         }
 
-        public async Task<List<string>> ExecuteReturnOnlyJsonFromArchiveSampleAsync(int entityAnalysisModelId,
+        public static string BuildArchiveSampleSql(string sql, int tokenCount, bool mockData)
+        {
+            return BuildArchiveSampleSql(sql, tokenCount, mockData ? SampleSource.Mock(0) : SampleSource.Archive(0));
+        }
+
+        public static string BuildArchiveSampleSql(string sql, int tokenCount, SampleSource source)
+        {
+            return $"select \"Json\" from \"{source.Table}\" where \"{source.KeyColumn}\" = (@{tokenCount - 1})"
+                   + " and (" + sql + ")"
+                   + $" order by \"EntityAnalysisModelInstanceEntryGuid\" limit (@{tokenCount})";
+        }
+
+        public Task<List<string>> ExecuteReturnOnlyJsonFromArchiveSampleAsync(int entityAnalysisModelId,
             string sql,
             string filterTokens,
             int limit, bool mockData, CancellationToken token = default)
         {
+            return ExecuteReturnOnlyJsonFromArchiveSampleAsync(
+                mockData ? SampleSource.Mock(entityAnalysisModelId) : SampleSource.Archive(entityAnalysisModelId),
+                sql, filterTokens, limit, token);
+        }
+
+        public async Task<List<string>> ExecuteReturnOnlyJsonFromArchiveSampleAsync(SampleSource source,
+            string sql,
+            string filterTokens,
+            int limit, CancellationToken token = default)
+        {
             var value = new List<string>();
 
             var tokens = JsonConvert.DeserializeObject<List<object>>(filterTokens);
-            tokens.Add(entityAnalysisModelId);
+            tokens.Add(source.Key);
             tokens.Add(limit);
 
-            var tableName = mockData ? "MockArchive" : "Archive";
-
-            var dynamicGatedSql =
-                $"select \"Json\" from \"{tableName}\" where \"EntityAnalysisModelId\" = (@{tokens.Count - 1})"
-                + " and (" + sql + ")"
-                + $" order by \"EntityAnalysisModelInstanceEntryGuid\" limit (@{tokens.Count})";
+            var dynamicGatedSql = BuildArchiveSampleSql(sql, tokens.Count, source);
 
             PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql, blockProtectedRelations);
 
@@ -204,6 +240,37 @@ namespace Jube.Data.Reporting
             }
 
             return value;
+        }
+
+        public static string BuildArchiveCountSql(string sql, int tokenCount, SampleSource source)
+        {
+            return $"select count(*) from \"{source.Table}\" where \"{source.KeyColumn}\" = (@{tokenCount})"
+                   + " and (" + sql + ")";
+        }
+
+        public async Task<long> ExecuteCountFromArchiveAsync(SampleSource source, string sql, string filterTokens,
+            CancellationToken token = default)
+        {
+            var tokens = JsonConvert.DeserializeObject<List<object>>(filterTokens);
+            tokens.Add(source.Key);
+
+            var dynamicGatedSql = BuildArchiveCountSql(sql, tokens.Count, source);
+
+            PostgresSqlValidator.AssertSelectOnly(dynamicGatedSql, blockProtectedRelations);
+
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
+            await using var command = new ResilientNpgsqlCommand(connection, dynamicGatedSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
+
+            for (var i = 0; i < tokens.Count; i++)
+            {
+                command.Parameters.AddWithValue("@" + (i + 1), tokens[i]);
+            }
+
+            var result = await command.ExecuteScalarAsync(token).ConfigureAwait(false);
+
+            return Convert.ToInt64(result);
         }
 
         public async Task<List<JObject>> ExecuteReturnOnlyJsonFromArchiveSampleAsync(int entityAnalysisModelId,
@@ -267,16 +334,20 @@ namespace Jube.Data.Reporting
                 { Value = DateTime.SpecifyKind(snapshotDate, DateTimeKind.Unspecified) });
             command.Parameters.Add(new NpgsqlParameter("afterReferenceDate", NpgsqlDbType.Timestamp)
                 { Value = DateTime.SpecifyKind(afterReferenceDate, DateTimeKind.Unspecified) });
+
             command.Parameters.Add(new NpgsqlParameter("afterEntityAnalysisModelInstanceEntryGuid", NpgsqlDbType.Uuid)
                 { Value = afterEntityAnalysisModelInstanceEntryGuid });
+
             command.Parameters.AddWithValue("limit", limit);
 
             await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
 
             var value = new List<DictionaryNoBoxing<string>>();
+
             while (await reader.ReadAsync(token).ConfigureAwait(false))
             {
                 var dictionaryNoBoxing = new DictionaryNoBoxing<string>();
+
                 for (var index = 0; index < reader.FieldCount; index++)
                 {
                     if (!dictionaryNoBoxing.ContainsKey(reader.GetName(index)))
@@ -316,6 +387,7 @@ namespace Jube.Data.Reporting
                 }
 
                 value.Add(dictionaryNoBoxing);
+
                 if (value.Count > MaximumRows)
                 {
                     throw new InvalidOperationException("The result exceeds the maximum number of rows permitted.");
@@ -343,9 +415,11 @@ namespace Jube.Data.Reporting
             await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
 
             var value = new List<IDictionary<string, object>>();
+
             while (await reader.ReadAsync(token).ConfigureAwait(false))
             {
                 IDictionary<string, object> eo = new ExpandoObject();
+
                 for (var index = 0; index < reader.FieldCount; index++)
                 {
                     if (!eo.ContainsKey(reader.GetName(index)))
@@ -356,6 +430,7 @@ namespace Jube.Data.Reporting
                 }
 
                 value.Add(eo);
+
                 if (value.Count > MaximumRows)
                 {
                     throw new InvalidOperationException("The result exceeds the maximum number of rows permitted.");
@@ -363,6 +438,124 @@ namespace Jube.Data.Reporting
             }
 
             return value;
+        }
+
+        public async Task<List<IDictionary<string, object>>> ExecuteWithTableTokenSwitchByNamedParametersAsync(
+            string sql, Dictionary<string, object> parameters, IReadOnlyDictionary<string, string> allowedTables,
+            CancellationToken token = default)
+        {
+            var rewrittenSql = PostgresSqlValidator.RewriteTableReferencesPreservingNamedParameters(sql,
+                allowedTables);
+
+            PostgresSqlValidator.AssertSelectOnly(rewrittenSql, blockProtectedRelations, true);
+
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
+            await using var command = new ResilientNpgsqlCommand(connection, rewrittenSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
+
+            foreach (var (key, o) in parameters)
+            {
+                command.Parameters.AddWithValue("@" + key, o);
+            }
+
+            await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
+
+            var value = new List<IDictionary<string, object>>();
+
+            while (await reader.ReadAsync(token).ConfigureAwait(false))
+            {
+                IDictionary<string, object> eo = new ExpandoObject();
+
+                for (var index = 0; index < reader.FieldCount; index++)
+                {
+                    if (!eo.ContainsKey(reader.GetName(index)))
+                    {
+                        eo.Add(reader.GetName(index),
+                            await reader.IsDBNullAsync(index, token) ? null : reader.GetValue(index));
+                    }
+                }
+
+                value.Add(eo);
+
+                if (value.Count > MaximumRows)
+                {
+                    throw new InvalidOperationException("The result exceeds the maximum number of rows permitted.");
+                }
+            }
+
+            return value;
+        }
+
+        public Task<List<IDictionary<string, object>>> ExecuteWithTableTokenSwitchAsync(string sql,
+            IReadOnlyDictionary<string, string> allowedTables, CancellationToken token = default)
+        {
+            var rewrittenSql = PostgresSqlValidator.RewriteTableReferences(sql, allowedTables);
+
+            return ExecuteAlreadyTokenSwitchedAsync(rewrittenSql, token);
+        }
+
+        public async Task<List<IDictionary<string, object>>> ExecuteAlreadyTokenSwitchedAsync(
+            string rewrittenSql, CancellationToken token = default)
+        {
+            PostgresSqlValidator.AssertSelectOnly(rewrittenSql, blockProtectedRelations, true);
+
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
+            await using var command = new ResilientNpgsqlCommand(connection, rewrittenSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
+
+            await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
+
+            var value = new List<IDictionary<string, object>>();
+
+            while (await reader.ReadAsync(token).ConfigureAwait(false))
+            {
+                IDictionary<string, object> eo = new ExpandoObject();
+
+                for (var index = 0; index < reader.FieldCount; index++)
+                {
+                    if (!eo.ContainsKey(reader.GetName(index)))
+                    {
+                        eo.Add(reader.GetName(index),
+                            await reader.IsDBNullAsync(index, token) ? null : reader.GetValue(index));
+                    }
+                }
+
+                value.Add(eo);
+
+                if (value.Count > MaximumRows)
+                {
+                    throw new InvalidOperationException("The result exceeds the maximum number of rows permitted.");
+                }
+            }
+
+            return value;
+        }
+
+        public async Task<List<string>> ExplainWithTableTokenSwitchAsync(string sql,
+            IReadOnlyDictionary<string, string> allowedTables, CancellationToken token = default)
+        {
+            var rewrittenSql = PostgresSqlValidator.RewriteTableReferences(sql, allowedTables);
+
+            await using var guard = await BeginGuardAsync(token).ConfigureAwait(false);
+
+            await using var command = new ResilientNpgsqlCommand(connection, "EXPLAIN " + rewrittenSql);
+            command.CommandTimeout = StatementTimeoutSeconds + 5;
+
+            await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
+
+            var lines = new List<string>();
+
+            while (await reader.ReadAsync(token).ConfigureAwait(false))
+            {
+                if (!await reader.IsDBNullAsync(0, token).ConfigureAwait(false))
+                {
+                    lines.Add(reader.GetString(0));
+                }
+            }
+
+            return lines;
         }
 
         public async Task<List<IDictionary<string, object>>> ExecuteByOrderedParametersAsync(string sql,
@@ -383,9 +576,11 @@ namespace Jube.Data.Reporting
             await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
 
             var value = new List<IDictionary<string, object>>();
+
             while (await reader.ReadAsync(token).ConfigureAwait(false))
             {
                 IDictionary<string, object> eo = new ExpandoObject();
+
                 for (var index = 0; index < reader.FieldCount; index++)
                 {
                     if (!eo.ContainsKey(reader.GetName(index)))
@@ -396,6 +591,7 @@ namespace Jube.Data.Reporting
                 }
 
                 value.Add(eo);
+
                 if (value.Count > MaximumRows)
                 {
                     throw new InvalidOperationException("The result exceeds the maximum number of rows permitted.");
@@ -421,12 +617,36 @@ namespace Jube.Data.Reporting
             }
 
             var id = await command.ExecuteScalarAsync(token).ConfigureAwait(false);
+
             if (id == null)
             {
                 return null;
             }
 
             return (int)id;
+        }
+
+        private static string GuardedConnectionString(string connectionString)
+        {
+            var builder = new NpgsqlConnectionStringBuilder(connectionString);
+
+            var settings =
+                $"-c default_transaction_read_only=on -c statement_timeout={StatementTimeoutSeconds * 1000} -c lock_timeout=5000";
+
+            builder.Options = string.IsNullOrWhiteSpace(builder.Options) ? settings : builder.Options + " " + settings;
+
+            return builder.ConnectionString;
+        }
+
+        private async Task<GuardScope> BeginGuardAsync(CancellationToken token)
+        {
+            await using (var begin = new ResilientNpgsqlCommand(connection,
+                             $"BEGIN READ ONLY; SET LOCAL statement_timeout = {StatementTimeoutSeconds * 1000}; SET LOCAL lock_timeout = 5000"))
+            {
+                await begin.ExecuteNonQueryAsync(token).ConfigureAwait(false);
+            }
+
+            return new GuardScope(connection);
         }
     }
 }

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription;
 
 namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription
@@ -18,25 +19,39 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariab
     internal static class ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionMapper
     {
         public static ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionDto ToDto(
-            global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery.Dto
-                source) => new()
+            GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQueryDto
+                source)
         {
-            Id = source.Id,
-            Name = source.Name,
-            VariableMean = FiniteNumber.Of(source.VariableMean),
-            VariableStandardDeviation = FiniteNumber.Of(source.VariableStandardDeviation),
-            VariableMaximum = FiniteNumber.Of(source.VariableMaximum),
-            VariableMinimum = FiniteNumber.Of(source.VariableMinimum),
-            PrescriptionMean = FiniteNumber.Of(source.PrescriptionMean),
-            PrescriptionStandardDeviation = FiniteNumber.Of(source.PrescriptionStandardDeviation),
-            PrescriptionMaximum = FiniteNumber.Of(source.PrescriptionMaximum),
-            PrescriptionMinimum = FiniteNumber.Of(source.PrescriptionMinimum),
-            Sensitivity = FiniteNumber.Of(source.Sensitivity)
-        };
+            return new ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionDto
+            {
+                Id = source.Id,
+                Name = source.Name,
+                VariableMean = FiniteNumber.Of(source.VariableMean),
+                VariableStandardDeviation = FiniteNumber.Of(source.VariableStandardDeviation),
+                VariableMaximum = FiniteNumber.Of(source.VariableMaximum),
+                VariableMinimum = FiniteNumber.Of(source.VariableMinimum),
+                PrescriptionMean = FiniteNumber.Of(source.PrescriptionMean),
+                PrescriptionStandardDeviation = FiniteNumber.Of(source.PrescriptionStandardDeviation),
+                PrescriptionMaximum = FiniteNumber.Of(source.PrescriptionMaximum),
+                PrescriptionMinimum = FiniteNumber.Of(source.PrescriptionMinimum),
+                Sensitivity = FiniteNumber.Of(source.Sensitivity),
+                Positive = source.Positive,
+                PromotedTrialInstanceVariableId = source.PromotedTrialInstanceVariableId,
+                HistogramValues = source.HistogramValues.Select(h =>
+                    new ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionHistogramValueDto
+                    {
+                        Frequency = h.Frequency,
+                        Bin = h.Bin,
+                        BinEnd = h.BinEnd
+                    }).ToList()
+            };
+        }
 
         public static List<ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.
-                    GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQuery.Dto>
-                source) => source.Select(ToDto).ToList();
+            IEnumerable<GetExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionQueryDto>
+                source)
+        {
+            return source.Select(ToDto).ToList();
+        }
     }
 }

@@ -18,7 +18,9 @@ namespace Jube.Engine.Integrity
     using System.Linq;
     using EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
     using Jube.Data.Query;
+    using Jube.Engine.Integrity.Models;
     using Parser.Dependency;
+    using Parser.Dependency.Models;
 
     public sealed record IntegrityCheck(
         IntegrityCode Code,
@@ -191,6 +193,7 @@ namespace Jube.Engine.Integrity
             ArgumentNullException.ThrowIfNull(entities);
 
             var checks = new List<IntegrityCheck>();
+
             if (observation.Source == EngineStateSourceKind.Unavailable)
             {
                 checks.Add(new IntegrityCheck(IntegrityCode.EngineStateUnavailable, IntegritySeverity.Info, Engine,
@@ -206,6 +209,7 @@ namespace Jube.Engine.Integrity
             }
 
             var retention = TimeSpan.FromMinutes(EngineInstanceLiveness.RetentionMinutes);
+
             foreach (var node in observation.Nodes.Where(n =>
                          n.HeartbeatDate is { } reported && now - reported > heartbeatTolerance
                                                          && now - reported <= retention))
@@ -223,9 +227,12 @@ namespace Jube.Engine.Integrity
             }
 
             var entityList = entities.ToList();
+
             var active = entityList.Where(e => e.Active && loadedKinds.Contains(e.Kind.ToString()))
                 .Select(e => (Kind: e.Kind.ToString(), e.Id, e.Name, e.Approved)).ToList();
+
             var activeKeys = active.Select(e => (e.Kind, e.Id)).ToHashSet();
+
             var pendingKeys = entityList.Where(e => !e.Approved && loadedKinds.Contains(e.Kind.ToString()))
                 .Select(e => (Kind: e.Kind.ToString(), e.Id)).ToHashSet();
 
@@ -250,6 +257,7 @@ namespace Jube.Engine.Integrity
                             Engine, missing.Kind, missing.Id, missing.Name,
                             $"{missing.Kind} {missing.Name} is waiting for approval, so engine instance " +
                             $"{state.Instance} does not run it yet."));
+
                         continue;
                     }
 
@@ -268,6 +276,7 @@ namespace Jube.Engine.Integrity
                             Engine, stale.Kind, stale.Id, stale.Name,
                             $"{stale.Kind} {stale.Name} has a change waiting for approval, so engine instance " +
                             $"{state.Instance} is still running the last approved version."));
+
                         continue;
                     }
 
@@ -279,6 +288,7 @@ namespace Jube.Engine.Integrity
             }
 
             var loadedInstances = observation.States.Select(s => s.Instance).ToHashSet(StringComparer.Ordinal);
+
             foreach (var node in observation.Nodes.Where(n => !loadedInstances.Contains(n.Instance))
                          .OrderBy(n => n.Instance, StringComparer.Ordinal))
             {

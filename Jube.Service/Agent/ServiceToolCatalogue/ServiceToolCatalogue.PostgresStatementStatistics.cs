@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.PostgresStatementStatistics;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -25,7 +28,9 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "and WAL bytes, accumulated across all history since the extension was created or last " +
                     "reset. Complements PostgresActivityList: that is 'what is running right now', this is " +
                     "'which query shape is worst overall'. Optional case-insensitive substring search against " +
-                    "username, database name or query text. Read-only."));
+                    "username, database name or query text. Read-only.",
+                    PostgresStatementStatisticsService.RequiredPermissions,
+                    PostgresStatementStatisticsService.RequiresLandlord));
         }
     }
 }

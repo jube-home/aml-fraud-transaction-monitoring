@@ -14,7 +14,11 @@
 using System.ComponentModel;
 using Jube.Dto.Interfaces;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Query.TreeChildren
 {
     [Description("A child node of a Case Workflow tree (xpath, form, action, macro, filter, display or status). " +

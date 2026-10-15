@@ -74,6 +74,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var rule = NewRule("HighAmount", 1.0,
                 (data, _, _, _) => (string)data["Currency"] == "AED", 42);
+
             var context = NewContext(0.0, rule);
 
             context.ExecuteGatewayRules();
@@ -97,9 +98,11 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ARuleIsSkippedEntirelyWhenTheRandomGatewaySampleIsAtOrAboveItsThreshold()
         {
             var wasEvaluated = false;
+
             var rule = NewRule("LowSample", 0.1, (_, _, _, _) =>
             {
                 wasEvaluated = true;
+
                 return true;
             });
 
@@ -115,11 +118,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ARuleRunsWhenTheRandomGatewaySampleIsBelowItsThreshold()
         {
             var wasEvaluated = false;
+
             var rule = NewRule("HighSample", 0.9, (_, _, _, _) =>
             {
                 wasEvaluated = true;
+
                 return false;
             });
+
             var context = NewContext(0.5, rule);
 
             context.ExecuteGatewayRules();
@@ -132,11 +138,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var secondRuleEvaluated = false;
             var first = NewRule("First", 1.0, (_, _, _, _) => true, 10);
+
             var second = NewRule("Second", 1.0, (_, _, _, _) =>
             {
                 secondRuleEvaluated = true;
+
                 return true;
             }, 99);
+
             var context = NewContext(0.0, first, second);
 
             context.ExecuteGatewayRules();
@@ -150,11 +159,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var secondRuleEvaluated = false;
             var first = NewRule("First", 1.0, (_, _, _, _) => false);
+
             var second = NewRule("Second", 1.0, (_, _, _, _) =>
             {
                 secondRuleEvaluated = true;
+
                 return true;
             }, 5);
+
             var context = NewContext(0.0, first, second);
 
             context.ExecuteGatewayRules();
@@ -167,13 +179,17 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void AnExceptionThrownByARuleIsCaughtAndSubsequentRulesStillRun()
         {
             var secondRuleEvaluated = false;
+
             var throwingRule = NewRule("Throws", 1.0,
                 (_, _, _, _) => throw new InvalidOperationException("boom"));
+
             var second = NewRule("Second", 1.0, (_, _, _, _) =>
             {
                 secondRuleEvaluated = true;
+
                 return false;
             });
+
             var context = NewContext(0.0, throwingRule, second);
 
             var act = context.ExecuteGatewayRules;

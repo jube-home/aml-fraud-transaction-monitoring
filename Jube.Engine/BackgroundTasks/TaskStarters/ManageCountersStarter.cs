@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Linq;
 using System.Net;
@@ -20,7 +21,7 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions;
-using Jube.TaskCancellation.TaskHelper;
+using Jube.TaskCancellation.TaskHelper.Models;
 using Microsoft.VisualBasic;
 
 namespace Jube.Engine.BackgroundTasks.TaskStarters
@@ -47,8 +48,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                             ClearResponseElevationCounters(value, context.Services.TaskCoordinator.CancellationToken);
                             ClearFrequencyCounters(value, context.Services.TaskCoordinator.CancellationToken);
                             ClearActivationWatcherCounters(value, context.Services.TaskCoordinator.CancellationToken);
+
                             await UpdateQueueBalancesInDatabaseAtModelLevelAsync(value,
                                 context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+
                             await UpdateCountersInDatabaseAsync(value, key,
                                 context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                         }
@@ -279,6 +282,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     var dbContext =
                         DataConnectionDbContext.GetResilientDbContextDataConnection(
                             context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+
                     try
                     {
                         var repository = new EntityAnalysisModelAsynchronousQueueBalanceRepository(dbContext);
@@ -376,6 +380,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                     var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                         context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+
                     try
                     {
                         try
@@ -395,12 +400,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                 Interlocked.Exchange(ref value.Counters.MaxModelResponseTime, long.MinValue);
 
                             int? archiveWalPendingCount = null;
+
                             try
                             {
                                 var walSize = await context.Services.CacheService.CacheWalRepository
                                     .GetWalSizeAsync(value.Instance.TenantRegistryId, value.Instance.Guid,
                                         Dns.GetHostName())
                                     .ConfigureAwait(false);
+
                                 archiveWalPendingCount = (int)Math.Min(walSize, int.MaxValue);
                             }
                             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -533,6 +540,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token = default)
         {
             var stageNames = value.StagePerformanceCounters.Stages.Keys.ToList();
+
             if (stageNames.Count == 0)
             {
                 return;
@@ -583,6 +591,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             int key, CancellationToken token = default)
         {
             var stageNames = value.ArchiverStagePerformanceCounters.Stages.Keys.ToList();
+
             if (stageNames.Count == 0)
             {
                 return;
@@ -633,6 +642,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             int key, CancellationToken token = default)
         {
             var stageNames = value.ResponseTimePipelineCounters.Stages.Keys.ToList();
+
             if (stageNames.Count == 0)
             {
                 return;
@@ -694,6 +704,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             CancellationToken token = default)
         {
             var taskKeys = value.TaskPerformanceCounters.Tasks.Keys.ToList();
+
             if (taskKeys.Count == 0)
             {
                 return;

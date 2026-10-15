@@ -23,6 +23,7 @@ namespace Jube.Data.Repository
     using Context;
     using LinqToDB;
     using Microsoft.Extensions.Logging.Abstractions;
+    using Models;
     using Poco;
     using Query;
     using Query.GetApprovedEntityQuery;

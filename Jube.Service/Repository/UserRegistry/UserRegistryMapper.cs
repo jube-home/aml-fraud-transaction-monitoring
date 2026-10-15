@@ -27,6 +27,7 @@ namespace Jube.Service.Repository.UserRegistry
                 : new UserRegistryDto
                 {
                     Id = userRegistry.Id,
+                    Guid = userRegistry.Guid,
                     RoleRegistryGuid = userRegistry.RoleRegistryGuid,
                     Email = userRegistry.Email,
                     Name = userRegistry.Name,

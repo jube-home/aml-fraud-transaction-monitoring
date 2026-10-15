@@ -51,6 +51,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         context.Services.CancellationToken).ConfigureAwait(false);
 
                     var shadowKvpDictionary = new Dictionary<int, EntityAnalysisModelDictionary>();
+
                     foreach (var recordDictionary in recordsDictionary)
                     {
                         context.Services.CancellationToken.ThrowIfCancellationRequested();

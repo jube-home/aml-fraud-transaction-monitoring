@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,17 +11,24 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
         static partial void AddExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription(
-            List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionGet", OperationKind.Read,
-                Idempotent: true, Destructive: false,
-                "Lists the variables of a promoted trial instance with variable and prescription statistics and sensitivity, ordered by sensitivity descending.")
-        ]);
+            List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionGet", OperationKind.Read,
+                    true, false,
+                    "Lists the variables of a promoted trial instance with variable and prescription statistics and sensitivity, ordered by sensitivity descending.",
+                    ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionService.RequiredPermissions)
+            ]);
+        }
     }
 }

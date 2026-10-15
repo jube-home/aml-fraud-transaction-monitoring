@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Models
 {
     using System;
@@ -23,7 +28,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
 
     public class EntityAnalysisModels
     {
-        public ConcurrentDictionary<int, EntityAnalysisModel> ActiveEntityAnalysisModels { get; set; }
+        public ConcurrentDictionary<int, EntityAnalysisModel> ActiveEntityAnalysisModels { get; set; } =
+            new ConcurrentDictionary<int, EntityAnalysisModel>();
+
         public List<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScripts { get; set; }
         public Guid EntityAnalysisInstanceGuid { get; set; }
 

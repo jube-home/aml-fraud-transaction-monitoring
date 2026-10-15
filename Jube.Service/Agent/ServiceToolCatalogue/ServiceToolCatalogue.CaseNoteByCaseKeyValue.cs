@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,16 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.CaseNoteByCaseKeyValue;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseNoteByCaseKeyValue(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseNoteByCaseKeyValueGet", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists the case notes for cases matching a case key and value, newest first, limited to " +
-                "workflows, statuses and actions the caller's roles may see within the caller's tenant.")
-        ]);
+        static partial void AddCaseNoteByCaseKeyValue(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseNoteByCaseKeyValueGet", OperationKind.Read, true, false,
+                    "Lists the case notes for cases matching a case key and value, newest first, limited to " +
+                    "workflows, statuses and actions the caller's roles may see within the caller's tenant.",
+                    CaseNoteByCaseKeyValueService.RequiredPermissions)
+            ]);
+        }
     }
 }

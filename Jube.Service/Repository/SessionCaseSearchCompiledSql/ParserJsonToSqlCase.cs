@@ -14,8 +14,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Jube.Data.Context;
-using Jube.Data.Query;
+using Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery;
 using Jube.Data.Repository;
+using Jube.Service.Repository.SessionCaseSearchCompiledSql.Models;
 
 namespace Jube.Service.Repository.SessionCaseSearchCompiledSql;
 
@@ -23,20 +24,23 @@ internal sealed class ParserJsonToSqlCase
 {
     public readonly List<QueryBuilderRule> Rules = [];
     public readonly List<object> Tokens = [];
-    private IEnumerable<GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery.Dto> completionDto = [];
+    private IEnumerable<GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQueryDto> completionDto = [];
     public string? Sql;
 
     public static async Task<ParserJsonToSqlCase> CreateAsync(QueryBuilderRule? rule, DbContext dbContext,
         Guid caseWorkflowGuid, string userName, CancellationToken token = default)
     {
         var parser = new ParserJsonToSqlCase();
+
         parser.completionDto = await parser.GetCompletionsAsync(dbContext, caseWorkflowGuid, userName, token)
             .ConfigureAwait(false);
+
         parser.ExtractRule(rule);
+
         return parser;
     }
 
-    private async Task<IEnumerable<GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery.Dto>>
+    private async Task<IEnumerable<GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQueryDto>>
         GetCompletionsAsync(DbContext dbContext,
             Guid caseWorkflowGuid, string userName, CancellationToken token = default)
     {
@@ -81,6 +85,7 @@ internal sealed class ParserJsonToSqlCase
         }
 
         Sql += "(";
+
         for (var j = 0; j < ruleChild.Rules.Count; j++)
         {
             ExtractRule(ruleChild.Rules.ElementAt(j));

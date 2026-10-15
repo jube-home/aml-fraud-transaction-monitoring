@@ -6,8 +6,6 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Working Case Key Journal
 The case record maintains a copy of the event \ transaction that caused the case to be created.  To underwrite and perform analysis on a case it is generally important to have a wider picture of the transaction or event history for the Case Key Value combination having caused case record creation.
 

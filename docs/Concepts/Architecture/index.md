@@ -5,9 +5,6 @@ nav_order: 1
 parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Architecture
 
 Jube is open source transaction and event monitoring software. Jube is software for real-time data wrangling, artificial

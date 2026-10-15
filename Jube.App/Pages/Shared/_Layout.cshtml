@@ -1,5 +1,6 @@
-@using System.Diagnostics
+﻿@using System.Diagnostics
 @using Jube.App.Code
+@using Jube.AskJooby.Security
 @using Jube.DynamicEnvironment
 @using log4net
 @* Copyright (C) 2022-present Jube Holdings Limited
@@ -19,6 +20,12 @@
 @inject ILog Log
 @{
     var landlord = DynamicEnvironment.AppSettings("Landlord").Equals("True", StringComparison.OrdinalIgnoreCase);
+    var showAskJoobyWidget = false;
+    var askJoobyHasInferenceBackend = DynamicEnvironment.AppSettings("EnableAskJooby")
+        .Equals("True", StringComparison.OrdinalIgnoreCase);
+    Debug.Assert(User.Identity != null);
+    var isAuthenticated = User.Identity.IsAuthenticated;
+    PermissionValidation permissionValidation = null;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -29,162 +36,276 @@
     <link rel="stylesheet" href="/styles/bootstrap.min.css"/>
     <link rel="stylesheet" href="/styles/site.css"/>
     <link rel="stylesheet" href="/styles/jube.css"/>
+    <link rel="stylesheet" href="/styles/askjooby.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="/styles/sessionWarning.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="/css/jube-charting.css?v=@Charting.ChartStylesheet.Version"/>
     <link rel="stylesheet" href="/kendo/styles/kendo.common.min.css"/>
     <link rel="stylesheet" href="/kendo/styles/kendo.silver.min.css"/>
+    <script>window.AskJoobyHasInferenceBackend = @(askJoobyHasInferenceBackend ? "true" : "false");</script>
     <script src="/kendo/js/jquery.min.js"></script>
+    <script src="/js/SessionWarning.js" asp-append-version="true"></script>
     <script src="/kendo/js/kendo.all.min.js"></script>
     <script src="/js/Approval/ApprovalManager.js"></script>
     @await RenderSectionAsync("Scripts", false).ConfigureAwait(false)
 </head>
-<body>
-<header>
-    @{
-        Debug.Assert(User.Identity != null);
+<body class="@(isAuthenticated ? "jube-authenticated" : "")">
+<script>
+    try {
+        if (localStorage.getItem('jubeSidebarCollapsed') === '1') {
+            document.body.classList.add('sidebarCollapsed');
+        }
+    } catch (e) {
+        // Private browsing or blocked storage: the sidebar simply starts expanded.
     }
-    @if (!User.Identity.IsAuthenticated)
+</script>
+<header>
+    @if (!isAuthenticated)
     {
-        <img href="https://www.jube.io" style="width: 200px; padding-top: 3px;" alt="Jube" src="/images/logo.png"/>
+        <a href="https://www.jube.io">
+            <img class="loginHeaderLogo" alt="Jube" src="/images/logo.png"/>
+        </a>
     }
     else
     {
-        var permissionValidation = new PermissionValidation(DynamicEnvironment.AppSettings("ConnectionString"), User.Identity?.Name, Log);
+        permissionValidation = new PermissionValidation(DynamicEnvironment.AppSettings("ConnectionString"), User.Identity?.Name, Log);
         landlord = permissionValidation.Landlord;
+        showAskJoobyWidget = permissionValidation.Validate([AskJoobyPermissions.Access]) &&
+                             ViewData["HideAskJoobyWidget"] is not true;
 
+        <button type="button" id="sidebarToggle" aria-label="Collapse navigation" aria-expanded="true">
+            <span class="sidebarToggleIcon" aria-hidden="true"></span>
+        </button>
+        <a href="/" id="topbarBrandLink">
+            <img alt="Jube" src="/images/logo.png" id="topbarBrandLogo"/>
+        </a>
+        <span id="currentPageLabel" aria-live="polite"></span>
+        <span id="topbarSpacer"></span>
+
+        @if (landlord)
+        {
+            <div id="tenantSwitcherMenuItem">
+                <input id="Tenant"/>
+            </div>
+        }
+
+        <div id="resourcesMenu" class="topbarMenu">
+            <button type="button" id="resourcesMenuToggle" class="topbarMenuToggle topbarMenuToggle-resources"
+                    aria-haspopup="true" aria-expanded="false" aria-label="Resources">
+                <svg class="topbarMenuIcon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 5a2 2 0 0 1 2-2h5v18H6a2 2 0 0 1-2-2V5zM20 5a2 2 0 0 0-2-2h-5v18h5a2 2 0 0 0 2-2V5z"
+                          fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <ul id="resourcesMenuPanel" class="topbarMenuPanel" hidden>
+                <li>
+                    <a href="https://www.jube.io" target="_blank" rel="noopener">Documentation</a>
+                </li>
+                <li>
+                    <a href="/Copyright">Copyright</a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="accountMenu" class="topbarMenu">
+            <button type="button" id="accountMenuToggle" class="topbarMenuToggle topbarMenuToggle-account"
+                    aria-haspopup="true" aria-expanded="false" aria-label="Account">
+                <svg class="topbarMenuIcon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.6" fill="currentColor"/>
+                    <path d="M4.5 20c0-4.142 3.358-7.5 7.5-7.5s7.5 3.358 7.5 7.5"
+                          fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <ul id="accountMenuPanel" class="topbarMenuPanel" hidden>
+                @if (!DynamicEnvironment.AppSettings("OAuthAuthentication").Equals("True", StringComparison.CurrentCultureIgnoreCase)
+                     && !DynamicEnvironment.AppSettings("NegotiateAuthentication").Equals("True", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    <li>
+                        <a href="/Account/ChangePassword">Change Password</a>
+                    </li>
+                }
+
+                <li>
+                    <a href="#" onclick="jubeLogout(); return false;">Logout</a>
+                </li>
+            </ul>
+        </div>
+    }
+</header>
+
+@if (isAuthenticated)
+{
+    <nav id="sidebar" aria-label="Main navigation">
         <ul id="menu">
-            <li>
-                <img href="https://www.jube.io" style="height: 20px" alt="Jube" src="/images/logo.png"/>
-            </li>
+            @if (landlord || permissionValidation.Validate([
+                         44
+                     ]))
+            {
+                <li class="sidebarFeatured">
+                    <a href='/AskJooby'>
+                        <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 4h16v12H8l-4 4V4z" fill="none" stroke="currentColor" stroke-width="1.6"
+                                  stroke-linejoin="round"/>
+                        </svg>
+                        AskJooby
+                    </a>
+                </li>
+            }
 
-            @if (permissionValidation.Validate(new[]
-                     {
+            @if (permissionValidation.Validate([
                          1
-                     }))
+                     ]))
             {
                 <li>
-                    <a href='/Case/CaseSearch'>Cases</a>
+                    <a href='/Case/CaseSearch'>
+                        <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6z"
+                                  fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                        </svg>
+                        Cases
+                    </a>
                 </li>
             }
 
-            @if (permissionValidation.Validate(new[]
-                     {
+            @if (permissionValidation.Validate([
                          2
-                     }))
+                     ]))
             {
                 <li>
-                    <a href='/Model/Override'>Override</a>
+                    <a href='/Model/Override'>
+                        <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                            <line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="1.6"/>
+                            <circle cx="9" cy="6" r="2" fill="currentColor"/>
+                            <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.6"/>
+                            <circle cx="15" cy="12" r="2" fill="currentColor"/>
+                            <line x1="4" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="1.6"/>
+                            <circle cx="11" cy="18" r="2" fill="currentColor"/>
+                        </svg>
+                        Override
+                    </a>
                 </li>
             }
 
-            @if (permissionValidation.Validate(new[]
-                     {
+            @if (permissionValidation.Validate([
                          3
-                     }))
+                     ]))
             {
                 <li>
-                    <a href='/Tree?Page=List'>Lists</a>
+                    <a href='/Tree?Page=List'>
+                        <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                            <line x1="8" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="1.6"/>
+                            <circle cx="4" cy="6" r="1.3" fill="currentColor"/>
+                            <line x1="8" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.6"/>
+                            <circle cx="4" cy="12" r="1.3" fill="currentColor"/>
+                            <line x1="8" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="1.6"/>
+                            <circle cx="4" cy="18" r="1.3" fill="currentColor"/>
+                        </svg>
+                        Lists
+                    </a>
                 </li>
             }
 
-            @if (permissionValidation.Validate(new[]
-                     {
+            @if (permissionValidation.Validate([
                          4
-                     }))
+                     ]))
             {
                 <li>
-                    <a href='/Tree?Page=Dictionary'>Dictionary</a>
+                    <a href='/Tree?Page=Dictionary'>
+                        <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M4 5a2 2 0 0 1 2-2h5v18H6a2 2 0 0 1-2-2V5zM20 5a2 2 0 0 0-2-2h-5v18h5a2 2 0 0 0 2-2V5z"
+                                fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                        </svg>
+                        Dictionary
+                    </a>
                 </li>
             }
 
-            @if (permissionValidation.Validate(new[]
-                     {
-                         5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 37, 60
-                     }))
+            @if (permissionValidation.Validate([
+                         5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 37, 45,
+                         46, 47, 48, 60
+                     ]))
             {
                 <li>
+                    <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" fill="none" stroke="currentColor"
+                              stroke-width="1.6" stroke-linejoin="round"/>
+                        <path d="M4.5 7.5L12 12l7.5-4.5M12 12v9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                    </svg>
                     Models
                     <ul>
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      60
-                                 }))
+                                 ]))
                         {
                             <li>
                                 <a href='/Model/Integrity'>Integrity</a>
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      6
-                                 }))
+                                 ]))
                         {
                             <li>
                                 <a href='/Model/EntityAnalysisModel'>Models</a>
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      7, 8, 9, 10, 11, 37
-                                 }))
+                                 ]))
                         {
                             <li>
                                 References
                                 <ul>
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  7
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=RequestXPath'>Request XPath</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  8
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=InlineFunction'>Inline Functions</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  9
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=InlineScript'>Inline Scripts</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  10
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=GatewayRule'>Gateway Rules</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  11
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=Sanctions'>Sanctions</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  37
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=Tag'>Tags</a>
@@ -194,39 +315,35 @@
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      12, 13, 14
-                                 }))
+                                 ]))
                         {
                             <li>
                                 <a>Abstraction</a>
                                 <ul>
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  12
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=TTLCounter'>TTL Counters</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  13
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=AbstractionRule'>Abstraction Rules</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  14
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=AbstractionCalculation'>Abstraction Calculation</a>
@@ -236,128 +353,123 @@
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
-                                     15, 16
-                                 }))
+                        @if (permissionValidation.Validate([
+                                     15, 16, 45, 46, 47, 48
+                                 ]))
                         {
                             <li>
                                 <a>Machine Learning</a>
                                 <ul>
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  15
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=Adaptation'>HTTP Adaptation</a>
                                         </li>
                                     }
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  16
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=Exhaustive'>Exhaustive Adaptation</a>
+                                        </li>
+                                    }
+                                    @if (permissionValidation.Validate([
+                                                 45, 46, 47, 48
+                                             ]))
+                                    {
+                                        <li>
+                                            <a href='/Model/AdvancedAnalytics'>Advanced Analytics</a>
                                         </li>
                                     }
                                 </ul>
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      17
-                                 }))
+                                 ]))
                         {
                             <li>
                                 <a href='/Tree?Page=ActivationRule'>Activation Rules</a>
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      18, 19, 20, 21, 22, 23, 24, 25
-                                 }))
+                                 ]))
                         {
                             <li>
                                 Cases Workflows
                                 <ul>
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  18
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=CaseWorkflow'>Cases Workflows</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  19
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=CaseWorkflowStatus'>Cases Workflows Status</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  20
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=CaseWorkflowXPath'>Cases Workflows XPath</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  21
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=CaseWorkflowForm'>Cases Workflow Form</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  22
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=CaseWorkflowAction'>Cases Workflow Action</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  23
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=CaseWorkflowDisplay'>Cases Workflow Display</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  24
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=CaseWorkflowMacro'>Cases Workflow Macro</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  25
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=CaseWorkflowFilter'>Cases Workflow Filter</a>
@@ -367,20 +479,18 @@
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      26
-                                 }))
+                                 ]))
                         {
                             <li>
                                 <a href='/Tree?Page=Reprocessing'>Reprocessing</a>
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      40
-                                 }))
+                                 ]))
                         {
                             <li>
                                 <a href='/Model/EntityAnalysisModelSample'>Sample</a>
@@ -390,42 +500,64 @@
                 </li>
             }
 
-            @if (permissionValidation.Validate(new[]
-                     {
+            @if (permissionValidation.Validate([
                          28
-                     }))
+                     ]))
             {
                 <li>
-                    <a href='/Visualisation/VisualisationDirectory'>Visualisation</a>
+                    <a href='/Visualisation/VisualisationDirectory'>
+                        <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                            <line x1="5" y1="20" x2="5" y2="10" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="20" x2="12" y2="5" stroke="currentColor" stroke-width="2"/>
+                            <line x1="19" y1="20" x2="19" y2="14" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Visualisation
+                    </a>
                 </li>
             }
 
-            @if (permissionValidation.Validate(new[]
-                     {
+            @if (permissionValidation.Validate([
                          29
-                     }))
+                     ]))
             {
                 <li>
-                    <a href='/Sanction/Search'>Sanctions</a>
+                    <a href='/Sanction/Search'>
+                        <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z" fill="none"
+                                  stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                        </svg>
+                        Sanctions
+                    </a>
                 </li>
             }
 
-            @if (permissionValidation.Validate(new[]
-                     {
+            @if (permissionValidation.Validate([
                          30
-                     }))
+                     ]))
             {
                 <li>
-                    <a href='/Watcher/Activation'>Watcher</a>
+                    <a href='/Watcher/Activation'>
+                        <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" fill="none" stroke="currentColor"
+                                  stroke-width="1.6" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="2.8" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
+                        Watcher
+                    </a>
                 </li>
             }
 
-            @if (landlord || permissionValidation.Validate(new[]
-                     {
+            @if (landlord || permissionValidation.Validate([
                          34, 35, 36, 31, 32, 33
-                     }))
+                     ]))
             {
                 <li>
+                    <svg class="sidebarItemIcon" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        <path
+                            d="M12 3v2.2M12 18.8V21M21 12h-2.2M5.2 12H3M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6M18.4 18.4l-1.6-1.6M7.2 7.2L5.6 5.6"
+                            stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    </svg>
                     Administration
                     <ul>
                         @if (landlord)
@@ -445,28 +577,25 @@
                                 </ul>
                             </li>
                         }
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      31, 32, 33
-                                 }))
+                                 ]))
                         {
                             <li>
                                 Visualisations
                                 <ul>
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  31
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Administration/VisualisationRegistry'>Visualisations</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  32
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=VisualisationRegistryParameter'>Visualisations
@@ -474,10 +603,9 @@
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  33
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=VisualisationRegistryDatasource'>Visualisations
@@ -488,10 +616,9 @@
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      34, 35, 36
-                                 }))
+                                 ]))
                         {
                             <li>
                                 Security
@@ -503,30 +630,27 @@
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  34
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Administration/RoleRegistry'>Roles</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  36
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree/?Page=RoleRegistryPermission'>Permissions</a>
                                         </li>
                                     }
 
-                                    @if (permissionValidation.Validate(new[]
-                                             {
+                                    @if (permissionValidation.Validate([
                                                  35
-                                             }))
+                                             ]))
                                     {
                                         <li>
                                             <a href='/Tree?Page=UserRegistry'>Users</a>
@@ -805,10 +929,9 @@
                             </li>
                         }
 
-                        @if (permissionValidation.Validate(new[]
-                                 {
+                        @if (permissionValidation.Validate([
                                      38
-                                 }))
+                                 ]))
                         {
                             <li>
                                 Preservation
@@ -826,41 +949,23 @@
                     </ul>
                 </li>
             }
-
-            <li>
-                Account
-                <ul>
-                    @if (!DynamicEnvironment.AppSettings("OAuthAuthentication").Equals("True", StringComparison.CurrentCultureIgnoreCase)
-                         && !DynamicEnvironment.AppSettings("NegotiateAuthentication").Equals("True", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        <li>
-                            <a href="/Account/ChangePassword">Change Password</a>
-                        </li>
-                    }
-
-                    <li>
-                        <a href="#" onclick="jubeLogout(); return false;">Logout</a>
-                    </li>
-                </ul>
-            </li>
         </ul>
-    }
-</header>
+        <div id="sidebarFooter">
+            Session expires in: <span id="session-countdown">--:--</span>
+        </div>
+    </nav>
+}
 <main role="main">
     @RenderBody()
 </main>
-<footer>
-    @if (User.Identity is { IsAuthenticated: true } && landlord)
-    {
-        <div class="tenantSwitcher">
-            <input id="Tenant"/>
+@if (!isAuthenticated)
+{
+    <footer>
+        <div class="footerCopyright">
+            Jube&#8482;. &copy; Jube Holdings Limited 2022 to present.
         </div>
-    }
-    <div class="footerCopyright">
-        Jube&#8482;. &copy; Jube Holdings Limited 2022 to present. &nbsp;|&nbsp; Session expires in: <span
-            id="session-countdown">--:--</span>
-    </div>
-</footer>
+    </footer>
+}
 
 @if (User.Identity is { IsAuthenticated: true })
 {
@@ -908,7 +1013,121 @@
         }
 
         $(document).ready(function () {
-            $("#menu").kendoMenu();
+            $("#menu").kendoPanelBar({
+                expandMode: "multiple"
+            });
+
+            (function () {
+                const label = $("#currentPageLabel");
+
+                function linkText(link) {
+                    const clone = link.cloneNode(true);
+                    $(clone).find(".k-icon").remove();
+                    return $.trim(clone.textContent.replace(/\s+/g, " "));
+                }
+
+                const target = window.location.pathname + window.location.search;
+                let activeLink = null;
+
+                $("#menu a[href]").each(function () {
+                    const href = this.getAttribute("href");
+                    if (href && href !== "#" && href === target) {
+                        activeLink = this;
+                    }
+                });
+
+                if (!activeLink) {
+                    label.text(document.title.replace(/\s*-\s*Jube\.App\s*$/, ""));
+                    return;
+                }
+
+                const crumbs = [linkText(activeLink)];
+                $(activeLink).closest("li").parentsUntil("#menu", "li").each(function () {
+                    const groupLink = $(this).children(".k-link, a").first();
+                    if (groupLink.length) {
+                        crumbs.unshift(linkText(groupLink[0]));
+                    }
+                });
+
+                const path = crumbs.join(" › ");
+                label.text(path).attr("title", path);
+            })();
+
+            const sidebarToggle = $("#sidebarToggle");
+            const body = $("body");
+
+            function syncSidebarToggleState() {
+                const collapsed = body.hasClass("sidebarCollapsed");
+                sidebarToggle.attr("aria-expanded", String(!collapsed));
+                sidebarToggle.attr("aria-label", collapsed ? "Expand navigation" : "Collapse navigation");
+            }
+
+            syncSidebarToggleState();
+
+            sidebarToggle.on("click", function () {
+                const collapsed = body.toggleClass("sidebarCollapsed").hasClass("sidebarCollapsed");
+                syncSidebarToggleState();
+                try {
+                    localStorage.setItem("jubeSidebarCollapsed", collapsed ? "1" : "0");
+                } catch (e) {
+                    // Private browsing or blocked storage: the preference just won't stick.
+                }
+
+                // Kendo widgets, and page-level resize handlers such as the ones Tree.js and
+                // AskJooby.js bind to window "resize" (e.g. AskJoobyJs's FixSplitterPaneWidths,
+                // which Kendo's own resize cycle does not know to call), only react once the
+                // collapse/expand transition has settled; a real resize event covers both,
+                // since Kendo widgets already listen for it internally.
+                setTimeout(function () {
+                    kendo.resize(body, true);
+                    window.dispatchEvent(new Event("resize"));
+                }, 200);
+            });
+
+            const topbarMenuClosers = [];
+
+            function setupTopbarMenu(toggleId, panelId) {
+                const toggle = $(toggleId);
+                const panel = $(panelId);
+
+                function close() {
+                    panel.attr("hidden", true);
+                    toggle.attr("aria-expanded", "false");
+                }
+
+                toggle.on("click", function (e) {
+                    e.stopPropagation();
+                    const wasHidden = panel.attr("hidden");
+                    topbarMenuClosers.forEach(function (closer) {
+                        closer();
+                    });
+                    if (wasHidden) {
+                        panel.removeAttr("hidden");
+                        toggle.attr("aria-expanded", "true");
+                    }
+                });
+
+                topbarMenuClosers.push(close);
+            }
+
+            setupTopbarMenu("#resourcesMenuToggle", "#resourcesMenuPanel");
+            setupTopbarMenu("#accountMenuToggle", "#accountMenuPanel");
+
+            $(document).on("click", function (e) {
+                if (!$(e.target).closest(".topbarMenu").length) {
+                    topbarMenuClosers.forEach(function (closer) {
+                        closer();
+                    });
+                }
+            });
+
+            $(document).on("keydown", function (e) {
+                if (e.key === "Escape") {
+                    topbarMenuClosers.forEach(function (closer) {
+                        closer();
+                    });
+                }
+            });
         });
 
         // Ends the session through POST /api/Authentication/Logout (same origin, cookies included), then shows the
@@ -930,6 +1149,18 @@
 
             let expiresAt = renderedExpiry ? new Date(renderedExpiry).getTime() : null;
 
+            window.JubeSessionExpiry = {
+                set: function (iso) {
+                    const parsed = new Date(iso).getTime();
+                    if (!isNaN(parsed)) {
+                        expiresAt = parsed;
+                    }
+                },
+                get: function () {
+                    return expiresAt;
+                }
+            };
+
             function updateCountdown(msRemaining) {
                 const countdown = document.getElementById('session-countdown');
                 if (!countdown) return;
@@ -946,7 +1177,7 @@
             $(document).ajaxComplete(function (event, xhr) {
                 const refreshed = xhr.getResponseHeader('@SessionExpiry.HeaderName');
                 if (refreshed) {
-                    expiresAt = new Date(refreshed).getTime();
+                    window.JubeSessionExpiry.set(refreshed);
                 }
             });
 
@@ -967,6 +1198,10 @@
             setInterval(tick, 1_000);
         })();
     </script>
+}
+@if (showAskJoobyWidget)
+{
+    @await Html.PartialAsync("Shared/_AskJoobyWidget")
 }
 </body>
 </html>

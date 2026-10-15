@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-8a73728f-t jc-8a73728f-d">
+    <title id="jc-8a73728f-t">Alerts by rule</title>
+    <desc id="jc-8a73728f-d">Treemap of 10 items totalling 1540. Largest: Velocity 420, Amount 310, New payee 260,
+        Geography 190, Device 120.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Alerts by rule</text>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Velocity, Value: 420, Of total: 27.3%">
+        <title>Velocity, Value: 420, Of total: 27.3%</title>
+        <rect class="cell m q8" x="24" y="48" width="280.62" height="193.32"/>
+        <text class="lbl qt8" x="30" y="63">Velocity</text>
+        <text class="lbl qt8" x="30" y="77">420</text>
+        <g class="tt">
+            <rect class="tb" x="114.11" y="73.66" width="100.4" height="61" rx="6"/>
+            <text class="tx b" x="124.11" y="91.66">Velocity</text>
+            <text class="tx" x="124.11" y="108.66">Value: 420</text>
+            <text class="tx" x="124.11" y="125.66">Of total: 27.3%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Amount, Value: 310, Of total: 20.1%">
+        <title>Amount, Value: 310, Of total: 20.1%</title>
+        <rect class="cell m q6" x="24" y="241.32" width="280.62" height="142.68"/>
+        <text class="lbl qt6" x="30" y="256.32">Amount</text>
+        <text class="lbl qt6" x="30" y="270.32">310</text>
+        <g class="tt">
+            <rect class="tb" x="114.11" y="241.66" width="100.4" height="61" rx="6"/>
+            <text class="tx b" x="124.11" y="259.66">Amount</text>
+            <text class="tx" x="124.11" y="276.66">Value: 310</text>
+            <text class="tx" x="124.11" y="293.66">Of total: 20.1%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="New payee, Value: 260, Of total: 16.9%">
+        <title>New payee, Value: 260, Of total: 16.9%</title>
+        <rect class="cell m q5" x="304.62" y="48" width="179.91" height="186.67"/>
+        <text class="lbl qt5" x="310.62" y="63">New payee</text>
+        <text class="lbl qt5" x="310.62" y="77">260</text>
+        <g class="tt">
+            <rect class="tb" x="344.38" y="70.33" width="100.4" height="61" rx="6"/>
+            <text class="tx b" x="354.38" y="88.33">New payee</text>
+            <text class="tx" x="354.38" y="105.33">Value: 260</text>
+            <text class="tx" x="354.38" y="122.33">Of total: 16.9%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Geography, Value: 190, Of total: 12.3%">
+        <title>Geography, Value: 190, Of total: 12.3%</title>
+        <rect class="cell m q4" x="484.53" y="48" width="131.47" height="186.67"/>
+        <text class="lbl qt4" x="490.53" y="63">Geography</text>
+        <text class="lbl qt4" x="490.53" y="77">190</text>
+        <g class="tt">
+            <rect class="tb" x="500.06" y="70.33" width="100.4" height="61" rx="6"/>
+            <text class="tx b" x="510.06" y="88.33">Geography</text>
+            <text class="tx" x="510.06" y="105.33">Value: 190</text>
+            <text class="tx" x="510.06" y="122.33">Of total: 12.3%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Device, Value: 120, Of total: 7.8%">
+        <title>Device, Value: 120, Of total: 7.8%</title>
+        <rect class="cell m q2" x="304.62" y="234.67" width="103.79" height="149.33"/>
+        <text class="lbl qt2" x="310.62" y="249.67">Device</text>
+        <text class="lbl qt2" x="310.62" y="263.67">120</text>
+        <g class="tt">
+            <rect class="tb" x="309.68" y="238.33" width="93.68" height="61" rx="6"/>
+            <text class="tx b" x="319.68" y="256.33">Device</text>
+            <text class="tx" x="319.68" y="273.33">Value: 120</text>
+            <text class="tx" x="319.68" y="290.33">Of total: 7.8%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Time of day, Value: 90, Of total: 5.8%">
+        <title>Time of day, Value: 90, Of total: 5.8%</title>
+        <rect class="cell m q1" x="408.42" y="234.67" width="77.84" height="149.33"/>
+        <text class="lbl qt1" x="414.42" y="249.67">Time of day</text>
+        <text class="lbl qt1" x="414.42" y="263.67">90</text>
+        <g class="tt">
+            <rect class="tb" x="400.5" y="238.33" width="93.68" height="61" rx="6"/>
+            <text class="tx b" x="410.5" y="256.33">Time of day</text>
+            <text class="tx" x="410.5" y="273.33">Value: 90</text>
+            <text class="tx" x="410.5" y="290.33">Of total: 5.8%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Merchant, Value: 70, Of total: 4.5%">
+        <title>Merchant, Value: 70, Of total: 4.5%</title>
+        <rect class="cell m q1" x="486.26" y="234.67" width="129.74" height="69.69"/>
+        <text class="lbl qt1" x="492.26" y="249.67">Merchant</text>
+        <text class="lbl qt1" x="492.26" y="263.67">70</text>
+        <g class="tt">
+            <rect class="tb" x="504.29" y="198.51" width="93.68" height="61" rx="6"/>
+            <text class="tx b" x="514.29" y="216.51">Merchant</text>
+            <text class="tx" x="514.29" y="233.51">Value: 70</text>
+            <text class="tx" x="514.29" y="250.51">Of total: 4.5%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Dormant, Value: 40, Of total: 2.6%">
+        <title>Dormant, Value: 40, Of total: 2.6%</title>
+        <rect class="cell m q0" x="486.26" y="304.36" width="64.87" height="79.64"/>
+        <text class="lbl qt0" x="492.26" y="319.36">Dormant</text>
+        <text class="lbl qt0" x="492.26" y="333.36">40</text>
+        <g class="tt">
+            <rect class="tb" x="471.85" y="273.18" width="93.68" height="61" rx="6"/>
+            <text class="tx b" x="481.85" y="291.18">Dormant</text>
+            <text class="tx" x="481.85" y="308.18">Value: 40</text>
+            <text class="tx" x="481.85" y="325.18">Of total: 2.6%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Structuring, Value: 25, Of total: 1.6%">
+        <title>Structuring, Value: 25, Of total: 1.6%</title>
+        <rect class="cell m q0" x="551.13" y="304.36" width="64.87" height="49.78"/>
+        <text class="lbl qt0" x="557.13" y="319.36">Structuri…</text>
+        <text class="lbl qt0" x="557.13" y="333.36">25</text>
+        <g class="tt">
+            <rect class="tb" x="522.32" y="258.24" width="93.68" height="61" rx="6"/>
+            <text class="tx b" x="532.32" y="276.24">Structuring</text>
+            <text class="tx" x="532.32" y="293.24">Value: 25</text>
+            <text class="tx" x="532.32" y="310.24">Of total: 1.6%</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="Other, Value: 15, Of total: 1%">
+        <title>Other, Value: 15, Of total: 1%</title>
+        <rect class="cell m q0" x="551.13" y="354.13" width="64.87" height="29.87"/>
+        <text class="lbl qt0" x="557.13" y="369.13">Other</text>
+        <g class="tt">
+            <rect class="tb" x="532.16" y="298.07" width="83.84" height="61" rx="6"/>
+            <text class="tx b" x="542.16" y="316.07">Other</text>
+            <text class="tx" x="542.16" y="333.07">Value: 15</text>
+            <text class="tx" x="542.16" y="350.07">Of total: 1%</text>
+        </g>
+    </g>
+</svg>

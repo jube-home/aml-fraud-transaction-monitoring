@@ -17,7 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         public static int CurrencyMinorUnitExponent(this string? @this)
         {
-            return IsoReferenceData.CurrencyExponents.TryGetValue((@this ?? "").Trim(), out var exponent)
+            return IsoReferenceData.currencyExponents.TryGetValue((@this ?? "").Trim(), out var exponent)
                 ? exponent
                 : -1;
         }

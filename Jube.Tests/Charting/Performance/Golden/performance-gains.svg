@@ -1,0 +1,703 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-978d39ad" viewBox="0 0 640 480" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-978d39ad-t jc-978d39ad-d">
+    <title id="jc-978d39ad-t">Cumulative Gains</title>
+    <desc id="jc-978d39ad-d">Cumulative gains chart with 1 series: Model. Y values range from 0 to 1. Model captures 50%
+        of positives in the top 20%.
+    </desc>
+    <style>
+        .jc-978d39ad{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-978d39ad:not([data-theme="light"]),.jc-978d39ad:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-978d39ad:not([data-theme="light"]),.jc-978d39ad[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-978d39ad
+        text{fill:var(--jc-text);font-size:12px}.jc-978d39ad .bg{fill:var(--jc-surface)}.jc-978d39ad
+        .ttl{font-size:16px;font-weight:600}.jc-978d39ad .sub{fill:var(--jc-text2)}.jc-978d39ad
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-978d39ad .at{fill:var(--jc-text2);font-weight:500}.jc-978d39ad
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-978d39ad
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-978d39ad
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-978d39ad .ref.s0,.jc-978d39ad
+        .ref.s1,.jc-978d39ad .ref.s2,.jc-978d39ad .ref.s3,.jc-978d39ad .ref.s4,.jc-978d39ad .ref.s5,.jc-978d39ad
+        .ref.s6,.jc-978d39ad .ref.s7{stroke:var(--sc)}.jc-978d39ad
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-978d39ad
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-978d39ad
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-978d39ad
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-978d39ad .wh,.jc-978d39ad
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-978d39ad
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-978d39ad
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-978d39ad
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-978d39ad .cd.hollow{fill:var(--jc-surface)}.jc-978d39ad
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-978d39ad
+        .ar.off{fill-opacity:0}.jc-978d39ad .ring{font-size:10px}.jc-978d39ad
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-978d39ad .needle{fill:var(--jc-text);stroke:none}.jc-978d39ad
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-978d39ad
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-978d39ad
+        .big{font-size:28px;font-weight:600}.jc-978d39ad .rg0,.jc-978d39ad .rg1,.jc-978d39ad
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-978d39ad .rg0{fill-opacity:.1}.jc-978d39ad
+        .rg1{fill-opacity:.2}.jc-978d39ad .rg2{fill-opacity:.32}.jc-978d39ad
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-978d39ad
+        .bar.part{fill-opacity:.35}.jc-978d39ad .lgt{fill:var(--jc-text2)}.jc-978d39ad
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-978d39ad
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-978d39ad
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-978d39ad
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-978d39ad .bar{fill:var(--sc)}.jc-978d39ad
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-978d39ad
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-978d39ad
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-978d39ad
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-978d39ad
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-978d39ad
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-978d39ad .mk:hover .pt.h,.jc-978d39ad .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-978d39ad .pt.sm{fill-opacity:.55;stroke:none}.jc-978d39ad
+        .na{fill:var(--jc-grid)}.jc-978d39ad .mk:hover .sl,.jc-978d39ad .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-978d39ad
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-978d39ad
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-978d39ad
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-978d39ad
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-978d39ad
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-978d39ad .ctr{text-anchor:middle}.jc-978d39ad
+        .end{text-anchor:end}.jc-978d39ad .mid{dominant-baseline:central}.jc-978d39ad .mk{outline:none}.jc-978d39ad
+        .m,.jc-978d39ad .pt,.jc-978d39ad .bub,.jc-978d39ad .bar,.jc-978d39ad .ov,.jc-978d39ad .sl,.jc-978d39ad
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-978d39ad .mk:hover .m,.jc-978d39ad .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-978d39ad .mk:hover .pt,.jc-978d39ad .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-978d39ad .mk:hover .bub,.jc-978d39ad .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-978d39ad .mk:hover .bar,.jc-978d39ad .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-978d39ad .mk:hover .ov,.jc-978d39ad .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-978d39ad .mk:hover .sl,.jc-978d39ad .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-978d39ad .mk:hover .box,.jc-978d39ad .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-978d39ad .mk:hover .wk,.jc-978d39ad .mk:focus-visible
+        .wk,.jc-978d39ad .mk:hover .cd,.jc-978d39ad .mk:focus-visible .cd{stroke-width:2.5}.jc-978d39ad .mk:hover
+        .cell,.jc-978d39ad .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-978d39ad .mk:hover
+        .vl,.jc-978d39ad .mk:focus-visible .vl,.jc-978d39ad .mk:hover .cx,.jc-978d39ad .mk:focus-visible
+        .cx{opacity:1}.jc-978d39ad .mk:hover .mkr,.jc-978d39ad .mk:focus-visible .mkr{stroke-width:3}.jc-978d39ad
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-978d39ad
+        .mk:hover .tt,.jc-978d39ad .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-978d39ad
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-978d39ad
+        .tx{fill:var(--jc-text);font-size:12px}.jc-978d39ad .tx.b{font-weight:600}.jc-978d39ad
+        .tsw{fill:var(--sc)}.jc-978d39ad .lg{cursor:default;transition:opacity .15s ease}.jc-978d39ad .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-978d39ad .sr{transition:opacity .15s ease}.jc-978d39ad:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-978d39ad:has(.mk:hover) .mk:not(:hover) .pt,.jc-978d39ad:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-978d39ad:has(.mk:hover) .mk:not(:hover) .bar,.jc-978d39ad:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-978d39ad:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-978d39ad:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-978d39ad .s0{--sc:var(--jc-c0)}.jc-978d39ad .s0
+        .on{fill:var(--jc-ct0)}.jc-978d39ad:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-978d39ad:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-978d39ad:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-978d39ad:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-978d39ad:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-978d39ad,.jc-978d39ad *{transition:none!important;animation:none!important}}
+    </style>
+    <rect class="bg" x="0" y="0" width="640" height="480" rx="8"/>
+    <text class="ttl" x="16" y="32">Cumulative Gains</text>
+    <text class="sub" x="16" y="50">Share of fraud captured by the highest scoring share of the population</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="444" width="51.36" height="18"/>
+        <rect class="sw" x="16" y="451" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="34" y="457">Model</text>
+    </g>
+    <line class="gl" x1="70.38" y1="398" x2="624" y2="398"/>
+    <text class="tk end mid" x="62.38" y="398">0%</text>
+    <line class="gl" x1="70.38" y1="331.6" x2="624" y2="331.6"/>
+    <text class="tk end mid" x="62.38" y="331.6">20%</text>
+    <line class="gl" x1="70.38" y1="265.2" x2="624" y2="265.2"/>
+    <text class="tk end mid" x="62.38" y="265.2">40%</text>
+    <line class="gl" x1="70.38" y1="198.8" x2="624" y2="198.8"/>
+    <text class="tk end mid" x="62.38" y="198.8">60%</text>
+    <line class="gl" x1="70.38" y1="132.4" x2="624" y2="132.4"/>
+    <text class="tk end mid" x="62.38" y="132.4">80%</text>
+    <line class="gl" x1="70.38" y1="66" x2="624" y2="66"/>
+    <text class="tk end mid" x="62.38" y="66">100%</text>
+    <text class="tk ctr" x="70.38" y="414">0%</text>
+    <text class="tk ctr" x="181.1" y="414">20%</text>
+    <text class="tk ctr" x="291.83" y="414">40%</text>
+    <text class="tk ctr" x="402.55" y="414">60%</text>
+    <text class="tk ctr" x="513.28" y="414">80%</text>
+    <text class="tk ctr" x="624" y="414">100%</text>
+    <line class="ax" x1="70.38" y1="398" x2="624" y2="398"/>
+    <line class="ref s0" x1="70.38" y1="398" x2="236.47" y2="66">
+        <title>Perfect model</title>
+    </line>
+    <line class="ref s0" x1="236.47" y1="66" x2="624" y2="66">
+        <title>Perfect model</title>
+    </line>
+    <line class="ref" x1="70.38" y1="398" x2="624" y2="66">
+        <title>Random ranking</title>
+    </line>
+    <g class="sr s0">
+        <path class="ln"
+              d="M70.38 398L84.22 370.33L98.06 342.67L125.74 315L139.58 287.33L153.42 259.67L167.26 259.67L181.1 232L208.79 204.33L222.63 204.33L236.47 176.67L250.31 149L264.15 149L277.99 149L305.67 121.33L319.51 121.33L333.35 121.33L347.19 121.33L361.03 93.67L374.87 66L388.71 66L402.55 66L430.23 66L444.07 66L457.91 66L471.75 66L485.6 66L499.44 66L527.12 66L540.96 66L568.64 66L582.48 66L610.16 66L624 66">
+            <title>Model</title>
+        </path>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Model, Share of population, highest score first: 0%, Share of positives captured: 0%">
+            <title>Model, Share of population, highest score first: 0%, Share of positives captured: 0%</title>
+            <circle class="hit" cx="70.38" cy="398" r="9"/>
+            <circle class="pt h" cx="70.38" cy="398" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="70.38" y="323.5" width="253.28" height="61" rx="6"/>
+                <rect class="tsw s0" x="80.38" y="332.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="94.38" y="341.5">Model</text>
+                <text class="tx" x="80.38" y="358.5">Share of population, highest score first: 0%</text>
+                <text class="tx" x="80.38" y="375.5">Share of positives captured: 0%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.95, Share of population, highest score first: 3%, Share of positives captured: 8%">
+            <title>Score cut-off 0.95, Share of population, highest score first: 3%, Share of positives captured: 8%
+            </title>
+            <circle class="hit" cx="84.22" cy="370.33" r="9"/>
+            <circle class="pt h" cx="84.22" cy="370.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="70.38" y="295.83" width="253.28" height="61" rx="6"/>
+                <text class="tx b" x="80.38" y="313.83">Score cut-off 0.95</text>
+                <text class="tx" x="80.38" y="330.83">Share of population, highest score first: 3%</text>
+                <text class="tx" x="80.38" y="347.83">Share of positives captured: 8%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.92, Share of population, highest score first: 5%, Share of positives captured: 17%">
+            <title>Score cut-off 0.92, Share of population, highest score first: 5%, Share of positives captured: 17%
+            </title>
+            <circle class="hit" cx="98.06" cy="342.67" r="9"/>
+            <circle class="pt h" cx="98.06" cy="342.67" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="70.38" y="268.17" width="253.28" height="61" rx="6"/>
+                <text class="tx b" x="80.38" y="286.17">Score cut-off 0.92</text>
+                <text class="tx" x="80.38" y="303.17">Share of population, highest score first: 5%</text>
+                <text class="tx" x="80.38" y="320.17">Share of positives captured: 17%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.9, Share of population, highest score first: 10%, Share of positives captured: 25%">
+            <title>Score cut-off 0.9, Share of population, highest score first: 10%, Share of positives captured: 25%
+            </title>
+            <circle class="hit" cx="125.74" cy="315" r="9"/>
+            <circle class="pt h" cx="125.74" cy="315" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="70.38" y="240.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="80.38" y="258.5">Score cut-off 0.9</text>
+                <text class="tx" x="80.38" y="275.5">Share of population, highest score first: 10%</text>
+                <text class="tx" x="80.38" y="292.5">Share of positives captured: 25%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.88, Share of population, highest score first: 13%, Share of positives captured: 33%">
+            <title>Score cut-off 0.88, Share of population, highest score first: 13%, Share of positives captured: 33%
+            </title>
+            <circle class="hit" cx="139.58" cy="287.33" r="9"/>
+            <circle class="pt h" cx="139.58" cy="287.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="70.38" y="212.83" width="260" height="61" rx="6"/>
+                <text class="tx b" x="80.38" y="230.83">Score cut-off 0.88</text>
+                <text class="tx" x="80.38" y="247.83">Share of population, highest score first: 13%</text>
+                <text class="tx" x="80.38" y="264.83">Share of positives captured: 33%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.85, Share of population, highest score first: 15%, Share of positives captured: 42%">
+            <title>Score cut-off 0.85, Share of population, highest score first: 15%, Share of positives captured: 42%
+            </title>
+            <circle class="hit" cx="153.42" cy="259.67" r="9"/>
+            <circle class="pt h" cx="153.42" cy="259.67" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="70.38" y="185.17" width="260" height="61" rx="6"/>
+                <text class="tx b" x="80.38" y="203.17">Score cut-off 0.85</text>
+                <text class="tx" x="80.38" y="220.17">Share of population, highest score first: 15%</text>
+                <text class="tx" x="80.38" y="237.17">Share of positives captured: 42%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.8, Share of population, highest score first: 18%, Share of positives captured: 42%">
+            <title>Score cut-off 0.8, Share of population, highest score first: 18%, Share of positives captured: 42%
+            </title>
+            <circle class="hit" cx="167.26" cy="259.67" r="9"/>
+            <circle class="pt h" cx="167.26" cy="259.67" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="70.38" y="185.17" width="260" height="61" rx="6"/>
+                <text class="tx b" x="80.38" y="203.17">Score cut-off 0.8</text>
+                <text class="tx" x="80.38" y="220.17">Share of population, highest score first: 18%</text>
+                <text class="tx" x="80.38" y="237.17">Share of positives captured: 42%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.75, Share of population, highest score first: 20%, Share of positives captured: 50%">
+            <title>Score cut-off 0.75, Share of population, highest score first: 20%, Share of positives captured: 50%
+            </title>
+            <circle class="hit" cx="181.1" cy="232" r="9"/>
+            <circle class="pt h" cx="181.1" cy="232" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="70.38" y="157.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="80.38" y="175.5">Score cut-off 0.75</text>
+                <text class="tx" x="80.38" y="192.5">Share of population, highest score first: 20%</text>
+                <text class="tx" x="80.38" y="209.5">Share of positives captured: 50%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.7, Share of population, highest score first: 25%, Share of positives captured: 58%">
+            <title>Score cut-off 0.7, Share of population, highest score first: 25%, Share of positives captured: 58%
+            </title>
+            <circle class="hit" cx="208.79" cy="204.33" r="9"/>
+            <circle class="pt h" cx="208.79" cy="204.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="78.79" y="129.83" width="260" height="61" rx="6"/>
+                <text class="tx b" x="88.79" y="147.83">Score cut-off 0.7</text>
+                <text class="tx" x="88.79" y="164.83">Share of population, highest score first: 25%</text>
+                <text class="tx" x="88.79" y="181.83">Share of positives captured: 58%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.65, Share of population, highest score first: 28%, Share of positives captured: 58%">
+            <title>Score cut-off 0.65, Share of population, highest score first: 28%, Share of positives captured: 58%
+            </title>
+            <circle class="hit" cx="222.63" cy="204.33" r="9"/>
+            <circle class="pt h" cx="222.63" cy="204.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="92.63" y="129.83" width="260" height="61" rx="6"/>
+                <text class="tx b" x="102.63" y="147.83">Score cut-off 0.65</text>
+                <text class="tx" x="102.63" y="164.83">Share of population, highest score first: 28%</text>
+                <text class="tx" x="102.63" y="181.83">Share of positives captured: 58%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.62, Share of population, highest score first: 30%, Share of positives captured: 67%">
+            <title>Score cut-off 0.62, Share of population, highest score first: 30%, Share of positives captured: 67%
+            </title>
+            <circle class="hit" cx="236.47" cy="176.67" r="9"/>
+            <circle class="pt h" cx="236.47" cy="176.67" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="106.47" y="102.17" width="260" height="61" rx="6"/>
+                <text class="tx b" x="116.47" y="120.17">Score cut-off 0.62</text>
+                <text class="tx" x="116.47" y="137.17">Share of population, highest score first: 30%</text>
+                <text class="tx" x="116.47" y="154.17">Share of positives captured: 67%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.6, Share of population, highest score first: 33%, Share of positives captured: 75%">
+            <title>Score cut-off 0.6, Share of population, highest score first: 33%, Share of positives captured: 75%
+            </title>
+            <circle class="hit" cx="250.31" cy="149" r="9"/>
+            <circle class="pt h" cx="250.31" cy="149" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="120.31" y="74.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="130.31" y="92.5">Score cut-off 0.6</text>
+                <text class="tx" x="130.31" y="109.5">Share of population, highest score first: 33%</text>
+                <text class="tx" x="130.31" y="126.5">Share of positives captured: 75%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.58, Share of population, highest score first: 35%, Share of positives captured: 75%">
+            <title>Score cut-off 0.58, Share of population, highest score first: 35%, Share of positives captured: 75%
+            </title>
+            <circle class="hit" cx="264.15" cy="149" r="9"/>
+            <circle class="pt h" cx="264.15" cy="149" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="134.15" y="74.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="144.15" y="92.5">Score cut-off 0.58</text>
+                <text class="tx" x="144.15" y="109.5">Share of population, highest score first: 35%</text>
+                <text class="tx" x="144.15" y="126.5">Share of positives captured: 75%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.55, Share of population, highest score first: 38%, Share of positives captured: 75%">
+            <title>Score cut-off 0.55, Share of population, highest score first: 38%, Share of positives captured: 75%
+            </title>
+            <circle class="hit" cx="277.99" cy="149" r="9"/>
+            <circle class="pt h" cx="277.99" cy="149" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="147.99" y="74.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="157.99" y="92.5">Score cut-off 0.55</text>
+                <text class="tx" x="157.99" y="109.5">Share of population, highest score first: 38%</text>
+                <text class="tx" x="157.99" y="126.5">Share of positives captured: 75%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.5, Share of population, highest score first: 43%, Share of positives captured: 83%">
+            <title>Score cut-off 0.5, Share of population, highest score first: 43%, Share of positives captured: 83%
+            </title>
+            <circle class="hit" cx="305.67" cy="121.33" r="9"/>
+            <circle class="pt h" cx="305.67" cy="121.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="175.67" y="127.83" width="260" height="61" rx="6"/>
+                <text class="tx b" x="185.67" y="145.83">Score cut-off 0.5</text>
+                <text class="tx" x="185.67" y="162.83">Share of population, highest score first: 43%</text>
+                <text class="tx" x="185.67" y="179.83">Share of positives captured: 83%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.48, Share of population, highest score first: 45%, Share of positives captured: 83%">
+            <title>Score cut-off 0.48, Share of population, highest score first: 45%, Share of positives captured: 83%
+            </title>
+            <circle class="hit" cx="319.51" cy="121.33" r="9"/>
+            <circle class="pt h" cx="319.51" cy="121.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="189.51" y="127.83" width="260" height="61" rx="6"/>
+                <text class="tx b" x="199.51" y="145.83">Score cut-off 0.48</text>
+                <text class="tx" x="199.51" y="162.83">Share of population, highest score first: 45%</text>
+                <text class="tx" x="199.51" y="179.83">Share of positives captured: 83%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.45, Share of population, highest score first: 48%, Share of positives captured: 83%">
+            <title>Score cut-off 0.45, Share of population, highest score first: 48%, Share of positives captured: 83%
+            </title>
+            <circle class="hit" cx="333.35" cy="121.33" r="9"/>
+            <circle class="pt h" cx="333.35" cy="121.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="203.35" y="127.83" width="260" height="61" rx="6"/>
+                <text class="tx b" x="213.35" y="145.83">Score cut-off 0.45</text>
+                <text class="tx" x="213.35" y="162.83">Share of population, highest score first: 48%</text>
+                <text class="tx" x="213.35" y="179.83">Share of positives captured: 83%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.42, Share of population, highest score first: 50%, Share of positives captured: 83%">
+            <title>Score cut-off 0.42, Share of population, highest score first: 50%, Share of positives captured: 83%
+            </title>
+            <circle class="hit" cx="347.19" cy="121.33" r="9"/>
+            <circle class="pt h" cx="347.19" cy="121.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="217.19" y="127.83" width="260" height="61" rx="6"/>
+                <text class="tx b" x="227.19" y="145.83">Score cut-off 0.42</text>
+                <text class="tx" x="227.19" y="162.83">Share of population, highest score first: 50%</text>
+                <text class="tx" x="227.19" y="179.83">Share of positives captured: 83%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.4, Share of population, highest score first: 53%, Share of positives captured: 92%">
+            <title>Score cut-off 0.4, Share of population, highest score first: 53%, Share of positives captured: 92%
+            </title>
+            <circle class="hit" cx="361.03" cy="93.67" r="9"/>
+            <circle class="pt h" cx="361.03" cy="93.67" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="231.03" y="100.17" width="260" height="61" rx="6"/>
+                <text class="tx b" x="241.03" y="118.17">Score cut-off 0.4</text>
+                <text class="tx" x="241.03" y="135.17">Share of population, highest score first: 53%</text>
+                <text class="tx" x="241.03" y="152.17">Share of positives captured: 92%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.38, Share of population, highest score first: 55%, Share of positives captured: 100%">
+            <title>Score cut-off 0.38, Share of population, highest score first: 55%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="374.87" cy="66" r="9"/>
+            <circle class="pt h" cx="374.87" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="244.87" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="254.87" y="90.5">Score cut-off 0.38</text>
+                <text class="tx" x="254.87" y="107.5">Share of population, highest score first: 55%</text>
+                <text class="tx" x="254.87" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.35, Share of population, highest score first: 57%, Share of positives captured: 100%">
+            <title>Score cut-off 0.35, Share of population, highest score first: 57%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="388.71" cy="66" r="9"/>
+            <circle class="pt h" cx="388.71" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="258.71" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="268.71" y="90.5">Score cut-off 0.35</text>
+                <text class="tx" x="268.71" y="107.5">Share of population, highest score first: 57%</text>
+                <text class="tx" x="268.71" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.33, Share of population, highest score first: 60%, Share of positives captured: 100%">
+            <title>Score cut-off 0.33, Share of population, highest score first: 60%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="402.55" cy="66" r="9"/>
+            <circle class="pt h" cx="402.55" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="272.55" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="282.55" y="90.5">Score cut-off 0.33</text>
+                <text class="tx" x="282.55" y="107.5">Share of population, highest score first: 60%</text>
+                <text class="tx" x="282.55" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.3, Share of population, highest score first: 65%, Share of positives captured: 100%">
+            <title>Score cut-off 0.3, Share of population, highest score first: 65%, Share of positives captured: 100%
+            </title>
+            <circle class="hit" cx="430.23" cy="66" r="9"/>
+            <circle class="pt h" cx="430.23" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="300.23" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="310.23" y="90.5">Score cut-off 0.3</text>
+                <text class="tx" x="310.23" y="107.5">Share of population, highest score first: 65%</text>
+                <text class="tx" x="310.23" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.28, Share of population, highest score first: 68%, Share of positives captured: 100%">
+            <title>Score cut-off 0.28, Share of population, highest score first: 68%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="444.07" cy="66" r="9"/>
+            <circle class="pt h" cx="444.07" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="314.07" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="324.07" y="90.5">Score cut-off 0.28</text>
+                <text class="tx" x="324.07" y="107.5">Share of population, highest score first: 68%</text>
+                <text class="tx" x="324.07" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.25, Share of population, highest score first: 70%, Share of positives captured: 100%">
+            <title>Score cut-off 0.25, Share of population, highest score first: 70%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="457.91" cy="66" r="9"/>
+            <circle class="pt h" cx="457.91" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="327.91" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="337.91" y="90.5">Score cut-off 0.25</text>
+                <text class="tx" x="337.91" y="107.5">Share of population, highest score first: 70%</text>
+                <text class="tx" x="337.91" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.22, Share of population, highest score first: 73%, Share of positives captured: 100%">
+            <title>Score cut-off 0.22, Share of population, highest score first: 73%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="471.75" cy="66" r="9"/>
+            <circle class="pt h" cx="471.75" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="341.75" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="351.75" y="90.5">Score cut-off 0.22</text>
+                <text class="tx" x="351.75" y="107.5">Share of population, highest score first: 73%</text>
+                <text class="tx" x="351.75" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.2, Share of population, highest score first: 75%, Share of positives captured: 100%">
+            <title>Score cut-off 0.2, Share of population, highest score first: 75%, Share of positives captured: 100%
+            </title>
+            <circle class="hit" cx="485.6" cy="66" r="9"/>
+            <circle class="pt h" cx="485.6" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="355.6" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="365.6" y="90.5">Score cut-off 0.2</text>
+                <text class="tx" x="365.6" y="107.5">Share of population, highest score first: 75%</text>
+                <text class="tx" x="365.6" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.18, Share of population, highest score first: 78%, Share of positives captured: 100%">
+            <title>Score cut-off 0.18, Share of population, highest score first: 78%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="499.44" cy="66" r="9"/>
+            <circle class="pt h" cx="499.44" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="364" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="374" y="90.5">Score cut-off 0.18</text>
+                <text class="tx" x="374" y="107.5">Share of population, highest score first: 78%</text>
+                <text class="tx" x="374" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.15, Share of population, highest score first: 83%, Share of positives captured: 100%">
+            <title>Score cut-off 0.15, Share of population, highest score first: 83%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="527.12" cy="66" r="9"/>
+            <circle class="pt h" cx="527.12" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="364" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="374" y="90.5">Score cut-off 0.15</text>
+                <text class="tx" x="374" y="107.5">Share of population, highest score first: 83%</text>
+                <text class="tx" x="374" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.12, Share of population, highest score first: 85%, Share of positives captured: 100%">
+            <title>Score cut-off 0.12, Share of population, highest score first: 85%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="540.96" cy="66" r="9"/>
+            <circle class="pt h" cx="540.96" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="364" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="374" y="90.5">Score cut-off 0.12</text>
+                <text class="tx" x="374" y="107.5">Share of population, highest score first: 85%</text>
+                <text class="tx" x="374" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.1, Share of population, highest score first: 90%, Share of positives captured: 100%">
+            <title>Score cut-off 0.1, Share of population, highest score first: 90%, Share of positives captured: 100%
+            </title>
+            <circle class="hit" cx="568.64" cy="66" r="9"/>
+            <circle class="pt h" cx="568.64" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="364" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="374" y="90.5">Score cut-off 0.1</text>
+                <text class="tx" x="374" y="107.5">Share of population, highest score first: 90%</text>
+                <text class="tx" x="374" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.08, Share of population, highest score first: 93%, Share of positives captured: 100%">
+            <title>Score cut-off 0.08, Share of population, highest score first: 93%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="582.48" cy="66" r="9"/>
+            <circle class="pt h" cx="582.48" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="364" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="374" y="90.5">Score cut-off 0.08</text>
+                <text class="tx" x="374" y="107.5">Share of population, highest score first: 93%</text>
+                <text class="tx" x="374" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.05, Share of population, highest score first: 98%, Share of positives captured: 100%">
+            <title>Score cut-off 0.05, Share of population, highest score first: 98%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="610.16" cy="66" r="9"/>
+            <circle class="pt h" cx="610.16" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="364" y="72.5" width="260" height="61" rx="6"/>
+                <text class="tx b" x="374" y="90.5">Score cut-off 0.05</text>
+                <text class="tx" x="374" y="107.5">Share of population, highest score first: 98%</text>
+                <text class="tx" x="374" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Score cut-off 0.03, Share of population, highest score first: 100%, Share of positives captured: 100%">
+            <title>Score cut-off 0.03, Share of population, highest score first: 100%, Share of positives captured:
+                100%
+            </title>
+            <circle class="hit" cx="624" cy="66" r="9"/>
+            <circle class="pt h" cx="624" cy="66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="357.28" y="72.5" width="266.72" height="61" rx="6"/>
+                <text class="tx b" x="367.28" y="90.5">Score cut-off 0.03</text>
+                <text class="tx" x="367.28" y="107.5">Share of population, highest score first: 100%</text>
+                <text class="tx" x="367.28" y="124.5">Share of positives captured: 100%</text>
+            </g>
+        </g>
+    </g>
+    <g class="an">
+        <title>Perfect model</title>
+        <circle class="and" cx="236.47" cy="66" r="3.5"/>
+        <text class="ant" x="244.47" y="76">Perfect model</text>
+    </g>
+    <g class="an">
+        <title>Random ranking</title>
+        <circle class="and" cx="402.55" cy="198.8" r="3.5"/>
+        <text class="ant" x="410.55" y="192.8">Random ranking</text>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol"
+       aria-label="Top 10% of scores, Captures 25% of positives, Lift 2.5">
+        <title>Top 10% of scores, Captures 25% of positives, Lift 2.5</title>
+        <circle class="hit" cx="125.74" cy="315" r="9"/>
+        <circle class="pt h s0" cx="125.74" cy="315" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="70.38" y="239" width="162.8" height="61" rx="6"/>
+            <text class="tx b" x="80.38" y="257">Top 10% of scores</text>
+            <text class="tx" x="80.38" y="274">Captures 25% of positives</text>
+            <text class="tx" x="80.38" y="291">Lift 2.5</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol"
+       aria-label="Top 20% of scores, Captures 50% of positives, Lift 2.5">
+        <title>Top 20% of scores, Captures 50% of positives, Lift 2.5</title>
+        <circle class="hit" cx="181.1" cy="232" r="9"/>
+        <circle class="pt h s0" cx="181.1" cy="232" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="99.7" y="156" width="162.8" height="61" rx="6"/>
+            <text class="tx b" x="109.7" y="174">Top 20% of scores</text>
+            <text class="tx" x="109.7" y="191">Captures 50% of positives</text>
+            <text class="tx" x="109.7" y="208">Lift 2.5</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol"
+       aria-label="Top 30% of scores, Captures 66.7% of positives, Lift 2.22">
+        <title>Top 30% of scores, Captures 66.7% of positives, Lift 2.22</title>
+        <circle class="hit" cx="236.47" cy="176.67" r="9"/>
+        <circle class="pt h s0" cx="236.47" cy="176.67" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="150.15" y="100.67" width="172.64" height="61" rx="6"/>
+            <text class="tx b" x="160.15" y="118.67">Top 30% of scores</text>
+            <text class="tx" x="160.15" y="135.67">Captures 66.7% of positives</text>
+            <text class="tx" x="160.15" y="152.67">Lift 2.22</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol"
+       aria-label="Top 40% of scores, Captures 79.2% of positives, Lift 1.98">
+        <title>Top 40% of scores, Captures 79.2% of positives, Lift 1.98</title>
+        <circle class="hit" cx="291.83" cy="135.17" r="9"/>
+        <circle class="pt h s0" cx="291.83" cy="135.17" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="205.51" y="140.17" width="172.64" height="61" rx="6"/>
+            <text class="tx b" x="215.51" y="158.17">Top 40% of scores</text>
+            <text class="tx" x="215.51" y="175.17">Captures 79.2% of positives</text>
+            <text class="tx" x="215.51" y="192.17">Lift 1.98</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol"
+       aria-label="Top 50% of scores, Captures 83.3% of positives, Lift 1.67">
+        <title>Top 50% of scores, Captures 83.3% of positives, Lift 1.67</title>
+        <circle class="hit" cx="347.19" cy="121.33" r="9"/>
+        <circle class="pt h s0" cx="347.19" cy="121.33" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="260.87" y="126.33" width="172.64" height="61" rx="6"/>
+            <text class="tx b" x="270.87" y="144.33">Top 50% of scores</text>
+            <text class="tx" x="270.87" y="161.33">Captures 83.3% of positives</text>
+            <text class="tx" x="270.87" y="178.33">Lift 1.67</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol"
+       aria-label="Top 60% of scores, Captures 100% of positives, Lift 1.67">
+        <title>Top 60% of scores, Captures 100% of positives, Lift 1.67</title>
+        <circle class="hit" cx="402.55" cy="66" r="9"/>
+        <circle class="pt h s0" cx="402.55" cy="66" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="317.79" y="71" width="169.52" height="61" rx="6"/>
+            <text class="tx b" x="327.79" y="89">Top 60% of scores</text>
+            <text class="tx" x="327.79" y="106">Captures 100% of positives</text>
+            <text class="tx" x="327.79" y="123">Lift 1.67</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol"
+       aria-label="Top 70% of scores, Captures 100% of positives, Lift 1.43">
+        <title>Top 70% of scores, Captures 100% of positives, Lift 1.43</title>
+        <circle class="hit" cx="457.91" cy="66" r="9"/>
+        <circle class="pt h s0" cx="457.91" cy="66" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="373.15" y="71" width="169.52" height="61" rx="6"/>
+            <text class="tx b" x="383.15" y="89">Top 70% of scores</text>
+            <text class="tx" x="383.15" y="106">Captures 100% of positives</text>
+            <text class="tx" x="383.15" y="123">Lift 1.43</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol"
+       aria-label="Top 80% of scores, Captures 100% of positives, Lift 1.25">
+        <title>Top 80% of scores, Captures 100% of positives, Lift 1.25</title>
+        <circle class="hit" cx="513.28" cy="66" r="9"/>
+        <circle class="pt h s0" cx="513.28" cy="66" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="428.52" y="71" width="169.52" height="61" rx="6"/>
+            <text class="tx b" x="438.52" y="89">Top 80% of scores</text>
+            <text class="tx" x="438.52" y="106">Captures 100% of positives</text>
+            <text class="tx" x="438.52" y="123">Lift 1.25</text>
+        </g>
+    </g>
+    <g class="mk s0" tabindex="0" role="graphics-symbol"
+       aria-label="Top 90% of scores, Captures 100% of positives, Lift 1.11">
+        <title>Top 90% of scores, Captures 100% of positives, Lift 1.11</title>
+        <circle class="hit" cx="568.64" cy="66" r="9"/>
+        <circle class="pt h s0" cx="568.64" cy="66" r="4.5"/>
+        <g class="tt">
+            <rect class="tb" x="454.48" y="71" width="169.52" height="61" rx="6"/>
+            <text class="tx b" x="464.48" y="89">Top 90% of scores</text>
+            <text class="tx" x="464.48" y="106">Captures 100% of positives</text>
+            <text class="tx" x="464.48" y="123">Lift 1.11</text>
+        </g>
+    </g>
+    <text class="at ctr" x="347.19" y="432">Share of population, highest score first</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 232) rotate(-90)">Share of positives captured</text>
+</svg>

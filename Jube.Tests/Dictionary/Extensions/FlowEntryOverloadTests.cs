@@ -78,6 +78,7 @@ namespace Jube.Test.Dictionary.Extensions
             {
                 var receiver = step.GetParameters()[0].ParameterType.GetGenericArguments()[0];
                 var key = Signature(step, receiver);
+
                 if (!raw.TryGetValue(key, out var overload))
                 {
                     missing.Add(key);
@@ -86,6 +87,7 @@ namespace Jube.Test.Dictionary.Extensions
 
                 var expectedParameters = step.GetParameters().Skip(1).Select(p => p.ParameterType);
                 var actualParameters = overload.GetParameters().Skip(1).Select(p => p.ParameterType);
+
                 if (!expectedParameters.SequenceEqual(actualParameters) || overload.ReturnType != step.ReturnType)
                 {
                     mismatched.Add(key);
@@ -133,6 +135,7 @@ namespace Jube.Test.Dictionary.Extensions
             foreach (var overload in RawSteps())
             {
                 var receiver = overload.GetParameters()[0].ParameterType;
+
                 if (receiver.GetMember(overload.Name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                         .Length > 0)
                 {
@@ -188,6 +191,7 @@ namespace Jube.Test.Dictionary.Extensions
 
             overloads.Single(m => m.GetParameters()[0].ParameterType == typeof(double)).ReturnType
                 .Should().Be(typeof(double));
+
             IsFlow(overloads.Single(m => m.GetParameters()[0].ParameterType == typeof(Flow<double>)).ReturnType)
                 .Should().BeTrue();
         }
@@ -288,6 +292,7 @@ namespace Jube.Test.Dictionary.Extensions
         {
             var ruleValueTypes = new[]
                 { typeof(object), typeof(string), typeof(double), typeof(int), typeof(DateTime), typeof(bool) };
+
             var reachableMemberNames = ruleValueTypes
                 .SelectMany(t => t.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
                 .Select(m => m.Name)

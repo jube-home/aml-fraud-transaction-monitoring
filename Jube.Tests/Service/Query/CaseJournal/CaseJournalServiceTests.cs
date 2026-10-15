@@ -23,7 +23,7 @@ using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Query.CaseJournal;
 using Jube.Service.Observability;
@@ -58,7 +58,6 @@ namespace Jube.Test.Service.Query.CaseJournal
         private readonly List<int> createdModelIds = [];
         private readonly List<int> createdWorkflowIds = [];
         private readonly List<int> createdXPathIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -66,24 +65,34 @@ namespace Jube.Test.Service.Query.CaseJournal
             await using var dbContext = fx.GetDbContext();
 
             await dbContext.Archive.Where(w => createdArchiveIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowXPathGuids = dbContext.CaseWorkflowXPath.Where(s => createdXPathIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowXPathRole>()
                 .Where(w => caseWorkflowXPathGuids.Contains(w.CaseWorkflowXPathGuid)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowXPathVersion>()
                 .Where(w => w.CaseWorkflowXPathId != null && createdXPathIds.Contains(w.CaseWorkflowXPathId.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflowXPath.Where(w => createdXPathIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowGuids =
                 dbContext.CaseWorkflow.Where(s => createdWorkflowIds.Contains(s.Id)).Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowVersion>()
                 .Where(w => w.CaseWorkflowId != null && createdWorkflowIds.Contains(w.CaseWorkflowId.Value))
                 .DeleteAsync();
+
             await dbContext.CaseWorkflow.Where(w => createdWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -110,6 +119,7 @@ namespace Jube.Test.Service.Query.CaseJournal
                     Deleted = 0,
                 }).ConfigureAwait(false);
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -117,6 +127,7 @@ namespace Jube.Test.Service.Query.CaseJournal
             bool grantRoleToUser)
         {
             var guid = Guid.NewGuid();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -139,6 +150,7 @@ namespace Jube.Test.Service.Query.CaseJournal
 
             var roleGuid = await dbContext.UserRegistry.Where(u => u.Name == user)
                 .Select(u => u.RoleRegistryGuid).FirstAsync();
+
             await dbContext.InsertAsync(new Data.Poco.CaseWorkflowRole
             {
                 CaseWorkflowGuid = guid,
@@ -157,7 +169,9 @@ namespace Jube.Test.Service.Query.CaseJournal
         {
             var workflowId = await dbContext.CaseWorkflow.Where(w => w.Guid == workflowGuid).Select(w => w.Id)
                 .FirstAsync();
+
             var guid = Guid.NewGuid();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowXPath
             {
                 Guid = guid,
@@ -187,6 +201,7 @@ namespace Jube.Test.Service.Query.CaseJournal
             {
                 var roleGuid = await dbContext.UserRegistry.Where(u => u.Name == user)
                     .Select(u => u.RoleRegistryGuid).FirstAsync();
+
                 await dbContext.InsertAsync(new Data.Poco.CaseWorkflowXPathRole
                 {
                     CaseWorkflowXPathGuid = guid,
@@ -207,6 +222,7 @@ namespace Jube.Test.Service.Query.CaseJournal
             var created = DateTime.UtcNow;
             payload ??= new JObject();
             payload[DrillName] = keyValue;
+
             var json = new JObject
             {
                 ["payload"] = payload,
@@ -225,6 +241,7 @@ namespace Jube.Test.Service.Query.CaseJournal
                 ReferenceDate = created,
             }).ConfigureAwait(false);
             createdArchiveIds.Add(id);
+
             return (id, guid, created);
         }
 
@@ -296,8 +313,10 @@ namespace Jube.Test.Service.Query.CaseJournal
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
             var keyValue = NewKeyValue();
+
             var (id, guid, created) = await CreateArchiveAsync(dbContext, modelId, keyValue, 7.5, 2,
                 tags: ["Alpha", "Beta"]);
+
             var workflowGuid = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission, true);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
@@ -314,6 +333,7 @@ namespace Jube.Test.Service.Query.CaseJournal
             row["ReferenceDate"].Should().NotBeNull();
             ((JArray)row["Tag"].Required()).Select(t => t.ToString()).Should().BeEquivalentTo(["Alpha", "Beta"]);
             var expectedUtc = new DateTime(created.Ticks - created.Ticks % 10, DateTimeKind.Utc);
+
             foreach (var column in new[] { "CreatedDate", "ReferenceDate" })
             {
                 var offset = row[column].Should().BeOfType<DateTimeOffset>().Subject;
@@ -323,6 +343,7 @@ namespace Jube.Test.Service.Query.CaseJournal
 
             dto.Schema.Should().ContainKeys("Id", "Activation", "EntityAnalysisModelInstanceEntryGuid",
                 "ReferenceDate", "CreatedDate", "ResponseElevation", "EntryKeyValue", "Tag");
+
             var schema = dto.Schema.Required();
             schema["Tag"].Should().Be("array");
             schema["Id"].Should().Be("number");
@@ -375,8 +396,10 @@ namespace Jube.Test.Service.Query.CaseJournal
 
             everything.Rows.Required().Select(r => Convert.ToInt64(r["Id"]))
                 .Should().BeEquivalentTo([noActivationLow, activatedLow, activatedHigh]);
+
             activationsOnly.Rows.Required().Select(r => Convert.ToInt64(r["Id"]))
                 .Should().BeEquivalentTo([activatedLow, activatedHigh]);
+
             elevated.Rows.Required().Select(r => Convert.ToInt64(r["Id"])).Should().BeEquivalentTo([activatedHigh]);
         }
 
@@ -422,6 +445,7 @@ namespace Jube.Test.Service.Query.CaseJournal
             var keyValue = NewKeyValue();
             await CreateArchiveAsync(dbContext, modelA, keyValue, payload: new JObject { ["Amount"] = 1 });
             var workflowB = await CreateWorkflowAsync(dbContext, modelB, fx.Seed.UserTenantB, true);
+
             await CreateXPathAsync(dbContext, workflowB, fx.Seed.UserTenantB, $"{DatabaseFixture.Prefix}TbCol",
                 "payload.Amount", true);
 
@@ -438,15 +462,19 @@ namespace Jube.Test.Service.Query.CaseJournal
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
             var keyValue = NewKeyValue();
+
             await CreateArchiveAsync(dbContext, modelId, keyValue,
                 payload: new JObject { ["Amount"] = 42, ["Note"] = "hello" });
+
             var workflowGuid = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission, true);
             var amountCol = $"{DatabaseFixture.Prefix}Amount";
             var missingCol = $"{DatabaseFixture.Prefix}Missing";
+
             await CreateXPathAsync(dbContext, workflowGuid, fx.Seed.UserWithPermission, amountCol,
                 "payload.Amount", true);
             await CreateXPathAsync(dbContext, workflowGuid, fx.Seed.UserWithPermission, missingCol,
                 "payload.DoesNotExist", true);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var dto = await service.GetAsync(DrillName, keyValue, workflowGuid, 10, false, 0);
@@ -504,8 +532,10 @@ namespace Jube.Test.Service.Query.CaseJournal
             await CreateArchiveAsync(dbContext, modelId, keyValue, payload: new JObject { ["Note"] = "Matching" });
             var workflowGuid = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission, true);
             var col = $"{DatabaseFixture.Prefix}Fmt";
+
             await CreateXPathAsync(dbContext, workflowGuid, fx.Seed.UserWithPermission, col, "payload.Note", true,
                 true, true);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var dto = await service.GetAsync(DrillName, keyValue, workflowGuid, 10, false, 0);
@@ -618,6 +648,7 @@ namespace Jube.Test.Service.Query.CaseJournal
             var forbidden = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission, serviceChangeBus: bus);
 
             await service.GetAsync(DrillName, NewKeyValue(), Guid.NewGuid(), 10, false, 0);
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 forbidden.GetAsync(DrillName, "x", Guid.NewGuid(), 10, false, 0));
 
@@ -628,6 +659,7 @@ namespace Jube.Test.Service.Query.CaseJournal
         public void CatalogueDescriptorHasUniquePascalCaseNoUnderscoreNameAndOperationAttributeMatches()
         {
             var tools = new List<ServiceToolDescriptor>();
+
             typeof(ServiceToolCatalogue).GetMethod("AddCaseJournal",
                 BindingFlags.NonPublic | BindingFlags.Static).Required().Invoke(null, [tools]);
 
@@ -645,6 +677,7 @@ namespace Jube.Test.Service.Query.CaseJournal
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");
@@ -656,6 +689,7 @@ namespace Jube.Test.Service.Query.CaseJournal
 
                 localizers.Create(typeof(CaseJournalResources))[CaseJournalResources.PermissionDenied].Value
                     .Should().Be(ex.Message);
+
                 ex.Message.Should().StartWith("Vous");
             }
             finally

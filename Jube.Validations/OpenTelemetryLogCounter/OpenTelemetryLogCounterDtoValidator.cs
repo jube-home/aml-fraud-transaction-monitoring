@@ -63,6 +63,7 @@ namespace Jube.Validations.OpenTelemetryLogCounter
             try
             {
                 _ = new Regex(pattern, RegexOptions.None, regexMatchTimeout);
+
                 return true;
             }
             catch (ArgumentException)

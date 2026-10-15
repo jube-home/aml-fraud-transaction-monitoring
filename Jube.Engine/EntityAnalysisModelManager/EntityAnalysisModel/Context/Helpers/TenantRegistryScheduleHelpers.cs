@@ -19,15 +19,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Hel
     using System.Threading;
     using System.Threading.Tasks;
     using Data.Context;
-    using Data.Query;
     using log4net;
+    using Jube.Data.Query.GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQuery;
 
     public static class TenantRegistryScheduleHelpers
     {
-        public static async Task<List<GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQuery.Dto>>
+        public static async Task<List<GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQueryDto>>
             GetScheduledAsync(ILog log, DbContext dbContext, CancellationToken token)
         {
-            var values = new List<GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQuery.Dto>();
+            var values = new List<GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQueryDto>();
 
             try
             {

@@ -6,8 +6,6 @@ parent: Exhaustive Adaptation
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Exhaustive Adaptation Training Configuration
 
 Exhaustive training is controlled by several Environment Variables, however the defaults are adequate in most use cases.
@@ -22,24 +20,21 @@ for supervised learning.
 Keep in mind that processing of data in Jube will have created large amounts of data in the Archive database table and
 this data will be targeted for machine learning training.
 
-For the purpose of testing and demonstration, a mock dataset can be used instead of extracting the data from the
-Archive. To enable the mock dataset for the purpose of testing, update the UseMockDataExhaustive Environment Variable to
-True:
+Training data comes from one of three sources, chosen per Exhaustive Adaptation on the Exhaustive options page under
+Training Data:
 
-```text
-UseMockDataExhaustive=True
-```
+* Archive (the default): the real processed transactions in the Archive database table.
+* Demonstration dataset: a built-in sample dataset for testing and demonstration. Its rows are loaded once per model
+  into the MockArchive database table using the same JSON structure as the Archive, storing the first column as a Tag by
+  the same name and the rest of the columns as Abstraction Rules. Choosing it requires no configuration beyond the
+  choice itself.
+* Uploaded dataset: a CSV file uploaded by the user and confirmed with a column mapping (which column is the dependent
+  variable, which values count as the positive class, and the processing type of every other column).
 
-Mock data will instead take a file called Mock.csv from directory location Jube.Engine/Exhaustive/Mock.csv. The file
-will be loaded into MockArchive database table using the same JSON structure as otherwise expected in normal processing
-into the Archive database table, storing the first column as a Tag by the same name, and rest of the columns as if they
-were Abstraction Rules. At this stage the functionality exists solely for the purpose of testing, however, it is
-envisaged that this functionality will be expanded upon in the future to allow for the training of third party files.
-The documentation as follows assumes that the Mock data is being used.
-
-By default the UseMockDataExhaustive is enabled as the assumption is that a default installation of the software will
-largely be about proof of concept, with production implementations having the binary executables more distributed and
-allocated.
+The former UseMockDataExhaustive Environment Variable has been removed. A deployment that set it to True to obtain the
+demonstration dataset now selects Demonstration dataset on each Exhaustive Adaptation instead; existing Exhaustive
+Adaptations are migrated to Archive, so until one selects Demonstration dataset it no longer trains on the demo rows.
+The documentation as follows assumes that the demonstration dataset is being used.
 
 Before a model can be recalled it must be trained. To configure an Exhaustive model for training navigate Models >>
 Machine Learning >> Exhaustive Adaptation:
@@ -53,16 +48,27 @@ parameters:
 
 The page accepts the following parameters:
 
-| Value                                       | Description                                                                                                                                                                                                                                                                       | Example       |
-|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| Class Anomaly Threshold                     | A switch to indicate that a One Class Support Vector Machine Anomaly Detection Model should be trained for the purpose of deriving a class for supervised Learning.                                                                                                               | True          |
-| Class Anomaly Threshold:Anomaly Probability | The One Class Support Vector Machine will be recalled to return a probability that the example fits the overall pattern of the data sample.  The threshold is the amount whereby examples are classified as positive in the event that their are less than a certain probability. | 2%            |
-| Class Definition                            | A switch to indicate that the class should be defined by a filter of records in the archive table whereby a match on the filter will return positive class.                                                                                                                       | True          |
-| Class Definition: Archive Filter            | The filter to apply to the Archive table to define positive class. The filter will also be used to negate the sample of negative class.                                                                                                                                           | Tag Fraud = 1 |
+| Value                                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Example                          |
+|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------|
+| Class Anomaly Threshold                     | A switch to indicate that a One Class Support Vector Machine Anomaly Detection Model should be trained for the purpose of deriving a class for supervised Learning.                                                                                                                                                                                                                                                                                                                                                                                                                                                            | True                             |
+| Class Anomaly Threshold:Anomaly Probability | The One Class Support Vector Machine will be recalled to return a probability that the example fits the overall pattern of the data sample.  The threshold is the amount whereby examples are classified as positive in the event that their are less than a certain probability.                                                                                                                                                                                                                                                                                                                                              | 2%                               |
+| Class Anomaly Threshold:Anomaly Algorithm   | The algorithm that labels the positive class. The default, One Class Support Vector Machine with Gaussian kernel, is the original behaviour. The alternatives are Isolation Forest, Histogram Based Outlier Score, Mahalanobis Distance, Robust Mahalanobis Distance, Principal Component Analysis, Gaussian Mixture, k Nearest Neighbour Distance, Local Outlier Factor, Marginal Likelihood, Feature Bagging Ensemble, Consensus Ensemble and Automatic, which evaluates a fixed set of candidates and records the choice. See the Exhaustive Anomaly Study for evidence on which algorithm suits which number of variables. | One Class Support Vector Machine |
+| Class Anomaly Threshold:Variable Reduction  | What is removed before the anomaly algorithm fits: nothing (None), or Standard, which drops constant, near constant and mostly missing variables, exact duplicates and highly correlated groups (one representative is kept) and applies robust scaling, optionally followed by principal components. The default is None for the One Class Support Vector Machine and Standard for every other algorithm. Reduction applies only to the anomaly step: the supervised search always sees every variable.                                                                                                                       | Default for the algorithm        |
+| Class Anomaly Threshold:Advanced Parameters | Optional JSON of algorithm parameters, reduction options and automatic evaluation options. Unknown properties are rejected.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Empty                            |
+| Base Rate                                   | Optional. The fraction of real cases that are positive in deployment, greater than 0 and less than 1 (for example 0.02 for 2% fraud). Recalled scores are calibrated probabilities at this rate. When left empty the rate is measured from the population (the count of Archive or dataset records matching the Class Definition, or the flagged fraction when the class comes from anomaly detection) and recorded with its source on the promoted model. Set it when you know the deployment rate and the training sample is not representative of it.                                                                       | Empty                            |
+| Class Definition                            | A switch to indicate that the class should be defined by a filter of records in the archive table whereby a match on the filter will return positive class.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | True                             |
+| Class Definition: Archive Filter            | The filter to apply to the Archive table to define positive class. The filter will also be used to negate the sample of negative class.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Tag Fraud = 1                    |
 
-Class Anomaly Threshold: Anomaly Probability must be between 0 and 1 (a percentage such as 2% is entered as 0.02).
-When Class Definition is switched on, the Archive Filter is required -- an Exhaustive Adaptation cannot be saved with
-Class Definition enabled and no filter defined.
+Class Anomaly Threshold: Anomaly Probability must be between 0 and 1 (a percentage such as 2% is entered as 0.02) for
+the One Class Support Vector Machine. For every other algorithm it is the contamination fraction, above 0 and at most
+0.5: the highest scoring fraction of the sample is labelled positive class, and the number of rows flagged is recorded.
+
+Every anomaly run records a report (algorithm, parameters, variables kept and dropped with the reason, score summary,
+threshold applied and, for Automatic, every candidate's evaluation). A one line summary is shown in the training status
+and the full report is returned by the instance endpoint as AnomalyReportJson. The time allowed for the Automatic
+evaluation is set by the ExhaustiveAnomalyAutoBudgetSeconds Environment Variable. When Class Definition is switched on,
+the Archive Filter is required -- an Exhaustive Adaptation cannot be saved with Class Definition enabled and no filter
+defined.
 
 An Exhaustive Adaptation can only be edited while it is still in status Awaiting Server -- once the background engine
 has picked it up for training it becomes read-only for the remainder of its lifecycle.
@@ -72,7 +78,8 @@ Complete the parameters to training a model based confirmed fraud via Tag, as fo
 ![ExampleExhaustive.png](ExampleExhaustive.png)
 
 Scroll down and click Add to not only create a version of the Exhaustive model but instruct the training of the model by
-the background thread. The default status will by "Awaiting Server" with the background thread updating the following status as progress:
+the background thread. The default status will by "Awaiting Server" with the background thread updating the following
+status as progress:
 
 * Awaiting Server.
 * Fetching Data.

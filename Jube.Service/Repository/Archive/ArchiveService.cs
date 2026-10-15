@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetArchiveTenantRegistryIdByEntityAnalysisModelInstanceEntryGuidQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.Archive;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.Archive;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -33,6 +34,7 @@ namespace Jube.Service.Repository.Archive
         private readonly ArchiveTagRepository archiveTagRepository;
         private readonly ILog auditLog;
         private readonly CaseRepository caseRepository;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly ArchiveRepository repository;
@@ -48,6 +50,7 @@ namespace Jube.Service.Repository.Archive
         {
             this.log = log;
             this.auditLog = auditLog;
+            this.dbContext = dbContext;
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
             this.userName = userName;
@@ -58,6 +61,8 @@ namespace Jube.Service.Repository.Archive
             archiveTagRepository = new ArchiveTagRepository(dbContext, userName);
             validator = new ArchiveTagDtoValidator(strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ArchiveService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -114,6 +119,7 @@ namespace Jube.Service.Repository.Archive
         {
             using var op = OperationScope.Start("Archive", "Tag", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"Archive.Tag: entry guid={model?.EntityAnalysisModelInstanceEntryGuid} user={userName}");
@@ -125,6 +131,7 @@ namespace Jube.Service.Repository.Archive
                 EnsurePermitted("Archive.Tag");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -136,9 +143,9 @@ namespace Jube.Service.Repository.Archive
                     throw new DtoValidationException(results);
                 }
 
-                var ownerTenantRegistryId = await repository
-                    .GetTenantRegistryIdByEntityAnalysisModelInstanceEntryGuidAsync(
-                        model.EntityAnalysisModelInstanceEntryGuid, token).ConfigureAwait(false);
+                var ownerTenantRegistryId =
+                    await new GetArchiveTenantRegistryIdByEntityAnalysisModelInstanceEntryGuidQuery(dbContext)
+                        .ExecuteAsync(model.EntityAnalysisModelInstanceEntryGuid, token).ConfigureAwait(false);
 
                 if (ownerTenantRegistryId is null || ownerTenantRegistryId.Value != tenantRegistryId)
                 {
@@ -153,6 +160,7 @@ namespace Jube.Service.Repository.Archive
                 }
 
                 Data.Poco.Archive archive;
+
                 try
                 {
                     archive = await repository.UpdateTagsByEntityAnalysisModelInstanceEntryGuidAsync(
@@ -204,6 +212,7 @@ namespace Jube.Service.Repository.Archive
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -215,9 +224,11 @@ namespace Jube.Service.Repository.Archive
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"Archive.Tag: unexpected failure guid={model?.EntityAnalysisModelInstanceEntryGuid} user={userName}",
                     ex);
+
                 throw;
             }
         }

@@ -77,6 +77,7 @@ namespace Jube.App.Code.Waf
                     break;
                 case JsonValueKind.Array:
                     var index = 0;
+
                     foreach (var item in element.EnumerateArray())
                     {
                         if (values.Count >= maxValues)

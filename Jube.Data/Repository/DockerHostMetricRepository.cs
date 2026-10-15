@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Helpers;
 using Jube.Data.Poco;
-using Jube.Dto.Payload;
 using LinqToDB;
 
 namespace Jube.Data.Repository
@@ -29,6 +28,7 @@ namespace Jube.Data.Repository
         public async Task<DockerHostMetric> InsertAsync(DockerHostMetric model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -49,44 +49,6 @@ namespace Jube.Data.Repository
             return BuildFilteredQuery(from, to, search, samplePercentage).CountAsync(token);
         }
 
-        public async Task<PayloadStatistics> GetStatisticsAsync(DateTime? from, DateTime? to, string search,
-            double? samplePercentage, int statisticsCap, CancellationToken token = default)
-        {
-            var rows = await BuildFilteredQuery(from, to, search, samplePercentage)
-                .OrderByDescending(o => o.Id)
-                .Take(statisticsCap)
-                .ToListAsync(token).ConfigureAwait(false);
-
-            return SummaryStatistics.Build(new Dictionary<string, double[]>
-            {
-                ["containersTotal"] = rows.Where(w => w.ContainersTotal.HasValue)
-                    .Select(s => (double)s.ContainersTotal!.Value).ToArray(),
-                ["containersRunning"] = rows.Where(w => w.ContainersRunning.HasValue)
-                    .Select(s => (double)s.ContainersRunning!.Value).ToArray(),
-                ["containersPaused"] = rows.Where(w => w.ContainersPaused.HasValue)
-                    .Select(s => (double)s.ContainersPaused!.Value).ToArray(),
-                ["containersStopped"] = rows.Where(w => w.ContainersStopped.HasValue)
-                    .Select(s => (double)s.ContainersStopped!.Value).ToArray(),
-                ["imagesCount"] = rows.Where(w => w.ImagesCount.HasValue)
-                    .Select(s => (double)s.ImagesCount!.Value).ToArray(),
-                ["nCpu"] = rows.Where(w => w.NCpu.HasValue).Select(s => (double)s.NCpu!.Value).ToArray(),
-                ["memTotalBytes"] = rows.Where(w => w.MemTotalBytes.HasValue)
-                    .Select(s => (double)s.MemTotalBytes!.Value).ToArray(),
-                ["layersSizeBytes"] = rows.Where(w => w.LayersSizeBytes.HasValue)
-                    .Select(s => (double)s.LayersSizeBytes!.Value).ToArray(),
-                ["imagesSizeBytes"] = rows.Where(w => w.ImagesSizeBytes.HasValue)
-                    .Select(s => (double)s.ImagesSizeBytes!.Value).ToArray(),
-                ["reclaimableImagesBytes"] = rows.Where(w => w.ReclaimableImagesBytes.HasValue)
-                    .Select(s => (double)s.ReclaimableImagesBytes!.Value).ToArray(),
-                ["containersDiskBytes"] = rows.Where(w => w.ContainersDiskBytes.HasValue)
-                    .Select(s => (double)s.ContainersDiskBytes!.Value).ToArray(),
-                ["volumesSizeBytes"] = rows.Where(w => w.VolumesSizeBytes.HasValue)
-                    .Select(s => (double)s.VolumesSizeBytes!.Value).ToArray(),
-                ["buildCacheSizeBytes"] = rows.Where(w => w.BuildCacheSizeBytes.HasValue)
-                    .Select(s => (double)s.BuildCacheSizeBytes!.Value).ToArray()
-            });
-        }
-
         private IQueryable<DockerHostMetric> BuildFilteredQuery(DateTime? from, DateTime? to, string search,
             double? samplePercentage)
         {
@@ -105,6 +67,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.Instance != null && w.Instance.ToLower().Contains(lowerSearch)) ||
                     (w.OperatingSystem != null && w.OperatingSystem.ToLower().Contains(lowerSearch)));
@@ -122,6 +85,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "containersTotal" => query.OrderByField(o => o.ContainersTotal, descending),

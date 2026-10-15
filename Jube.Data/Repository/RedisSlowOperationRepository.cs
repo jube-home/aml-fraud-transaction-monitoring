@@ -29,6 +29,7 @@ namespace Jube.Data.Repository
         public async Task<RedisSlowOperation> InsertAsync(RedisSlowOperation model, CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -59,8 +60,11 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["durationMicroseconds"] = rows.Where(w => w.DurationMicroseconds.HasValue)
-                    .Select(s => (double)s.DurationMicroseconds!.Value).ToArray()
+                ["durationMicroseconds"] =
+                [
+                    .. rows.Where(w => w.DurationMicroseconds.HasValue)
+                        .Select(s => (double)s.DurationMicroseconds!.Value)
+                ]
             });
         }
 
@@ -82,6 +86,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     w.Command.ToLower().Contains(lowerSearch) ||
                     (w.CommandName != null && w.CommandName.ToLower().Contains(lowerSearch)) ||
@@ -102,6 +107,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "redisSlowLogId" => query.OrderByField(o => o.RedisSlowLogId, descending),

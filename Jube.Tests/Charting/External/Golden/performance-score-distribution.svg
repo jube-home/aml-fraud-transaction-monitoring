@@ -1,0 +1,644 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 480" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-58a3509b-t jc-58a3509b-d">
+    <title id="jc-58a3509b-t">Score Distribution</title>
+    <desc id="jc-58a3509b-d">Class-conditional score distribution with 2 series: Genuine, Fraud. Y values range from 0
+        to 0.3. 12 Fraud and 28 Genuine observations, each class shown as its own share of the bins.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="480" rx="8"/>
+    <text class="ttl" x="16" y="32">Score Distribution</text>
+    <text class="sub" x="16" y="50">Predicted probability by actual class</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="444" width="61.68" height="18"/>
+        <rect class="sw" x="16" y="448" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="457">Genuine</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="93.68" y="444" width="49.68" height="18"/>
+        <rect class="sw" x="95.68" y="448" width="10" height="10" rx="2"/>
+        <text class="lgt" x="113.68" y="457">Fraud</text>
+    </g>
+    <line class="gl" x1="64.22" y1="398" x2="624" y2="398"/>
+    <text class="tk end mid" x="56.22" y="398">0%</text>
+    <line class="gl" x1="64.22" y1="342.67" x2="624" y2="342.67"/>
+    <text class="tk end mid" x="56.22" y="342.67">5%</text>
+    <line class="gl" x1="64.22" y1="287.33" x2="624" y2="287.33"/>
+    <text class="tk end mid" x="56.22" y="287.33">10%</text>
+    <line class="gl" x1="64.22" y1="232" x2="624" y2="232"/>
+    <text class="tk end mid" x="56.22" y="232">15%</text>
+    <line class="gl" x1="64.22" y1="176.67" x2="624" y2="176.67"/>
+    <text class="tk end mid" x="56.22" y="176.67">20%</text>
+    <line class="gl" x1="64.22" y1="121.33" x2="624" y2="121.33"/>
+    <text class="tk end mid" x="56.22" y="121.33">25%</text>
+    <line class="gl" x1="64.22" y1="66" x2="624" y2="66"/>
+    <text class="tk end mid" x="56.22" y="66">30%</text>
+    <text class="tk ctr" x="64.22" y="414">0</text>
+    <text class="tk ctr" x="176.18" y="414">0.2</text>
+    <text class="tk ctr" x="288.13" y="414">0.4</text>
+    <text class="tk ctr" x="400.09" y="414">0.6</text>
+    <text class="tk ctr" x="512.04" y="414">0.8</text>
+    <text class="tk ctr" x="624" y="414">1</text>
+    <line class="ax" x1="64.22" y1="398" x2="624" y2="398"/>
+    <line class="ref s2" x1="344.11" y1="398" x2="344.11" y2="66">
+        <title>Decision threshold 0.5</title>
+    </line>
+    <g class="sr s0">
+        <path class="ar"
+              d="M64.22 239.9L120.2 239.9L120.2 160.86L176.18 160.86L176.18 239.9L232.15 239.9L232.15 239.9L288.13 239.9L288.13 279.43L344.11 279.43L344.11 279.43L400.09 279.43L400.09 358.48L456.07 358.48L456.07 358.48L512.04 358.48L512.04 358.48L568.02 358.48L568.02 358.48L624 358.48L624 398L568.02 398L568.02 398L512.04 398L512.04 398L456.07 398L456.07 398L400.09 398L400.09 398L344.11 398L344.11 398L288.13 398L288.13 398L232.15 398L232.15 398L176.18 398L176.18 398L120.2 398L120.2 398L64.22 398Z"/>
+        <path class="ln"
+              d="M64.22 239.9L120.2 239.9L120.2 160.86L176.18 160.86L176.18 239.9L232.15 239.9L232.15 239.9L288.13 239.9L288.13 279.43L344.11 279.43L344.11 279.43L400.09 279.43L400.09 358.48L456.07 358.48L456.07 358.48L512.04 358.48L512.04 358.48L568.02 358.48L568.02 358.48L624 358.48">
+            <title>Genuine</title>
+        </path>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0 to 0.1 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0, Share of class: 14%">
+            <title>0 to 0.1 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0, Share of class: 14%</title>
+            <circle class="hit" cx="64.22" cy="239.9" r="9"/>
+            <circle class="pt h" cx="64.22" cy="239.9" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="64.22" y="148.4" width="224.28" height="78" rx="6"/>
+                <text class="tx b" x="74.22" y="166.4">0 to 0.1 Genuine: 14.3% of class (4)</text>
+                <rect class="tsw s0" x="74.22" y="174.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="88.22" y="183.4">Genuine</text>
+                <text class="tx" x="74.22" y="200.4">Predicted probability: 0</text>
+                <text class="tx" x="74.22" y="217.4">Share of class: 14%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0 to 0.1 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.1, Share of class: 14%">
+            <title>0 to 0.1 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.1, Share of class: 14%
+            </title>
+            <circle class="hit" cx="120.2" cy="239.9" r="9"/>
+            <circle class="pt h" cx="120.2" cy="239.9" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="64.22" y="148.4" width="224.28" height="78" rx="6"/>
+                <text class="tx b" x="74.22" y="166.4">0 to 0.1 Genuine: 14.3% of class (4)</text>
+                <rect class="tsw s0" x="74.22" y="174.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="88.22" y="183.4">Genuine</text>
+                <text class="tx" x="74.22" y="200.4">Predicted probability: 0.1</text>
+                <text class="tx" x="74.22" y="217.4">Share of class: 14%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.1 to 0.2 Genuine: 21.4% of class (6), Genuine, Predicted probability: 0.1, Share of class: 21%">
+            <title>0.1 to 0.2 Genuine: 21.4% of class (6), Genuine, Predicted probability: 0.1, Share of class: 21%
+            </title>
+            <circle class="hit" cx="120.2" cy="160.86" r="9"/>
+            <circle class="pt h" cx="120.2" cy="160.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="64.22" y="69.36" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="74.22" y="87.36">0.1 to 0.2 Genuine: 21.4% of class (6)</text>
+                <rect class="tsw s0" x="74.22" y="95.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="88.22" y="104.36">Genuine</text>
+                <text class="tx" x="74.22" y="121.36">Predicted probability: 0.1</text>
+                <text class="tx" x="74.22" y="138.36">Share of class: 21%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.1 to 0.2 Genuine: 21.4% of class (6), Genuine, Predicted probability: 0.2, Share of class: 21%">
+            <title>0.1 to 0.2 Genuine: 21.4% of class (6), Genuine, Predicted probability: 0.2, Share of class: 21%
+            </title>
+            <circle class="hit" cx="176.18" cy="160.86" r="9"/>
+            <circle class="pt h" cx="176.18" cy="160.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="64.22" y="69.36" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="74.22" y="87.36">0.1 to 0.2 Genuine: 21.4% of class (6)</text>
+                <rect class="tsw s0" x="74.22" y="95.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="88.22" y="104.36">Genuine</text>
+                <text class="tx" x="74.22" y="121.36">Predicted probability: 0.2</text>
+                <text class="tx" x="74.22" y="138.36">Share of class: 21%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.2 to 0.3 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.2, Share of class: 14%">
+            <title>0.2 to 0.3 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.2, Share of class: 14%
+            </title>
+            <circle class="hit" cx="176.18" cy="239.9" r="9"/>
+            <circle class="pt h" cx="176.18" cy="239.9" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="64.22" y="148.4" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="74.22" y="166.4">0.2 to 0.3 Genuine: 14.3% of class (4)</text>
+                <rect class="tsw s0" x="74.22" y="174.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="88.22" y="183.4">Genuine</text>
+                <text class="tx" x="74.22" y="200.4">Predicted probability: 0.2</text>
+                <text class="tx" x="74.22" y="217.4">Share of class: 14%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.2 to 0.3 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.3, Share of class: 14%">
+            <title>0.2 to 0.3 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.3, Share of class: 14%
+            </title>
+            <circle class="hit" cx="232.15" cy="239.9" r="9"/>
+            <circle class="pt h" cx="232.15" cy="239.9" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="114.8" y="148.4" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="124.8" y="166.4">0.2 to 0.3 Genuine: 14.3% of class (4)</text>
+                <rect class="tsw s0" x="124.8" y="174.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="138.8" y="183.4">Genuine</text>
+                <text class="tx" x="124.8" y="200.4">Predicted probability: 0.3</text>
+                <text class="tx" x="124.8" y="217.4">Share of class: 14%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.3 to 0.4 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.3, Share of class: 14%">
+            <title>0.3 to 0.4 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.3, Share of class: 14%
+            </title>
+            <circle class="hit" cx="232.15" cy="239.9" r="9"/>
+            <circle class="pt h" cx="232.15" cy="239.9" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="114.8" y="148.4" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="124.8" y="166.4">0.3 to 0.4 Genuine: 14.3% of class (4)</text>
+                <rect class="tsw s0" x="124.8" y="174.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="138.8" y="183.4">Genuine</text>
+                <text class="tx" x="124.8" y="200.4">Predicted probability: 0.3</text>
+                <text class="tx" x="124.8" y="217.4">Share of class: 14%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.3 to 0.4 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.4, Share of class: 14%">
+            <title>0.3 to 0.4 Genuine: 14.3% of class (4), Genuine, Predicted probability: 0.4, Share of class: 14%
+            </title>
+            <circle class="hit" cx="288.13" cy="239.9" r="9"/>
+            <circle class="pt h" cx="288.13" cy="239.9" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="170.78" y="148.4" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="180.78" y="166.4">0.3 to 0.4 Genuine: 14.3% of class (4)</text>
+                <rect class="tsw s0" x="180.78" y="174.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="194.78" y="183.4">Genuine</text>
+                <text class="tx" x="180.78" y="200.4">Predicted probability: 0.4</text>
+                <text class="tx" x="180.78" y="217.4">Share of class: 14%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.4 to 0.5 Genuine: 10.7% of class (3), Genuine, Predicted probability: 0.4, Share of class: 11%">
+            <title>0.4 to 0.5 Genuine: 10.7% of class (3), Genuine, Predicted probability: 0.4, Share of class: 11%
+            </title>
+            <circle class="hit" cx="288.13" cy="279.43" r="9"/>
+            <circle class="pt h" cx="288.13" cy="279.43" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="170.78" y="187.93" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="180.78" y="205.93">0.4 to 0.5 Genuine: 10.7% of class (3)</text>
+                <rect class="tsw s0" x="180.78" y="213.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="194.78" y="222.93">Genuine</text>
+                <text class="tx" x="180.78" y="239.93">Predicted probability: 0.4</text>
+                <text class="tx" x="180.78" y="256.93">Share of class: 11%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.4 to 0.5 Genuine: 10.7% of class (3), Genuine, Predicted probability: 0.5, Share of class: 11%">
+            <title>0.4 to 0.5 Genuine: 10.7% of class (3), Genuine, Predicted probability: 0.5, Share of class: 11%
+            </title>
+            <circle class="hit" cx="344.11" cy="279.43" r="9"/>
+            <circle class="pt h" cx="344.11" cy="279.43" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="226.75" y="187.93" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="236.75" y="205.93">0.4 to 0.5 Genuine: 10.7% of class (3)</text>
+                <rect class="tsw s0" x="236.75" y="213.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="250.75" y="222.93">Genuine</text>
+                <text class="tx" x="236.75" y="239.93">Predicted probability: 0.5</text>
+                <text class="tx" x="236.75" y="256.93">Share of class: 11%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.5 to 0.6 Genuine: 10.7% of class (3), Genuine, Predicted probability: 0.5, Share of class: 11%">
+            <title>0.5 to 0.6 Genuine: 10.7% of class (3), Genuine, Predicted probability: 0.5, Share of class: 11%
+            </title>
+            <circle class="hit" cx="344.11" cy="279.43" r="9"/>
+            <circle class="pt h" cx="344.11" cy="279.43" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="226.75" y="187.93" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="236.75" y="205.93">0.5 to 0.6 Genuine: 10.7% of class (3)</text>
+                <rect class="tsw s0" x="236.75" y="213.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="250.75" y="222.93">Genuine</text>
+                <text class="tx" x="236.75" y="239.93">Predicted probability: 0.5</text>
+                <text class="tx" x="236.75" y="256.93">Share of class: 11%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.5 to 0.6 Genuine: 10.7% of class (3), Genuine, Predicted probability: 0.6, Share of class: 11%">
+            <title>0.5 to 0.6 Genuine: 10.7% of class (3), Genuine, Predicted probability: 0.6, Share of class: 11%
+            </title>
+            <circle class="hit" cx="400.09" cy="279.43" r="9"/>
+            <circle class="pt h" cx="400.09" cy="279.43" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="282.73" y="187.93" width="234.71" height="78" rx="6"/>
+                <text class="tx b" x="292.73" y="205.93">0.5 to 0.6 Genuine: 10.7% of class (3)</text>
+                <rect class="tsw s0" x="292.73" y="213.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="306.73" y="222.93">Genuine</text>
+                <text class="tx" x="292.73" y="239.93">Predicted probability: 0.6</text>
+                <text class="tx" x="292.73" y="256.93">Share of class: 11%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.6 to 0.7 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.6, Share of class: 4%">
+            <title>0.6 to 0.7 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.6, Share of class: 4%
+            </title>
+            <circle class="hit" cx="400.09" cy="358.48" r="9"/>
+            <circle class="pt h" cx="400.09" cy="358.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="286.29" y="266.98" width="227.59" height="78" rx="6"/>
+                <text class="tx b" x="296.29" y="284.98">0.6 to 0.7 Genuine: 3.6% of class (1)</text>
+                <rect class="tsw s0" x="296.29" y="292.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="310.29" y="301.98">Genuine</text>
+                <text class="tx" x="296.29" y="318.98">Predicted probability: 0.6</text>
+                <text class="tx" x="296.29" y="335.98">Share of class: 4%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.6 to 0.7 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.7, Share of class: 4%">
+            <title>0.6 to 0.7 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.7, Share of class: 4%
+            </title>
+            <circle class="hit" cx="456.07" cy="358.48" r="9"/>
+            <circle class="pt h" cx="456.07" cy="358.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="342.27" y="266.98" width="227.59" height="78" rx="6"/>
+                <text class="tx b" x="352.27" y="284.98">0.6 to 0.7 Genuine: 3.6% of class (1)</text>
+                <rect class="tsw s0" x="352.27" y="292.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="366.27" y="301.98">Genuine</text>
+                <text class="tx" x="352.27" y="318.98">Predicted probability: 0.7</text>
+                <text class="tx" x="352.27" y="335.98">Share of class: 4%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.7 to 0.8 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.7, Share of class: 4%">
+            <title>0.7 to 0.8 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.7, Share of class: 4%
+            </title>
+            <circle class="hit" cx="456.07" cy="358.48" r="9"/>
+            <circle class="pt h" cx="456.07" cy="358.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="342.27" y="266.98" width="227.59" height="78" rx="6"/>
+                <text class="tx b" x="352.27" y="284.98">0.7 to 0.8 Genuine: 3.6% of class (1)</text>
+                <rect class="tsw s0" x="352.27" y="292.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="366.27" y="301.98">Genuine</text>
+                <text class="tx" x="352.27" y="318.98">Predicted probability: 0.7</text>
+                <text class="tx" x="352.27" y="335.98">Share of class: 4%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.7 to 0.8 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.8, Share of class: 4%">
+            <title>0.7 to 0.8 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.8, Share of class: 4%
+            </title>
+            <circle class="hit" cx="512.04" cy="358.48" r="9"/>
+            <circle class="pt h" cx="512.04" cy="358.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="396.41" y="266.98" width="227.59" height="78" rx="6"/>
+                <text class="tx b" x="406.41" y="284.98">0.7 to 0.8 Genuine: 3.6% of class (1)</text>
+                <rect class="tsw s0" x="406.41" y="292.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="420.41" y="301.98">Genuine</text>
+                <text class="tx" x="406.41" y="318.98">Predicted probability: 0.8</text>
+                <text class="tx" x="406.41" y="335.98">Share of class: 4%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.8 to 0.9 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.8, Share of class: 4%">
+            <title>0.8 to 0.9 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.8, Share of class: 4%
+            </title>
+            <circle class="hit" cx="512.04" cy="358.48" r="9"/>
+            <circle class="pt h" cx="512.04" cy="358.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="396.41" y="266.98" width="227.59" height="78" rx="6"/>
+                <text class="tx b" x="406.41" y="284.98">0.8 to 0.9 Genuine: 3.6% of class (1)</text>
+                <rect class="tsw s0" x="406.41" y="292.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="420.41" y="301.98">Genuine</text>
+                <text class="tx" x="406.41" y="318.98">Predicted probability: 0.8</text>
+                <text class="tx" x="406.41" y="335.98">Share of class: 4%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.8 to 0.9 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.9, Share of class: 4%">
+            <title>0.8 to 0.9 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.9, Share of class: 4%
+            </title>
+            <circle class="hit" cx="568.02" cy="358.48" r="9"/>
+            <circle class="pt h" cx="568.02" cy="358.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="396.41" y="266.98" width="227.59" height="78" rx="6"/>
+                <text class="tx b" x="406.41" y="284.98">0.8 to 0.9 Genuine: 3.6% of class (1)</text>
+                <rect class="tsw s0" x="406.41" y="292.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="420.41" y="301.98">Genuine</text>
+                <text class="tx" x="406.41" y="318.98">Predicted probability: 0.9</text>
+                <text class="tx" x="406.41" y="335.98">Share of class: 4%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.9 to 1 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.9, Share of class: 4%">
+            <title>0.9 to 1 Genuine: 3.6% of class (1), Genuine, Predicted probability: 0.9, Share of class: 4%</title>
+            <circle class="hit" cx="568.02" cy="358.48" r="9"/>
+            <circle class="pt h" cx="568.02" cy="358.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="406.84" y="266.98" width="217.16" height="78" rx="6"/>
+                <text class="tx b" x="416.84" y="284.98">0.9 to 1 Genuine: 3.6% of class (1)</text>
+                <rect class="tsw s0" x="416.84" y="292.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="430.84" y="301.98">Genuine</text>
+                <text class="tx" x="416.84" y="318.98">Predicted probability: 0.9</text>
+                <text class="tx" x="416.84" y="335.98">Share of class: 4%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="0.9 to 1 Genuine: 3.6% of class (1), Genuine, Predicted probability: 1, Share of class: 4%">
+            <title>0.9 to 1 Genuine: 3.6% of class (1), Genuine, Predicted probability: 1, Share of class: 4%</title>
+            <circle class="hit" cx="624" cy="358.48" r="9"/>
+            <circle class="pt h" cx="624" cy="358.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="406.84" y="266.98" width="217.16" height="78" rx="6"/>
+                <text class="tx b" x="416.84" y="284.98">0.9 to 1 Genuine: 3.6% of class (1)</text>
+                <rect class="tsw s0" x="416.84" y="292.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="430.84" y="301.98">Genuine</text>
+                <text class="tx" x="416.84" y="318.98">Predicted probability: 1</text>
+                <text class="tx" x="416.84" y="335.98">Share of class: 4%</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <path class="ar"
+              d="M64.22 398L120.2 398L120.2 398L176.18 398L176.18 398L232.15 398L232.15 305.78L288.13 305.78L288.13 305.78L344.11 305.78L344.11 305.78L400.09 305.78L400.09 213.56L456.07 213.56L456.07 213.56L512.04 213.56L512.04 213.56L568.02 213.56L568.02 121.33L624 121.33L624 398L568.02 398L568.02 398L512.04 398L512.04 398L456.07 398L456.07 398L400.09 398L400.09 398L344.11 398L344.11 398L288.13 398L288.13 398L232.15 398L232.15 398L176.18 398L176.18 398L120.2 398L120.2 398L64.22 398Z"/>
+        <path class="ln"
+              d="M64.22 398L120.2 398L120.2 398L176.18 398L176.18 398L232.15 398L232.15 305.78L288.13 305.78L288.13 305.78L344.11 305.78L344.11 305.78L400.09 305.78L400.09 213.56L456.07 213.56L456.07 213.56L512.04 213.56L512.04 213.56L568.02 213.56L568.02 121.33L624 121.33">
+            <title>Fraud</title>
+        </path>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0 to 0.1 Fraud: 0% of class (0), Fraud, Predicted probability: 0, Share of class: 0%">
+            <title>0 to 0.1 Fraud: 0% of class (0), Fraud, Predicted probability: 0, Share of class: 0%</title>
+            <circle class="hit" cx="64.22" cy="398" r="9"/>
+            <circle class="pt h" cx="64.22" cy="398" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="64.22" y="306.5" width="194.01" height="78" rx="6"/>
+                <text class="tx b" x="74.22" y="324.5">0 to 0.1 Fraud: 0% of class (0)</text>
+                <rect class="tsw s1" x="74.22" y="332.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="88.22" y="341.5">Fraud</text>
+                <text class="tx" x="74.22" y="358.5">Predicted probability: 0</text>
+                <text class="tx" x="74.22" y="375.5">Share of class: 0%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0 to 0.1 Fraud: 0% of class (0), Fraud, Predicted probability: 0.1, Share of class: 0%">
+            <title>0 to 0.1 Fraud: 0% of class (0), Fraud, Predicted probability: 0.1, Share of class: 0%</title>
+            <circle class="hit" cx="120.2" cy="398" r="9"/>
+            <circle class="pt h" cx="120.2" cy="398" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="64.22" y="306.5" width="194.01" height="78" rx="6"/>
+                <text class="tx b" x="74.22" y="324.5">0 to 0.1 Fraud: 0% of class (0)</text>
+                <rect class="tsw s1" x="74.22" y="332.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="88.22" y="341.5">Fraud</text>
+                <text class="tx" x="74.22" y="358.5">Predicted probability: 0.1</text>
+                <text class="tx" x="74.22" y="375.5">Share of class: 0%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.1 to 0.2 Fraud: 0% of class (0), Fraud, Predicted probability: 0.1, Share of class: 0%">
+            <title>0.1 to 0.2 Fraud: 0% of class (0), Fraud, Predicted probability: 0.1, Share of class: 0%</title>
+            <circle class="hit" cx="120.2" cy="398" r="9"/>
+            <circle class="pt h" cx="120.2" cy="398" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="64.22" y="306.5" width="204.44" height="78" rx="6"/>
+                <text class="tx b" x="74.22" y="324.5">0.1 to 0.2 Fraud: 0% of class (0)</text>
+                <rect class="tsw s1" x="74.22" y="332.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="88.22" y="341.5">Fraud</text>
+                <text class="tx" x="74.22" y="358.5">Predicted probability: 0.1</text>
+                <text class="tx" x="74.22" y="375.5">Share of class: 0%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.1 to 0.2 Fraud: 0% of class (0), Fraud, Predicted probability: 0.2, Share of class: 0%">
+            <title>0.1 to 0.2 Fraud: 0% of class (0), Fraud, Predicted probability: 0.2, Share of class: 0%</title>
+            <circle class="hit" cx="176.18" cy="398" r="9"/>
+            <circle class="pt h" cx="176.18" cy="398" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="73.96" y="306.5" width="204.44" height="78" rx="6"/>
+                <text class="tx b" x="83.96" y="324.5">0.1 to 0.2 Fraud: 0% of class (0)</text>
+                <rect class="tsw s1" x="83.96" y="332.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="97.96" y="341.5">Fraud</text>
+                <text class="tx" x="83.96" y="358.5">Predicted probability: 0.2</text>
+                <text class="tx" x="83.96" y="375.5">Share of class: 0%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.2 to 0.3 Fraud: 0% of class (0), Fraud, Predicted probability: 0.2, Share of class: 0%">
+            <title>0.2 to 0.3 Fraud: 0% of class (0), Fraud, Predicted probability: 0.2, Share of class: 0%</title>
+            <circle class="hit" cx="176.18" cy="398" r="9"/>
+            <circle class="pt h" cx="176.18" cy="398" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="73.96" y="306.5" width="204.44" height="78" rx="6"/>
+                <text class="tx b" x="83.96" y="324.5">0.2 to 0.3 Fraud: 0% of class (0)</text>
+                <rect class="tsw s1" x="83.96" y="332.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="97.96" y="341.5">Fraud</text>
+                <text class="tx" x="83.96" y="358.5">Predicted probability: 0.2</text>
+                <text class="tx" x="83.96" y="375.5">Share of class: 0%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.2 to 0.3 Fraud: 0% of class (0), Fraud, Predicted probability: 0.3, Share of class: 0%">
+            <title>0.2 to 0.3 Fraud: 0% of class (0), Fraud, Predicted probability: 0.3, Share of class: 0%</title>
+            <circle class="hit" cx="232.15" cy="398" r="9"/>
+            <circle class="pt h" cx="232.15" cy="398" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="129.93" y="306.5" width="204.44" height="78" rx="6"/>
+                <text class="tx b" x="139.93" y="324.5">0.2 to 0.3 Fraud: 0% of class (0)</text>
+                <rect class="tsw s1" x="139.93" y="332.5" width="9" height="9" rx="2"/>
+                <text class="tx b" x="153.93" y="341.5">Fraud</text>
+                <text class="tx" x="139.93" y="358.5">Predicted probability: 0.3</text>
+                <text class="tx" x="139.93" y="375.5">Share of class: 0%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.3 to 0.4 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.3, Share of class: 8%">
+            <title>0.3 to 0.4 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.3, Share of class: 8%</title>
+            <circle class="hit" cx="232.15" cy="305.78" r="9"/>
+            <circle class="pt h" cx="232.15" cy="305.78" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="124.72" y="214.28" width="214.87" height="78" rx="6"/>
+                <text class="tx b" x="134.72" y="232.28">0.3 to 0.4 Fraud: 8.3% of class (1)</text>
+                <rect class="tsw s1" x="134.72" y="240.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="148.72" y="249.28">Fraud</text>
+                <text class="tx" x="134.72" y="266.28">Predicted probability: 0.3</text>
+                <text class="tx" x="134.72" y="283.28">Share of class: 8%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.3 to 0.4 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.4, Share of class: 8%">
+            <title>0.3 to 0.4 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.4, Share of class: 8%</title>
+            <circle class="hit" cx="288.13" cy="305.78" r="9"/>
+            <circle class="pt h" cx="288.13" cy="305.78" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="180.7" y="214.28" width="214.87" height="78" rx="6"/>
+                <text class="tx b" x="190.7" y="232.28">0.3 to 0.4 Fraud: 8.3% of class (1)</text>
+                <rect class="tsw s1" x="190.7" y="240.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="204.7" y="249.28">Fraud</text>
+                <text class="tx" x="190.7" y="266.28">Predicted probability: 0.4</text>
+                <text class="tx" x="190.7" y="283.28">Share of class: 8%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.4 to 0.5 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.4, Share of class: 8%">
+            <title>0.4 to 0.5 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.4, Share of class: 8%</title>
+            <circle class="hit" cx="288.13" cy="305.78" r="9"/>
+            <circle class="pt h" cx="288.13" cy="305.78" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="180.7" y="214.28" width="214.87" height="78" rx="6"/>
+                <text class="tx b" x="190.7" y="232.28">0.4 to 0.5 Fraud: 8.3% of class (1)</text>
+                <rect class="tsw s1" x="190.7" y="240.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="204.7" y="249.28">Fraud</text>
+                <text class="tx" x="190.7" y="266.28">Predicted probability: 0.4</text>
+                <text class="tx" x="190.7" y="283.28">Share of class: 8%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.4 to 0.5 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.5, Share of class: 8%">
+            <title>0.4 to 0.5 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.5, Share of class: 8%</title>
+            <circle class="hit" cx="344.11" cy="305.78" r="9"/>
+            <circle class="pt h" cx="344.11" cy="305.78" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="236.67" y="214.28" width="214.87" height="78" rx="6"/>
+                <text class="tx b" x="246.67" y="232.28">0.4 to 0.5 Fraud: 8.3% of class (1)</text>
+                <rect class="tsw s1" x="246.67" y="240.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="260.67" y="249.28">Fraud</text>
+                <text class="tx" x="246.67" y="266.28">Predicted probability: 0.5</text>
+                <text class="tx" x="246.67" y="283.28">Share of class: 8%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.5 to 0.6 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.5, Share of class: 8%">
+            <title>0.5 to 0.6 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.5, Share of class: 8%</title>
+            <circle class="hit" cx="344.11" cy="305.78" r="9"/>
+            <circle class="pt h" cx="344.11" cy="305.78" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="236.67" y="214.28" width="214.87" height="78" rx="6"/>
+                <text class="tx b" x="246.67" y="232.28">0.5 to 0.6 Fraud: 8.3% of class (1)</text>
+                <rect class="tsw s1" x="246.67" y="240.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="260.67" y="249.28">Fraud</text>
+                <text class="tx" x="246.67" y="266.28">Predicted probability: 0.5</text>
+                <text class="tx" x="246.67" y="283.28">Share of class: 8%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.5 to 0.6 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.6, Share of class: 8%">
+            <title>0.5 to 0.6 Fraud: 8.3% of class (1), Fraud, Predicted probability: 0.6, Share of class: 8%</title>
+            <circle class="hit" cx="400.09" cy="305.78" r="9"/>
+            <circle class="pt h" cx="400.09" cy="305.78" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="292.65" y="214.28" width="214.87" height="78" rx="6"/>
+                <text class="tx b" x="302.65" y="232.28">0.5 to 0.6 Fraud: 8.3% of class (1)</text>
+                <rect class="tsw s1" x="302.65" y="240.28" width="9" height="9" rx="2"/>
+                <text class="tx b" x="316.65" y="249.28">Fraud</text>
+                <text class="tx" x="302.65" y="266.28">Predicted probability: 0.6</text>
+                <text class="tx" x="302.65" y="283.28">Share of class: 8%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.6 to 0.7 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.6, Share of class: 17%">
+            <title>0.6 to 0.7 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.6, Share of class: 17%</title>
+            <circle class="hit" cx="400.09" cy="213.56" r="9"/>
+            <circle class="pt h" cx="400.09" cy="213.56" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="289.09" y="122.06" width="221.99" height="78" rx="6"/>
+                <text class="tx b" x="299.09" y="140.06">0.6 to 0.7 Fraud: 16.7% of class (2)</text>
+                <rect class="tsw s1" x="299.09" y="148.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="313.09" y="157.06">Fraud</text>
+                <text class="tx" x="299.09" y="174.06">Predicted probability: 0.6</text>
+                <text class="tx" x="299.09" y="191.06">Share of class: 17%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.6 to 0.7 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.7, Share of class: 17%">
+            <title>0.6 to 0.7 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.7, Share of class: 17%</title>
+            <circle class="hit" cx="456.07" cy="213.56" r="9"/>
+            <circle class="pt h" cx="456.07" cy="213.56" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="345.07" y="122.06" width="221.99" height="78" rx="6"/>
+                <text class="tx b" x="355.07" y="140.06">0.6 to 0.7 Fraud: 16.7% of class (2)</text>
+                <rect class="tsw s1" x="355.07" y="148.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="369.07" y="157.06">Fraud</text>
+                <text class="tx" x="355.07" y="174.06">Predicted probability: 0.7</text>
+                <text class="tx" x="355.07" y="191.06">Share of class: 17%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.7 to 0.8 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.7, Share of class: 17%">
+            <title>0.7 to 0.8 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.7, Share of class: 17%</title>
+            <circle class="hit" cx="456.07" cy="213.56" r="9"/>
+            <circle class="pt h" cx="456.07" cy="213.56" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="345.07" y="122.06" width="221.99" height="78" rx="6"/>
+                <text class="tx b" x="355.07" y="140.06">0.7 to 0.8 Fraud: 16.7% of class (2)</text>
+                <rect class="tsw s1" x="355.07" y="148.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="369.07" y="157.06">Fraud</text>
+                <text class="tx" x="355.07" y="174.06">Predicted probability: 0.7</text>
+                <text class="tx" x="355.07" y="191.06">Share of class: 17%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.7 to 0.8 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.8, Share of class: 17%">
+            <title>0.7 to 0.8 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.8, Share of class: 17%</title>
+            <circle class="hit" cx="512.04" cy="213.56" r="9"/>
+            <circle class="pt h" cx="512.04" cy="213.56" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="401.05" y="122.06" width="221.99" height="78" rx="6"/>
+                <text class="tx b" x="411.05" y="140.06">0.7 to 0.8 Fraud: 16.7% of class (2)</text>
+                <rect class="tsw s1" x="411.05" y="148.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="425.05" y="157.06">Fraud</text>
+                <text class="tx" x="411.05" y="174.06">Predicted probability: 0.8</text>
+                <text class="tx" x="411.05" y="191.06">Share of class: 17%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.8 to 0.9 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.8, Share of class: 17%">
+            <title>0.8 to 0.9 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.8, Share of class: 17%</title>
+            <circle class="hit" cx="512.04" cy="213.56" r="9"/>
+            <circle class="pt h" cx="512.04" cy="213.56" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="401.05" y="122.06" width="221.99" height="78" rx="6"/>
+                <text class="tx b" x="411.05" y="140.06">0.8 to 0.9 Fraud: 16.7% of class (2)</text>
+                <rect class="tsw s1" x="411.05" y="148.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="425.05" y="157.06">Fraud</text>
+                <text class="tx" x="411.05" y="174.06">Predicted probability: 0.8</text>
+                <text class="tx" x="411.05" y="191.06">Share of class: 17%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.8 to 0.9 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.9, Share of class: 17%">
+            <title>0.8 to 0.9 Fraud: 16.7% of class (2), Fraud, Predicted probability: 0.9, Share of class: 17%</title>
+            <circle class="hit" cx="568.02" cy="213.56" r="9"/>
+            <circle class="pt h" cx="568.02" cy="213.56" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="402.01" y="122.06" width="221.99" height="78" rx="6"/>
+                <text class="tx b" x="412.01" y="140.06">0.8 to 0.9 Fraud: 16.7% of class (2)</text>
+                <rect class="tsw s1" x="412.01" y="148.06" width="9" height="9" rx="2"/>
+                <text class="tx b" x="426.01" y="157.06">Fraud</text>
+                <text class="tx" x="412.01" y="174.06">Predicted probability: 0.9</text>
+                <text class="tx" x="412.01" y="191.06">Share of class: 17%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.9 to 1 Fraud: 25% of class (3), Fraud, Predicted probability: 0.9, Share of class: 25%">
+            <title>0.9 to 1 Fraud: 25% of class (3), Fraud, Predicted probability: 0.9, Share of class: 25%</title>
+            <circle class="hit" cx="568.02" cy="121.33" r="9"/>
+            <circle class="pt h" cx="568.02" cy="121.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="422.87" y="127.83" width="201.13" height="78" rx="6"/>
+                <text class="tx b" x="432.87" y="145.83">0.9 to 1 Fraud: 25% of class (3)</text>
+                <rect class="tsw s1" x="432.87" y="153.83" width="9" height="9" rx="2"/>
+                <text class="tx b" x="446.87" y="162.83">Fraud</text>
+                <text class="tx" x="432.87" y="179.83">Predicted probability: 0.9</text>
+                <text class="tx" x="432.87" y="196.83">Share of class: 25%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="0.9 to 1 Fraud: 25% of class (3), Fraud, Predicted probability: 1, Share of class: 25%">
+            <title>0.9 to 1 Fraud: 25% of class (3), Fraud, Predicted probability: 1, Share of class: 25%</title>
+            <circle class="hit" cx="624" cy="121.33" r="9"/>
+            <circle class="pt h" cx="624" cy="121.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="422.87" y="127.83" width="201.13" height="78" rx="6"/>
+                <text class="tx b" x="432.87" y="145.83">0.9 to 1 Fraud: 25% of class (3)</text>
+                <rect class="tsw s1" x="432.87" y="153.83" width="9" height="9" rx="2"/>
+                <text class="tx b" x="446.87" y="162.83">Fraud</text>
+                <text class="tx" x="432.87" y="179.83">Predicted probability: 1</text>
+                <text class="tx" x="432.87" y="196.83">Share of class: 25%</text>
+            </g>
+        </g>
+    </g>
+    <g>
+        <title>Threshold 0.5</title>
+        <circle class="and" cx="344.11" cy="66" r="3.5"/>
+        <text class="ant" x="352.11" y="76">Threshold 0.5</text>
+    </g>
+    <text class="at ctr" x="344.11" y="432">Predicted probability</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 232) rotate(-90)">Share of class</text>
+</svg>

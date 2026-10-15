@@ -16,6 +16,7 @@ using FluentValidation.Results;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Parser.Dependency;
+using Jube.Parser.Dependency.Models;
 using Jube.Resources;
 using log4net;
 using Microsoft.Extensions.Localization;
@@ -31,7 +32,6 @@ namespace Jube.Validations.Dependency
     public sealed class ModelEntityDeleteValidator : AbstractValidator<ModelEntityDelete>
     {
         private const string ErrorCode = "HasDependents";
-
         private static readonly ILog log = LogManager.GetLogger(typeof(ModelEntityDeleteValidator));
 
         public ModelEntityDeleteValidator(DbContext dbContext, int tenantRegistryId, string userName,
@@ -40,6 +40,7 @@ namespace Jube.Validations.Dependency
             RuleFor(p => p).CustomAsync(async (request, context, token) =>
             {
                 var modelId = request.EntityAnalysisModelId;
+
                 if (modelId == null && request.EntityAnalysisModelGuid is { } guid)
                 {
                     modelId = (await new EntityAnalysisModelRepository(dbContext, tenantRegistryId)

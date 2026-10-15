@@ -12,6 +12,7 @@
  */
 
 using Jube.Data.Query.GetApprovedEntityQuery;
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Jube.Data.Context;
+using Jube.Data.Extensions;
 using Jube.Data.Poco;
 using LinqToDB;
 using Microsoft.Extensions.Logging.Abstractions;
+using Jube.Data.Helpers;
 
 namespace Jube.Data.Repository
 {
@@ -120,6 +123,14 @@ namespace Jube.Data.Repository
                 && w.Id == id, token);
         }
 
+        public Task<EntityAnalysisModelAbstractionCalculation> GetByGuidAsync(Guid guid,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelAbstractionCalculation.FirstOrDefaultAsync(w =>
+                (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                && w.Guid == guid && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<EntityAnalysisModelAbstractionCalculation> InsertAsync(
             EntityAnalysisModelAbstractionCalculation model, CancellationToken token = default)
         {
@@ -128,6 +139,7 @@ namespace Jube.Data.Repository
             model.Version = 1;
             model.CreatedDate = DateTime.UtcNow;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -184,6 +196,59 @@ namespace Jube.Data.Repository
             return dbContext.InTransactionAsync(() => DeleteVersionedAsync(id, token), token);
         }
 
+        public Task UpdateCompileStatusAsync(int id, bool compiled, string compileError,
+            CancellationToken token = default)
+        {
+            var compiledValue = Convert.ToByte(compiled ? 1 : 0);
+
+            var query = dbContext.EntityAnalysisModelAbstractionCalculation
+                .Where(d => (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                            && d.Id == id);
+
+            query = compileError == null
+                ? query.Where(d => d.Compiled == null || d.Compiled != compiledValue || d.CompileError != null)
+                : query.Where(d => d.Compiled == null || d.Compiled != compiledValue || d.CompileError == null
+                                   || d.CompileError != compileError);
+
+            return query
+                .Set(s => s.Compiled, compiledValue)
+                .Set(s => s.CompileError, compileError)
+                .UpdateAsync(token);
+        }
+
+        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelAbstractionCalculation
+                .Where(d =>
+                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
+                    && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.ImportId, importId)
+                .Set(s => s.Deleted, Convert.ToByte(1))
+                .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .UpdateAsync(token);
+        }
+
+        public async Task<IEnumerable<EntityAnalysisModelAbstractionCalculation>>
+            GetApprovedByEntityAnalysisModelIdOrderByIdDescAsync(
+                int entityAnalysisModelId, int approvalsRequired = 1,
+                CancellationToken token = default)
+        {
+            var current = await dbContext.EntityAnalysisModelAbstractionCalculation
+                .Where(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelId == entityAnalysisModelId)
+                .OrderBy(o => o.Id)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            return await new GetApprovedEntityQuery<EntityAnalysisModelAbstractionCalculation,
+                    EntityAnalysisModelAbstractionCalculationVersion>(dbContext,
+                    EntityApprovalKind.EntityAnalysisModelAbstractionCalculation,
+                    nameof(EntityAnalysisModelAbstractionCalculationVersion
+                        .EntityAnalysisModelAbstractionCalculationId), tenantRegistryId)
+                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
+        }
+
         private async Task DeleteVersionedAsync(int id, CancellationToken token)
         {
             var existing = await dbContext.EntityAnalysisModelAbstractionCalculation
@@ -236,59 +301,6 @@ namespace Jube.Data.Repository
             deletedState.Version = (existing.Version ?? 1) + 1;
 
             await dbContext.InsertAsync(deletedState, token: token);
-        }
-
-        public Task UpdateCompileStatusAsync(int id, bool compiled, string compileError,
-            CancellationToken token = default)
-        {
-            var compiledValue = Convert.ToByte(compiled ? 1 : 0);
-
-            var query = dbContext.EntityAnalysisModelAbstractionCalculation
-                .Where(d => (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                            && d.Id == id);
-
-            query = compileError == null
-                ? query.Where(d => d.Compiled == null || d.Compiled != compiledValue || d.CompileError != null)
-                : query.Where(d => d.Compiled == null || d.Compiled != compiledValue || d.CompileError == null
-                                   || d.CompileError != compileError);
-
-            return query
-                .Set(s => s.Compiled, compiledValue)
-                .Set(s => s.CompileError, compileError)
-                .UpdateAsync(token);
-        }
-
-        public Task DeleteByTenantRegistryIdOutsideOfInstanceAsync(int tenantRegistryIdOutsideOfInstance, int importId,
-            CancellationToken token = default)
-        {
-            return dbContext.EntityAnalysisModelAbstractionCalculation
-                .Where(d =>
-                    d.EntityAnalysisModel.TenantRegistryId == tenantRegistryIdOutsideOfInstance
-                    && (d.Deleted == 0 || d.Deleted == null))
-                .Set(s => s.ImportId, importId)
-                .Set(s => s.Deleted, Convert.ToByte(1))
-                .Set(s => s.DeletedDate, DateTime.UtcNow)
-                .UpdateAsync(token);
-        }
-
-        public async Task<IEnumerable<EntityAnalysisModelAbstractionCalculation>>
-            GetApprovedByEntityAnalysisModelIdOrderByIdDescAsync(
-                int entityAnalysisModelId, int approvalsRequired = 1,
-                CancellationToken token = default)
-        {
-            var current = await dbContext.EntityAnalysisModelAbstractionCalculation
-                .Where(w =>
-                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                    && w.EntityAnalysisModelId == entityAnalysisModelId)
-                .OrderBy(o => o.Id)
-                .ToListAsync(token).ConfigureAwait(false);
-
-            return await new GetApprovedEntityQuery<EntityAnalysisModelAbstractionCalculation,
-                    EntityAnalysisModelAbstractionCalculationVersion>(dbContext,
-                    EntityApprovalKind.EntityAnalysisModelAbstractionCalculation,
-                    nameof(EntityAnalysisModelAbstractionCalculationVersion
-                        .EntityAnalysisModelAbstractionCalculationId), tenantRegistryId)
-                .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
     }
 }

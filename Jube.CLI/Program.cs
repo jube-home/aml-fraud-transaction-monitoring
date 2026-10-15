@@ -23,14 +23,14 @@ namespace Jube.CLI
 
             for (var i = 0; i < args.Length; i++)
             {
-                if (args[i] == "-cs")//Connection String
+                if (args[i] == "-cs") //Connection String
                 {
                     connectionString = args[i + 1];
                 }
 
                 if (args[i] != "-urpr")
                 {
-                    continue;//User Registry Password Reset
+                    continue; //User Registry Password Reset
                 }
 
                 var hash = args[i + 1];
@@ -40,18 +40,21 @@ namespace Jube.CLI
                 if (String.IsNullOrEmpty(hash))
                 {
                     Console.WriteLine(@"User Registry Password Reset: No hash passed in arguments.");
+
                     return;
                 }
 
                 if (String.IsNullOrEmpty(userName))
                 {
                     Console.WriteLine(@"User Registry Password Reset: No User Name passed in arguments.");
+
                     return;
                 }
 
                 if (String.IsNullOrEmpty(password))
                 {
                     Console.WriteLine(@"User Registry Password Reset: No password passed in arguments.");
+
                     return;
                 }
 
@@ -59,6 +62,7 @@ namespace Jube.CLI
                 {
                     Console.WriteLine(
                         @"User Registry Password Reset: No database connection string passed in arguments.");
+
                     return;
                 }
 

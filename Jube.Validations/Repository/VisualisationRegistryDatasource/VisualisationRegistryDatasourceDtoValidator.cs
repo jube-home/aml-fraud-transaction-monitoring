@@ -25,7 +25,6 @@ namespace Jube.Validations.Repository.VisualisationRegistryDatasource
         private const int MaxNameLength = 256;
         private const int MaxCommandLength = 65536;
         private const int MaxVisualisationTextLength = 65536;
-
         private static readonly int[] allowedVisualisationTypeIds = [1, 2, 3];
 
         public VisualisationRegistryDatasourceDtoValidator(
@@ -42,6 +41,7 @@ namespace Jube.Validations.Repository.VisualisationRegistryDatasource
                 {
                     var parent = await visualisationRegistryRepository
                         .GetByIdAsync(visualisationRegistryId, cancellation);
+
                     return parent != null;
                 })
                 .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.VisualisationRegistryIdNotFound])
@@ -60,6 +60,7 @@ namespace Jube.Validations.Repository.VisualisationRegistryDatasource
                 {
                     var existing = await repository
                         .GetByNameVisualisationRegistryIdAsync(name, dto.VisualisationRegistryId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.NameAlreadyExists])

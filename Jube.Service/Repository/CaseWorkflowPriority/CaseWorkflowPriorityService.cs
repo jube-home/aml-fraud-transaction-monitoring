@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseWorkflowPriority;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseWorkflowPriority;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -57,6 +57,8 @@ namespace Jube.Service.Repository.CaseWorkflowPriority
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowPriorityService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -109,6 +111,7 @@ namespace Jube.Service.Repository.CaseWorkflowPriority
         {
             using var op = OperationScope.Start("CaseWorkflowPriority", "ListActiveOnly", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowPriority.ListActiveOnly: entry user={userName}");
@@ -119,6 +122,7 @@ namespace Jube.Service.Repository.CaseWorkflowPriority
                 EnsurePermitted("CaseWorkflowPriority.ListActiveOnly", permissions);
                 token.ThrowIfCancellationRequested();
                 op.Rows(fixedPriorities.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowPriority.ListActiveOnly: {fixedPriorities.Count} rows user={userName}");

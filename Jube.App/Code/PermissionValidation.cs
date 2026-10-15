@@ -11,11 +11,12 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Security.Models;
+
 namespace Jube.App.Code
 {
     using System.Linq;
     using Data.Context;
-    using Data.Security;
     using log4net;
 
     public class PermissionValidation
@@ -25,13 +26,14 @@ namespace Jube.App.Code
         public PermissionValidation(DbContext dbContext, string userName, ILog log)
         {
             var permissionValidation = new Data.Security.PermissionValidation();
+
             permissionValidationDto = permissionValidation
                 .GetPermissionsAsync(dbContext, userName, log)
                 .ConfigureAwait(false)
                 .GetAwaiter()
- #pragma warning disable VSTHRD002
+#pragma warning disable VSTHRD002
                 .GetResult();
- #pragma warning restore VSTHRD002
+#pragma warning restore VSTHRD002
         }
 
         public PermissionValidation(string connectionString, string userName, ILog log)
@@ -42,17 +44,14 @@ namespace Jube.App.Code
                 .GetPermissionsAsync(connectionString, userName, log)
                 .ConfigureAwait(false)
                 .GetAwaiter()
- #pragma warning disable VSTHRD002
+#pragma warning disable VSTHRD002
                 .GetResult();
- #pragma warning restore VSTHRD002
+#pragma warning restore VSTHRD002
         }
 
         public bool Landlord
         {
-            get
-            {
-                return permissionValidationDto.Landlord;
-            }
+            get { return permissionValidationDto.Landlord; }
         }
 
         public bool Validate(int[] testPermissionSpecifications)

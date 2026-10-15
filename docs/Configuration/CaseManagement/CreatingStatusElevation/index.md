@@ -6,8 +6,6 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Creating Status Elevation
 Consider the scenario where a rule creates a case having allocated a status of FLD (First Line Defence) as a consequence of an velocity rule having matched.  Thereafter,  suppose a transaction occurs in a sanctioned country, which is of course a much higher risk event than a velocity having been breached.  Status elevation is able to change the status in an upward,  more severe direction, on rule match, yet not allow for the status to be changed to a less severe,  downward direction.
 

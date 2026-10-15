@@ -18,17 +18,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Data.Query.ApproveEntireModelQuery;
 using LinqToDB;
 using Npgsql;
 using Fixture = Jube.Test.Infrastructure.DatabaseFixture.DatabaseFixture;
-using Jube.Data.Repository;
 
 namespace Jube.Test.Infrastructure.ModelScaffolding
 {
     public sealed class ModelScaffold : IAsyncDisposable
     {
         public const int ExampleModelId = 1;
-
         public static readonly Guid ExampleModelGuid = new("81abd51c-0013-41c1-a4c7-4a6270eb5aa4");
 
         public const string DefaultExcludedTablePattern =
@@ -38,9 +37,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             "CaseWorkflowFormEntryValue)$";
 
         internal const string Root = "EntityAnalysisModel";
-
         internal const string ApprovedBy = "ZzTestChecker";
-
         private readonly object gate = new();
         private readonly List<int> scheduleIds = [];
         private int disposed;
@@ -62,7 +59,6 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         public string ModelName { get; private set; } = string.Empty;
         public int TenantRegistryId { get; private set; }
         public string TenantName { get; private set; } = string.Empty;
-
         public bool OwnsTenant { get; private set; }
 
         public IReadOnlyDictionary<string, IReadOnlyDictionary<long, long>> IdMap { get; private set; } =
@@ -72,13 +68,10 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             IdMap.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Count);
 
         public Guid RoleGuid { get; private set; }
-
         public int RoleRegistryId { get; private set; }
         public int OtherRoleRegistryId { get; private set; }
         public int UserRegistryId { get; private set; }
-
         public string UserName { get; private set; } = string.Empty;
-
         public string OtherUserName { get; private set; } = string.Empty;
 
         public IReadOnlyList<int> ScheduleIds
@@ -95,16 +88,16 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         public static async Task<ModelScaffold> CreateAsync(ModelScaffoldOptions? options = null)
         {
             options ??= new ModelScaffoldOptions();
+
             if (!options.NamePrefix.StartsWith(Fixture.Prefix, StringComparison.Ordinal))
             {
-                // ReSharper disable LocalizableElement
                 throw new ArgumentException(
                     $"NamePrefix '{options.NamePrefix}' must start with '{Fixture.Prefix}' so that the database " +
                     "fixture's clean-up still finds what a crashed run leaves behind.", nameof(options));
-                // ReSharper restore LocalizableElement
             }
 
             var scaffold = new ModelScaffold(options);
+
             try
             {
                 await scaffold.BuildAsync().ConfigureAwait(false);
@@ -132,12 +125,14 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 var tenant = await dbContext.TenantRegistry.Where(w => w.Id == existing).FirstOrDefaultAsync()
                     .ConfigureAwait(false) ?? throw new InvalidOperationException(
                     $"TenantRegistryId {existing} does not exist, so the model cannot be scaffolded into it.");
+
                 TenantRegistryId = tenant.Id;
                 TenantName = tenant.Name;
             }
             else
             {
                 TenantName = $"{prefix}Tenant{suffix}";
+
                 TenantRegistryId = await dbContext.InsertWithInt32IdentityAsync(new TenantRegistry
                 {
                     Name = TenantName,
@@ -149,12 +144,14 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                     CreatedDate = DateTime.UtcNow,
                     CreatedUser = Fixture.Prefix
                 }).ConfigureAwait(false);
+
                 OwnsTenant = true;
             }
 
             if (Options.CreateCallers)
             {
                 RoleGuid = Guid.NewGuid();
+
                 RoleRegistryId = await dbContext.InsertWithInt32IdentityAsync(new RoleRegistry
                 {
                     Guid = RoleGuid,
@@ -173,6 +170,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                         .ConfigureAwait(false);
 
                 var otherRoleGuid = Guid.NewGuid();
+
                 OtherRoleRegistryId = await dbContext.InsertWithInt32IdentityAsync(new RoleRegistry
                 {
                     Guid = otherRoleGuid,
@@ -185,24 +183,28 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                     CreatedDate = DateTime.UtcNow,
                     CreatedUser = Fixture.Prefix
                 }).ConfigureAwait(false);
+
                 (OtherUserName, _) = await InsertUserWithApiKeyAsync(dbContext, $"{prefix}OtherUser{suffix}",
                     otherRoleGuid).ConfigureAwait(false);
             }
 
             ModelName = $"{prefix}Model{suffix}";
+
             await using (var connection = new NpgsqlConnection(ConnectionString))
             {
                 await connection.OpenAsync().ConfigureAwait(false);
                 await using var transaction = await connection.BeginTransactionAsync().ConfigureAwait(false);
+
                 (ModelId, IdMap) = await ModelGraphCopier.CopyAsync(connection, transaction, Options,
                     TenantRegistryId, ModelGuid, ModelName).ConfigureAwait(false);
+
                 await transaction.CommitAsync().ConfigureAwait(false);
             }
 
             if (Options.Approve)
             {
-                await new EntityApprovalRepository(dbContext)
-                    .ApproveEntireModelAsync(ModelId, ApprovedBy).ConfigureAwait(false);
+                await new ApproveEntireModelQuery(dbContext)
+                    .ExecuteAsync(ModelId, ApprovedBy).ConfigureAwait(false);
             }
 
             if (Options.CreateCallers)
@@ -307,6 +309,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                     await ModelGraphCopier.ExecuteAsync(connection,
                         "DELETE FROM \"UserInTenant\" WHERE \"User\" = @name",
                         ("name", name)).ConfigureAwait(false);
+
                     await ModelGraphCopier.CascadeDeleteAsync(connection, "UserRegistry", "\"Name\" = @name",
                         ("name", name)).ConfigureAwait(false);
                 }

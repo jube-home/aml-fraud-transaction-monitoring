@@ -18,7 +18,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Dto.Validation;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Xunit;
 
@@ -59,7 +59,8 @@ namespace Jube.Test.Service.Agent
         {
             var services = ServicesWithValidators().ToList();
 
-            services.Should().HaveCount(41);
+            services.Should().HaveCount(42);
+
             services.Should().OnlyContain(s => s.GetMethods().Any(m =>
                 m.Name == "ValidateAsync" && m.ReturnType == typeof(Task<ValidationResultDto>)));
         }

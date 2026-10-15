@@ -30,6 +30,11 @@ function loadTemplate(id) {
     $.get(endpoint + "/" + id,
         function (data) {
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("TenantRegistry", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name
+            });
             validator.validate();
 
             $("#Template").show();
@@ -39,11 +44,13 @@ function loadTemplate(id) {
 
 function showTemplate() {
     ReadyNew();
+    window.AskJoobySetPageContext?.("TenantRegistry", "new", null);
     $("#Template").show();
     $("#Homepage").hide();
 }
 
 function showHomePage() {
+    window.AskJoobySetPageContext?.("TenantRegistry", "list", null);
     $("#Template").hide();
     $("#Homepage").show();
     getRecords();

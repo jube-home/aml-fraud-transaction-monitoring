@@ -37,8 +37,10 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         private ModelInvokeHost(WebApplication app)
         {
             this.app = app;
+
             var address = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>().Required()
                 .Addresses.Single();
+
             client = new HttpClient(new HttpClientHandler { UseCookies = false, AllowAutoRedirect = false })
                 { BaseAddress = new Uri(address), Timeout = TimeSpan.FromSeconds(120) };
         }
@@ -51,6 +53,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             builder.WebHost.UseUrls("http://127.0.0.1:0");
             builder.Services.AddSingleton(log);
             builder.Services.AddSingleton(environment);
+
             if (engine != null)
             {
                 builder.Services.AddSingleton(engine);
@@ -59,6 +62,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             builder.Services.AddAuthentication(InvokeTestUserHandler.TestScheme)
                 .AddScheme<AuthenticationSchemeOptions, InvokeTestUserHandler>(InvokeTestUserHandler.TestScheme,
                     _ => { });
+
             builder.Services.AddAuthorization();
             builder.Services.AddLocalization();
             builder.Services.AddHttpContextAccessor();
@@ -76,6 +80,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             app.UseAuthorization();
             app.MapInvokeEndpoints();
             await app.StartAsync().ConfigureAwait(false);
+
             return new ModelInvokeHost(app);
         }
 
@@ -94,6 +99,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             string? user = null, CancellationToken cancellationToken = default)
         {
             var path = $"/api/Invoke/EntityAnalysisModel/{scaffold.ModelGuid}" + (async ? "/Async" : string.Empty);
+
             return SendAsync("POST", path, user ?? scaffold.UserName, body, "application/json",
                 cancellationToken: cancellationToken);
         }
@@ -103,6 +109,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             CancellationToken cancellationToken = default, params (string Name, string Value)[] headers)
         {
             using var request = new HttpRequestMessage(new HttpMethod(method), path);
+
             if (user != null)
             {
                 request.Headers.Add(InvokeTestUserHandler.Header, user);
@@ -111,6 +118,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             if (body != null)
             {
                 request.Content = new ByteArrayContent(body);
+
                 if (!sendContentLength)
                 {
                     request.Content = new StreamContent(new ChunkedStream(body));
@@ -131,9 +139,12 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             using var response = await client
                 .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
                 .ConfigureAwait(false);
+
             var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+
             var responseHeaders = response.Headers.Concat(response.Content.Headers)
                 .ToDictionary(h => h.Key.ToLowerInvariant(), h => string.Join(",", h.Value));
+
             return new InvokeResponse((int)response.StatusCode, bytes,
                 response.Content.Headers.ContentType?.ToString(), response.Content.Headers.ContentLength,
                 responseHeaders);

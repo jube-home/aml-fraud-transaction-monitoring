@@ -1,0 +1,2289 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-27a59f05" viewBox="0 0 720 454" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-27a59f05-t jc-27a59f05-d">
+    <title id="jc-27a59f05-t">Gaussian naive Bayes</title>
+    <desc id="jc-27a59f05-d">Per class normal densities of 4 features in a naive Bayes classifier.</desc>
+    <style>
+        .jc-27a59f05{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-27a59f05:not([data-theme="light"]),.jc-27a59f05:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-27a59f05:not([data-theme="light"]),.jc-27a59f05[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-27a59f05
+        text{fill:var(--jc-text);font-size:12px}.jc-27a59f05 .bg{fill:var(--jc-surface)}.jc-27a59f05
+        .ttl{font-size:16px;font-weight:600}.jc-27a59f05 .sub{fill:var(--jc-text2)}.jc-27a59f05
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-27a59f05 .at{fill:var(--jc-text2);font-weight:500}.jc-27a59f05
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-27a59f05
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-27a59f05
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-27a59f05 .ref.s0,.jc-27a59f05
+        .ref.s1,.jc-27a59f05 .ref.s2,.jc-27a59f05 .ref.s3,.jc-27a59f05 .ref.s4,.jc-27a59f05 .ref.s5,.jc-27a59f05
+        .ref.s6,.jc-27a59f05 .ref.s7{stroke:var(--sc)}.jc-27a59f05
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-27a59f05
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-27a59f05
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-27a59f05
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-27a59f05 .wh,.jc-27a59f05
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-27a59f05
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-27a59f05
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-27a59f05
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-27a59f05 .cd.hollow{fill:var(--jc-surface)}.jc-27a59f05
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-27a59f05
+        .ar.off{fill-opacity:0}.jc-27a59f05 .ring{font-size:10px}.jc-27a59f05
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-27a59f05 .needle{fill:var(--jc-text);stroke:none}.jc-27a59f05
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-27a59f05
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-27a59f05
+        .big{font-size:28px;font-weight:600}.jc-27a59f05 .rg0,.jc-27a59f05 .rg1,.jc-27a59f05
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-27a59f05 .rg0{fill-opacity:.1}.jc-27a59f05
+        .rg1{fill-opacity:.2}.jc-27a59f05 .rg2{fill-opacity:.32}.jc-27a59f05
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-27a59f05
+        .bar.part{fill-opacity:.35}.jc-27a59f05 .lgt{fill:var(--jc-text2)}.jc-27a59f05
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-27a59f05
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-27a59f05
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-27a59f05
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-27a59f05 .bar{fill:var(--sc)}.jc-27a59f05
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-27a59f05
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-27a59f05
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-27a59f05
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-27a59f05
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-27a59f05
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-27a59f05 .mk:hover .pt.h,.jc-27a59f05 .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-27a59f05 .pt.sm{fill-opacity:.55;stroke:none}.jc-27a59f05
+        .na{fill:var(--jc-grid)}.jc-27a59f05 .mk:hover .sl,.jc-27a59f05 .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-27a59f05
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-27a59f05
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-27a59f05
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-27a59f05
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-27a59f05
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-27a59f05 .ctr{text-anchor:middle}.jc-27a59f05
+        .end{text-anchor:end}.jc-27a59f05 .mid{dominant-baseline:central}.jc-27a59f05 .mk{outline:none}.jc-27a59f05
+        .m,.jc-27a59f05 .pt,.jc-27a59f05 .bub,.jc-27a59f05 .bar,.jc-27a59f05 .ov,.jc-27a59f05 .sl,.jc-27a59f05
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-27a59f05 .mk:hover .m,.jc-27a59f05 .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-27a59f05 .mk:hover .pt,.jc-27a59f05 .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-27a59f05 .mk:hover .bub,.jc-27a59f05 .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-27a59f05 .mk:hover .bar,.jc-27a59f05 .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-27a59f05 .mk:hover .ov,.jc-27a59f05 .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-27a59f05 .mk:hover .sl,.jc-27a59f05 .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-27a59f05 .mk:hover .box,.jc-27a59f05 .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-27a59f05 .mk:hover .wk,.jc-27a59f05 .mk:focus-visible
+        .wk,.jc-27a59f05 .mk:hover .cd,.jc-27a59f05 .mk:focus-visible .cd{stroke-width:2.5}.jc-27a59f05 .mk:hover
+        .cell,.jc-27a59f05 .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-27a59f05 .mk:hover
+        .vl,.jc-27a59f05 .mk:focus-visible .vl,.jc-27a59f05 .mk:hover .cx,.jc-27a59f05 .mk:focus-visible
+        .cx{opacity:1}.jc-27a59f05 .mk:hover .mkr,.jc-27a59f05 .mk:focus-visible .mkr{stroke-width:3}.jc-27a59f05
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-27a59f05
+        .mk:hover .tt,.jc-27a59f05 .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-27a59f05
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-27a59f05
+        .tx{fill:var(--jc-text);font-size:12px}.jc-27a59f05 .tx.b{font-weight:600}.jc-27a59f05
+        .tsw{fill:var(--sc)}.jc-27a59f05 .lg{cursor:default;transition:opacity .15s ease}.jc-27a59f05 .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-27a59f05 .sr{transition:opacity .15s ease}.jc-27a59f05:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-27a59f05:has(.mk:hover) .mk:not(:hover) .pt,.jc-27a59f05:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-27a59f05:has(.mk:hover) .mk:not(:hover) .bar,.jc-27a59f05:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-27a59f05:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-27a59f05:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-27a59f05 .s0{--sc:var(--jc-c0)}.jc-27a59f05 .s0
+        .on{fill:var(--jc-ct0)}.jc-27a59f05:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-27a59f05:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-27a59f05:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-27a59f05:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-27a59f05:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-27a59f05
+        .s1{--sc:var(--jc-c1)}.jc-27a59f05 .s1 .on{fill:var(--jc-ct1)}.jc-27a59f05:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-27a59f05:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-27a59f05:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-27a59f05:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-27a59f05:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}.jc-27a59f05
+        .s2{--sc:var(--jc-c2)}.jc-27a59f05 .s2 .on{fill:var(--jc-ct2)}.jc-27a59f05:has(.lg.s2:hover)
+        .sr:not(.s2){opacity:.16}.jc-27a59f05:has(.sr.s2:hover) .sr:not(.s2){opacity:.3}.jc-27a59f05:has(.sr.s2:hover)
+        .lg:not(.s2){opacity:.4}.jc-27a59f05:has(.sr.s2:hover) .lg.s2
+        .sw{transform:scale(1.35)}.jc-27a59f05:has(.lg.s2:hover) .lg.s2 .sw{transform:scale(1.35)}.jc-27a59f05
+        .s3{--sc:var(--jc-c3)}.jc-27a59f05 .s3 .on{fill:var(--jc-ct3)}.jc-27a59f05:has(.lg.s3:hover)
+        .sr:not(.s3){opacity:.16}.jc-27a59f05:has(.sr.s3:hover) .sr:not(.s3){opacity:.3}.jc-27a59f05:has(.sr.s3:hover)
+        .lg:not(.s3){opacity:.4}.jc-27a59f05:has(.sr.s3:hover) .lg.s3
+        .sw{transform:scale(1.35)}.jc-27a59f05:has(.lg.s3:hover) .lg.s3 .sw{transform:scale(1.35)}.jc-27a59f05
+        .s4{--sc:var(--jc-c4)}.jc-27a59f05 .s4 .on{fill:var(--jc-ct4)}.jc-27a59f05:has(.lg.s4:hover)
+        .sr:not(.s4){opacity:.16}.jc-27a59f05:has(.sr.s4:hover) .sr:not(.s4){opacity:.3}.jc-27a59f05:has(.sr.s4:hover)
+        .lg:not(.s4){opacity:.4}.jc-27a59f05:has(.sr.s4:hover) .lg.s4
+        .sw{transform:scale(1.35)}.jc-27a59f05:has(.lg.s4:hover) .lg.s4 .sw{transform:scale(1.35)}.jc-27a59f05
+        .s5{--sc:var(--jc-c5)}.jc-27a59f05 .s5 .on{fill:var(--jc-ct5)}.jc-27a59f05:has(.lg.s5:hover)
+        .sr:not(.s5){opacity:.16}.jc-27a59f05:has(.sr.s5:hover) .sr:not(.s5){opacity:.3}.jc-27a59f05:has(.sr.s5:hover)
+        .lg:not(.s5){opacity:.4}.jc-27a59f05:has(.sr.s5:hover) .lg.s5
+        .sw{transform:scale(1.35)}.jc-27a59f05:has(.lg.s5:hover) .lg.s5 .sw{transform:scale(1.35)}.jc-27a59f05
+        .s6{--sc:var(--jc-c6)}.jc-27a59f05 .s6 .on{fill:var(--jc-ct6)}.jc-27a59f05:has(.lg.s6:hover)
+        .sr:not(.s6){opacity:.16}.jc-27a59f05:has(.sr.s6:hover) .sr:not(.s6){opacity:.3}.jc-27a59f05:has(.sr.s6:hover)
+        .lg:not(.s6){opacity:.4}.jc-27a59f05:has(.sr.s6:hover) .lg.s6
+        .sw{transform:scale(1.35)}.jc-27a59f05:has(.lg.s6:hover) .lg.s6 .sw{transform:scale(1.35)}.jc-27a59f05
+        .s7{--sc:var(--jc-c7)}.jc-27a59f05 .s7 .on{fill:var(--jc-ct7)}.jc-27a59f05:has(.lg.s7:hover)
+        .sr:not(.s7){opacity:.16}.jc-27a59f05:has(.sr.s7:hover) .sr:not(.s7){opacity:.3}.jc-27a59f05:has(.sr.s7:hover)
+        .lg:not(.s7){opacity:.4}.jc-27a59f05:has(.sr.s7:hover) .lg.s7
+        .sw{transform:scale(1.35)}.jc-27a59f05:has(.lg.s7:hover) .lg.s7 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-27a59f05,.jc-27a59f05
+        *{transition:none!important;animation:none!important}}.jc-27a59f05 .q0{fill:var(--jc-q0)}.jc-27a59f05
+        .qt0{fill:var(--jc-qt0)}.jc-27a59f05 .q1{fill:var(--jc-q1)}.jc-27a59f05 .qt1{fill:var(--jc-qt1)}.jc-27a59f05
+        .q2{fill:var(--jc-q2)}.jc-27a59f05 .qt2{fill:var(--jc-qt2)}.jc-27a59f05 .q3{fill:var(--jc-q3)}.jc-27a59f05
+        .qt3{fill:var(--jc-qt3)}.jc-27a59f05 .q4{fill:var(--jc-q4)}.jc-27a59f05 .qt4{fill:var(--jc-qt4)}.jc-27a59f05
+        .q5{fill:var(--jc-q5)}.jc-27a59f05 .qt5{fill:var(--jc-qt5)}.jc-27a59f05 .q6{fill:var(--jc-q6)}.jc-27a59f05
+        .qt6{fill:var(--jc-qt6)}.jc-27a59f05 .q7{fill:var(--jc-q7)}.jc-27a59f05 .qt7{fill:var(--jc-qt7)}.jc-27a59f05
+        .q8{fill:var(--jc-q8)}.jc-27a59f05 .qt8{fill:var(--jc-qt8)}.jc-27a59f05 .d0{fill:var(--jc-d0)}.jc-27a59f05
+        .dt0{fill:var(--jc-dt0)}.jc-27a59f05 .d1{fill:var(--jc-d1)}.jc-27a59f05 .dt1{fill:var(--jc-dt1)}.jc-27a59f05
+        .d2{fill:var(--jc-d2)}.jc-27a59f05 .dt2{fill:var(--jc-dt2)}.jc-27a59f05 .d3{fill:var(--jc-d3)}.jc-27a59f05
+        .dt3{fill:var(--jc-dt3)}.jc-27a59f05 .d4{fill:var(--jc-d4)}.jc-27a59f05 .dt4{fill:var(--jc-dt4)}.jc-27a59f05
+        .d5{fill:var(--jc-d5)}.jc-27a59f05 .dt5{fill:var(--jc-dt5)}.jc-27a59f05 .d6{fill:var(--jc-d6)}.jc-27a59f05
+        .dt6{fill:var(--jc-dt6)}.jc-27a59f05 .d7{fill:var(--jc-d7)}.jc-27a59f05 .dt7{fill:var(--jc-dt7)}.jc-27a59f05
+        .d8{fill:var(--jc-d8)}.jc-27a59f05 .dt8{fill:var(--jc-dt8)}.jc-27a59f05 .d9{fill:var(--jc-d9)}.jc-27a59f05
+        .dt9{fill:var(--jc-dt9)}.jc-27a59f05 .d10{fill:var(--jc-d10)}.jc-27a59f05 .dt10{fill:var(--jc-dt10)}.jc-27a59f05
+        .nb{fill:var(--jc-surface);stroke:var(--sc,var(--jc-axis));stroke-width:2}.jc-27a59f05
+        .nt{fill:var(--sc,var(--jc-muted));fill-opacity:.2;stroke:none}.jc-27a59f05 .nb.dash{stroke-dasharray:4
+        3}.jc-27a59f05 .nd,.jc-27a59f05 .eg,.jc-27a59f05 .pn{transition:opacity .15s ease}.jc-27a59f05 .mk:hover
+        .nb,.jc-27a59f05 .mk:focus-visible .nb{stroke:var(--jc-text);stroke-width:3.5}.jc-27a59f05
+        .ep{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:.68;transition:stroke-opacity .15s
+        ease}.jc-27a59f05 .ep.en{stroke:var(--jc-axis)}.jc-27a59f05
+        .ep.et{stroke:var(--jc-muted);stroke-opacity:.5}.jc-27a59f05 .vt{fill:var(--jc-grid)}.jc-27a59f05
+        .nt.lf{fill-opacity:.38}.jc-27a59f05 .ep.ed{stroke-dasharray:5 4}.jc-27a59f05
+        .eh{fill:none;stroke:transparent;stroke-width:12;pointer-events:stroke}.jc-27a59f05 .eg:hover .ep,.jc-27a59f05
+        .eg:focus-visible .ep{stroke-opacity:1}.jc-27a59f05 .ah{fill:var(--jc-text2);stroke:none}.jc-27a59f05 .mk:hover
+        .ah,.jc-27a59f05 .mk:focus-visible .ah{fill:var(--jc-text)}.jc-27a59f05
+        .hl{fill:var(--jc-text);fill-opacity:0;stroke:none;transition:fill-opacity .15s ease}.jc-27a59f05 .mk:hover
+        .hl,.jc-27a59f05 .mk:focus-visible .hl{fill-opacity:.07}.jc-27a59f05
+        .hb{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-27a59f05 .mk:hover .bs,.jc-27a59f05 .mk:focus-visible
+        .bs{stroke:var(--jc-text);stroke-width:2}.jc-27a59f05
+        .sh{fill:var(--jc-text);fill-opacity:.05;stroke:none}.jc-27a59f05
+        .key{font-size:11px;fill:var(--jc-text2)}.jc-27a59f05 .kn{font-size:10.5px;fill:var(--jc-muted)}.jc-27a59f05
+        .ph{font-size:12px;font-weight:600}.jc-27a59f05 .pf{fill:none;stroke:var(--jc-grid);stroke-width:1}.jc-27a59f05
+        .tps{pointer-events:none}.jc-27a59f05 .dsh{stroke-dasharray:3 3}.jc-27a59f05
+        .ln.thin{stroke-width:1.5}.jc-27a59f05 .ln.hi{stroke-width:2.5}.jc-27a59f05
+        .rb{fill:var(--sc);fill-opacity:.85;stroke:none}.jc-27a59f05 .mk:hover .rb,.jc-27a59f05 .mk:focus-visible
+        .rb{fill-opacity:1;stroke:var(--jc-text);stroke-width:1.5}.jc-27a59f05
+        .ci{stroke:var(--sc);stroke-width:2;fill:none;stroke-linecap:round}.jc-27a59f05
+        .dmd{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5}.jc-27a59f05
+        .dmd.hollow{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-27a59f05 .mk:hover .dmd,.jc-27a59f05
+        .mk:focus-visible .dmd{stroke:var(--jc-text);stroke-width:2.5}.jc-27a59f05 .mk:hover .ci,.jc-27a59f05
+        .mk:focus-visible .ci{stroke-width:3}.jc-27a59f05
+        .tri{fill:var(--jc-surface);stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:3 2}.jc-27a59f05 .mk:hover
+        .tri,.jc-27a59f05 .mk:focus-visible .tri{stroke:var(--jc-text);stroke-width:2.5}.jc-27a59f05
+        .cl{fill:var(--sc)}.jc-27a59f05 .db{fill:var(--sc);fill-opacity:.42;stroke:var(--sc);stroke-width:1}.jc-27a59f05
+        .ax.dsh{stroke-dasharray:3 3}.jc-27a59f05 .sd0{stroke:var(--jc-d0)}.jc-27a59f05
+        .sd1{stroke:var(--jc-d1)}.jc-27a59f05 .sd2{stroke:var(--jc-d2)}.jc-27a59f05
+        .sd3{stroke:var(--jc-d3)}.jc-27a59f05 .sd4{stroke:var(--jc-d4)}.jc-27a59f05
+        .sd5{stroke:var(--jc-d5)}.jc-27a59f05 .sd6{stroke:var(--jc-d6)}.jc-27a59f05
+        .sd7{stroke:var(--jc-d7)}.jc-27a59f05 .sd8{stroke:var(--jc-d8)}.jc-27a59f05
+        .sd9{stroke:var(--jc-d9)}.jc-27a59f05 .sd10{stroke:var(--jc-d10)}.jc-27a59f05:has(.eg:hover)
+        .eg:not(:hover){opacity:.12}.jc-27a59f05:has(.eg:hover) .nd{opacity:.45}.jc-27a59f05:has(.lg.s0:hover)
+        .nd:not(.s0){opacity:.2}.jc-27a59f05:has(.lg.s0:hover) .eg{opacity:.3}.jc-27a59f05:has(.lg.s1:hover)
+        .nd:not(.s1){opacity:.2}.jc-27a59f05:has(.lg.s1:hover) .eg{opacity:.3}.jc-27a59f05:has(.lg.s2:hover)
+        .nd:not(.s2){opacity:.2}.jc-27a59f05:has(.lg.s2:hover) .eg{opacity:.3}.jc-27a59f05:has(.lg.s3:hover)
+        .nd:not(.s3){opacity:.2}.jc-27a59f05:has(.lg.s3:hover) .eg{opacity:.3}.jc-27a59f05:has(.lg.s4:hover)
+        .nd:not(.s4){opacity:.2}.jc-27a59f05:has(.lg.s4:hover) .eg{opacity:.3}.jc-27a59f05:has(.lg.s5:hover)
+        .nd:not(.s5){opacity:.2}.jc-27a59f05:has(.lg.s5:hover) .eg{opacity:.3}.jc-27a59f05:has(.lg.s6:hover)
+        .nd:not(.s6){opacity:.2}.jc-27a59f05:has(.lg.s6:hover) .eg{opacity:.3}.jc-27a59f05:has(.lg.s7:hover)
+        .nd:not(.s7){opacity:.2}.jc-27a59f05:has(.lg.s7:hover)
+        .eg{opacity:.3}.jc-27a59f05:has(.mk.d0c0:hover,.mk.d0c0:focus-visible) .tp.td0c0
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c1:hover,.mk.d0c1:focus-visible) .tp.td0c1
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c2:hover,.mk.d0c2:focus-visible) .tp.td0c2
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c3:hover,.mk.d0c3:focus-visible) .tp.td0c3
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c4:hover,.mk.d0c4:focus-visible) .tp.td0c4
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c5:hover,.mk.d0c5:focus-visible) .tp.td0c5
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c6:hover,.mk.d0c6:focus-visible) .tp.td0c6
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c7:hover,.mk.d0c7:focus-visible) .tp.td0c7
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c8:hover,.mk.d0c8:focus-visible) .tp.td0c8
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c9:hover,.mk.d0c9:focus-visible) .tp.td0c9
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c10:hover,.mk.d0c10:focus-visible) .tp.td0c10
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c11:hover,.mk.d0c11:focus-visible) .tp.td0c11
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c12:hover,.mk.d0c12:focus-visible) .tp.td0c12
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c13:hover,.mk.d0c13:focus-visible) .tp.td0c13
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c14:hover,.mk.d0c14:focus-visible) .tp.td0c14
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c15:hover,.mk.d0c15:focus-visible) .tp.td0c15
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c16:hover,.mk.d0c16:focus-visible) .tp.td0c16
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c17:hover,.mk.d0c17:focus-visible) .tp.td0c17
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c18:hover,.mk.d0c18:focus-visible) .tp.td0c18
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c19:hover,.mk.d0c19:focus-visible) .tp.td0c19
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c20:hover,.mk.d0c20:focus-visible) .tp.td0c20
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c21:hover,.mk.d0c21:focus-visible) .tp.td0c21
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c22:hover,.mk.d0c22:focus-visible) .tp.td0c22
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c23:hover,.mk.d0c23:focus-visible) .tp.td0c23
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c24:hover,.mk.d0c24:focus-visible) .tp.td0c24
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c25:hover,.mk.d0c25:focus-visible) .tp.td0c25
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c26:hover,.mk.d0c26:focus-visible) .tp.td0c26
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d0c27:hover,.mk.d0c27:focus-visible) .tp.td0c27
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c0:hover,.mk.d1c0:focus-visible) .tp.td1c0
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c1:hover,.mk.d1c1:focus-visible) .tp.td1c1
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c2:hover,.mk.d1c2:focus-visible) .tp.td1c2
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c3:hover,.mk.d1c3:focus-visible) .tp.td1c3
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c4:hover,.mk.d1c4:focus-visible) .tp.td1c4
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c5:hover,.mk.d1c5:focus-visible) .tp.td1c5
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c6:hover,.mk.d1c6:focus-visible) .tp.td1c6
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c7:hover,.mk.d1c7:focus-visible) .tp.td1c7
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c8:hover,.mk.d1c8:focus-visible) .tp.td1c8
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c9:hover,.mk.d1c9:focus-visible) .tp.td1c9
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c10:hover,.mk.d1c10:focus-visible) .tp.td1c10
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c11:hover,.mk.d1c11:focus-visible) .tp.td1c11
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c12:hover,.mk.d1c12:focus-visible) .tp.td1c12
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c13:hover,.mk.d1c13:focus-visible) .tp.td1c13
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c14:hover,.mk.d1c14:focus-visible) .tp.td1c14
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c15:hover,.mk.d1c15:focus-visible) .tp.td1c15
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c16:hover,.mk.d1c16:focus-visible) .tp.td1c16
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c17:hover,.mk.d1c17:focus-visible) .tp.td1c17
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c18:hover,.mk.d1c18:focus-visible) .tp.td1c18
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c19:hover,.mk.d1c19:focus-visible) .tp.td1c19
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c20:hover,.mk.d1c20:focus-visible) .tp.td1c20
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c21:hover,.mk.d1c21:focus-visible) .tp.td1c21
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c22:hover,.mk.d1c22:focus-visible) .tp.td1c22
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c23:hover,.mk.d1c23:focus-visible) .tp.td1c23
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c24:hover,.mk.d1c24:focus-visible) .tp.td1c24
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c25:hover,.mk.d1c25:focus-visible) .tp.td1c25
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c26:hover,.mk.d1c26:focus-visible) .tp.td1c26
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d1c27:hover,.mk.d1c27:focus-visible) .tp.td1c27
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c0:hover,.mk.d2c0:focus-visible) .tp.td2c0
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c1:hover,.mk.d2c1:focus-visible) .tp.td2c1
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c2:hover,.mk.d2c2:focus-visible) .tp.td2c2
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c3:hover,.mk.d2c3:focus-visible) .tp.td2c3
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c4:hover,.mk.d2c4:focus-visible) .tp.td2c4
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c5:hover,.mk.d2c5:focus-visible) .tp.td2c5
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c6:hover,.mk.d2c6:focus-visible) .tp.td2c6
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c7:hover,.mk.d2c7:focus-visible) .tp.td2c7
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c8:hover,.mk.d2c8:focus-visible) .tp.td2c8
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c9:hover,.mk.d2c9:focus-visible) .tp.td2c9
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c10:hover,.mk.d2c10:focus-visible) .tp.td2c10
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c11:hover,.mk.d2c11:focus-visible) .tp.td2c11
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c12:hover,.mk.d2c12:focus-visible) .tp.td2c12
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c13:hover,.mk.d2c13:focus-visible) .tp.td2c13
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c14:hover,.mk.d2c14:focus-visible) .tp.td2c14
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c15:hover,.mk.d2c15:focus-visible) .tp.td2c15
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c16:hover,.mk.d2c16:focus-visible) .tp.td2c16
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c17:hover,.mk.d2c17:focus-visible) .tp.td2c17
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c18:hover,.mk.d2c18:focus-visible) .tp.td2c18
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c19:hover,.mk.d2c19:focus-visible) .tp.td2c19
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c20:hover,.mk.d2c20:focus-visible) .tp.td2c20
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c21:hover,.mk.d2c21:focus-visible) .tp.td2c21
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c22:hover,.mk.d2c22:focus-visible) .tp.td2c22
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c23:hover,.mk.d2c23:focus-visible) .tp.td2c23
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c24:hover,.mk.d2c24:focus-visible) .tp.td2c24
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c25:hover,.mk.d2c25:focus-visible) .tp.td2c25
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c26:hover,.mk.d2c26:focus-visible) .tp.td2c26
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d2c27:hover,.mk.d2c27:focus-visible) .tp.td2c27
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c0:hover,.mk.d3c0:focus-visible) .tp.td3c0
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c1:hover,.mk.d3c1:focus-visible) .tp.td3c1
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c2:hover,.mk.d3c2:focus-visible) .tp.td3c2
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c3:hover,.mk.d3c3:focus-visible) .tp.td3c3
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c4:hover,.mk.d3c4:focus-visible) .tp.td3c4
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c5:hover,.mk.d3c5:focus-visible) .tp.td3c5
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c6:hover,.mk.d3c6:focus-visible) .tp.td3c6
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c7:hover,.mk.d3c7:focus-visible) .tp.td3c7
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c8:hover,.mk.d3c8:focus-visible) .tp.td3c8
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c9:hover,.mk.d3c9:focus-visible) .tp.td3c9
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c10:hover,.mk.d3c10:focus-visible) .tp.td3c10
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c11:hover,.mk.d3c11:focus-visible) .tp.td3c11
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c12:hover,.mk.d3c12:focus-visible) .tp.td3c12
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c13:hover,.mk.d3c13:focus-visible) .tp.td3c13
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c14:hover,.mk.d3c14:focus-visible) .tp.td3c14
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c15:hover,.mk.d3c15:focus-visible) .tp.td3c15
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c16:hover,.mk.d3c16:focus-visible) .tp.td3c16
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c17:hover,.mk.d3c17:focus-visible) .tp.td3c17
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c18:hover,.mk.d3c18:focus-visible) .tp.td3c18
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c19:hover,.mk.d3c19:focus-visible) .tp.td3c19
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c20:hover,.mk.d3c20:focus-visible) .tp.td3c20
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c21:hover,.mk.d3c21:focus-visible) .tp.td3c21
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c22:hover,.mk.d3c22:focus-visible) .tp.td3c22
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c23:hover,.mk.d3c23:focus-visible) .tp.td3c23
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c24:hover,.mk.d3c24:focus-visible) .tp.td3c24
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c25:hover,.mk.d3c25:focus-visible) .tp.td3c25
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c26:hover,.mk.d3c26:focus-visible) .tp.td3c26
+        .tt{opacity:1;visibility:visible}.jc-27a59f05:has(.mk.d3c27:hover,.mk.d3c27:focus-visible) .tp.td3c27
+        .tt{opacity:1;visibility:visible}
+    </style>
+    <rect class="bg" x="0" y="0" width="720" height="454" rx="8"/>
+    <text class="ttl" x="16" y="32">Gaussian naive Bayes</text>
+    <text class="sub" x="16" y="50">Density of each feature within each class</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="114.48" height="18"/>
+        <rect class="sw" x="16" y="69" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="34" y="75">Class 0 (prior 0.5)</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="146.48" y="62" width="114.48" height="18"/>
+        <rect class="sw" x="148.48" y="69" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="166.48" y="75">Class 1 (prior 0.5)</text>
+    </g>
+    <g transform="translate(22 90)">
+        <rect class="pf" x="0" y="0" width="218.67" height="168" rx="6"/>
+        <text class="ph" x="10" y="18">amount</text>
+        <g class="sr s0">
+            <path class="ar"
+                  d="M12 142L12 141.97L14.51 141.95L17.02 141.91L19.53 141.86L22.04 141.77L24.54 141.64L27.05 141.45L29.56 141.16L32.07 140.75L34.58 140.17L37.09 139.36L39.6 138.27L42.11 136.81L44.61 134.92L47.12 132.5L49.63 129.49L52.14 125.81L54.65 121.42L57.16 116.3L59.67 110.47L62.18 103.99L64.68 97L67.19 89.66L69.7 82.2L72.21 74.87L74.72 67.97L77.23 61.81L79.74 56.66L82.25 52.78L84.76 50.37L87.26 49.55L89.77 50.37L92.28 52.78L94.79 56.66L97.3 61.81L99.81 67.97L102.32 74.87L104.83 82.2L107.33 89.66L109.84 97L112.35 103.99L114.86 110.47L117.37 116.3L119.88 121.42L122.39 125.81L124.9 129.49L127.4 132.5L129.91 134.92L132.42 136.81L134.93 138.27L137.44 139.36L139.95 140.17L142.46 140.75L144.97 141.16L147.48 141.45L149.98 141.64L152.49 141.77L155 141.86L157.51 141.91L160.02 141.95L162.53 141.97L162.53 142Z"/>
+            <path class="ln thin"
+                  d="M12 141.97L14.51 141.95L17.02 141.91L19.53 141.86L22.04 141.77L24.54 141.64L27.05 141.45L29.56 141.16L32.07 140.75L34.58 140.17L37.09 139.36L39.6 138.27L42.11 136.81L44.61 134.92L47.12 132.5L49.63 129.49L52.14 125.81L54.65 121.42L57.16 116.3L59.67 110.47L62.18 103.99L64.68 97L67.19 89.66L69.7 82.2L72.21 74.87L74.72 67.97L77.23 61.81L79.74 56.66L82.25 52.78L84.76 50.37L87.26 49.55L89.77 50.37L92.28 52.78L94.79 56.66L97.3 61.81L99.81 67.97L102.32 74.87L104.83 82.2L107.33 89.66L109.84 97L112.35 103.99L114.86 110.47L117.37 116.3L119.88 121.42L122.39 125.81L124.9 129.49L127.4 132.5L129.91 134.92L132.42 136.81L134.93 138.27L137.44 139.36L139.95 140.17L142.46 140.75L144.97 141.16L147.48 141.45L149.98 141.64L152.49 141.77L155 141.86L157.51 141.91L160.02 141.95L162.53 141.97"/>
+        </g>
+        <g class="sr s1">
+            <path class="ar"
+                  d="M72.48 142L72.48 141.97L74.71 141.94L76.95 141.9L79.19 141.84L81.42 141.75L83.66 141.6L85.9 141.38L88.13 141.06L90.37 140.6L92.61 139.94L94.84 139.04L97.08 137.81L99.32 136.18L101.55 134.05L103.79 131.35L106.03 127.97L108.26 123.84L110.5 118.91L112.73 113.17L114.97 106.63L117.21 99.37L119.44 91.52L121.68 83.29L123.92 74.91L126.15 66.7L128.39 58.96L130.63 52.04L132.86 46.27L135.1 41.92L137.34 39.21L139.57 38.3L141.81 39.21L144.05 41.92L146.28 46.27L148.52 52.04L150.75 58.96L152.99 66.7L155.23 74.91L157.46 83.29L159.7 91.52L161.94 99.37L164.17 106.63L166.41 113.17L168.65 118.91L170.88 123.84L173.12 127.97L175.36 131.35L177.59 134.05L179.83 136.18L182.07 137.81L184.3 139.04L186.54 139.94L188.77 140.6L191.01 141.06L193.25 141.38L195.48 141.6L197.72 141.75L199.96 141.84L202.19 141.9L204.43 141.94L206.67 141.97L206.67 142Z"/>
+            <path class="ln thin"
+                  d="M72.48 141.97L74.71 141.94L76.95 141.9L79.19 141.84L81.42 141.75L83.66 141.6L85.9 141.38L88.13 141.06L90.37 140.6L92.61 139.94L94.84 139.04L97.08 137.81L99.32 136.18L101.55 134.05L103.79 131.35L106.03 127.97L108.26 123.84L110.5 118.91L112.73 113.17L114.97 106.63L117.21 99.37L119.44 91.52L121.68 83.29L123.92 74.91L126.15 66.7L128.39 58.96L130.63 52.04L132.86 46.27L135.1 41.92L137.34 39.21L139.57 38.3L141.81 39.21L144.05 41.92L146.28 46.27L148.52 52.04L150.75 58.96L152.99 66.7L155.23 74.91L157.46 83.29L159.7 91.52L161.94 99.37L164.17 106.63L166.41 113.17L168.65 118.91L170.88 123.84L173.12 127.97L175.36 131.35L177.59 134.05L179.83 136.18L182.07 137.81L184.3 139.04L186.54 139.94L188.77 140.6L191.01 141.06L193.25 141.38L195.48 141.6L197.72 141.75L199.96 141.84L202.19 141.9L204.43 141.94L206.67 141.97"/>
+        </g>
+        <line class="ax" x1="12" y1="142" x2="206.67" y2="142"/>
+        <line class="ax" x1="58.76" y1="142" x2="58.76" y2="145"/>
+        <text class="kn ctr" x="58.76" y="157">0</text>
+        <line class="ax" x1="123.3" y1="142" x2="123.3" y2="145"/>
+        <text class="kn ctr" x="123.3" y="157">2</text>
+        <line class="ax" x1="187.84" y1="142" x2="187.84" y2="145"/>
+        <text class="kn ctr" x="187.84" y="157">4</text>
+        <g class="mk d0c0 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = -1.341, Class 0 (prior 0.5): 0.0004865">
+            <title>amount = -1.341, Class 0 (prior 0.5): 0.0004865</title>
+            <rect class="hb" x="12" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="15.48" y1="30" x2="15.48" y2="142"/>
+            <circle class="cx s0" cx="15.48" cy="141.93" r="3.5"/>
+        </g>
+        <g class="mk d0c1 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = -1.126, Class 0 (prior 0.5): 0.001832">
+            <title>amount = -1.126, Class 0 (prior 0.5): 0.001832</title>
+            <rect class="hb" x="18.95" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="22.43" y1="30" x2="22.43" y2="142"/>
+            <circle class="cx s0" cx="22.43" cy="141.75" r="3.5"/>
+        </g>
+        <g class="mk d0c2 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = -0.9103, Class 0 (prior 0.5): 0.006057">
+            <title>amount = -0.9103, Class 0 (prior 0.5): 0.006057</title>
+            <rect class="hb" x="25.9" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="29.38" y1="30" x2="29.38" y2="142"/>
+            <circle class="cx s0" cx="29.38" cy="141.18" r="3.5"/>
+        </g>
+        <g class="mk d0c3 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = -0.6948, Class 0 (prior 0.5): 0.01775">
+            <title>amount = -0.6948, Class 0 (prior 0.5): 0.01775</title>
+            <rect class="hb" x="32.86" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="36.33" y1="30" x2="36.33" y2="142"/>
+            <circle class="cx s0" cx="36.33" cy="139.6" r="3.5"/>
+        </g>
+        <g class="mk d0c4 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = -0.4794, Class 0 (prior 0.5): 0.045">
+            <title>amount = -0.4794, Class 0 (prior 0.5): 0.045</title>
+            <rect class="hb" x="39.81" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="43.29" y1="30" x2="43.29" y2="142"/>
+            <circle class="cx s0" cx="43.29" cy="135.92" r="3.5"/>
+        </g>
+        <g class="mk d0c5 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = -0.264, Class 0 (prior 0.5): 0.09918">
+            <title>amount = -0.264, Class 0 (prior 0.5): 0.09918</title>
+            <rect class="hb" x="46.76" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="50.24" y1="30" x2="50.24" y2="142"/>
+            <circle class="cx s0" cx="50.24" cy="128.6" r="3.5"/>
+        </g>
+        <g class="mk d0c6 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = -0.04854, Class 0 (prior 0.5): 0.1908">
+            <title>amount = -0.04854, Class 0 (prior 0.5): 0.1908</title>
+            <rect class="hb" x="53.71" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="57.19" y1="30" x2="57.19" y2="142"/>
+            <circle class="cx s0" cx="57.19" cy="116.22" r="3.5"/>
+        </g>
+        <g class="mk d0c7 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 0.1669, Class 0 (prior 0.5): 0.3219">
+            <title>amount = 0.1669, Class 0 (prior 0.5): 0.3219</title>
+            <rect class="hb" x="60.67" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="64.14" y1="30" x2="64.14" y2="142"/>
+            <circle class="cx s0" cx="64.14" cy="98.51" r="3.5"/>
+        </g>
+        <g class="mk d0c8 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 0.3823, Class 0 (prior 0.5): 0.4727">
+            <title>amount = 0.3823, Class 0 (prior 0.5): 0.4727</title>
+            <rect class="hb" x="67.62" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="71.1" y1="30" x2="71.1" y2="142"/>
+            <circle class="cx s0" cx="71.1" cy="78.13" r="3.5"/>
+        </g>
+        <g class="mk d0c9 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 0.5978, Class 0 (prior 0.5): 0.606, Class 1 (prior 0.5): 0.0009452">
+            <title>amount = 0.5978, Class 0 (prior 0.5): 0.606, Class 1 (prior 0.5): 0.0009452</title>
+            <rect class="hb" x="74.57" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="78.05" y1="30" x2="78.05" y2="142"/>
+            <circle class="cx s0" cx="78.05" cy="60.13" r="3.5"/>
+            <circle class="cx s1" cx="78.05" cy="141.87" r="3.5"/>
+        </g>
+        <g class="mk d0c10 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 0.8132, Class 0 (prior 0.5): 0.6788, Class 1 (prior 0.5): 0.003937">
+            <title>amount = 0.8132, Class 0 (prior 0.5): 0.6788, Class 1 (prior 0.5): 0.003937</title>
+            <rect class="hb" x="81.52" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="85" y1="30" x2="85" y2="142"/>
+            <circle class="cx s0" cx="85" cy="50.29" r="3.5"/>
+            <circle class="cx s1" cx="85" cy="141.47" r="3.5"/>
+        </g>
+        <g class="mk d0c11 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 1.029, Class 0 (prior 0.5): 0.6627, Class 1 (prior 0.5): 0.01381">
+            <title>amount = 1.029, Class 0 (prior 0.5): 0.6627, Class 1 (prior 0.5): 0.01381</title>
+            <rect class="hb" x="88.48" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="91.95" y1="30" x2="91.95" y2="142"/>
+            <circle class="cx s0" cx="91.95" cy="52.47" r="3.5"/>
+            <circle class="cx s1" cx="91.95" cy="140.13" r="3.5"/>
+        </g>
+        <g class="mk d0c12 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 1.244, Class 0 (prior 0.5): 0.5643, Class 1 (prior 0.5): 0.04087">
+            <title>amount = 1.244, Class 0 (prior 0.5): 0.5643, Class 1 (prior 0.5): 0.04087</title>
+            <rect class="hb" x="95.43" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="98.9" y1="30" x2="98.9" y2="142"/>
+            <circle class="cx s0" cx="98.9" cy="65.75" r="3.5"/>
+            <circle class="cx s1" cx="98.9" cy="136.48" r="3.5"/>
+        </g>
+        <g class="mk d0c13 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 1.46, Class 0 (prior 0.5): 0.4199, Class 1 (prior 0.5): 0.102">
+            <title>amount = 1.46, Class 0 (prior 0.5): 0.4199, Class 1 (prior 0.5): 0.102</title>
+            <rect class="hb" x="102.38" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="105.86" y1="30" x2="105.86" y2="142"/>
+            <circle class="cx s0" cx="105.86" cy="85.27" r="3.5"/>
+            <circle class="cx s1" cx="105.86" cy="128.22" r="3.5"/>
+        </g>
+        <g class="mk d0c14 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 1.675, Class 0 (prior 0.5): 0.2726, Class 1 (prior 0.5): 0.215">
+            <title>amount = 1.675, Class 0 (prior 0.5): 0.2726, Class 1 (prior 0.5): 0.215</title>
+            <rect class="hb" x="109.33" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="112.81" y1="30" x2="112.81" y2="142"/>
+            <circle class="cx s0" cx="112.81" cy="105.17" r="3.5"/>
+            <circle class="cx s1" cx="112.81" cy="112.95" r="3.5"/>
+        </g>
+        <g class="mk d0c15 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 1.89, Class 0 (prior 0.5): 0.1541, Class 1 (prior 0.5): 0.3823">
+            <title>amount = 1.89, Class 0 (prior 0.5): 0.1541, Class 1 (prior 0.5): 0.3823</title>
+            <rect class="hb" x="116.29" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="119.76" y1="30" x2="119.76" y2="142"/>
+            <circle class="cx s0" cx="119.76" cy="121.18" r="3.5"/>
+            <circle class="cx s1" cx="119.76" cy="90.35" r="3.5"/>
+        </g>
+        <g class="mk d0c16 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 2.106, Class 0 (prior 0.5): 0.07644, Class 1 (prior 0.5): 0.5717">
+            <title>amount = 2.106, Class 0 (prior 0.5): 0.07644, Class 1 (prior 0.5): 0.5717</title>
+            <rect class="hb" x="123.24" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="126.71" y1="30" x2="126.71" y2="142"/>
+            <circle class="cx s0" cx="126.71" cy="131.67" r="3.5"/>
+            <circle class="cx s1" cx="126.71" cy="64.76" r="3.5"/>
+        </g>
+        <g class="mk d0c17 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 2.321, Class 0 (prior 0.5): 0.03307, Class 1 (prior 0.5): 0.7201">
+            <title>amount = 2.321, Class 0 (prior 0.5): 0.03307, Class 1 (prior 0.5): 0.7201</title>
+            <rect class="hb" x="130.19" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="133.67" y1="30" x2="133.67" y2="142"/>
+            <circle class="cx s0" cx="133.67" cy="137.53" r="3.5"/>
+            <circle class="cx s1" cx="133.67" cy="44.71" r="3.5"/>
+        </g>
+        <g class="mk d0c18 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 2.537, Class 0 (prior 0.5): 0.01242, Class 1 (prior 0.5): 0.7644">
+            <title>amount = 2.537, Class 0 (prior 0.5): 0.01242, Class 1 (prior 0.5): 0.7644</title>
+            <rect class="hb" x="137.14" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="140.62" y1="30" x2="140.62" y2="142"/>
+            <circle class="cx s0" cx="140.62" cy="140.32" r="3.5"/>
+            <circle class="cx s1" cx="140.62" cy="38.73" r="3.5"/>
+        </g>
+        <g class="mk d0c19 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 2.752, Class 0 (prior 0.5): 0.004034, Class 1 (prior 0.5): 0.6839">
+            <title>amount = 2.752, Class 0 (prior 0.5): 0.004034, Class 1 (prior 0.5): 0.6839</title>
+            <rect class="hb" x="144.1" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="147.57" y1="30" x2="147.57" y2="142"/>
+            <circle class="cx s0" cx="147.57" cy="141.46" r="3.5"/>
+            <circle class="cx s1" cx="147.57" cy="49.6" r="3.5"/>
+        </g>
+        <g class="mk d0c20 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 2.968, Class 0 (prior 0.5): 0.00117, Class 1 (prior 0.5): 0.5157">
+            <title>amount = 2.968, Class 0 (prior 0.5): 0.00117, Class 1 (prior 0.5): 0.5157</title>
+            <rect class="hb" x="151.05" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="154.52" y1="30" x2="154.52" y2="142"/>
+            <circle class="cx s0" cx="154.52" cy="141.84" r="3.5"/>
+            <circle class="cx s1" cx="154.52" cy="72.33" r="3.5"/>
+        </g>
+        <g class="mk d0c21 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 3.183, Class 0 (prior 0.5): 0.0002959, Class 1 (prior 0.5): 0.3275">
+            <title>amount = 3.183, Class 0 (prior 0.5): 0.0002959, Class 1 (prior 0.5): 0.3275</title>
+            <rect class="hb" x="158" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="161.48" y1="30" x2="161.48" y2="142"/>
+            <circle class="cx s0" cx="161.48" cy="141.96" r="3.5"/>
+            <circle class="cx s1" cx="161.48" cy="97.75" r="3.5"/>
+        </g>
+        <g class="mk d0c22 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 3.398, Class 1 (prior 0.5): 0.175">
+            <title>amount = 3.398, Class 1 (prior 0.5): 0.175</title>
+            <rect class="hb" x="164.95" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="168.43" y1="30" x2="168.43" y2="142"/>
+            <circle class="cx s1" cx="168.43" cy="118.35" r="3.5"/>
+        </g>
+        <g class="mk d0c23 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 3.614, Class 1 (prior 0.5): 0.07863">
+            <title>amount = 3.614, Class 1 (prior 0.5): 0.07863</title>
+            <rect class="hb" x="171.9" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="175.38" y1="30" x2="175.38" y2="142"/>
+            <circle class="cx s1" cx="175.38" cy="131.38" r="3.5"/>
+        </g>
+        <g class="mk d0c24 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 3.829, Class 1 (prior 0.5): 0.02992">
+            <title>amount = 3.829, Class 1 (prior 0.5): 0.02992</title>
+            <rect class="hb" x="178.86" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="182.33" y1="30" x2="182.33" y2="142"/>
+            <circle class="cx s1" cx="182.33" cy="137.96" r="3.5"/>
+        </g>
+        <g class="mk d0c25 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 4.045, Class 1 (prior 0.5): 0.009609">
+            <title>amount = 4.045, Class 1 (prior 0.5): 0.009609</title>
+            <rect class="hb" x="185.81" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="189.29" y1="30" x2="189.29" y2="142"/>
+            <circle class="cx s1" cx="189.29" cy="140.7" r="3.5"/>
+        </g>
+        <g class="mk d0c26 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 4.26, Class 1 (prior 0.5): 0.002603">
+            <title>amount = 4.26, Class 1 (prior 0.5): 0.002603</title>
+            <rect class="hb" x="192.76" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="196.24" y1="30" x2="196.24" y2="142"/>
+            <circle class="cx s1" cx="196.24" cy="141.65" r="3.5"/>
+        </g>
+        <g class="mk d0c27 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 4.476, Class 1 (prior 0.5): 0.0005941">
+            <title>amount = 4.476, Class 1 (prior 0.5): 0.0005941</title>
+            <rect class="hb" x="199.71" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="203.19" y1="30" x2="203.19" y2="142"/>
+            <circle class="cx s1" cx="203.19" cy="141.92" r="3.5"/>
+        </g>
+        <rect class="pf" x="230.67" y="0" width="218.67" height="168" rx="6"/>
+        <text class="ph" x="240.67" y="18">velocity</text>
+        <g class="sr s0">
+            <path class="ar"
+                  d="M242.67 142L242.67 141.97L245.25 141.94L247.84 141.91L250.42 141.85L253.01 141.76L255.59 141.62L258.18 141.41L260.76 141.1L263.35 140.66L265.93 140.03L268.52 139.16L271.1 137.99L273.69 136.43L276.27 134.4L278.86 131.8L281.44 128.57L284.03 124.62L286.61 119.9L289.19 114.4L291.78 108.14L294.36 101.2L296.95 93.69L299.53 85.81L302.12 77.79L304.7 69.93L307.29 62.53L309.87 55.91L312.46 50.38L315.04 46.22L317.63 43.63L320.21 42.75L322.8 43.63L325.38 46.22L327.97 50.38L330.55 55.91L333.14 62.53L335.72 69.93L338.31 77.79L340.89 85.81L343.48 93.69L346.06 101.2L348.65 108.14L351.23 114.4L353.82 119.9L356.4 124.62L358.99 128.57L361.57 131.8L364.16 134.4L366.74 136.43L369.33 137.99L371.91 139.16L374.5 140.03L377.08 140.66L379.67 141.1L382.25 141.41L384.84 141.62L387.42 141.76L390.01 141.85L392.59 141.91L395.18 141.94L397.76 141.97L397.76 142Z"/>
+            <path class="ln thin"
+                  d="M242.67 141.97L245.25 141.94L247.84 141.91L250.42 141.85L253.01 141.76L255.59 141.62L258.18 141.41L260.76 141.1L263.35 140.66L265.93 140.03L268.52 139.16L271.1 137.99L273.69 136.43L276.27 134.4L278.86 131.8L281.44 128.57L284.03 124.62L286.61 119.9L289.19 114.4L291.78 108.14L294.36 101.2L296.95 93.69L299.53 85.81L302.12 77.79L304.7 69.93L307.29 62.53L309.87 55.91L312.46 50.38L315.04 46.22L317.63 43.63L320.21 42.75L322.8 43.63L325.38 46.22L327.97 50.38L330.55 55.91L333.14 62.53L335.72 69.93L338.31 77.79L340.89 85.81L343.48 93.69L346.06 101.2L348.65 108.14L351.23 114.4L353.82 119.9L356.4 124.62L358.99 128.57L361.57 131.8L364.16 134.4L366.74 136.43L369.33 137.99L371.91 139.16L374.5 140.03L377.08 140.66L379.67 141.1L382.25 141.41L384.84 141.62L387.42 141.76L390.01 141.85L392.59 141.91L395.18 141.94L397.76 141.97"/>
+        </g>
+        <g class="sr s1">
+            <path class="ar"
+                  d="M288.9 142L288.9 141.97L291.37 141.94L293.85 141.9L296.32 141.84L298.8 141.75L301.27 141.6L303.74 141.38L306.22 141.06L308.69 140.6L311.16 139.94L313.64 139.04L316.11 137.81L318.59 136.18L321.06 134.05L323.53 131.35L326.01 127.97L328.48 123.84L330.96 118.91L333.43 113.17L335.9 106.63L338.38 99.37L340.85 91.52L343.33 83.29L345.8 74.91L348.27 66.7L350.75 58.96L353.22 52.04L355.69 46.27L358.17 41.92L360.64 39.21L363.12 38.3L365.59 39.21L368.06 41.92L370.54 46.27L373.01 52.04L375.49 58.96L377.96 66.7L380.43 74.91L382.91 83.29L385.38 91.52L387.86 99.37L390.33 106.63L392.8 113.17L395.28 118.91L397.75 123.84L400.22 127.97L402.7 131.35L405.17 134.05L407.65 136.18L410.12 137.81L412.59 139.04L415.07 139.94L417.54 140.6L420.02 141.06L422.49 141.38L424.96 141.6L427.44 141.75L429.91 141.84L432.39 141.9L434.86 141.94L437.33 141.97L437.33 142Z"/>
+            <path class="ln thin"
+                  d="M288.9 141.97L291.37 141.94L293.85 141.9L296.32 141.84L298.8 141.75L301.27 141.6L303.74 141.38L306.22 141.06L308.69 140.6L311.16 139.94L313.64 139.04L316.11 137.81L318.59 136.18L321.06 134.05L323.53 131.35L326.01 127.97L328.48 123.84L330.96 118.91L333.43 113.17L335.9 106.63L338.38 99.37L340.85 91.52L343.33 83.29L345.8 74.91L348.27 66.7L350.75 58.96L353.22 52.04L355.69 46.27L358.17 41.92L360.64 39.21L363.12 38.3L365.59 39.21L368.06 41.92L370.54 46.27L373.01 52.04L375.49 58.96L377.96 66.7L380.43 74.91L382.91 83.29L385.38 91.52L387.86 99.37L390.33 106.63L392.8 113.17L395.28 118.91L397.75 123.84L400.22 127.97L402.7 131.35L405.17 134.05L407.65 136.18L410.12 137.81L412.59 139.04L415.07 139.94L417.54 140.6L420.02 141.06L422.49 141.38L424.96 141.6L427.44 141.75L429.91 141.84L432.39 141.9L434.86 141.94L437.33 141.97"/>
+        </g>
+        <line class="ax" x1="242.67" y1="142" x2="437.33" y2="142"/>
+        <line class="ax" x1="280.45" y1="142" x2="280.45" y2="145"/>
+        <text class="kn ctr" x="280.45" y="157">0</text>
+        <line class="ax" x1="321.39" y1="142" x2="321.39" y2="145"/>
+        <text class="kn ctr" x="321.39" y="157">1</text>
+        <line class="ax" x1="362.34" y1="142" x2="362.34" y2="145"/>
+        <text class="kn ctr" x="362.34" y="157">2</text>
+        <line class="ax" x1="403.29" y1="142" x2="403.29" y2="145"/>
+        <text class="kn ctr" x="403.29" y="157">3</text>
+        <g class="mk d1c0 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = -0.8378, Class 0 (prior 0.5): 0.0005862">
+            <title>velocity = -0.8378, Class 0 (prior 0.5): 0.0005862</title>
+            <rect class="hb" x="242.67" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="246.14" y1="30" x2="246.14" y2="142"/>
+            <circle class="cx s0" cx="246.14" cy="141.93" r="3.5"/>
+        </g>
+        <g class="mk d1c1 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = -0.668, Class 0 (prior 0.5): 0.002111">
+            <title>velocity = -0.668, Class 0 (prior 0.5): 0.002111</title>
+            <rect class="hb" x="249.62" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="253.1" y1="30" x2="253.1" y2="142"/>
+            <circle class="cx s0" cx="253.1" cy="141.75" r="3.5"/>
+        </g>
+        <g class="mk d1c2 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = -0.4982, Class 0 (prior 0.5): 0.006926">
+            <title>velocity = -0.4982, Class 0 (prior 0.5): 0.006926</title>
+            <rect class="hb" x="256.57" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="260.05" y1="30" x2="260.05" y2="142"/>
+            <circle class="cx s0" cx="260.05" cy="141.18" r="3.5"/>
+        </g>
+        <g class="mk d1c3 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = -0.3284, Class 0 (prior 0.5): 0.01976">
+            <title>velocity = -0.3284, Class 0 (prior 0.5): 0.01976</title>
+            <rect class="hb" x="263.52" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="267" y1="30" x2="267" y2="142"/>
+            <circle class="cx s0" cx="267" cy="139.67" r="3.5"/>
+        </g>
+        <g class="mk d1c4 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = -0.1586, Class 0 (prior 0.5): 0.04908">
+            <title>velocity = -0.1586, Class 0 (prior 0.5): 0.04908</title>
+            <rect class="hb" x="270.48" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="273.95" y1="30" x2="273.95" y2="142"/>
+            <circle class="cx s0" cx="273.95" cy="136.22" r="3.5"/>
+        </g>
+        <g class="mk d1c5 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 0.01115, Class 0 (prior 0.5): 0.1083">
+            <title>velocity = 0.01115, Class 0 (prior 0.5): 0.1083</title>
+            <rect class="hb" x="277.43" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="280.9" y1="30" x2="280.9" y2="142"/>
+            <circle class="cx s0" cx="280.9" cy="129.24" r="3.5"/>
+        </g>
+        <g class="mk d1c6 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 0.1809, Class 0 (prior 0.5): 0.2101">
+            <title>velocity = 0.1809, Class 0 (prior 0.5): 0.2101</title>
+            <rect class="hb" x="284.38" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="287.86" y1="30" x2="287.86" y2="142"/>
+            <circle class="cx s0" cx="287.86" cy="117.25" r="3.5"/>
+        </g>
+        <g class="mk d1c7 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 0.3507, Class 0 (prior 0.5): 0.3574, Class 1 (prior 0.5): 0.001031">
+            <title>velocity = 0.3507, Class 0 (prior 0.5): 0.3574, Class 1 (prior 0.5): 0.001031</title>
+            <rect class="hb" x="291.33" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="294.81" y1="30" x2="294.81" y2="142"/>
+            <circle class="cx s0" cx="294.81" cy="99.91" r="3.5"/>
+            <circle class="cx s1" cx="294.81" cy="141.88" r="3.5"/>
+        </g>
+        <g class="mk d1c8 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 0.5205, Class 0 (prior 0.5): 0.5357, Class 1 (prior 0.5): 0.003773">
+            <title>velocity = 0.5205, Class 0 (prior 0.5): 0.5357, Class 1 (prior 0.5): 0.003773</title>
+            <rect class="hb" x="298.29" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="301.76" y1="30" x2="301.76" y2="142"/>
+            <circle class="cx s0" cx="301.76" cy="78.9" r="3.5"/>
+            <circle class="cx s1" cx="301.76" cy="141.56" r="3.5"/>
+        </g>
+        <g class="mk d1c9 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 0.6903, Class 0 (prior 0.5): 0.7057, Class 1 (prior 0.5): 0.01197">
+            <title>velocity = 0.6903, Class 0 (prior 0.5): 0.7057, Class 1 (prior 0.5): 0.01197</title>
+            <rect class="hb" x="305.24" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="308.71" y1="30" x2="308.71" y2="142"/>
+            <circle class="cx s0" cx="308.71" cy="58.88" r="3.5"/>
+            <circle class="cx s1" cx="308.71" cy="140.59" r="3.5"/>
+        </g>
+        <g class="mk d1c10 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 0.8601, Class 0 (prior 0.5): 0.8184, Class 1 (prior 0.5): 0.03369">
+            <title>velocity = 0.8601, Class 0 (prior 0.5): 0.8184, Class 1 (prior 0.5): 0.03369</title>
+            <rect class="hb" x="312.19" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="315.67" y1="30" x2="315.67" y2="142"/>
+            <circle class="cx s0" cx="315.67" cy="45.59" r="3.5"/>
+            <circle class="cx s1" cx="315.67" cy="138.03" r="3.5"/>
+        </g>
+        <g class="mk d1c11 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 1.03, Class 0 (prior 0.5): 0.8356, Class 1 (prior 0.5): 0.08194">
+            <title>velocity = 1.03, Class 0 (prior 0.5): 0.8356, Class 1 (prior 0.5): 0.08194</title>
+            <rect class="hb" x="319.14" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="322.62" y1="30" x2="322.62" y2="142"/>
+            <circle class="cx s0" cx="322.62" cy="43.57" r="3.5"/>
+            <circle class="cx s1" cx="322.62" cy="132.35" r="3.5"/>
+        </g>
+        <g class="mk d1c12 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 1.2, Class 0 (prior 0.5): 0.7487, Class 1 (prior 0.5): 0.1726">
+            <title>velocity = 1.2, Class 0 (prior 0.5): 0.7487, Class 1 (prior 0.5): 0.1726</title>
+            <rect class="hb" x="326.1" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="329.57" y1="30" x2="329.57" y2="142"/>
+            <circle class="cx s0" cx="329.57" cy="53.81" r="3.5"/>
+            <circle class="cx s1" cx="329.57" cy="121.67" r="3.5"/>
+        </g>
+        <g class="mk d1c13 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 1.37, Class 0 (prior 0.5): 0.5912, Class 1 (prior 0.5): 0.3158">
+            <title>velocity = 1.37, Class 0 (prior 0.5): 0.5912, Class 1 (prior 0.5): 0.3158</title>
+            <rect class="hb" x="333.05" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="336.52" y1="30" x2="336.52" y2="142"/>
+            <circle class="cx s0" cx="336.52" cy="72.37" r="3.5"/>
+            <circle class="cx s1" cx="336.52" cy="104.81" r="3.5"/>
+        </g>
+        <g class="mk d1c14 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 1.539, Class 0 (prior 0.5): 0.4102, Class 1 (prior 0.5): 0.5028">
+            <title>velocity = 1.539, Class 0 (prior 0.5): 0.4102, Class 1 (prior 0.5): 0.5028</title>
+            <rect class="hb" x="340" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="343.48" y1="30" x2="343.48" y2="142"/>
+            <circle class="cx s0" cx="343.48" cy="93.69" r="3.5"/>
+            <circle class="cx s1" cx="343.48" cy="82.78" r="3.5"/>
+        </g>
+        <g class="mk d1c15 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 1.709, Class 0 (prior 0.5): 0.2508, Class 1 (prior 0.5): 0.6965">
+            <title>velocity = 1.709, Class 0 (prior 0.5): 0.2508, Class 1 (prior 0.5): 0.6965</title>
+            <rect class="hb" x="346.95" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="350.43" y1="30" x2="350.43" y2="142"/>
+            <circle class="cx s0" cx="350.43" cy="112.46" r="3.5"/>
+            <circle class="cx s1" cx="350.43" cy="59.96" r="3.5"/>
+        </g>
+        <g class="mk d1c16 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 1.879, Class 0 (prior 0.5): 0.1349, Class 1 (prior 0.5): 0.8379">
+            <title>velocity = 1.879, Class 0 (prior 0.5): 0.1349, Class 1 (prior 0.5): 0.8379</title>
+            <rect class="hb" x="353.9" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="357.38" y1="30" x2="357.38" y2="142"/>
+            <circle class="cx s0" cx="357.38" cy="126.11" r="3.5"/>
+            <circle class="cx s1" cx="357.38" cy="43.3" r="3.5"/>
+        </g>
+        <g class="mk d1c17 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 2.049, Class 0 (prior 0.5): 0.06338, Class 1 (prior 0.5): 0.8766">
+            <title>velocity = 2.049, Class 0 (prior 0.5): 0.06338, Class 1 (prior 0.5): 0.8766</title>
+            <rect class="hb" x="360.86" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="364.33" y1="30" x2="364.33" y2="142"/>
+            <circle class="cx s0" cx="364.33" cy="134.53" r="3.5"/>
+            <circle class="cx s1" cx="364.33" cy="38.75" r="3.5"/>
+        </g>
+        <g class="mk d1c18 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 2.218, Class 0 (prior 0.5): 0.02648, Class 1 (prior 0.5): 0.7979">
+            <title>velocity = 2.218, Class 0 (prior 0.5): 0.02648, Class 1 (prior 0.5): 0.7979</title>
+            <rect class="hb" x="367.81" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="371.29" y1="30" x2="371.29" y2="142"/>
+            <circle class="cx s0" cx="371.29" cy="138.88" r="3.5"/>
+            <circle class="cx s1" cx="371.29" cy="48.01" r="3.5"/>
+        </g>
+        <g class="mk d1c19 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 2.388, Class 0 (prior 0.5): 0.009724, Class 1 (prior 0.5): 0.6315">
+            <title>velocity = 2.388, Class 0 (prior 0.5): 0.009724, Class 1 (prior 0.5): 0.6315</title>
+            <rect class="hb" x="374.76" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="378.24" y1="30" x2="378.24" y2="142"/>
+            <circle class="cx s0" cx="378.24" cy="140.85" r="3.5"/>
+            <circle class="cx s1" cx="378.24" cy="67.62" r="3.5"/>
+        </g>
+        <g class="mk d1c20 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 2.558, Class 0 (prior 0.5): 0.003095, Class 1 (prior 0.5): 0.4339">
+            <title>velocity = 2.558, Class 0 (prior 0.5): 0.003095, Class 1 (prior 0.5): 0.4339</title>
+            <rect class="hb" x="381.71" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="385.19" y1="30" x2="385.19" y2="142"/>
+            <circle class="cx s0" cx="385.19" cy="141.64" r="3.5"/>
+            <circle class="cx s1" cx="385.19" cy="90.89" r="3.5"/>
+        </g>
+        <g class="mk d1c21 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 2.728, Class 0 (prior 0.5): 0.0008792, Class 1 (prior 0.5): 0.2596">
+            <title>velocity = 2.728, Class 0 (prior 0.5): 0.0008792, Class 1 (prior 0.5): 0.2596</title>
+            <rect class="hb" x="388.67" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="392.14" y1="30" x2="392.14" y2="142"/>
+            <circle class="cx s0" cx="392.14" cy="141.9" r="3.5"/>
+            <circle class="cx s1" cx="392.14" cy="111.42" r="3.5"/>
+        </g>
+        <g class="mk d1c22 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 2.898, Class 1 (prior 0.5): 0.1351">
+            <title>velocity = 2.898, Class 1 (prior 0.5): 0.1351</title>
+            <rect class="hb" x="395.62" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="399.1" y1="30" x2="399.1" y2="142"/>
+            <circle class="cx s1" cx="399.1" cy="126.08" r="3.5"/>
+        </g>
+        <g class="mk d1c23 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 3.067, Class 1 (prior 0.5): 0.06108">
+            <title>velocity = 3.067, Class 1 (prior 0.5): 0.06108</title>
+            <rect class="hb" x="402.57" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="406.05" y1="30" x2="406.05" y2="142"/>
+            <circle class="cx s1" cx="406.05" cy="134.81" r="3.5"/>
+        </g>
+        <g class="mk d1c24 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 3.237, Class 1 (prior 0.5): 0.02389">
+            <title>velocity = 3.237, Class 1 (prior 0.5): 0.02389</title>
+            <rect class="hb" x="409.52" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="413" y1="30" x2="413" y2="142"/>
+            <circle class="cx s1" cx="413" cy="139.19" r="3.5"/>
+        </g>
+        <g class="mk d1c25 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 3.407, Class 1 (prior 0.5): 0.008091">
+            <title>velocity = 3.407, Class 1 (prior 0.5): 0.008091</title>
+            <rect class="hb" x="416.48" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="419.95" y1="30" x2="419.95" y2="142"/>
+            <circle class="cx s1" cx="419.95" cy="141.05" r="3.5"/>
+        </g>
+        <g class="mk d1c26 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 3.577, Class 1 (prior 0.5): 0.00243">
+            <title>velocity = 3.577, Class 1 (prior 0.5): 0.00243</title>
+            <rect class="hb" x="423.43" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="426.9" y1="30" x2="426.9" y2="142"/>
+            <circle class="cx s1" cx="426.9" cy="141.71" r="3.5"/>
+        </g>
+        <g class="mk d1c27 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 3.747, Class 1 (prior 0.5): 0.0006324">
+            <title>velocity = 3.747, Class 1 (prior 0.5): 0.0006324</title>
+            <rect class="hb" x="430.38" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="433.86" y1="30" x2="433.86" y2="142"/>
+            <circle class="cx s1" cx="433.86" cy="141.93" r="3.5"/>
+        </g>
+        <rect class="pf" x="461.33" y="0" width="218.67" height="168" rx="6"/>
+        <text class="ph" x="471.33" y="18">merchant_risk</text>
+        <g class="sr s0">
+            <path class="ar"
+                  d="M477.83 142L477.83 141.97L481 141.95L484.17 141.92L487.34 141.87L490.51 141.79L493.67 141.67L496.84 141.49L500.01 141.22L503.18 140.83L506.35 140.29L509.52 139.54L512.69 138.52L515.86 137.17L519.03 135.4L522.2 133.15L525.37 130.35L528.54 126.92L531.71 122.83L534.88 118.06L538.05 112.63L541.22 106.6L544.39 100.09L547.56 93.26L550.73 86.3L553.9 79.48L557.07 73.06L560.24 67.32L563.4 62.52L566.57 58.91L569.74 56.66L572.91 55.9L576.08 56.66L579.25 58.91L582.42 62.52L585.59 67.32L588.76 73.06L591.93 79.48L595.1 86.3L598.27 93.26L601.44 100.09L604.61 106.6L607.78 112.63L610.95 118.06L614.12 122.83L617.29 126.92L620.46 130.35L623.63 133.15L626.8 135.4L629.97 137.17L633.13 138.52L636.3 139.54L639.47 140.29L642.64 140.83L645.81 141.22L648.98 141.49L652.15 141.67L655.32 141.79L658.49 141.87L661.66 141.92L664.83 141.95L668 141.97L668 142Z"/>
+            <path class="ln thin"
+                  d="M477.83 141.97L481 141.95L484.17 141.92L487.34 141.87L490.51 141.79L493.67 141.67L496.84 141.49L500.01 141.22L503.18 140.83L506.35 140.29L509.52 139.54L512.69 138.52L515.86 137.17L519.03 135.4L522.2 133.15L525.37 130.35L528.54 126.92L531.71 122.83L534.88 118.06L538.05 112.63L541.22 106.6L544.39 100.09L547.56 93.26L550.73 86.3L553.9 79.48L557.07 73.06L560.24 67.32L563.4 62.52L566.57 58.91L569.74 56.66L572.91 55.9L576.08 56.66L579.25 58.91L582.42 62.52L585.59 67.32L588.76 73.06L591.93 79.48L595.1 86.3L598.27 93.26L601.44 100.09L604.61 106.6L607.78 112.63L610.95 118.06L614.12 122.83L617.29 126.92L620.46 130.35L623.63 133.15L626.8 135.4L629.97 137.17L633.13 138.52L636.3 139.54L639.47 140.29L642.64 140.83L645.81 141.22L648.98 141.49L652.15 141.67L655.32 141.79L658.49 141.87L661.66 141.92L664.83 141.95L668 141.97"/>
+        </g>
+        <g class="sr s1">
+            <path class="ar"
+                  d="M473.33 142L473.33 141.97L475.96 141.94L478.6 141.9L481.23 141.84L483.86 141.75L486.49 141.6L489.12 141.38L491.75 141.06L494.38 140.6L497.02 139.94L499.65 139.04L502.28 137.81L504.91 136.18L507.54 134.05L510.17 131.35L512.81 127.97L515.44 123.84L518.07 118.91L520.7 113.17L523.33 106.63L525.96 99.37L528.59 91.52L531.23 83.29L533.86 74.91L536.49 66.7L539.12 58.96L541.75 52.04L544.38 46.27L547.01 41.92L549.65 39.21L552.28 38.3L554.91 39.21L557.54 41.92L560.17 46.27L562.8 52.04L565.43 58.96L568.07 66.7L570.7 74.91L573.33 83.29L575.96 91.52L578.59 99.37L581.22 106.63L583.85 113.17L586.49 118.91L589.12 123.84L591.75 127.97L594.38 131.35L597.01 134.05L599.64 136.18L602.27 137.81L604.91 139.04L607.54 139.94L610.17 140.6L612.8 141.06L615.43 141.38L618.06 141.6L620.69 141.75L623.33 141.84L625.96 141.9L628.59 141.94L631.22 141.97L631.22 142Z"/>
+            <path class="ln thin"
+                  d="M473.33 141.97L475.96 141.94L478.6 141.9L481.23 141.84L483.86 141.75L486.49 141.6L489.12 141.38L491.75 141.06L494.38 140.6L497.02 139.94L499.65 139.04L502.28 137.81L504.91 136.18L507.54 134.05L510.17 131.35L512.81 127.97L515.44 123.84L518.07 118.91L520.7 113.17L523.33 106.63L525.96 99.37L528.59 91.52L531.23 83.29L533.86 74.91L536.49 66.7L539.12 58.96L541.75 52.04L544.38 46.27L547.01 41.92L549.65 39.21L552.28 38.3L554.91 39.21L557.54 41.92L560.17 46.27L562.8 52.04L565.43 58.96L568.07 66.7L570.7 74.91L573.33 83.29L575.96 91.52L578.59 99.37L581.22 106.63L583.85 113.17L586.49 118.91L589.12 123.84L591.75 127.97L594.38 131.35L597.01 134.05L599.64 136.18L602.27 137.81L604.91 139.04L607.54 139.94L610.17 140.6L612.8 141.06L615.43 141.38L618.06 141.6L620.69 141.75L623.33 141.84L625.96 141.9L628.59 141.94L631.22 141.97"/>
+        </g>
+        <line class="ax" x1="473.33" y1="142" x2="668" y2="142"/>
+        <line class="ax" x1="535.84" y1="142" x2="535.84" y2="145"/>
+        <text class="kn ctr" x="535.84" y="157">0</text>
+        <line class="ax" x1="609.64" y1="142" x2="609.64" y2="145"/>
+        <text class="kn ctr" x="609.64" y="157">4</text>
+        <g class="mk d2c0 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = -3.2, Class 1 (prior 0.5): 0.0002561">
+            <title>merchant_risk = -3.2, Class 1 (prior 0.5): 0.0002561</title>
+            <rect class="hb" x="473.33" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="476.81" y1="30" x2="476.81" y2="142"/>
+            <circle class="cx s1" cx="476.81" cy="141.93" r="3.5"/>
+        </g>
+        <g class="mk d2c1 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = -2.823, Class 0 (prior 0.5): 0.0002765, Class 1 (prior 0.5): 0.0009035">
+            <title>merchant_risk = -2.823, Class 0 (prior 0.5): 0.0002765, Class 1 (prior 0.5): 0.0009035</title>
+            <rect class="hb" x="480.29" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="483.76" y1="30" x2="483.76" y2="142"/>
+            <circle class="cx s0" cx="483.76" cy="141.92" r="3.5"/>
+            <circle class="cx s1" cx="483.76" cy="141.75" r="3.5"/>
+        </g>
+        <g class="mk d2c2 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = -2.446, Class 0 (prior 0.5): 0.0007894, Class 1 (prior 0.5): 0.002928">
+            <title>merchant_risk = -2.446, Class 0 (prior 0.5): 0.0007894, Class 1 (prior 0.5): 0.002928</title>
+            <rect class="hb" x="487.24" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="490.71" y1="30" x2="490.71" y2="142"/>
+            <circle class="cx s0" cx="490.71" cy="141.78" r="3.5"/>
+            <circle class="cx s1" cx="490.71" cy="141.19" r="3.5"/>
+        </g>
+        <g class="mk d2c3 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = -2.069, Class 0 (prior 0.5): 0.002099, Class 1 (prior 0.5): 0.008203">
+            <title>merchant_risk = -2.069, Class 0 (prior 0.5): 0.002099, Class 1 (prior 0.5): 0.008203</title>
+            <rect class="hb" x="494.19" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="497.67" y1="30" x2="497.67" y2="142"/>
+            <circle class="cx s0" cx="497.67" cy="141.42" r="3.5"/>
+            <circle class="cx s1" cx="497.67" cy="139.72" r="3.5"/>
+        </g>
+        <g class="mk d2c4 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = -1.692, Class 0 (prior 0.5): 0.005076, Class 1 (prior 0.5): 0.02028">
+            <title>merchant_risk = -1.692, Class 0 (prior 0.5): 0.005076, Class 1 (prior 0.5): 0.02028</title>
+            <rect class="hb" x="501.14" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="504.62" y1="30" x2="504.62" y2="142"/>
+            <circle class="cx s0" cx="504.62" cy="140.59" r="3.5"/>
+            <circle class="cx s1" cx="504.62" cy="136.36" r="3.5"/>
+        </g>
+        <g class="mk d2c5 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = -1.315, Class 0 (prior 0.5): 0.01121, Class 1 (prior 0.5): 0.04477">
+            <title>merchant_risk = -1.315, Class 0 (prior 0.5): 0.01121, Class 1 (prior 0.5): 0.04477</title>
+            <rect class="hb" x="508.1" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="511.57" y1="30" x2="511.57" y2="142"/>
+            <circle class="cx s0" cx="511.57" cy="138.88" r="3.5"/>
+            <circle class="cx s1" cx="511.57" cy="129.55" r="3.5"/>
+        </g>
+        <g class="mk d2c6 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = -0.9386, Class 0 (prior 0.5): 0.02271, Class 1 (prior 0.5): 0.08661">
+            <title>merchant_risk = -0.9386, Class 0 (prior 0.5): 0.02271, Class 1 (prior 0.5): 0.08661</title>
+            <rect class="hb" x="515.05" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="518.52" y1="30" x2="518.52" y2="142"/>
+            <circle class="cx s0" cx="518.52" cy="135.69" r="3.5"/>
+            <circle class="cx s1" cx="518.52" cy="117.92" r="3.5"/>
+        </g>
+        <g class="mk d2c7 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = -0.5618, Class 0 (prior 0.5): 0.04231, Class 1 (prior 0.5): 0.1485">
+            <title>merchant_risk = -0.5618, Class 0 (prior 0.5): 0.04231, Class 1 (prior 0.5): 0.1485</title>
+            <rect class="hb" x="522" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="525.48" y1="30" x2="525.48" y2="142"/>
+            <circle class="cx s0" cx="525.48" cy="130.23" r="3.5"/>
+            <circle class="cx s1" cx="525.48" cy="100.71" r="3.5"/>
+        </g>
+        <g class="mk d2c8 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = -0.1849, Class 0 (prior 0.5): 0.07282, Class 1 (prior 0.5): 0.2249">
+            <title>merchant_risk = -0.1849, Class 0 (prior 0.5): 0.07282, Class 1 (prior 0.5): 0.2249</title>
+            <rect class="hb" x="528.95" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="532.43" y1="30" x2="532.43" y2="142"/>
+            <circle class="cx s0" cx="532.43" cy="121.75" r="3.5"/>
+            <circle class="cx s1" cx="532.43" cy="79.46" r="3.5"/>
+        </g>
+        <g class="mk d2c9 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 0.1919, Class 0 (prior 0.5): 0.1147, Class 1 (prior 0.5): 0.3011">
+            <title>merchant_risk = 0.1919, Class 0 (prior 0.5): 0.1147, Class 1 (prior 0.5): 0.3011</title>
+            <rect class="hb" x="535.9" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="539.38" y1="30" x2="539.38" y2="142"/>
+            <circle class="cx s0" cx="539.38" cy="110.1" r="3.5"/>
+            <circle class="cx s1" cx="539.38" cy="58.27" r="3.5"/>
+        </g>
+        <g class="mk d2c10 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 0.5688, Class 0 (prior 0.5): 0.1658, Class 1 (prior 0.5): 0.3559">
+            <title>merchant_risk = 0.5688, Class 0 (prior 0.5): 0.1658, Class 1 (prior 0.5): 0.3559</title>
+            <rect class="hb" x="542.86" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="546.33" y1="30" x2="546.33" y2="142"/>
+            <circle class="cx s0" cx="546.33" cy="95.9" r="3.5"/>
+            <circle class="cx s1" cx="546.33" cy="43.04" r="3.5"/>
+        </g>
+        <g class="mk d2c11 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 0.9456, Class 0 (prior 0.5): 0.2201, Class 1 (prior 0.5): 0.3717">
+            <title>merchant_risk = 0.9456, Class 0 (prior 0.5): 0.2201, Class 1 (prior 0.5): 0.3717</title>
+            <rect class="hb" x="549.81" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="553.29" y1="30" x2="553.29" y2="142"/>
+            <circle class="cx s0" cx="553.29" cy="80.79" r="3.5"/>
+            <circle class="cx s1" cx="553.29" cy="38.65" r="3.5"/>
+        </g>
+        <g class="mk d2c12 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 1.322, Class 0 (prior 0.5): 0.2686, Class 1 (prior 0.5): 0.3437">
+            <title>merchant_risk = 1.322, Class 0 (prior 0.5): 0.2686, Class 1 (prior 0.5): 0.3437</title>
+            <rect class="hb" x="556.76" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="560.24" y1="30" x2="560.24" y2="142"/>
+            <circle class="cx s0" cx="560.24" cy="67.31" r="3.5"/>
+            <circle class="cx s1" cx="560.24" cy="46.42" r="3.5"/>
+        </g>
+        <g class="mk d2c13 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 1.699, Class 0 (prior 0.5): 0.3004, Class 1 (prior 0.5): 0.28">
+            <title>merchant_risk = 1.699, Class 0 (prior 0.5): 0.3004, Class 1 (prior 0.5): 0.28</title>
+            <rect class="hb" x="563.71" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="567.19" y1="30" x2="567.19" y2="142"/>
+            <circle class="cx s0" cx="567.19" cy="58.47" r="3.5"/>
+            <circle class="cx s1" cx="567.19" cy="64.12" r="3.5"/>
+        </g>
+        <g class="mk d2c14 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 2.076, Class 0 (prior 0.5): 0.3086, Class 1 (prior 0.5): 0.202">
+            <title>merchant_risk = 2.076, Class 0 (prior 0.5): 0.3086, Class 1 (prior 0.5): 0.202</title>
+            <rect class="hb" x="570.67" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="574.14" y1="30" x2="574.14" y2="142"/>
+            <circle class="cx s0" cx="574.14" cy="56.2" r="3.5"/>
+            <circle class="cx s1" cx="574.14" cy="85.84" r="3.5"/>
+        </g>
+        <g class="mk d2c15 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 2.453, Class 0 (prior 0.5): 0.2912, Class 1 (prior 0.5): 0.1285">
+            <title>merchant_risk = 2.453, Class 0 (prior 0.5): 0.2912, Class 1 (prior 0.5): 0.1285</title>
+            <rect class="hb" x="577.62" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="581.1" y1="30" x2="581.1" y2="142"/>
+            <circle class="cx s0" cx="581.1" cy="61.01" r="3.5"/>
+            <circle class="cx s1" cx="581.1" cy="106.27" r="3.5"/>
+        </g>
+        <g class="mk d2c16 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 2.83, Class 0 (prior 0.5): 0.2526, Class 1 (prior 0.5): 0.07251">
+            <title>merchant_risk = 2.83, Class 0 (prior 0.5): 0.2526, Class 1 (prior 0.5): 0.07251</title>
+            <rect class="hb" x="584.57" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="588.05" y1="30" x2="588.05" y2="142"/>
+            <circle class="cx s0" cx="588.05" cy="71.77" r="3.5"/>
+            <circle class="cx s1" cx="588.05" cy="121.84" r="3.5"/>
+        </g>
+        <g class="mk d2c17 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 3.207, Class 0 (prior 0.5): 0.2011, Class 1 (prior 0.5): 0.03602">
+            <title>merchant_risk = 3.207, Class 0 (prior 0.5): 0.2011, Class 1 (prior 0.5): 0.03602</title>
+            <rect class="hb" x="591.52" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="595" y1="30" x2="595" y2="142"/>
+            <circle class="cx s0" cx="595" cy="86.09" r="3.5"/>
+            <circle class="cx s1" cx="595" cy="131.98" r="3.5"/>
+        </g>
+        <g class="mk d2c18 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 3.584, Class 0 (prior 0.5): 0.1469, Class 1 (prior 0.5): 0.01578">
+            <title>merchant_risk = 3.584, Class 0 (prior 0.5): 0.1469, Class 1 (prior 0.5): 0.01578</title>
+            <rect class="hb" x="598.48" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="601.95" y1="30" x2="601.95" y2="142"/>
+            <circle class="cx s0" cx="601.95" cy="101.15" r="3.5"/>
+            <circle class="cx s1" cx="601.95" cy="137.61" r="3.5"/>
+        </g>
+        <g class="mk d2c19 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 3.96, Class 0 (prior 0.5): 0.09867, Class 1 (prior 0.5): 0.006178">
+            <title>merchant_risk = 3.96, Class 0 (prior 0.5): 0.09867, Class 1 (prior 0.5): 0.006178</title>
+            <rect class="hb" x="605.43" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="608.9" y1="30" x2="608.9" y2="142"/>
+            <circle class="cx s0" cx="608.9" cy="114.56" r="3.5"/>
+            <circle class="cx s1" cx="608.9" cy="140.28" r="3.5"/>
+        </g>
+        <g class="mk d2c20 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 4.337, Class 0 (prior 0.5): 0.06086, Class 1 (prior 0.5): 0.002101">
+            <title>merchant_risk = 4.337, Class 0 (prior 0.5): 0.06086, Class 1 (prior 0.5): 0.002101</title>
+            <rect class="hb" x="612.38" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="615.86" y1="30" x2="615.86" y2="142"/>
+            <circle class="cx s0" cx="615.86" cy="125.08" r="3.5"/>
+            <circle class="cx s1" cx="615.86" cy="141.42" r="3.5"/>
+        </g>
+        <g class="mk d2c21 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 4.714, Class 0 (prior 0.5): 0.03441, Class 1 (prior 0.5): 0.0006395">
+            <title>merchant_risk = 4.714, Class 0 (prior 0.5): 0.03441, Class 1 (prior 0.5): 0.0006395</title>
+            <rect class="hb" x="619.33" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="622.81" y1="30" x2="622.81" y2="142"/>
+            <circle class="cx s0" cx="622.81" cy="132.43" r="3.5"/>
+            <circle class="cx s1" cx="622.81" cy="141.82" r="3.5"/>
+        </g>
+        <g class="mk d2c22 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 5.091, Class 0 (prior 0.5): 0.01779, Class 1 (prior 0.5): 0.0001729">
+            <title>merchant_risk = 5.091, Class 0 (prior 0.5): 0.01779, Class 1 (prior 0.5): 0.0001729</title>
+            <rect class="hb" x="626.29" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="629.76" y1="30" x2="629.76" y2="142"/>
+            <circle class="cx s0" cx="629.76" cy="137.05" r="3.5"/>
+            <circle class="cx s1" cx="629.76" cy="141.95" r="3.5"/>
+        </g>
+        <g class="mk d2c23 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 5.468, Class 0 (prior 0.5): 0.008495">
+            <title>merchant_risk = 5.468, Class 0 (prior 0.5): 0.008495</title>
+            <rect class="hb" x="633.24" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="636.71" y1="30" x2="636.71" y2="142"/>
+            <circle class="cx s0" cx="636.71" cy="139.64" r="3.5"/>
+        </g>
+        <g class="mk d2c24 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 5.845, Class 0 (prior 0.5): 0.003746">
+            <title>merchant_risk = 5.845, Class 0 (prior 0.5): 0.003746</title>
+            <rect class="hb" x="640.19" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="643.67" y1="30" x2="643.67" y2="142"/>
+            <circle class="cx s0" cx="643.67" cy="140.96" r="3.5"/>
+        </g>
+        <g class="mk d2c25 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 6.221, Class 0 (prior 0.5): 0.001513">
+            <title>merchant_risk = 6.221, Class 0 (prior 0.5): 0.001513</title>
+            <rect class="hb" x="647.14" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="650.62" y1="30" x2="650.62" y2="142"/>
+            <circle class="cx s0" cx="650.62" cy="141.58" r="3.5"/>
+        </g>
+        <g class="mk d2c26 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 6.598, Class 0 (prior 0.5): 0.0005578">
+            <title>merchant_risk = 6.598, Class 0 (prior 0.5): 0.0005578</title>
+            <rect class="hb" x="654.1" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="657.57" y1="30" x2="657.57" y2="142"/>
+            <circle class="cx s0" cx="657.57" cy="141.84" r="3.5"/>
+        </g>
+        <g class="mk d2c27 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk = 6.975, Class 0 (prior 0.5): 0.0001867">
+            <title>merchant_risk = 6.975, Class 0 (prior 0.5): 0.0001867</title>
+            <rect class="hb" x="661.05" y="30" width="6.95" height="112"/>
+            <line class="vl" x1="664.52" y1="30" x2="664.52" y2="142"/>
+            <circle class="cx s0" cx="664.52" cy="141.95" r="3.5"/>
+        </g>
+        <rect class="pf" x="0" y="180" width="218.67" height="168" rx="6"/>
+        <text class="ph" x="10" y="198">account_age</text>
+        <g class="sr s0">
+            <path class="ar"
+                  d="M12 322L12 321.97L15.07 321.94L18.14 321.9L21.21 321.84L24.27 321.75L27.34 321.6L30.41 321.38L33.48 321.06L36.55 320.6L39.62 319.94L42.69 319.04L45.76 317.81L48.82 316.18L51.89 314.05L54.96 311.35L58.03 307.97L61.1 303.84L64.17 298.91L67.24 293.17L70.31 286.63L73.37 279.37L76.44 271.52L79.51 263.29L82.58 254.91L85.65 246.7L88.72 238.96L91.79 232.04L94.86 226.27L97.92 221.92L100.99 219.21L104.06 218.3L107.13 219.21L110.2 221.92L113.27 226.27L116.34 232.04L119.41 238.96L122.47 246.7L125.54 254.91L128.61 263.29L131.68 271.52L134.75 279.37L137.82 286.63L140.89 293.17L143.96 298.91L147.02 303.84L150.09 307.97L153.16 311.35L156.23 314.05L159.3 316.18L162.37 317.81L165.44 319.04L168.51 319.94L171.57 320.6L174.64 321.06L177.71 321.38L180.78 321.6L183.85 321.75L186.92 321.84L189.99 321.9L193.06 321.94L196.12 321.97L196.12 322Z"/>
+            <path class="ln thin"
+                  d="M12 321.97L15.07 321.94L18.14 321.9L21.21 321.84L24.27 321.75L27.34 321.6L30.41 321.38L33.48 321.06L36.55 320.6L39.62 319.94L42.69 319.04L45.76 317.81L48.82 316.18L51.89 314.05L54.96 311.35L58.03 307.97L61.1 303.84L64.17 298.91L67.24 293.17L70.31 286.63L73.37 279.37L76.44 271.52L79.51 263.29L82.58 254.91L85.65 246.7L88.72 238.96L91.79 232.04L94.86 226.27L97.92 221.92L100.99 219.21L104.06 218.3L107.13 219.21L110.2 221.92L113.27 226.27L116.34 232.04L119.41 238.96L122.47 246.7L125.54 254.91L128.61 263.29L131.68 271.52L134.75 279.37L137.82 286.63L140.89 293.17L143.96 298.91L147.02 303.84L150.09 307.97L153.16 311.35L156.23 314.05L159.3 316.18L162.37 317.81L165.44 319.04L168.51 319.94L171.57 320.6L174.64 321.06L177.71 321.38L180.78 321.6L183.85 321.75L186.92 321.84L189.99 321.9L193.06 321.94L196.12 321.97"/>
+        </g>
+        <g class="sr s1">
+            <path class="ar"
+                  d="M21.06 322L21.06 321.97L24.15 321.94L27.25 321.9L30.34 321.84L33.43 321.75L36.53 321.6L39.62 321.39L42.71 321.07L45.81 320.61L48.9 319.96L51.99 319.06L55.09 317.84L58.18 316.23L61.28 314.12L64.37 311.43L67.46 308.08L70.56 303.98L73.65 299.1L76.74 293.4L79.84 286.91L82.93 279.71L86.02 271.93L89.12 263.76L92.21 255.45L95.3 247.3L98.4 239.62L101.49 232.76L104.58 227.03L107.68 222.72L110.77 220.03L113.86 219.12L116.96 220.03L120.05 222.72L123.14 227.03L126.24 232.76L129.33 239.62L132.42 247.3L135.52 255.45L138.61 263.76L141.7 271.93L144.8 279.71L147.89 286.91L150.98 293.4L154.08 299.1L157.17 303.98L160.27 308.08L163.36 311.43L166.45 314.12L169.55 316.23L172.64 317.84L175.73 319.06L178.83 319.96L181.92 320.61L185.01 321.07L188.11 321.39L191.2 321.6L194.29 321.75L197.39 321.84L200.48 321.9L203.57 321.94L206.67 321.97L206.67 322Z"/>
+            <path class="ln thin"
+                  d="M21.06 321.97L24.15 321.94L27.25 321.9L30.34 321.84L33.43 321.75L36.53 321.6L39.62 321.39L42.71 321.07L45.81 320.61L48.9 319.96L51.99 319.06L55.09 317.84L58.18 316.23L61.28 314.12L64.37 311.43L67.46 308.08L70.56 303.98L73.65 299.1L76.74 293.4L79.84 286.91L82.93 279.71L86.02 271.93L89.12 263.76L92.21 255.45L95.3 247.3L98.4 239.62L101.49 232.76L104.58 227.03L107.68 222.72L110.77 220.03L113.86 219.12L116.96 220.03L120.05 222.72L123.14 227.03L126.24 232.76L129.33 239.62L132.42 247.3L135.52 255.45L138.61 263.76L141.7 271.93L144.8 279.71L147.89 286.91L150.98 293.4L154.08 299.1L157.17 303.98L160.27 308.08L163.36 311.43L166.45 314.12L169.55 316.23L172.64 317.84L175.73 319.06L178.83 319.96L181.92 320.61L185.01 321.07L188.11 321.39L191.2 321.6L194.29 321.75L197.39 321.84L200.48 321.9L203.57 321.94L206.67 321.97"/>
+        </g>
+        <line class="ax" x1="12" y1="322" x2="206.67" y2="322"/>
+        <line class="ax" x1="71.28" y1="322" x2="71.28" y2="325"/>
+        <text class="kn ctr" x="71.28" y="337">0</text>
+        <line class="ax" x1="151.58" y1="322" x2="151.58" y2="325"/>
+        <text class="kn ctr" x="151.58" y="337">1</text>
+        <g class="mk d3c0 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = -0.6948, Class 0 (prior 0.5): 0.0008581">
+            <title>account_age = -0.6948, Class 0 (prior 0.5): 0.0008581</title>
+            <rect class="hb" x="12" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="15.48" y1="210" x2="15.48" y2="322"/>
+            <circle class="cx s0" cx="15.48" cy="321.94" r="3.5"/>
+        </g>
+        <g class="mk d3c1 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = -0.6083, Class 0 (prior 0.5): 0.002647, Class 1 (prior 0.5): 0.0006045">
+            <title>account_age = -0.6083, Class 0 (prior 0.5): 0.002647, Class 1 (prior 0.5): 0.0006045</title>
+            <rect class="hb" x="18.95" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="22.43" y1="210" x2="22.43" y2="322"/>
+            <circle class="cx s0" cx="22.43" cy="321.8" r="3.5"/>
+            <circle class="cx s1" cx="22.43" cy="321.95" r="3.5"/>
+        </g>
+        <g class="mk d3c2 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = -0.5217, Class 0 (prior 0.5): 0.007331, Class 1 (prior 0.5): 0.001864">
+            <title>account_age = -0.5217, Class 0 (prior 0.5): 0.007331, Class 1 (prior 0.5): 0.001864</title>
+            <rect class="hb" x="25.9" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="29.38" y1="210" x2="29.38" y2="322"/>
+            <circle class="cx s0" cx="29.38" cy="321.45" r="3.5"/>
+            <circle class="cx s1" cx="29.38" cy="321.86" r="3.5"/>
+        </g>
+        <g class="mk d3c3 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = -0.4351, Class 0 (prior 0.5): 0.01841, Class 1 (prior 0.5): 0.005216">
+            <title>account_age = -0.4351, Class 0 (prior 0.5): 0.01841, Class 1 (prior 0.5): 0.005216</title>
+            <rect class="hb" x="32.86" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="36.33" y1="210" x2="36.33" y2="322"/>
+            <circle class="cx s0" cx="36.33" cy="320.63" r="3.5"/>
+            <circle class="cx s1" cx="36.33" cy="321.61" r="3.5"/>
+        </g>
+        <g class="mk d3c4 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = -0.3485, Class 0 (prior 0.5): 0.04298, Class 1 (prior 0.5): 0.01367">
+            <title>account_age = -0.3485, Class 0 (prior 0.5): 0.04298, Class 1 (prior 0.5): 0.01367</title>
+            <rect class="hb" x="39.81" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="43.29" y1="210" x2="43.29" y2="322"/>
+            <circle class="cx s0" cx="43.29" cy="318.8" r="3.5"/>
+            <circle class="cx s1" cx="43.29" cy="320.98" r="3.5"/>
+        </g>
+        <g class="mk d3c5 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = -0.262, Class 0 (prior 0.5): 0.09127, Class 1 (prior 0.5): 0.0326">
+            <title>account_age = -0.262, Class 0 (prior 0.5): 0.09127, Class 1 (prior 0.5): 0.0326</title>
+            <rect class="hb" x="46.76" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="50.24" y1="210" x2="50.24" y2="322"/>
+            <circle class="cx s0" cx="50.24" cy="315.2" r="3.5"/>
+            <circle class="cx s1" cx="50.24" cy="319.57" r="3.5"/>
+        </g>
+        <g class="mk d3c6 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = -0.1754, Class 0 (prior 0.5): 0.176, Class 1 (prior 0.5): 0.07056">
+            <title>account_age = -0.1754, Class 0 (prior 0.5): 0.176, Class 1 (prior 0.5): 0.07056</title>
+            <rect class="hb" x="53.71" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="57.19" y1="210" x2="57.19" y2="322"/>
+            <circle class="cx s0" cx="57.19" cy="308.89" r="3.5"/>
+            <circle class="cx s1" cx="57.19" cy="316.74" r="3.5"/>
+        </g>
+        <g class="mk d3c7 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = -0.08883, Class 0 (prior 0.5): 0.3094, Class 1 (prior 0.5): 0.1392">
+            <title>account_age = -0.08883, Class 0 (prior 0.5): 0.3094, Class 1 (prior 0.5): 0.1392</title>
+            <rect class="hb" x="60.67" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="64.14" y1="210" x2="64.14" y2="322"/>
+            <circle class="cx s0" cx="64.14" cy="298.95" r="3.5"/>
+            <circle class="cx s1" cx="64.14" cy="311.63" r="3.5"/>
+        </g>
+        <g class="mk d3c8 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = -0.002259, Class 0 (prior 0.5): 0.4999, Class 1 (prior 0.5): 0.2533">
+            <title>account_age = -0.002259, Class 0 (prior 0.5): 0.4999, Class 1 (prior 0.5): 0.2533</title>
+            <rect class="hb" x="67.62" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="71.1" y1="210" x2="71.1" y2="322"/>
+            <circle class="cx s0" cx="71.1" cy="284.76" r="3.5"/>
+            <circle class="cx s1" cx="71.1" cy="303.13" r="3.5"/>
+        </g>
+        <g class="mk d3c9 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.08431, Class 0 (prior 0.5): 0.7353, Class 1 (prior 0.5): 0.4207">
+            <title>account_age = 0.08431, Class 0 (prior 0.5): 0.7353, Class 1 (prior 0.5): 0.4207</title>
+            <rect class="hb" x="74.57" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="78.05" y1="210" x2="78.05" y2="322"/>
+            <circle class="cx s0" cx="78.05" cy="267.22" r="3.5"/>
+            <circle class="cx s1" cx="78.05" cy="290.66" r="3.5"/>
+        </g>
+        <g class="mk d3c10 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.1709, Class 0 (prior 0.5): 0.9875, Class 1 (prior 0.5): 0.6376">
+            <title>account_age = 0.1709, Class 0 (prior 0.5): 0.9875, Class 1 (prior 0.5): 0.6376</title>
+            <rect class="hb" x="81.52" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="85" y1="210" x2="85" y2="322"/>
+            <circle class="cx s0" cx="85" cy="248.44" r="3.5"/>
+            <circle class="cx s1" cx="85" cy="274.5" r="3.5"/>
+        </g>
+        <g class="mk d3c11 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.2575, Class 0 (prior 0.5): 1.212, Class 1 (prior 0.5): 0.884">
+            <title>account_age = 0.2575, Class 0 (prior 0.5): 1.212, Class 1 (prior 0.5): 0.884</title>
+            <rect class="hb" x="88.48" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="91.95" y1="210" x2="91.95" y2="322"/>
+            <circle class="cx s0" cx="91.95" cy="231.73" r="3.5"/>
+            <circle class="cx s1" cx="91.95" cy="256.14" r="3.5"/>
+        </g>
+        <g class="mk d3c12 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.344, Class 0 (prior 0.5): 1.355, Class 1 (prior 0.5): 1.121">
+            <title>account_age = 0.344, Class 0 (prior 0.5): 1.355, Class 1 (prior 0.5): 1.121</title>
+            <rect class="hb" x="95.43" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="98.9" y1="210" x2="98.9" y2="322"/>
+            <circle class="cx s0" cx="98.9" cy="221.05" r="3.5"/>
+            <circle class="cx s1" cx="98.9" cy="238.5" r="3.5"/>
+        </g>
+        <g class="mk d3c13 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.4306, Class 0 (prior 0.5): 1.385, Class 1 (prior 0.5): 1.299">
+            <title>account_age = 0.4306, Class 0 (prior 0.5): 1.385, Class 1 (prior 0.5): 1.299</title>
+            <rect class="hb" x="102.38" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="105.86" y1="210" x2="105.86" y2="322"/>
+            <circle class="cx s0" cx="105.86" cy="218.83" r="3.5"/>
+            <circle class="cx s1" cx="105.86" cy="225.26" r="3.5"/>
+        </g>
+        <g class="mk d3c14 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.5172, Class 0 (prior 0.5): 1.294, Class 1 (prior 0.5): 1.377">
+            <title>account_age = 0.5172, Class 0 (prior 0.5): 1.294, Class 1 (prior 0.5): 1.377</title>
+            <rect class="hb" x="109.33" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="112.81" y1="210" x2="112.81" y2="322"/>
+            <circle class="cx s0" cx="112.81" cy="225.62" r="3.5"/>
+            <circle class="cx s1" cx="112.81" cy="219.43" r="3.5"/>
+        </g>
+        <g class="mk d3c15 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.6037, Class 0 (prior 0.5): 1.103, Class 1 (prior 0.5): 1.336">
+            <title>account_age = 0.6037, Class 0 (prior 0.5): 1.103, Class 1 (prior 0.5): 1.336</title>
+            <rect class="hb" x="116.29" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="119.76" y1="210" x2="119.76" y2="322"/>
+            <circle class="cx s0" cx="119.76" cy="239.86" r="3.5"/>
+            <circle class="cx s1" cx="119.76" cy="222.47" r="3.5"/>
+        </g>
+        <g class="mk d3c16 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.6903, Class 0 (prior 0.5): 0.8576, Class 1 (prior 0.5): 1.184">
+            <title>account_age = 0.6903, Class 0 (prior 0.5): 0.8576, Class 1 (prior 0.5): 1.184</title>
+            <rect class="hb" x="123.24" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="126.71" y1="210" x2="126.71" y2="322"/>
+            <circle class="cx s0" cx="126.71" cy="258.11" r="3.5"/>
+            <circle class="cx s1" cx="126.71" cy="233.82" r="3.5"/>
+        </g>
+        <g class="mk d3c17 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.7769, Class 0 (prior 0.5): 0.6094, Class 1 (prior 0.5): 0.9588">
+            <title>account_age = 0.7769, Class 0 (prior 0.5): 0.6094, Class 1 (prior 0.5): 0.9588</title>
+            <rect class="hb" x="130.19" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="133.67" y1="210" x2="133.67" y2="322"/>
+            <circle class="cx s0" cx="133.67" cy="276.6" r="3.5"/>
+            <circle class="cx s1" cx="133.67" cy="250.57" r="3.5"/>
+        </g>
+        <g class="mk d3c18 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.8635, Class 0 (prior 0.5): 0.3947, Class 1 (prior 0.5): 0.7106">
+            <title>account_age = 0.8635, Class 0 (prior 0.5): 0.3947, Class 1 (prior 0.5): 0.7106</title>
+            <rect class="hb" x="137.14" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="140.62" y1="210" x2="140.62" y2="322"/>
+            <circle class="cx s0" cx="140.62" cy="292.6" r="3.5"/>
+            <circle class="cx s1" cx="140.62" cy="269.06" r="3.5"/>
+        </g>
+        <g class="mk d3c19 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 0.95, Class 0 (prior 0.5): 0.2339, Class 1 (prior 0.5): 0.481">
+            <title>account_age = 0.95, Class 0 (prior 0.5): 0.2339, Class 1 (prior 0.5): 0.481</title>
+            <rect class="hb" x="144.1" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="147.57" y1="210" x2="147.57" y2="322"/>
+            <circle class="cx s0" cx="147.57" cy="304.57" r="3.5"/>
+            <circle class="cx s1" cx="147.57" cy="286.16" r="3.5"/>
+        </g>
+        <g class="mk d3c20 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 1.037, Class 0 (prior 0.5): 0.1269, Class 1 (prior 0.5): 0.298">
+            <title>account_age = 1.037, Class 0 (prior 0.5): 0.1269, Class 1 (prior 0.5): 0.298</title>
+            <rect class="hb" x="151.05" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="154.52" y1="210" x2="154.52" y2="322"/>
+            <circle class="cx s0" cx="154.52" cy="312.55" r="3.5"/>
+            <circle class="cx s1" cx="154.52" cy="299.8" r="3.5"/>
+        </g>
+        <g class="mk d3c21 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 1.123, Class 0 (prior 0.5): 0.0626, Class 1 (prior 0.5): 0.1693">
+            <title>account_age = 1.123, Class 0 (prior 0.5): 0.0626, Class 1 (prior 0.5): 0.1693</title>
+            <rect class="hb" x="158" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="161.48" y1="210" x2="161.48" y2="322"/>
+            <circle class="cx s0" cx="161.48" cy="317.34" r="3.5"/>
+            <circle class="cx s1" cx="161.48" cy="309.39" r="3.5"/>
+        </g>
+        <g class="mk d3c22 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 1.21, Class 0 (prior 0.5): 0.02792, Class 1 (prior 0.5): 0.08773">
+            <title>account_age = 1.21, Class 0 (prior 0.5): 0.02792, Class 1 (prior 0.5): 0.08773</title>
+            <rect class="hb" x="164.95" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="168.43" y1="210" x2="168.43" y2="322"/>
+            <circle class="cx s0" cx="168.43" cy="319.92" r="3.5"/>
+            <circle class="cx s1" cx="168.43" cy="315.46" r="3.5"/>
+        </g>
+        <g class="mk d3c23 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 1.296, Class 0 (prior 0.5): 0.0116, Class 1 (prior 0.5): 0.0413">
+            <title>account_age = 1.296, Class 0 (prior 0.5): 0.0116, Class 1 (prior 0.5): 0.0413</title>
+            <rect class="hb" x="171.9" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="175.38" y1="210" x2="175.38" y2="322"/>
+            <circle class="cx s0" cx="175.38" cy="321.14" r="3.5"/>
+            <circle class="cx s1" cx="175.38" cy="318.92" r="3.5"/>
+        </g>
+        <g class="mk d3c24 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 1.383, Class 0 (prior 0.5): 0.004389, Class 1 (prior 0.5): 0.01787">
+            <title>account_age = 1.383, Class 0 (prior 0.5): 0.004389, Class 1 (prior 0.5): 0.01787</title>
+            <rect class="hb" x="178.86" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="182.33" y1="210" x2="182.33" y2="322"/>
+            <circle class="cx s0" cx="182.33" cy="321.67" r="3.5"/>
+            <circle class="cx s1" cx="182.33" cy="320.67" r="3.5"/>
+        </g>
+        <g class="mk d3c25 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 1.469, Class 0 (prior 0.5): 0.001498, Class 1 (prior 0.5): 0.007141">
+            <title>account_age = 1.469, Class 0 (prior 0.5): 0.001498, Class 1 (prior 0.5): 0.007141</title>
+            <rect class="hb" x="185.81" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="189.29" y1="210" x2="189.29" y2="322"/>
+            <circle class="cx s0" cx="189.29" cy="321.89" r="3.5"/>
+            <circle class="cx s1" cx="189.29" cy="321.47" r="3.5"/>
+        </g>
+        <g class="mk d3c26 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 1.556, Class 1 (prior 0.5): 0.002591">
+            <title>account_age = 1.556, Class 1 (prior 0.5): 0.002591</title>
+            <rect class="hb" x="192.76" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="196.24" y1="210" x2="196.24" y2="322"/>
+            <circle class="cx s1" cx="196.24" cy="321.81" r="3.5"/>
+        </g>
+        <g class="mk d3c27 cl0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age = 1.643, Class 1 (prior 0.5): 0.0008465">
+            <title>account_age = 1.643, Class 1 (prior 0.5): 0.0008465</title>
+            <rect class="hb" x="199.71" y="210" width="6.95" height="112"/>
+            <line class="vl" x1="203.19" y1="210" x2="203.19" y2="322"/>
+            <circle class="cx s1" cx="203.19" cy="321.94" r="3.5"/>
+        </g>
+    </g>
+    <g class="tps">
+        <g class="tp td0c0">
+            <g class="tt">
+                <rect class="tb" x="47.48" y="154" width="193.84" height="44" rx="6"/>
+                <text class="tx b" x="57.48" y="172">amount = -1.341</text>
+                <rect class="tsw s0" x="57.48" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="71.48" y="189">Class 0 (prior 0.5): 0.0004865</text>
+            </g>
+        </g>
+        <g class="tp td0c1">
+            <g class="tt">
+                <rect class="tb" x="54.43" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="64.43" y="172">amount = -1.126</text>
+                <rect class="tsw s0" x="64.43" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="78.43" y="189">Class 0 (prior 0.5): 0.001832</text>
+            </g>
+        </g>
+        <g class="tp td0c2">
+            <g class="tt">
+                <rect class="tb" x="61.38" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="71.38" y="172">amount = -0.9103</text>
+                <rect class="tsw s0" x="71.38" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="85.38" y="189">Class 0 (prior 0.5): 0.006057</text>
+            </g>
+        </g>
+        <g class="tp td0c3">
+            <g class="tt">
+                <rect class="tb" x="68.33" y="154" width="180.4" height="44" rx="6"/>
+                <text class="tx b" x="78.33" y="172">amount = -0.6948</text>
+                <rect class="tsw s0" x="78.33" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="92.33" y="189">Class 0 (prior 0.5): 0.01775</text>
+            </g>
+        </g>
+        <g class="tp td0c4">
+            <g class="tt">
+                <rect class="tb" x="75.29" y="154" width="166.96" height="44" rx="6"/>
+                <text class="tx b" x="85.29" y="172">amount = -0.4794</text>
+                <rect class="tsw s0" x="85.29" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="99.29" y="189">Class 0 (prior 0.5): 0.045</text>
+            </g>
+        </g>
+        <g class="tp td0c5">
+            <g class="tt">
+                <rect class="tb" x="82.24" y="154" width="180.4" height="44" rx="6"/>
+                <text class="tx b" x="92.24" y="172">amount = -0.264</text>
+                <rect class="tsw s0" x="92.24" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="106.24" y="189">Class 0 (prior 0.5): 0.09918</text>
+            </g>
+        </g>
+        <g class="tp td0c6">
+            <g class="tt">
+                <rect class="tb" x="89.19" y="154" width="173.68" height="44" rx="6"/>
+                <text class="tx b" x="99.19" y="172">amount = -0.04854</text>
+                <rect class="tsw s0" x="99.19" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="113.19" y="189">Class 0 (prior 0.5): 0.1908</text>
+            </g>
+        </g>
+        <g class="tp td0c7">
+            <g class="tt">
+                <rect class="tb" x="96.14" y="154" width="173.68" height="44" rx="6"/>
+                <text class="tx b" x="106.14" y="172">amount = 0.1669</text>
+                <rect class="tsw s0" x="106.14" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="120.14" y="189">Class 0 (prior 0.5): 0.3219</text>
+            </g>
+        </g>
+        <g class="tp td0c8">
+            <g class="tt">
+                <rect class="tb" x="103.1" y="154" width="173.68" height="44" rx="6"/>
+                <text class="tx b" x="113.1" y="172">amount = 0.3823</text>
+                <rect class="tsw s0" x="113.1" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="127.1" y="189">Class 0 (prior 0.5): 0.4727</text>
+            </g>
+        </g>
+        <g class="tp td0c9">
+            <g class="tt">
+                <rect class="tb" x="110.05" y="146" width="193.84" height="61" rx="6"/>
+                <text class="tx b" x="120.05" y="164">amount = 0.5978</text>
+                <rect class="tsw s0" x="120.05" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="134.05" y="181">Class 0 (prior 0.5): 0.606</text>
+                <rect class="tsw s1" x="120.05" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="134.05" y="198">Class 1 (prior 0.5): 0.0009452</text>
+            </g>
+        </g>
+        <g class="tp td0c10">
+            <g class="tt">
+                <rect class="tb" x="117" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="127" y="164">amount = 0.8132</text>
+                <rect class="tsw s0" x="127" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="141" y="181">Class 0 (prior 0.5): 0.6788</text>
+                <rect class="tsw s1" x="127" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="141" y="198">Class 1 (prior 0.5): 0.003937</text>
+            </g>
+        </g>
+        <g class="tp td0c11">
+            <g class="tt">
+                <rect class="tb" x="123.95" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="133.95" y="164">amount = 1.029</text>
+                <rect class="tsw s0" x="133.95" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="147.95" y="181">Class 0 (prior 0.5): 0.6627</text>
+                <rect class="tsw s1" x="133.95" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="147.95" y="198">Class 1 (prior 0.5): 0.01381</text>
+            </g>
+        </g>
+        <g class="tp td0c12">
+            <g class="tt">
+                <rect class="tb" x="130.9" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="140.9" y="164">amount = 1.244</text>
+                <rect class="tsw s0" x="140.9" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="154.9" y="181">Class 0 (prior 0.5): 0.5643</text>
+                <rect class="tsw s1" x="140.9" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="154.9" y="198">Class 1 (prior 0.5): 0.04087</text>
+            </g>
+        </g>
+        <g class="tp td0c13">
+            <g class="tt">
+                <rect class="tb" x="137.86" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="147.86" y="164">amount = 1.46</text>
+                <rect class="tsw s0" x="147.86" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="161.86" y="181">Class 0 (prior 0.5): 0.4199</text>
+                <rect class="tsw s1" x="147.86" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="161.86" y="198">Class 1 (prior 0.5): 0.102</text>
+            </g>
+        </g>
+        <g class="tp td0c14">
+            <g class="tt">
+                <rect class="tb" x="144.81" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="154.81" y="164">amount = 1.675</text>
+                <rect class="tsw s0" x="154.81" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="168.81" y="181">Class 0 (prior 0.5): 0.2726</text>
+                <rect class="tsw s1" x="154.81" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="168.81" y="198">Class 1 (prior 0.5): 0.215</text>
+            </g>
+        </g>
+        <g class="tp td0c15">
+            <g class="tt">
+                <rect class="tb" x="151.76" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="161.76" y="164">amount = 1.89</text>
+                <rect class="tsw s0" x="161.76" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="175.76" y="181">Class 0 (prior 0.5): 0.1541</text>
+                <rect class="tsw s1" x="161.76" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="175.76" y="198">Class 1 (prior 0.5): 0.3823</text>
+            </g>
+        </g>
+        <g class="tp td0c16">
+            <g class="tt">
+                <rect class="tb" x="158.71" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="168.71" y="164">amount = 2.106</text>
+                <rect class="tsw s0" x="168.71" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="182.71" y="181">Class 0 (prior 0.5): 0.07644</text>
+                <rect class="tsw s1" x="168.71" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="182.71" y="198">Class 1 (prior 0.5): 0.5717</text>
+            </g>
+        </g>
+        <g class="tp td0c17">
+            <g class="tt">
+                <rect class="tb" x="165.67" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="175.67" y="164">amount = 2.321</text>
+                <rect class="tsw s0" x="175.67" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="189.67" y="181">Class 0 (prior 0.5): 0.03307</text>
+                <rect class="tsw s1" x="175.67" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="189.67" y="198">Class 1 (prior 0.5): 0.7201</text>
+            </g>
+        </g>
+        <g class="tp td0c18">
+            <g class="tt">
+                <rect class="tb" x="172.62" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="182.62" y="164">amount = 2.537</text>
+                <rect class="tsw s0" x="182.62" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="196.62" y="181">Class 0 (prior 0.5): 0.01242</text>
+                <rect class="tsw s1" x="182.62" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="196.62" y="198">Class 1 (prior 0.5): 0.7644</text>
+            </g>
+        </g>
+        <g class="tp td0c19">
+            <g class="tt">
+                <rect class="tb" x="179.57" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="189.57" y="164">amount = 2.752</text>
+                <rect class="tsw s0" x="189.57" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="203.57" y="181">Class 0 (prior 0.5): 0.004034</text>
+                <rect class="tsw s1" x="189.57" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="203.57" y="198">Class 1 (prior 0.5): 0.6839</text>
+            </g>
+        </g>
+        <g class="tp td0c20">
+            <g class="tt">
+                <rect class="tb" x="186.52" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="196.52" y="164">amount = 2.968</text>
+                <rect class="tsw s0" x="196.52" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="210.52" y="181">Class 0 (prior 0.5): 0.00117</text>
+                <rect class="tsw s1" x="196.52" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="210.52" y="198">Class 1 (prior 0.5): 0.5157</text>
+            </g>
+        </g>
+        <g class="tp td0c21">
+            <g class="tt">
+                <rect class="tb" x="193.48" y="146" width="193.84" height="61" rx="6"/>
+                <text class="tx b" x="203.48" y="164">amount = 3.183</text>
+                <rect class="tsw s0" x="203.48" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="217.48" y="181">Class 0 (prior 0.5): 0.0002959</text>
+                <rect class="tsw s1" x="203.48" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="217.48" y="198">Class 1 (prior 0.5): 0.3275</text>
+            </g>
+        </g>
+        <g class="tp td0c22">
+            <g class="tt">
+                <rect class="tb" x="200.43" y="154" width="166.96" height="44" rx="6"/>
+                <text class="tx b" x="210.43" y="172">amount = 3.398</text>
+                <rect class="tsw s1" x="210.43" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="224.43" y="189">Class 1 (prior 0.5): 0.175</text>
+            </g>
+        </g>
+        <g class="tp td0c23">
+            <g class="tt">
+                <rect class="tb" x="207.38" y="154" width="180.4" height="44" rx="6"/>
+                <text class="tx b" x="217.38" y="172">amount = 3.614</text>
+                <rect class="tsw s1" x="217.38" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="231.38" y="189">Class 1 (prior 0.5): 0.07863</text>
+            </g>
+        </g>
+        <g class="tp td0c24">
+            <g class="tt">
+                <rect class="tb" x="214.33" y="154" width="180.4" height="44" rx="6"/>
+                <text class="tx b" x="224.33" y="172">amount = 3.829</text>
+                <rect class="tsw s1" x="224.33" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="238.33" y="189">Class 1 (prior 0.5): 0.02992</text>
+            </g>
+        </g>
+        <g class="tp td0c25">
+            <g class="tt">
+                <rect class="tb" x="221.29" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="231.29" y="172">amount = 4.045</text>
+                <rect class="tsw s1" x="231.29" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="245.29" y="189">Class 1 (prior 0.5): 0.009609</text>
+            </g>
+        </g>
+        <g class="tp td0c26">
+            <g class="tt">
+                <rect class="tb" x="228.24" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="238.24" y="172">amount = 4.26</text>
+                <rect class="tsw s1" x="238.24" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="252.24" y="189">Class 1 (prior 0.5): 0.002603</text>
+            </g>
+        </g>
+        <g class="tp td0c27">
+            <g class="tt">
+                <rect class="tb" x="235.19" y="154" width="193.84" height="44" rx="6"/>
+                <text class="tx b" x="245.19" y="172">amount = 4.476</text>
+                <rect class="tsw s1" x="245.19" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="259.19" y="189">Class 1 (prior 0.5): 0.0005941</text>
+            </g>
+        </g>
+        <g class="tp td1c0">
+            <g class="tt">
+                <rect class="tb" x="278.14" y="154" width="193.84" height="44" rx="6"/>
+                <text class="tx b" x="288.14" y="172">velocity = -0.8378</text>
+                <rect class="tsw s0" x="288.14" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="302.14" y="189">Class 0 (prior 0.5): 0.0005862</text>
+            </g>
+        </g>
+        <g class="tp td1c1">
+            <g class="tt">
+                <rect class="tb" x="285.1" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="295.1" y="172">velocity = -0.668</text>
+                <rect class="tsw s0" x="295.1" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="309.1" y="189">Class 0 (prior 0.5): 0.002111</text>
+            </g>
+        </g>
+        <g class="tp td1c2">
+            <g class="tt">
+                <rect class="tb" x="292.05" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="302.05" y="172">velocity = -0.4982</text>
+                <rect class="tsw s0" x="302.05" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="316.05" y="189">Class 0 (prior 0.5): 0.006926</text>
+            </g>
+        </g>
+        <g class="tp td1c3">
+            <g class="tt">
+                <rect class="tb" x="299" y="154" width="180.4" height="44" rx="6"/>
+                <text class="tx b" x="309" y="172">velocity = -0.3284</text>
+                <rect class="tsw s0" x="309" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="323" y="189">Class 0 (prior 0.5): 0.01976</text>
+            </g>
+        </g>
+        <g class="tp td1c4">
+            <g class="tt">
+                <rect class="tb" x="305.95" y="154" width="180.4" height="44" rx="6"/>
+                <text class="tx b" x="315.95" y="172">velocity = -0.1586</text>
+                <rect class="tsw s0" x="315.95" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="329.95" y="189">Class 0 (prior 0.5): 0.04908</text>
+            </g>
+        </g>
+        <g class="tp td1c5">
+            <g class="tt">
+                <rect class="tb" x="312.9" y="154" width="173.68" height="44" rx="6"/>
+                <text class="tx b" x="322.9" y="172">velocity = 0.01115</text>
+                <rect class="tsw s0" x="322.9" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="336.9" y="189">Class 0 (prior 0.5): 0.1083</text>
+            </g>
+        </g>
+        <g class="tp td1c6">
+            <g class="tt">
+                <rect class="tb" x="319.86" y="154" width="173.68" height="44" rx="6"/>
+                <text class="tx b" x="329.86" y="172">velocity = 0.1809</text>
+                <rect class="tsw s0" x="329.86" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="343.86" y="189">Class 0 (prior 0.5): 0.2101</text>
+            </g>
+        </g>
+        <g class="tp td1c7">
+            <g class="tt">
+                <rect class="tb" x="326.81" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="336.81" y="164">velocity = 0.3507</text>
+                <rect class="tsw s0" x="336.81" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="350.81" y="181">Class 0 (prior 0.5): 0.3574</text>
+                <rect class="tsw s1" x="336.81" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="350.81" y="198">Class 1 (prior 0.5): 0.001031</text>
+            </g>
+        </g>
+        <g class="tp td1c8">
+            <g class="tt">
+                <rect class="tb" x="333.76" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="343.76" y="164">velocity = 0.5205</text>
+                <rect class="tsw s0" x="343.76" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="357.76" y="181">Class 0 (prior 0.5): 0.5357</text>
+                <rect class="tsw s1" x="343.76" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="357.76" y="198">Class 1 (prior 0.5): 0.003773</text>
+            </g>
+        </g>
+        <g class="tp td1c9">
+            <g class="tt">
+                <rect class="tb" x="340.71" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="350.71" y="164">velocity = 0.6903</text>
+                <rect class="tsw s0" x="350.71" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="364.71" y="181">Class 0 (prior 0.5): 0.7057</text>
+                <rect class="tsw s1" x="350.71" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="364.71" y="198">Class 1 (prior 0.5): 0.01197</text>
+            </g>
+        </g>
+        <g class="tp td1c10">
+            <g class="tt">
+                <rect class="tb" x="347.67" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="357.67" y="164">velocity = 0.8601</text>
+                <rect class="tsw s0" x="357.67" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="371.67" y="181">Class 0 (prior 0.5): 0.8184</text>
+                <rect class="tsw s1" x="357.67" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="371.67" y="198">Class 1 (prior 0.5): 0.03369</text>
+            </g>
+        </g>
+        <g class="tp td1c11">
+            <g class="tt">
+                <rect class="tb" x="354.62" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="364.62" y="164">velocity = 1.03</text>
+                <rect class="tsw s0" x="364.62" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="378.62" y="181">Class 0 (prior 0.5): 0.8356</text>
+                <rect class="tsw s1" x="364.62" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="378.62" y="198">Class 1 (prior 0.5): 0.08194</text>
+            </g>
+        </g>
+        <g class="tp td1c12">
+            <g class="tt">
+                <rect class="tb" x="361.57" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="371.57" y="164">velocity = 1.2</text>
+                <rect class="tsw s0" x="371.57" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="385.57" y="181">Class 0 (prior 0.5): 0.7487</text>
+                <rect class="tsw s1" x="371.57" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="385.57" y="198">Class 1 (prior 0.5): 0.1726</text>
+            </g>
+        </g>
+        <g class="tp td1c13">
+            <g class="tt">
+                <rect class="tb" x="368.52" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="378.52" y="164">velocity = 1.37</text>
+                <rect class="tsw s0" x="378.52" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="392.52" y="181">Class 0 (prior 0.5): 0.5912</text>
+                <rect class="tsw s1" x="378.52" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="392.52" y="198">Class 1 (prior 0.5): 0.3158</text>
+            </g>
+        </g>
+        <g class="tp td1c14">
+            <g class="tt">
+                <rect class="tb" x="375.48" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="385.48" y="164">velocity = 1.539</text>
+                <rect class="tsw s0" x="385.48" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="399.48" y="181">Class 0 (prior 0.5): 0.4102</text>
+                <rect class="tsw s1" x="385.48" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="399.48" y="198">Class 1 (prior 0.5): 0.5028</text>
+            </g>
+        </g>
+        <g class="tp td1c15">
+            <g class="tt">
+                <rect class="tb" x="382.43" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="392.43" y="164">velocity = 1.709</text>
+                <rect class="tsw s0" x="392.43" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="406.43" y="181">Class 0 (prior 0.5): 0.2508</text>
+                <rect class="tsw s1" x="392.43" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="406.43" y="198">Class 1 (prior 0.5): 0.6965</text>
+            </g>
+        </g>
+        <g class="tp td1c16">
+            <g class="tt">
+                <rect class="tb" x="389.38" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="399.38" y="164">velocity = 1.879</text>
+                <rect class="tsw s0" x="399.38" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="413.38" y="181">Class 0 (prior 0.5): 0.1349</text>
+                <rect class="tsw s1" x="399.38" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="413.38" y="198">Class 1 (prior 0.5): 0.8379</text>
+            </g>
+        </g>
+        <g class="tp td1c17">
+            <g class="tt">
+                <rect class="tb" x="396.33" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="406.33" y="164">velocity = 2.049</text>
+                <rect class="tsw s0" x="406.33" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="420.33" y="181">Class 0 (prior 0.5): 0.06338</text>
+                <rect class="tsw s1" x="406.33" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="420.33" y="198">Class 1 (prior 0.5): 0.8766</text>
+            </g>
+        </g>
+        <g class="tp td1c18">
+            <g class="tt">
+                <rect class="tb" x="403.29" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="413.29" y="164">velocity = 2.218</text>
+                <rect class="tsw s0" x="413.29" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="427.29" y="181">Class 0 (prior 0.5): 0.02648</text>
+                <rect class="tsw s1" x="413.29" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="427.29" y="198">Class 1 (prior 0.5): 0.7979</text>
+            </g>
+        </g>
+        <g class="tp td1c19">
+            <g class="tt">
+                <rect class="tb" x="410.24" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="420.24" y="164">velocity = 2.388</text>
+                <rect class="tsw s0" x="420.24" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="434.24" y="181">Class 0 (prior 0.5): 0.009724</text>
+                <rect class="tsw s1" x="420.24" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="434.24" y="198">Class 1 (prior 0.5): 0.6315</text>
+            </g>
+        </g>
+        <g class="tp td1c20">
+            <g class="tt">
+                <rect class="tb" x="417.19" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="427.19" y="164">velocity = 2.558</text>
+                <rect class="tsw s0" x="427.19" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="441.19" y="181">Class 0 (prior 0.5): 0.003095</text>
+                <rect class="tsw s1" x="427.19" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="441.19" y="198">Class 1 (prior 0.5): 0.4339</text>
+            </g>
+        </g>
+        <g class="tp td1c21">
+            <g class="tt">
+                <rect class="tb" x="424.14" y="146" width="193.84" height="61" rx="6"/>
+                <text class="tx b" x="434.14" y="164">velocity = 2.728</text>
+                <rect class="tsw s0" x="434.14" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="448.14" y="181">Class 0 (prior 0.5): 0.0008792</text>
+                <rect class="tsw s1" x="434.14" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="448.14" y="198">Class 1 (prior 0.5): 0.2596</text>
+            </g>
+        </g>
+        <g class="tp td1c22">
+            <g class="tt">
+                <rect class="tb" x="431.1" y="154" width="173.68" height="44" rx="6"/>
+                <text class="tx b" x="441.1" y="172">velocity = 2.898</text>
+                <rect class="tsw s1" x="441.1" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="455.1" y="189">Class 1 (prior 0.5): 0.1351</text>
+            </g>
+        </g>
+        <g class="tp td1c23">
+            <g class="tt">
+                <rect class="tb" x="438.05" y="154" width="180.4" height="44" rx="6"/>
+                <text class="tx b" x="448.05" y="172">velocity = 3.067</text>
+                <rect class="tsw s1" x="448.05" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="462.05" y="189">Class 1 (prior 0.5): 0.06108</text>
+            </g>
+        </g>
+        <g class="tp td1c24">
+            <g class="tt">
+                <rect class="tb" x="445" y="154" width="180.4" height="44" rx="6"/>
+                <text class="tx b" x="455" y="172">velocity = 3.237</text>
+                <rect class="tsw s1" x="455" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="469" y="189">Class 1 (prior 0.5): 0.02389</text>
+            </g>
+        </g>
+        <g class="tp td1c25">
+            <g class="tt">
+                <rect class="tb" x="451.95" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="461.95" y="172">velocity = 3.407</text>
+                <rect class="tsw s1" x="461.95" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="475.95" y="189">Class 1 (prior 0.5): 0.008091</text>
+            </g>
+        </g>
+        <g class="tp td1c26">
+            <g class="tt">
+                <rect class="tb" x="458.9" y="154" width="180.4" height="44" rx="6"/>
+                <text class="tx b" x="468.9" y="172">velocity = 3.577</text>
+                <rect class="tsw s1" x="468.9" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="482.9" y="189">Class 1 (prior 0.5): 0.00243</text>
+            </g>
+        </g>
+        <g class="tp td1c27">
+            <g class="tt">
+                <rect class="tb" x="465.86" y="154" width="193.84" height="44" rx="6"/>
+                <text class="tx b" x="475.86" y="172">velocity = 3.747</text>
+                <rect class="tsw s1" x="475.86" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="489.86" y="189">Class 1 (prior 0.5): 0.0006324</text>
+            </g>
+        </g>
+        <g class="tp td2c0">
+            <g class="tt">
+                <rect class="tb" x="508.81" y="154" width="193.84" height="44" rx="6"/>
+                <text class="tx b" x="518.81" y="172">merchant_risk = -3.2</text>
+                <rect class="tsw s1" x="518.81" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="532.81" y="189">Class 1 (prior 0.5): 0.0002561</text>
+            </g>
+        </g>
+        <g class="tp td2c1">
+            <g class="tt">
+                <rect class="tb" x="301.92" y="146" width="193.84" height="61" rx="6"/>
+                <text class="tx b" x="311.92" y="164">merchant_risk = -2.823</text>
+                <rect class="tsw s0" x="311.92" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="325.92" y="181">Class 0 (prior 0.5): 0.0002765</text>
+                <rect class="tsw s1" x="311.92" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="325.92" y="198">Class 1 (prior 0.5): 0.0009035</text>
+            </g>
+        </g>
+        <g class="tp td2c2">
+            <g class="tt">
+                <rect class="tb" x="308.87" y="146" width="193.84" height="61" rx="6"/>
+                <text class="tx b" x="318.87" y="164">merchant_risk = -2.446</text>
+                <rect class="tsw s0" x="318.87" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="332.87" y="181">Class 0 (prior 0.5): 0.0007894</text>
+                <rect class="tsw s1" x="318.87" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="332.87" y="198">Class 1 (prior 0.5): 0.002928</text>
+            </g>
+        </g>
+        <g class="tp td2c3">
+            <g class="tt">
+                <rect class="tb" x="322.55" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="332.55" y="164">merchant_risk = -2.069</text>
+                <rect class="tsw s0" x="332.55" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="346.55" y="181">Class 0 (prior 0.5): 0.002099</text>
+                <rect class="tsw s1" x="332.55" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="346.55" y="198">Class 1 (prior 0.5): 0.008203</text>
+            </g>
+        </g>
+        <g class="tp td2c4">
+            <g class="tt">
+                <rect class="tb" x="329.5" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="339.5" y="164">merchant_risk = -1.692</text>
+                <rect class="tsw s0" x="339.5" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="353.5" y="181">Class 0 (prior 0.5): 0.005076</text>
+                <rect class="tsw s1" x="339.5" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="353.5" y="198">Class 1 (prior 0.5): 0.02028</text>
+            </g>
+        </g>
+        <g class="tp td2c5">
+            <g class="tt">
+                <rect class="tb" x="343.17" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="353.17" y="164">merchant_risk = -1.315</text>
+                <rect class="tsw s0" x="353.17" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="367.17" y="181">Class 0 (prior 0.5): 0.01121</text>
+                <rect class="tsw s1" x="353.17" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="367.17" y="198">Class 1 (prior 0.5): 0.04477</text>
+            </g>
+        </g>
+        <g class="tp td2c6">
+            <g class="tt">
+                <rect class="tb" x="350.12" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="360.12" y="164">merchant_risk = -0.9386</text>
+                <rect class="tsw s0" x="360.12" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="374.12" y="181">Class 0 (prior 0.5): 0.02271</text>
+                <rect class="tsw s1" x="360.12" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="374.12" y="198">Class 1 (prior 0.5): 0.08661</text>
+            </g>
+        </g>
+        <g class="tp td2c7">
+            <g class="tt">
+                <rect class="tb" x="357.08" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="367.08" y="164">merchant_risk = -0.5618</text>
+                <rect class="tsw s0" x="367.08" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="381.08" y="181">Class 0 (prior 0.5): 0.04231</text>
+                <rect class="tsw s1" x="367.08" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="381.08" y="198">Class 1 (prior 0.5): 0.1485</text>
+            </g>
+        </g>
+        <g class="tp td2c8">
+            <g class="tt">
+                <rect class="tb" x="364.03" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="374.03" y="164">merchant_risk = -0.1849</text>
+                <rect class="tsw s0" x="374.03" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="388.03" y="181">Class 0 (prior 0.5): 0.07282</text>
+                <rect class="tsw s1" x="374.03" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="388.03" y="198">Class 1 (prior 0.5): 0.2249</text>
+            </g>
+        </g>
+        <g class="tp td2c9">
+            <g class="tt">
+                <rect class="tb" x="377.7" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="387.7" y="164">merchant_risk = 0.1919</text>
+                <rect class="tsw s0" x="387.7" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="401.7" y="181">Class 0 (prior 0.5): 0.1147</text>
+                <rect class="tsw s1" x="387.7" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="401.7" y="198">Class 1 (prior 0.5): 0.3011</text>
+            </g>
+        </g>
+        <g class="tp td2c10">
+            <g class="tt">
+                <rect class="tb" x="384.65" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="394.65" y="164">merchant_risk = 0.5688</text>
+                <rect class="tsw s0" x="394.65" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="408.65" y="181">Class 0 (prior 0.5): 0.1658</text>
+                <rect class="tsw s1" x="394.65" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="408.65" y="198">Class 1 (prior 0.5): 0.3559</text>
+            </g>
+        </g>
+        <g class="tp td2c11">
+            <g class="tt">
+                <rect class="tb" x="391.61" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="401.61" y="164">merchant_risk = 0.9456</text>
+                <rect class="tsw s0" x="401.61" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="415.61" y="181">Class 0 (prior 0.5): 0.2201</text>
+                <rect class="tsw s1" x="401.61" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="415.61" y="198">Class 1 (prior 0.5): 0.3717</text>
+            </g>
+        </g>
+        <g class="tp td2c12">
+            <g class="tt">
+                <rect class="tb" x="398.56" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="408.56" y="164">merchant_risk = 1.322</text>
+                <rect class="tsw s0" x="408.56" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="422.56" y="181">Class 0 (prior 0.5): 0.2686</text>
+                <rect class="tsw s1" x="408.56" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="422.56" y="198">Class 1 (prior 0.5): 0.3437</text>
+            </g>
+        </g>
+        <g class="tp td2c13">
+            <g class="tt">
+                <rect class="tb" x="405.51" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="415.51" y="164">merchant_risk = 1.699</text>
+                <rect class="tsw s0" x="415.51" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="429.51" y="181">Class 0 (prior 0.5): 0.3004</text>
+                <rect class="tsw s1" x="415.51" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="429.51" y="198">Class 1 (prior 0.5): 0.28</text>
+            </g>
+        </g>
+        <g class="tp td2c14">
+            <g class="tt">
+                <rect class="tb" x="412.46" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="422.46" y="164">merchant_risk = 2.076</text>
+                <rect class="tsw s0" x="422.46" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="436.46" y="181">Class 0 (prior 0.5): 0.3086</text>
+                <rect class="tsw s1" x="422.46" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="436.46" y="198">Class 1 (prior 0.5): 0.202</text>
+            </g>
+        </g>
+        <g class="tp td2c15">
+            <g class="tt">
+                <rect class="tb" x="419.42" y="146" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="429.42" y="164">merchant_risk = 2.453</text>
+                <rect class="tsw s0" x="429.42" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="443.42" y="181">Class 0 (prior 0.5): 0.2912</text>
+                <rect class="tsw s1" x="429.42" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="443.42" y="198">Class 1 (prior 0.5): 0.1285</text>
+            </g>
+        </g>
+        <g class="tp td2c16">
+            <g class="tt">
+                <rect class="tb" x="419.65" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="429.65" y="164">merchant_risk = 2.83</text>
+                <rect class="tsw s0" x="429.65" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="443.65" y="181">Class 0 (prior 0.5): 0.2526</text>
+                <rect class="tsw s1" x="429.65" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="443.65" y="198">Class 1 (prior 0.5): 0.07251</text>
+            </g>
+        </g>
+        <g class="tp td2c17">
+            <g class="tt">
+                <rect class="tb" x="426.6" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="436.6" y="164">merchant_risk = 3.207</text>
+                <rect class="tsw s0" x="436.6" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="450.6" y="181">Class 0 (prior 0.5): 0.2011</text>
+                <rect class="tsw s1" x="436.6" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="450.6" y="198">Class 1 (prior 0.5): 0.03602</text>
+            </g>
+        </g>
+        <g class="tp td2c18">
+            <g class="tt">
+                <rect class="tb" x="433.55" y="146" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="443.55" y="164">merchant_risk = 3.584</text>
+                <rect class="tsw s0" x="443.55" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="457.55" y="181">Class 0 (prior 0.5): 0.1469</text>
+                <rect class="tsw s1" x="443.55" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="457.55" y="198">Class 1 (prior 0.5): 0.01578</text>
+            </g>
+        </g>
+        <g class="tp td2c19">
+            <g class="tt">
+                <rect class="tb" x="433.78" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="443.78" y="164">merchant_risk = 3.96</text>
+                <rect class="tsw s0" x="443.78" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="457.78" y="181">Class 0 (prior 0.5): 0.09867</text>
+                <rect class="tsw s1" x="443.78" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="457.78" y="198">Class 1 (prior 0.5): 0.006178</text>
+            </g>
+        </g>
+        <g class="tp td2c20">
+            <g class="tt">
+                <rect class="tb" x="440.74" y="146" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="450.74" y="164">merchant_risk = 4.337</text>
+                <rect class="tsw s0" x="450.74" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="464.74" y="181">Class 0 (prior 0.5): 0.06086</text>
+                <rect class="tsw s1" x="450.74" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="464.74" y="198">Class 1 (prior 0.5): 0.002101</text>
+            </g>
+        </g>
+        <g class="tp td2c21">
+            <g class="tt">
+                <rect class="tb" x="440.97" y="146" width="193.84" height="61" rx="6"/>
+                <text class="tx b" x="450.97" y="164">merchant_risk = 4.714</text>
+                <rect class="tsw s0" x="450.97" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="464.97" y="181">Class 0 (prior 0.5): 0.03441</text>
+                <rect class="tsw s1" x="450.97" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="464.97" y="198">Class 1 (prior 0.5): 0.0006395</text>
+            </g>
+        </g>
+        <g class="tp td2c22">
+            <g class="tt">
+                <rect class="tb" x="447.92" y="146" width="193.84" height="61" rx="6"/>
+                <text class="tx b" x="457.92" y="164">merchant_risk = 5.091</text>
+                <rect class="tsw s0" x="457.92" y="172" width="9" height="9" rx="2"/>
+                <text class="tx" x="471.92" y="181">Class 0 (prior 0.5): 0.01779</text>
+                <rect class="tsw s1" x="457.92" y="189" width="9" height="9" rx="2"/>
+                <text class="tx" x="471.92" y="198">Class 1 (prior 0.5): 0.0001729</text>
+            </g>
+        </g>
+        <g class="tp td2c23">
+            <g class="tt">
+                <rect class="tb" x="461.59" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="471.59" y="172">merchant_risk = 5.468</text>
+                <rect class="tsw s0" x="471.59" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="485.59" y="189">Class 0 (prior 0.5): 0.008495</text>
+            </g>
+        </g>
+        <g class="tp td2c24">
+            <g class="tt">
+                <rect class="tb" x="468.55" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="478.55" y="172">merchant_risk = 5.845</text>
+                <rect class="tsw s0" x="478.55" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="492.55" y="189">Class 0 (prior 0.5): 0.003746</text>
+            </g>
+        </g>
+        <g class="tp td2c25">
+            <g class="tt">
+                <rect class="tb" x="475.5" y="154" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="485.5" y="172">merchant_risk = 6.221</text>
+                <rect class="tsw s0" x="485.5" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="499.5" y="189">Class 0 (prior 0.5): 0.001513</text>
+            </g>
+        </g>
+        <g class="tp td2c26">
+            <g class="tt">
+                <rect class="tb" x="475.73" y="154" width="193.84" height="44" rx="6"/>
+                <text class="tx b" x="485.73" y="172">merchant_risk = 6.598</text>
+                <rect class="tsw s0" x="485.73" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="499.73" y="189">Class 0 (prior 0.5): 0.0005578</text>
+            </g>
+        </g>
+        <g class="tp td2c27">
+            <g class="tt">
+                <rect class="tb" x="482.68" y="154" width="193.84" height="44" rx="6"/>
+                <text class="tx b" x="492.68" y="172">merchant_risk = 6.975</text>
+                <rect class="tsw s0" x="492.68" y="180" width="9" height="9" rx="2"/>
+                <text class="tx" x="506.68" y="189">Class 0 (prior 0.5): 0.0001867</text>
+            </g>
+        </g>
+        <g class="tp td3c0">
+            <g class="tt">
+                <rect class="tb" x="47.48" y="334" width="193.84" height="44" rx="6"/>
+                <text class="tx b" x="57.48" y="352">account_age = -0.6948</text>
+                <rect class="tsw s0" x="57.48" y="360" width="9" height="9" rx="2"/>
+                <text class="tx" x="71.48" y="369">Class 0 (prior 0.5): 0.0008581</text>
+            </g>
+        </g>
+        <g class="tp td3c1">
+            <g class="tt">
+                <rect class="tb" x="54.43" y="326" width="193.84" height="61" rx="6"/>
+                <text class="tx b" x="64.43" y="344">account_age = -0.6083</text>
+                <rect class="tsw s0" x="64.43" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="78.43" y="361">Class 0 (prior 0.5): 0.002647</text>
+                <rect class="tsw s1" x="64.43" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="78.43" y="378">Class 1 (prior 0.5): 0.0006045</text>
+            </g>
+        </g>
+        <g class="tp td3c2">
+            <g class="tt">
+                <rect class="tb" x="61.38" y="326" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="71.38" y="344">account_age = -0.5217</text>
+                <rect class="tsw s0" x="71.38" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="85.38" y="361">Class 0 (prior 0.5): 0.007331</text>
+                <rect class="tsw s1" x="71.38" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="85.38" y="378">Class 1 (prior 0.5): 0.001864</text>
+            </g>
+        </g>
+        <g class="tp td3c3">
+            <g class="tt">
+                <rect class="tb" x="68.33" y="326" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="78.33" y="344">account_age = -0.4351</text>
+                <rect class="tsw s0" x="78.33" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="92.33" y="361">Class 0 (prior 0.5): 0.01841</text>
+                <rect class="tsw s1" x="78.33" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="92.33" y="378">Class 1 (prior 0.5): 0.005216</text>
+            </g>
+        </g>
+        <g class="tp td3c4">
+            <g class="tt">
+                <rect class="tb" x="75.29" y="326" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="85.29" y="344">account_age = -0.3485</text>
+                <rect class="tsw s0" x="85.29" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="99.29" y="361">Class 0 (prior 0.5): 0.04298</text>
+                <rect class="tsw s1" x="85.29" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="99.29" y="378">Class 1 (prior 0.5): 0.01367</text>
+            </g>
+        </g>
+        <g class="tp td3c5">
+            <g class="tt">
+                <rect class="tb" x="82.24" y="326" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="92.24" y="344">account_age = -0.262</text>
+                <rect class="tsw s0" x="92.24" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="106.24" y="361">Class 0 (prior 0.5): 0.09127</text>
+                <rect class="tsw s1" x="92.24" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="106.24" y="378">Class 1 (prior 0.5): 0.0326</text>
+            </g>
+        </g>
+        <g class="tp td3c6">
+            <g class="tt">
+                <rect class="tb" x="89.19" y="326" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="99.19" y="344">account_age = -0.1754</text>
+                <rect class="tsw s0" x="99.19" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="113.19" y="361">Class 0 (prior 0.5): 0.176</text>
+                <rect class="tsw s1" x="99.19" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="113.19" y="378">Class 1 (prior 0.5): 0.07056</text>
+            </g>
+        </g>
+        <g class="tp td3c7">
+            <g class="tt">
+                <rect class="tb" x="96.14" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="106.14" y="344">account_age = -0.08883</text>
+                <rect class="tsw s0" x="106.14" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="120.14" y="361">Class 0 (prior 0.5): 0.3094</text>
+                <rect class="tsw s1" x="106.14" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="120.14" y="378">Class 1 (prior 0.5): 0.1392</text>
+            </g>
+        </g>
+        <g class="tp td3c8">
+            <g class="tt">
+                <rect class="tb" x="103.1" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="113.1" y="344">account_age = -0.002259</text>
+                <rect class="tsw s0" x="113.1" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="127.1" y="361">Class 0 (prior 0.5): 0.4999</text>
+                <rect class="tsw s1" x="113.1" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="127.1" y="378">Class 1 (prior 0.5): 0.2533</text>
+            </g>
+        </g>
+        <g class="tp td3c9">
+            <g class="tt">
+                <rect class="tb" x="110.05" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="120.05" y="344">account_age = 0.08431</text>
+                <rect class="tsw s0" x="120.05" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="134.05" y="361">Class 0 (prior 0.5): 0.7353</text>
+                <rect class="tsw s1" x="120.05" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="134.05" y="378">Class 1 (prior 0.5): 0.4207</text>
+            </g>
+        </g>
+        <g class="tp td3c10">
+            <g class="tt">
+                <rect class="tb" x="117" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="127" y="344">account_age = 0.1709</text>
+                <rect class="tsw s0" x="127" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="141" y="361">Class 0 (prior 0.5): 0.9875</text>
+                <rect class="tsw s1" x="127" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="141" y="378">Class 1 (prior 0.5): 0.6376</text>
+            </g>
+        </g>
+        <g class="tp td3c11">
+            <g class="tt">
+                <rect class="tb" x="123.95" y="326" width="166.96" height="61" rx="6"/>
+                <text class="tx b" x="133.95" y="344">account_age = 0.2575</text>
+                <rect class="tsw s0" x="133.95" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="147.95" y="361">Class 0 (prior 0.5): 1.212</text>
+                <rect class="tsw s1" x="133.95" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="147.95" y="378">Class 1 (prior 0.5): 0.884</text>
+            </g>
+        </g>
+        <g class="tp td3c12">
+            <g class="tt">
+                <rect class="tb" x="130.9" y="326" width="166.96" height="61" rx="6"/>
+                <text class="tx b" x="140.9" y="344">account_age = 0.344</text>
+                <rect class="tsw s0" x="140.9" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="154.9" y="361">Class 0 (prior 0.5): 1.355</text>
+                <rect class="tsw s1" x="140.9" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="154.9" y="378">Class 1 (prior 0.5): 1.121</text>
+            </g>
+        </g>
+        <g class="tp td3c13">
+            <g class="tt">
+                <rect class="tb" x="137.86" y="326" width="166.96" height="61" rx="6"/>
+                <text class="tx b" x="147.86" y="344">account_age = 0.4306</text>
+                <rect class="tsw s0" x="147.86" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="161.86" y="361">Class 0 (prior 0.5): 1.385</text>
+                <rect class="tsw s1" x="147.86" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="161.86" y="378">Class 1 (prior 0.5): 1.299</text>
+            </g>
+        </g>
+        <g class="tp td3c14">
+            <g class="tt">
+                <rect class="tb" x="144.81" y="326" width="166.96" height="61" rx="6"/>
+                <text class="tx b" x="154.81" y="344">account_age = 0.5172</text>
+                <rect class="tsw s0" x="154.81" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="168.81" y="361">Class 0 (prior 0.5): 1.294</text>
+                <rect class="tsw s1" x="154.81" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="168.81" y="378">Class 1 (prior 0.5): 1.377</text>
+            </g>
+        </g>
+        <g class="tp td3c15">
+            <g class="tt">
+                <rect class="tb" x="151.76" y="326" width="166.96" height="61" rx="6"/>
+                <text class="tx b" x="161.76" y="344">account_age = 0.6037</text>
+                <rect class="tsw s0" x="161.76" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="175.76" y="361">Class 0 (prior 0.5): 1.103</text>
+                <rect class="tsw s1" x="161.76" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="175.76" y="378">Class 1 (prior 0.5): 1.336</text>
+            </g>
+        </g>
+        <g class="tp td3c16">
+            <g class="tt">
+                <rect class="tb" x="158.71" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="168.71" y="344">account_age = 0.6903</text>
+                <rect class="tsw s0" x="168.71" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="182.71" y="361">Class 0 (prior 0.5): 0.8576</text>
+                <rect class="tsw s1" x="168.71" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="182.71" y="378">Class 1 (prior 0.5): 1.184</text>
+            </g>
+        </g>
+        <g class="tp td3c17">
+            <g class="tt">
+                <rect class="tb" x="165.67" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="175.67" y="344">account_age = 0.7769</text>
+                <rect class="tsw s0" x="175.67" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="189.67" y="361">Class 0 (prior 0.5): 0.6094</text>
+                <rect class="tsw s1" x="175.67" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="189.67" y="378">Class 1 (prior 0.5): 0.9588</text>
+            </g>
+        </g>
+        <g class="tp td3c18">
+            <g class="tt">
+                <rect class="tb" x="172.62" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="182.62" y="344">account_age = 0.8635</text>
+                <rect class="tsw s0" x="182.62" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="196.62" y="361">Class 0 (prior 0.5): 0.3947</text>
+                <rect class="tsw s1" x="182.62" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="196.62" y="378">Class 1 (prior 0.5): 0.7106</text>
+            </g>
+        </g>
+        <g class="tp td3c19">
+            <g class="tt">
+                <rect class="tb" x="179.57" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="189.57" y="344">account_age = 0.95</text>
+                <rect class="tsw s0" x="189.57" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="203.57" y="361">Class 0 (prior 0.5): 0.2339</text>
+                <rect class="tsw s1" x="189.57" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="203.57" y="378">Class 1 (prior 0.5): 0.481</text>
+            </g>
+        </g>
+        <g class="tp td3c20">
+            <g class="tt">
+                <rect class="tb" x="186.52" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="196.52" y="344">account_age = 1.037</text>
+                <rect class="tsw s0" x="196.52" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="210.52" y="361">Class 0 (prior 0.5): 0.1269</text>
+                <rect class="tsw s1" x="196.52" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="210.52" y="378">Class 1 (prior 0.5): 0.298</text>
+            </g>
+        </g>
+        <g class="tp td3c21">
+            <g class="tt">
+                <rect class="tb" x="193.48" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="203.48" y="344">account_age = 1.123</text>
+                <rect class="tsw s0" x="203.48" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="217.48" y="361">Class 0 (prior 0.5): 0.0626</text>
+                <rect class="tsw s1" x="203.48" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="217.48" y="378">Class 1 (prior 0.5): 0.1693</text>
+            </g>
+        </g>
+        <g class="tp td3c22">
+            <g class="tt">
+                <rect class="tb" x="200.43" y="326" width="180.4" height="61" rx="6"/>
+                <text class="tx b" x="210.43" y="344">account_age = 1.21</text>
+                <rect class="tsw s0" x="210.43" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="224.43" y="361">Class 0 (prior 0.5): 0.02792</text>
+                <rect class="tsw s1" x="210.43" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="224.43" y="378">Class 1 (prior 0.5): 0.08773</text>
+            </g>
+        </g>
+        <g class="tp td3c23">
+            <g class="tt">
+                <rect class="tb" x="207.38" y="326" width="173.68" height="61" rx="6"/>
+                <text class="tx b" x="217.38" y="344">account_age = 1.296</text>
+                <rect class="tsw s0" x="217.38" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="231.38" y="361">Class 0 (prior 0.5): 0.0116</text>
+                <rect class="tsw s1" x="217.38" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="231.38" y="378">Class 1 (prior 0.5): 0.0413</text>
+            </g>
+        </g>
+        <g class="tp td3c24">
+            <g class="tt">
+                <rect class="tb" x="214.33" y="326" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="224.33" y="344">account_age = 1.383</text>
+                <rect class="tsw s0" x="224.33" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="238.33" y="361">Class 0 (prior 0.5): 0.004389</text>
+                <rect class="tsw s1" x="224.33" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="238.33" y="378">Class 1 (prior 0.5): 0.01787</text>
+            </g>
+        </g>
+        <g class="tp td3c25">
+            <g class="tt">
+                <rect class="tb" x="221.29" y="326" width="187.12" height="61" rx="6"/>
+                <text class="tx b" x="231.29" y="344">account_age = 1.469</text>
+                <rect class="tsw s0" x="231.29" y="352" width="9" height="9" rx="2"/>
+                <text class="tx" x="245.29" y="361">Class 0 (prior 0.5): 0.001498</text>
+                <rect class="tsw s1" x="231.29" y="369" width="9" height="9" rx="2"/>
+                <text class="tx" x="245.29" y="378">Class 1 (prior 0.5): 0.007141</text>
+            </g>
+        </g>
+        <g class="tp td3c26">
+            <g class="tt">
+                <rect class="tb" x="228.24" y="334" width="187.12" height="44" rx="6"/>
+                <text class="tx b" x="238.24" y="352">account_age = 1.556</text>
+                <rect class="tsw s1" x="238.24" y="360" width="9" height="9" rx="2"/>
+                <text class="tx" x="252.24" y="369">Class 1 (prior 0.5): 0.002591</text>
+            </g>
+        </g>
+        <g class="tp td3c27">
+            <g class="tt">
+                <rect class="tb" x="235.19" y="334" width="193.84" height="44" rx="6"/>
+                <text class="tx b" x="245.19" y="352">account_age = 1.643</text>
+                <rect class="tsw s1" x="245.19" y="360" width="9" height="9" rx="2"/>
+                <text class="tx" x="259.19" y="369">Class 1 (prior 0.5): 0.0008465</text>
+            </g>
+        </g>
+    </g>
+</svg>

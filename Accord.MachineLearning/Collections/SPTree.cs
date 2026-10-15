@@ -52,143 +52,141 @@
 //    OF SUCH DAMAGE.
 //   
 
+using System;
+using Accord.Math;
+
 namespace Accord.Collections
 {
-    using System;
-    using Accord.Math;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Space-Partitioning Tree.
+    ///     Space-Partitioning Tree.
     /// </summary>
-    /// 
     [Serializable]
     public class SPTree : Tree<SPTreeNode>
     {
-        private int dimension;
-
         /// <summary>
-        ///   Gets the dimension of the space covered by this tree.
+        ///     Initializes a new instance of the <see cref="SPTree" /> class.
         /// </summary>
-        /// 
-        public int Dimension
-        {
-            get { return dimension; }
-        }
-
-        
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SPTree"/> class.
-        /// </summary>
-        /// 
         /// <param name="dimensions">The dimensions of the space partitioned by the tree.</param>
-        /// 
         public SPTree(int dimensions)
         {
-            this.dimension = dimensions;
+            Dimension = dimensions;
         }
 
+        /// <summary>
+        ///     Gets the dimension of the space covered by this tree.
+        /// </summary>
+        public int Dimension { get; }
 
         /// <summary>
-        ///   Creates a new space-partitioning tree from the given points.
+        ///     Creates a new space-partitioning tree from the given points.
         /// </summary>
-        /// 
         /// <param name="points">The points to be added to the tree.</param>
-        /// 
-        /// <returns>A <see cref="SPTree"/> populated with the given data points.</returns>
-        /// 
+        /// <returns>A <see cref="SPTree" /> populated with the given data points.</returns>
         public static SPTree FromData(double[][] points)
         {
-            int D = points.Columns();
-            int N = points.Rows();
+            var D = points.Columns();
+            var N = points.Rows();
             var tree = new SPTree(D);
 
             // Compute mean, width, and height of current map (boundaries of SPTree)
             var mean_Y = new double[D];
             var min_Y = new double[D];
             var max_Y = new double[D];
-            for (int d = 0; d < D; d++)
+            for (var d = 0; d < D; d++)
             {
-                min_Y[d] = Double.MaxValue;
-                max_Y[d] = Double.MinValue;
+                min_Y[d] = double.MaxValue;
+                max_Y[d] = double.MinValue;
             }
 
-            for (int n = 0; n < N; n++)
+            for (var n = 0; n < N; n++)
             {
-                for (int d = 0; d < D; d++)
+                for (var d = 0; d < D; d++)
                 {
                     mean_Y[d] += points[n][d];
                     if (points[n][d] < min_Y[d])
+                    {
                         min_Y[d] = points[n][d];
+                    }
+
                     if (points[n][d] > max_Y[d])
+                    {
                         max_Y[d] = points[n][d];
+                    }
                 }
             }
 
-            for (int d = 0; d < D; d++)
-                mean_Y[d] /= (double)N;
+            for (var d = 0; d < D; d++)
+            {
+                mean_Y[d] /= N;
+            }
 
             // Construct SPTree
             var width = new double[D];
-            for (int d = 0; d < D; d++)
+            for (var d = 0; d < D; d++)
+            {
                 width[d] = System.Math.Max(max_Y[d] - mean_Y[d], mean_Y[d] - min_Y[d]) + 1e-5;
+            }
 
             tree.Root = new SPTreeNode(tree, null, 0, mean_Y, width);
-            for (int i = 0; i < points.Length; i++)
+            for (var i = 0; i < points.Length; i++)
+            {
                 tree.Root.Add(points[i]);
+            }
 
             return tree;
         }
 
         /// <summary>
-        ///   Inserts a point in the Space-Partitioning tree.
+        ///     Inserts a point in the Space-Partitioning tree.
         /// </summary>
-        /// 
         public bool Add(double[] point)
         {
             return Root.Add(point);
         }
 
         /// <summary>
-        ///  Computes non-edge forces using Barnes-Hut algorithm.
+        ///     Computes non-edge forces using Barnes-Hut algorithm.
         /// </summary>
-        /// 
         public void ComputeNonEdgeForces(double[] point, double theta, double[] neg_f, ref double sum_Q)
         {
             Root.ComputeNonEdgeForces(point, theta, neg_f, ref sum_Q);
         }
 
         /// <summary>
-        ///   Computes edge forces.
+        ///     Computes edge forces.
         /// </summary>
-        /// 
         public void ComputeEdgeForces(double[][] points, int[] row_P, int[] col_P, double[] val_P, double[][] pos_f)
         {
             // Loop over all edges in the graph
             double D;
-            double[] buff = new double[dimension];
-            for (int n = 0; n < points.Length; n++)
+            var buff = new double[Dimension];
+            for (var n = 0; n < points.Length; n++)
             {
-                for (int i = row_P[n]; i < row_P[n + 1]; i++)
+                for (var i = row_P[n]; i < row_P[n + 1]; i++)
                 {
                     // Compute pairwise distance and Q-value
                     D = 1.0;
-                    int j = col_P[i];
+                    var j = col_P[i];
 
-                    for (int d = 0; d < dimension; d++)
+                    for (var d = 0; d < Dimension; d++)
+                    {
                         buff[d] = points[n][d] - points[j][d];
+                    }
 
-                    for (int d = 0; d < dimension; d++)
+                    for (var d = 0; d < Dimension; d++)
+                    {
                         D += buff[d] * buff[d];
+                    }
+
                     D = val_P[i] / D;
 
                     // Sum positive force
-                    for (int d = 0; d < dimension; d++)
+                    for (var d = 0; d < Dimension; d++)
+                    {
                         pos_f[n][d] += D * buff[d];
+                    }
                 }
             }
         }
-
     }
 }

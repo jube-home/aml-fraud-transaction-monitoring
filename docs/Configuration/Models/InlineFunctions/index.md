@@ -6,8 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Inline Functions
 
 Inline functions exist for the purpose of adding new fields to the payload by performing coded functions on data added

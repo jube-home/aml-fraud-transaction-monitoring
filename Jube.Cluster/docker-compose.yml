@@ -724,6 +724,7 @@ services:
   jube-ui:
     image: ${JUBE_IMAGE}
     secrets:
+      - ASK_JOOBY_API_KEY
       - JUBE_APP_PASSWORD
       - JUBE_REPORTING_PASSWORD
       - JUBE_MIGRATION_PASSWORD
@@ -773,6 +774,8 @@ services:
       - EnableExhaustiveTraining=False
       - Landlord=False
       - EnableReprocessing=False
+      - EnableAskJooby=${EnableAskJooby}
+      - AskJoobyApiKey=[@ASK_JOOBY_API_KEY@]
       - EnableSanctionLoader=False
       - CachePruneServer=False
       - EnableTtlCounter=False
@@ -846,6 +849,7 @@ services:
   jube-api:
     image: ${JUBE_IMAGE}
     secrets:
+      - ASK_JOOBY_API_KEY
       - JUBE_APP_PASSWORD
       - JUBE_REPORTING_PASSWORD
       - JUBE_MIGRATION_PASSWORD
@@ -906,6 +910,8 @@ services:
       - EnableExhaustiveTraining=False
       - Landlord=True
       - EnableReprocessing=False
+      - EnableAskJooby=${EnableAskJooby}
+      - AskJoobyApiKey=[@ASK_JOOBY_API_KEY@]
       - EnableSanctionLoader=False
       - CachePruneServer=False
       - EnableTtlCounter=False
@@ -920,6 +926,11 @@ services:
       - RedisPublishSubscribeEvents=True
       - EnableEntityModel=True
       - EnablePublicInvokeController=True
+      # Points AskJooby's sandboxed-R-script tool (RunScript, gated separately by EnableAskJoobyR plus the
+      # per-caller SandboxedScriptExecution permission) at the jube-r service below by its compose service
+      # name and internal port. jube-jobs doesn't carry this: it has no haproxy frontend of its own (see
+      # haproxy.cfg), so it never serves the AskJooby HTTP endpoints that reach this tool.
+      - RServerUrl=http://jube-r:8080
       - Log4NetLogLevel=WARN
       - ActivationWatcherBulkCopyThresholdjube-=20
       - ArchiverPersistThreads=4
@@ -976,6 +987,7 @@ services:
   jube-jobs:
     image: ${JUBE_IMAGE}
     secrets:
+      - ASK_JOOBY_API_KEY
       - JUBE_APP_PASSWORD
       - JUBE_REPORTING_PASSWORD
       - JUBE_MIGRATION_PASSWORD
@@ -1038,6 +1050,8 @@ services:
       # horizontally-scaled request handlers.
       - EnableExhaustiveTraining=True
       - EnableReprocessing=True
+      - EnableAskJooby=${EnableAskJooby}
+      - AskJoobyApiKey=[@ASK_JOOBY_API_KEY@]
       - EnableSanctionLoader=True
       - CachePruneServer=True
       - EnableTtlCounter=True
@@ -1077,6 +1091,37 @@ services:
       update_config:
         parallelism: 1
         delay: 180s
+        order: stop-first
+        failure_action: rollback
+        monitor: 30s
+        max_failure_ratio: 0.1
+      rollback_config:
+        parallelism: 1
+        delay: 60s
+        order: stop-first
+        failure_action: continue
+
+  jube-r:
+    image: ${JUBE_R_IMAGE}
+    environment:
+      - JUBE_R_HOST=0.0.0.0
+      - JUBE_R_PORT=8080
+    networks:
+      jube-cluster:
+        aliases:
+          - jube-r
+    deploy:
+      # Unlike jube-api/jube-ui above, this service has no database-migration gate to wait on - it's a
+      # stateless sandbox with no schema of its own - so it runs with real replicas from the first deploy
+      # rather than sitting at replicas: 0 for a manual scale-up step that doesn't apply to it.
+      replicas: 2
+      endpoint_mode: dnsrr
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+      update_config:
+        parallelism: 1
+        delay: 60s
         order: stop-first
         failure_action: rollback
         monitor: 30s
@@ -1218,6 +1263,8 @@ secrets:
   API_HMAC_KEY:
     external: true
   ENCRYPTION_KEY:
+    external: true
+  ASK_JOOBY_API_KEY:
     external: true
   PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY:
     external: true

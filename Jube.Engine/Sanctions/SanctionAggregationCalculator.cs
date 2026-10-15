@@ -20,18 +20,6 @@ namespace Jube.Engine.Sanctions
 {
     public static class SanctionAggregationCalculator
     {
-        private const byte Sum = 1;
-        private const byte Average = 2;
-        private const byte Count = 3;
-        private const byte Max = 4;
-        private const byte Min = 5;
-        private const byte First = 6;
-        private const byte Last = 7;
-        private const byte Confidence = 8;
-
-        private const double DefaultClosenessWeight = 0.5;
-        private const ConfidenceBlendMode DefaultBlendMode = ConfidenceBlendMode.Multiplicative;
-
         public static double? Calculate(byte aggregationTypeId, IReadOnlyList<SanctionEntryReturn> sanctionEntryReturns)
         {
             return aggregationTypeId switch
@@ -128,6 +116,17 @@ namespace Jube.Engine.Sanctions
             return Math.Round(CombineConfidence(closeness, standout, DefaultBlendMode, DefaultClosenessWeight), 4);
         }
 
+        private const byte Sum = 1;
+        private const byte Average = 2;
+        private const byte Count = 3;
+        private const byte Max = 4;
+        private const byte Min = 5;
+        private const byte First = 6;
+        private const byte Last = 7;
+        private const byte Confidence = 8;
+        private const double DefaultClosenessWeight = 0.5;
+        private const ConfidenceBlendMode DefaultBlendMode = ConfidenceBlendMode.Multiplicative;
+
         private static double CalculateCloseness(double minDistance)
         {
             return 1.0 / (1.0 + minDistance);
@@ -136,12 +135,14 @@ namespace Jube.Engine.Sanctions
         private static double CalculateSampleStdDev(List<double> distances, double mean, int n)
         {
             var variance = distances.Sum(d => (d - mean) * (d - mean)) / (n - 1);
+
             return Math.Sqrt(variance);
         }
 
         private static double CalculateSeparation(double mean, double min, double stdDev, double midpointZ)
         {
             var zScore = (mean - min) / stdDev;
+
             return 1.0 / (1.0 + Math.Exp(-zScore + midpointZ));
         }
 

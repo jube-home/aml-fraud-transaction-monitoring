@@ -50,7 +50,6 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -59,23 +58,33 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
 
             await dbContext.CaseNote.Where(w => createdCaseNoteIds.Contains(w.Id)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowActionGuids = dbContext.CaseWorkflowAction
                 .Where(a => createdCaseWorkflowActionIds.Contains(a.Id)).Select(a => a.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowActionRole>()
                 .Where(w => caseWorkflowActionGuids.Contains(w.CaseWorkflowActionGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowAction.Where(w => createdCaseWorkflowActionIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowStatusGuids = dbContext.CaseWorkflowStatus
                 .Where(s => createdCaseWorkflowStatusIds.Contains(s.Id)).Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 .Where(w => caseWorkflowStatusGuids.Contains(w.CaseWorkflowStatusGuid)).DeleteAsync();
+
             var caseWorkflowGuids = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -92,6 +101,7 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
             bool grantAction = true, byte workflowDeleted = 0, byte statusDeleted = 0, byte roleDeleted = 0)
         {
             var repository = new Data.Repository.EntityAnalysisModelRepository(dbContext, ownerUser);
+
             var model = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -106,6 +116,7 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
                 .Where(u => u.Name == grantRoleOfUser).Select(u => u.RoleRegistryGuid).FirstAsync();
 
             var workflowGuid = Guid.NewGuid();
+
             var workflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -129,6 +140,7 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
             }
 
             var statusGuid = Guid.NewGuid();
+
             var statusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -148,6 +160,7 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
 
             var actionGuid = Guid.NewGuid();
             var actionName = $"{DatabaseFixture.Prefix}Action{Guid.NewGuid():N}"[..40];
+
             var actionId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowAction
             {
                 Name = actionName, Guid = actionGuid, CaseWorkflowId = workflowId, Active = 1, Locked = 0,
@@ -183,6 +196,7 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
                 CreatedUser = createdUser, CaseId = graph.CaseId, CaseKey = graph.Key, CaseKeyValue = graph.Value,
             });
             createdCaseNoteIds.Add(id);
+
             return id;
         }
 
@@ -210,6 +224,7 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -218,6 +233,7 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -306,8 +322,10 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
             var key = Unique("Key");
             var value = Unique("Val");
             var graph = await CreateCaseGraphAsync(dbContext, user, user, key, value);
+
             await AddNoteAsync(dbContext, graph, "Called the customer, will re-check tomorrow.", 2, user,
                 DateTime.UtcNow);
+
             var service = await BuildServiceAsync(dbContext, user);
 
             var result = await service.GetAsync(key, value);
@@ -404,8 +422,10 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
             await using var dbContext = fx.GetDbContext();
             var key = Unique("Key");
             var value = Unique("Val");
+
             var graph = await CreateCaseGraphAsync(dbContext, fx.Seed.UserWithPermission,
                 fx.Seed.UserWithPermission, key, value);
+
             await AddNoteAsync(dbContext, graph, "n", 1, "x", DateTime.UtcNow);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermissionNoApproval);
 
@@ -422,9 +442,11 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
             var user = fx.Seed.UserWithPermission;
             var key = Unique("Key");
             var value = Unique("Val");
+
             var graph = await CreateCaseGraphAsync(dbContext, user, user, key, value,
                 grantWorkflow: missing != "workflow", grantStatus: missing != "status",
                 grantAction: missing != "action");
+
             await AddNoteAsync(dbContext, graph, "n", 1, user, DateTime.UtcNow);
             var service = await BuildServiceAsync(dbContext, user);
 
@@ -510,6 +532,7 @@ namespace Jube.Test.Service.Query.CaseNoteByCaseKeyValue
             await service.GetAsync(Unique("Key"), Unique("Val"));
 
             auditLog.Entries.Should().ContainSingle();
+
             auditLog.Entries[0].Message.Should().Contain("area=CaseNoteByCaseKeyValue op=Get")
                 .And.Contain("outcome=ok").And.Contain("rows=0");
         }

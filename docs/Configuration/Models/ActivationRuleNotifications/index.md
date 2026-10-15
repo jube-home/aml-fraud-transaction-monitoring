@@ -6,8 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Activation Rule Notifications
 It is possible to send Email and SMS notifications as a consequence of an Activation Rule having matched,  with Notification configuration strings being available for tokenization (i.e. swapping values with that available in the processing for the purposes of providing context to the recipient).
 

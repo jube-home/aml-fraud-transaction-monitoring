@@ -1,36 +1,44 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Math.Distances;
 
 namespace Accord.Statistics.Kernels
 {
-    using System;
-    using Accord.Math;
-    using Accord.Math.Distances;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Polynomial Kernel.
+    ///     Polynomial Kernel.
     /// </summary>
-    /// 
     [Serializable]
     public struct Polynomial : IKernel, IDistance,
         IReverseDistance, ICloneable, ITransform,
@@ -40,12 +48,10 @@ namespace Accord.Statistics.Kernels
         private double constant;
 
         /// <summary>
-        ///   Constructs a new Polynomial kernel of a given degree.
+        ///     Constructs a new Polynomial kernel of a given degree.
         /// </summary>
-        /// 
         /// <param name="degree">The polynomial degree for this kernel.</param>
         /// <param name="constant">The polynomial constant for this kernel. Default is 1.</param>
-        /// 
         public Polynomial(int degree, double constant)
         {
             this.degree = degree;
@@ -53,190 +59,175 @@ namespace Accord.Statistics.Kernels
         }
 
         /// <summary>
-        ///   Constructs a new Polynomial kernel of a given degree.
+        ///     Constructs a new Polynomial kernel of a given degree.
         /// </summary>
-        /// 
         /// <param name="degree">The polynomial degree for this kernel.</param>
-        /// 
         public Polynomial(int degree)
-            : this(degree, 1.0) { }
+            : this(degree, 1.0)
+        {
+        }
 
         /// <summary>
-        ///   Gets or sets the kernel's polynomial degree.
+        ///     Gets or sets the kernel's polynomial degree.
         /// </summary>
-        /// 
         public int Degree
         {
-            get { return degree; }
+            get => degree;
             set
             {
                 if (value <= 0)
+                {
                     throw new ArgumentOutOfRangeException("value", "Degree must be positive.");
+                }
 
                 degree = value;
             }
         }
 
         /// <summary>
-        ///   Gets or sets the kernel's polynomial constant term.
+        ///     Gets or sets the kernel's polynomial constant term.
         /// </summary>
-        /// 
         public double Constant
         {
-            get { return constant; }
-            set { constant = value; }
+            get => constant;
+            set => constant = value;
         }
 
-
         /// <summary>
-        ///   Polynomial kernel function.
+        ///     Polynomial kernel function.
         /// </summary>
-        /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
         /// <param name="y">Vector <c>y</c> in input space.</param>
         /// <returns>Dot product in feature (kernel) space.</returns>
-        /// 
         public double Function(double[] x, double[] y)
         {
-            double sum = constant;
-            for (int i = 0; i < x.Length; i++)
+            var sum = constant;
+            for (var i = 0; i < x.Length; i++)
+            {
                 sum += x[i] * y[i];
+            }
 
-            return Math.Pow(sum, degree);
+            return System.Math.Pow(sum, degree);
         }
 
         /// <summary>
-        ///   Polynomial kernel function.
+        ///     Polynomial kernel function.
         /// </summary>
-        /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
         /// <param name="y">Vector <c>y</c> in input space.</param>
         /// <returns>Dot product in feature (kernel) space.</returns>
-        /// 
         public double Function(Sparse<double> x, Sparse<double> y)
         {
-            double sum = x.Dot(y) + constant;
-            return Math.Pow(sum, degree);
+            var sum = x.Dot(y) + constant;
+            return System.Math.Pow(sum, degree);
         }
 
         /// <summary>
-        ///   Polynomial kernel function.
+        ///     Polynomial kernel function.
         /// </summary>
-        /// 
         /// <param name="z">Distance <c>z</c> in input space.</param>
-        /// 
         /// <returns>Dot product in feature (kernel) space.</returns>
-        /// 
         public double Function(double z)
         {
-            return Math.Pow(z + constant, degree);
+            return System.Math.Pow(z + constant, degree);
         }
 
         /// <summary>
-        ///   Computes the squared distance in feature space
-        ///   between two points given in input space.
+        ///     Computes the squared distance in feature space
+        ///     between two points given in input space.
         /// </summary>
-        /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
         /// <param name="y">Vector <c>y</c> in input space.</param>
-        /// 
         /// <returns>Squared distance between <c>x</c> and <c>y</c> in feature (kernel) space.</returns>
-        /// 
         public double Distance(double[] x, double[] y)
         {
             if (x == y)
+            {
                 return 0.0;
+            }
 
-            double sumx = constant;
-            double sumy = constant;
-            double sum = constant;
+            var sumx = constant;
+            var sumy = constant;
+            var sum = constant;
 
-            for (int i = 0; i < x.Length; i++)
+            for (var i = 0; i < x.Length; i++)
             {
                 sumx += x[i] * x[i];
                 sumy += y[i] * y[i];
                 sum += x[i] * y[i];
             }
 
-            int d = degree;
+            var d = degree;
 
-            return Math.Pow(sumx, d) + Math.Pow(sumy, d) - 2 * Math.Pow(sum, d);
+            return System.Math.Pow(sumx, d) + System.Math.Pow(sumy, d) - 2 * System.Math.Pow(sum, d);
         }
 
         /// <summary>
-        ///   Computes the squared distance in feature space
-        ///   between two points given in input space.
+        ///     Computes the squared distance in feature space
+        ///     between two points given in input space.
         /// </summary>
-        /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
         /// <param name="y">Vector <c>y</c> in input space.</param>
-        /// 
         /// <returns>Squared distance between <c>x</c> and <c>y</c> in feature (kernel) space.</returns>
-        /// 
         public double Distance(Sparse<double> x, Sparse<double> y)
         {
             if (x == y)
+            {
                 return 0.0;
+            }
 
-            double sumx = constant + x.Dot(x);
-            double sumy = constant + y.Dot(y);
-            double sum = constant + x.Dot(y);
+            var sumx = constant + x.Dot(x);
+            var sumy = constant + y.Dot(y);
+            var sum = constant + x.Dot(y);
 
-            int d = degree;
+            var d = degree;
 
-            return Math.Pow(sumx, d) + Math.Pow(sumy, d) - 2 * Math.Pow(sum, d);
+            return System.Math.Pow(sumx, d) + System.Math.Pow(sumy, d) - 2 * System.Math.Pow(sum, d);
         }
 
         /// <summary>
-        ///   Computes the distance in input space
-        ///   between two points given in feature space.
+        ///     Computes the distance in input space
+        ///     between two points given in feature space.
         /// </summary>
-        /// 
         /// <param name="x">Vector <c>x</c> in feature (kernel) space.</param>
         /// <param name="y">Vector <c>y</c> in feature (kernel) space.</param>
         /// <returns>Distance between <c>x</c> and <c>y</c> in input space.</returns>
-        /// 
         public double ReverseDistance(double[] x, double[] y)
         {
-            double sumx = constant;
-            double sumy = constant;
-            double sum = constant;
+            var sumx = constant;
+            var sumy = constant;
+            var sum = constant;
 
-            for (int i = 0; i < x.Length; i++)
+            for (var i = 0; i < x.Length; i++)
             {
                 sumx += x[i] * x[i];
                 sumy += y[i] * y[i];
                 sum += x[i] * y[i];
             }
 
-            double q = 1.0 / degree;
+            var q = 1.0 / degree;
 
-            return Math.Pow(sumx, q) + Math.Pow(sumy, q) - 2.0 * Math.Pow(sum, q);
+            return System.Math.Pow(sumx, q) + System.Math.Pow(sumy, q) - 2.0 * System.Math.Pow(sum, q);
         }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public object Clone()
         {
             return MemberwiseClone();
         }
 
         /// <summary>
-        ///   Projects an input point into feature space.
+        ///     Projects an input point into feature space.
         /// </summary>
-        /// 
         /// <param name="input">The input point to be projected into feature space.</param>
-        /// 
         /// <returns>
-        ///   The feature space representation of the given <paramref name="input"/> point.
+        ///     The feature space representation of the given <paramref name="input" /> point.
         /// </returns>
-        /// 
         public double[] Transform(double[] input)
         {
             switch (degree)
@@ -253,35 +244,32 @@ namespace Accord.Statistics.Kernels
         }
 
         /// <summary>
-        ///   Projects a set of input points into feature space.
+        ///     Projects a set of input points into feature space.
         /// </summary>
-        /// 
         /// <param name="inputs">The input points to be projected into feature space.</param>
-        /// 
         /// <returns>
-        ///   The feature space representation of the given <paramref name="inputs"/> points.
+        ///     The feature space representation of the given <paramref name="inputs" /> points.
         /// </returns>
-        /// 
         public double[][] Transform(double[][] inputs)
         {
-            double[][] r = new double[inputs.Length][];
-            for (int i = 0; i < inputs.Length; i++)
+            var r = new double[inputs.Length][];
+            for (var i = 0; i < inputs.Length; i++)
+            {
                 r[i] = Transform(inputs[i]);
+            }
+
             return r;
         }
 
         /// <summary>
-        ///   Projects an input point into feature space.
+        ///     Projects an input point into feature space.
         /// </summary>
-        /// 
         /// <param name="input">The input point to be projected into feature space.</param>
-        /// <param name="constant">The <see cref="Constant"/> parameter of the kernel.</param>
-        /// <param name="degree">The <see cref="Degree"/> parameter of the kernel.</param>
-        /// 
+        /// <param name="constant">The <see cref="Constant" /> parameter of the kernel.</param>
+        /// <param name="degree">The <see cref="Degree" /> parameter of the kernel.</param>
         /// <returns>
-        ///   The feature space representation of the given <paramref name="input"/> point.
+        ///     The feature space representation of the given <paramref name="input" /> point.
         /// </returns>
-        /// 
         public static double[] Transform(double[] input, int degree, double constant)
         {
             if (constant != 0)
@@ -292,22 +280,24 @@ namespace Accord.Statistics.Kernels
                     + " (i.e. kernel functions with the constant term set to zero).");
             }
 
-            int n = input.Length;
-            int m = (int)Math.Pow(n, degree);
+            var n = input.Length;
+            var m = (int)System.Math.Pow(n, degree);
 
-            double[] features = new double[m];
+            var features = new double[m];
 
-            int index = 0;
-            foreach (int[] s in Combinatorics.Sequences(input.Length, degree))
+            var index = 0;
+            foreach (var s in Combinatorics.Sequences(input.Length, degree))
             {
                 double prod = 1;
-                for (int i = 0; i < s.Length; i++)
+                for (var i = 0; i < s.Length; i++)
+                {
                     prod *= input[s[i]];
+                }
+
                 features[index++] = prod;
             }
 
             return features;
         }
-
     }
 }

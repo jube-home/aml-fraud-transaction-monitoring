@@ -75,6 +75,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
 
             snapshots.Builder(1, first).EntityAnalysisModelLists =
                 new Dictionary<string, List<string>> { ["Deny"] = ["1.2.3.4"] };
+
             snapshots.Builder(2, second).ModelActivationRules =
                 [new EntityAnalysisModelActivationRule { Id = 9, Name = "Rule" }];
 
@@ -114,6 +115,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
 
             snapshots.Builder(1, model).ModelActivationRules =
                 [new EntityAnalysisModelActivationRule { Id = 1, Name = "Rule" }];
+
             snapshots.Publish();
 
             using var scope = new AssertionScope();

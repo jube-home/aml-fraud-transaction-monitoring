@@ -32,19 +32,22 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelDictionaryCsvFileUpload>> GetAsync(CancellationToken token = default)
+        public async Task<IEnumerable<EntityAnalysisModelDictionaryCsvFileUpload>> GetAsync(
+            CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelDictionaryCsvFileUpload
                 .Where(w => w.EntityAnalysisModelDictionary.EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
                 .ToListAsync(token);
         }
 
-        public async Task<IEnumerable<EntityAnalysisModelDictionaryCsvFileUpload>> GetByEntityAnalysisModelDictionaryIdAsync(
-            int entityAnalysisModelDictionaryId, CancellationToken token = default)
+        public async Task<IEnumerable<EntityAnalysisModelDictionaryCsvFileUpload>>
+            GetByEntityAnalysisModelDictionaryIdAsync(
+                int entityAnalysisModelDictionaryId, CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelDictionaryCsvFileUpload
                 .Where(w => w.EntityAnalysisModelDictionary.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
@@ -56,16 +59,19 @@ namespace Jube.Data.Repository
         public Task<EntityAnalysisModelDictionaryCsvFileUpload> GetByIdAsync(int id, CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelDictionaryCsvFileUpload.FirstOrDefaultAsync(w =>
-                w.EntityAnalysisModelDictionary.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
-                && w.EntityAnalysisModelDictionary.Id == id && (w.EntityAnalysisModelDictionary.Deleted == 0 ||
-                                                                w.EntityAnalysisModelDictionary.Deleted == null), token);
+                    w.EntityAnalysisModelDictionary.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                    && w.EntityAnalysisModelDictionary.Id == id && (w.EntityAnalysisModelDictionary.Deleted == 0 ||
+                                                                    w.EntityAnalysisModelDictionary.Deleted == null),
+                token);
         }
 
-        public async Task<EntityAnalysisModelDictionaryCsvFileUpload> InsertAsync(EntityAnalysisModelDictionaryCsvFileUpload model, CancellationToken token = default)
+        public async Task<EntityAnalysisModelDictionaryCsvFileUpload> InsertAsync(
+            EntityAnalysisModelDictionaryCsvFileUpload model, CancellationToken token = default)
         {
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
             model.InheritedId = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 

@@ -1,62 +1,75 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Linq;
+using System.Text;
+using Accord.Math;
+using Accord.Statistics.Distributions.Fitting;
+using Accord.Statistics.Distributions.Multivariate;
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using Accord.Math;
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.Statistics.Distributions.Multivariate;
-    using System;
-    using System.Linq;
-    using System.Text;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Mixture of univariate probability distributions.
+    ///     Mixture of univariate probability distributions.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   A mixture density is a probability density function which is expressed
-    ///   as a convex combination (i.e. a weighted sum, with non-negative weights
-    ///   that sum to 1) of other probability density functions. The individual
-    ///   density functions that are combined to make the mixture density are
-    ///   called the mixture components, and the weights associated with each
-    ///   component are called the mixture weights.</para>
-    ///   
-    /// <para>    
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Mixture_density">
-    ///       Wikipedia, The Free Encyclopedia. Mixture density. Available on:
-    ///       http://en.wikipedia.org/wiki/Mixture_density </a></description></item>
-    ///   </list></para>
+    ///     <para>
+    ///         A mixture density is a probability density function which is expressed
+    ///         as a convex combination (i.e. a weighted sum, with non-negative weights
+    ///         that sum to 1) of other probability density functions. The individual
+    ///         density functions that are combined to make the mixture density are
+    ///         called the mixture components, and the weights associated with each
+    ///         component are called the mixture weights.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://en.wikipedia.org/wiki/Mixture_density">
+    ///                         Wikipedia, The Free Encyclopedia. Mixture density. Available on:
+    ///                         http://en.wikipedia.org/wiki/Mixture_density
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    ///   
     /// <typeparam name="T">
-    ///   The type of the univariate component distributions.</typeparam>
-    ///   
+    ///     The type of the univariate component distributions.
+    /// </typeparam>
     /// <example>
-    /// <code>
+    ///     <code>
     ///   // Create a new mixture containing two Normal distributions
     ///   Mixture&lt;NormalDistribution> mix = new Mixture&lt;NormalDistribution>(
     ///       new NormalDistribution(2, 1), new NormalDistribution(5, 1));
@@ -89,12 +102,11 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   // Mixture(x; 0.5 * N(x; μ = 5, σ² = 1) + 0.5 * N(x; μ = 5, σ² = 1))
     ///   string str = mix.ToString(CultureInfo.InvariantCulture);
     /// </code>
-    /// 
-    /// <para>
-    ///   The following example shows how to estimate (fit) a Mixture of Normal distributions
-    ///   from weighted data:</para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         The following example shows how to estimate (fit) a Mixture of Normal distributions
+    ///         from weighted data:
+    ///     </para>
+    ///     <code>
     /// // Randomly initialize some mixture components
     /// NormalDistribution[] components = new NormalDistribution[2];
     /// components[0] = new NormalDistribution(2, 1);
@@ -136,305 +148,220 @@ namespace Accord.Statistics.Distributions.Univariate
     /// p2 = gmm.Gaussians[1].Proportion; // 0.48591 (same)
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="MultivariateMixture{T}"/>
-    /// <seealso cref="ExpectationMaximization{T}"/>
-    /// <seealso cref="LogExpectationMaximization{T}"/>
-    ///   
+    /// <seealso cref="MultivariateMixture{T}" />
+    /// <seealso cref="ExpectationMaximization{T}" />
+    /// <seealso cref="LogExpectationMaximization{T}" />
     [Serializable]
     public class Mixture<T> : UnivariateContinuousDistribution, IMixture<T>,
         IFittableDistribution<double, MixtureOptions>,
         ISampleableDistribution<double>
         where T : IUnivariateDistribution<double>
     {
+        // cache
+        private IDistribution<double>[] cache;
 
         // distribution parameters
-        private double[] coefficients;
-        private T[] components;
 
         // distributions measures
         private double? mean;
-        private double? variance;
         private DoubleRange? range;
-
-        // cache
-        IDistribution<double>[] cache;
-        ISampleableDistribution<double>[] sampleable;
+        private ISampleableDistribution<double>[] sampleable;
+        private double? variance;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="Mixture&lt;T&gt;"/> class.
+        ///     Initializes a new instance of the <see cref="Mixture&lt;T&gt;" /> class.
         /// </summary>
-        /// 
         /// <param name="components">The mixture distribution components.</param>
-        /// 
         public Mixture(params T[] components)
         {
             if (components == null)
+            {
                 throw new ArgumentNullException("components");
+            }
 
-            this.components = components;
+            this.Components = components;
 
-            this.coefficients = new double[components.Length];
-            for (int i = 0; i < coefficients.Length; i++)
-                coefficients[i] = 1.0 / coefficients.Length;
+            Coefficients = new double[components.Length];
+            for (var i = 0; i < Coefficients.Length; i++)
+            {
+                Coefficients[i] = 1.0 / Coefficients.Length;
+            }
 
-            this.cache = new IDistribution<double>[coefficients.Length];
-            for (int i = 0; i < cache.Length; i++)
+            cache = new IDistribution<double>[Coefficients.Length];
+            for (var i = 0; i < cache.Length; i++)
+            {
                 cache[i] = components[i];
+            }
 
-            this.initialize();
+            initialize();
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="Mixture&lt;T&gt;"/> class.
+        ///     Initializes a new instance of the <see cref="Mixture&lt;T&gt;" /> class.
         /// </summary>
-        /// 
         /// <param name="coefficients">The mixture weight coefficients.</param>
         /// <param name="components">The mixture distribution components.</param>
-        /// 
         public Mixture(double[] coefficients, params T[] components)
         {
             if (components == null)
+            {
                 throw new ArgumentNullException("components");
+            }
 
             if (coefficients == null)
+            {
                 throw new ArgumentNullException("coefficients");
+            }
 
             if (coefficients.Length != components.Length)
+            {
                 throw new ArgumentException(
                     "The coefficient and component arrays should have the same length.",
                     "components");
-
-            this.components = components;
-            this.coefficients = coefficients;
-
-            this.cache = new IDistribution<double>[coefficients.Length];
-            for (int i = 0; i < cache.Length; i++)
-                cache[i] = components[i];
-
-            this.initialize();
-        }
-
-        private void initialize()
-        {
-            this.mean = null;
-            this.variance = null;
-            this.range = null;
-        }
-
-        /// <summary>
-        ///   Gets the mixture components.
-        /// </summary>
-        /// 
-        public T[] Components
-        {
-            get { return components; }
-        }
-
-        /// <summary>
-        ///   Gets the weight coefficients.
-        /// </summary>
-        /// 
-        public double[] Coefficients
-        {
-            get { return coefficients; }
-        }
-
-
-
-        /// <summary>
-        ///   Gets the probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
-        /// </summary>
-        /// 
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
-        /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
-        /// </returns>
-        /// 
-        /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
-        /// </remarks>
-        /// 
-        protected internal override double InnerProbabilityDensityFunction(double x)
-        {
-            double r = 0.0;
-            for (int i = 0; i < components.Length; i++)
-                r += coefficients[i] * components[i].ProbabilityFunction(x);
-            return r;
-        }
-
-        /// <summary>
-        ///   Gets the probability density function (pdf) for one of
-        ///   the component distributions evaluated at point <c>x</c>.
-        /// </summary>
-        /// 
-        /// <param name="componentIndex">The index of the desired component distribution.</param>
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
-        /// <returns>
-        ///   The probability of <c>x</c> occurring in the component distribution,
-        ///   computed as the PDF of the component distribution times its mixture
-        ///   coefficient.
-        /// </returns>
-        /// 
-        /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
-        /// </remarks>
-        /// 
-        public double ProbabilityDensityFunction(int componentIndex, double x)
-        {
-            return coefficients[componentIndex] * components[componentIndex].ProbabilityFunction(x);
-        }
-
-        /// <summary>
-        ///   Gets the log-probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
-        /// </summary>
-        /// 
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
-        /// <returns>
-        ///   The logarithm of the probability of <c>x</c>
-        ///   occurring in the current distribution.
-        /// </returns>
-        /// 
-        /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
-        /// </remarks>
-        /// 
-        protected internal override double InnerLogProbabilityDensityFunction(double x)
-        {
-            double r = Double.NegativeInfinity;
-            for (int i = 0; i < components.Length; i++)
-                r = Special.LogSum(r, Math.Log(coefficients[i]) + components[i].LogProbabilityFunction(x));
-            return r;
-        }
-
-        /// <summary>
-        ///   Gets the log-probability density function (pdf) for one 
-        ///   of the component distributions evaluated at point <c>x</c>.
-        /// </summary>
-        /// 
-        /// <param name="componentIndex">The index of the desired component distribution.</param>
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
-        /// <returns>
-        ///   The logarithm of the probability of <c>x</c> occurring in the 
-        ///   component distribution, computed as the PDF of the component 
-        ///   distribution times its mixture coefficient.
-        /// </returns>
-        /// 
-        /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
-        /// </remarks>
-        /// 
-        public double LogProbabilityDensityFunction(int componentIndex, double x)
-        {
-            return Math.Log(coefficients[componentIndex]) + components[componentIndex].LogProbabilityFunction(x);
-        }
-
-        /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>x</c>.
-        /// </summary>
-        /// 
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
-        /// <remarks>
-        ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
-        /// </remarks>
-        /// 
-        protected internal override double InnerDistributionFunction(double x)
-        {
-            double r = 0.0;
-            for (int i = 0; i < components.Length; i++)
-                r += coefficients[i] * components[i].DistributionFunction(x);
-            return r;
-        }
-
-        /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for one
-        ///   component of this distribution evaluated at point <c>x</c>.
-        /// </summary>
-        /// 
-        /// <param name="componentIndex">The component distribution's index.</param>
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
-        /// <remarks>
-        ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
-        /// </remarks>
-        /// 
-        public double DistributionFunction(int componentIndex, double x)
-        {
-            return coefficients[componentIndex] * components[componentIndex].DistributionFunction(x);
-        }
-
-
-        /// <summary>
-        ///   Fits the underlying distribution to a given set of observations.
-        /// </summary>
-        /// 
-        /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
-        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
-        /// <param name="options">Optional arguments which may be used during fitting, such
-        /// as regularization constants and additional parameters.</param>
-        /// 
-        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
-        {
-            MixtureOptions mixOptions = options as MixtureOptions;
-
-            if (options != null && mixOptions == null)
-            {
-                mixOptions = new MixtureOptions()
-                {
-                    InnerOptions = options
-                };
             }
 
-            Fit(observations, weights, mixOptions);
+            this.Components = components;
+            this.Coefficients = coefficients;
+
+            cache = new IDistribution<double>[coefficients.Length];
+            for (var i = 0; i < cache.Length; i++)
+            {
+                cache[i] = components[i];
+            }
+
+            initialize();
         }
 
         /// <summary>
-        ///   Fits the underlying distribution to a given set of observations.
+        ///     Gets the mean for this distribution.
         /// </summary>
-        /// 
-        /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
+        public override double Mean
+        {
+            get
+            {
+                if (mean == null)
+                {
+                    var mu = 0.0;
+                    for (var i = 0; i < Coefficients.Length; i++)
+                    {
+                        mu += Coefficients[i] * Components[i].Mean;
+                    }
+
+                    mean = mu;
+                }
+
+                return mean.Value;
+            }
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     Gets the variance for this distribution.
+        /// </summary>
+        /// <remarks>
+        ///     References: Lidija Trailovic and Lucy Y. Pao, Variance Estimation and
+        ///     Ranking of Gaussian Mixture Distributions in Target Tracking
+        ///     Applications, Department of Electrical and Computer Engineering
+        /// </remarks>
+        public override double Variance
+        {
+            get
+            {
+                if (variance == null)
+                {
+                    var mu = Mean;
+                    var var = 0.0;
+                    for (var i = 0; i < Coefficients.Length; i++)
+                    {
+                        var w = Coefficients[i];
+                        var m = Components[i].Mean;
+                        var v = Components[i].Variance;
+                        var += w * (v + m * m);
+                    }
+
+                    variance = var - mu * mu;
+                }
+
+                return variance.Value;
+            }
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     This method is not supported.
+        /// </summary>
+        public override double Mode
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     This method is not supported.
+        /// </summary>
+        public override double Entropy
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     Gets the support interval for this distribution.
+        /// </summary>
+        /// <value>
+        ///     A <see cref="DoubleRange" /> containing
+        ///     the support interval for this distribution.
+        /// </value>
+        public override DoubleRange Support
+        {
+            get
+            {
+                if (range == null)
+                {
+                    var min = Components.Min(p => p.Support.Min);
+                    var max = Components.Max(p => p.Support.Max);
+                    range = new DoubleRange(min, max);
+                }
+
+                return range.Value;
+            }
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     Fits the underlying distribution to a given set of observations.
+        /// </summary>
+        /// <param name="observations">
+        ///     The array of observations to fit the model against. The array
+        ///     elements can be either of type double (for univariate data) or
+        ///     type double[] (for multivariate data).
+        /// </param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
-        /// <param name="options">Optional arguments which may be used during fitting, such
-        /// as regularization constants and additional parameters.</param>
-        /// 
+        /// <param name="options">
+        ///     Optional arguments which may be used during fitting, such
+        ///     as regularization constants and additional parameters.
+        /// </param>
         public void Fit(double[] observations, double[] weights, MixtureOptions options)
         {
-            var pdf = new IFittableDistribution<double>[coefficients.Length];
-            for (int i = 0; i < components.Length; i++)
-                pdf[i] = (IFittableDistribution<double>)components[i];
+            var pdf = new IFittableDistribution<double>[Coefficients.Length];
+            for (var i = 0; i < Components.Length; i++)
+            {
+                pdf[i] = (IFittableDistribution<double>)Components[i];
+            }
 
-            bool log = (options != null && options.Logarithm);
+            var log = options != null && options.Logarithm;
 
             if (log)
             {
                 if (weights != null)
                 {
                     throw new ArgumentException("The model fitting algorithm does not"
-                    + " currently support different weights when the logarithm option"
-                    + " is enabled. To avoid this exception, pass 'null' as the second"
-                    + " parameter's value when calling this method.");
+                                                + " currently support different weights when the logarithm option"
+                                                + " is enabled. To avoid this exception, pass 'null' as the second"
+                                                + " parameter's value when calling this method.");
                 }
 
-                var em = new LogExpectationMaximization<double>(coefficients, pdf);
+                var em = new LogExpectationMaximization<double>(Coefficients, pdf);
 
                 if (options != null)
                 {
@@ -448,12 +375,14 @@ namespace Accord.Statistics.Distributions.Univariate
 
 #pragma warning disable 612, 618
                 if (options != null)
+                {
                     options.Iterations = em.Convergence.CurrentIteration;
+                }
 #pragma warning restore 612, 618
             }
             else
             {
-                var em = new ExpectationMaximization<double>(coefficients, pdf);
+                var em = new ExpectationMaximization<double>(Coefficients, pdf);
 
                 if (options != null)
                 {
@@ -467,168 +396,234 @@ namespace Accord.Statistics.Distributions.Univariate
 
 #pragma warning disable 612, 618
                 if (options != null)
+                {
                     options.Iterations = em.Convergence.CurrentIteration;
+                }
 #pragma warning restore 612, 618
             }
 
-            for (int i = 0; i < components.Length; i++)
-                cache[i] = components[i] = (T)pdf[i];
+            for (var i = 0; i < Components.Length; i++)
+            {
+                cache[i] = Components[i] = (T)pdf[i];
+            }
 
-            this.initialize();
+            initialize();
         }
 
         /// <summary>
-        ///   Computes the log-likelihood of the distribution
-        ///   for a given set of observations.
+        ///     Gets the mixture components.
         /// </summary>
-        /// 
-        public double LogLikelihood(double[] observations, double[] weights)
-        {
-            return ExpectationMaximization<double>.LogLikelihood(coefficients, cache, observations,
-                weights, weights.Sum());
-        }
+        public T[] Components { get; }
 
         /// <summary>
-        ///   Computes the log-likelihood of the distribution
-        ///   for a given set of observations.
+        ///     Gets the weight coefficients.
         /// </summary>
-        /// 
-        public double LogLikelihood(double[] observations)
-        {
-            return ExpectationMaximization<double>.LogLikelihood(coefficients, cache, observations);
-        }
+        public double[] Coefficients { get; }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public override object Clone()
         {
             // Clone the mixture coefficients
-            double[] pi = (double[])coefficients.Clone();
+            var pi = (double[])Coefficients.Clone();
 
             // Clone the mixture components
-            T[] pdf = new T[components.Length];
-            for (int i = 0; i < components.Length; i++)
-                pdf[i] = (T)components[i].Clone();
+            var pdf = new T[Components.Length];
+            for (var i = 0; i < Components.Length; i++)
+            {
+                pdf[i] = (T)Components[i].Clone();
+            }
 
             return new Mixture<T>(pi, pdf);
         }
 
-
-        /// <summary>
-        ///   Gets the mean for this distribution.
-        /// </summary>
-        /// 
-        public override double Mean
+        private void initialize()
         {
-            get
-            {
-                if (mean == null)
-                {
-                    double mu = 0.0;
-                    for (int i = 0; i < coefficients.Length; i++)
-                        mu += coefficients[i] * components[i].Mean;
-                    this.mean = mu;
-                }
-
-                return mean.Value;
-            }
-            set { throw new NotImplementedException();}
+            mean = null;
+            variance = null;
+            range = null;
         }
 
-
         /// <summary>
-        ///   Gets the variance for this distribution.
+        ///     Gets the probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <returns>
+        ///     The probability of <c>x</c> occurring
+        ///     in the current distribution.
+        /// </returns>
         /// <remarks>
-        ///   References: Lidija Trailovic and Lucy Y. Pao, Variance Estimation and
-        ///   Ranking of Gaussian Mixture Distributions in Target Tracking
-        ///   Applications, Department of Electrical and Computer Engineering
+        ///     The Probability Density Function (PDF) describes the
+        ///     probability that a given value <c>x</c> will occur.
         /// </remarks>
-        /// 
-        public override double Variance
+        protected internal override double InnerProbabilityDensityFunction(double x)
         {
-            get
+            var r = 0.0;
+            for (var i = 0; i < Components.Length; i++)
             {
-                if (variance == null)
-                {
-                    double mu = Mean;
-                    double var = 0.0;
-                    for (int i = 0; i < coefficients.Length; i++)
-                    {
-                        double w = coefficients[i];
-                        double m = components[i].Mean;
-                        double v = components[i].Variance;
-                        var += w * (v + m * m);
-                    }
-
-                    this.variance = var - mu * mu;
-                }
-
-                return variance.Value;
+                r += Coefficients[i] * Components[i].ProbabilityFunction(x);
             }
-            set { throw new NotImplementedException();}
+
+            return r;
         }
 
         /// <summary>
-        ///   This method is not supported.
+        ///     Gets the probability density function (pdf) for one of
+        ///     the component distributions evaluated at point <c>x</c>.
         /// </summary>
-        /// 
-        public override double Mode
+        /// <param name="componentIndex">The index of the desired component distribution.</param>
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <returns>
+        ///     The probability of <c>x</c> occurring in the component distribution,
+        ///     computed as the PDF of the component distribution times its mixture
+        ///     coefficient.
+        /// </returns>
+        /// <remarks>
+        ///     The Probability Density Function (PDF) describes the
+        ///     probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        public double ProbabilityDensityFunction(int componentIndex, double x)
         {
-            get { throw new NotSupportedException(); }
-            set { throw new NotImplementedException();}
+            return Coefficients[componentIndex] * Components[componentIndex].ProbabilityFunction(x);
         }
 
         /// <summary>
-        ///   This method is not supported.
+        ///     Gets the log-probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
-        public override double Entropy
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <returns>
+        ///     The logarithm of the probability of <c>x</c>
+        ///     occurring in the current distribution.
+        /// </returns>
+        /// <remarks>
+        ///     The Probability Density Function (PDF) describes the
+        ///     probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        protected internal override double InnerLogProbabilityDensityFunction(double x)
         {
-            get { throw new NotSupportedException(); }
-            set { throw new NotImplementedException();}
-        }
-
-        /// <summary>
-        ///   Gets the support interval for this distribution.
-        /// </summary>
-        /// 
-        /// <value>
-        ///   A <see cref="DoubleRange" /> containing
-        ///   the support interval for this distribution.
-        /// </value>
-        /// 
-        public override DoubleRange Support
-        {
-            get
+            var r = double.NegativeInfinity;
+            for (var i = 0; i < Components.Length; i++)
             {
-                if (range == null)
-                {
-                    double min = Components.Min(p => p.Support.Min);
-                    double max = Components.Max(p => p.Support.Max);
-                    range = new DoubleRange(min, max);
-                }
-
-                return range.Value;
+                r = Special.LogSum(r, System.Math.Log(Coefficients[i]) + Components[i].LogProbabilityFunction(x));
             }
-            set { throw new NotImplementedException();}
+
+            return r;
         }
 
         /// <summary>
-        ///   Estimates a new mixture model from a given set of observations.
+        ///     Gets the log-probability density function (pdf) for one
+        ///     of the component distributions evaluated at point <c>x</c>.
         /// </summary>
-        /// 
+        /// <param name="componentIndex">The index of the desired component distribution.</param>
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <returns>
+        ///     The logarithm of the probability of <c>x</c> occurring in the
+        ///     component distribution, computed as the PDF of the component
+        ///     distribution times its mixture coefficient.
+        /// </returns>
+        /// <remarks>
+        ///     The Probability Density Function (PDF) describes the
+        ///     probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        public double LogProbabilityDensityFunction(int componentIndex, double x)
+        {
+            return System.Math.Log(Coefficients[componentIndex]) + Components[componentIndex].LogProbabilityFunction(x);
+        }
+
+        /// <summary>
+        ///     Gets the cumulative distribution function (cdf) for
+        ///     this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <remarks>
+        ///     The Cumulative Distribution Function (CDF) describes the cumulative
+        ///     probability that a given value or any value smaller than it will occur.
+        /// </remarks>
+        protected internal override double InnerDistributionFunction(double x)
+        {
+            var r = 0.0;
+            for (var i = 0; i < Components.Length; i++)
+            {
+                r += Coefficients[i] * Components[i].DistributionFunction(x);
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        ///     Gets the cumulative distribution function (cdf) for one
+        ///     component of this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="componentIndex">The component distribution's index.</param>
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <remarks>
+        ///     The Cumulative Distribution Function (CDF) describes the cumulative
+        ///     probability that a given value or any value smaller than it will occur.
+        /// </remarks>
+        public double DistributionFunction(int componentIndex, double x)
+        {
+            return Coefficients[componentIndex] * Components[componentIndex].DistributionFunction(x);
+        }
+
+        /// <summary>
+        ///     Fits the underlying distribution to a given set of observations.
+        /// </summary>
+        /// <param name="observations">
+        ///     The array of observations to fit the model against. The array
+        ///     elements can be either of type double (for univariate data) or
+        ///     type double[] (for multivariate data).
+        /// </param>
+        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
+        /// <param name="options">
+        ///     Optional arguments which may be used during fitting, such
+        ///     as regularization constants and additional parameters.
+        /// </param>
+        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
+        {
+            var mixOptions = options as MixtureOptions;
+
+            if (options != null && mixOptions == null)
+            {
+                mixOptions = new MixtureOptions
+                {
+                    InnerOptions = options
+                };
+            }
+
+            Fit(observations, weights, mixOptions);
+        }
+
+        /// <summary>
+        ///     Computes the log-likelihood of the distribution
+        ///     for a given set of observations.
+        /// </summary>
+        public double LogLikelihood(double[] observations, double[] weights)
+        {
+            return ExpectationMaximization<double>.LogLikelihood(Coefficients, cache, observations,
+                weights, weights.Sum());
+        }
+
+        /// <summary>
+        ///     Computes the log-likelihood of the distribution
+        ///     for a given set of observations.
+        /// </summary>
+        public double LogLikelihood(double[] observations)
+        {
+            return ExpectationMaximization<double>.LogLikelihood(Coefficients, cache, observations);
+        }
+
+        /// <summary>
+        ///     Estimates a new mixture model from a given set of observations.
+        /// </summary>
         /// <param name="data">A set of observations.</param>
         /// <param name="components">The initial components of the mixture model.</param>
         /// <returns>Returns a new Mixture fitted to the given observations.</returns>
-        /// 
         public static Mixture<T> Estimate(double[] data, params T[] components)
         {
             var mixture = new Mixture<T>(components);
@@ -637,14 +632,12 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Estimates a new mixture model from a given set of observations.
+        ///     Estimates a new mixture model from a given set of observations.
         /// </summary>
-        /// 
         /// <param name="data">A set of observations.</param>
         /// <param name="coefficients">The initial mixture coefficients.</param>
         /// <param name="components">The initial components of the mixture model.</param>
         /// <returns>Returns a new Mixture fitted to the given observations.</returns>
-        /// 
         public static Mixture<T> Estimate(double[] data, double[] coefficients, params T[] components)
         {
             var mixture = new Mixture<T>(coefficients, components);
@@ -653,15 +646,13 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Estimates a new mixture model from a given set of observations.
+        ///     Estimates a new mixture model from a given set of observations.
         /// </summary>
-        /// 
         /// <param name="data">A set of observations.</param>
         /// <param name="coefficients">The initial mixture coefficients.</param>
         /// <param name="threshold">The convergence threshold for the Expectation-Maximization estimation.</param>
         /// <param name="components">The initial components of the mixture model.</param>
         /// <returns>Returns a new Mixture fitted to the given observations.</returns>
-        /// 
         public static Mixture<T> Estimate(double[] data, double threshold, double[] coefficients, params T[] components)
         {
             var mixture = new Mixture<T>(coefficients, components);
@@ -669,33 +660,70 @@ namespace Accord.Statistics.Distributions.Univariate
             return mixture;
         }
 
+        /// <summary>
+        ///     Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString(string format, IFormatProvider formatProvider)
+        {
+            var sb = new StringBuilder();
+            sb.Append("Mixture(x; ");
+
+            for (var i = 0; i < Coefficients.Length; i++)
+            {
+                sb.AppendFormat("{0}*", Coefficients[i].ToString(format, formatProvider));
+
+                var fmt = Components[i] as IFormattable;
+
+                if (fmt != null)
+                {
+                    sb.AppendFormat(fmt.ToString(format, formatProvider));
+                }
+                else
+                {
+                    sb.AppendFormat(fmt.ToString());
+                }
+
+                if (i < Coefficients.Length - 1)
+                {
+                    sb.Append(" + ");
+                }
+            }
+
+            sb.Append(")");
+
+            return sb.ToString();
+        }
 
         #region ISampleableDistribution<double> Members
 
         /// <summary>
-        ///   Generates a random vector of observations from the current distribution.
+        ///     Generates a random vector of observations from the current distribution.
         /// </summary>
-        /// 
         /// <param name="samples">The number of samples to generate.</param>
         /// <param name="result">The location where to store the samples.</param>
-        /// <param name="source">The random number generator to use as a source of randomness. 
-        ///   Default is to use <see cref="Accord.Math.Random.Generator.Random"/>.</param>
-        ///
+        /// <param name="source">
+        ///     The random number generator to use as a source of randomness.
+        ///     Default is to use <see cref="Accord.Math.Random.Generator.Random" />.
+        /// </param>
         /// <returns>A random vector of observations drawn from this distribution.</returns>
-        /// 
         public override double[] Generate(int samples, double[] result, Random source)
         {
             if (sampleable == null)
             {
-                sampleable = new ISampleableDistribution<double>[components.Length];
-                for (int i = 0; i < sampleable.Length; i++)
-                    sampleable[i] = this.components[i] as ISampleableDistribution<double>;
+                sampleable = new ISampleableDistribution<double>[Components.Length];
+                for (var i = 0; i < sampleable.Length; i++)
+                {
+                    sampleable[i] = Components[i] as ISampleableDistribution<double>;
+                }
             }
 
-            for (int i = 0; i < samples; i++)
+            for (var i = 0; i < samples; i++)
             {
                 // Choose one coefficient at random
-                int j = GeneralDiscreteDistribution.Random(coefficients, source);
+                var j = GeneralDiscreteDistribution.Random(Coefficients, source);
 
                 // Sample from the chosen coefficient
                 result[i] = sampleable[j].Generate();
@@ -705,61 +733,27 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Generates a random observation from the current distribution.
+        ///     Generates a random observation from the current distribution.
         /// </summary>
-        /// 
         /// <returns>A random observations drawn from this distribution.</returns>
-        /// 
         public override double Generate(Random source)
         {
             if (sampleable == null)
             {
-                sampleable = new ISampleableDistribution<double>[components.Length];
-                for (int i = 0; i < sampleable.Length; i++)
-                    sampleable[i] = this.components[i] as ISampleableDistribution<double>;
+                sampleable = new ISampleableDistribution<double>[Components.Length];
+                for (var i = 0; i < sampleable.Length; i++)
+                {
+                    sampleable[i] = Components[i] as ISampleableDistribution<double>;
+                }
             }
 
             // Choose one coefficient at random
-            int j = GeneralDiscreteDistribution.Random(coefficients, source);
+            var j = GeneralDiscreteDistribution.Random(Coefficients, source);
 
             // Sample from the chosen coefficient
             return sampleable[j].Generate();
         }
 
         #endregion
-
-
-        /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
-        /// </returns>
-        /// 
-        public override string ToString(string format, IFormatProvider formatProvider)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Mixture(x; ");
-
-            for (int i = 0; i < coefficients.Length; i++)
-            {
-                sb.AppendFormat("{0}*", coefficients[i].ToString(format, formatProvider));
-
-                var fmt = components[i] as IFormattable;
-
-                if (fmt != null)
-                    sb.AppendFormat(fmt.ToString(format, formatProvider));
-                else
-                    sb.AppendFormat(fmt.ToString());
-
-                if (i < coefficients.Length - 1)
-                    sb.Append(" + ");
-            }
-            sb.Append(")");
-
-            return sb.ToString();
-        }
-
     }
 }

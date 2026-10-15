@@ -25,6 +25,7 @@ namespace Jube.Dictionary.Extensions
             }
 
             var mask = NetworkAddressSupport.Mask(prefix, bits);
+
             return (NetworkAddressSupport.ToNumber(address) & mask) == NetworkAddressSupport.ToNumber(network);
         }
     }

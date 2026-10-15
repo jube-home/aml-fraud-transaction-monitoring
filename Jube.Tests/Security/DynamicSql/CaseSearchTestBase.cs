@@ -97,6 +97,7 @@ public abstract class CaseSearchTestBase(DatabaseFixture fx, ITestOutputHelper o
         try
         {
             using var document = JsonDocument.Parse(response.Body);
+
             return document.RootElement.GetProperty("guid").GetGuid();
         }
         catch (Exception)
@@ -108,6 +109,7 @@ public abstract class CaseSearchTestBase(DatabaseFixture fx, ITestOutputHelper o
     protected async Task<string?> PasswordOfAsync(string user)
     {
         await using var db = Fx.GetDbContext();
+
         return (await db.UserRegistry.FirstAsync(u => u.Name == user)).Password;
     }
 }

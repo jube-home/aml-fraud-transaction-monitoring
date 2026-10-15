@@ -23,11 +23,6 @@ namespace Jube.Engine.Observability
 {
     public sealed class OpenTelemetryExcludeCache(string connectionString, ILog log)
     {
-        private const int PollIntervalMilliseconds = 60000;
-        private const int RetryDelayMilliseconds = 5000;
-
-        private volatile HashSet<string> excludedNames = [];
-
         public bool IsExcluded(string name)
         {
             return !string.IsNullOrEmpty(name) && excludedNames.Contains(name);
@@ -62,15 +57,21 @@ namespace Jube.Engine.Observability
             }
         }
 
+        private const int PollIntervalMilliseconds = 60000;
+        private const int RetryDelayMilliseconds = 5000;
+        private volatile HashSet<string> excludedNames = [];
+
         private async Task RefreshAsync(CancellationToken token)
         {
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(connectionString, log);
+
             var repository = new OpenTelemetryExcludeRepository(dbContext);
 
             var rows = await repository.GetAllActiveAsync(token).ConfigureAwait(false);
 
             var refreshed = new HashSet<string>(StringComparer.Ordinal);
+
             foreach (var row in rows)
             {
                 if (!string.IsNullOrEmpty(row.Name))

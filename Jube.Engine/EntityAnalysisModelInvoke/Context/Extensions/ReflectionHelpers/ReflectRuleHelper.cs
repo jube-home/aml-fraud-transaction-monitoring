@@ -21,11 +21,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
     public static class ReflectRuleHelper
     {
         public static bool Execute(EntityAnalysisModelAbstractionRule abstractionRule,
-            Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot, DictionaryNoBoxing<string> fields,
+            Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot,
+            DictionaryNoBoxing<string> fields,
             PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs, ILog log)
         {
             var matched = abstractionRule.AbstractionRuleCompileDelegate(fields,
                 snapshot.EntityAnalysisModelLists, entityInstanceEntryDictionaryKvPs, log);
+
             return matched;
         }
 
@@ -37,12 +39,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
         {
             var matched = activationRule.ActivationRuleCompileDelegate(payload.Payload,
                 payload.TtlCounter, payload.Abstraction,
-                payload.HttpAdaptation, payload.ExhaustiveAdaptation,
+                payload.HttpAdaptation, payload.ExhaustiveAdaptation, payload.AdvancedAnalyticsAdaptation,
                 snapshot.EntityAnalysisModelLists,
                 payload.AbstractionCalculation,
                 payload.Sanction, entityInstanceEntryDictionaryKvPs,
                 payload.Activation.Keys,
                 log);
+
             return matched;
         }
 

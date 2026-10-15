@@ -1,5 +1,6 @@
 // Adapted from Z.ExtensionMethods (https://github.com/zzzprojects/Z.ExtensionMethods), MIT License.
 // See NOTICE.md for full attribution.
+
 using System.Text;
 
 namespace Jube.Dictionary.Extensions
@@ -21,6 +22,7 @@ namespace Jube.Dictionary.Extensions
         public static string Concatenate<T>(this IEnumerable<T> source, Func<T, string> func)
         {
             var sb = new StringBuilder();
+
             foreach (var item in source)
             {
                 sb.Append(func(item));

@@ -51,6 +51,7 @@ namespace Jube.App.Endpoints.Query
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/{entityAnalysisModelId}: entry user={user}");
@@ -58,12 +59,14 @@ namespace Jube.App.Endpoints.Query
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service =
                     await EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeService.CreateAsync(
                         dbContext, user, log,
                         stringLocalizerFactory, serviceChangeBus, token);
+
                 return TypedResults.Ok(await service.GetAsync(entityAnalysisModelId, token));
             }
             catch (NotAuthenticatedException)
@@ -96,6 +99,7 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"GET {Base}/{entityAnalysisModelId}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

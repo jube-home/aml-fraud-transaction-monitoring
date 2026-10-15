@@ -63,12 +63,21 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["retryCount"] = rows.Where(w => w.RetryCount.HasValue)
-                    .Select(s => (double)s.RetryCount!.Value).ToArray(),
-                ["backoffMilliseconds"] = rows.Where(w => w.BackoffMilliseconds.HasValue)
-                    .Select(s => (double)s.BackoffMilliseconds!.Value).ToArray(),
-                ["transactionsImpacted"] = rows.Where(w => w.TransactionsImpacted.HasValue)
-                    .Select(s => (double)s.TransactionsImpacted!.Value).ToArray()
+                ["retryCount"] =
+                [
+                    .. rows.Where(w => w.RetryCount.HasValue)
+                        .Select(s => (double)s.RetryCount!.Value)
+                ],
+                ["backoffMilliseconds"] =
+                [
+                    .. rows.Where(w => w.BackoffMilliseconds.HasValue)
+                        .Select(s => (double)s.BackoffMilliseconds!.Value)
+                ],
+                ["transactionsImpacted"] =
+                [
+                    .. rows.Where(w => w.TransactionsImpacted.HasValue)
+                        .Select(s => (double)s.TransactionsImpacted!.Value)
+                ]
             });
         }
 
@@ -105,6 +114,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.EndPoint != null && w.EndPoint.ToLower().Contains(lowerSearch)) ||
                     (w.Message != null && w.Message.ToLower().Contains(lowerSearch)) ||
@@ -123,6 +133,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "eventTypeName" => query.OrderByField(o => o.EventTypeId, descending),

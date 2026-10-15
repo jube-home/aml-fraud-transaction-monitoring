@@ -28,8 +28,10 @@ using Jube.Service.Exceptions.EntityAnalysisModelOverride;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
+using Jube.Test.Service.EntityAnalysisModelOverride.Models;
 using LinqToDB;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -37,7 +39,6 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using Jube.Test.Service.EntityAnalysisModelOverride.Models;
 
 namespace Jube.Test.Service.EntityAnalysisModelOverride
 {
@@ -67,6 +68,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
             {
                 await dbContext.GetTable<EntityAnalysisModelOverrideVersion>()
                     .Where(w => w.EntityAnalysisModelOverrideId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelOverride>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -75,6 +77,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -91,6 +94,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
         private async Task<(int Id, Guid Guid)> CreateParentModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -101,6 +105,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return (saved.Id, saved.Guid);
         }
 
@@ -191,6 +196,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
 
             var stillOn = await service.GetByEntityAnalysisModelIdAsync(
                 (await dbContext.EntityAnalysisModel.Where(w => w.Guid == modelGuid).SingleAsync()).Id);
+
             stillOn.Should().ContainSingle(d => d.OverrideKeyValue == keyValue);
 
             var toggleOff = NewDto(modelGuid, key, keyValue);
@@ -277,11 +283,14 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
 
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.InsertAsync(NewDto(modelGuid, "IP", UniqueValue("Denied"))));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetAsync());
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByEntityAnalysisModelIdAsync(modelId));
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.UpdateAsync(NewDto(modelGuid, "IP", UniqueValue("DeniedUpdate"))));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
 
             var afterCount = await dbContext.GetTable<Data.Poco.EntityAnalysisModelOverride>()
@@ -311,6 +320,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -319,6 +329,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -372,6 +383,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
             var dto = NewDto(modelGuid, key!, UniqueValue("BadKey"));
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelOverrideDto.OverrideKey) &&
                 e.ErrorCode == "OverrideKeyNotEmpty");
@@ -603,6 +615,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -620,10 +633,12 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
             await service.GetAsync();
+
             await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(modelGuid, "IP", "")));
 
@@ -636,6 +651,7 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "EntityAnalysisModelOverrideList", "EntityAnalysisModelOverrideGet",

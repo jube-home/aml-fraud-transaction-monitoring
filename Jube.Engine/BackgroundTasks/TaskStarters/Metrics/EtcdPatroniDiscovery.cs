@@ -47,15 +47,19 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             CancellationToken token)
         {
             var explicitEndpoints = dynamicEnvironment.AppSettings(explicitEndpointsKey);
+
             if (!string.IsNullOrWhiteSpace(explicitEndpoints))
             {
-                return explicitEndpoints
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .Distinct()
-                    .ToList();
+                return
+                [
+                    .. explicitEndpoints
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        .Distinct()
+                ];
             }
 
             var prefix = dynamicEnvironment.AppSettings(prefixKey);
+
             if (string.IsNullOrWhiteSpace(prefix))
             {
                 prefix = defaultPrefix;
@@ -67,11 +71,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             var portSetting = dynamicEnvironment.AppSettings(portKey);
             var port = int.TryParse(portSetting, out var parsedPort) ? parsedPort : defaultPort;
             var candidates = Enumerable.Range(1, maxNodes).Select(i => $"{prefix}{i}").ToList();
+
             var resolutions = await Task.WhenAll(candidates.Select(async host =>
                     (Host: host, Resolves: await ResolvesAsync(host, token).ConfigureAwait(false))))
                 .ConfigureAwait(false);
 
-            return resolutions.Where(r => r.Resolves).Select(r => $"{r.Host}:{port}").ToList();
+            return [.. resolutions.Where(r => r.Resolves).Select(r => $"{r.Host}:{port}")];
         }
 
         private static async Task<bool> ResolvesAsync(string host, CancellationToken token)
@@ -79,6 +84,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             try
             {
                 var addresses = await Dns.GetHostAddressesAsync(host, token).ConfigureAwait(false);
+
                 return addresses.Length > 0;
             }
             catch (SocketException)

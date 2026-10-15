@@ -40,6 +40,7 @@ namespace Jube.Test.Service.RoleGrantAccess
                 return (world, new ArrangedSubject("CaseWorkflowRole", workflowGuid, async userName =>
                 {
                     await using var dbContext = Fx.GetDbContext();
+
                     return await new Data.Repository.CaseWorkflowRepository(dbContext, userName)
                         .GetByGuidActiveOnlyWithRoleAsync(workflowGuid) != null;
                 }));
@@ -65,9 +66,11 @@ namespace Jube.Test.Service.RoleGrantAccess
                         Name = name, Guid = childGuid, CaseWorkflowId = workflowId, Active = 1, Locked = 0,
                         Deleted = 0, Priority = 3, Version = 1, CreatedUser = createdUser, CreatedDate = now
                     });
+
                     return (world, new ArrangedSubject("CaseWorkflowStatusRole", childGuid, async userName =>
                     {
                         await using var dbContext = Fx.GetDbContext();
+
                         return (await new Data.Repository.CaseWorkflowStatusRepository(dbContext, userName)
                             .GetByCasesWorkflowGuidActiveOnlyAsync(workflowGuid)).Any(w => w.Guid == childGuid);
                     }));
@@ -77,9 +80,11 @@ namespace Jube.Test.Service.RoleGrantAccess
                         Name = name, Guid = childGuid, CaseWorkflowId = workflowId, XPath = "/Case/Field", Active = 1,
                         Locked = 0, Deleted = 0, CreatedUser = createdUser, CreatedDate = now
                     });
+
                     return (world, new ArrangedSubject("CaseWorkflowXPathRole", childGuid, async userName =>
                     {
                         await using var dbContext = Fx.GetDbContext();
+
                         return (await new Data.Repository.CaseWorkflowXPathRepository(dbContext, userName)
                             .GetByCasesWorkflowGuidActiveOnlyAsync(workflowGuid)).Any(w => w.Guid == childGuid);
                     }));
@@ -90,9 +95,11 @@ namespace Jube.Test.Service.RoleGrantAccess
                         Deleted = 0, EnableNotification = 0, EnableHttpEndpoint = 0, CreatedUser = createdUser,
                         CreatedDate = now
                     });
+
                     return (world, new ArrangedSubject("CaseWorkflowActionRole", childGuid, async userName =>
                     {
                         await using var dbContext = Fx.GetDbContext();
+
                         return (await new Data.Repository.CaseWorkflowActionRepository(dbContext, userName)
                             .GetByCasesWorkflowGuidActiveOnlyAsync(workflowGuid)).Any(w => w.Guid == childGuid);
                     }));
@@ -102,9 +109,11 @@ namespace Jube.Test.Service.RoleGrantAccess
                         Name = name, Guid = childGuid, CaseWorkflowId = workflowId, Active = 1, Locked = 0,
                         Deleted = 0, Html = "<div></div>", CreatedUser = createdUser, CreatedDate = now
                     });
+
                     return (world, new ArrangedSubject("CaseWorkflowDisplayRole", childGuid, async userName =>
                     {
                         await using var dbContext = Fx.GetDbContext();
+
                         return (await new Data.Repository.CaseWorkflowDisplayRepository(dbContext, userName)
                             .GetByCasesWorkflowGuidActiveOnlyAsync(workflowGuid)).Any(w => w.Guid == childGuid);
                     }));
@@ -114,9 +123,11 @@ namespace Jube.Test.Service.RoleGrantAccess
                         Name = name, Guid = childGuid, CaseWorkflowId = workflowId, Active = 1, Locked = 0,
                         Deleted = 0, CreatedUser = createdUser, CreatedDate = now
                     });
+
                     return (world, new ArrangedSubject("CaseWorkflowFilterRole", childGuid, async userName =>
                     {
                         await using var dbContext = Fx.GetDbContext();
+
                         return (await new Data.Repository.CaseWorkflowFilterRepository(dbContext, userName)
                             .GetByCasesWorkflowGuidActiveOnlyAsync(workflowGuid)).Any(w => w.Guid == childGuid);
                     }));
@@ -127,9 +138,11 @@ namespace Jube.Test.Service.RoleGrantAccess
                         Deleted = 0, Html = "<div></div>", EnableHttpEndpoint = 0, EnableNotification = 0,
                         CreatedUser = createdUser, CreatedDate = now
                     });
+
                     return (world, new ArrangedSubject("CaseWorkflowFormRole", childGuid, async userName =>
                     {
                         await using var dbContext = Fx.GetDbContext();
+
                         return (await new Data.Repository.CaseWorkflowFormRepository(dbContext, userName)
                             .GetByCasesWorkflowGuidActiveOnlyAsync(workflowGuid)).Any(w => w.Guid == childGuid);
                     }));
@@ -140,15 +153,16 @@ namespace Jube.Test.Service.RoleGrantAccess
                         Deleted = 0, Javascript = "console.log('test');", EnableHttpEndpoint = 0,
                         EnableNotification = 0, CreatedUser = createdUser, CreatedDate = now
                     });
+
                     return (world, new ArrangedSubject("CaseWorkflowMacroRole", childGuid, async userName =>
                     {
                         await using var dbContext = Fx.GetDbContext();
+
                         return (await new Data.Repository.CaseWorkflowMacroRepository(dbContext, userName)
                             .GetByCasesWorkflowGuidActiveOnlyAsync(workflowGuid)).Any(w => w.Guid == childGuid);
                     }));
                 default:
                     // ReSharper disable once NotResolvedInText
-                    // ReSharper disable once LocalizableElement
                     throw new ArgumentOutOfRangeException(nameof(subject), subject, "Unknown subject.");
             }
         }

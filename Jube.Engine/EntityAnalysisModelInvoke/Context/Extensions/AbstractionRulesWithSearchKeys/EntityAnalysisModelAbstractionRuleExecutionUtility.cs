@@ -53,6 +53,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
                 try
                 {
                     var documents = new List<DictionaryNoBoxing<string>>(SortedSetKeys.Count);
+
                     foreach (var key in SortedSetKeys.Select(k => k.ToString()))
                     {
                         if (PayloadMap.TryGetValue(key, out var payload))

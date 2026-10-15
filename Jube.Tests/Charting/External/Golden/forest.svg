@@ -1,0 +1,2243 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 656 674" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-faa00f0d-t jc-faa00f0d-d">
+    <title id="jc-faa00f0d-t">Random forest</title>
+    <desc id="jc-faa00f0d-d">Forest of 100 trees; the first 4 are drawn with a feature importance strip led by
+        amount_z.
+    </desc>
+    <rect class="bg" x="0" y="0" width="656" height="674" rx="8"/>
+    <text class="ttl" x="16" y="32">Random forest</text>
+    <text class="sub" x="16" y="50">First 4 of 100 trees, depth capped at 3</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="71.4" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">legitimate</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="103.4" y="62" width="45.6" height="18"/>
+        <rect class="sw" x="105.4" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="123.4" y="75">fraud</text>
+    </g>
+    <rect class="pf" x="22" y="90" width="300" height="164" rx="6"/>
+    <text class="ph" x="32" y="107">Tree 1</text>
+    <text class="kn end" x="312" y="107">31 nodes, cut at depth 3</text>
+    <g class="tree" transform="translate(90.5 120)">
+        <g class="mk x0 eg e0 e1 a1 a2 a3 a4 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.86: yes, Samples: 2219 (37% of root), legitimate: 1553 (70%), fraud: 665.7 (30%)">
+            <title>feature_11 ≤ 6.86: yes, Samples: 2219 (37% of root), legitimate: 1553 (70%), fraud: 665.7 (30%)
+            </title>
+            <path class="eh" d="M81.5 14C81.5 25 39.5 25 39.5 36"/>
+            <path class="ep et" d="M81.5 14C81.5 25 39.5 25 39.5 36" stroke-width="1.84"/>
+        </g>
+        <g class="mk x1 eg e1 e2 a2 a3 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 8.27: yes, Samples: 1329 (22.2% of root), legitimate: 930.3 (70%), fraud: 398.7 (30%)">
+            <title>feature_10 ≤ 8.27: yes, Samples: 1329 (22.2% of root), legitimate: 930.3 (70%), fraud: 398.7 (30%)
+            </title>
+            <path class="eh" d="M39.5 50C39.5 61 18.5 61 18.5 72"/>
+            <path class="ep et" d="M39.5 50C39.5 61 18.5 61 18.5 72" stroke-width="1.42"/>
+        </g>
+        <g class="mk x2 eg e2 e3 a3" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 0.37: yes, Samples: 524 (8.7% of root), legitimate: 366.8 (70%), fraud: 157.2 (30%)">
+            <title>feature_9 ≤ 0.37: yes, Samples: 524 (8.7% of root), legitimate: 366.8 (70%), fraud: 157.2 (30%)
+            </title>
+            <path class="eh" d="M18.5 86C18.5 97 8 97 8 108"/>
+            <path class="ep et" d="M18.5 86C18.5 97 8 97 8 108" stroke-width="1.04"/>
+        </g>
+        <g class="mk x3 eg e2 e4 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 0.37: no, Samples: 805 (13.4% of root), legitimate: 563.5 (70%), fraud: 241.5 (30%)">
+            <title>feature_9 ≤ 0.37: no, Samples: 805 (13.4% of root), legitimate: 563.5 (70%), fraud: 241.5 (30%)
+            </title>
+            <path class="eh" d="M18.5 86C18.5 97 29 97 29 108"/>
+            <path class="ep et" d="M18.5 86C18.5 97 29 97 29 108" stroke-width="1.18"/>
+        </g>
+        <g class="mk x4 eg e1 e5 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 8.27: no, Samples: 890 (14.8% of root), legitimate: 623 (70%), fraud: 267 (30%)">
+            <title>feature_10 ≤ 8.27: no, Samples: 890 (14.8% of root), legitimate: 623 (70%), fraud: 267 (30%)</title>
+            <path class="eh" d="M39.5 50C39.5 61 60.5 61 60.5 72"/>
+            <path class="ep et" d="M39.5 50C39.5 61 60.5 61 60.5 72" stroke-width="1.22"/>
+        </g>
+        <g class="mk x5 eg e5 e6 a6" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 0.82: yes, Samples: 276 (4.6% of root), legitimate: 193.2 (70%), fraud: 82.8 (30%)">
+            <title>feature_9 ≤ 0.82: yes, Samples: 276 (4.6% of root), legitimate: 193.2 (70%), fraud: 82.8 (30%)
+            </title>
+            <path class="eh" d="M60.5 86C60.5 97 50 97 50 108"/>
+            <path class="ep et" d="M60.5 86C60.5 97 50 97 50 108" stroke-width="0.93"/>
+        </g>
+        <g class="mk x6 eg e5 e7 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 0.82: no, Samples: 614 (10.2% of root), legitimate: 429.8 (70%), fraud: 184.2 (30%)">
+            <title>feature_9 ≤ 0.82: no, Samples: 614 (10.2% of root), legitimate: 429.8 (70%), fraud: 184.2 (30%)
+            </title>
+            <path class="eh" d="M60.5 86C60.5 97 71 97 71 108"/>
+            <path class="ep et" d="M60.5 86C60.5 97 71 97 71 108" stroke-width="1.09"/>
+        </g>
+        <g class="mk x7 eg e0 e8 a8 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.86: no, Samples: 3781 (63% of root), legitimate: 2647 (70%), fraud: 1134 (30%)">
+            <title>feature_11 ≤ 6.86: no, Samples: 3781 (63% of root), legitimate: 2647 (70%), fraud: 1134 (30%)</title>
+            <path class="eh" d="M81.5 14C81.5 25 123.5 25 123.5 36"/>
+            <path class="ep et" d="M81.5 14C81.5 25 123.5 25 123.5 36" stroke-width="2.56"/>
+        </g>
+        <g class="mk x8 eg e8 e9 a9 a10 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 3.95: yes, Samples: 1542 (25.7% of root), legitimate: 1079 (70%), fraud: 462.6 (30%)">
+            <title>feature_10 ≤ 3.95: yes, Samples: 1542 (25.7% of root), legitimate: 1079 (70%), fraud: 462.6 (30%)
+            </title>
+            <path class="eh" d="M123.5 50C123.5 61 102.5 61 102.5 72"/>
+            <path class="ep et" d="M123.5 50C123.5 61 102.5 61 102.5 72" stroke-width="1.52"/>
+        </g>
+        <g class="mk x9 eg e9 e10 a10" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 0.59: yes, Samples: 597 (10% of root), legitimate: 417.9 (70%), fraud: 179.1 (30%)">
+            <title>feature_9 ≤ 0.59: yes, Samples: 597 (10% of root), legitimate: 417.9 (70%), fraud: 179.1 (30%)
+            </title>
+            <path class="eh" d="M102.5 86C102.5 97 92 97 92 108"/>
+            <path class="ep et" d="M102.5 86C102.5 97 92 97 92 108" stroke-width="1.08"/>
+        </g>
+        <g class="mk x10 eg e9 e11 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 0.59: no, Samples: 945 (15.8% of root), legitimate: 661.5 (70%), fraud: 283.5 (30%)">
+            <title>feature_9 ≤ 0.59: no, Samples: 945 (15.8% of root), legitimate: 661.5 (70%), fraud: 283.5 (30%)
+            </title>
+            <path class="eh" d="M102.5 86C102.5 97 113 97 113 108"/>
+            <path class="ep et" d="M102.5 86C102.5 97 113 97 113 108" stroke-width="1.24"/>
+        </g>
+        <g class="mk x11 eg e8 e12 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 3.95: no, Samples: 2239 (37.3% of root), legitimate: 1567 (70%), fraud: 671.7 (30%)">
+            <title>feature_10 ≤ 3.95: no, Samples: 2239 (37.3% of root), legitimate: 1567 (70%), fraud: 671.7 (30%)
+            </title>
+            <path class="eh" d="M123.5 50C123.5 61 144.5 61 144.5 72"/>
+            <path class="ep et" d="M123.5 50C123.5 61 144.5 61 144.5 72" stroke-width="1.84"/>
+        </g>
+        <g class="mk x12 eg e12 e13 a13" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 3.9: yes, Samples: 1263 (21.1% of root), legitimate: 884.1 (70%), fraud: 378.9 (30%)">
+            <title>feature_9 ≤ 3.9: yes, Samples: 1263 (21.1% of root), legitimate: 884.1 (70%), fraud: 378.9 (30%)
+            </title>
+            <path class="eh" d="M144.5 86C144.5 97 134 97 134 108"/>
+            <path class="ep et" d="M144.5 86C144.5 97 134 97 134 108" stroke-width="1.39"/>
+        </g>
+        <g class="mk x13 eg e12 e14 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 3.9: no, Samples: 976 (16.3% of root), legitimate: 683.2 (70%), fraud: 292.8 (30%)">
+            <title>feature_9 ≤ 3.9: no, Samples: 976 (16.3% of root), legitimate: 683.2 (70%), fraud: 292.8 (30%)
+            </title>
+            <path class="eh" d="M144.5 86C144.5 97 155 97 155 108"/>
+            <path class="ep et" d="M144.5 86C144.5 97 155 97 155 108" stroke-width="1.26"/>
+        </g>
+        <g class="mk n0 nd s0 j1 j8 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.86, Split at depth 0, Samples: 6000 (100% of root), Impurity (impurity): 0.3, legitimate: 4200 (70%), fraud: 1800 (30%)">
+            <title>feature_11 ≤ 6.86, Split at depth 0, Samples: 6000 (100% of root), Impurity (impurity): 0.3,
+                legitimate: 4200 (70%), fraud: 1800 (30%)
+            </title>
+            <circle class="nb" cx="81.5" cy="7" r="7"/>
+            <circle class="nt" cx="81.5" cy="7" r="7"/>
+        </g>
+        <g class="mk n1 nd s0 j0 j2 j5 a2 a3 a4 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 8.27, Split at depth 1, Samples: 2219 (37% of root), Impurity (impurity): 0.3, legitimate: 1553 (70%), fraud: 665.7 (30%)">
+            <title>feature_10 ≤ 8.27, Split at depth 1, Samples: 2219 (37% of root), Impurity (impurity): 0.3,
+                legitimate: 1553 (70%), fraud: 665.7 (30%)
+            </title>
+            <circle class="nb" cx="39.5" cy="43" r="7"/>
+            <circle class="nt" cx="39.5" cy="43" r="7"/>
+        </g>
+        <g class="mk n2 nd s0 j1 j3 j4 a3 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 0.37, Split at depth 2, Samples: 1329 (22.2% of root), Impurity (impurity): 0.3, legitimate: 930.3 (70%), fraud: 398.7 (30%)">
+            <title>feature_9 ≤ 0.37, Split at depth 2, Samples: 1329 (22.2% of root), Impurity (impurity): 0.3,
+                legitimate: 930.3 (70%), fraud: 398.7 (30%)
+            </title>
+            <circle class="nb" cx="18.5" cy="79" r="7"/>
+            <circle class="nt" cx="18.5" cy="79" r="7"/>
+        </g>
+        <g class="mk n3 nd s0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="feature_8 ≤ 4.76, Collapsed subtree at depth 3, Samples: 524 (8.7% of root), Impurity (impurity): 0.3, legitimate: 366.8 (70%), fraud: 157.2 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_8 ≤ 4.76, Collapsed subtree at depth 3, Samples: 524 (8.7% of root), Impurity (impurity):
+                0.3, legitimate: 366.8 (70%), fraud: 157.2 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M8 108L16 122L0 122Z"/>
+        </g>
+        <g class="mk n4 nd s0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="feature_8 ≤ 6.49, Collapsed subtree at depth 3, Samples: 805 (13.4% of root), Impurity (impurity): 0.3, legitimate: 563.5 (70%), fraud: 241.5 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_8 ≤ 6.49, Collapsed subtree at depth 3, Samples: 805 (13.4% of root), Impurity (impurity):
+                0.3, legitimate: 563.5 (70%), fraud: 241.5 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M29 108L37 122L21 122Z"/>
+        </g>
+        <g class="mk n5 nd s0 j1 j6 j7 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 0.82, Split at depth 2, Samples: 890 (14.8% of root), Impurity (impurity): 0.3, legitimate: 623 (70%), fraud: 267 (30%)">
+            <title>feature_9 ≤ 0.82, Split at depth 2, Samples: 890 (14.8% of root), Impurity (impurity): 0.3,
+                legitimate: 623 (70%), fraud: 267 (30%)
+            </title>
+            <circle class="nb" cx="60.5" cy="79" r="7"/>
+            <circle class="nt" cx="60.5" cy="79" r="7"/>
+        </g>
+        <g class="mk n6 nd s0 j5" tabindex="0" role="graphics-symbol"
+           aria-label="feature_8 ≤ 8.75, Collapsed subtree at depth 3, Samples: 276 (4.6% of root), Impurity (impurity): 0.3, legitimate: 193.2 (70%), fraud: 82.8 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_8 ≤ 8.75, Collapsed subtree at depth 3, Samples: 276 (4.6% of root), Impurity (impurity):
+                0.3, legitimate: 193.2 (70%), fraud: 82.8 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M50 108L58 122L42 122Z"/>
+        </g>
+        <g class="mk n7 nd s0 j5" tabindex="0" role="graphics-symbol"
+           aria-label="feature_8 ≤ 5.21, Collapsed subtree at depth 3, Samples: 614 (10.2% of root), Impurity (impurity): 0.3, legitimate: 429.8 (70%), fraud: 184.2 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_8 ≤ 5.21, Collapsed subtree at depth 3, Samples: 614 (10.2% of root), Impurity (impurity):
+                0.3, legitimate: 429.8 (70%), fraud: 184.2 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M71 108L79 122L63 122Z"/>
+        </g>
+        <g class="mk n8 nd s0 j0 j9 j12 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 3.95, Split at depth 1, Samples: 3781 (63% of root), Impurity (impurity): 0.3, legitimate: 2647 (70%), fraud: 1134 (30%)">
+            <title>feature_10 ≤ 3.95, Split at depth 1, Samples: 3781 (63% of root), Impurity (impurity): 0.3,
+                legitimate: 2647 (70%), fraud: 1134 (30%)
+            </title>
+            <circle class="nb" cx="123.5" cy="43" r="7"/>
+            <circle class="nt" cx="123.5" cy="43" r="7"/>
+        </g>
+        <g class="mk n9 nd s0 j8 j10 j11 a10 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 0.59, Split at depth 2, Samples: 1542 (25.7% of root), Impurity (impurity): 0.3, legitimate: 1079 (70%), fraud: 462.6 (30%)">
+            <title>feature_9 ≤ 0.59, Split at depth 2, Samples: 1542 (25.7% of root), Impurity (impurity): 0.3,
+                legitimate: 1079 (70%), fraud: 462.6 (30%)
+            </title>
+            <circle class="nb" cx="102.5" cy="79" r="7"/>
+            <circle class="nt" cx="102.5" cy="79" r="7"/>
+        </g>
+        <g class="mk n10 nd s0 j9" tabindex="0" role="graphics-symbol"
+           aria-label="feature_8 ≤ 7.55, Collapsed subtree at depth 3, Samples: 597 (10% of root), Impurity (impurity): 0.3, legitimate: 417.9 (70%), fraud: 179.1 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_8 ≤ 7.55, Collapsed subtree at depth 3, Samples: 597 (10% of root), Impurity (impurity): 0.3,
+                legitimate: 417.9 (70%), fraud: 179.1 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M92 108L100 122L84 122Z"/>
+        </g>
+        <g class="mk n11 nd s0 j9" tabindex="0" role="graphics-symbol"
+           aria-label="feature_8 ≤ 0.2, Collapsed subtree at depth 3, Samples: 945 (15.8% of root), Impurity (impurity): 0.3, legitimate: 661.5 (70%), fraud: 283.5 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_8 ≤ 0.2, Collapsed subtree at depth 3, Samples: 945 (15.8% of root), Impurity (impurity):
+                0.3, legitimate: 661.5 (70%), fraud: 283.5 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M113 108L121 122L105 122Z"/>
+        </g>
+        <g class="mk n12 nd s0 j8 j13 j14 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_9 ≤ 3.9, Split at depth 2, Samples: 2239 (37.3% of root), Impurity (impurity): 0.3, legitimate: 1567 (70%), fraud: 671.7 (30%)">
+            <title>feature_9 ≤ 3.9, Split at depth 2, Samples: 2239 (37.3% of root), Impurity (impurity): 0.3,
+                legitimate: 1567 (70%), fraud: 671.7 (30%)
+            </title>
+            <circle class="nb" cx="144.5" cy="79" r="7"/>
+            <circle class="nt" cx="144.5" cy="79" r="7"/>
+        </g>
+        <g class="mk n13 nd s0 j12" tabindex="0" role="graphics-symbol"
+           aria-label="feature_8 ≤ 0.8, Collapsed subtree at depth 3, Samples: 1263 (21.1% of root), Impurity (impurity): 0.3, legitimate: 884.1 (70%), fraud: 378.9 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_8 ≤ 0.8, Collapsed subtree at depth 3, Samples: 1263 (21.1% of root), Impurity (impurity):
+                0.3, legitimate: 884.1 (70%), fraud: 378.9 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M134 108L142 122L126 122Z"/>
+        </g>
+        <g class="mk n14 nd s0 j12" tabindex="0" role="graphics-symbol"
+           aria-label="feature_8 ≤ 1.88, Collapsed subtree at depth 3, Samples: 976 (16.3% of root), Impurity (impurity): 0.3, legitimate: 683.2 (70%), fraud: 292.8 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_8 ≤ 1.88, Collapsed subtree at depth 3, Samples: 976 (16.3% of root), Impurity (impurity):
+                0.3, legitimate: 683.2 (70%), fraud: 292.8 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M155 108L163 122L147 122Z"/>
+        </g>
+    </g>
+    <rect class="pf" x="338" y="90" width="300" height="164" rx="6"/>
+    <text class="ph" x="348" y="107">Tree 2</text>
+    <text class="kn end" x="628" y="107">63 nodes, cut at depth 3</text>
+    <g class="tree" transform="translate(406.5 120)">
+        <g class="mk eg e0 e1 a1 a2 a3 a4 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 9.79: yes, Samples: 3473 (57.9% of root), legitimate: 2431 (70%), fraud: 1042 (30%)">
+            <title>feature_0 ≤ 9.79: yes, Samples: 3473 (57.9% of root), legitimate: 2431 (70%), fraud: 1042 (30%)
+            </title>
+            <path class="eh" d="M81.5 14C81.5 25 39.5 25 39.5 36"/>
+            <path class="ep et" d="M81.5 14C81.5 25 39.5 25 39.5 36" stroke-width="2.42"/>
+            <g class="tt">
+                <rect class="tb" x="-134.02" y="-14" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-124.02" y="4">feature_0 ≤ 9.79: yes</text>
+                <text class="tx" x="-124.02" y="21">Samples: 3473 (57.9% of root)</text>
+                <rect class="tsw s0" x="-124.02" y="29" width="9" height="9" rx="2"/>
+                <text class="tx" x="-110.02" y="38">legitimate: 2431 (70%)</text>
+                <rect class="tsw s1" x="-124.02" y="46" width="9" height="9" rx="2"/>
+                <text class="tx" x="-110.02" y="55">fraud: 1042 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e1 e2 a2 a3 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 0.4: yes, Samples: 1663 (27.7% of root), legitimate: 1164 (70%), fraud: 498.9 (30%)">
+            <title>feature_12 ≤ 0.4: yes, Samples: 1663 (27.7% of root), legitimate: 1164 (70%), fraud: 498.9 (30%)
+            </title>
+            <path class="eh" d="M39.5 50C39.5 61 18.5 61 18.5 72"/>
+            <path class="ep et" d="M39.5 50C39.5 61 18.5 61 18.5 72" stroke-width="1.58"/>
+            <g class="tt">
+                <rect class="tb" x="39" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="49" y="40">feature_12 ≤ 0.4: yes</text>
+                <text class="tx" x="49" y="57">Samples: 1663 (27.7% of root)</text>
+                <rect class="tsw s0" x="49" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="63" y="74">legitimate: 1164 (70%)</text>
+                <rect class="tsw s1" x="49" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="63" y="91">fraud: 498.9 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e2 e3 a3" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 9.11: yes, Samples: 956 (15.9% of root), legitimate: 669.2 (70%), fraud: 286.8 (30%)">
+            <title>feature_11 ≤ 9.11: yes, Samples: 956 (15.9% of root), legitimate: 669.2 (70%), fraud: 286.8 (30%)
+            </title>
+            <path class="eh" d="M18.5 86C18.5 97 8 97 8 108"/>
+            <path class="ep et" d="M18.5 86C18.5 97 8 97 8 108" stroke-width="1.25"/>
+            <g class="tt">
+                <rect class="tb" x="23.25" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="33.25" y="76">feature_11 ≤ 9.11: yes</text>
+                <text class="tx" x="33.25" y="93">Samples: 956 (15.9% of root)</text>
+                <rect class="tsw s0" x="33.25" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="47.25" y="110">legitimate: 669.2 (70%)</text>
+                <rect class="tsw s1" x="33.25" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="47.25" y="127">fraud: 286.8 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e2 e4 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 9.11: no, Samples: 707 (11.8% of root), legitimate: 494.9 (70%), fraud: 212.1 (30%)">
+            <title>feature_11 ≤ 9.11: no, Samples: 707 (11.8% of root), legitimate: 494.9 (70%), fraud: 212.1 (30%)
+            </title>
+            <path class="eh" d="M18.5 86C18.5 97 29 97 29 108"/>
+            <path class="ep et" d="M18.5 86C18.5 97 29 97 29 108" stroke-width="1.13"/>
+            <g class="tt">
+                <rect class="tb" x="33.75" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="43.75" y="76">feature_11 ≤ 9.11: no</text>
+                <text class="tx" x="43.75" y="93">Samples: 707 (11.8% of root)</text>
+                <rect class="tsw s0" x="43.75" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="57.75" y="110">legitimate: 494.9 (70%)</text>
+                <rect class="tsw s1" x="43.75" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="57.75" y="127">fraud: 212.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e1 e5 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 0.4: no, Samples: 1810 (30.2% of root), legitimate: 1267 (70%), fraud: 543 (30%)">
+            <title>feature_12 ≤ 0.4: no, Samples: 1810 (30.2% of root), legitimate: 1267 (70%), fraud: 543 (30%)</title>
+            <path class="eh" d="M39.5 50C39.5 61 60.5 61 60.5 72"/>
+            <path class="ep et" d="M39.5 50C39.5 61 60.5 61 60.5 72" stroke-width="1.64"/>
+            <g class="tt">
+                <rect class="tb" x="-144.52" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-134.52" y="40">feature_12 ≤ 0.4: no</text>
+                <text class="tx" x="-134.52" y="57">Samples: 1810 (30.2% of root)</text>
+                <rect class="tsw s0" x="-134.52" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="-120.52" y="74">legitimate: 1267 (70%)</text>
+                <rect class="tsw s1" x="-134.52" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="-120.52" y="91">fraud: 543 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e5 e6 a6" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 4.46: yes, Samples: 721 (12% of root), legitimate: 504.7 (70%), fraud: 216.3 (30%)">
+            <title>feature_11 ≤ 4.46: yes, Samples: 721 (12% of root), legitimate: 504.7 (70%), fraud: 216.3 (30%)
+            </title>
+            <path class="eh" d="M60.5 86C60.5 97 50 97 50 108"/>
+            <path class="ep et" d="M60.5 86C60.5 97 50 97 50 108" stroke-width="1.14"/>
+            <g class="tt">
+                <rect class="tb" x="65.25" y="58" width="167.96" height="78" rx="6"/>
+                <text class="tx b" x="75.25" y="76">feature_11 ≤ 4.46: yes</text>
+                <text class="tx" x="75.25" y="93">Samples: 721 (12% of root)</text>
+                <rect class="tsw s0" x="75.25" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="89.25" y="110">legitimate: 504.7 (70%)</text>
+                <rect class="tsw s1" x="75.25" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="89.25" y="127">fraud: 216.3 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e5 e7 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 4.46: no, Samples: 1089 (18.2% of root), legitimate: 762.3 (70%), fraud: 326.7 (30%)">
+            <title>feature_11 ≤ 4.46: no, Samples: 1089 (18.2% of root), legitimate: 762.3 (70%), fraud: 326.7 (30%)
+            </title>
+            <path class="eh" d="M60.5 86C60.5 97 71 97 71 108"/>
+            <path class="ep et" d="M60.5 86C60.5 97 71 97 71 108" stroke-width="1.31"/>
+            <g class="tt">
+                <rect class="tb" x="-128.77" y="58" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-118.77" y="76">feature_11 ≤ 4.46: no</text>
+                <text class="tx" x="-118.77" y="93">Samples: 1089 (18.2% of root)</text>
+                <rect class="tsw s0" x="-118.77" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-104.77" y="110">legitimate: 762.3 (70%)</text>
+                <rect class="tsw s1" x="-118.77" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-104.77" y="127">fraud: 326.7 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e0 e8 a8 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 9.79: no, Samples: 2527 (42.1% of root), legitimate: 1769 (70%), fraud: 758.1 (30%)">
+            <title>feature_0 ≤ 9.79: no, Samples: 2527 (42.1% of root), legitimate: 1769 (70%), fraud: 758.1 (30%)
+            </title>
+            <path class="eh" d="M81.5 14C81.5 25 123.5 25 123.5 36"/>
+            <path class="ep et" d="M81.5 14C81.5 25 123.5 25 123.5 36" stroke-width="1.98"/>
+            <g class="tt">
+                <rect class="tb" x="-92.02" y="-14" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-82.02" y="4">feature_0 ≤ 9.79: no</text>
+                <text class="tx" x="-82.02" y="21">Samples: 2527 (42.1% of root)</text>
+                <rect class="tsw s0" x="-82.02" y="29" width="9" height="9" rx="2"/>
+                <text class="tx" x="-68.02" y="38">legitimate: 1769 (70%)</text>
+                <rect class="tsw s1" x="-82.02" y="46" width="9" height="9" rx="2"/>
+                <text class="tx" x="-68.02" y="55">fraud: 758.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e8 e9 a9 a10 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 5.15: yes, Samples: 1508 (25.1% of root), legitimate: 1056 (70%), fraud: 452.4 (30%)">
+            <title>feature_12 ≤ 5.15: yes, Samples: 1508 (25.1% of root), legitimate: 1056 (70%), fraud: 452.4 (30%)
+            </title>
+            <path class="eh" d="M123.5 50C123.5 61 102.5 61 102.5 72"/>
+            <path class="ep et" d="M123.5 50C123.5 61 102.5 61 102.5 72" stroke-width="1.5"/>
+            <g class="tt">
+                <rect class="tb" x="-81.52" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-71.52" y="40">feature_12 ≤ 5.15: yes</text>
+                <text class="tx" x="-71.52" y="57">Samples: 1508 (25.1% of root)</text>
+                <rect class="tsw s0" x="-71.52" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="-57.52" y="74">legitimate: 1056 (70%)</text>
+                <rect class="tsw s1" x="-71.52" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="-57.52" y="91">fraud: 452.4 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e9 e10 a10" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.73: yes, Samples: 1041 (17.3% of root), legitimate: 728.7 (70%), fraud: 312.3 (30%)">
+            <title>feature_11 ≤ 6.73: yes, Samples: 1041 (17.3% of root), legitimate: 728.7 (70%), fraud: 312.3 (30%)
+            </title>
+            <path class="eh" d="M102.5 86C102.5 97 92 97 92 108"/>
+            <path class="ep et" d="M102.5 86C102.5 97 92 97 92 108" stroke-width="1.29"/>
+            <g class="tt">
+                <rect class="tb" x="-97.27" y="58" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-87.27" y="76">feature_11 ≤ 6.73: yes</text>
+                <text class="tx" x="-87.27" y="93">Samples: 1041 (17.3% of root)</text>
+                <rect class="tsw s0" x="-87.27" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-73.27" y="110">legitimate: 728.7 (70%)</text>
+                <rect class="tsw s1" x="-87.27" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-73.27" y="127">fraud: 312.3 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e9 e11 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.73: no, Samples: 467 (7.8% of root), legitimate: 326.9 (70%), fraud: 140.1 (30%)">
+            <title>feature_11 ≤ 6.73: no, Samples: 467 (7.8% of root), legitimate: 326.9 (70%), fraud: 140.1 (30%)
+            </title>
+            <path class="eh" d="M102.5 86C102.5 97 113 97 113 108"/>
+            <path class="ep et" d="M102.5 86C102.5 97 113 97 113 108" stroke-width="1.02"/>
+            <g class="tt">
+                <rect class="tb" x="-73.33" y="58" width="171.08" height="78" rx="6"/>
+                <text class="tx b" x="-63.33" y="76">feature_11 ≤ 6.73: no</text>
+                <text class="tx" x="-63.33" y="93">Samples: 467 (7.8% of root)</text>
+                <rect class="tsw s0" x="-63.33" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-49.33" y="110">legitimate: 326.9 (70%)</text>
+                <rect class="tsw s1" x="-63.33" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-49.33" y="127">fraud: 140.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e8 e12 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 5.15: no, Samples: 1019 (17% of root), legitimate: 713.3 (70%), fraud: 305.7 (30%)">
+            <title>feature_12 ≤ 5.15: no, Samples: 1019 (17% of root), legitimate: 713.3 (70%), fraud: 305.7 (30%)
+            </title>
+            <path class="eh" d="M123.5 50C123.5 61 144.5 61 144.5 72"/>
+            <path class="ep et" d="M123.5 50C123.5 61 144.5 61 144.5 72" stroke-width="1.28"/>
+            <g class="tt">
+                <rect class="tb" x="-50.68" y="22" width="174.68" height="78" rx="6"/>
+                <text class="tx b" x="-40.68" y="40">feature_12 ≤ 5.15: no</text>
+                <text class="tx" x="-40.68" y="57">Samples: 1019 (17% of root)</text>
+                <rect class="tsw s0" x="-40.68" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="-26.68" y="74">legitimate: 713.3 (70%)</text>
+                <rect class="tsw s1" x="-40.68" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="-26.68" y="91">fraud: 305.7 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e12 e13 a13" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 9.97: yes, Samples: 387 (6.5% of root), legitimate: 270.9 (70%), fraud: 116.1 (30%)">
+            <title>feature_11 ≤ 9.97: yes, Samples: 387 (6.5% of root), legitimate: 270.9 (70%), fraud: 116.1 (30%)
+            </title>
+            <path class="eh" d="M144.5 86C144.5 97 134 97 134 108"/>
+            <path class="ep et" d="M144.5 86C144.5 97 134 97 134 108" stroke-width="0.98"/>
+            <g class="tt">
+                <rect class="tb" x="-41.83" y="58" width="171.08" height="78" rx="6"/>
+                <text class="tx b" x="-31.83" y="76">feature_11 ≤ 9.97: yes</text>
+                <text class="tx" x="-31.83" y="93">Samples: 387 (6.5% of root)</text>
+                <rect class="tsw s0" x="-31.83" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-17.83" y="110">legitimate: 270.9 (70%)</text>
+                <rect class="tsw s1" x="-31.83" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-17.83" y="127">fraud: 116.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e12 e14 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 9.97: no, Samples: 632 (10.5% of root), legitimate: 442.4 (70%), fraud: 189.6 (30%)">
+            <title>feature_11 ≤ 9.97: no, Samples: 632 (10.5% of root), legitimate: 442.4 (70%), fraud: 189.6 (30%)
+            </title>
+            <path class="eh" d="M144.5 86C144.5 97 155 97 155 108"/>
+            <path class="ep et" d="M144.5 86C144.5 97 155 97 155 108" stroke-width="1.09"/>
+            <g class="tt">
+                <rect class="tb" x="-38.05" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="-28.05" y="76">feature_11 ≤ 9.97: no</text>
+                <text class="tx" x="-28.05" y="93">Samples: 632 (10.5% of root)</text>
+                <rect class="tsw s0" x="-28.05" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-14.05" y="110">legitimate: 442.4 (70%)</text>
+                <rect class="tsw s1" x="-28.05" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-14.05" y="127">fraud: 189.6 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j1 j8 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 9.79, Split at depth 0, Samples: 6000 (100% of root), Impurity (impurity): 0.3, legitimate: 4200 (70%), fraud: 1800 (30%)">
+            <title>feature_0 ≤ 9.79, Split at depth 0, Samples: 6000 (100% of root), Impurity (impurity): 0.3,
+                legitimate: 4200 (70%), fraud: 1800 (30%)
+            </title>
+            <circle class="nb" cx="81.5" cy="7" r="7"/>
+            <circle class="nt" cx="81.5" cy="7" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-102.9" y="-49" width="181.4" height="112" rx="6"/>
+                <text class="tx b" x="-92.9" y="-31">feature_0 ≤ 9.79</text>
+                <text class="tx" x="-92.9" y="-14">Split at depth 0</text>
+                <text class="tx" x="-92.9" y="3">Samples: 6000 (100% of root)</text>
+                <text class="tx" x="-92.9" y="20">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-92.9" y="28" width="9" height="9" rx="2"/>
+                <text class="tx" x="-78.9" y="37">legitimate: 4200 (70%)</text>
+                <rect class="tsw s1" x="-92.9" y="45" width="9" height="9" rx="2"/>
+                <text class="tx" x="-78.9" y="54">fraud: 1800 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j0 j2 j5 a2 a3 a4 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 0.4, Split at depth 1, Samples: 3473 (57.9% of root), Impurity (impurity): 0.3, legitimate: 2431 (70%), fraud: 1042 (30%)">
+            <title>feature_12 ≤ 0.4, Split at depth 1, Samples: 3473 (57.9% of root), Impurity (impurity): 0.3,
+                legitimate: 2431 (70%), fraud: 1042 (30%)
+            </title>
+            <circle class="nb" cx="39.5" cy="43" r="7"/>
+            <circle class="nt" cx="39.5" cy="43" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-148.02" y="-13" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="-138.02" y="5">feature_12 ≤ 0.4</text>
+                <text class="tx" x="-138.02" y="22">Split at depth 1</text>
+                <text class="tx" x="-138.02" y="39">Samples: 3473 (57.9% of root)</text>
+                <text class="tx" x="-138.02" y="56">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-138.02" y="64" width="9" height="9" rx="2"/>
+                <text class="tx" x="-124.02" y="73">legitimate: 2431 (70%)</text>
+                <rect class="tsw s1" x="-138.02" y="81" width="9" height="9" rx="2"/>
+                <text class="tx" x="-124.02" y="90">fraud: 1042 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j1 j3 j4 a3 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 9.11, Split at depth 2, Samples: 1663 (27.7% of root), Impurity (impurity): 0.3, legitimate: 1164 (70%), fraud: 498.9 (30%)">
+            <title>feature_11 ≤ 9.11, Split at depth 2, Samples: 1663 (27.7% of root), Impurity (impurity): 0.3,
+                legitimate: 1164 (70%), fraud: 498.9 (30%)
+            </title>
+            <circle class="nb" cx="18.5" cy="79" r="7"/>
+            <circle class="nt" cx="18.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="35.5" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="45.5" y="41">feature_11 ≤ 9.11</text>
+                <text class="tx" x="45.5" y="58">Split at depth 2</text>
+                <text class="tx" x="45.5" y="75">Samples: 1663 (27.7% of root)</text>
+                <text class="tx" x="45.5" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="45.5" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="59.5" y="109">legitimate: 1164 (70%)</text>
+                <rect class="tsw s1" x="45.5" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="59.5" y="126">fraud: 498.9 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 9.78, Collapsed subtree at depth 3, Samples: 956 (15.9% of root), Impurity (impurity): 0.3, legitimate: 669.2 (70%), fraud: 286.8 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_10 ≤ 9.78, Collapsed subtree at depth 3, Samples: 956 (15.9% of root), Impurity (impurity):
+                0.3, legitimate: 669.2 (70%), fraud: 286.8 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M8 108L16 122L0 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="26" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="36" y="69">feature_10 ≤ 9.78</text>
+                <text class="tx" x="36" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="36" y="103">Samples: 956 (15.9% of root)</text>
+                <text class="tx" x="36" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="36" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="50" y="137">legitimate: 669.2 (70%)</text>
+                <rect class="tsw s1" x="36" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="50" y="154">fraud: 286.8 (30%)</text>
+                <text class="tx" x="36" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 3.95, Collapsed subtree at depth 3, Samples: 707 (11.8% of root), Impurity (impurity): 0.3, legitimate: 494.9 (70%), fraud: 212.1 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_10 ≤ 3.95, Collapsed subtree at depth 3, Samples: 707 (11.8% of root), Impurity (impurity):
+                0.3, legitimate: 494.9 (70%), fraud: 212.1 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M29 108L37 122L21 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-167.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-157.96" y="69">feature_10 ≤ 3.95</text>
+                <text class="tx" x="-157.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-157.96" y="103">Samples: 707 (11.8% of root)</text>
+                <text class="tx" x="-157.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-157.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-143.96" y="137">legitimate: 494.9 (70%)</text>
+                <rect class="tsw s1" x="-157.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-143.96" y="154">fraud: 212.1 (30%)</text>
+                <text class="tx" x="-157.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j1 j6 j7 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 4.46, Split at depth 2, Samples: 1810 (30.2% of root), Impurity (impurity): 0.3, legitimate: 1267 (70%), fraud: 543 (30%)">
+            <title>feature_11 ≤ 4.46, Split at depth 2, Samples: 1810 (30.2% of root), Impurity (impurity): 0.3,
+                legitimate: 1267 (70%), fraud: 543 (30%)
+            </title>
+            <circle class="nb" cx="60.5" cy="79" r="7"/>
+            <circle class="nt" cx="60.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-127.02" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="-117.02" y="41">feature_11 ≤ 4.46</text>
+                <text class="tx" x="-117.02" y="58">Split at depth 2</text>
+                <text class="tx" x="-117.02" y="75">Samples: 1810 (30.2% of root)</text>
+                <text class="tx" x="-117.02" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-117.02" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="-103.02" y="109">legitimate: 1267 (70%)</text>
+                <rect class="tsw s1" x="-117.02" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="-103.02" y="126">fraud: 543 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j5" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 0, Collapsed subtree at depth 3, Samples: 721 (12% of root), Impurity (impurity): 0.3, legitimate: 504.7 (70%), fraud: 216.3 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_10 ≤ 0, Collapsed subtree at depth 3, Samples: 721 (12% of root), Impurity (impurity): 0.3,
+                legitimate: 504.7 (70%), fraud: 216.3 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M50 108L58 122L42 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-146.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-136.96" y="69">feature_10 ≤ 0</text>
+                <text class="tx" x="-136.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-136.96" y="103">Samples: 721 (12% of root)</text>
+                <text class="tx" x="-136.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-136.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-122.96" y="137">legitimate: 504.7 (70%)</text>
+                <rect class="tsw s1" x="-136.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-122.96" y="154">fraud: 216.3 (30%)</text>
+                <text class="tx" x="-136.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j5" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 6.99, Collapsed subtree at depth 3, Samples: 1089 (18.2% of root), Impurity (impurity): 0.3, legitimate: 762.3 (70%), fraud: 326.7 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_10 ≤ 6.99, Collapsed subtree at depth 3, Samples: 1089 (18.2% of root), Impurity (impurity):
+                0.3, legitimate: 762.3 (70%), fraud: 326.7 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M71 108L79 122L63 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-125.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-115.96" y="69">feature_10 ≤ 6.99</text>
+                <text class="tx" x="-115.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-115.96" y="103">Samples: 1089 (18.2% of root)</text>
+                <text class="tx" x="-115.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-115.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-101.96" y="137">legitimate: 762.3 (70%)</text>
+                <rect class="tsw s1" x="-115.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-101.96" y="154">fraud: 326.7 (30%)</text>
+                <text class="tx" x="-115.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j0 j9 j12 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 5.15, Split at depth 1, Samples: 2527 (42.1% of root), Impurity (impurity): 0.3, legitimate: 1769 (70%), fraud: 758.1 (30%)">
+            <title>feature_12 ≤ 5.15, Split at depth 1, Samples: 2527 (42.1% of root), Impurity (impurity): 0.3,
+                legitimate: 1769 (70%), fraud: 758.1 (30%)
+            </title>
+            <circle class="nb" cx="123.5" cy="43" r="7"/>
+            <circle class="nt" cx="123.5" cy="43" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-64.02" y="-13" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="-54.02" y="5">feature_12 ≤ 5.15</text>
+                <text class="tx" x="-54.02" y="22">Split at depth 1</text>
+                <text class="tx" x="-54.02" y="39">Samples: 2527 (42.1% of root)</text>
+                <text class="tx" x="-54.02" y="56">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-54.02" y="64" width="9" height="9" rx="2"/>
+                <text class="tx" x="-40.02" y="73">legitimate: 1769 (70%)</text>
+                <rect class="tsw s1" x="-54.02" y="81" width="9" height="9" rx="2"/>
+                <text class="tx" x="-40.02" y="90">fraud: 758.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j8 j10 j11 a10 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.73, Split at depth 2, Samples: 1508 (25.1% of root), Impurity (impurity): 0.3, legitimate: 1056 (70%), fraud: 452.4 (30%)">
+            <title>feature_11 ≤ 6.73, Split at depth 2, Samples: 1508 (25.1% of root), Impurity (impurity): 0.3,
+                legitimate: 1056 (70%), fraud: 452.4 (30%)
+            </title>
+            <circle class="nb" cx="102.5" cy="79" r="7"/>
+            <circle class="nt" cx="102.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-85.02" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="-75.02" y="41">feature_11 ≤ 6.73</text>
+                <text class="tx" x="-75.02" y="58">Split at depth 2</text>
+                <text class="tx" x="-75.02" y="75">Samples: 1508 (25.1% of root)</text>
+                <text class="tx" x="-75.02" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-75.02" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="-61.02" y="109">legitimate: 1056 (70%)</text>
+                <rect class="tsw s1" x="-75.02" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="-61.02" y="126">fraud: 452.4 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j9" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 6.92, Collapsed subtree at depth 3, Samples: 1041 (17.3% of root), Impurity (impurity): 0.3, legitimate: 728.7 (70%), fraud: 312.3 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_10 ≤ 6.92, Collapsed subtree at depth 3, Samples: 1041 (17.3% of root), Impurity (impurity):
+                0.3, legitimate: 728.7 (70%), fraud: 312.3 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M92 108L100 122L84 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-104.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-94.96" y="69">feature_10 ≤ 6.92</text>
+                <text class="tx" x="-94.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-94.96" y="103">Samples: 1041 (17.3% of root)</text>
+                <text class="tx" x="-94.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-94.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-80.96" y="137">legitimate: 728.7 (70%)</text>
+                <rect class="tsw s1" x="-94.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-80.96" y="154">fraud: 312.3 (30%)</text>
+                <text class="tx" x="-94.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j9" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 6.5, Collapsed subtree at depth 3, Samples: 467 (7.8% of root), Impurity (impurity): 0.3, legitimate: 326.9 (70%), fraud: 140.1 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_10 ≤ 6.5, Collapsed subtree at depth 3, Samples: 467 (7.8% of root), Impurity (impurity):
+                0.3, legitimate: 326.9 (70%), fraud: 140.1 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M113 108L121 122L105 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-83.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-73.96" y="69">feature_10 ≤ 6.5</text>
+                <text class="tx" x="-73.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-73.96" y="103">Samples: 467 (7.8% of root)</text>
+                <text class="tx" x="-73.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-73.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-59.96" y="137">legitimate: 326.9 (70%)</text>
+                <rect class="tsw s1" x="-73.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-59.96" y="154">fraud: 140.1 (30%)</text>
+                <text class="tx" x="-73.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j8 j13 j14 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 9.97, Split at depth 2, Samples: 1019 (17% of root), Impurity (impurity): 0.3, legitimate: 713.3 (70%), fraud: 305.7 (30%)">
+            <title>feature_11 ≤ 9.97, Split at depth 2, Samples: 1019 (17% of root), Impurity (impurity): 0.3,
+                legitimate: 713.3 (70%), fraud: 305.7 (30%)
+            </title>
+            <circle class="nb" cx="144.5" cy="79" r="7"/>
+            <circle class="nt" cx="144.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-33.18" y="23" width="174.68" height="112" rx="6"/>
+                <text class="tx b" x="-23.18" y="41">feature_11 ≤ 9.97</text>
+                <text class="tx" x="-23.18" y="58">Split at depth 2</text>
+                <text class="tx" x="-23.18" y="75">Samples: 1019 (17% of root)</text>
+                <text class="tx" x="-23.18" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-23.18" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="-9.18" y="109">legitimate: 713.3 (70%)</text>
+                <rect class="tsw s1" x="-23.18" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="-9.18" y="126">fraud: 305.7 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j12" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 1.83, Collapsed subtree at depth 3, Samples: 387 (6.5% of root), Impurity (impurity): 0.3, legitimate: 270.9 (70%), fraud: 116.1 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_10 ≤ 1.83, Collapsed subtree at depth 3, Samples: 387 (6.5% of root), Impurity (impurity):
+                0.3, legitimate: 270.9 (70%), fraud: 116.1 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M134 108L142 122L126 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-62.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-52.96" y="69">feature_10 ≤ 1.83</text>
+                <text class="tx" x="-52.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-52.96" y="103">Samples: 387 (6.5% of root)</text>
+                <text class="tx" x="-52.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-52.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-38.96" y="137">legitimate: 270.9 (70%)</text>
+                <rect class="tsw s1" x="-52.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-38.96" y="154">fraud: 116.1 (30%)</text>
+                <text class="tx" x="-52.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j12" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 0.78, Collapsed subtree at depth 3, Samples: 632 (10.5% of root), Impurity (impurity): 0.3, legitimate: 442.4 (70%), fraud: 189.6 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_10 ≤ 0.78, Collapsed subtree at depth 3, Samples: 632 (10.5% of root), Impurity (impurity):
+                0.3, legitimate: 442.4 (70%), fraud: 189.6 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M155 108L163 122L147 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-41.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-31.96" y="69">feature_10 ≤ 0.78</text>
+                <text class="tx" x="-31.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-31.96" y="103">Samples: 632 (10.5% of root)</text>
+                <text class="tx" x="-31.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-31.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-17.96" y="137">legitimate: 442.4 (70%)</text>
+                <rect class="tsw s1" x="-31.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-17.96" y="154">fraud: 189.6 (30%)</text>
+                <text class="tx" x="-31.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+    </g>
+    <rect class="pf" x="22" y="262" width="300" height="164" rx="6"/>
+    <text class="ph" x="32" y="279">Tree 3</text>
+    <text class="kn end" x="312" y="279">31 nodes, cut at depth 3</text>
+    <g class="tree" transform="translate(90.5 292)">
+        <g class="mk eg e0 e1 a1 a2 a3 a4 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 2.73: yes, Samples: 2327 (38.8% of root), legitimate: 1629 (70%), fraud: 698.1 (30%)">
+            <title>feature_0 ≤ 2.73: yes, Samples: 2327 (38.8% of root), legitimate: 1629 (70%), fraud: 698.1 (30%)
+            </title>
+            <path class="eh" d="M81.5 14C81.5 25 39.5 25 39.5 36"/>
+            <path class="ep et" d="M81.5 14C81.5 25 39.5 25 39.5 36" stroke-width="1.89"/>
+            <g class="tt">
+                <rect class="tb" x="70.5" y="-14" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="80.5" y="4">feature_0 ≤ 2.73: yes</text>
+                <text class="tx" x="80.5" y="21">Samples: 2327 (38.8% of root)</text>
+                <rect class="tsw s0" x="80.5" y="29" width="9" height="9" rx="2"/>
+                <text class="tx" x="94.5" y="38">legitimate: 1629 (70%)</text>
+                <rect class="tsw s1" x="80.5" y="46" width="9" height="9" rx="2"/>
+                <text class="tx" x="94.5" y="55">fraud: 698.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e1 e2 a2 a3 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 2.54: yes, Samples: 834 (13.9% of root), legitimate: 583.8 (70%), fraud: 250.2 (30%)">
+            <title>feature_12 ≤ 2.54: yes, Samples: 834 (13.9% of root), legitimate: 583.8 (70%), fraud: 250.2 (30%)
+            </title>
+            <path class="eh" d="M39.5 50C39.5 61 18.5 61 18.5 72"/>
+            <path class="ep et" d="M39.5 50C39.5 61 18.5 61 18.5 72" stroke-width="1.19"/>
+            <g class="tt">
+                <rect class="tb" x="39" y="22" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="49" y="40">feature_12 ≤ 2.54: yes</text>
+                <text class="tx" x="49" y="57">Samples: 834 (13.9% of root)</text>
+                <rect class="tsw s0" x="49" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="63" y="74">legitimate: 583.8 (70%)</text>
+                <rect class="tsw s1" x="49" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="63" y="91">fraud: 250.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e2 e3 a3" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 7.85: yes, Samples: 296 (4.9% of root), legitimate: 207.2 (70%), fraud: 88.8 (30%)">
+            <title>feature_11 ≤ 7.85: yes, Samples: 296 (4.9% of root), legitimate: 207.2 (70%), fraud: 88.8 (30%)
+            </title>
+            <path class="eh" d="M18.5 86C18.5 97 8 97 8 108"/>
+            <path class="ep et" d="M18.5 86C18.5 97 8 97 8 108" stroke-width="0.94"/>
+            <g class="tt">
+                <rect class="tb" x="23.25" y="58" width="171.08" height="78" rx="6"/>
+                <text class="tx b" x="33.25" y="76">feature_11 ≤ 7.85: yes</text>
+                <text class="tx" x="33.25" y="93">Samples: 296 (4.9% of root)</text>
+                <rect class="tsw s0" x="33.25" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="47.25" y="110">legitimate: 207.2 (70%)</text>
+                <rect class="tsw s1" x="33.25" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="47.25" y="127">fraud: 88.8 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e2 e4 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 7.85: no, Samples: 538 (9% of root), legitimate: 376.6 (70%), fraud: 161.4 (30%)">
+            <title>feature_11 ≤ 7.85: no, Samples: 538 (9% of root), legitimate: 376.6 (70%), fraud: 161.4 (30%)</title>
+            <path class="eh" d="M18.5 86C18.5 97 29 97 29 108"/>
+            <path class="ep et" d="M18.5 86C18.5 97 29 97 29 108" stroke-width="1.05"/>
+            <g class="tt">
+                <rect class="tb" x="33.75" y="58" width="161.24" height="78" rx="6"/>
+                <text class="tx b" x="43.75" y="76">feature_11 ≤ 7.85: no</text>
+                <text class="tx" x="43.75" y="93">Samples: 538 (9% of root)</text>
+                <rect class="tsw s0" x="43.75" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="57.75" y="110">legitimate: 376.6 (70%)</text>
+                <rect class="tsw s1" x="43.75" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="57.75" y="127">fraud: 161.4 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e1 e5 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 2.54: no, Samples: 1493 (24.9% of root), legitimate: 1045 (70%), fraud: 447.9 (30%)">
+            <title>feature_12 ≤ 2.54: no, Samples: 1493 (24.9% of root), legitimate: 1045 (70%), fraud: 447.9 (30%)
+            </title>
+            <path class="eh" d="M39.5 50C39.5 61 60.5 61 60.5 72"/>
+            <path class="ep et" d="M39.5 50C39.5 61 60.5 61 60.5 72" stroke-width="1.5"/>
+            <g class="tt">
+                <rect class="tb" x="60" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="70" y="40">feature_12 ≤ 2.54: no</text>
+                <text class="tx" x="70" y="57">Samples: 1493 (24.9% of root)</text>
+                <rect class="tsw s0" x="70" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="84" y="74">legitimate: 1045 (70%)</text>
+                <rect class="tsw s1" x="70" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="84" y="91">fraud: 447.9 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e5 e6 a6" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.43: yes, Samples: 746 (12.4% of root), legitimate: 522.2 (70%), fraud: 223.8 (30%)">
+            <title>feature_11 ≤ 6.43: yes, Samples: 746 (12.4% of root), legitimate: 522.2 (70%), fraud: 223.8 (30%)
+            </title>
+            <path class="eh" d="M60.5 86C60.5 97 50 97 50 108"/>
+            <path class="ep et" d="M60.5 86C60.5 97 50 97 50 108" stroke-width="1.15"/>
+            <g class="tt">
+                <rect class="tb" x="65.25" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="75.25" y="76">feature_11 ≤ 6.43: yes</text>
+                <text class="tx" x="75.25" y="93">Samples: 746 (12.4% of root)</text>
+                <rect class="tsw s0" x="75.25" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="89.25" y="110">legitimate: 522.2 (70%)</text>
+                <rect class="tsw s1" x="75.25" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="89.25" y="127">fraud: 223.8 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e5 e7 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.43: no, Samples: 747 (12.5% of root), legitimate: 522.9 (70%), fraud: 224.1 (30%)">
+            <title>feature_11 ≤ 6.43: no, Samples: 747 (12.5% of root), legitimate: 522.9 (70%), fraud: 224.1 (30%)
+            </title>
+            <path class="eh" d="M60.5 86C60.5 97 71 97 71 108"/>
+            <path class="ep et" d="M60.5 86C60.5 97 71 97 71 108" stroke-width="1.15"/>
+            <g class="tt">
+                <rect class="tb" x="75.75" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="85.75" y="76">feature_11 ≤ 6.43: no</text>
+                <text class="tx" x="85.75" y="93">Samples: 747 (12.5% of root)</text>
+                <rect class="tsw s0" x="85.75" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="99.75" y="110">legitimate: 522.9 (70%)</text>
+                <rect class="tsw s1" x="85.75" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="99.75" y="127">fraud: 224.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e0 e8 a8 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 2.73: no, Samples: 3673 (61.2% of root), legitimate: 2571 (70%), fraud: 1102 (30%)">
+            <title>feature_0 ≤ 2.73: no, Samples: 3673 (61.2% of root), legitimate: 2571 (70%), fraud: 1102 (30%)
+            </title>
+            <path class="eh" d="M81.5 14C81.5 25 123.5 25 123.5 36"/>
+            <path class="ep et" d="M81.5 14C81.5 25 123.5 25 123.5 36" stroke-width="2.51"/>
+            <g class="tt">
+                <rect class="tb" x="112.5" y="-14" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="122.5" y="4">feature_0 ≤ 2.73: no</text>
+                <text class="tx" x="122.5" y="21">Samples: 3673 (61.2% of root)</text>
+                <rect class="tsw s0" x="122.5" y="29" width="9" height="9" rx="2"/>
+                <text class="tx" x="136.5" y="38">legitimate: 2571 (70%)</text>
+                <rect class="tsw s1" x="122.5" y="46" width="9" height="9" rx="2"/>
+                <text class="tx" x="136.5" y="55">fraud: 1102 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e8 e9 a9 a10 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 6.35: yes, Samples: 1264 (21.1% of root), legitimate: 884.8 (70%), fraud: 379.2 (30%)">
+            <title>feature_12 ≤ 6.35: yes, Samples: 1264 (21.1% of root), legitimate: 884.8 (70%), fraud: 379.2 (30%)
+            </title>
+            <path class="eh" d="M123.5 50C123.5 61 102.5 61 102.5 72"/>
+            <path class="ep et" d="M123.5 50C123.5 61 102.5 61 102.5 72" stroke-width="1.39"/>
+            <g class="tt">
+                <rect class="tb" x="123" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="133" y="40">feature_12 ≤ 6.35: yes</text>
+                <text class="tx" x="133" y="57">Samples: 1264 (21.1% of root)</text>
+                <rect class="tsw s0" x="133" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="147" y="74">legitimate: 884.8 (70%)</text>
+                <rect class="tsw s1" x="133" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="147" y="91">fraud: 379.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e9 e10 a10" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 8.33: yes, Samples: 517 (8.6% of root), legitimate: 361.9 (70%), fraud: 155.1 (30%)">
+            <title>feature_11 ≤ 8.33: yes, Samples: 517 (8.6% of root), legitimate: 361.9 (70%), fraud: 155.1 (30%)
+            </title>
+            <path class="eh" d="M102.5 86C102.5 97 92 97 92 108"/>
+            <path class="ep et" d="M102.5 86C102.5 97 92 97 92 108" stroke-width="1.04"/>
+            <g class="tt">
+                <rect class="tb" x="107.25" y="58" width="171.08" height="78" rx="6"/>
+                <text class="tx b" x="117.25" y="76">feature_11 ≤ 8.33: yes</text>
+                <text class="tx" x="117.25" y="93">Samples: 517 (8.6% of root)</text>
+                <rect class="tsw s0" x="117.25" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="131.25" y="110">legitimate: 361.9 (70%)</text>
+                <rect class="tsw s1" x="117.25" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="131.25" y="127">fraud: 155.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e9 e11 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 8.33: no, Samples: 747 (12.5% of root), legitimate: 522.9 (70%), fraud: 224.1 (30%)">
+            <title>feature_11 ≤ 8.33: no, Samples: 747 (12.5% of root), legitimate: 522.9 (70%), fraud: 224.1 (30%)
+            </title>
+            <path class="eh" d="M102.5 86C102.5 97 113 97 113 108"/>
+            <path class="ep et" d="M102.5 86C102.5 97 113 97 113 108" stroke-width="1.15"/>
+            <g class="tt">
+                <rect class="tb" x="117.75" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="127.75" y="76">feature_11 ≤ 8.33: no</text>
+                <text class="tx" x="127.75" y="93">Samples: 747 (12.5% of root)</text>
+                <rect class="tsw s0" x="127.75" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="141.75" y="110">legitimate: 522.9 (70%)</text>
+                <rect class="tsw s1" x="127.75" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="141.75" y="127">fraud: 224.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e8 e12 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 6.35: no, Samples: 2409 (40.2% of root), legitimate: 1686 (70%), fraud: 722.7 (30%)">
+            <title>feature_12 ≤ 6.35: no, Samples: 2409 (40.2% of root), legitimate: 1686 (70%), fraud: 722.7 (30%)
+            </title>
+            <path class="eh" d="M123.5 50C123.5 61 144.5 61 144.5 72"/>
+            <path class="ep et" d="M123.5 50C123.5 61 144.5 61 144.5 72" stroke-width="1.92"/>
+            <g class="tt">
+                <rect class="tb" x="144" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="154" y="40">feature_12 ≤ 6.35: no</text>
+                <text class="tx" x="154" y="57">Samples: 2409 (40.2% of root)</text>
+                <rect class="tsw s0" x="154" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="168" y="74">legitimate: 1686 (70%)</text>
+                <rect class="tsw s1" x="154" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="168" y="91">fraud: 722.7 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e12 e13 a13" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.76: yes, Samples: 1548 (25.8% of root), legitimate: 1084 (70%), fraud: 464.4 (30%)">
+            <title>feature_11 ≤ 6.76: yes, Samples: 1548 (25.8% of root), legitimate: 1084 (70%), fraud: 464.4 (30%)
+            </title>
+            <path class="eh" d="M144.5 86C144.5 97 134 97 134 108"/>
+            <path class="ep et" d="M144.5 86C144.5 97 134 97 134 108" stroke-width="1.52"/>
+            <g class="tt">
+                <rect class="tb" x="149.25" y="58" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="159.25" y="76">feature_11 ≤ 6.76: yes</text>
+                <text class="tx" x="159.25" y="93">Samples: 1548 (25.8% of root)</text>
+                <rect class="tsw s0" x="159.25" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="173.25" y="110">legitimate: 1084 (70%)</text>
+                <rect class="tsw s1" x="159.25" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="173.25" y="127">fraud: 464.4 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e12 e14 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.76: no, Samples: 861 (14.4% of root), legitimate: 602.7 (70%), fraud: 258.3 (30%)">
+            <title>feature_11 ≤ 6.76: no, Samples: 861 (14.4% of root), legitimate: 602.7 (70%), fraud: 258.3 (30%)
+            </title>
+            <path class="eh" d="M144.5 86C144.5 97 155 97 155 108"/>
+            <path class="ep et" d="M144.5 86C144.5 97 155 97 155 108" stroke-width="1.2"/>
+            <g class="tt">
+                <rect class="tb" x="159.75" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="169.75" y="76">feature_11 ≤ 6.76: no</text>
+                <text class="tx" x="169.75" y="93">Samples: 861 (14.4% of root)</text>
+                <rect class="tsw s0" x="169.75" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="183.75" y="110">legitimate: 602.7 (70%)</text>
+                <rect class="tsw s1" x="169.75" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="183.75" y="127">fraud: 258.3 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j1 j8 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 2.73, Split at depth 0, Samples: 6000 (100% of root), Impurity (impurity): 0.3, legitimate: 4200 (70%), fraud: 1800 (30%)">
+            <title>feature_0 ≤ 2.73, Split at depth 0, Samples: 6000 (100% of root), Impurity (impurity): 0.3,
+                legitimate: 4200 (70%), fraud: 1800 (30%)
+            </title>
+            <circle class="nb" cx="81.5" cy="7" r="7"/>
+            <circle class="nt" cx="81.5" cy="7" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="98.5" y="-49" width="181.4" height="112" rx="6"/>
+                <text class="tx b" x="108.5" y="-31">feature_0 ≤ 2.73</text>
+                <text class="tx" x="108.5" y="-14">Split at depth 0</text>
+                <text class="tx" x="108.5" y="3">Samples: 6000 (100% of root)</text>
+                <text class="tx" x="108.5" y="20">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="108.5" y="28" width="9" height="9" rx="2"/>
+                <text class="tx" x="122.5" y="37">legitimate: 4200 (70%)</text>
+                <rect class="tsw s1" x="108.5" y="45" width="9" height="9" rx="2"/>
+                <text class="tx" x="122.5" y="54">fraud: 1800 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j0 j2 j5 a2 a3 a4 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 2.54, Split at depth 1, Samples: 2327 (38.8% of root), Impurity (impurity): 0.3, legitimate: 1629 (70%), fraud: 698.1 (30%)">
+            <title>feature_12 ≤ 2.54, Split at depth 1, Samples: 2327 (38.8% of root), Impurity (impurity): 0.3,
+                legitimate: 1629 (70%), fraud: 698.1 (30%)
+            </title>
+            <circle class="nb" cx="39.5" cy="43" r="7"/>
+            <circle class="nt" cx="39.5" cy="43" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="56.5" y="-13" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="66.5" y="5">feature_12 ≤ 2.54</text>
+                <text class="tx" x="66.5" y="22">Split at depth 1</text>
+                <text class="tx" x="66.5" y="39">Samples: 2327 (38.8% of root)</text>
+                <text class="tx" x="66.5" y="56">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="66.5" y="64" width="9" height="9" rx="2"/>
+                <text class="tx" x="80.5" y="73">legitimate: 1629 (70%)</text>
+                <rect class="tsw s1" x="66.5" y="81" width="9" height="9" rx="2"/>
+                <text class="tx" x="80.5" y="90">fraud: 698.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j1 j3 j4 a3 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 7.85, Split at depth 2, Samples: 834 (13.9% of root), Impurity (impurity): 0.3, legitimate: 583.8 (70%), fraud: 250.2 (30%)">
+            <title>feature_11 ≤ 7.85, Split at depth 2, Samples: 834 (13.9% of root), Impurity (impurity): 0.3,
+                legitimate: 583.8 (70%), fraud: 250.2 (30%)
+            </title>
+            <circle class="nb" cx="18.5" cy="79" r="7"/>
+            <circle class="nt" cx="18.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="35.5" y="23" width="177.8" height="112" rx="6"/>
+                <text class="tx b" x="45.5" y="41">feature_11 ≤ 7.85</text>
+                <text class="tx" x="45.5" y="58">Split at depth 2</text>
+                <text class="tx" x="45.5" y="75">Samples: 834 (13.9% of root)</text>
+                <text class="tx" x="45.5" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="45.5" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="59.5" y="109">legitimate: 583.8 (70%)</text>
+                <rect class="tsw s1" x="45.5" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="59.5" y="126">fraud: 250.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 4.79, Collapsed subtree at depth 3, Samples: 296 (4.9% of root), Impurity (impurity): 0.3, legitimate: 207.2 (70%), fraud: 88.8 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_10 ≤ 4.79, Collapsed subtree at depth 3, Samples: 296 (4.9% of root), Impurity (impurity):
+                0.3, legitimate: 207.2 (70%), fraud: 88.8 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M8 108L16 122L0 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="26" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="36" y="69">feature_10 ≤ 4.79</text>
+                <text class="tx" x="36" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="36" y="103">Samples: 296 (4.9% of root)</text>
+                <text class="tx" x="36" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="36" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="50" y="137">legitimate: 207.2 (70%)</text>
+                <rect class="tsw s1" x="36" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="50" y="154">fraud: 88.8 (30%)</text>
+                <text class="tx" x="36" y="171">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 3.86, Collapsed subtree at depth 3, Samples: 538 (9% of root), Impurity (impurity): 0.3, legitimate: 376.6 (70%), fraud: 161.4 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_10 ≤ 3.86, Collapsed subtree at depth 3, Samples: 538 (9% of root), Impurity (impurity): 0.3,
+                legitimate: 376.6 (70%), fraud: 161.4 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M29 108L37 122L21 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="47" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="57" y="69">feature_10 ≤ 3.86</text>
+                <text class="tx" x="57" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="57" y="103">Samples: 538 (9% of root)</text>
+                <text class="tx" x="57" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="57" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="71" y="137">legitimate: 376.6 (70%)</text>
+                <rect class="tsw s1" x="57" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="71" y="154">fraud: 161.4 (30%)</text>
+                <text class="tx" x="57" y="171">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j1 j6 j7 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.43, Split at depth 2, Samples: 1493 (24.9% of root), Impurity (impurity): 0.3, legitimate: 1045 (70%), fraud: 447.9 (30%)">
+            <title>feature_11 ≤ 6.43, Split at depth 2, Samples: 1493 (24.9% of root), Impurity (impurity): 0.3,
+                legitimate: 1045 (70%), fraud: 447.9 (30%)
+            </title>
+            <circle class="nb" cx="60.5" cy="79" r="7"/>
+            <circle class="nt" cx="60.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="77.5" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="87.5" y="41">feature_11 ≤ 6.43</text>
+                <text class="tx" x="87.5" y="58">Split at depth 2</text>
+                <text class="tx" x="87.5" y="75">Samples: 1493 (24.9% of root)</text>
+                <text class="tx" x="87.5" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="87.5" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="101.5" y="109">legitimate: 1045 (70%)</text>
+                <rect class="tsw s1" x="87.5" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="101.5" y="126">fraud: 447.9 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j5" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 9.15, Collapsed subtree at depth 3, Samples: 746 (12.4% of root), Impurity (impurity): 0.3, legitimate: 522.2 (70%), fraud: 223.8 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_10 ≤ 9.15, Collapsed subtree at depth 3, Samples: 746 (12.4% of root), Impurity (impurity):
+                0.3, legitimate: 522.2 (70%), fraud: 223.8 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M50 108L58 122L42 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="68" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="78" y="69">feature_10 ≤ 9.15</text>
+                <text class="tx" x="78" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="78" y="103">Samples: 746 (12.4% of root)</text>
+                <text class="tx" x="78" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="78" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="92" y="137">legitimate: 522.2 (70%)</text>
+                <rect class="tsw s1" x="78" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="92" y="154">fraud: 223.8 (30%)</text>
+                <text class="tx" x="78" y="171">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j5" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 7.7, Collapsed subtree at depth 3, Samples: 747 (12.5% of root), Impurity (impurity): 0.3, legitimate: 522.9 (70%), fraud: 224.1 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_10 ≤ 7.7, Collapsed subtree at depth 3, Samples: 747 (12.5% of root), Impurity (impurity):
+                0.3, legitimate: 522.9 (70%), fraud: 224.1 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M71 108L79 122L63 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="89" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="99" y="69">feature_10 ≤ 7.7</text>
+                <text class="tx" x="99" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="99" y="103">Samples: 747 (12.5% of root)</text>
+                <text class="tx" x="99" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="99" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="113" y="137">legitimate: 522.9 (70%)</text>
+                <rect class="tsw s1" x="99" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="113" y="154">fraud: 224.1 (30%)</text>
+                <text class="tx" x="99" y="171">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j0 j9 j12 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 6.35, Split at depth 1, Samples: 3673 (61.2% of root), Impurity (impurity): 0.3, legitimate: 2571 (70%), fraud: 1102 (30%)">
+            <title>feature_12 ≤ 6.35, Split at depth 1, Samples: 3673 (61.2% of root), Impurity (impurity): 0.3,
+                legitimate: 2571 (70%), fraud: 1102 (30%)
+            </title>
+            <circle class="nb" cx="123.5" cy="43" r="7"/>
+            <circle class="nt" cx="123.5" cy="43" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="140.5" y="-13" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="150.5" y="5">feature_12 ≤ 6.35</text>
+                <text class="tx" x="150.5" y="22">Split at depth 1</text>
+                <text class="tx" x="150.5" y="39">Samples: 3673 (61.2% of root)</text>
+                <text class="tx" x="150.5" y="56">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="150.5" y="64" width="9" height="9" rx="2"/>
+                <text class="tx" x="164.5" y="73">legitimate: 2571 (70%)</text>
+                <rect class="tsw s1" x="150.5" y="81" width="9" height="9" rx="2"/>
+                <text class="tx" x="164.5" y="90">fraud: 1102 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j8 j10 j11 a10 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 8.33, Split at depth 2, Samples: 1264 (21.1% of root), Impurity (impurity): 0.3, legitimate: 884.8 (70%), fraud: 379.2 (30%)">
+            <title>feature_11 ≤ 8.33, Split at depth 2, Samples: 1264 (21.1% of root), Impurity (impurity): 0.3,
+                legitimate: 884.8 (70%), fraud: 379.2 (30%)
+            </title>
+            <circle class="nb" cx="102.5" cy="79" r="7"/>
+            <circle class="nt" cx="102.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="119.5" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="129.5" y="41">feature_11 ≤ 8.33</text>
+                <text class="tx" x="129.5" y="58">Split at depth 2</text>
+                <text class="tx" x="129.5" y="75">Samples: 1264 (21.1% of root)</text>
+                <text class="tx" x="129.5" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="129.5" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="143.5" y="109">legitimate: 884.8 (70%)</text>
+                <rect class="tsw s1" x="129.5" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="143.5" y="126">fraud: 379.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j9" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 2.45, Collapsed subtree at depth 3, Samples: 517 (8.6% of root), Impurity (impurity): 0.3, legitimate: 361.9 (70%), fraud: 155.1 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_10 ≤ 2.45, Collapsed subtree at depth 3, Samples: 517 (8.6% of root), Impurity (impurity):
+                0.3, legitimate: 361.9 (70%), fraud: 155.1 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M92 108L100 122L84 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="110" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="120" y="69">feature_10 ≤ 2.45</text>
+                <text class="tx" x="120" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="120" y="103">Samples: 517 (8.6% of root)</text>
+                <text class="tx" x="120" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="120" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="134" y="137">legitimate: 361.9 (70%)</text>
+                <rect class="tsw s1" x="120" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="134" y="154">fraud: 155.1 (30%)</text>
+                <text class="tx" x="120" y="171">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j9" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 7.18, Collapsed subtree at depth 3, Samples: 747 (12.5% of root), Impurity (impurity): 0.3, legitimate: 522.9 (70%), fraud: 224.1 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_10 ≤ 7.18, Collapsed subtree at depth 3, Samples: 747 (12.5% of root), Impurity (impurity):
+                0.3, legitimate: 522.9 (70%), fraud: 224.1 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M113 108L121 122L105 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="131" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="141" y="69">feature_10 ≤ 7.18</text>
+                <text class="tx" x="141" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="141" y="103">Samples: 747 (12.5% of root)</text>
+                <text class="tx" x="141" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="141" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="155" y="137">legitimate: 522.9 (70%)</text>
+                <rect class="tsw s1" x="141" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="155" y="154">fraud: 224.1 (30%)</text>
+                <text class="tx" x="141" y="171">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j8 j13 j14 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_11 ≤ 6.76, Split at depth 2, Samples: 2409 (40.2% of root), Impurity (impurity): 0.3, legitimate: 1686 (70%), fraud: 722.7 (30%)">
+            <title>feature_11 ≤ 6.76, Split at depth 2, Samples: 2409 (40.2% of root), Impurity (impurity): 0.3,
+                legitimate: 1686 (70%), fraud: 722.7 (30%)
+            </title>
+            <circle class="nb" cx="144.5" cy="79" r="7"/>
+            <circle class="nt" cx="144.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="161.5" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="171.5" y="41">feature_11 ≤ 6.76</text>
+                <text class="tx" x="171.5" y="58">Split at depth 2</text>
+                <text class="tx" x="171.5" y="75">Samples: 2409 (40.2% of root)</text>
+                <text class="tx" x="171.5" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="171.5" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="185.5" y="109">legitimate: 1686 (70%)</text>
+                <rect class="tsw s1" x="171.5" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="185.5" y="126">fraud: 722.7 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j12" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 3.19, Collapsed subtree at depth 3, Samples: 1548 (25.8% of root), Impurity (impurity): 0.3, legitimate: 1084 (70%), fraud: 464.4 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_10 ≤ 3.19, Collapsed subtree at depth 3, Samples: 1548 (25.8% of root), Impurity (impurity):
+                0.3, legitimate: 1084 (70%), fraud: 464.4 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M134 108L142 122L126 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="152" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="162" y="69">feature_10 ≤ 3.19</text>
+                <text class="tx" x="162" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="162" y="103">Samples: 1548 (25.8% of root)</text>
+                <text class="tx" x="162" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="162" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="176" y="137">legitimate: 1084 (70%)</text>
+                <rect class="tsw s1" x="162" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="176" y="154">fraud: 464.4 (30%)</text>
+                <text class="tx" x="162" y="171">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j12" tabindex="0" role="graphics-symbol"
+           aria-label="feature_10 ≤ 7.99, Collapsed subtree at depth 3, Samples: 861 (14.4% of root), Impurity (impurity): 0.3, legitimate: 602.7 (70%), fraud: 258.3 (30%), 3 nodes, 2 leaves in this subtree">
+            <title>feature_10 ≤ 7.99, Collapsed subtree at depth 3, Samples: 861 (14.4% of root), Impurity (impurity):
+                0.3, legitimate: 602.7 (70%), fraud: 258.3 (30%), 3 nodes, 2 leaves in this subtree
+            </title>
+            <path class="tri" d="M155 108L163 122L147 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="173" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="183" y="69">feature_10 ≤ 7.99</text>
+                <text class="tx" x="183" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="183" y="103">Samples: 861 (14.4% of root)</text>
+                <text class="tx" x="183" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="183" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="197" y="137">legitimate: 602.7 (70%)</text>
+                <rect class="tsw s1" x="183" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="197" y="154">fraud: 258.3 (30%)</text>
+                <text class="tx" x="183" y="171">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+    </g>
+    <rect class="pf" x="338" y="262" width="300" height="164" rx="6"/>
+    <text class="ph" x="348" y="279">Tree 4</text>
+    <text class="kn end" x="628" y="279">63 nodes, cut at depth 3</text>
+    <g class="tree" transform="translate(406.5 292)">
+        <g class="mk eg e0 e1 a1 a2 a3 a4 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_2 ≤ 5.66: yes, Samples: 3581 (59.7% of root), legitimate: 2507 (70%), fraud: 1074 (30%)">
+            <title>feature_2 ≤ 5.66: yes, Samples: 3581 (59.7% of root), legitimate: 2507 (70%), fraud: 1074 (30%)
+            </title>
+            <path class="eh" d="M81.5 14C81.5 25 39.5 25 39.5 36"/>
+            <path class="ep et" d="M81.5 14C81.5 25 39.5 25 39.5 36" stroke-width="2.47"/>
+            <g class="tt">
+                <rect class="tb" x="-134.02" y="-14" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-124.02" y="4">feature_2 ≤ 5.66: yes</text>
+                <text class="tx" x="-124.02" y="21">Samples: 3581 (59.7% of root)</text>
+                <rect class="tsw s0" x="-124.02" y="29" width="9" height="9" rx="2"/>
+                <text class="tx" x="-110.02" y="38">legitimate: 2507 (70%)</text>
+                <rect class="tsw s1" x="-124.02" y="46" width="9" height="9" rx="2"/>
+                <text class="tx" x="-110.02" y="55">fraud: 1074 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e1 e2 a2 a3 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_1 ≤ 4.67: yes, Samples: 2284 (38.1% of root), legitimate: 1599 (70%), fraud: 685.2 (30%)">
+            <title>feature_1 ≤ 4.67: yes, Samples: 2284 (38.1% of root), legitimate: 1599 (70%), fraud: 685.2 (30%)
+            </title>
+            <path class="eh" d="M39.5 50C39.5 61 18.5 61 18.5 72"/>
+            <path class="ep et" d="M39.5 50C39.5 61 18.5 61 18.5 72" stroke-width="1.87"/>
+            <g class="tt">
+                <rect class="tb" x="39" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="49" y="40">feature_1 ≤ 4.67: yes</text>
+                <text class="tx" x="49" y="57">Samples: 2284 (38.1% of root)</text>
+                <rect class="tsw s0" x="49" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="63" y="74">legitimate: 1599 (70%)</text>
+                <rect class="tsw s1" x="49" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="63" y="91">fraud: 685.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e2 e3 a3" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 6.59: yes, Samples: 1224 (20.4% of root), legitimate: 856.8 (70%), fraud: 367.2 (30%)">
+            <title>feature_0 ≤ 6.59: yes, Samples: 1224 (20.4% of root), legitimate: 856.8 (70%), fraud: 367.2 (30%)
+            </title>
+            <path class="eh" d="M18.5 86C18.5 97 8 97 8 108"/>
+            <path class="ep et" d="M18.5 86C18.5 97 8 97 8 108" stroke-width="1.37"/>
+            <g class="tt">
+                <rect class="tb" x="23.25" y="58" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="33.25" y="76">feature_0 ≤ 6.59: yes</text>
+                <text class="tx" x="33.25" y="93">Samples: 1224 (20.4% of root)</text>
+                <rect class="tsw s0" x="33.25" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="47.25" y="110">legitimate: 856.8 (70%)</text>
+                <rect class="tsw s1" x="33.25" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="47.25" y="127">fraud: 367.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e2 e4 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 6.59: no, Samples: 1060 (17.7% of root), legitimate: 742 (70%), fraud: 318 (30%)">
+            <title>feature_0 ≤ 6.59: no, Samples: 1060 (17.7% of root), legitimate: 742 (70%), fraud: 318 (30%)</title>
+            <path class="eh" d="M18.5 86C18.5 97 29 97 29 108"/>
+            <path class="ep et" d="M18.5 86C18.5 97 29 97 29 108" stroke-width="1.29"/>
+            <g class="tt">
+                <rect class="tb" x="33.75" y="58" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="43.75" y="76">feature_0 ≤ 6.59: no</text>
+                <text class="tx" x="43.75" y="93">Samples: 1060 (17.7% of root)</text>
+                <rect class="tsw s0" x="43.75" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="57.75" y="110">legitimate: 742 (70%)</text>
+                <rect class="tsw s1" x="43.75" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="57.75" y="127">fraud: 318 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e1 e5 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_1 ≤ 4.67: no, Samples: 1297 (21.6% of root), legitimate: 907.9 (70%), fraud: 389.1 (30%)">
+            <title>feature_1 ≤ 4.67: no, Samples: 1297 (21.6% of root), legitimate: 907.9 (70%), fraud: 389.1 (30%)
+            </title>
+            <path class="eh" d="M39.5 50C39.5 61 60.5 61 60.5 72"/>
+            <path class="ep et" d="M39.5 50C39.5 61 60.5 61 60.5 72" stroke-width="1.41"/>
+            <g class="tt">
+                <rect class="tb" x="-144.52" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-134.52" y="40">feature_1 ≤ 4.67: no</text>
+                <text class="tx" x="-134.52" y="57">Samples: 1297 (21.6% of root)</text>
+                <rect class="tsw s0" x="-134.52" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="-120.52" y="74">legitimate: 907.9 (70%)</text>
+                <rect class="tsw s1" x="-134.52" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="-120.52" y="91">fraud: 389.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e5 e6 a6" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 2.2: yes, Samples: 545 (9.1% of root), legitimate: 381.5 (70%), fraud: 163.5 (30%)">
+            <title>feature_0 ≤ 2.2: yes, Samples: 545 (9.1% of root), legitimate: 381.5 (70%), fraud: 163.5 (30%)
+            </title>
+            <path class="eh" d="M60.5 86C60.5 97 50 97 50 108"/>
+            <path class="ep et" d="M60.5 86C60.5 97 50 97 50 108" stroke-width="1.05"/>
+            <g class="tt">
+                <rect class="tb" x="-125.83" y="58" width="171.08" height="78" rx="6"/>
+                <text class="tx b" x="-115.83" y="76">feature_0 ≤ 2.2: yes</text>
+                <text class="tx" x="-115.83" y="93">Samples: 545 (9.1% of root)</text>
+                <rect class="tsw s0" x="-115.83" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-101.83" y="110">legitimate: 381.5 (70%)</text>
+                <rect class="tsw s1" x="-115.83" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-101.83" y="127">fraud: 163.5 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e5 e7 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 2.2: no, Samples: 752 (12.5% of root), legitimate: 526.4 (70%), fraud: 225.6 (30%)">
+            <title>feature_0 ≤ 2.2: no, Samples: 752 (12.5% of root), legitimate: 526.4 (70%), fraud: 225.6 (30%)
+            </title>
+            <path class="eh" d="M60.5 86C60.5 97 71 97 71 108"/>
+            <path class="ep et" d="M60.5 86C60.5 97 71 97 71 108" stroke-width="1.15"/>
+            <g class="tt">
+                <rect class="tb" x="-122.05" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="-112.05" y="76">feature_0 ≤ 2.2: no</text>
+                <text class="tx" x="-112.05" y="93">Samples: 752 (12.5% of root)</text>
+                <rect class="tsw s0" x="-112.05" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-98.05" y="110">legitimate: 526.4 (70%)</text>
+                <rect class="tsw s1" x="-112.05" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-98.05" y="127">fraud: 225.6 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e0 e8 a8 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_2 ≤ 5.66: no, Samples: 2419 (40.3% of root), legitimate: 1693 (70%), fraud: 725.7 (30%)">
+            <title>feature_2 ≤ 5.66: no, Samples: 2419 (40.3% of root), legitimate: 1693 (70%), fraud: 725.7 (30%)
+            </title>
+            <path class="eh" d="M81.5 14C81.5 25 123.5 25 123.5 36"/>
+            <path class="ep et" d="M81.5 14C81.5 25 123.5 25 123.5 36" stroke-width="1.93"/>
+            <g class="tt">
+                <rect class="tb" x="-92.02" y="-14" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-82.02" y="4">feature_2 ≤ 5.66: no</text>
+                <text class="tx" x="-82.02" y="21">Samples: 2419 (40.3% of root)</text>
+                <rect class="tsw s0" x="-82.02" y="29" width="9" height="9" rx="2"/>
+                <text class="tx" x="-68.02" y="38">legitimate: 1693 (70%)</text>
+                <rect class="tsw s1" x="-82.02" y="46" width="9" height="9" rx="2"/>
+                <text class="tx" x="-68.02" y="55">fraud: 725.7 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e8 e9 a9 a10 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_1 ≤ 5.65: yes, Samples: 1254 (20.9% of root), legitimate: 877.8 (70%), fraud: 376.2 (30%)">
+            <title>feature_1 ≤ 5.65: yes, Samples: 1254 (20.9% of root), legitimate: 877.8 (70%), fraud: 376.2 (30%)
+            </title>
+            <path class="eh" d="M123.5 50C123.5 61 102.5 61 102.5 72"/>
+            <path class="ep et" d="M123.5 50C123.5 61 102.5 61 102.5 72" stroke-width="1.39"/>
+            <g class="tt">
+                <rect class="tb" x="-81.52" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-71.52" y="40">feature_1 ≤ 5.65: yes</text>
+                <text class="tx" x="-71.52" y="57">Samples: 1254 (20.9% of root)</text>
+                <rect class="tsw s0" x="-71.52" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="-57.52" y="74">legitimate: 877.8 (70%)</text>
+                <rect class="tsw s1" x="-71.52" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="-57.52" y="91">fraud: 376.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e9 e10 a10" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 7.6: yes, Samples: 714 (11.9% of root), legitimate: 499.8 (70%), fraud: 214.2 (30%)">
+            <title>feature_0 ≤ 7.6: yes, Samples: 714 (11.9% of root), legitimate: 499.8 (70%), fraud: 214.2 (30%)
+            </title>
+            <path class="eh" d="M102.5 86C102.5 97 92 97 92 108"/>
+            <path class="ep et" d="M102.5 86C102.5 97 92 97 92 108" stroke-width="1.13"/>
+            <g class="tt">
+                <rect class="tb" x="-90.55" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="-80.55" y="76">feature_0 ≤ 7.6: yes</text>
+                <text class="tx" x="-80.55" y="93">Samples: 714 (11.9% of root)</text>
+                <rect class="tsw s0" x="-80.55" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-66.55" y="110">legitimate: 499.8 (70%)</text>
+                <rect class="tsw s1" x="-80.55" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-66.55" y="127">fraud: 214.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e9 e11 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 7.6: no, Samples: 540 (9% of root), legitimate: 378 (70%), fraud: 162 (30%)">
+            <title>feature_0 ≤ 7.6: no, Samples: 540 (9% of root), legitimate: 378 (70%), fraud: 162 (30%)</title>
+            <path class="eh" d="M102.5 86C102.5 97 113 97 113 108"/>
+            <path class="ep et" d="M102.5 86C102.5 97 113 97 113 108" stroke-width="1.05"/>
+            <g class="tt">
+                <rect class="tb" x="-63.49" y="58" width="161.24" height="78" rx="6"/>
+                <text class="tx b" x="-53.49" y="76">feature_0 ≤ 7.6: no</text>
+                <text class="tx" x="-53.49" y="93">Samples: 540 (9% of root)</text>
+                <rect class="tsw s0" x="-53.49" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-39.49" y="110">legitimate: 378 (70%)</text>
+                <rect class="tsw s1" x="-53.49" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-39.49" y="127">fraud: 162 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e8 e12 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_1 ≤ 5.65: no, Samples: 1165 (19.4% of root), legitimate: 815.5 (70%), fraud: 349.5 (30%)">
+            <title>feature_1 ≤ 5.65: no, Samples: 1165 (19.4% of root), legitimate: 815.5 (70%), fraud: 349.5 (30%)
+            </title>
+            <path class="eh" d="M123.5 50C123.5 61 144.5 61 144.5 72"/>
+            <path class="ep et" d="M123.5 50C123.5 61 144.5 61 144.5 72" stroke-width="1.34"/>
+            <g class="tt">
+                <rect class="tb" x="-60.52" y="22" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="-50.52" y="40">feature_1 ≤ 5.65: no</text>
+                <text class="tx" x="-50.52" y="57">Samples: 1165 (19.4% of root)</text>
+                <rect class="tsw s0" x="-50.52" y="65" width="9" height="9" rx="2"/>
+                <text class="tx" x="-36.52" y="74">legitimate: 815.5 (70%)</text>
+                <rect class="tsw s1" x="-50.52" y="82" width="9" height="9" rx="2"/>
+                <text class="tx" x="-36.52" y="91">fraud: 349.5 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e12 e13 a13" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 2.61: yes, Samples: 533 (8.9% of root), legitimate: 373.1 (70%), fraud: 159.9 (30%)">
+            <title>feature_0 ≤ 2.61: yes, Samples: 533 (8.9% of root), legitimate: 373.1 (70%), fraud: 159.9 (30%)
+            </title>
+            <path class="eh" d="M144.5 86C144.5 97 134 97 134 108"/>
+            <path class="ep et" d="M144.5 86C144.5 97 134 97 134 108" stroke-width="1.05"/>
+            <g class="tt">
+                <rect class="tb" x="-41.83" y="58" width="171.08" height="78" rx="6"/>
+                <text class="tx b" x="-31.83" y="76">feature_0 ≤ 2.61: yes</text>
+                <text class="tx" x="-31.83" y="93">Samples: 533 (8.9% of root)</text>
+                <rect class="tsw s0" x="-31.83" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-17.83" y="110">legitimate: 373.1 (70%)</text>
+                <rect class="tsw s1" x="-31.83" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-17.83" y="127">fraud: 159.9 (30%)</text>
+            </g>
+        </g>
+        <g class="mk eg e12 e14 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 2.61: no, Samples: 632 (10.5% of root), legitimate: 442.4 (70%), fraud: 189.6 (30%)">
+            <title>feature_0 ≤ 2.61: no, Samples: 632 (10.5% of root), legitimate: 442.4 (70%), fraud: 189.6 (30%)
+            </title>
+            <path class="eh" d="M144.5 86C144.5 97 155 97 155 108"/>
+            <path class="ep et" d="M144.5 86C144.5 97 155 97 155 108" stroke-width="1.09"/>
+            <g class="tt">
+                <rect class="tb" x="-38.05" y="58" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="-28.05" y="76">feature_0 ≤ 2.61: no</text>
+                <text class="tx" x="-28.05" y="93">Samples: 632 (10.5% of root)</text>
+                <rect class="tsw s0" x="-28.05" y="101" width="9" height="9" rx="2"/>
+                <text class="tx" x="-14.05" y="110">legitimate: 442.4 (70%)</text>
+                <rect class="tsw s1" x="-28.05" y="118" width="9" height="9" rx="2"/>
+                <text class="tx" x="-14.05" y="127">fraud: 189.6 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j1 j8 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_2 ≤ 5.66, Split at depth 0, Samples: 6000 (100% of root), Impurity (impurity): 0.3, legitimate: 4200 (70%), fraud: 1800 (30%)">
+            <title>feature_2 ≤ 5.66, Split at depth 0, Samples: 6000 (100% of root), Impurity (impurity): 0.3,
+                legitimate: 4200 (70%), fraud: 1800 (30%)
+            </title>
+            <circle class="nb" cx="81.5" cy="7" r="7"/>
+            <circle class="nt" cx="81.5" cy="7" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-102.9" y="-49" width="181.4" height="112" rx="6"/>
+                <text class="tx b" x="-92.9" y="-31">feature_2 ≤ 5.66</text>
+                <text class="tx" x="-92.9" y="-14">Split at depth 0</text>
+                <text class="tx" x="-92.9" y="3">Samples: 6000 (100% of root)</text>
+                <text class="tx" x="-92.9" y="20">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-92.9" y="28" width="9" height="9" rx="2"/>
+                <text class="tx" x="-78.9" y="37">legitimate: 4200 (70%)</text>
+                <rect class="tsw s1" x="-92.9" y="45" width="9" height="9" rx="2"/>
+                <text class="tx" x="-78.9" y="54">fraud: 1800 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j0 j2 j5 a2 a3 a4 a5 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_1 ≤ 4.67, Split at depth 1, Samples: 3581 (59.7% of root), Impurity (impurity): 0.3, legitimate: 2507 (70%), fraud: 1074 (30%)">
+            <title>feature_1 ≤ 4.67, Split at depth 1, Samples: 3581 (59.7% of root), Impurity (impurity): 0.3,
+                legitimate: 2507 (70%), fraud: 1074 (30%)
+            </title>
+            <circle class="nb" cx="39.5" cy="43" r="7"/>
+            <circle class="nt" cx="39.5" cy="43" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-148.02" y="-13" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="-138.02" y="5">feature_1 ≤ 4.67</text>
+                <text class="tx" x="-138.02" y="22">Split at depth 1</text>
+                <text class="tx" x="-138.02" y="39">Samples: 3581 (59.7% of root)</text>
+                <text class="tx" x="-138.02" y="56">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-138.02" y="64" width="9" height="9" rx="2"/>
+                <text class="tx" x="-124.02" y="73">legitimate: 2507 (70%)</text>
+                <rect class="tsw s1" x="-138.02" y="81" width="9" height="9" rx="2"/>
+                <text class="tx" x="-124.02" y="90">fraud: 1074 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j1 j3 j4 a3 a4" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 6.59, Split at depth 2, Samples: 2284 (38.1% of root), Impurity (impurity): 0.3, legitimate: 1599 (70%), fraud: 685.2 (30%)">
+            <title>feature_0 ≤ 6.59, Split at depth 2, Samples: 2284 (38.1% of root), Impurity (impurity): 0.3,
+                legitimate: 1599 (70%), fraud: 685.2 (30%)
+            </title>
+            <circle class="nb" cx="18.5" cy="79" r="7"/>
+            <circle class="nt" cx="18.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="35.5" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="45.5" y="41">feature_0 ≤ 6.59</text>
+                <text class="tx" x="45.5" y="58">Split at depth 2</text>
+                <text class="tx" x="45.5" y="75">Samples: 2284 (38.1% of root)</text>
+                <text class="tx" x="45.5" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="45.5" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="59.5" y="109">legitimate: 1599 (70%)</text>
+                <rect class="tsw s1" x="45.5" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="59.5" y="126">fraud: 685.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 9.81, Collapsed subtree at depth 3, Samples: 1224 (20.4% of root), Impurity (impurity): 0.3, legitimate: 856.8 (70%), fraud: 367.2 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_12 ≤ 9.81, Collapsed subtree at depth 3, Samples: 1224 (20.4% of root), Impurity (impurity):
+                0.3, legitimate: 856.8 (70%), fraud: 367.2 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M8 108L16 122L0 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="26" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="36" y="69">feature_12 ≤ 9.81</text>
+                <text class="tx" x="36" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="36" y="103">Samples: 1224 (20.4% of root)</text>
+                <text class="tx" x="36" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="36" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="50" y="137">legitimate: 856.8 (70%)</text>
+                <rect class="tsw s1" x="36" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="50" y="154">fraud: 367.2 (30%)</text>
+                <text class="tx" x="36" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 4.35, Collapsed subtree at depth 3, Samples: 1060 (17.7% of root), Impurity (impurity): 0.3, legitimate: 742 (70%), fraud: 318 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_12 ≤ 4.35, Collapsed subtree at depth 3, Samples: 1060 (17.7% of root), Impurity (impurity):
+                0.3, legitimate: 742 (70%), fraud: 318 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M29 108L37 122L21 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-167.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-157.96" y="69">feature_12 ≤ 4.35</text>
+                <text class="tx" x="-157.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-157.96" y="103">Samples: 1060 (17.7% of root)</text>
+                <text class="tx" x="-157.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-157.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-143.96" y="137">legitimate: 742 (70%)</text>
+                <rect class="tsw s1" x="-157.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-143.96" y="154">fraud: 318 (30%)</text>
+                <text class="tx" x="-157.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j1 j6 j7 a6 a7" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 2.2, Split at depth 2, Samples: 1297 (21.6% of root), Impurity (impurity): 0.3, legitimate: 907.9 (70%), fraud: 389.1 (30%)">
+            <title>feature_0 ≤ 2.2, Split at depth 2, Samples: 1297 (21.6% of root), Impurity (impurity): 0.3,
+                legitimate: 907.9 (70%), fraud: 389.1 (30%)
+            </title>
+            <circle class="nb" cx="60.5" cy="79" r="7"/>
+            <circle class="nt" cx="60.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-127.02" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="-117.02" y="41">feature_0 ≤ 2.2</text>
+                <text class="tx" x="-117.02" y="58">Split at depth 2</text>
+                <text class="tx" x="-117.02" y="75">Samples: 1297 (21.6% of root)</text>
+                <text class="tx" x="-117.02" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-117.02" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="-103.02" y="109">legitimate: 907.9 (70%)</text>
+                <rect class="tsw s1" x="-117.02" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="-103.02" y="126">fraud: 389.1 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j5" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 4.91, Collapsed subtree at depth 3, Samples: 545 (9.1% of root), Impurity (impurity): 0.3, legitimate: 381.5 (70%), fraud: 163.5 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_12 ≤ 4.91, Collapsed subtree at depth 3, Samples: 545 (9.1% of root), Impurity (impurity):
+                0.3, legitimate: 381.5 (70%), fraud: 163.5 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M50 108L58 122L42 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-146.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-136.96" y="69">feature_12 ≤ 4.91</text>
+                <text class="tx" x="-136.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-136.96" y="103">Samples: 545 (9.1% of root)</text>
+                <text class="tx" x="-136.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-136.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-122.96" y="137">legitimate: 381.5 (70%)</text>
+                <rect class="tsw s1" x="-136.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-122.96" y="154">fraud: 163.5 (30%)</text>
+                <text class="tx" x="-136.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j5" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 9.39, Collapsed subtree at depth 3, Samples: 752 (12.5% of root), Impurity (impurity): 0.3, legitimate: 526.4 (70%), fraud: 225.6 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_12 ≤ 9.39, Collapsed subtree at depth 3, Samples: 752 (12.5% of root), Impurity (impurity):
+                0.3, legitimate: 526.4 (70%), fraud: 225.6 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M71 108L79 122L63 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-125.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-115.96" y="69">feature_12 ≤ 9.39</text>
+                <text class="tx" x="-115.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-115.96" y="103">Samples: 752 (12.5% of root)</text>
+                <text class="tx" x="-115.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-115.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-101.96" y="137">legitimate: 526.4 (70%)</text>
+                <rect class="tsw s1" x="-115.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-101.96" y="154">fraud: 225.6 (30%)</text>
+                <text class="tx" x="-115.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j0 j9 j12 a9 a10 a11 a12 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_1 ≤ 5.65, Split at depth 1, Samples: 2419 (40.3% of root), Impurity (impurity): 0.3, legitimate: 1693 (70%), fraud: 725.7 (30%)">
+            <title>feature_1 ≤ 5.65, Split at depth 1, Samples: 2419 (40.3% of root), Impurity (impurity): 0.3,
+                legitimate: 1693 (70%), fraud: 725.7 (30%)
+            </title>
+            <circle class="nb" cx="123.5" cy="43" r="7"/>
+            <circle class="nt" cx="123.5" cy="43" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-64.02" y="-13" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="-54.02" y="5">feature_1 ≤ 5.65</text>
+                <text class="tx" x="-54.02" y="22">Split at depth 1</text>
+                <text class="tx" x="-54.02" y="39">Samples: 2419 (40.3% of root)</text>
+                <text class="tx" x="-54.02" y="56">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-54.02" y="64" width="9" height="9" rx="2"/>
+                <text class="tx" x="-40.02" y="73">legitimate: 1693 (70%)</text>
+                <rect class="tsw s1" x="-54.02" y="81" width="9" height="9" rx="2"/>
+                <text class="tx" x="-40.02" y="90">fraud: 725.7 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j8 j10 j11 a10 a11" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 7.6, Split at depth 2, Samples: 1254 (20.9% of root), Impurity (impurity): 0.3, legitimate: 877.8 (70%), fraud: 376.2 (30%)">
+            <title>feature_0 ≤ 7.6, Split at depth 2, Samples: 1254 (20.9% of root), Impurity (impurity): 0.3,
+                legitimate: 877.8 (70%), fraud: 376.2 (30%)
+            </title>
+            <circle class="nb" cx="102.5" cy="79" r="7"/>
+            <circle class="nt" cx="102.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-85.02" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="-75.02" y="41">feature_0 ≤ 7.6</text>
+                <text class="tx" x="-75.02" y="58">Split at depth 2</text>
+                <text class="tx" x="-75.02" y="75">Samples: 1254 (20.9% of root)</text>
+                <text class="tx" x="-75.02" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-75.02" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="-61.02" y="109">legitimate: 877.8 (70%)</text>
+                <rect class="tsw s1" x="-75.02" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="-61.02" y="126">fraud: 376.2 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j9" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 0.55, Collapsed subtree at depth 3, Samples: 714 (11.9% of root), Impurity (impurity): 0.3, legitimate: 499.8 (70%), fraud: 214.2 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_12 ≤ 0.55, Collapsed subtree at depth 3, Samples: 714 (11.9% of root), Impurity (impurity):
+                0.3, legitimate: 499.8 (70%), fraud: 214.2 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M92 108L100 122L84 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-104.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-94.96" y="69">feature_12 ≤ 0.55</text>
+                <text class="tx" x="-94.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-94.96" y="103">Samples: 714 (11.9% of root)</text>
+                <text class="tx" x="-94.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-94.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-80.96" y="137">legitimate: 499.8 (70%)</text>
+                <rect class="tsw s1" x="-94.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-80.96" y="154">fraud: 214.2 (30%)</text>
+                <text class="tx" x="-94.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j9" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 8.76, Collapsed subtree at depth 3, Samples: 540 (9% of root), Impurity (impurity): 0.3, legitimate: 378 (70%), fraud: 162 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_12 ≤ 8.76, Collapsed subtree at depth 3, Samples: 540 (9% of root), Impurity (impurity): 0.3,
+                legitimate: 378 (70%), fraud: 162 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M113 108L121 122L105 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-83.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-73.96" y="69">feature_12 ≤ 8.76</text>
+                <text class="tx" x="-73.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-73.96" y="103">Samples: 540 (9% of root)</text>
+                <text class="tx" x="-73.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-73.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-59.96" y="137">legitimate: 378 (70%)</text>
+                <rect class="tsw s1" x="-73.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-59.96" y="154">fraud: 162 (30%)</text>
+                <text class="tx" x="-73.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j8 j13 j14 a13 a14" tabindex="0" role="graphics-symbol"
+           aria-label="feature_0 ≤ 2.61, Split at depth 2, Samples: 1165 (19.4% of root), Impurity (impurity): 0.3, legitimate: 815.5 (70%), fraud: 349.5 (30%)">
+            <title>feature_0 ≤ 2.61, Split at depth 2, Samples: 1165 (19.4% of root), Impurity (impurity): 0.3,
+                legitimate: 815.5 (70%), fraud: 349.5 (30%)
+            </title>
+            <circle class="nb" cx="144.5" cy="79" r="7"/>
+            <circle class="nt" cx="144.5" cy="79" r="7"/>
+            <g class="tt">
+                <rect class="tb" x="-43.02" y="23" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="-33.02" y="41">feature_0 ≤ 2.61</text>
+                <text class="tx" x="-33.02" y="58">Split at depth 2</text>
+                <text class="tx" x="-33.02" y="75">Samples: 1165 (19.4% of root)</text>
+                <text class="tx" x="-33.02" y="92">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-33.02" y="100" width="9" height="9" rx="2"/>
+                <text class="tx" x="-19.02" y="109">legitimate: 815.5 (70%)</text>
+                <rect class="tsw s1" x="-33.02" y="117" width="9" height="9" rx="2"/>
+                <text class="tx" x="-19.02" y="126">fraud: 349.5 (30%)</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j12" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 0.85, Collapsed subtree at depth 3, Samples: 533 (8.9% of root), Impurity (impurity): 0.3, legitimate: 373.1 (70%), fraud: 159.9 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_12 ≤ 0.85, Collapsed subtree at depth 3, Samples: 533 (8.9% of root), Impurity (impurity):
+                0.3, legitimate: 373.1 (70%), fraud: 159.9 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M134 108L142 122L126 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-62.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-52.96" y="69">feature_12 ≤ 0.85</text>
+                <text class="tx" x="-52.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-52.96" y="103">Samples: 533 (8.9% of root)</text>
+                <text class="tx" x="-52.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-52.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-38.96" y="137">legitimate: 373.1 (70%)</text>
+                <rect class="tsw s1" x="-52.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-38.96" y="154">fraud: 159.9 (30%)</text>
+                <text class="tx" x="-52.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="mk nd s0 j12" tabindex="0" role="graphics-symbol"
+           aria-label="feature_12 ≤ 7.77, Collapsed subtree at depth 3, Samples: 632 (10.5% of root), Impurity (impurity): 0.3, legitimate: 442.4 (70%), fraud: 189.6 (30%), 7 nodes, 4 leaves in this subtree">
+            <title>feature_12 ≤ 7.77, Collapsed subtree at depth 3, Samples: 632 (10.5% of root), Impurity (impurity):
+                0.3, legitimate: 442.4 (70%), fraud: 189.6 (30%), 7 nodes, 4 leaves in this subtree
+            </title>
+            <path class="tri" d="M155 108L163 122L147 122Z"/>
+            <g class="tt">
+                <rect class="tb" x="-41.96" y="51" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="-31.96" y="69">feature_12 ≤ 7.77</text>
+                <text class="tx" x="-31.96" y="86">Collapsed subtree at depth 3</text>
+                <text class="tx" x="-31.96" y="103">Samples: 632 (10.5% of root)</text>
+                <text class="tx" x="-31.96" y="120">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="-31.96" y="128" width="9" height="9" rx="2"/>
+                <text class="tx" x="-17.96" y="137">legitimate: 442.4 (70%)</text>
+                <rect class="tsw s1" x="-31.96" y="145" width="9" height="9" rx="2"/>
+                <text class="tx" x="-17.96" y="154">fraud: 189.6 (30%)</text>
+                <text class="tx" x="-31.96" y="171">7 nodes, 4 leaves in this subtree</text>
+            </g>
+        </g>
+    </g>
+    <text class="ph" x="22" y="464">Mean decrease in impurity (first 4 of 100 trees drawn)</text>
+    <g class="mk rw s0" tabindex="0" role="graphics-symbol"
+       aria-label="amount_z, Mean decrease in impurity: 0.31, Rank 1, 31% of shown">
+        <title>amount_z, Mean decrease in impurity: 0.31, Rank 1, 31% of shown</title>
+        <rect class="hl" x="22" y="478" width="606" height="22"/>
+        <text class="end mid" x="101.68" y="489">amount_z</text>
+        <rect class="rb" x="113.68" y="482" width="454.32" height="14" rx="2"/>
+        <text class="tk mid" x="574" y="489">0.31</text>
+        <g class="tt">
+            <rect class="tb" x="365.08" y="459" width="192.92" height="61" rx="6"/>
+            <text class="tx b" x="375.08" y="477">amount_z</text>
+            <text class="tx" x="375.08" y="494">Mean decrease in impurity: 0.31</text>
+            <text class="tx" x="375.08" y="511">Rank 1, 31% of shown</text>
+        </g>
+    </g>
+    <g class="mk rw s0" tabindex="0" role="graphics-symbol"
+       aria-label="velocity_1h, Mean decrease in impurity: 0.22, Rank 2, 22% of shown">
+        <title>velocity_1h, Mean decrease in impurity: 0.22, Rank 2, 22% of shown</title>
+        <rect class="hl" x="22" y="500" width="606" height="22"/>
+        <text class="end mid" x="101.68" y="511">velocity_1h</text>
+        <rect class="rb" x="113.68" y="504" width="322.42" height="14" rx="2"/>
+        <text class="tk mid" x="442.1" y="511">0.22</text>
+        <g class="tt">
+            <rect class="tb" x="446.1" y="481" width="192.92" height="61" rx="6"/>
+            <text class="tx b" x="456.1" y="499">velocity_1h</text>
+            <text class="tx" x="456.1" y="516">Mean decrease in impurity: 0.22</text>
+            <text class="tx" x="456.1" y="533">Rank 2, 22% of shown</text>
+        </g>
+    </g>
+    <g class="mk rw s0" tabindex="0" role="graphics-symbol"
+       aria-label="merchant_risk, Mean decrease in impurity: 0.17, Rank 3, 17% of shown">
+        <title>merchant_risk, Mean decrease in impurity: 0.17, Rank 3, 17% of shown</title>
+        <rect class="hl" x="22" y="522" width="606" height="22"/>
+        <text class="end mid" x="101.68" y="533">merchant_risk</text>
+        <rect class="rb" x="113.68" y="526" width="249.14" height="14" rx="2"/>
+        <text class="tk mid" x="368.82" y="533">0.17</text>
+        <g class="tt">
+            <rect class="tb" x="372.82" y="503" width="192.92" height="61" rx="6"/>
+            <text class="tx b" x="382.82" y="521">merchant_risk</text>
+            <text class="tx" x="382.82" y="538">Mean decrease in impurity: 0.17</text>
+            <text class="tx" x="382.82" y="555">Rank 3, 17% of shown</text>
+        </g>
+    </g>
+    <g class="mk rw s0" tabindex="0" role="graphics-symbol"
+       aria-label="geo_mismatch, Mean decrease in impurity: 0.11, Rank 4, 11% of shown">
+        <title>geo_mismatch, Mean decrease in impurity: 0.11, Rank 4, 11% of shown</title>
+        <rect class="hl" x="22" y="544" width="606" height="22"/>
+        <text class="end mid" x="101.68" y="555">geo_mismatch</text>
+        <rect class="rb" x="113.68" y="548" width="161.21" height="14" rx="2"/>
+        <text class="tk mid" x="280.89" y="555">0.11</text>
+        <g class="tt">
+            <rect class="tb" x="284.89" y="525" width="192.92" height="61" rx="6"/>
+            <text class="tx b" x="294.89" y="543">geo_mismatch</text>
+            <text class="tx" x="294.89" y="560">Mean decrease in impurity: 0.11</text>
+            <text class="tx" x="294.89" y="577">Rank 4, 11% of shown</text>
+        </g>
+    </g>
+    <g class="mk rw s0" tabindex="0" role="graphics-symbol"
+       aria-label="account_age, Mean decrease in impurity: 0.08, Rank 5, 8% of shown">
+        <title>account_age, Mean decrease in impurity: 0.08, Rank 5, 8% of shown</title>
+        <rect class="hl" x="22" y="566" width="606" height="22"/>
+        <text class="end mid" x="101.68" y="577">account_age</text>
+        <rect class="rb" x="113.68" y="570" width="117.24" height="14" rx="2"/>
+        <text class="tk mid" x="236.92" y="577">0.08</text>
+        <g class="tt">
+            <rect class="tb" x="240.92" y="547" width="192.92" height="61" rx="6"/>
+            <text class="tx b" x="250.92" y="565">account_age</text>
+            <text class="tx" x="250.92" y="582">Mean decrease in impurity: 0.08</text>
+            <text class="tx" x="250.92" y="599">Rank 5, 8% of shown</text>
+        </g>
+    </g>
+    <g class="mk rw s0" tabindex="0" role="graphics-symbol"
+       aria-label="channel, Mean decrease in impurity: 0.06, Rank 6, 6% of shown">
+        <title>channel, Mean decrease in impurity: 0.06, Rank 6, 6% of shown</title>
+        <rect class="hl" x="22" y="588" width="606" height="22"/>
+        <text class="end mid" x="101.68" y="599">channel</text>
+        <rect class="rb" x="113.68" y="592" width="87.93" height="14" rx="2"/>
+        <text class="tk mid" x="207.61" y="599">0.06</text>
+        <g class="tt">
+            <rect class="tb" x="211.61" y="569" width="192.92" height="61" rx="6"/>
+            <text class="tx b" x="221.61" y="587">channel</text>
+            <text class="tx" x="221.61" y="604">Mean decrease in impurity: 0.06</text>
+            <text class="tx" x="221.61" y="621">Rank 6, 6% of shown</text>
+        </g>
+    </g>
+    <g class="mk rw s0" tabindex="0" role="graphics-symbol"
+       aria-label="night_time, Mean decrease in impurity: 0.03, Rank 7, 3% of shown">
+        <title>night_time, Mean decrease in impurity: 0.03, Rank 7, 3% of shown</title>
+        <rect class="hl" x="22" y="610" width="606" height="22"/>
+        <text class="end mid" x="101.68" y="621">night_time</text>
+        <rect class="rb" x="113.68" y="614" width="43.97" height="14" rx="2"/>
+        <text class="tk mid" x="163.65" y="621">0.03</text>
+        <g class="tt">
+            <rect class="tb" x="167.65" y="591" width="192.92" height="61" rx="6"/>
+            <text class="tx b" x="177.65" y="609">night_time</text>
+            <text class="tx" x="177.65" y="626">Mean decrease in impurity: 0.03</text>
+            <text class="tx" x="177.65" y="643">Rank 7, 3% of shown</text>
+        </g>
+    </g>
+    <g class="mk rw s0" tabindex="0" role="graphics-symbol"
+       aria-label="card_present, Mean decrease in impurity: 0.02, Rank 8, 2% of shown">
+        <title>card_present, Mean decrease in impurity: 0.02, Rank 8, 2% of shown</title>
+        <rect class="hl" x="22" y="632" width="606" height="22"/>
+        <text class="end mid" x="101.68" y="643">card_present</text>
+        <rect class="rb" x="113.68" y="636" width="29.31" height="14" rx="2"/>
+        <text class="tk mid" x="148.99" y="643">0.02</text>
+        <g class="tt">
+            <rect class="tb" x="152.99" y="597" width="192.92" height="61" rx="6"/>
+            <text class="tx b" x="162.99" y="615">card_present</text>
+            <text class="tx" x="162.99" y="632">Mean decrease in impurity: 0.02</text>
+            <text class="tx" x="162.99" y="649">Rank 8, 2% of shown</text>
+        </g>
+    </g>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="161" y="106" width="174.68" height="78" rx="6"/>
+                <text class="tx b" x="171" y="124">feature_11 ≤ 6.86: yes</text>
+                <text class="tx" x="171" y="141">Samples: 2219 (37% of root)</text>
+                <rect class="tsw s0" x="171" y="149" width="9" height="9" rx="2"/>
+                <text class="tx" x="185" y="158">legitimate: 1553 (70%)</text>
+                <rect class="tsw s1" x="171" y="166" width="9" height="9" rx="2"/>
+                <text class="tx" x="185" y="175">fraud: 665.7 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="129.5" y="142" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="139.5" y="160">feature_10 ≤ 8.27: yes</text>
+                <text class="tx" x="139.5" y="177">Samples: 1329 (22.2% of root)</text>
+                <rect class="tsw s0" x="139.5" y="185" width="9" height="9" rx="2"/>
+                <text class="tx" x="153.5" y="194">legitimate: 930.3 (70%)</text>
+                <rect class="tsw s1" x="139.5" y="202" width="9" height="9" rx="2"/>
+                <text class="tx" x="153.5" y="211">fraud: 398.7 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="113.75" y="178" width="171.08" height="78" rx="6"/>
+                <text class="tx b" x="123.75" y="196">feature_9 ≤ 0.37: yes</text>
+                <text class="tx" x="123.75" y="213">Samples: 524 (8.7% of root)</text>
+                <rect class="tsw s0" x="123.75" y="221" width="9" height="9" rx="2"/>
+                <text class="tx" x="137.75" y="230">legitimate: 366.8 (70%)</text>
+                <rect class="tsw s1" x="123.75" y="238" width="9" height="9" rx="2"/>
+                <text class="tx" x="137.75" y="247">fraud: 157.2 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="124.25" y="178" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="134.25" y="196">feature_9 ≤ 0.37: no</text>
+                <text class="tx" x="134.25" y="213">Samples: 805 (13.4% of root)</text>
+                <rect class="tsw s0" x="134.25" y="221" width="9" height="9" rx="2"/>
+                <text class="tx" x="148.25" y="230">legitimate: 563.5 (70%)</text>
+                <rect class="tsw s1" x="134.25" y="238" width="9" height="9" rx="2"/>
+                <text class="tx" x="148.25" y="247">fraud: 241.5 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx4">
+            <g class="tt">
+                <rect class="tb" x="150.5" y="142" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="160.5" y="160">feature_10 ≤ 8.27: no</text>
+                <text class="tx" x="160.5" y="177">Samples: 890 (14.8% of root)</text>
+                <rect class="tsw s0" x="160.5" y="185" width="9" height="9" rx="2"/>
+                <text class="tx" x="174.5" y="194">legitimate: 623 (70%)</text>
+                <rect class="tsw s1" x="160.5" y="202" width="9" height="9" rx="2"/>
+                <text class="tx" x="174.5" y="211">fraud: 267 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="155.75" y="178" width="171.08" height="78" rx="6"/>
+                <text class="tx b" x="165.75" y="196">feature_9 ≤ 0.82: yes</text>
+                <text class="tx" x="165.75" y="213">Samples: 276 (4.6% of root)</text>
+                <rect class="tsw s0" x="165.75" y="221" width="9" height="9" rx="2"/>
+                <text class="tx" x="179.75" y="230">legitimate: 193.2 (70%)</text>
+                <rect class="tsw s1" x="165.75" y="238" width="9" height="9" rx="2"/>
+                <text class="tx" x="179.75" y="247">fraud: 82.8 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="166.25" y="178" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="176.25" y="196">feature_9 ≤ 0.82: no</text>
+                <text class="tx" x="176.25" y="213">Samples: 614 (10.2% of root)</text>
+                <rect class="tsw s0" x="176.25" y="221" width="9" height="9" rx="2"/>
+                <text class="tx" x="190.25" y="230">legitimate: 429.8 (70%)</text>
+                <rect class="tsw s1" x="176.25" y="238" width="9" height="9" rx="2"/>
+                <text class="tx" x="190.25" y="247">fraud: 184.2 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx7">
+            <g class="tt">
+                <rect class="tb" x="203" y="106" width="174.68" height="78" rx="6"/>
+                <text class="tx b" x="213" y="124">feature_11 ≤ 6.86: no</text>
+                <text class="tx" x="213" y="141">Samples: 3781 (63% of root)</text>
+                <rect class="tsw s0" x="213" y="149" width="9" height="9" rx="2"/>
+                <text class="tx" x="227" y="158">legitimate: 2647 (70%)</text>
+                <rect class="tsw s1" x="213" y="166" width="9" height="9" rx="2"/>
+                <text class="tx" x="227" y="175">fraud: 1134 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx8">
+            <g class="tt">
+                <rect class="tb" x="213.5" y="142" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="223.5" y="160">feature_10 ≤ 3.95: yes</text>
+                <text class="tx" x="223.5" y="177">Samples: 1542 (25.7% of root)</text>
+                <rect class="tsw s0" x="223.5" y="185" width="9" height="9" rx="2"/>
+                <text class="tx" x="237.5" y="194">legitimate: 1079 (70%)</text>
+                <rect class="tsw s1" x="223.5" y="202" width="9" height="9" rx="2"/>
+                <text class="tx" x="237.5" y="211">fraud: 462.6 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx9">
+            <g class="tt">
+                <rect class="tb" x="197.75" y="178" width="167.96" height="78" rx="6"/>
+                <text class="tx b" x="207.75" y="196">feature_9 ≤ 0.59: yes</text>
+                <text class="tx" x="207.75" y="213">Samples: 597 (10% of root)</text>
+                <rect class="tsw s0" x="207.75" y="221" width="9" height="9" rx="2"/>
+                <text class="tx" x="221.75" y="230">legitimate: 417.9 (70%)</text>
+                <rect class="tsw s1" x="207.75" y="238" width="9" height="9" rx="2"/>
+                <text class="tx" x="221.75" y="247">fraud: 179.1 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx10">
+            <g class="tt">
+                <rect class="tb" x="208.25" y="178" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="218.25" y="196">feature_9 ≤ 0.59: no</text>
+                <text class="tx" x="218.25" y="213">Samples: 945 (15.8% of root)</text>
+                <rect class="tsw s0" x="218.25" y="221" width="9" height="9" rx="2"/>
+                <text class="tx" x="232.25" y="230">legitimate: 661.5 (70%)</text>
+                <rect class="tsw s1" x="218.25" y="238" width="9" height="9" rx="2"/>
+                <text class="tx" x="232.25" y="247">fraud: 283.5 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx11">
+            <g class="tt">
+                <rect class="tb" x="234.5" y="142" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="244.5" y="160">feature_10 ≤ 3.95: no</text>
+                <text class="tx" x="244.5" y="177">Samples: 2239 (37.3% of root)</text>
+                <rect class="tsw s0" x="244.5" y="185" width="9" height="9" rx="2"/>
+                <text class="tx" x="258.5" y="194">legitimate: 1567 (70%)</text>
+                <rect class="tsw s1" x="244.5" y="202" width="9" height="9" rx="2"/>
+                <text class="tx" x="258.5" y="211">fraud: 671.7 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx12">
+            <g class="tt">
+                <rect class="tb" x="239.75" y="178" width="184.52" height="78" rx="6"/>
+                <text class="tx b" x="249.75" y="196">feature_9 ≤ 3.9: yes</text>
+                <text class="tx" x="249.75" y="213">Samples: 1263 (21.1% of root)</text>
+                <rect class="tsw s0" x="249.75" y="221" width="9" height="9" rx="2"/>
+                <text class="tx" x="263.75" y="230">legitimate: 884.1 (70%)</text>
+                <rect class="tsw s1" x="249.75" y="238" width="9" height="9" rx="2"/>
+                <text class="tx" x="263.75" y="247">fraud: 378.9 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tx13">
+            <g class="tt">
+                <rect class="tb" x="250.25" y="178" width="177.8" height="78" rx="6"/>
+                <text class="tx b" x="260.25" y="196">feature_9 ≤ 3.9: no</text>
+                <text class="tx" x="260.25" y="213">Samples: 976 (16.3% of root)</text>
+                <rect class="tsw s0" x="260.25" y="221" width="9" height="9" rx="2"/>
+                <text class="tx" x="274.25" y="230">legitimate: 683.2 (70%)</text>
+                <rect class="tsw s1" x="260.25" y="238" width="9" height="9" rx="2"/>
+                <text class="tx" x="274.25" y="247">fraud: 292.8 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="189" y="71" width="181.4" height="112" rx="6"/>
+                <text class="tx b" x="199" y="89">feature_11 ≤ 6.86</text>
+                <text class="tx" x="199" y="106">Split at depth 0</text>
+                <text class="tx" x="199" y="123">Samples: 6000 (100% of root)</text>
+                <text class="tx" x="199" y="140">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="199" y="148" width="9" height="9" rx="2"/>
+                <text class="tx" x="213" y="157">legitimate: 4200 (70%)</text>
+                <rect class="tsw s1" x="199" y="165" width="9" height="9" rx="2"/>
+                <text class="tx" x="213" y="174">fraud: 1800 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="147" y="107" width="174.68" height="112" rx="6"/>
+                <text class="tx b" x="157" y="125">feature_10 ≤ 8.27</text>
+                <text class="tx" x="157" y="142">Split at depth 1</text>
+                <text class="tx" x="157" y="159">Samples: 2219 (37% of root)</text>
+                <text class="tx" x="157" y="176">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="157" y="184" width="9" height="9" rx="2"/>
+                <text class="tx" x="171" y="193">legitimate: 1553 (70%)</text>
+                <rect class="tsw s1" x="157" y="201" width="9" height="9" rx="2"/>
+                <text class="tx" x="171" y="210">fraud: 665.7 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="126" y="143" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="136" y="161">feature_9 ≤ 0.37</text>
+                <text class="tx" x="136" y="178">Split at depth 2</text>
+                <text class="tx" x="136" y="195">Samples: 1329 (22.2% of root)</text>
+                <text class="tx" x="136" y="212">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="136" y="220" width="9" height="9" rx="2"/>
+                <text class="tx" x="150" y="229">legitimate: 930.3 (70%)</text>
+                <rect class="tsw s1" x="136" y="237" width="9" height="9" rx="2"/>
+                <text class="tx" x="150" y="246">fraud: 398.7 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="116.5" y="171" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="126.5" y="189">feature_8 ≤ 4.76</text>
+                <text class="tx" x="126.5" y="206">Collapsed subtree at depth 3</text>
+                <text class="tx" x="126.5" y="223">Samples: 524 (8.7% of root)</text>
+                <text class="tx" x="126.5" y="240">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="126.5" y="248" width="9" height="9" rx="2"/>
+                <text class="tx" x="140.5" y="257">legitimate: 366.8 (70%)</text>
+                <rect class="tsw s1" x="126.5" y="265" width="9" height="9" rx="2"/>
+                <text class="tx" x="140.5" y="274">fraud: 157.2 (30%)</text>
+                <text class="tx" x="126.5" y="291">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="137.5" y="171" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="147.5" y="189">feature_8 ≤ 6.49</text>
+                <text class="tx" x="147.5" y="206">Collapsed subtree at depth 3</text>
+                <text class="tx" x="147.5" y="223">Samples: 805 (13.4% of root)</text>
+                <text class="tx" x="147.5" y="240">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="147.5" y="248" width="9" height="9" rx="2"/>
+                <text class="tx" x="161.5" y="257">legitimate: 563.5 (70%)</text>
+                <rect class="tsw s1" x="147.5" y="265" width="9" height="9" rx="2"/>
+                <text class="tx" x="161.5" y="274">fraud: 241.5 (30%)</text>
+                <text class="tx" x="147.5" y="291">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="tp tn5">
+            <g class="tt">
+                <rect class="tb" x="168" y="143" width="177.8" height="112" rx="6"/>
+                <text class="tx b" x="178" y="161">feature_9 ≤ 0.82</text>
+                <text class="tx" x="178" y="178">Split at depth 2</text>
+                <text class="tx" x="178" y="195">Samples: 890 (14.8% of root)</text>
+                <text class="tx" x="178" y="212">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="178" y="220" width="9" height="9" rx="2"/>
+                <text class="tx" x="192" y="229">legitimate: 623 (70%)</text>
+                <rect class="tsw s1" x="178" y="237" width="9" height="9" rx="2"/>
+                <text class="tx" x="192" y="246">fraud: 267 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tn6">
+            <g class="tt">
+                <rect class="tb" x="158.5" y="171" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="168.5" y="189">feature_8 ≤ 8.75</text>
+                <text class="tx" x="168.5" y="206">Collapsed subtree at depth 3</text>
+                <text class="tx" x="168.5" y="223">Samples: 276 (4.6% of root)</text>
+                <text class="tx" x="168.5" y="240">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="168.5" y="248" width="9" height="9" rx="2"/>
+                <text class="tx" x="182.5" y="257">legitimate: 193.2 (70%)</text>
+                <rect class="tsw s1" x="168.5" y="265" width="9" height="9" rx="2"/>
+                <text class="tx" x="182.5" y="274">fraud: 82.8 (30%)</text>
+                <text class="tx" x="168.5" y="291">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="tp tn7">
+            <g class="tt">
+                <rect class="tb" x="179.5" y="171" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="189.5" y="189">feature_8 ≤ 5.21</text>
+                <text class="tx" x="189.5" y="206">Collapsed subtree at depth 3</text>
+                <text class="tx" x="189.5" y="223">Samples: 614 (10.2% of root)</text>
+                <text class="tx" x="189.5" y="240">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="189.5" y="248" width="9" height="9" rx="2"/>
+                <text class="tx" x="203.5" y="257">legitimate: 429.8 (70%)</text>
+                <rect class="tsw s1" x="189.5" y="265" width="9" height="9" rx="2"/>
+                <text class="tx" x="203.5" y="274">fraud: 184.2 (30%)</text>
+                <text class="tx" x="189.5" y="291">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="tp tn8">
+            <g class="tt">
+                <rect class="tb" x="231" y="107" width="174.68" height="112" rx="6"/>
+                <text class="tx b" x="241" y="125">feature_10 ≤ 3.95</text>
+                <text class="tx" x="241" y="142">Split at depth 1</text>
+                <text class="tx" x="241" y="159">Samples: 3781 (63% of root)</text>
+                <text class="tx" x="241" y="176">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="241" y="184" width="9" height="9" rx="2"/>
+                <text class="tx" x="255" y="193">legitimate: 2647 (70%)</text>
+                <rect class="tsw s1" x="241" y="201" width="9" height="9" rx="2"/>
+                <text class="tx" x="255" y="210">fraud: 1134 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tn9">
+            <g class="tt">
+                <rect class="tb" x="210" y="143" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="220" y="161">feature_9 ≤ 0.59</text>
+                <text class="tx" x="220" y="178">Split at depth 2</text>
+                <text class="tx" x="220" y="195">Samples: 1542 (25.7% of root)</text>
+                <text class="tx" x="220" y="212">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="220" y="220" width="9" height="9" rx="2"/>
+                <text class="tx" x="234" y="229">legitimate: 1079 (70%)</text>
+                <rect class="tsw s1" x="220" y="237" width="9" height="9" rx="2"/>
+                <text class="tx" x="234" y="246">fraud: 462.6 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tn10">
+            <g class="tt">
+                <rect class="tb" x="200.5" y="171" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="210.5" y="189">feature_8 ≤ 7.55</text>
+                <text class="tx" x="210.5" y="206">Collapsed subtree at depth 3</text>
+                <text class="tx" x="210.5" y="223">Samples: 597 (10% of root)</text>
+                <text class="tx" x="210.5" y="240">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="210.5" y="248" width="9" height="9" rx="2"/>
+                <text class="tx" x="224.5" y="257">legitimate: 417.9 (70%)</text>
+                <rect class="tsw s1" x="210.5" y="265" width="9" height="9" rx="2"/>
+                <text class="tx" x="224.5" y="274">fraud: 179.1 (30%)</text>
+                <text class="tx" x="210.5" y="291">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="tp tn11">
+            <g class="tt">
+                <rect class="tb" x="221.5" y="171" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="231.5" y="189">feature_8 ≤ 0.2</text>
+                <text class="tx" x="231.5" y="206">Collapsed subtree at depth 3</text>
+                <text class="tx" x="231.5" y="223">Samples: 945 (15.8% of root)</text>
+                <text class="tx" x="231.5" y="240">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="231.5" y="248" width="9" height="9" rx="2"/>
+                <text class="tx" x="245.5" y="257">legitimate: 661.5 (70%)</text>
+                <rect class="tsw s1" x="231.5" y="265" width="9" height="9" rx="2"/>
+                <text class="tx" x="245.5" y="274">fraud: 283.5 (30%)</text>
+                <text class="tx" x="231.5" y="291">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="tp tn12">
+            <g class="tt">
+                <rect class="tb" x="252" y="143" width="184.52" height="112" rx="6"/>
+                <text class="tx b" x="262" y="161">feature_9 ≤ 3.9</text>
+                <text class="tx" x="262" y="178">Split at depth 2</text>
+                <text class="tx" x="262" y="195">Samples: 2239 (37.3% of root)</text>
+                <text class="tx" x="262" y="212">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="262" y="220" width="9" height="9" rx="2"/>
+                <text class="tx" x="276" y="229">legitimate: 1567 (70%)</text>
+                <rect class="tsw s1" x="262" y="237" width="9" height="9" rx="2"/>
+                <text class="tx" x="276" y="246">fraud: 671.7 (30%)</text>
+            </g>
+        </g>
+        <g class="tp tn13">
+            <g class="tt">
+                <rect class="tb" x="242.5" y="171" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="252.5" y="189">feature_8 ≤ 0.8</text>
+                <text class="tx" x="252.5" y="206">Collapsed subtree at depth 3</text>
+                <text class="tx" x="252.5" y="223">Samples: 1263 (21.1% of root)</text>
+                <text class="tx" x="252.5" y="240">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="252.5" y="248" width="9" height="9" rx="2"/>
+                <text class="tx" x="266.5" y="257">legitimate: 884.1 (70%)</text>
+                <rect class="tsw s1" x="252.5" y="265" width="9" height="9" rx="2"/>
+                <text class="tx" x="266.5" y="274">fraud: 378.9 (30%)</text>
+                <text class="tx" x="252.5" y="291">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+        <g class="tp tn14">
+            <g class="tt">
+                <rect class="tb" x="263.5" y="171" width="194.96" height="129" rx="6"/>
+                <text class="tx b" x="273.5" y="189">feature_8 ≤ 1.88</text>
+                <text class="tx" x="273.5" y="206">Collapsed subtree at depth 3</text>
+                <text class="tx" x="273.5" y="223">Samples: 976 (16.3% of root)</text>
+                <text class="tx" x="273.5" y="240">Impurity (impurity): 0.3</text>
+                <rect class="tsw s0" x="273.5" y="248" width="9" height="9" rx="2"/>
+                <text class="tx" x="287.5" y="257">legitimate: 683.2 (70%)</text>
+                <rect class="tsw s1" x="273.5" y="265" width="9" height="9" rx="2"/>
+                <text class="tx" x="287.5" y="274">fraud: 292.8 (30%)</text>
+                <text class="tx" x="273.5" y="291">3 nodes, 2 leaves in this subtree</text>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -23,17 +23,19 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.UserRegistryApiKey;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.UserRegistryApiKey;
+using Jube.Service.Repository.UserRegistryApiKey.Interfaces;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using Jube.Test.Service.Repository.UserRegistryApiKey.Models;
 using LinqToDB;
+using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using log4net;
 
 namespace Jube.Test.Service.Repository.UserRegistryApiKey
 {
@@ -90,6 +92,7 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
             });
 
             createdApiKeyIds.Add(saved.Id);
+
             return saved;
         }
 
@@ -353,6 +356,7 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
             await using var dbContext = fx.GetDbContext();
             var userRegistryId = await GetOwnUserRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
             var cacheInvalidator = new CapturingCacheInvalidator();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 cacheInvalidator: cacheInvalidator);
 
@@ -426,8 +430,10 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
             await using var dbContext = fx.GetDbContext();
             var userRegistryId = await GetOwnUserRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
             var cacheInvalidator = new CapturingCacheInvalidator();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 cacheInvalidator: cacheInvalidator);
+
             var saved = await InsertKeyAsync(service, userRegistryId);
             var row = await dbContext.UserRegistryApiKey.FirstAsync(w => w.Id == saved.Id);
 
@@ -505,6 +511,7 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
                 UserRegistryId = userRegistryId,
                 Name = $"{DatabaseFixture.Prefix}Key{Guid.NewGuid():N}"[..40],
             });
+
             await act.Should().ThrowAsync<ForbiddenException>();
 
             capturingLog.Entries.Should().Contain(e => e.Level == "WARN");
@@ -517,6 +524,7 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
             await using var dbContext = fx.GetDbContext();
             var userRegistryId = await GetOwnUserRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
 
@@ -530,6 +538,7 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
         {
             await using var dbContext = fx.GetDbContext();
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
 
@@ -543,6 +552,7 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
         {
             await using var dbContext = fx.GetDbContext();
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
 
@@ -555,6 +565,7 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
         public void CatalogueListsOnlyTheNonSensitiveUserRegistryApiKeyToolNames()
         {
             var tools = ServiceToolCatalogue.All;
+
             var names = tools.Where(t => t.Name.StartsWith("UserRegistryApiKey"))
                 .Select(t => t.Name).ToList();
 
@@ -562,6 +573,7 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
                 "UserRegistryApiKeyListByUserRegistryId",
                 "UserRegistryApiKeyDelete",
             ]);
+
             names.Should().OnlyHaveUniqueItems();
         }
 

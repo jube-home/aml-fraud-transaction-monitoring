@@ -1,23 +1,33 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
 // ======================================================================
@@ -28,6 +38,7 @@
 namespace Accord.Math
 {
     using System;
+    using System.Runtime.InteropServices;
     using Accord.Math;
     using System.Runtime.CompilerServices;
 
@@ -11984,17 +11995,16 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, int[,] b, int[,] result)
         {
             check<int, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -12086,15 +12096,14 @@ namespace Accord.Math
         public static int[,] Add(this int a, int[,] b, int[,] result)
         {
             check<int, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -12116,15 +12125,14 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, int b, int[,] result)
         {
             check<int, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -12428,15 +12436,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -12462,15 +12469,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -12496,15 +12502,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -12530,15 +12535,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -12597,17 +12601,16 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, int[,] b, double[,] result)
         {
             check<int, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -12699,15 +12702,14 @@ namespace Accord.Math
         public static double[,] Add(this int a, int[,] b, double[,] result)
         {
             check<int, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -12729,15 +12731,14 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, int b, double[,] result)
         {
             check<int, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -13041,15 +13042,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -13075,15 +13075,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -13109,15 +13108,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -13143,15 +13141,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -13210,17 +13207,16 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, float[,] b, int[,] result)
         {
             check<int, float, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -13312,15 +13308,14 @@ namespace Accord.Math
         public static int[,] Add(this int a, float[,] b, int[,] result)
         {
             check<int, float, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -13342,15 +13337,14 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, float b, int[,] result)
         {
             check<int, float, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -13654,15 +13648,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -13688,15 +13681,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -13722,15 +13714,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -13756,15 +13747,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -13823,17 +13813,16 @@ namespace Accord.Math
         public static float[,] Add(this int[,] a, float[,] b, float[,] result)
         {
             check<int, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -13925,15 +13914,14 @@ namespace Accord.Math
         public static float[,] Add(this int a, float[,] b, float[,] result)
         {
             check<int, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -13955,15 +13943,14 @@ namespace Accord.Math
         public static float[,] Add(this int[,] a, float b, float[,] result)
         {
             check<int, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -14267,15 +14254,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -14301,15 +14287,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -14335,15 +14320,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -14369,15 +14353,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -14436,17 +14419,16 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, float[,] b, double[,] result)
         {
             check<int, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -14538,15 +14520,14 @@ namespace Accord.Math
         public static double[,] Add(this int a, float[,] b, double[,] result)
         {
             check<int, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -14568,15 +14549,14 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, float b, double[,] result)
         {
             check<int, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -14880,15 +14860,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -14914,15 +14893,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -14948,15 +14926,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -14982,15 +14959,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -15049,17 +15025,16 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, double[,] b, int[,] result)
         {
             check<int, double, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -15151,15 +15126,14 @@ namespace Accord.Math
         public static int[,] Add(this int a, double[,] b, int[,] result)
         {
             check<int, double, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -15181,15 +15155,14 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, double b, int[,] result)
         {
             check<int, double, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -15493,15 +15466,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -15527,15 +15499,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -15561,15 +15532,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -15595,15 +15565,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -15662,17 +15631,16 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, double[,] b, double[,] result)
         {
             check<int, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -15764,15 +15732,14 @@ namespace Accord.Math
         public static double[,] Add(this int a, double[,] b, double[,] result)
         {
             check<int, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -15794,15 +15761,14 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, double b, double[,] result)
         {
             check<int, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -16106,15 +16072,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -16140,15 +16105,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -16174,15 +16138,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -16208,15 +16171,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -16275,17 +16237,16 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, byte[,] b, int[,] result)
         {
             check<int, byte, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -16377,15 +16338,14 @@ namespace Accord.Math
         public static int[,] Add(this int a, byte[,] b, int[,] result)
         {
             check<int, byte, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -16407,15 +16367,14 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, byte b, int[,] result)
         {
             check<int, byte, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -16719,15 +16678,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -16753,15 +16711,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -16787,15 +16744,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -16821,15 +16777,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -16888,17 +16843,16 @@ namespace Accord.Math
         public static byte[,] Add(this int[,] a, byte[,] b, byte[,] result)
         {
             check<int, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -16990,15 +16944,14 @@ namespace Accord.Math
         public static byte[,] Add(this int a, byte[,] b, byte[,] result)
         {
             check<int, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -17020,15 +16973,14 @@ namespace Accord.Math
         public static byte[,] Add(this int[,] a, byte b, byte[,] result)
         {
             check<int, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -17332,15 +17284,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -17366,15 +17317,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -17400,15 +17350,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -17434,15 +17383,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -17501,17 +17449,16 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, byte[,] b, double[,] result)
         {
             check<int, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -17603,15 +17550,14 @@ namespace Accord.Math
         public static double[,] Add(this int a, byte[,] b, double[,] result)
         {
             check<int, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -17633,15 +17579,14 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, byte b, double[,] result)
         {
             check<int, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -17945,15 +17890,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -17979,15 +17923,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -18013,15 +17956,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -18047,15 +17989,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -18114,17 +18055,16 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, decimal[,] b, int[,] result)
         {
             check<int, decimal, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -18216,15 +18156,14 @@ namespace Accord.Math
         public static int[,] Add(this int a, decimal[,] b, int[,] result)
         {
             check<int, decimal, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -18246,15 +18185,14 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, decimal b, int[,] result)
         {
             check<int, decimal, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -18558,15 +18496,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -18592,15 +18529,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -18626,15 +18562,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -18660,15 +18595,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -18727,17 +18661,16 @@ namespace Accord.Math
         public static decimal[,] Add(this int[,] a, decimal[,] b, decimal[,] result)
         {
             check<int, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -18829,15 +18762,14 @@ namespace Accord.Math
         public static decimal[,] Add(this int a, decimal[,] b, decimal[,] result)
         {
             check<int, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -18859,15 +18791,14 @@ namespace Accord.Math
         public static decimal[,] Add(this int[,] a, decimal b, decimal[,] result)
         {
             check<int, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -19171,15 +19102,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -19205,15 +19135,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -19239,15 +19168,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -19273,15 +19201,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -19340,17 +19267,16 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, decimal[,] b, double[,] result)
         {
             check<int, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -19442,15 +19368,14 @@ namespace Accord.Math
         public static double[,] Add(this int a, decimal[,] b, double[,] result)
         {
             check<int, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -19472,15 +19397,14 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, decimal b, double[,] result)
         {
             check<int, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -19784,15 +19708,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -19818,15 +19741,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -19852,15 +19774,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -19886,15 +19807,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -19953,17 +19873,16 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, short[,] b, int[,] result)
         {
             check<int, short, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -20055,15 +19974,14 @@ namespace Accord.Math
         public static int[,] Add(this int a, short[,] b, int[,] result)
         {
             check<int, short, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -20085,15 +20003,14 @@ namespace Accord.Math
         public static int[,] Add(this int[,] a, short b, int[,] result)
         {
             check<int, short, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -20397,15 +20314,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -20431,15 +20347,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -20465,15 +20380,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -20499,15 +20413,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -20566,17 +20479,16 @@ namespace Accord.Math
         public static short[,] Add(this int[,] a, short[,] b, short[,] result)
         {
             check<int, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -20668,15 +20580,14 @@ namespace Accord.Math
         public static short[,] Add(this int a, short[,] b, short[,] result)
         {
             check<int, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -20698,15 +20609,14 @@ namespace Accord.Math
         public static short[,] Add(this int[,] a, short b, short[,] result)
         {
             check<int, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -21010,15 +20920,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -21044,15 +20953,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -21078,15 +20986,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -21112,15 +21019,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -21179,17 +21085,16 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, short[,] b, double[,] result)
         {
             check<int, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -21281,15 +21186,14 @@ namespace Accord.Math
         public static double[,] Add(this int a, short[,] b, double[,] result)
         {
             check<int, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -21311,15 +21215,14 @@ namespace Accord.Math
         public static double[,] Add(this int[,] a, short b, double[,] result)
         {
             check<int, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -21623,15 +21526,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -21657,15 +21559,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -21691,15 +21592,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -21725,15 +21625,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -21792,17 +21691,16 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, int[,] b, float[,] result)
         {
             check<float, int, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -21894,15 +21792,14 @@ namespace Accord.Math
         public static float[,] Add(this float a, int[,] b, float[,] result)
         {
             check<float, int, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -21924,15 +21821,14 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, int b, float[,] result)
         {
             check<float, int, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -22236,15 +22132,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -22270,15 +22165,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -22304,15 +22198,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -22338,15 +22231,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -22405,17 +22297,16 @@ namespace Accord.Math
         public static int[,] Add(this float[,] a, int[,] b, int[,] result)
         {
             check<float, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -22507,15 +22398,14 @@ namespace Accord.Math
         public static int[,] Add(this float a, int[,] b, int[,] result)
         {
             check<float, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -22537,15 +22427,14 @@ namespace Accord.Math
         public static int[,] Add(this float[,] a, int b, int[,] result)
         {
             check<float, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -22849,15 +22738,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -22883,15 +22771,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -22917,15 +22804,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -22951,15 +22837,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -23018,17 +22903,16 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, int[,] b, double[,] result)
         {
             check<float, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -23120,15 +23004,14 @@ namespace Accord.Math
         public static double[,] Add(this float a, int[,] b, double[,] result)
         {
             check<float, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -23150,15 +23033,14 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, int b, double[,] result)
         {
             check<float, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -23462,15 +23344,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -23496,15 +23377,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -23530,15 +23410,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -23564,15 +23443,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -23631,17 +23509,16 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, float[,] b, float[,] result)
         {
             check<float, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -23733,15 +23610,14 @@ namespace Accord.Math
         public static float[,] Add(this float a, float[,] b, float[,] result)
         {
             check<float, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -23763,15 +23639,14 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, float b, float[,] result)
         {
             check<float, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -24075,15 +23950,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -24109,15 +23983,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -24143,15 +24016,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -24177,15 +24049,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -24244,17 +24115,16 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, float[,] b, double[,] result)
         {
             check<float, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -24346,15 +24216,14 @@ namespace Accord.Math
         public static double[,] Add(this float a, float[,] b, double[,] result)
         {
             check<float, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -24376,15 +24245,14 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, float b, double[,] result)
         {
             check<float, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -24688,15 +24556,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -24722,15 +24589,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -24756,15 +24622,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -24790,15 +24655,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -24857,17 +24721,16 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, double[,] b, float[,] result)
         {
             check<float, double, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -24959,15 +24822,14 @@ namespace Accord.Math
         public static float[,] Add(this float a, double[,] b, float[,] result)
         {
             check<float, double, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -24989,15 +24851,14 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, double b, float[,] result)
         {
             check<float, double, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -25301,15 +25162,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -25335,15 +25195,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -25369,15 +25228,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -25403,15 +25261,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -25470,17 +25327,16 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, double[,] b, double[,] result)
         {
             check<float, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -25572,15 +25428,14 @@ namespace Accord.Math
         public static double[,] Add(this float a, double[,] b, double[,] result)
         {
             check<float, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -25602,15 +25457,14 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, double b, double[,] result)
         {
             check<float, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -25914,15 +25768,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -25948,15 +25801,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -25982,15 +25834,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -26016,15 +25867,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -26083,17 +25933,16 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, byte[,] b, float[,] result)
         {
             check<float, byte, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -26185,15 +26034,14 @@ namespace Accord.Math
         public static float[,] Add(this float a, byte[,] b, float[,] result)
         {
             check<float, byte, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -26215,15 +26063,14 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, byte b, float[,] result)
         {
             check<float, byte, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -26527,15 +26374,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -26561,15 +26407,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -26595,15 +26440,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -26629,15 +26473,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -26696,17 +26539,16 @@ namespace Accord.Math
         public static byte[,] Add(this float[,] a, byte[,] b, byte[,] result)
         {
             check<float, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -26798,15 +26640,14 @@ namespace Accord.Math
         public static byte[,] Add(this float a, byte[,] b, byte[,] result)
         {
             check<float, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -26828,15 +26669,14 @@ namespace Accord.Math
         public static byte[,] Add(this float[,] a, byte b, byte[,] result)
         {
             check<float, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -27140,15 +26980,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -27174,15 +27013,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -27208,15 +27046,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -27242,15 +27079,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -27309,17 +27145,16 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, byte[,] b, double[,] result)
         {
             check<float, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -27411,15 +27246,14 @@ namespace Accord.Math
         public static double[,] Add(this float a, byte[,] b, double[,] result)
         {
             check<float, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -27441,15 +27275,14 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, byte b, double[,] result)
         {
             check<float, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -27753,15 +27586,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -27787,15 +27619,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -27821,15 +27652,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -27855,15 +27685,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -27922,17 +27751,16 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, decimal[,] b, float[,] result)
         {
             check<float, decimal, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -28024,15 +27852,14 @@ namespace Accord.Math
         public static float[,] Add(this float a, decimal[,] b, float[,] result)
         {
             check<float, decimal, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -28054,15 +27881,14 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, decimal b, float[,] result)
         {
             check<float, decimal, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -28366,15 +28192,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -28400,15 +28225,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -28434,15 +28258,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -28468,15 +28291,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -28535,17 +28357,16 @@ namespace Accord.Math
         public static decimal[,] Add(this float[,] a, decimal[,] b, decimal[,] result)
         {
             check<float, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -28637,15 +28458,14 @@ namespace Accord.Math
         public static decimal[,] Add(this float a, decimal[,] b, decimal[,] result)
         {
             check<float, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -28667,15 +28487,14 @@ namespace Accord.Math
         public static decimal[,] Add(this float[,] a, decimal b, decimal[,] result)
         {
             check<float, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -28979,15 +28798,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -29013,15 +28831,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -29047,15 +28864,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -29081,15 +28897,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -29148,17 +28963,16 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, decimal[,] b, double[,] result)
         {
             check<float, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -29250,15 +29064,14 @@ namespace Accord.Math
         public static double[,] Add(this float a, decimal[,] b, double[,] result)
         {
             check<float, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -29280,15 +29093,14 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, decimal b, double[,] result)
         {
             check<float, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -29592,15 +29404,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -29626,15 +29437,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -29660,15 +29470,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -29694,15 +29503,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -29761,17 +29569,16 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, short[,] b, float[,] result)
         {
             check<float, short, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -29863,15 +29670,14 @@ namespace Accord.Math
         public static float[,] Add(this float a, short[,] b, float[,] result)
         {
             check<float, short, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -29893,15 +29699,14 @@ namespace Accord.Math
         public static float[,] Add(this float[,] a, short b, float[,] result)
         {
             check<float, short, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -30205,15 +30010,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -30239,15 +30043,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -30273,15 +30076,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -30307,15 +30109,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -30374,17 +30175,16 @@ namespace Accord.Math
         public static short[,] Add(this float[,] a, short[,] b, short[,] result)
         {
             check<float, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -30476,15 +30276,14 @@ namespace Accord.Math
         public static short[,] Add(this float a, short[,] b, short[,] result)
         {
             check<float, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -30506,15 +30305,14 @@ namespace Accord.Math
         public static short[,] Add(this float[,] a, short b, short[,] result)
         {
             check<float, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -30818,15 +30616,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -30852,15 +30649,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -30886,15 +30682,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -30920,15 +30715,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -30987,17 +30781,16 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, short[,] b, double[,] result)
         {
             check<float, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -31089,15 +30882,14 @@ namespace Accord.Math
         public static double[,] Add(this float a, short[,] b, double[,] result)
         {
             check<float, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -31119,15 +30911,14 @@ namespace Accord.Math
         public static double[,] Add(this float[,] a, short b, double[,] result)
         {
             check<float, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -31431,15 +31222,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -31465,15 +31255,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -31499,15 +31288,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -31533,15 +31321,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -31600,17 +31387,16 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, int[,] b, double[,] result)
         {
             check<double, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -31702,15 +31488,14 @@ namespace Accord.Math
         public static double[,] Add(this double a, int[,] b, double[,] result)
         {
             check<double, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -31732,15 +31517,14 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, int b, double[,] result)
         {
             check<double, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -32044,15 +31828,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -32078,15 +31861,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -32112,15 +31894,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -32146,15 +31927,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -32213,17 +31993,16 @@ namespace Accord.Math
         public static int[,] Add(this double[,] a, int[,] b, int[,] result)
         {
             check<double, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -32315,15 +32094,14 @@ namespace Accord.Math
         public static int[,] Add(this double a, int[,] b, int[,] result)
         {
             check<double, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -32345,15 +32123,14 @@ namespace Accord.Math
         public static int[,] Add(this double[,] a, int b, int[,] result)
         {
             check<double, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -32657,15 +32434,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -32691,15 +32467,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -32725,15 +32500,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -32759,15 +32533,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -32826,17 +32599,16 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, float[,] b, double[,] result)
         {
             check<double, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -32928,15 +32700,14 @@ namespace Accord.Math
         public static double[,] Add(this double a, float[,] b, double[,] result)
         {
             check<double, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -32958,15 +32729,14 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, float b, double[,] result)
         {
             check<double, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -33270,15 +33040,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -33304,15 +33073,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -33338,15 +33106,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -33372,15 +33139,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -33439,17 +33205,16 @@ namespace Accord.Math
         public static float[,] Add(this double[,] a, float[,] b, float[,] result)
         {
             check<double, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -33541,15 +33306,14 @@ namespace Accord.Math
         public static float[,] Add(this double a, float[,] b, float[,] result)
         {
             check<double, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -33571,15 +33335,14 @@ namespace Accord.Math
         public static float[,] Add(this double[,] a, float b, float[,] result)
         {
             check<double, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -33883,15 +33646,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -33917,15 +33679,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -33951,15 +33712,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -33985,15 +33745,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -34052,17 +33811,16 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, double[,] b, double[,] result)
         {
             check<double, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -34154,15 +33912,14 @@ namespace Accord.Math
         public static double[,] Add(this double a, double[,] b, double[,] result)
         {
             check<double, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -34184,15 +33941,14 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, double b, double[,] result)
         {
             check<double, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -34496,15 +34252,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -34530,15 +34285,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -34564,15 +34318,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -34598,15 +34351,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -34665,17 +34417,16 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, byte[,] b, double[,] result)
         {
             check<double, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -34767,15 +34518,14 @@ namespace Accord.Math
         public static double[,] Add(this double a, byte[,] b, double[,] result)
         {
             check<double, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -34797,15 +34547,14 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, byte b, double[,] result)
         {
             check<double, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -35109,15 +34858,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -35143,15 +34891,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -35177,15 +34924,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -35211,15 +34957,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -35278,17 +35023,16 @@ namespace Accord.Math
         public static byte[,] Add(this double[,] a, byte[,] b, byte[,] result)
         {
             check<double, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -35380,15 +35124,14 @@ namespace Accord.Math
         public static byte[,] Add(this double a, byte[,] b, byte[,] result)
         {
             check<double, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -35410,15 +35153,14 @@ namespace Accord.Math
         public static byte[,] Add(this double[,] a, byte b, byte[,] result)
         {
             check<double, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -35722,15 +35464,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -35756,15 +35497,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -35790,15 +35530,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -35824,15 +35563,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -35891,17 +35629,16 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, decimal[,] b, double[,] result)
         {
             check<double, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -35993,15 +35730,14 @@ namespace Accord.Math
         public static double[,] Add(this double a, decimal[,] b, double[,] result)
         {
             check<double, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -36023,15 +35759,14 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, decimal b, double[,] result)
         {
             check<double, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -36335,15 +36070,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -36369,15 +36103,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -36403,15 +36136,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -36437,15 +36169,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -36504,17 +36235,16 @@ namespace Accord.Math
         public static decimal[,] Add(this double[,] a, decimal[,] b, decimal[,] result)
         {
             check<double, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -36606,15 +36336,14 @@ namespace Accord.Math
         public static decimal[,] Add(this double a, decimal[,] b, decimal[,] result)
         {
             check<double, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -36636,15 +36365,14 @@ namespace Accord.Math
         public static decimal[,] Add(this double[,] a, decimal b, decimal[,] result)
         {
             check<double, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -36948,15 +36676,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -36982,15 +36709,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -37016,15 +36742,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -37050,15 +36775,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -37117,17 +36841,16 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, short[,] b, double[,] result)
         {
             check<double, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -37219,15 +36942,14 @@ namespace Accord.Math
         public static double[,] Add(this double a, short[,] b, double[,] result)
         {
             check<double, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -37249,15 +36971,14 @@ namespace Accord.Math
         public static double[,] Add(this double[,] a, short b, double[,] result)
         {
             check<double, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -37561,15 +37282,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -37595,15 +37315,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -37629,15 +37348,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -37663,15 +37381,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -37730,17 +37447,16 @@ namespace Accord.Math
         public static short[,] Add(this double[,] a, short[,] b, short[,] result)
         {
             check<double, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -37832,15 +37548,14 @@ namespace Accord.Math
         public static short[,] Add(this double a, short[,] b, short[,] result)
         {
             check<double, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -37862,15 +37577,14 @@ namespace Accord.Math
         public static short[,] Add(this double[,] a, short b, short[,] result)
         {
             check<double, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -38174,15 +37888,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -38208,15 +37921,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -38242,15 +37954,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -38276,15 +37987,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<double> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -38343,17 +38053,16 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, int[,] b, byte[,] result)
         {
             check<byte, int, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -38445,15 +38154,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte a, int[,] b, byte[,] result)
         {
             check<byte, int, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -38475,15 +38183,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, int b, byte[,] result)
         {
             check<byte, int, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -38787,15 +38494,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -38821,15 +38527,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -38855,15 +38560,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -38889,15 +38593,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -38956,17 +38659,16 @@ namespace Accord.Math
         public static int[,] Add(this byte[,] a, int[,] b, int[,] result)
         {
             check<byte, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -39058,15 +38760,14 @@ namespace Accord.Math
         public static int[,] Add(this byte a, int[,] b, int[,] result)
         {
             check<byte, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -39088,15 +38789,14 @@ namespace Accord.Math
         public static int[,] Add(this byte[,] a, int b, int[,] result)
         {
             check<byte, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -39400,15 +39100,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -39434,15 +39133,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -39468,15 +39166,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -39502,15 +39199,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -39569,17 +39265,16 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, int[,] b, double[,] result)
         {
             check<byte, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -39671,15 +39366,14 @@ namespace Accord.Math
         public static double[,] Add(this byte a, int[,] b, double[,] result)
         {
             check<byte, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -39701,15 +39395,14 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, int b, double[,] result)
         {
             check<byte, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -40013,15 +39706,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -40047,15 +39739,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -40081,15 +39772,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -40115,15 +39805,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -40182,17 +39871,16 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, float[,] b, byte[,] result)
         {
             check<byte, float, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -40284,15 +39972,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte a, float[,] b, byte[,] result)
         {
             check<byte, float, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -40314,15 +40001,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, float b, byte[,] result)
         {
             check<byte, float, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -40626,15 +40312,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -40660,15 +40345,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -40694,15 +40378,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -40728,15 +40411,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -40795,17 +40477,16 @@ namespace Accord.Math
         public static float[,] Add(this byte[,] a, float[,] b, float[,] result)
         {
             check<byte, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -40897,15 +40578,14 @@ namespace Accord.Math
         public static float[,] Add(this byte a, float[,] b, float[,] result)
         {
             check<byte, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -40927,15 +40607,14 @@ namespace Accord.Math
         public static float[,] Add(this byte[,] a, float b, float[,] result)
         {
             check<byte, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -41239,15 +40918,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -41273,15 +40951,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -41307,15 +40984,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -41341,15 +41017,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -41408,17 +41083,16 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, float[,] b, double[,] result)
         {
             check<byte, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -41510,15 +41184,14 @@ namespace Accord.Math
         public static double[,] Add(this byte a, float[,] b, double[,] result)
         {
             check<byte, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -41540,15 +41213,14 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, float b, double[,] result)
         {
             check<byte, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -41852,15 +41524,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -41886,15 +41557,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -41920,15 +41590,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -41954,15 +41623,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -42021,17 +41689,16 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, double[,] b, byte[,] result)
         {
             check<byte, double, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -42123,15 +41790,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte a, double[,] b, byte[,] result)
         {
             check<byte, double, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -42153,15 +41819,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, double b, byte[,] result)
         {
             check<byte, double, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -42465,15 +42130,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -42499,15 +42163,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -42533,15 +42196,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -42567,15 +42229,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -42634,17 +42295,16 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, double[,] b, double[,] result)
         {
             check<byte, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -42736,15 +42396,14 @@ namespace Accord.Math
         public static double[,] Add(this byte a, double[,] b, double[,] result)
         {
             check<byte, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -42766,15 +42425,14 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, double b, double[,] result)
         {
             check<byte, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -43078,15 +42736,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -43112,15 +42769,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -43146,15 +42802,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -43180,15 +42835,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -43247,17 +42901,16 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, byte[,] b, byte[,] result)
         {
             check<byte, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -43349,15 +43002,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte a, byte[,] b, byte[,] result)
         {
             check<byte, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -43379,15 +43031,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, byte b, byte[,] result)
         {
             check<byte, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -43691,15 +43342,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -43725,15 +43375,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -43759,15 +43408,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -43793,15 +43441,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -43860,17 +43507,16 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, byte[,] b, double[,] result)
         {
             check<byte, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -43962,15 +43608,14 @@ namespace Accord.Math
         public static double[,] Add(this byte a, byte[,] b, double[,] result)
         {
             check<byte, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -43992,15 +43637,14 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, byte b, double[,] result)
         {
             check<byte, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -44304,15 +43948,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -44338,15 +43981,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -44372,15 +44014,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -44406,15 +44047,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -44473,17 +44113,16 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, decimal[,] b, byte[,] result)
         {
             check<byte, decimal, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -44575,15 +44214,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte a, decimal[,] b, byte[,] result)
         {
             check<byte, decimal, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -44605,15 +44243,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, decimal b, byte[,] result)
         {
             check<byte, decimal, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -44917,15 +44554,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -44951,15 +44587,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -44985,15 +44620,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -45019,15 +44653,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -45086,17 +44719,16 @@ namespace Accord.Math
         public static decimal[,] Add(this byte[,] a, decimal[,] b, decimal[,] result)
         {
             check<byte, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -45188,15 +44820,14 @@ namespace Accord.Math
         public static decimal[,] Add(this byte a, decimal[,] b, decimal[,] result)
         {
             check<byte, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -45218,15 +44849,14 @@ namespace Accord.Math
         public static decimal[,] Add(this byte[,] a, decimal b, decimal[,] result)
         {
             check<byte, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -45530,15 +45160,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -45564,15 +45193,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -45598,15 +45226,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -45632,15 +45259,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -45699,17 +45325,16 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, decimal[,] b, double[,] result)
         {
             check<byte, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -45801,15 +45426,14 @@ namespace Accord.Math
         public static double[,] Add(this byte a, decimal[,] b, double[,] result)
         {
             check<byte, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -45831,15 +45455,14 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, decimal b, double[,] result)
         {
             check<byte, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -46143,15 +45766,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -46177,15 +45799,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -46211,15 +45832,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -46245,15 +45865,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -46312,17 +45931,16 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, short[,] b, byte[,] result)
         {
             check<byte, short, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -46414,15 +46032,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte a, short[,] b, byte[,] result)
         {
             check<byte, short, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -46444,15 +46061,14 @@ namespace Accord.Math
         public static byte[,] Add(this byte[,] a, short b, byte[,] result)
         {
             check<byte, short, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -46756,15 +46372,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -46790,15 +46405,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -46824,15 +46438,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -46858,15 +46471,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -46925,17 +46537,16 @@ namespace Accord.Math
         public static short[,] Add(this byte[,] a, short[,] b, short[,] result)
         {
             check<byte, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -47027,15 +46638,14 @@ namespace Accord.Math
         public static short[,] Add(this byte a, short[,] b, short[,] result)
         {
             check<byte, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -47057,15 +46667,14 @@ namespace Accord.Math
         public static short[,] Add(this byte[,] a, short b, short[,] result)
         {
             check<byte, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -47369,15 +46978,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -47403,15 +47011,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -47437,15 +47044,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -47471,15 +47077,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -47538,17 +47143,16 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, short[,] b, double[,] result)
         {
             check<byte, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -47640,15 +47244,14 @@ namespace Accord.Math
         public static double[,] Add(this byte a, short[,] b, double[,] result)
         {
             check<byte, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -47670,15 +47273,14 @@ namespace Accord.Math
         public static double[,] Add(this byte[,] a, short b, double[,] result)
         {
             check<byte, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -47982,15 +47584,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -48016,15 +47617,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -48050,15 +47650,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -48084,15 +47683,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -48151,17 +47749,16 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, int[,] b, decimal[,] result)
         {
             check<decimal, int, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -48253,15 +47850,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal a, int[,] b, decimal[,] result)
         {
             check<decimal, int, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -48283,15 +47879,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, int b, decimal[,] result)
         {
             check<decimal, int, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -48595,15 +48190,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -48629,15 +48223,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -48663,15 +48256,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -48697,15 +48289,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -48764,17 +48355,16 @@ namespace Accord.Math
         public static int[,] Add(this decimal[,] a, int[,] b, int[,] result)
         {
             check<decimal, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -48866,15 +48456,14 @@ namespace Accord.Math
         public static int[,] Add(this decimal a, int[,] b, int[,] result)
         {
             check<decimal, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -48896,15 +48485,14 @@ namespace Accord.Math
         public static int[,] Add(this decimal[,] a, int b, int[,] result)
         {
             check<decimal, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -49208,15 +48796,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -49242,15 +48829,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -49276,15 +48862,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -49310,15 +48895,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -49377,17 +48961,16 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, int[,] b, double[,] result)
         {
             check<decimal, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -49479,15 +49062,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal a, int[,] b, double[,] result)
         {
             check<decimal, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -49509,15 +49091,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, int b, double[,] result)
         {
             check<decimal, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -49821,15 +49402,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -49855,15 +49435,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -49889,15 +49468,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -49923,15 +49501,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -49990,17 +49567,16 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, float[,] b, decimal[,] result)
         {
             check<decimal, float, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -50092,15 +49668,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal a, float[,] b, decimal[,] result)
         {
             check<decimal, float, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -50122,15 +49697,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, float b, decimal[,] result)
         {
             check<decimal, float, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -50434,15 +50008,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -50468,15 +50041,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -50502,15 +50074,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -50536,15 +50107,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -50603,17 +50173,16 @@ namespace Accord.Math
         public static float[,] Add(this decimal[,] a, float[,] b, float[,] result)
         {
             check<decimal, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -50705,15 +50274,14 @@ namespace Accord.Math
         public static float[,] Add(this decimal a, float[,] b, float[,] result)
         {
             check<decimal, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -50735,15 +50303,14 @@ namespace Accord.Math
         public static float[,] Add(this decimal[,] a, float b, float[,] result)
         {
             check<decimal, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -51047,15 +50614,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -51081,15 +50647,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -51115,15 +50680,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -51149,15 +50713,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -51216,17 +50779,16 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, float[,] b, double[,] result)
         {
             check<decimal, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -51318,15 +50880,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal a, float[,] b, double[,] result)
         {
             check<decimal, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -51348,15 +50909,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, float b, double[,] result)
         {
             check<decimal, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -51660,15 +51220,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -51694,15 +51253,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -51728,15 +51286,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -51762,15 +51319,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -51829,17 +51385,16 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, double[,] b, decimal[,] result)
         {
             check<decimal, double, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -51931,15 +51486,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal a, double[,] b, decimal[,] result)
         {
             check<decimal, double, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -51961,15 +51515,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, double b, decimal[,] result)
         {
             check<decimal, double, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -52273,15 +51826,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -52307,15 +51859,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -52341,15 +51892,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -52375,15 +51925,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -52442,17 +51991,16 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, double[,] b, double[,] result)
         {
             check<decimal, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -52544,15 +52092,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal a, double[,] b, double[,] result)
         {
             check<decimal, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -52574,15 +52121,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, double b, double[,] result)
         {
             check<decimal, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -52886,15 +52432,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -52920,15 +52465,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -52954,15 +52498,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -52988,15 +52531,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -53055,17 +52597,16 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, byte[,] b, decimal[,] result)
         {
             check<decimal, byte, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -53157,15 +52698,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal a, byte[,] b, decimal[,] result)
         {
             check<decimal, byte, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -53187,15 +52727,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, byte b, decimal[,] result)
         {
             check<decimal, byte, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -53499,15 +53038,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -53533,15 +53071,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -53567,15 +53104,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -53601,15 +53137,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -53668,17 +53203,16 @@ namespace Accord.Math
         public static byte[,] Add(this decimal[,] a, byte[,] b, byte[,] result)
         {
             check<decimal, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -53770,15 +53304,14 @@ namespace Accord.Math
         public static byte[,] Add(this decimal a, byte[,] b, byte[,] result)
         {
             check<decimal, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -53800,15 +53333,14 @@ namespace Accord.Math
         public static byte[,] Add(this decimal[,] a, byte b, byte[,] result)
         {
             check<decimal, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -54112,15 +53644,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -54146,15 +53677,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -54180,15 +53710,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -54214,15 +53743,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -54281,17 +53809,16 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, byte[,] b, double[,] result)
         {
             check<decimal, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -54383,15 +53910,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal a, byte[,] b, double[,] result)
         {
             check<decimal, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -54413,15 +53939,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, byte b, double[,] result)
         {
             check<decimal, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -54725,15 +54250,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -54759,15 +54283,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -54793,15 +54316,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -54827,15 +54349,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -54894,17 +54415,16 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, decimal[,] b, decimal[,] result)
         {
             check<decimal, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -54996,15 +54516,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal a, decimal[,] b, decimal[,] result)
         {
             check<decimal, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -55026,15 +54545,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, decimal b, decimal[,] result)
         {
             check<decimal, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -55338,15 +54856,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -55372,15 +54889,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -55406,15 +54922,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -55440,15 +54955,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -55507,17 +55021,16 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, decimal[,] b, double[,] result)
         {
             check<decimal, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -55609,15 +55122,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal a, decimal[,] b, double[,] result)
         {
             check<decimal, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -55639,15 +55151,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, decimal b, double[,] result)
         {
             check<decimal, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -55951,15 +55462,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -55985,15 +55495,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -56019,15 +55528,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -56053,15 +55561,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -56120,17 +55627,16 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, short[,] b, decimal[,] result)
         {
             check<decimal, short, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -56222,15 +55728,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal a, short[,] b, decimal[,] result)
         {
             check<decimal, short, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -56252,15 +55757,14 @@ namespace Accord.Math
         public static decimal[,] Add(this decimal[,] a, short b, decimal[,] result)
         {
             check<decimal, short, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -56564,15 +56068,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -56598,15 +56101,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -56632,15 +56134,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -56666,15 +56167,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -56733,17 +56233,16 @@ namespace Accord.Math
         public static short[,] Add(this decimal[,] a, short[,] b, short[,] result)
         {
             check<decimal, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -56835,15 +56334,14 @@ namespace Accord.Math
         public static short[,] Add(this decimal a, short[,] b, short[,] result)
         {
             check<decimal, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -56865,15 +56363,14 @@ namespace Accord.Math
         public static short[,] Add(this decimal[,] a, short b, short[,] result)
         {
             check<decimal, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -57177,15 +56674,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -57211,15 +56707,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -57245,15 +56740,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -57279,15 +56773,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -57346,17 +56839,16 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, short[,] b, double[,] result)
         {
             check<decimal, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -57448,15 +56940,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal a, short[,] b, double[,] result)
         {
             check<decimal, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -57478,15 +56969,14 @@ namespace Accord.Math
         public static double[,] Add(this decimal[,] a, short b, double[,] result)
         {
             check<decimal, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -57790,15 +57280,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -57824,15 +57313,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -57858,15 +57346,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -57892,15 +57379,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -57959,17 +57445,16 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, int[,] b, short[,] result)
         {
             check<short, int, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -58061,15 +57546,14 @@ namespace Accord.Math
         public static short[,] Add(this short a, int[,] b, short[,] result)
         {
             check<short, int, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -58091,15 +57575,14 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, int b, short[,] result)
         {
             check<short, int, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -58403,15 +57886,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -58437,15 +57919,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -58471,15 +57952,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -58505,15 +57985,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -58572,17 +58051,16 @@ namespace Accord.Math
         public static int[,] Add(this short[,] a, int[,] b, int[,] result)
         {
             check<short, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (int* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (int)((int)(*pa) + (int)(*pb));
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)(ptrB[pb]));
                 }
             }
 
@@ -58674,15 +58152,14 @@ namespace Accord.Math
         public static int[,] Add(this short a, int[,] b, int[,] result)
         {
             check<short, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
 
@@ -58704,15 +58181,14 @@ namespace Accord.Math
         public static int[,] Add(this short[,] a, int b, int[,] result)
         {
             check<short, int, int>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (int* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
 
@@ -59016,15 +58492,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a + (int)(*pb));
+                        ptrR[pr] = (int)((int)a + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -59050,15 +58525,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (int* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (int)((int)a[j] + (int)(*pb));
+                        ptrR[pr] = (int)((int)a[j] + (int)(ptrB[pb]));
                 }
             }
             return result;
@@ -59084,15 +58558,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b);
                 }
             }
             return result;
@@ -59118,15 +58591,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (int* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<int> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (int)((int)(*pa) + (int)b[j]);
+                        ptrR[pr] = (int)((int)(ptrA[pa]) + (int)b[j]);
                 }
             }
             return result;
@@ -59185,17 +58657,16 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, int[,] b, double[,] result)
         {
             check<short, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (int* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -59287,15 +58758,14 @@ namespace Accord.Math
         public static double[,] Add(this short a, int[,] b, double[,] result)
         {
             check<short, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -59317,15 +58787,14 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, int b, double[,] result)
         {
             check<short, int, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -59629,15 +59098,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -59663,15 +59131,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (int* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<int> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, int>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -59697,15 +59164,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -59731,15 +59197,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -59798,17 +59263,16 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, float[,] b, short[,] result)
         {
             check<short, float, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -59900,15 +59364,14 @@ namespace Accord.Math
         public static short[,] Add(this short a, float[,] b, short[,] result)
         {
             check<short, float, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -59930,15 +59393,14 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, float b, short[,] result)
         {
             check<short, float, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -60242,15 +59704,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -60276,15 +59737,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -60310,15 +59770,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -60344,15 +59803,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -60411,17 +59869,16 @@ namespace Accord.Math
         public static float[,] Add(this short[,] a, float[,] b, float[,] result)
         {
             check<short, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (float* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (float)((float)(*pa) + (float)(*pb));
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)(ptrB[pb]));
                 }
             }
 
@@ -60513,15 +59970,14 @@ namespace Accord.Math
         public static float[,] Add(this short a, float[,] b, float[,] result)
         {
             check<short, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
 
@@ -60543,15 +59999,14 @@ namespace Accord.Math
         public static float[,] Add(this short[,] a, float b, float[,] result)
         {
             check<short, float, float>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (float* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
 
@@ -60855,15 +60310,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a + (float)(*pb));
+                        ptrR[pr] = (float)((float)a + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -60889,15 +60343,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (float* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (float)((float)a[j] + (float)(*pb));
+                        ptrR[pr] = (float)((float)a[j] + (float)(ptrB[pb]));
                 }
             }
             return result;
@@ -60923,15 +60376,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b);
                 }
             }
             return result;
@@ -60957,15 +60409,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (float* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<float> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (float)((float)(*pa) + (float)b[j]);
+                        ptrR[pr] = (float)((float)(ptrA[pa]) + (float)b[j]);
                 }
             }
             return result;
@@ -61024,17 +60475,16 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, float[,] b, double[,] result)
         {
             check<short, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (float* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -61126,15 +60576,14 @@ namespace Accord.Math
         public static double[,] Add(this short a, float[,] b, double[,] result)
         {
             check<short, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -61156,15 +60605,14 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, float b, double[,] result)
         {
             check<short, float, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -61468,15 +60916,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -61502,15 +60949,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (float* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<float> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, float>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -61536,15 +60982,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -61570,15 +61015,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -61637,17 +61081,16 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, double[,] b, short[,] result)
         {
             check<short, double, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -61739,15 +61182,14 @@ namespace Accord.Math
         public static short[,] Add(this short a, double[,] b, short[,] result)
         {
             check<short, double, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -61769,15 +61211,14 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, double b, short[,] result)
         {
             check<short, double, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -62081,15 +61522,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -62115,15 +61555,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -62149,15 +61588,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -62183,15 +61621,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -62250,17 +61687,16 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, double[,] b, double[,] result)
         {
             check<short, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (double* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -62352,15 +61788,14 @@ namespace Accord.Math
         public static double[,] Add(this short a, double[,] b, double[,] result)
         {
             check<short, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -62382,15 +61817,14 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, double b, double[,] result)
         {
             check<short, double, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -62694,15 +62128,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -62728,15 +62161,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (double* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<double> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -62762,15 +62194,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -62796,15 +62227,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -62863,17 +62293,16 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, byte[,] b, short[,] result)
         {
             check<short, byte, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -62965,15 +62394,14 @@ namespace Accord.Math
         public static short[,] Add(this short a, byte[,] b, short[,] result)
         {
             check<short, byte, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -62995,15 +62423,14 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, byte b, short[,] result)
         {
             check<short, byte, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -63307,15 +62734,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -63341,15 +62767,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -63375,15 +62800,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -63409,15 +62833,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -63476,17 +62899,16 @@ namespace Accord.Math
         public static byte[,] Add(this short[,] a, byte[,] b, byte[,] result)
         {
             check<short, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (byte* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)(ptrB[pb]));
                 }
             }
 
@@ -63578,15 +63000,14 @@ namespace Accord.Math
         public static byte[,] Add(this short a, byte[,] b, byte[,] result)
         {
             check<short, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
 
@@ -63608,15 +63029,14 @@ namespace Accord.Math
         public static byte[,] Add(this short[,] a, byte b, byte[,] result)
         {
             check<short, byte, byte>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (byte* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
 
@@ -63920,15 +63340,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -63954,15 +63373,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (byte* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (byte)((byte)a[j] + (byte)(*pb));
+                        ptrR[pr] = (byte)((byte)a[j] + (byte)(ptrB[pb]));
                 }
             }
             return result;
@@ -63988,15 +63406,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b);
                 }
             }
             return result;
@@ -64022,15 +63439,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (byte* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<byte> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (byte)((byte)(*pa) + (byte)b[j]);
+                        ptrR[pr] = (byte)((byte)(ptrA[pa]) + (byte)b[j]);
                 }
             }
             return result;
@@ -64089,17 +63505,16 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, byte[,] b, double[,] result)
         {
             check<short, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (byte* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -64191,15 +63606,14 @@ namespace Accord.Math
         public static double[,] Add(this short a, byte[,] b, double[,] result)
         {
             check<short, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -64221,15 +63635,14 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, byte b, double[,] result)
         {
             check<short, byte, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -64533,15 +63946,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -64567,15 +63979,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (byte* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<byte> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, byte>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -64601,15 +64012,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -64635,15 +64045,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -64702,17 +64111,16 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, decimal[,] b, short[,] result)
         {
             check<short, decimal, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -64804,15 +64212,14 @@ namespace Accord.Math
         public static short[,] Add(this short a, decimal[,] b, short[,] result)
         {
             check<short, decimal, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -64834,15 +64241,14 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, decimal b, short[,] result)
         {
             check<short, decimal, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -65146,15 +64552,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -65180,15 +64585,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -65214,15 +64618,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -65248,15 +64651,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -65315,17 +64717,16 @@ namespace Accord.Math
         public static decimal[,] Add(this short[,] a, decimal[,] b, decimal[,] result)
         {
             check<short, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -65417,15 +64818,14 @@ namespace Accord.Math
         public static decimal[,] Add(this short a, decimal[,] b, decimal[,] result)
         {
             check<short, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
 
@@ -65447,15 +64847,14 @@ namespace Accord.Math
         public static decimal[,] Add(this short[,] a, decimal b, decimal[,] result)
         {
             check<short, decimal, decimal>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (decimal* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
 
@@ -65759,15 +65158,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -65793,15 +65191,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (decimal* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (decimal)((decimal)a[j] + (decimal)(*pb));
+                        ptrR[pr] = (decimal)((decimal)a[j] + (decimal)(ptrB[pb]));
                 }
             }
             return result;
@@ -65827,15 +65224,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b);
                 }
             }
             return result;
@@ -65861,15 +65257,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (decimal* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<decimal> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (decimal)((decimal)(*pa) + (decimal)b[j]);
+                        ptrR[pr] = (decimal)((decimal)(ptrA[pa]) + (decimal)b[j]);
                 }
             }
             return result;
@@ -65928,17 +65323,16 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, decimal[,] b, double[,] result)
         {
             check<short, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (decimal* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -66030,15 +65424,14 @@ namespace Accord.Math
         public static double[,] Add(this short a, decimal[,] b, double[,] result)
         {
             check<short, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -66060,15 +65453,14 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, decimal b, double[,] result)
         {
             check<short, decimal, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -66372,15 +65764,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -66406,15 +65797,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (decimal* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<decimal> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, decimal>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -66440,15 +65830,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -66474,15 +65863,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;
@@ -66541,17 +65929,16 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, short[,] b, short[,] result)
         {
             check<short, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (short)((short)(*pa) + (short)(*pb));
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)(ptrB[pb]));
                 }
             }
 
@@ -66643,15 +66030,14 @@ namespace Accord.Math
         public static short[,] Add(this short a, short[,] b, short[,] result)
         {
             check<short, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
 
@@ -66673,15 +66059,14 @@ namespace Accord.Math
         public static short[,] Add(this short[,] a, short b, short[,] result)
         {
             check<short, short, short>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (short* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
 
@@ -66985,15 +66370,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a + (short)(*pb));
+                        ptrR[pr] = (short)((short)a + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -67019,15 +66403,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (short)((short)a[j] + (short)(*pb));
+                        ptrR[pr] = (short)((short)a[j] + (short)(ptrB[pb]));
                 }
             }
             return result;
@@ -67053,15 +66436,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b);
                 }
             }
             return result;
@@ -67087,15 +66469,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (short* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<short> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (short)((short)(*pa) + (short)b[j]);
+                        ptrR[pr] = (short)((short)(ptrA[pa]) + (short)b[j]);
                 }
             }
             return result;
@@ -67154,17 +66535,16 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, short[,] b, double[,] result)
         {
             check<short, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (short* ptrB = b)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pb = ptrB;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pb = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pb++, pr++)
-                        *pr = (double)((double)(*pa) + (double)(*pb));
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)(ptrB[pb]));
                 }
             }
 
@@ -67256,15 +66636,14 @@ namespace Accord.Math
         public static double[,] Add(this short a, short[,] b, double[,] result)
         {
             check<short, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < b.Length; j++, pr++, pb++)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
 
@@ -67286,15 +66665,14 @@ namespace Accord.Math
         public static double[,] Add(this short[,] a, short b, double[,] result)
         {
             check<short, short, double>(a: a, b: b, result: result);
-            unsafe
             {
-                fixed (short* ptrA = a)
-                fixed (double* ptrR = result)
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int i = 0; i < a.Length; i++, pa++, pr++)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
 
@@ -67598,15 +66976,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a + (double)(*pb));
+                        ptrR[pr] = (double)((double)a + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -67632,15 +67009,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrB = b)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrB = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)b)), b.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pb = ptrB;
+                    int pr = 0;
+                    int pb = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pb += cols + 1)
-                        *pr = (double)((double)a[j] + (double)(*pb));
+                        ptrR[pr] = (double)((double)a[j] + (double)(ptrB[pb]));
                 }
             }
             return result;
@@ -67666,15 +67042,14 @@ namespace Accord.Math
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pa = ptrA;
-                    var pr = ptrR;
+                    int pa = 0;
+                    int pr = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b);
                 }
             }
             return result;
@@ -67700,15 +67075,14 @@ namespace Accord.Math
             int rows = b.GetLength(0);
             int cols = b.GetLength(1);
 
-            unsafe 
             {
-                fixed (short* ptrA = a)        
-                fixed (double* ptrR = result)        
+                Span<short> ptrA = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, short>(ref MemoryMarshal.GetArrayDataReference((Array)a)), a.Length);        
+                Span<double> ptrR = MemoryMarshal.CreateSpan(ref Unsafe.As<byte, double>(ref MemoryMarshal.GetArrayDataReference((Array)result)), result.Length);        
                 {
-                    var pr = ptrR;
-                    var pa = ptrA;
+                    int pr = 0;
+                    int pa = 0;
                     for (int j = 0; j < rows; j++, pr += cols + 1, pa += cols + 1)
-                        *pr = (double)((double)(*pa) + (double)b[j]);
+                        ptrR[pr] = (double)((double)(ptrA[pa]) + (double)b[j]);
                 }
             }
             return result;

@@ -11,10 +11,16 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Accord.Statistics.Distributions.Univariate;
+using Jube.Analytics.Categorical;
+
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.Exhaustive.Algorithms.Models
 {
-    using Accord.Statistics.Distributions.Univariate;
-
     public class Variable
     {
         public int ExhaustiveSearchInstanceVariableId { get; set; }
@@ -34,5 +40,8 @@ namespace Jube.Engine.Exhaustive.Algorithms.Models
         public int Bins { get; set; }
         public double Correlation { get; set; }
         public TriangularDistribution TriangularDistribution { get; set; }
+        public CategoricalFieldEncoder CategoricalEncoder { get; init; }
+        public int CategoricalIndicatorIndex { get; init; }
+        public int? CategoricalFieldId { get; set; }
     }
 }

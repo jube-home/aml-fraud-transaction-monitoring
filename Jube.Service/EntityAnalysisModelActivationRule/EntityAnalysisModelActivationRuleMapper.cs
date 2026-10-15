@@ -28,6 +28,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                 : new EntityAnalysisModelActivationRuleDto
                 {
                     Id = activationRule.Id,
+                    Guid = activationRule.Guid,
                     EntityAnalysisModelId = activationRule.EntityAnalysisModelId.GetValueOrDefault(),
                     Name = activationRule.Name,
                     Active = activationRule.Active == 1,

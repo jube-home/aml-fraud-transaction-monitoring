@@ -21,6 +21,7 @@ using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.EntityAnalysisModelInlineFunction;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityAnalysisModelInlineFunction;
@@ -29,6 +30,7 @@ using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
@@ -78,6 +80,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
             {
                 await dbContext.GetTable<EntityAnalysisModelInlineFunctionVersion>()
                     .Where(w => w.EntityAnalysisModelInlineFunctionId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelInlineFunction>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -86,6 +89,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -102,6 +106,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
         private async Task<int> CreateParentModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -112,6 +117,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -248,6 +254,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
 
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.InsertAsync(NewDto(modelId, UniqueName("Denied"))));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
             var updateDto = NewDto(modelId, seedRow.Name);
@@ -284,6 +291,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -292,6 +300,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -348,6 +357,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
             var dto = NewDto(modelId, name!);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelInlineFunctionDto.Name) &&
                 e.ErrorCode == "NameNotEmpty");
@@ -380,6 +390,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(modelAId, name)));
+
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
 
             var second = await service.InsertAsync(NewDto(modelBId, name));
@@ -399,6 +410,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(modelId, name.ToUpperInvariant())));
+
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
         }
 
@@ -872,6 +884,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -889,6 +902,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -904,6 +918,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "EntityAnalysisModelInlineFunctionList", "EntityAnalysisModelInlineFunctionGet",

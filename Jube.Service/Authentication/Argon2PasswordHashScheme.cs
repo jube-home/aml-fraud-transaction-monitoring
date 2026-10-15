@@ -12,6 +12,7 @@
  */
 
 using Jube.Data.Security;
+using Jube.Service.Authentication.Interfaces;
 
 namespace Jube.Service.Authentication
 {

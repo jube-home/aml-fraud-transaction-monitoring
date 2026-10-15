@@ -40,7 +40,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Helpers
 
                 using var smtpServer = new SmtpClient();
 
-                if (jubeEnvironment.AppSettings("SMTPUseDefaultCredentials") == null || jubeEnvironment.AppSettings("SMTPUser") == null || jubeEnvironment.AppSettings("SMTPPassword") == null)
+                if (jubeEnvironment.AppSettings("SMTPUseDefaultCredentials") == null ||
+                    jubeEnvironment.AppSettings("SMTPUser") == null ||
+                    jubeEnvironment.AppSettings("SMTPPassword") == null)
                 {
                     log.Info("SMTP Client: No SMTP credentials specified.");
 
@@ -69,7 +71,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Helpers
 
                 if (log.IsInfoEnabled)
                 {
-                    log.Info($"SMTP Client: Configured SMTP server with Host={smtpServer.Host}, Port={smtpServer.Port}, EnableSsl={smtpServer.EnableSsl}, User={jubeEnvironment.AppSettings("SMTPUser")}.");
+                    log.Info(
+                        $"SMTP Client: Configured SMTP server with Host={smtpServer.Host}, Port={smtpServer.Port}, EnableSsl={smtpServer.EnableSsl}, User={jubeEnvironment.AppSettings("SMTPUser")}.");
                 }
 
                 using var email = new MailMessage();
@@ -81,10 +84,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Helpers
 
                 if (log.IsInfoEnabled)
                 {
-                    log.Info($"SMTP Client: Email compiled. To={toEmail}, Subject='{subject}', Body length={body.Length}.");
+                    log.Info(
+                        $"SMTP Client: Email compiled. To={toEmail}, Subject='{subject}', Body length={body.Length}.");
                 }
 
                 var taskCompletionSource = new TaskCompletionSource<object>();
+
                 await using (token.Register(() => taskCompletionSource.TrySetCanceled()).ConfigureAwait(false))
                 {
                     smtpServer.SendCompleted += (_, e) =>

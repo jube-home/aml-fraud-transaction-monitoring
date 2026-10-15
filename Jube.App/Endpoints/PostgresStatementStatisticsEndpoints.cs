@@ -50,19 +50,24 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}: entry user={user}");
             }
 
             var connectionString = dynamicEnvironment.AppSettings("ConnectionString");
+
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 connectionString, log);
+
             try
             {
                 var service = await PostgresStatementStatisticsService.CreateAsync(dbContext, connectionString, user,
                     log, stringLocalizerFactory, serviceChangeBus, token);
+
                 var result = await service.ListAsync(search, sortField, sortDirection, token);
+
                 return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
@@ -95,6 +100,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

@@ -51,6 +51,7 @@ namespace Jube.Validations.Repository.CaseWorkflowForm
                 {
                     var existing = await repository
                         .GetByNameCaseWorkflowIdAsync(name, dto.CaseWorkflowId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[CaseWorkflowFormResources.NameAlreadyExists])

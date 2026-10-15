@@ -51,6 +51,7 @@ namespace Jube.App.Endpoints.Query
                     .Equals("True", StringComparison.OrdinalIgnoreCase));
 
             var ready = service.IsReady();
+
             if (!ready && log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}: 503 not ready");

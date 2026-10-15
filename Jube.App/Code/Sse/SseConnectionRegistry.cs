@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
+using Jube.App.Code.Interfaces;
 using Jube.App.Code.Models;
 using log4net;
 
@@ -42,6 +43,7 @@ namespace Jube.App.Code.Sse
                 cancellationTokenSource);
 
             connections[connectionId] = entry;
+
             connectionsByTenant.GetOrAdd(tenantRegistryId, _ => new ConcurrentDictionary<string, SseConnectionEntry>())
                 [connectionId] = entry;
 
@@ -63,9 +65,11 @@ namespace Jube.App.Code.Sse
 
         public IReadOnlyList<TrackedConnection> Tracked()
         {
-            return connections
-                .Select(c => new TrackedConnection(c.Key, c.Value.UserName, c.Value.IssuedMilliseconds))
-                .ToList();
+            return
+            [
+                .. connections
+                    .Select(c => new TrackedConnection(c.Key, c.Value.UserName, c.Value.IssuedMilliseconds))
+            ];
         }
 
         public void Abort(string connectionId)

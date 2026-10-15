@@ -11,22 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Context;
-    using LinqToDB;
-    using log4net;
-    using Microsoft.Extensions.Logging.Abstractions;
-    using Poco;
-    using Reporting;
-    using Validation;
-
     public class VisualisationRegistryDatasourceRepository
     {
         private readonly DbContext dbContext;
@@ -37,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -123,6 +119,14 @@ namespace Jube.Data.Repository
                    && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
+        public Task<VisualisationRegistryDatasource> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.VisualisationRegistryDatasource.FirstOrDefaultAsync(w
+                => w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
+                   && w.Guid == guid
+                   && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public Task<VisualisationRegistryDatasource> GetByIdActiveOnlyAsync(int id, CancellationToken token = default)
         {
             return dbContext.VisualisationRegistryDatasource
@@ -159,199 +163,8 @@ namespace Jube.Data.Repository
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
-            return model;
-        }
-
-        public async Task<VisualisationRegistryDatasource> InsertWithValidationAsync(
-            VisualisationRegistryDatasource model, ILog log, string interpolationConnectionString,
-            CancellationToken token = default)
-        {
-            if (model.VisualisationRegistryId == null)
-            {
-                return model;
-            }
-
-            Dictionary<string, string> columns;
-            try
-            {
-                columns = await ValidateSeriesAsync(model.VisualisationRegistryId.Value, model.Command,
-                    interpolationConnectionString, log).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                log.Info("VisualisationRegistryDatasource: the SQL command was rejected: " + e.Message);
-                throw new SqlValidationFailed(SanitiseSqlError(e));
-            }
-
-            model.CreatedUser = userName;
-            model.CreatedDate = DateTime.UtcNow;
-            model.Version = 1;
-            model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
-            model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
-
-            await FillSeriesAsync(model.Id, columns, token);
 
             return model;
-        }
-
-        public async Task<VisualisationRegistryDatasource> UpdateWithValidationAsync(
-            VisualisationRegistryDatasource model, ILog log, string interpolationConnectionString,
-            CancellationToken token = default)
-        {
-            if (model.VisualisationRegistryId == null)
-            {
-                return model;
-            }
-
-            Dictionary<string, string> columns;
-            try
-            {
-                columns = await ValidateSeriesAsync(model.VisualisationRegistryId.Value, model.Command,
-                    interpolationConnectionString, log).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                log.Info("VisualisationRegistryDatasource: the SQL command was rejected: " + e.Message);
-                throw new SqlValidationFailed(SanitiseSqlError(e));
-            }
-
-            var existing = await dbContext.VisualisationRegistryDatasource
-                .FirstOrDefaultAsync(w => w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
-                                          && w.Id == model.Id
-                                          && (w.Deleted == 0 || w.Deleted == null)
-                                          && (w.Locked == 0 || w.Locked == null), token);
-
-            if (existing == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            model.Version = existing.Version + 1;
-            model.Guid = existing.Guid;
-            model.CreatedUser = existing.CreatedUser;
-            model.CreatedDate = existing.CreatedDate;
-            model.UpdatedUser = userName;
-            model.UpdatedDate = DateTime.UtcNow;
-            model.ImportId = existing.ImportId;
-
-            await dbContext.UpdateAsync(model, token: token).ConfigureAwait(false);
-
-            var mapper = new Mapper(new MapperConfiguration(
-                cfg => { cfg.CreateMap<VisualisationRegistryDatasource, VisualisationRegistryDatasourceVersion>(); },
-                NullLoggerFactory.Instance));
-
-            var audit = mapper.Map<VisualisationRegistryDatasourceVersion>(existing);
-            audit.VisualisationRegistryDatasourceId = existing.Id;
-
-            await dbContext.InsertAsync(audit, token: token).ConfigureAwait(false);
-
-            await FillSeriesAsync(model.Id, columns, token);
-
-            return model;
-        }
-
-        private async Task FillSeriesAsync(int id, Dictionary<string, string> columns,
-            CancellationToken token = default)
-        {
-            await dbContext.BeginTransactionAsync(token);
-
-            var visualisationRegistryDatasourceSeriesRepository =
-                new VisualisationRegistryDatasourceSeriesRepository(dbContext);
-            await visualisationRegistryDatasourceSeriesRepository.DeleteByVisualisationRegistryDatasourceIdAsync(id);
-
-            foreach (var (key, value) in columns)
-            {
-                var visualisationRegistryDatasourceSeries = new VisualisationRegistryDatasourceSeries
-                {
-                    VisualisationRegistryDatasourceId = id,
-                    Name = key
-                };
-
-                switch (value)
-                {
-                    case "integer":
-                    case "bigint":
-                        visualisationRegistryDatasourceSeries.DataTypeId = 2;
-                        break;
-                    case "double precision":
-                        visualisationRegistryDatasourceSeries.DataTypeId = 3;
-                        break;
-                    default:
-                    {
-                        if (value.Contains("timestamp"))
-                        {
-                            visualisationRegistryDatasourceSeries.DataTypeId = 4;
-                        }
-                        else
-                        {
-                            visualisationRegistryDatasourceSeries.DataTypeId = value switch
-                            {
-                                "smallint" => 5,
-                                "double precision[]" => 6,
-                                _ => value.EndsWith("[]") ? 7 : 1
-                            };
-                        }
-
-                        break;
-                    }
-                }
-
-                await dbContext.InsertAsync(visualisationRegistryDatasourceSeries, token: token);
-                await dbContext.CommitTransactionAsync(token);
-            }
-        }
-
-        private static string SanitiseSqlError(Exception e)
-        {
-            if (e is InvalidOperationException)
-            {
-                return
-                    "The SQL command must be a single SELECT statement that uses no blocked statement, function or table.";
-            }
-
-            for (var inner = e; inner != null; inner = inner.InnerException)
-            {
-                if (inner is not Npgsql.PostgresException postgresException)
-                {
-                    continue;
-                }
-
-                var message =
-                    $"The reporting database rejected the SQL command: {postgresException.MessageText} ({postgresException.SqlState}).";
-                return string.IsNullOrWhiteSpace(postgresException.Hint)
-                    ? message
-                    : $"{message} {postgresException.Hint}";
-            }
-
-            return "The SQL command was rejected by the reporting database.";
-        }
-
-        private async Task<Dictionary<string, string>> ValidateSeriesAsync(int visualisationRegistryId, string sql,
-            string interpolationConnectionString, ILog log)
-        {
-            var visualisationRegistryParameterRepository = new VisualisationRegistryParameterRepository(dbContext);
-            var parameters =
-                await visualisationRegistryParameterRepository.GetByVisualisationRegistryIdOrderByIdAsync(
-                    visualisationRegistryId);
-
-            var parametersDefaultValues = new Dictionary<string, object>();
-            foreach (var parameter in parameters)
-            {
-                object defaultValue = parameter.DataTypeId switch
-                {
-                    1 => "",
-                    2 => 0,
-                    3 => 0d,
-                    4 => new DateTime(),
-                    5 => true,
-                    _ => ""
-                };
-
-                parametersDefaultValues.Add(parameter.Name.Replace(" ", "_"), defaultValue);
-            }
-
-            using var postgres = new Postgres(interpolationConnectionString, log, true);
-            return await postgres.IntrospectAsync(sql, parametersDefaultValues).ConfigureAwait(false);
         }
 
         public async Task DeleteAsync(int id, CancellationToken token = default)

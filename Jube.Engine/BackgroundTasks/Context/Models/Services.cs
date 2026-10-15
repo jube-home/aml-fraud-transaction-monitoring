@@ -22,7 +22,10 @@ using log4net;
 using Newtonsoft.Json.Serialization;
 using RabbitMQ.Client;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Engine.BackgroundTasks.Context.Models
 {

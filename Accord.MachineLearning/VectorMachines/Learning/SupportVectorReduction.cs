@@ -1,56 +1,63 @@
-﻿// Accord Machine Learning Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math;
+using Accord.Math.Optimization.Losses;
+using Accord.Statistics;
+using Accord.Statistics.Kernels;
 
 namespace Accord.MachineLearning.VectorMachines.Learning
 {
-    using Accord.Math;
-    using Accord.Statistics;
-    using Accord.Statistics.Kernels;
-    using Math.Optimization.Losses;
-    using System;
-    using System.Threading;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Exact support vector reduction through linear dependency elimination.
+    ///     Exact support vector reduction through linear dependency elimination.
     /// </summary>
-    /// 
     /// <example>
-    ///   <para>
-    ///   The following example shows how to reduce the number of support vectors in
-    ///   a SVM by removing vectors which are linearly dependent between themselves.</para>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\SupportVectorReductionTest.cs" region="doc_learn" />
+    ///     <para>
+    ///         The following example shows how to reduce the number of support vectors in
+    ///         a SVM by removing vectors which are linearly dependent between themselves.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\SupportVectorReductionTest.cs"
+    ///         region="doc_learn" />
     /// </example>
-    /// 
     //[Obsolete("Please use SupportVectorReduction<TKernel> instead.")]
     public class SupportVectorReduction
         : SupportVectorReductionBase<SupportVectorMachine<IKernel<double[]>, double[]>,
             IKernel<double[]>, double[]>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SupportVectorReduction"/> class.
+        ///     Initializes a new instance of the <see cref="SupportVectorReduction" /> class.
         /// </summary>
         /// <param name="machine">The machine to be reduced.</param>
-        ///
         public SupportVectorReduction(ISupportVectorMachine<double[]> machine)
             : base(machine)
         {
@@ -58,25 +65,24 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     }
 
     /// <summary>
-    ///   Exact support vector reduction through linear dependency elimination.
+    ///     Exact support vector reduction through linear dependency elimination.
     /// </summary>
-    /// 
     /// <example>
-    ///   <para>
-    ///   The following example shows how to reduce the number of support vectors in
-    ///   a SVM by removing vectors which are linearly dependent between themselves.</para>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\SupportVectorReductionTest.cs" region="doc_learn" />
+    ///     <para>
+    ///         The following example shows how to reduce the number of support vectors in
+    ///         a SVM by removing vectors which are linearly dependent between themselves.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\SupportVectorReductionTest.cs"
+    ///         region="doc_learn" />
     /// </example>
-    /// 
     public class SupportVectorReduction<TKernel>
         : SupportVectorReductionBase<SupportVectorMachine<TKernel, double[]>, TKernel, double[]>
         where TKernel : IKernel<double[]>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SupportVectorReduction"/> class.
+        ///     Initializes a new instance of the <see cref="SupportVectorReduction" /> class.
         /// </summary>
         /// <param name="machine">The machine to be reduced.</param>
-        ///
         public SupportVectorReduction(ISupportVectorMachine<double[]> machine)
             : base(machine)
         {
@@ -84,26 +90,25 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     }
 
     /// <summary>
-    ///   Exact support vector reduction through linear dependency elimination.
+    ///     Exact support vector reduction through linear dependency elimination.
     /// </summary>
-    /// 
     /// <example>
-    ///   <para>
-    ///   The following example shows how to reduce the number of support vectors in
-    ///   a SVM by removing vectors which are linearly dependent between themselves.</para>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\SupportVectorReductionTest.cs" region="doc_learn" />
+    ///     <para>
+    ///         The following example shows how to reduce the number of support vectors in
+    ///         a SVM by removing vectors which are linearly dependent between themselves.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\SupportVectorReductionTest.cs"
+    ///         region="doc_learn" />
     /// </example>
-    /// 
     public class SupportVectorReduction<TKernel, TInput>
         : SupportVectorReductionBase<SupportVectorMachine<TKernel, TInput>, TKernel, TInput>
         where TKernel : IKernel<TInput>
         where TInput : ICloneable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SupportVectorReduction"/> class.
+        ///     Initializes a new instance of the <see cref="SupportVectorReduction" /> class.
         /// </summary>
         /// <param name="machine">The machine to be reduced.</param>
-        ///
         public SupportVectorReduction(ISupportVectorMachine<TInput> machine)
             : base(machine)
         {
@@ -111,16 +116,16 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     }
 
     /// <summary>
-    ///   Exact support vector reduction through linear dependency elimination.
+    ///     Exact support vector reduction through linear dependency elimination.
     /// </summary>
-    /// 
     /// <example>
-    ///   <para>
-    ///   The following example shows how to reduce the number of support vectors in
-    ///   a SVM by removing vectors which are linearly dependent between themselves.</para>
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\SupportVectorReductionTest.cs" region="doc_learn" />
+    ///     <para>
+    ///         The following example shows how to reduce the number of support vectors in
+    ///         a SVM by removing vectors which are linearly dependent between themselves.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\SupportVectorReductionTest.cs"
+    ///         region="doc_learn" />
     /// </example>
-    /// 
     public class SupportVectorReductionBase<TModel, TKernel, TInput>
         : BaseSupportVectorCalibration<TModel, TKernel, TInput>
         where TModel : SupportVectorMachine<TKernel, TInput>
@@ -129,42 +134,41 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         where TInput : ICloneable
 #endif
     {
-        private double threshold = 1e-12;
-
         /// <summary>
-        /// Gets or sets the minimum threshold that is used to determine
-        /// whether a weight will be kept in the machine or not. Default
-        /// is 1e-12.
+        ///     Creates a new <see cref="SupportVectorReduction" /> algorithm.
         /// </summary>
-        /// 
-        public double Threshold
-        {
-            get { return threshold; }
-            set { threshold = value; }
-        }
-
-        /// <summary>
-        ///   Creates a new <see cref="SupportVectorReduction"/> algorithm.
-        /// </summary>
-        /// 
         /// <param name="machine">The machine to be reduced.</param>
-        /// 
         public SupportVectorReductionBase(TModel machine)
             : base(machine)
         {
         }
 
         /// <summary>
-        /// Learns a model that can map the given inputs to the given outputs.
+        ///     Creates a new <see cref="SupportVectorReduction" /> algorithm.
         /// </summary>
-        /// 
-        public TModel Learn()
+        /// <param name="machine">The machine to be reduced.</param>
+        public SupportVectorReductionBase(ISupportVectorMachine<TInput> machine)
+            : base(machine)
         {
-            return base.Learn(Model.SupportVectors, Classes.Decide(Model.Weights));
         }
 
         /// <summary>
-        /// Runs the learning algorithm.
+        ///     Gets or sets the minimum threshold that is used to determine
+        ///     whether a weight will be kept in the machine or not. Default
+        ///     is 1e-12.
+        /// </summary>
+        public double Threshold { get; set; } = 1e-12;
+
+        /// <summary>
+        ///     Learns a model that can map the given inputs to the given outputs.
+        /// </summary>
+        public TModel Learn()
+        {
+            return Learn(Model.SupportVectors, Classes.Decide(Model.Weights));
+        }
+
+        /// <summary>
+        ///     Runs the learning algorithm.
         /// </summary>
         protected override void InnerRun()
         {
@@ -172,10 +176,8 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             var alpha = (double[])Model.Weights.Clone();
             var kernel = Model.Kernel;
 
-            this.Input = supportVectors;
-            this.Output = Classes.Decide(alpha);
-
-            int n = supportVectors.Length;
+            Input = supportVectors;
+            Output = Classes.Decide(alpha);
 
             // Create Gram matrix
             var K = kernel.ToJagged(supportVectors);
@@ -183,37 +185,38 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             // Reduce to Echelon form to detect linear dependence
             var ech = new JaggedReducedRowEchelonForm(K);
 
-            double[][] rref = ech.Result;
-            int[] pivot = ech.Pivot;
+            var rref = ech.Result;
 
 
             // For each support vector
-            for (int i = 0; i < supportVectors.Length; i++)
+            for (var i = 0; i < supportVectors.Length; i++)
             {
                 // Get its corresponding row
-                int row = ech.Pivot[i];
+                var row = ech.Pivot[i];
 
                 // Check if it can be expressed as a
                 // linear combination of other vectors
 
                 if (row > supportVectors.Length - ech.FreeVariables - 1)
                 {
-                    double c = alpha[row];
-                    for (int j = 0; j < rref.Length; j++)
+                    var c = alpha[row];
+                    for (var j = 0; j < rref.Length; j++)
+                    {
                         alpha[j] = alpha[j] + c * rref[j][row];
+                    }
 
                     alpha[row] = 0;
                 }
             }
 
             // Retain only multipliers which are not zero
-            int[] idx = alpha.Find(a => Math.Abs(a) > threshold);
+            var idx = alpha.Find(a => System.Math.Abs(a) > Threshold);
             Model.Weights = alpha.Get(idx);
             Model.SupportVectors = supportVectors.Get(idx);
         }
 
         /// <summary>
-        ///   Obsolete.
+        ///     Obsolete.
         /// </summary>
         [Obsolete("Please use Learn() instead.")]
         public override double Run()
@@ -221,18 +224,5 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             var classifier = Learn();
             return new ZeroOneLoss(Output).Loss(classifier.Decide(Input));
         }
-
-        /// <summary>
-        ///   Creates a new <see cref="SupportVectorReduction"/> algorithm.
-        /// </summary>
-        /// 
-        /// <param name="machine">The machine to be reduced.</param>
-        /// 
-        public SupportVectorReductionBase(ISupportVectorMachine<TInput> machine)
-            : base(machine)
-        {
-        }
-
-
     }
 }

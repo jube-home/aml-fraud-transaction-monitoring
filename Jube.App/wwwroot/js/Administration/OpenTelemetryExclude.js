@@ -30,6 +30,11 @@ function loadTemplate(id) {
     $.get(endpoint + "/" + id,
         function (data) {
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("OpenTelemetryExclude", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name
+            });
             validator.validate();
 
             $("#Template").show();
@@ -39,11 +44,13 @@ function loadTemplate(id) {
 
 function showTemplate() {
     ReadyNew();
+    window.AskJoobySetPageContext?.("OpenTelemetryExclude", "new", null);
     $("#Template").show();
     $("#Homepage").hide();
 }
 
 function showHomePage() {
+    window.AskJoobySetPageContext?.("OpenTelemetryExclude", "list", null);
     $("#Template").hide();
     $("#Homepage").show();
     getRecords();

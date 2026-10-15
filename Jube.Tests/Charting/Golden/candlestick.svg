@@ -1,0 +1,636 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-feb126b5" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-feb126b5-t jc-feb126b5-d">
+    <title id="jc-feb126b5-t">Daily volume index</title>
+    <desc id="jc-feb126b5-d">Candlestick chart with 30 periods.</desc>
+    <style>
+        .jc-feb126b5{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-feb126b5:not([data-theme="light"]),.jc-feb126b5:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-feb126b5:not([data-theme="light"]),.jc-feb126b5[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-feb126b5
+        text{fill:var(--jc-text);font-size:12px}.jc-feb126b5 .bg{fill:var(--jc-surface)}.jc-feb126b5
+        .ttl{font-size:16px;font-weight:600}.jc-feb126b5 .sub{fill:var(--jc-text2)}.jc-feb126b5
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-feb126b5 .at{fill:var(--jc-text2);font-weight:500}.jc-feb126b5
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-feb126b5
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-feb126b5
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-feb126b5 .ref.s0,.jc-feb126b5
+        .ref.s1,.jc-feb126b5 .ref.s2,.jc-feb126b5 .ref.s3,.jc-feb126b5 .ref.s4,.jc-feb126b5 .ref.s5,.jc-feb126b5
+        .ref.s6,.jc-feb126b5 .ref.s7{stroke:var(--sc)}.jc-feb126b5
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-feb126b5
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-feb126b5
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-feb126b5
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-feb126b5 .wh,.jc-feb126b5
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-feb126b5
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-feb126b5
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-feb126b5
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-feb126b5 .cd.hollow{fill:var(--jc-surface)}.jc-feb126b5
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-feb126b5
+        .ar.off{fill-opacity:0}.jc-feb126b5 .ring{font-size:10px}.jc-feb126b5
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-feb126b5 .needle{fill:var(--jc-text);stroke:none}.jc-feb126b5
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-feb126b5
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-feb126b5
+        .big{font-size:28px;font-weight:600}.jc-feb126b5 .rg0,.jc-feb126b5 .rg1,.jc-feb126b5
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-feb126b5 .rg0{fill-opacity:.1}.jc-feb126b5
+        .rg1{fill-opacity:.2}.jc-feb126b5 .rg2{fill-opacity:.32}.jc-feb126b5
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-feb126b5
+        .bar.part{fill-opacity:.35}.jc-feb126b5 .lgt{fill:var(--jc-text2)}.jc-feb126b5
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-feb126b5
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-feb126b5
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-feb126b5
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-feb126b5 .bar{fill:var(--sc)}.jc-feb126b5
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-feb126b5
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-feb126b5
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-feb126b5
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-feb126b5
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-feb126b5
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-feb126b5 .mk:hover .pt.h,.jc-feb126b5 .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-feb126b5 .pt.sm{fill-opacity:.55;stroke:none}.jc-feb126b5
+        .na{fill:var(--jc-grid)}.jc-feb126b5 .mk:hover .sl,.jc-feb126b5 .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-feb126b5
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-feb126b5
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-feb126b5
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-feb126b5
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-feb126b5
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-feb126b5 .ctr{text-anchor:middle}.jc-feb126b5
+        .end{text-anchor:end}.jc-feb126b5 .mid{dominant-baseline:central}.jc-feb126b5 .mk{outline:none}.jc-feb126b5
+        .m,.jc-feb126b5 .pt,.jc-feb126b5 .bub,.jc-feb126b5 .bar,.jc-feb126b5 .ov,.jc-feb126b5 .sl,.jc-feb126b5
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-feb126b5 .mk:hover .m,.jc-feb126b5 .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-feb126b5 .mk:hover .pt,.jc-feb126b5 .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-feb126b5 .mk:hover .bub,.jc-feb126b5 .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-feb126b5 .mk:hover .bar,.jc-feb126b5 .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-feb126b5 .mk:hover .ov,.jc-feb126b5 .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-feb126b5 .mk:hover .sl,.jc-feb126b5 .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-feb126b5 .mk:hover .box,.jc-feb126b5 .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-feb126b5 .mk:hover .wk,.jc-feb126b5 .mk:focus-visible
+        .wk,.jc-feb126b5 .mk:hover .cd,.jc-feb126b5 .mk:focus-visible .cd{stroke-width:2.5}.jc-feb126b5 .mk:hover
+        .cell,.jc-feb126b5 .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-feb126b5 .mk:hover
+        .vl,.jc-feb126b5 .mk:focus-visible .vl,.jc-feb126b5 .mk:hover .cx,.jc-feb126b5 .mk:focus-visible
+        .cx{opacity:1}.jc-feb126b5 .mk:hover .mkr,.jc-feb126b5 .mk:focus-visible .mkr{stroke-width:3}.jc-feb126b5
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-feb126b5
+        .mk:hover .tt,.jc-feb126b5 .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-feb126b5
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-feb126b5
+        .tx{fill:var(--jc-text);font-size:12px}.jc-feb126b5 .tx.b{font-weight:600}.jc-feb126b5
+        .tsw{fill:var(--sc)}.jc-feb126b5 .lg{cursor:default;transition:opacity .15s ease}.jc-feb126b5 .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-feb126b5 .sr{transition:opacity .15s ease}.jc-feb126b5:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-feb126b5:has(.mk:hover) .mk:not(:hover) .pt,.jc-feb126b5:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-feb126b5:has(.mk:hover) .mk:not(:hover) .bar,.jc-feb126b5:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-feb126b5:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-feb126b5:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-feb126b5 .s0{--sc:var(--jc-c0)}.jc-feb126b5 .s0
+        .on{fill:var(--jc-ct0)}.jc-feb126b5:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-feb126b5:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-feb126b5:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-feb126b5:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-feb126b5:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-feb126b5
+        .s1{--sc:var(--jc-c1)}.jc-feb126b5 .s1 .on{fill:var(--jc-ct1)}.jc-feb126b5:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-feb126b5:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-feb126b5:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-feb126b5:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-feb126b5:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-feb126b5,.jc-feb126b5 *{transition:none!important;animation:none!important}}
+    </style>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Daily volume index</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="51.84" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Rising</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="83.84" y="44" width="54.96" height="18"/>
+        <rect class="sw" x="85.84" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="103.84" y="57">Falling</text>
+    </g>
+    <line class="gl" x1="42.48" y1="364" x2="624" y2="364"/>
+    <text class="tk end mid" x="34.48" y="364">99</text>
+    <line class="gl" x1="42.48" y1="305.6" x2="624" y2="305.6"/>
+    <text class="tk end mid" x="34.48" y="305.6">105</text>
+    <line class="gl" x1="42.48" y1="247.2" x2="624" y2="247.2"/>
+    <text class="tk end mid" x="34.48" y="247.2">111</text>
+    <line class="gl" x1="42.48" y1="188.8" x2="624" y2="188.8"/>
+    <text class="tk end mid" x="34.48" y="188.8">117</text>
+    <line class="gl" x1="42.48" y1="130.4" x2="624" y2="130.4"/>
+    <text class="tk end mid" x="34.48" y="130.4">123</text>
+    <line class="gl" x1="42.48" y1="72" x2="624" y2="72"/>
+    <text class="tk end mid" x="34.48" y="72">129</text>
+    <line class="ax" x1="42.48" y1="364" x2="624" y2="364"/>
+    <text class="tk ctr" x="52.17" y="380">2026-03-01</text>
+    <text class="tk ctr" x="129.71" y="380">2026-03-05</text>
+    <text class="tk ctr" x="207.24" y="380">2026-03-09</text>
+    <text class="tk ctr" x="284.78" y="380">2026-03-13</text>
+    <text class="tk ctr" x="362.32" y="380">2026-03-17</text>
+    <text class="tk ctr" x="439.85" y="380">2026-03-21</text>
+    <text class="tk ctr" x="517.39" y="380">2026-03-25</text>
+    <text class="tk ctr" x="594.92" y="380">2026-03-29</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-01, Open: 100, High: 103.5, Low: 99.88, Close: 102.6, Change: 2.56%">
+            <title>2026-03-01, Open: 100, High: 103.5, Low: 99.88, Close: 102.6, Change: 2.56%</title>
+            <rect class="hit" x="45.87" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M52.17 319.81L52.17 355.43"/>
+            <rect class="cd hollow m" x="45.87" y="329.35" width="12.6" height="24.92" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="42.48" y="199.81" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="52.48" y="208.81" width="9" height="9" rx="2"/>
+                <text class="tx b" x="66.48" y="217.81">2026-03-01</text>
+                <text class="tx" x="52.48" y="234.81">Open: 100</text>
+                <text class="tx" x="52.48" y="251.81">High: 103.5</text>
+                <text class="tx" x="52.48" y="268.81">Low: 99.88</text>
+                <text class="tx" x="52.48" y="285.81">Close: 102.6</text>
+                <text class="tx" x="52.48" y="302.81">Change: 2.56%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02, Open: 102.6, High: 105.2, Low: 99.85, Close: 104.4, Change: 1.75%">
+            <title>2026-03-02, Open: 102.6, High: 105.2, Low: 99.85, Close: 104.4, Change: 1.75%</title>
+            <rect class="hit" x="65.26" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M71.56 303.26L71.56 355.73"/>
+            <rect class="cd hollow m" x="65.26" y="311.93" width="12.6" height="17.42" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="42.48" y="183.26" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="52.48" y="192.26" width="9" height="9" rx="2"/>
+                <text class="tx b" x="66.48" y="201.26">2026-03-02</text>
+                <text class="tx" x="52.48" y="218.26">Open: 102.6</text>
+                <text class="tx" x="52.48" y="235.26">High: 105.2</text>
+                <text class="tx" x="52.48" y="252.26">Low: 99.85</text>
+                <text class="tx" x="52.48" y="269.26">Close: 104.4</text>
+                <text class="tx" x="52.48" y="286.26">Change: 1.75%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-03, Open: 104.4, High: 110, Low: 102.7, Close: 107.1, Change: 2.59%">
+            <title>2026-03-03, Open: 104.4, High: 110, Low: 102.7, Close: 107.1, Change: 2.59%</title>
+            <rect class="hit" x="84.64" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M90.94 256.74L90.94 328.47"/>
+            <rect class="cd hollow m" x="84.64" y="285.65" width="12.6" height="26.28" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="42.48" y="136.74" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="52.48" y="145.74" width="9" height="9" rx="2"/>
+                <text class="tx b" x="66.48" y="154.74">2026-03-03</text>
+                <text class="tx" x="52.48" y="171.74">Open: 104.4</text>
+                <text class="tx" x="52.48" y="188.74">High: 110</text>
+                <text class="tx" x="52.48" y="205.74">Low: 102.7</text>
+                <text class="tx" x="52.48" y="222.74">Close: 107.1</text>
+                <text class="tx" x="52.48" y="239.74">Change: 2.59%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-04, Open: 107.1, High: 112.1, Low: 106.7, Close: 110.2, Change: 2.9%">
+            <title>2026-03-04, Open: 107.1, High: 112.1, Low: 106.7, Close: 110.2, Change: 2.9%</title>
+            <rect class="hit" x="104.02" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M110.32 236.3L110.32 288.86"/>
+            <rect class="cd hollow m" x="104.02" y="255.47" width="12.6" height="30.17" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="60.51" y="116.3" width="99.64" height="112" rx="6"/>
+                <rect class="tsw s0" x="70.51" y="125.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.51" y="134.3">2026-03-04</text>
+                <text class="tx" x="70.51" y="151.3">Open: 107.1</text>
+                <text class="tx" x="70.51" y="168.3">High: 112.1</text>
+                <text class="tx" x="70.51" y="185.3">Low: 106.7</text>
+                <text class="tx" x="70.51" y="202.3">Close: 110.2</text>
+                <text class="tx" x="70.51" y="219.3">Change: 2.9%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-05, Open: 110.2, High: 112.5, Low: 109.3, Close: 110.9, Change: 0.64%">
+            <title>2026-03-05, Open: 110.2, High: 112.5, Low: 109.3, Close: 110.9, Change: 0.64%</title>
+            <rect class="hit" x="123.41" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M129.71 232.31L129.71 263.65"/>
+            <rect class="cd hollow m" x="123.41" y="248.56" width="12.6" height="6.91" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="79.15" y="112.31" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="89.15" y="121.31" width="9" height="9" rx="2"/>
+                <text class="tx b" x="103.15" y="130.31">2026-03-05</text>
+                <text class="tx" x="89.15" y="147.31">Open: 110.2</text>
+                <text class="tx" x="89.15" y="164.31">High: 112.5</text>
+                <text class="tx" x="89.15" y="181.31">Low: 109.3</text>
+                <text class="tx" x="89.15" y="198.31">Close: 110.9</text>
+                <text class="tx" x="89.15" y="215.31">Change: 0.64%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-07, Open: 109, High: 110.7, Low: 107, Close: 109.1, Change: 0.07%">
+            <title>2026-03-07, Open: 109, High: 110.7, Low: 107, Close: 109.1, Change: 0.07%</title>
+            <rect class="hit" x="162.18" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M168.48 249.93L168.48 286.13"/>
+            <rect class="cd hollow m" x="162.18" y="265.79" width="12.6" height="1.5" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="117.92" y="129.93" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="127.92" y="138.93" width="9" height="9" rx="2"/>
+                <text class="tx b" x="141.92" y="147.93">2026-03-07</text>
+                <text class="tx" x="127.92" y="164.93">Open: 109</text>
+                <text class="tx" x="127.92" y="181.93">High: 110.7</text>
+                <text class="tx" x="127.92" y="198.93">Low: 107</text>
+                <text class="tx" x="127.92" y="215.93">Close: 109.1</text>
+                <text class="tx" x="127.92" y="232.93">Change: 0.07%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-08, Open: 109.1, High: 114.8, Low: 108.6, Close: 112.2, Change: 2.81%">
+            <title>2026-03-08, Open: 109.1, High: 114.8, Low: 108.6, Close: 112.2, Change: 2.81%</title>
+            <rect class="hit" x="181.56" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M187.86 209.82L187.86 270.66"/>
+            <rect class="cd hollow m" x="181.56" y="235.91" width="12.6" height="29.88" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="137.3" y="89.82" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="147.3" y="98.82" width="9" height="9" rx="2"/>
+                <text class="tx b" x="161.3" y="107.82">2026-03-08</text>
+                <text class="tx" x="147.3" y="124.82">Open: 109.1</text>
+                <text class="tx" x="147.3" y="141.82">High: 114.8</text>
+                <text class="tx" x="147.3" y="158.82">Low: 108.6</text>
+                <text class="tx" x="147.3" y="175.82">Close: 112.2</text>
+                <text class="tx" x="147.3" y="192.82">Change: 2.81%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-09, Open: 112.2, High: 113.3, Low: 109.6, Close: 112.7, Change: 0.49%">
+            <title>2026-03-09, Open: 112.2, High: 113.3, Low: 109.6, Close: 112.7, Change: 0.49%</title>
+            <rect class="hit" x="200.94" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M207.24 225.3L207.24 261.22"/>
+            <rect class="cd hollow m" x="200.94" y="230.56" width="12.6" height="5.35" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="156.68" y="105.3" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="166.68" y="114.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="180.68" y="123.3">2026-03-09</text>
+                <text class="tx" x="166.68" y="140.3">Open: 112.2</text>
+                <text class="tx" x="166.68" y="157.3">High: 113.3</text>
+                <text class="tx" x="166.68" y="174.3">Low: 109.6</text>
+                <text class="tx" x="166.68" y="191.3">Close: 112.7</text>
+                <text class="tx" x="166.68" y="208.3">Change: 0.49%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-10, Open: 112.7, High: 115.6, Low: 111.4, Close: 114, Change: 1.1%">
+            <title>2026-03-10, Open: 112.7, High: 115.6, Low: 111.4, Close: 114, Change: 1.1%</title>
+            <rect class="hit" x="220.33" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M226.63 202.23L226.63 243.31"/>
+            <rect class="cd hollow m" x="220.33" y="218.49" width="12.6" height="12.07" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="176.81" y="82.23" width="99.64" height="112" rx="6"/>
+                <rect class="tsw s0" x="186.81" y="91.23" width="9" height="9" rx="2"/>
+                <text class="tx b" x="200.81" y="100.23">2026-03-10</text>
+                <text class="tx" x="186.81" y="117.23">Open: 112.7</text>
+                <text class="tx" x="186.81" y="134.23">High: 115.6</text>
+                <text class="tx" x="186.81" y="151.23">Low: 111.4</text>
+                <text class="tx" x="186.81" y="168.23">Close: 114</text>
+                <text class="tx" x="186.81" y="185.23">Change: 1.1%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-11, Open: 114, High: 116.9, Low: 111.1, Close: 116.6, Change: 2.33%">
+            <title>2026-03-11, Open: 114, High: 116.9, Low: 111.1, Close: 116.6, Change: 2.33%</title>
+            <rect class="hit" x="239.71" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M246.01 189.87L246.01 246.42"/>
+            <rect class="cd hollow m" x="239.71" y="192.6" width="12.6" height="25.89" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="195.45" y="72" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="205.45" y="81" width="9" height="9" rx="2"/>
+                <text class="tx b" x="219.45" y="90">2026-03-11</text>
+                <text class="tx" x="205.45" y="107">Open: 114</text>
+                <text class="tx" x="205.45" y="124">High: 116.9</text>
+                <text class="tx" x="205.45" y="141">Low: 111.1</text>
+                <text class="tx" x="205.45" y="158">Close: 116.6</text>
+                <text class="tx" x="205.45" y="175">Change: 2.33%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-12, Open: 116.6, High: 120.5, Low: 116.6, Close: 118.2, Change: 1.37%">
+            <title>2026-03-12, Open: 116.6, High: 120.5, Low: 116.6, Close: 118.2, Change: 1.37%</title>
+            <rect class="hit" x="259.1" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M265.4 154.64L265.4 193.18"/>
+            <rect class="cd hollow m" x="259.1" y="177.02" width="12.6" height="15.57" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="214.84" y="162.64" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="224.84" y="171.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="238.84" y="180.64">2026-03-12</text>
+                <text class="tx" x="224.84" y="197.64">Open: 116.6</text>
+                <text class="tx" x="224.84" y="214.64">High: 120.5</text>
+                <text class="tx" x="224.84" y="231.64">Low: 116.6</text>
+                <text class="tx" x="224.84" y="248.64">Close: 118.2</text>
+                <text class="tx" x="224.84" y="265.64">Change: 1.37%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-15, Open: 115.7, High: 118.9, Low: 115.1, Close: 117.2, Change: 1.36%">
+            <title>2026-03-15, Open: 115.7, High: 118.9, Low: 115.1, Close: 117.2, Change: 1.36%</title>
+            <rect class="hit" x="317.25" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M323.55 170.31L323.55 207.59"/>
+            <rect class="cd hollow m" x="317.25" y="186.56" width="12.6" height="15.28" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="272.99" y="178.31" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="282.99" y="187.31" width="9" height="9" rx="2"/>
+                <text class="tx b" x="296.99" y="196.31">2026-03-15</text>
+                <text class="tx" x="282.99" y="213.31">Open: 115.7</text>
+                <text class="tx" x="282.99" y="230.31">High: 118.9</text>
+                <text class="tx" x="282.99" y="247.31">Low: 115.1</text>
+                <text class="tx" x="282.99" y="264.31">Close: 117.2</text>
+                <text class="tx" x="282.99" y="281.31">Change: 1.36%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-17, Open: 116.5, High: 119.9, Low: 114.2, Close: 119.7, Change: 2.73%">
+            <title>2026-03-17, Open: 116.5, High: 119.9, Low: 114.2, Close: 119.7, Change: 2.73%</title>
+            <rect class="hit" x="356.02" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M362.32 160.87L362.32 216.15"/>
+            <rect class="cd hollow m" x="356.02" y="162.42" width="12.6" height="30.95" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="311.76" y="168.87" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="321.76" y="177.87" width="9" height="9" rx="2"/>
+                <text class="tx b" x="335.76" y="186.87">2026-03-17</text>
+                <text class="tx" x="321.76" y="203.87">Open: 116.5</text>
+                <text class="tx" x="321.76" y="220.87">High: 119.9</text>
+                <text class="tx" x="321.76" y="237.87">Low: 114.2</text>
+                <text class="tx" x="321.76" y="254.87">Close: 119.7</text>
+                <text class="tx" x="321.76" y="271.87">Change: 2.73%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-18, Open: 119.7, High: 123.8, Low: 118.5, Close: 121.7, Change: 1.7%">
+            <title>2026-03-18, Open: 119.7, High: 123.8, Low: 118.5, Close: 121.7, Change: 1.7%</title>
+            <rect class="hit" x="375.4" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M381.7 122.32L381.7 174.01"/>
+            <rect class="cd hollow m" x="375.4" y="142.66" width="12.6" height="19.76" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="331.88" y="130.32" width="99.64" height="112" rx="6"/>
+                <rect class="tsw s0" x="341.88" y="139.32" width="9" height="9" rx="2"/>
+                <text class="tx b" x="355.88" y="148.32">2026-03-18</text>
+                <text class="tx" x="341.88" y="165.32">Open: 119.7</text>
+                <text class="tx" x="341.88" y="182.32">High: 123.8</text>
+                <text class="tx" x="341.88" y="199.32">Low: 118.5</text>
+                <text class="tx" x="341.88" y="216.32">Close: 121.7</text>
+                <text class="tx" x="341.88" y="233.32">Change: 1.7%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-20, Open: 119.1, High: 122.2, Low: 118.7, Close: 121.6, Change: 2.14%">
+            <title>2026-03-20, Open: 119.1, High: 122.2, Low: 118.7, Close: 121.6, Change: 2.14%</title>
+            <rect class="hit" x="414.17" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M420.47 137.99L420.47 172.35"/>
+            <rect class="cd hollow m" x="414.17" y="144.03" width="12.6" height="24.82" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="369.91" y="145.99" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="379.91" y="154.99" width="9" height="9" rx="2"/>
+                <text class="tx b" x="393.91" y="163.99">2026-03-20</text>
+                <text class="tx" x="379.91" y="180.99">Open: 119.1</text>
+                <text class="tx" x="379.91" y="197.99">High: 122.2</text>
+                <text class="tx" x="379.91" y="214.99">Low: 118.7</text>
+                <text class="tx" x="379.91" y="231.99">Close: 121.6</text>
+                <text class="tx" x="379.91" y="248.99">Change: 2.14%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-25, Open: 114.3, High: 115.7, Low: 111.9, Close: 115.5, Change: 1.13%">
+            <title>2026-03-25, Open: 114.3, High: 115.7, Low: 111.9, Close: 115.5, Change: 1.13%</title>
+            <rect class="hit" x="511.09" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M517.39 201.84L517.39 238.25"/>
+            <rect class="cd hollow m" x="511.09" y="203.01" width="12.6" height="12.56" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="466.83" y="81.84" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="476.83" y="90.84" width="9" height="9" rx="2"/>
+                <text class="tx b" x="490.83" y="99.84">2026-03-25</text>
+                <text class="tx" x="476.83" y="116.84">Open: 114.3</text>
+                <text class="tx" x="476.83" y="133.84">High: 115.7</text>
+                <text class="tx" x="476.83" y="150.84">Low: 111.9</text>
+                <text class="tx" x="476.83" y="167.84">Close: 115.5</text>
+                <text class="tx" x="476.83" y="184.84">Change: 1.13%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-26, Open: 115.5, High: 119, Low: 114.5, Close: 118.2, Change: 2.33%">
+            <title>2026-03-26, Open: 115.5, High: 119, Low: 114.5, Close: 118.2, Change: 2.33%</title>
+            <rect class="hit" x="530.47" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M536.77 169.53L536.77 212.84"/>
+            <rect class="cd hollow m" x="530.47" y="176.83" width="12.6" height="26.18" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="486.21" y="177.53" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="496.21" y="186.53" width="9" height="9" rx="2"/>
+                <text class="tx b" x="510.21" y="195.53">2026-03-26</text>
+                <text class="tx" x="496.21" y="212.53">Open: 115.5</text>
+                <text class="tx" x="496.21" y="229.53">High: 119</text>
+                <text class="tx" x="496.21" y="246.53">Low: 114.5</text>
+                <text class="tx" x="496.21" y="263.53">Close: 118.2</text>
+                <text class="tx" x="496.21" y="280.53">Change: 2.33%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-27, Open: 118.2, High: 122, Low: 115.3, Close: 121.3, Change: 2.62%">
+            <title>2026-03-27, Open: 118.2, High: 122, Low: 115.3, Close: 121.3, Change: 2.62%</title>
+            <rect class="hit" x="549.86" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M556.16 140.52L556.16 205.35"/>
+            <rect class="cd hollow m" x="549.86" y="146.65" width="12.6" height="30.17" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="505.6" y="148.52" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="515.6" y="157.52" width="9" height="9" rx="2"/>
+                <text class="tx b" x="529.6" y="166.52">2026-03-27</text>
+                <text class="tx" x="515.6" y="183.52">Open: 118.2</text>
+                <text class="tx" x="515.6" y="200.52">High: 122</text>
+                <text class="tx" x="515.6" y="217.52">Low: 115.3</text>
+                <text class="tx" x="515.6" y="234.52">Close: 121.3</text>
+                <text class="tx" x="515.6" y="251.52">Change: 2.62%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-28, Open: 121.3, High: 126.4, Low: 119.8, Close: 124.4, Change: 2.5%">
+            <title>2026-03-28, Open: 121.3, High: 126.4, Low: 119.8, Close: 124.4, Change: 2.5%</title>
+            <rect class="hit" x="569.24" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M575.54 97.4L575.54 161.35"/>
+            <rect class="cd hollow m" x="569.24" y="117.16" width="12.6" height="29.49" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="524.36" y="105.4" width="99.64" height="112" rx="6"/>
+                <rect class="tsw s0" x="534.36" y="114.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="548.36" y="123.4">2026-03-28</text>
+                <text class="tx" x="534.36" y="140.4">Open: 121.3</text>
+                <text class="tx" x="534.36" y="157.4">High: 126.4</text>
+                <text class="tx" x="534.36" y="174.4">Low: 119.8</text>
+                <text class="tx" x="534.36" y="191.4">Close: 124.4</text>
+                <text class="tx" x="534.36" y="208.4">Change: 2.5%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-29, Open: 124.4, High: 125.9, Low: 123.2, Close: 125.6, Change: 1.01%">
+            <title>2026-03-29, Open: 124.4, High: 125.9, Low: 123.2, Close: 125.6, Change: 1.01%</title>
+            <rect class="hit" x="588.62" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M594.92 101.98L594.92 128.75"/>
+            <rect class="cd hollow m" x="588.62" y="105" width="12.6" height="12.17" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="522.88" y="109.98" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="532.88" y="118.98" width="9" height="9" rx="2"/>
+                <text class="tx b" x="546.88" y="127.98">2026-03-29</text>
+                <text class="tx" x="532.88" y="144.98">Open: 124.4</text>
+                <text class="tx" x="532.88" y="161.98">High: 125.9</text>
+                <text class="tx" x="532.88" y="178.98">Low: 123.2</text>
+                <text class="tx" x="532.88" y="195.98">Close: 125.6</text>
+                <text class="tx" x="532.88" y="212.98">Change: 1.01%</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-30, Open: 125.6, High: 128.4, Low: 123, Close: 126.3, Change: 0.53%">
+            <title>2026-03-30, Open: 125.6, High: 128.4, Low: 123, Close: 126.3, Change: 0.53%</title>
+            <rect class="hit" x="608.01" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M614.31 77.55L614.31 130.01"/>
+            <rect class="cd hollow m" x="608.01" y="98.47" width="12.6" height="6.52" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="522.88" y="85.55" width="101.12" height="112" rx="6"/>
+                <rect class="tsw s0" x="532.88" y="94.55" width="9" height="9" rx="2"/>
+                <text class="tx b" x="546.88" y="103.55">2026-03-30</text>
+                <text class="tx" x="532.88" y="120.55">Open: 125.6</text>
+                <text class="tx" x="532.88" y="137.55">High: 128.4</text>
+                <text class="tx" x="532.88" y="154.55">Low: 123</text>
+                <text class="tx" x="532.88" y="171.55">Close: 126.3</text>
+                <text class="tx" x="532.88" y="188.55">Change: 0.53%</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-06, Open: 110.9, High: 111, Low: 106.1, Close: 109, Change: -1.67%">
+            <title>2026-03-06, Open: 110.9, High: 111, Low: 106.1, Close: 109, Change: -1.67%</title>
+            <rect class="hit" x="142.79" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M149.09 247.01L149.09 294.99"/>
+            <rect class="cd m" x="142.79" y="248.56" width="12.6" height="18.01" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="96.49" y="127.01" width="105.2" height="112" rx="6"/>
+                <rect class="tsw s1" x="106.49" y="136.01" width="9" height="9" rx="2"/>
+                <text class="tx b" x="120.49" y="145.01">2026-03-06</text>
+                <text class="tx" x="106.49" y="162.01">Open: 110.9</text>
+                <text class="tx" x="106.49" y="179.01">High: 111</text>
+                <text class="tx" x="106.49" y="196.01">Low: 106.1</text>
+                <text class="tx" x="106.49" y="213.01">Close: 109</text>
+                <text class="tx" x="106.49" y="230.01">Change: -1.67%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-13, Open: 118.2, High: 118.6, Low: 114.9, Close: 115.8, Change: -2.02%">
+            <title>2026-03-13, Open: 118.2, High: 118.6, Low: 114.9, Close: 115.8, Change: -2.02%</title>
+            <rect class="hit" x="278.48" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M284.78 172.84L284.78 209.34"/>
+            <rect class="cd m" x="278.48" y="177.02" width="12.6" height="23.26" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="232.18" y="180.84" width="105.2" height="112" rx="6"/>
+                <rect class="tsw s1" x="242.18" y="189.84" width="9" height="9" rx="2"/>
+                <text class="tx b" x="256.18" y="198.84">2026-03-13</text>
+                <text class="tx" x="242.18" y="215.84">Open: 118.2</text>
+                <text class="tx" x="242.18" y="232.84">High: 118.6</text>
+                <text class="tx" x="242.18" y="249.84">Low: 114.9</text>
+                <text class="tx" x="242.18" y="266.84">Close: 115.8</text>
+                <text class="tx" x="242.18" y="283.84">Change: -2.02%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-14, Open: 115.8, High: 118.1, Low: 113.3, Close: 115.7, Change: -0.14%">
+            <title>2026-03-14, Open: 115.8, High: 118.1, Low: 113.3, Close: 115.7, Change: -0.14%</title>
+            <rect class="hit" x="297.86" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M304.16 177.8L304.16 224.42"/>
+            <rect class="cd m" x="297.86" y="200.29" width="12.6" height="1.56" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="251.56" y="185.8" width="105.2" height="112" rx="6"/>
+                <rect class="tsw s1" x="261.56" y="194.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="275.56" y="203.8">2026-03-14</text>
+                <text class="tx" x="261.56" y="220.8">Open: 115.8</text>
+                <text class="tx" x="261.56" y="237.8">High: 118.1</text>
+                <text class="tx" x="261.56" y="254.8">Low: 113.3</text>
+                <text class="tx" x="261.56" y="271.8">Close: 115.7</text>
+                <text class="tx" x="261.56" y="288.8">Change: -0.14%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-16, Open: 117.2, High: 117.8, Low: 113.8, Close: 116.5, Change: -0.6%">
+            <title>2026-03-16, Open: 117.2, High: 117.8, Low: 113.8, Close: 116.5, Change: -0.6%</title>
+            <rect class="hit" x="336.63" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M342.93 180.62L342.93 219.95"/>
+            <rect class="cd m" x="336.63" y="186.56" width="12.6" height="6.81" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="293.11" y="188.62" width="99.64" height="112" rx="6"/>
+                <rect class="tsw s1" x="303.11" y="197.62" width="9" height="9" rx="2"/>
+                <text class="tx b" x="317.11" y="206.62">2026-03-16</text>
+                <text class="tx" x="303.11" y="223.62">Open: 117.2</text>
+                <text class="tx" x="303.11" y="240.62">High: 117.8</text>
+                <text class="tx" x="303.11" y="257.62">Low: 113.8</text>
+                <text class="tx" x="303.11" y="274.62">Close: 116.5</text>
+                <text class="tx" x="303.11" y="291.62">Change: -0.6%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-19, Open: 121.7, High: 124.5, Low: 117.8, Close: 119.1, Change: -2.21%">
+            <title>2026-03-19, Open: 121.7, High: 124.5, Low: 117.8, Close: 119.1, Change: -2.21%</title>
+            <rect class="hit" x="394.78" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M401.08 115.9L401.08 181.5"/>
+            <rect class="cd m" x="394.78" y="142.66" width="12.6" height="26.18" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="348.48" y="123.9" width="105.2" height="112" rx="6"/>
+                <rect class="tsw s1" x="358.48" y="132.9" width="9" height="9" rx="2"/>
+                <text class="tx b" x="372.48" y="141.9">2026-03-19</text>
+                <text class="tx" x="358.48" y="158.9">Open: 121.7</text>
+                <text class="tx" x="358.48" y="175.9">High: 124.5</text>
+                <text class="tx" x="358.48" y="192.9">Low: 117.8</text>
+                <text class="tx" x="358.48" y="209.9">Close: 119.1</text>
+                <text class="tx" x="358.48" y="226.9">Change: -2.21%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-21, Open: 121.6, High: 122.3, Low: 117.8, Close: 119.1, Change: -2.05%">
+            <title>2026-03-21, Open: 121.6, High: 122.3, Low: 117.8, Close: 119.1, Change: -2.05%</title>
+            <rect class="hit" x="433.55" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M439.85 136.92L439.85 180.92"/>
+            <rect class="cd m" x="433.55" y="144.03" width="12.6" height="24.24" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="387.25" y="144.92" width="105.2" height="112" rx="6"/>
+                <rect class="tsw s1" x="397.25" y="153.92" width="9" height="9" rx="2"/>
+                <text class="tx b" x="411.25" y="162.92">2026-03-21</text>
+                <text class="tx" x="397.25" y="179.92">Open: 121.6</text>
+                <text class="tx" x="397.25" y="196.92">High: 122.3</text>
+                <text class="tx" x="397.25" y="213.92">Low: 117.8</text>
+                <text class="tx" x="397.25" y="230.92">Close: 119.1</text>
+                <text class="tx" x="397.25" y="247.92">Change: -2.05%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-22, Open: 119.1, High: 119.3, Low: 115.5, Close: 117.2, Change: -1.62%">
+            <title>2026-03-22, Open: 119.1, High: 119.3, Low: 115.5, Close: 117.2, Change: -1.62%</title>
+            <rect class="hit" x="452.94" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M459.24 166.12L459.24 203.5"/>
+            <rect class="cd m" x="452.94" y="168.26" width="12.6" height="18.79" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="406.64" y="174.12" width="105.2" height="112" rx="6"/>
+                <rect class="tsw s1" x="416.64" y="183.12" width="9" height="9" rx="2"/>
+                <text class="tx b" x="430.64" y="192.12">2026-03-22</text>
+                <text class="tx" x="416.64" y="209.12">Open: 119.1</text>
+                <text class="tx" x="416.64" y="226.12">High: 119.3</text>
+                <text class="tx" x="416.64" y="243.12">Low: 115.5</text>
+                <text class="tx" x="416.64" y="260.12">Close: 117.2</text>
+                <text class="tx" x="416.64" y="277.12">Change: -1.62%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-23, Open: 117.2, High: 119.7, Low: 113, Close: 115.4, Change: -1.54%">
+            <title>2026-03-23, Open: 117.2, High: 119.7, Low: 113, Close: 115.4, Change: -1.54%</title>
+            <rect class="hit" x="472.32" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M478.62 162.13L478.62 227.54"/>
+            <rect class="cd m" x="472.32" y="187.05" width="12.6" height="17.52" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="426.02" y="170.13" width="105.2" height="112" rx="6"/>
+                <rect class="tsw s1" x="436.02" y="179.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="450.02" y="188.13">2026-03-23</text>
+                <text class="tx" x="436.02" y="205.13">Open: 117.2</text>
+                <text class="tx" x="436.02" y="222.13">High: 119.7</text>
+                <text class="tx" x="436.02" y="239.13">Low: 113</text>
+                <text class="tx" x="436.02" y="256.13">Close: 115.4</text>
+                <text class="tx" x="436.02" y="273.13">Change: -1.54%</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-24, Open: 115.4, High: 115.7, Low: 111.5, Close: 114.3, Change: -0.98%">
+            <title>2026-03-24, Open: 115.4, High: 115.7, Low: 111.5, Close: 114.3, Change: -0.98%</title>
+            <rect class="hit" x="491.7" y="72" width="12.6" height="292"/>
+            <path class="wk" d="M498 201.94L498 242.14"/>
+            <rect class="cd m" x="491.7" y="204.57" width="12.6" height="11" rx="1"/>
+            <g class="tt">
+                <rect class="tb" x="445.4" y="81.94" width="105.2" height="112" rx="6"/>
+                <rect class="tsw s1" x="455.4" y="90.94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="469.4" y="99.94">2026-03-24</text>
+                <text class="tx" x="455.4" y="116.94">Open: 115.4</text>
+                <text class="tx" x="455.4" y="133.94">High: 115.7</text>
+                <text class="tx" x="455.4" y="150.94">Low: 111.5</text>
+                <text class="tx" x="455.4" y="167.94">Close: 114.3</text>
+                <text class="tx" x="455.4" y="184.94">Change: -0.98%</text>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -49,6 +49,7 @@ namespace Jube.Dictionary.Extensions
             var rearranged = cleaned.Substring(4) + cleaned.Substring(0, 4);
 
             var numeric = new StringBuilder();
+
             foreach (var c in rearranged)
             {
                 numeric.Append(char.IsDigit(c) ? c.ToString() : (c - 'A' + 10).ToString());

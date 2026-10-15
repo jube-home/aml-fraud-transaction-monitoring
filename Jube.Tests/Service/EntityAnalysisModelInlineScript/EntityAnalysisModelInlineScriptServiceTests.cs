@@ -21,6 +21,7 @@ using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.EntityAnalysisModelInlineScript;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityAnalysisModelInlineScript;
@@ -29,6 +30,7 @@ using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
@@ -80,6 +82,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             {
                 await dbContext.GetTable<EntityAnalysisModelInlineScriptVersion>()
                     .Where(w => w.EntityAnalysisModelInlineScriptId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelInlineScript>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -88,6 +91,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
 
@@ -110,6 +114,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
         private async Task<int> CreateParentModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -120,12 +125,14 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
         private async Task<int> CreateInlineScriptAsync(DbContext dbContext)
         {
             var repository = new EntityAnalysisInlineScriptRepository(dbContext);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisInlineScript
             {
                 Name = $"{DatabaseFixture.Prefix}Script{Guid.NewGuid():N}"[..40],
@@ -134,6 +141,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             }).ConfigureAwait(false);
 
             createdInlineScriptIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -274,6 +282,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
 
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.InsertAsync(NewDto(modelId, inlineScriptId, UniqueName("Denied"))));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
             var updateDto = NewDto(modelId, inlineScriptId, seedRow.Name);
@@ -310,6 +319,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -318,6 +328,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -377,6 +388,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             var dto = NewDto(modelId, inlineScriptId, name!);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelInlineScriptDto.Name) &&
                 e.ErrorCode == "NameNotEmpty");
@@ -411,6 +423,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(modelAId, inlineScriptId, name)));
+
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
 
             var second = await service.InsertAsync(NewDto(modelBId, inlineScriptId, name));
@@ -431,6 +444,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(modelId, inlineScriptId, name.ToUpperInvariant())));
+
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NameDuplicate");
         }
 
@@ -892,6 +906,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var inlineScriptId = await CreateInlineScriptAsync(dbContext);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -910,10 +925,12 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var inlineScriptId = await CreateInlineScriptAsync(dbContext);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
             await service.GetAsync();
+
             await Assert.ThrowsAsync<DtoValidationException>(() =>
                 service.InsertAsync(NewDto(modelId, inlineScriptId, "")));
 
@@ -926,6 +943,7 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "EntityAnalysisModelInlineScriptList", "EntityAnalysisModelInlineScriptGet",

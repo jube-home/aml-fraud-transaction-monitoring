@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,15 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.PermissionSpecification;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddPermissionSpecification(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "PermissionSpecificationList", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Lists rows in the global Permission Specification catalogue, keyset-paged and capped.")
-        ]);
+        static partial void AddPermissionSpecification(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "PermissionSpecificationList", OperationKind.Read, true, false,
+                    "Lists rows in the global Permission Specification catalogue, keyset-paged and capped.",
+                    PermissionSpecificationService.RequiredPermissions)
+            ]);
+        }
     }
 }

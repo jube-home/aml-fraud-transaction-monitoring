@@ -21,6 +21,7 @@ namespace Jube.Parser
     using Compiler;
     using Data.Query.Models;
     using log4net;
+    using Models;
 
     public static class RuleParse
     {
@@ -69,6 +70,7 @@ namespace Jube.Parser
         public static string[] EngineReferences(int ruleParseType)
         {
             var binaryPath = Path.GetDirectoryName(typeof(RuleParse).Assembly.Location);
+
             if (binaryPath == null)
             {
                 return null;
@@ -93,6 +95,7 @@ namespace Jube.Parser
             if (ruleParseType == AbstractionCalculation)
             {
                 parser.WrapAbstractionCalculation(parsedRule, tryCatchWrap);
+
                 return "CalculationRule";
             }
 
@@ -115,6 +118,7 @@ namespace Jube.Parser
             parsedRule.ParsedRuleText = wrapped.Text;
             parsedRule.LineOffset = wrapped.LineOffset;
             parsedRule.CharOffset = wrapped.CharOffset;
+
             return wrapped.ClassName;
         }
 
@@ -164,27 +168,40 @@ namespace Jube.Parser
                 EntityAnalysisModelsDictionaries = environment.Dictionaries,
                 EntityAnalysisModelsHttpAdaptations = environment.HttpAdaptations,
                 EntityAnalysisModelsExhaustiveAdaptations = environment.ExhaustiveAdaptations,
+                EntityAnalysisModelsAdvancedAnalyticsAdaptations = environment.AdvancedAnalyticsAdaptations,
                 EntityAnalysisModelsActivationRules = environment.ActivationRules,
                 EntityAnalysisModelsInlineFunctions = environment.InlineFunctions
             };
 
             var errorSpans = new List<ErrorSpan>();
+
             var parsedRule = new ParsedRule
             {
                 ErrorSpans = errorSpans,
                 OriginalRuleText = ruleText
             };
+
             parsedRule = parser.TranslateFromDotNotation(parsedRule,
                 showOnlyCacheForPayload ?? ruleParseType == AbstractionRule);
+
             parsedRule = parser.Parse(parsedRule);
 
+            var contractError = RuleReturnContract.Check(parsedRule.ParsedRuleText);
+
+            if (contractError != null)
+            {
+                parsedRule.ErrorSpans.Add(contractError);
+            }
+
             var sb = new StringBuilder();
+
             foreach (var softParseErrorSpan in parsedRule.ErrorSpans)
             {
                 sb.AppendLine(softParseErrorSpan.Message);
             }
 
             var className = ClassName(ruleParseType);
+
             if (engineWrap)
             {
                 className = WrapForEngine(parser, parsedRule, ruleParseType, tryCatchWrap, reprocessing);
@@ -203,6 +220,7 @@ namespace Jube.Parser
             }
 
             byte[] compiledBinary = null;
+
             if (references != null)
             {
                 var compile = new Compile();
@@ -269,6 +287,7 @@ namespace Jube.Parser
             var parenDepth = 0;
             var unaryRun = 0;
             var i = 0;
+
             while (i < ruleText.Length)
             {
                 var c = ruleText[i];
@@ -276,6 +295,7 @@ namespace Jube.Parser
                 if (c == '"')
                 {
                     i++;
+
                     while (i < ruleText.Length)
                     {
                         if (ruleText[i] == '"')
@@ -300,6 +320,7 @@ namespace Jube.Parser
                 if (c == '(')
                 {
                     parenDepth++;
+
                     if (parenDepth > MaximumNestingDepth)
                     {
                         return true;
@@ -323,6 +344,7 @@ namespace Jube.Parser
                 if (c == '-')
                 {
                     unaryRun++;
+
                     if (unaryRun > MaximumNestingDepth)
                     {
                         return true;
@@ -341,6 +363,7 @@ namespace Jube.Parser
                 if ((c == 'N' || c == 'n') && IsNotKeyword(ruleText, i))
                 {
                     unaryRun++;
+
                     if (unaryRun > MaximumNestingDepth)
                     {
                         return true;
@@ -377,6 +400,7 @@ namespace Jube.Parser
             }
 
             var after = index + 3;
+
             if (after < ruleText.Length && (char.IsLetterOrDigit(ruleText[after]) || ruleText[after] == '_'))
             {
                 return false;

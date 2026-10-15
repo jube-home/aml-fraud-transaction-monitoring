@@ -24,6 +24,7 @@ namespace Jube.App.Middlewares
             if (context.User.Identity?.IsAuthenticated != true)
             {
                 await context.ChallengeAsync();
+
                 return;
             }
 

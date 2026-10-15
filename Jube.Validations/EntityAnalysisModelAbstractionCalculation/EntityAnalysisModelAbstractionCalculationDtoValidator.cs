@@ -57,6 +57,7 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionCalculation
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionCalculationResources.NameAlreadyExists])

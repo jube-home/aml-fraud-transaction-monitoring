@@ -24,7 +24,10 @@ namespace Jube.Engine.Helpers
 
     public static class DispatchNotificationHelpers
     {
-        public static async Task DispatchNotificationAsync(Context context, Notification notification, CancellationToken token = default)
+        private static readonly HttpClient HttpClient = new();
+
+        public static async Task DispatchNotificationAsync(Context context, Notification notification,
+            CancellationToken token = default)
         {
             try
             {
@@ -51,8 +54,10 @@ namespace Jube.Engine.Helpers
                 }
 
                 var apiKey = context.Services.DynamicEnvironment.AppSettings("ClickatellAPIKey");
+
                 var destination = HttpUtility.UrlEncode(notification.NotificationDestination?
                     .Replace("+", "").Replace(" ", ""));
+
                 var message = HttpUtility.UrlEncode(notification.NotificationBody);
 
                 var clickatellUrl =
@@ -62,8 +67,7 @@ namespace Jube.Engine.Helpers
 
                 try
                 {
-                    var httpClient = new HttpClient();
-                    using var response = await httpClient.GetAsync(clickatellUrl, token).ConfigureAwait(false);
+                    using var response = await HttpClient.GetAsync(clickatellUrl, token).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
 
                     var content = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
@@ -77,7 +81,8 @@ namespace Jube.Engine.Helpers
                 {
                     if (context.Services.Log.IsInfoEnabled)
                     {
-                        context.Services.Log.Error($"Notification Dispatch: Failed to send Clickatell message to {destination}. Error: {ex}");
+                        context.Services.Log.Error(
+                            $"Notification Dispatch: Failed to send Clickatell message to {destination}. Error: {ex}");
                     }
                 }
             }

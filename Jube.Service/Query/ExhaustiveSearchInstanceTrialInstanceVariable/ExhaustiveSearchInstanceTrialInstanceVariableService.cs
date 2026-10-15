@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.ExhaustiveSearchInstanceTrialInstanceVariable;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstanceTrialInstanceVariable;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -29,11 +30,10 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
     public sealed class ExhaustiveSearchInstanceTrialInstanceVariableService
     {
         private static readonly int[] permissions = [16];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery query;
+        private readonly GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -50,9 +50,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(
+
+            query = new GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(
                 dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<ExhaustiveSearchInstanceTrialInstanceVariableService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -115,6 +118,7 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
         {
             using var op = OperationScope.Start("ExhaustiveSearchInstanceTrialInstanceVariable", "Get", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -124,10 +128,12 @@ namespace Jube.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable
             try
             {
                 EnsurePermitted("ExhaustiveSearchInstanceTrialInstanceVariable.Get");
+
                 var dtos = ExhaustiveSearchInstanceTrialInstanceVariableMapper.ToDto(
                     await query.ExecuteByExhaustiveSearchInstanceIdAsync(exhaustiveSearchInstanceId, token)
                         .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"ExhaustiveSearchInstanceTrialInstanceVariable.Get: {dtos.Count} rows user={userName}");

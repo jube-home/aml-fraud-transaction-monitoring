@@ -6,8 +6,6 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Creating Case Entry With Defer Activation Rule
 When a case is created as a consequence of an Activation Rule match it would be placed into the case workflow, and assuming it is not already open pending closure,  in will be in an open status.  In the event that the case record is already in existence, and not in closed status, a case record will not be created.
 

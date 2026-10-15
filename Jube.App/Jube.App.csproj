@@ -44,6 +44,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.9.0"/>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5"/>
         <PackageReference Include="RabbitMQ.Client" Version="6.2.1"/>
         <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.2.3"/>
@@ -82,6 +83,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Jube.ApiTokensCache\Jube.ApiTokensCache.csproj"/>
+        <ProjectReference Include="..\Jube.AskJooby\Jube.AskJooby.csproj"/>
         <ProjectReference Include="..\Jube.Cache\Jube.Cache.csproj"/>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
         <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj"/>
@@ -98,7 +100,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="bin\Debug\net10.0\.env" />
+        <None Include="bin\Debug\net10.0\.env"/>
         <None Include="wwwroot\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
@@ -111,7 +113,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="bin\Debug\net10.0\" />
+        <Folder Include="bin\Debug\net10.0\"/>
         <Folder Include="wwwroot\images"/>
         <Folder Include="wwwroot\js\signalr"/>
     </ItemGroup>

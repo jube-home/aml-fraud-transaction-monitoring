@@ -384,6 +384,8 @@ function ShowModelsGrid() {
     $("#keysGrid").attr("hidden", "hidden");
     $("#valuesGrid").attr("hidden", "hidden");
     $("#grid").removeAttr("hidden");
+
+    window.AskJoobySetPageContext?.("Override", "edit", {overrideKey: key, overrideKeyValue: keyValue});
 }
 
 function ShowValuesGrid() {
@@ -394,6 +396,8 @@ function ShowValuesGrid() {
     const valuesGrid = $("#valuesGrid").data("kendoGrid");
     valuesGrid.dataSource.options.transport.read.data.overrideKey = key;
     valuesGrid.dataSource.read();
+
+    window.AskJoobySetPageContext?.("Override", "search", {overrideKey: key});
 }
 
 function ShowKeysGrid() {
@@ -401,6 +405,8 @@ function ShowKeysGrid() {
     $("#valuesGrid").attr("hidden", "hidden");
     $("#keysGrid").removeAttr("hidden");
     $("#keysGrid").data("kendoGrid").dataSource.read();
+
+    window.AskJoobySetPageContext?.("Override", "list", null);
 }
 
 function DrillIntoKey(overrideKey) {
@@ -702,6 +708,8 @@ $(document).ready(function () {
         },
         selectable: "row"
     });
+
+    window.AskJoobySetPageContext?.("Override", "list", null);
 });
 
 //# sourceURL=Override.js

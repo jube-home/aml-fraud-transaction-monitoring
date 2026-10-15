@@ -281,10 +281,12 @@ namespace Jube.Test.Service.DockerEvent
 
             var ascending = await service.ListAsync(search: uniqueActorName, sortField: "action",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.Action).Should().Equal("a-action", "b-action", "c-action");
 
             var descending = await service.ListAsync(search: uniqueActorName, sortField: "action",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.Action).Should().Equal("c-action", "b-action", "a-action");
         }
 
@@ -300,6 +302,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", "a-action", uniqueActorName);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: uniqueActorName, sortField: "action",
                 sortDirection: ascendingKeyword);
 
@@ -315,6 +318,7 @@ namespace Jube.Test.Service.DockerEvent
             await CreateEntryAsync(dbContext, "container", "b-action", uniqueActorName);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: uniqueActorName, sortField: "action",
                 sortDirection: "banana");
 
@@ -326,8 +330,10 @@ namespace Jube.Test.Service.DockerEvent
         {
             await using var dbContext = fx.GetDbContext();
             var uniqueActorName = $"{DatabaseFixture.Prefix}sort{Guid.NewGuid():N}";
+
             await CreateEntryAsync(dbContext, "container", "first", uniqueActorName,
                 DateTime.UtcNow.AddMinutes(-30));
+
             await CreateEntryAsync(dbContext, "container", "second", uniqueActorName, DateTime.UtcNow);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -341,6 +347,7 @@ namespace Jube.Test.Service.DockerEvent
         {
             await using var dbContext = fx.GetDbContext();
             var uniqueActorName = $"{DatabaseFixture.Prefix}total{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, "container", "action", uniqueActorName);
@@ -364,6 +371,7 @@ namespace Jube.Test.Service.DockerEvent
             var result = await service.ListAsync(search: uniqueActorName);
 
             result.Statistics.Should().NotBeNull();
+
             result.Statistics.Columns.Should().BeEmpty(
                 "DockerEventDto has no continuous measured columns -- every column is a string, date, or identifier");
         }

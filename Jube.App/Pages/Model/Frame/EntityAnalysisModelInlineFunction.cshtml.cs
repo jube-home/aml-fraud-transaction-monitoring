@@ -35,15 +35,15 @@ namespace Jube.App.Pages.Model.Frame
                 userName = httpContextAccessor.HttpContext.User.Identity.Name;
             }
 
-            permissionValidation = new PermissionValidation(dynamicEnvironment.AppSettings("ConnectionString"), userName, log);
+            permissionValidation =
+                new PermissionValidation(dynamicEnvironment.AppSettings("ConnectionString"), userName, log);
         }
 
         public ActionResult OnGet()
         {
-            if (!permissionValidation.Validate(new[]
-                {
+            if (!permissionValidation.Validate([
                     8
-                }))
+                ]))
             {
                 return Forbid();
             }

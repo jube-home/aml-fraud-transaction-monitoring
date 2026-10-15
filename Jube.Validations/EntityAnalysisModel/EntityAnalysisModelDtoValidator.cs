@@ -23,7 +23,6 @@ namespace Jube.Validations.EntityAnalysisModel
     {
         private const int MaxNameLength = 256;
         private const int MaxXPathLength = 1024;
-
         private static readonly byte[] allowedPayloadLocationTypeIds = [1, 3];
         private static readonly char[] allowedIntervals = ['s', 'n', 'h', 'd'];
 
@@ -41,6 +40,7 @@ namespace Jube.Validations.EntityAnalysisModel
                 .MustAsync(async (dto, name, cancellation) =>
                 {
                     var existing = await repository.GetByNameAsync(name, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelResources.NameAlreadyExists])

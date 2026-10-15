@@ -27,16 +27,17 @@ using Jube.Service.Exceptions.Repository.VisualisationRegistryParameter;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.VisualisationRegistryParameter.Models;
 using LinqToDB;
+using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using log4net;
 
 namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
 {
@@ -83,6 +84,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
 
                 await dbContext.GetTable<VisualisationRegistryParameterVersion>()
                     .Where(w => w.VisualisationRegistryParameterId == id).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.VisualisationRegistryParameter>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -100,6 +102,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
 
                 await dbContext.GetTable<VisualisationRegistryVersion>()
                     .Where(w => w.VisualisationRegistryId == visualisationRegistryId).DeleteAsync();
+
                 await dbContext.VisualisationRegistry.Where(w => w.Id == visualisationRegistryId).DeleteAsync();
             }
 
@@ -149,6 +152,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
             createdTenantIds.Add(tenantId);
 
             var roleGuid = Guid.NewGuid();
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleGuid,
@@ -180,6 +184,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
             }
 
             var userName = $"{DatabaseFixture.Prefix}User{label}{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -194,6 +199,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             });
+
             createdUserNames.Add(userName);
 
             await dbContext.InsertAsync(new Data.Poco.UserInTenant { User = userName, TenantRegistryId = tenantId });
@@ -204,6 +210,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         private async Task<int> CreateParentVisualisationRegistryAsync(DbContext dbContext, string createdUser)
         {
             var repository = new VisualisationRegistryRepository(dbContext, createdUser);
+
             var visualisationRegistry = await repository.InsertAsync(new Data.Poco.VisualisationRegistry
             {
                 Name = $"{DatabaseFixture.Prefix}VisualisationRegistry{Guid.NewGuid():N}",
@@ -270,6 +277,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         private static string UniqueName(string label)
         {
             var name = $"{DatabaseFixture.Prefix}{label}{Guid.NewGuid():N}";
+
             return name[..Math.Min(40, name.Length)];
         }
 
@@ -277,8 +285,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task InsertPersistsAndReturnsVersionOneAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Insert");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -296,8 +306,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task GetAllReturnsCreatedRowAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "GetAll");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -313,8 +325,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task GetByVisualisationRegistryIdReturnsRowsForThatRegistryIncludingInactiveOrderedByIdAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "ByRegistry");
+
             var registryAId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var registryBId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
@@ -345,8 +359,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
             int visualisationRegistryId)
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Missing");
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var result = await service.GetByVisualisationRegistryIdAsync(visualisationRegistryId);
@@ -358,8 +374,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task UpdateIncrementsVersionSetsUpdatedUserPreservesCreatedUserAndWritesAuditRowAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Update");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -391,8 +409,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task UpdatePreservesImportIdAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "ImportId");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -427,6 +447,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
             {
                 await dbContext.GetTable<Data.Poco.VisualisationRegistryParameter>()
                     .Where(w => w.Id == saved.Id).Set(w => w.ImportId, (int?)null).UpdateAsync();
+
                 await dbContext.GetTable<Import>().Where(w => w.Id == importId).DeleteAsync();
             }
         }
@@ -435,8 +456,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task DeleteSoftDeletesAndRowDisappearsFromByVisualisationRegistryIdAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Delete");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -453,8 +476,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync()
         {
             await using var writerDb = fx.GetDbContext();
+
             var (_, ownerUserName) = await CreateTenantUserWithPermissionsAsync(writerDb,
                 [VisualisationParameterAdministrationSpec], "ForbiddenOwner");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(writerDb, ownerUserName);
             var writer = await BuildServiceAsync(writerDb, ownerUserName);
             var seedRow = await writer.InsertAsync(NewDto(visualisationRegistryId, UniqueName("Forbidden")));
@@ -469,8 +494,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
 
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.InsertAsync(NewDto(visualisationRegistryId, UniqueName("Denied"))));
+
             await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.GetByVisualisationRegistryIdAsync(visualisationRegistryId));
+
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
             var updateDto = NewDto(visualisationRegistryId, seedRow.Name.Required());
@@ -505,6 +532,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -513,6 +541,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -521,16 +550,20 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task UserInTenantBCannotUpdateOrDeleteTenantARowAsync()
         {
             await using var ownerDb = fx.GetDbContext();
+
             var (_, ownerUserName) = await CreateTenantUserWithPermissionsAsync(ownerDb,
                 [VisualisationParameterAdministrationSpec], "IsolationA");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(ownerDb, ownerUserName);
             var owner = await BuildServiceAsync(ownerDb, ownerUserName);
             var saved = await owner.InsertAsync(NewDto(visualisationRegistryId, UniqueName("Isolation")));
             createdIds.Add(saved.Id);
 
             await using var dbContext = fx.GetDbContext();
+
             var (_, otherUserName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "IsolationB");
+
             var otherTenant = await BuildServiceAsync(dbContext, otherUserName);
 
             var updateDto = NewDto(visualisationRegistryId, saved.Name.Required());
@@ -549,16 +582,20 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task GetByVisualisationRegistryIdAsTenantBNeverContainsTenantARowsAsync()
         {
             await using var ownerDb = fx.GetDbContext();
+
             var (_, ownerUserName) = await CreateTenantUserWithPermissionsAsync(ownerDb,
                 [VisualisationParameterAdministrationSpec], "TenantAOnlyOwner");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(ownerDb, ownerUserName);
             var owner = await BuildServiceAsync(ownerDb, ownerUserName);
             var saved = await owner.InsertAsync(NewDto(visualisationRegistryId, UniqueName("TenantAOnly")));
             createdIds.Add(saved.Id);
 
             await using var dbContext = fx.GetDbContext();
+
             var (_, otherUserName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "TenantAOnlyOther");
+
             var otherTenant = await BuildServiceAsync(dbContext, otherUserName);
             var forRegistryAsTenantB = await otherTenant.GetByVisualisationRegistryIdAsync(visualisationRegistryId);
 
@@ -572,14 +609,17 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task NameRequiredRejectsNullEmptyOrWhitespaceAsync(string? name)
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "NameReq");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(visualisationRegistryId);
             dto.Name = name;
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(VisualisationRegistryParameterDto.Name) &&
                 e.ErrorCode == "NameNotEmpty");
@@ -589,8 +629,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task NameOverMaximumLengthIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "NameMax");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(visualisationRegistryId, new string('n', 257));
@@ -603,8 +645,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task NameDuplicateWithinRegistryIsRejectedButAcrossRegistriesIsAcceptedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "NameDup");
+
             var registryAId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var registryBId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
@@ -628,8 +672,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task InvalidDataTypeIdIsRejectedAsync(int dataTypeId)
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "BadDataType");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(visualisationRegistryId, UniqueName("BadDataType"), dataTypeId);
@@ -647,8 +693,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task ValidDataTypeIdsAreAcceptedAsync(int dataTypeId, string defaultValue)
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "GoodDataType");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(visualisationRegistryId, UniqueName("GoodDataType"), dataTypeId, defaultValue);
@@ -666,13 +714,16 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task DefaultValueRequiredRejectsNullEmptyOrWhitespaceAsync(string? defaultValue)
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "DefaultReq");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(visualisationRegistryId, UniqueName("DefaultReq"), 1, defaultValue);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(VisualisationRegistryParameterDto.DefaultValue) &&
                 e.ErrorCode == "DefaultValueNotEmpty");
@@ -686,8 +737,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task DefaultValueNotParseableForDataTypeIsRejectedAsync(int dataTypeId, string defaultValue)
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "BadDefaultFormat");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(visualisationRegistryId, UniqueName("BadDefaultFormat"), dataTypeId, defaultValue);
@@ -704,8 +757,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task DefaultValueParseableForDataTypeIsAcceptedAsync(int dataTypeId, string defaultValue)
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "GoodDefaultFormat");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(visualisationRegistryId, UniqueName("GoodDefaultFormat"), dataTypeId, defaultValue);
@@ -720,8 +775,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task DefaultValueOverMaximumLengthIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "DefaultMax");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(visualisationRegistryId, UniqueName("DefaultMax"), 1, new string('v', 257));
@@ -734,8 +791,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task InvalidVisualisationRegistryIdIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "BadParent");
+
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(0, UniqueName("BadParent"));
 
@@ -747,8 +806,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task NonExistentVisualisationRegistryIdIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "MissingParent");
+
             var service = await BuildServiceAsync(dbContext, userName);
             var dto = NewDto(int.MaxValue - 1, UniqueName("MissingParent"));
 
@@ -760,13 +821,17 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task VisualisationRegistryIdBelongingToAnotherTenantIsRejectedAsync()
         {
             await using var ownerDb = fx.GetDbContext();
+
             var (_, ownerUserName) = await CreateTenantUserWithPermissionsAsync(ownerDb,
                 [VisualisationParameterAdministrationSpec], "CrossTenantOwner");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(ownerDb, ownerUserName);
 
             await using var dbContext = fx.GetDbContext();
+
             var (_, otherUserName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "CrossTenantOther");
+
             var service = await BuildServiceAsync(dbContext, otherUserName);
             var dto = NewDto(visualisationRegistryId, UniqueName("CrossTenant"));
 
@@ -778,8 +843,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "TamperInsert");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -798,8 +865,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "TamperUpdate");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -822,8 +891,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task UpdateOfLockedRowThrowsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "LockedUpdate");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var saved = await service.InsertAsync(NewDto(visualisationRegistryId, UniqueName("Locked")));
@@ -843,8 +914,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task UpdateOfSoftDeletedRowThrowsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "PreDeleted");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var saved = await service.InsertAsync(NewDto(visualisationRegistryId, UniqueName("PreDeleted")));
@@ -861,8 +934,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task UpdateOfNeverExistedIdThrowsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "NeverExisted");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -876,8 +951,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task DeleteOfLockedRowThrowsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "LockedDelete");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var saved = await service.InsertAsync(NewDto(visualisationRegistryId, UniqueName("LockedDelete")));
@@ -895,8 +972,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "DoubleDelete");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -913,9 +992,11 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task ActiveOnlyRequiresBothVisualisationRegistryAndParameterRoleGrantsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec, VisualisationDirectorySpec, ReadWriteCaseSpec],
                 "ActiveOnlyRoles");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -926,10 +1007,12 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
                 .NotContain(d => d.Id == saved.Id);
 
             await GrantVisualisationRegistryRoleAsync(dbContext, visualisationRegistryId, userName);
+
             (await service.GetByVisualisationRegistryIdActiveOnlyAsync(visualisationRegistryId)).Should()
                 .NotContain(d => d.Id == saved.Id);
 
             await GrantVisualisationRegistryParameterRoleAsync(dbContext, saved.Guid, userName);
+
             (await service.GetByVisualisationRegistryIdActiveOnlyAsync(visualisationRegistryId)).Should()
                 .Contain(d => d.Id == saved.Id);
         }
@@ -938,9 +1021,11 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task ActiveOnlyExcludesInactiveParameterEvenWithBothRoleGrantsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec, VisualisationDirectorySpec, ReadWriteCaseSpec],
                 "ActiveOnlyInactive");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
@@ -960,8 +1045,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task PreCancelledTokenOnReadThrowsOperationCanceledAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Cancel");
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             using var cts = new CancellationTokenSource();
@@ -988,8 +1075,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "LogInsert");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var log = new TestLog();
             var service = await BuildServiceAsync(dbContext, userName, log);
@@ -1008,8 +1097,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Gated");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var log = new TestLog(false);
             var service = await BuildServiceAsync(dbContext, userName, log);
@@ -1024,8 +1115,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync()
         {
             var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "FailLog");
+
             var log = new TestLog();
             var service = await BuildServiceAsync(dbContext, userName, log);
 
@@ -1048,8 +1141,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
             ActivitySource.AddActivityListener(listener);
 
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Span");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var saved = await service.InsertAsync(NewDto(visualisationRegistryId, UniqueName("Span")));
@@ -1067,8 +1162,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
             using var collector = new MetricCollector<double>(ServiceDiagnostics.OperationDuration);
 
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Metric");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
             var saved = await service.InsertAsync(NewDto(visualisationRegistryId, UniqueName("Metric")));
@@ -1082,8 +1179,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task AuditLogGetsExactlyOneLineIncludingReadsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "AuditLog");
+
             var auditLog = new TestLog();
             var service = await BuildServiceAsync(dbContext, userName, auditLog: auditLog);
 
@@ -1098,8 +1197,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         {
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Reactive");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName, serviceChangeBus: serviceChangeBus);
 
@@ -1116,8 +1217,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         {
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "ReactiveNone");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName, serviceChangeBus: serviceChangeBus);
 
@@ -1140,8 +1243,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
         public async Task ListAsyncClampsTakeAndPaginatesDeterministicallyAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
                 [VisualisationParameterAdministrationSpec], "Page");
+
             var visualisationRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 

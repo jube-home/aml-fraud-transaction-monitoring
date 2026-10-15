@@ -5,8 +5,6 @@ nav_order: 2
 parent: Navigation
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Main Menu Navigation
 
 Navigation in the Jube platform is centred around a Menu, where each Menu item will redirect the user to a specific page

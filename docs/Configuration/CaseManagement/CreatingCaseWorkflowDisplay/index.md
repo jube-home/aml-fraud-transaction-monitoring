@@ -6,8 +6,6 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Case Workflow Display
 Upon the creation of a case the payload that caused the creation is stored alongside the case record.  Upon navigation to the case creation record in the case page,  the record is of course displayed in the default view whereby data is extracted and colored from the payload record using the Cases Workflows Xpath functionality.  It is a key value table.
 

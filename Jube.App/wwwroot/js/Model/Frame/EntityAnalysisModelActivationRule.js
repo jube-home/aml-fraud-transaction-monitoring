@@ -422,6 +422,7 @@ function Ready() {
     if (typeof id === "undefined") {
         initBuilderCoder(5, parentKey);
         ReadyNew();
+        window.AskJoobySetPageContext?.("EntityAnalysisModelActivationRule", "new", {[parentKeyName]: parentKey});
         PopulateTTLCounters();
         PopulateCasesWorkflowsStatus($("#CaseWorkflowGuid" +
             "").data("kendoDropDownList").value());
@@ -552,6 +553,12 @@ function Ready() {
                 resetButton.show();
 
                 ReadyExisting(data);
+                window.AskJoobySetPageContext?.("EntityAnalysisModelActivationRule", "edit", {
+                    id: data.id,
+                    guid: data.guid,
+                    name: data.name,
+                    [parentKeyName]: parentKey
+                });
 
                 ExpandCollapseTTLCounter();
                 ExpandCollapseNotification();

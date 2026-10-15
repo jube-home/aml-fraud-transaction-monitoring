@@ -43,7 +43,7 @@ namespace Jube.App.Endpoints.Repository
                 .WithTags("SessionCaseSearchCompiledSql");
 
             group.MapGet("ByGuid/{guid:Guid}", ExecuteByGuidAsync)
-                .Produces<DynamicResultSchemaDto>()
+                .Produces<DynamicResultsSchemaDto>()
                 .Produces((int)HttpStatusCode.NotFound)
                 .Produces((int)HttpStatusCode.Forbidden)
                 .Produces((int)HttpStatusCode.InternalServerError)
@@ -68,6 +68,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByGuid/{guid}: entry user={user}");
@@ -75,10 +76,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await SessionCaseSearchCompiledSqlService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
+
                 return TypedResults.Ok(await service.ExecuteByGuidAsync(guid, token));
             }
             catch (Npgsql.PostgresException e) when (e.SqlState is "22025" or "22P02" or "22007" or "22008" or "22003")
@@ -129,6 +132,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByGuid/{guid}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -138,6 +142,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/ByLast: entry user={user}");
@@ -145,10 +150,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await SessionCaseSearchCompiledSqlService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
+
                 return TypedResults.Ok(await service.GetLastAsync(token));
             }
             catch (NotAuthenticatedException)
@@ -181,6 +188,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByLast: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -197,6 +205,7 @@ namespace Jube.App.Endpoints.Repository
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"POST {Base}: entry user={user}");
@@ -209,10 +218,12 @@ namespace Jube.App.Endpoints.Repository
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var service = await SessionCaseSearchCompiledSqlService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
+
                 return TypedResults.Ok(await service.InsertAsync(model, token));
             }
             catch (NotAuthenticatedException)
@@ -264,6 +275,7 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

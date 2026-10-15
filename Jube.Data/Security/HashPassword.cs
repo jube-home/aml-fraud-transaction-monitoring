@@ -24,17 +24,22 @@ namespace Jube.Data.Security
         {
             var bytes = Encoding.UTF8.GetBytes(input);
             var hash = SHA256.HashData(bytes);
+
             return Convert.ToHexString(hash).ToLowerInvariant();
         }
 
         public static string Argon2(string password, string key = null)
         {
-            return key != null && key.IsNullOrEmpty() ? Isopoh.Cryptography.Argon2.Argon2.Hash(password) : Isopoh.Cryptography.Argon2.Argon2.Hash(password, key);
+            return key != null && key.IsNullOrEmpty()
+                ? Isopoh.Cryptography.Argon2.Argon2.Hash(password)
+                : Isopoh.Cryptography.Argon2.Argon2.Hash(password, key);
         }
 
         public static bool Verify(string passwordHash, string password, string key = null)
         {
-            return key != null && (key.IsNullOrEmpty() ? Isopoh.Cryptography.Argon2.Argon2.Verify(passwordHash, password) : Isopoh.Cryptography.Argon2.Argon2.Verify(passwordHash, password, key));
+            return key != null && (key.IsNullOrEmpty()
+                ? Isopoh.Cryptography.Argon2.Argon2.Verify(passwordHash, password)
+                : Isopoh.Cryptography.Argon2.Argon2.Verify(passwordHash, password, key));
         }
 
         public static string CreateSecurePassword(int length)
@@ -45,6 +50,7 @@ namespace Jube.Data.Security
             using (var rng = RandomNumberGenerator.Create())
             {
                 var uintBuffer = new byte[4];
+
                 while (length-- > 0)
                 {
                     rng.GetBytes(uintBuffer);

@@ -26,9 +26,7 @@ namespace Jube.Test.Cluster
     public class ClusterPatroniImageTests
     {
         private const string Loader = "/usr/local/lib/patroni-secrets.sh";
-
         private const string Shim = "/usr/local/bin/patronictl";
-
         private const string RealBinary = "/opt/patroni/bin/patronictl";
 
         private static readonly Regex generatedFile =
@@ -48,6 +46,7 @@ namespace Jube.Test.Cluster
         private static string[] Dockerfile()
         {
             var directory = new DirectoryInfo(AppContext.BaseDirectory);
+
             while (directory != null && !Directory.Exists(Path.Join(directory.FullName, "Jube.Cluster")))
             {
                 directory = directory.Parent;
@@ -69,6 +68,7 @@ namespace Jube.Test.Cluster
                 if (path == null)
                 {
                     var match = generatedFile.Match(line);
+
                     if (match.Success)
                     {
                         path = match.Groups["path"].Value;
@@ -115,6 +115,7 @@ namespace Jube.Test.Cluster
 
             shim.Should().BeGreaterThanOrEqualTo(0, "the shim's directory has to be on PATH to be reachable at all");
             real.Should().BeGreaterThanOrEqualTo(0);
+
             shim.Should().BeLessThan(real,
                 "a docker exec invocation of patronictl has to resolve to the shim rather than to the real binary, " +
                 "which cannot see the etcd credential the entrypoint exports into the Patroni process alone");
@@ -128,6 +129,7 @@ namespace Jube.Test.Cluster
             shim.Should().Contain($". {Loader}");
             shim.Should().Contain("load_patroni_secrets");
             shim.Should().Contain($"exec {RealBinary} \"$@\"");
+
             shim.Should().NotMatchRegex(@"(?m)^\s*exec patronictl\b",
                 "handing off by name would resolve back to the shim itself");
         }

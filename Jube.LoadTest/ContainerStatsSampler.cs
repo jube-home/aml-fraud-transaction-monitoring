@@ -16,17 +16,18 @@ namespace Jube.LoadTest
     using System.Diagnostics;
     using System.Globalization;
     using System.Text.RegularExpressions;
+    using Models;
 
     public sealed class ContainerStatsSampler
     {
         private static readonly Regex MemUnitRegex = new Regex(@"^([\d.]+)\s*([A-Za-z]+)$", RegexOptions.Compiled);
         private readonly Dictionary<string, List<Regex>> rolePatterns;
-
         private readonly IReadOnlyList<ContainerRole> roles;
 
         public ContainerStatsSampler(IReadOnlyList<ContainerRole> roles, bool patternsAreRegex)
         {
             this.roles = roles;
+
             rolePatterns = roles.ToDictionary(
                 role => role.Name,
                 role => role.Patterns
@@ -40,6 +41,7 @@ namespace Jube.LoadTest
             CancellationToken token = default)
         {
             List<(string Name, string CpuPercent, string MemUsage)> stats;
+
             try
             {
                 stats = await RunDockerStatsAsync(token).ConfigureAwait(false);
@@ -48,6 +50,7 @@ namespace Jube.LoadTest
             {
                 await Console.Error.WriteLineAsync($"container stats sampling failed: {ex.Message}")
                     .ConfigureAwait(false);
+
                 return null;
             }
 
@@ -63,6 +66,7 @@ namespace Jube.LoadTest
                     }
 
                     var (cpuPercent, memMiB) = result[role.Name];
+
                     result[role.Name] = (
                         cpuPercent + ParseCpuPercent(stat.CpuPercent),
                         memMiB + ParseMemUsageToMiB(stat.MemUsage));
@@ -75,6 +79,7 @@ namespace Jube.LoadTest
         private static double ParseCpuPercent(string cpuPerc)
         {
             var trimmed = cpuPerc.TrimEnd('%').Trim();
+
             return Double.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out var value)
                 ? value
                 : 0;
@@ -84,8 +89,10 @@ namespace Jube.LoadTest
         {
             var usedPart = memUsage.Split('/')[0].Trim();
             var match = MemUnitRegex.Match(usedPart);
+
             if (!match.Success ||
-                !Double.TryParse(match.Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
+                !Double.TryParse(match.Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture,
+                    out var value))
             {
                 return 0;
             }
@@ -130,9 +137,11 @@ namespace Jube.LoadTest
             }
 
             var results = new List<(string, string, string)>();
+
             foreach (var line in standardOutput.Split('\n', StringSplitOptions.RemoveEmptyEntries))
             {
                 var columns = line.Split('\t');
+
                 if (columns.Length != 3)
                 {
                     continue;

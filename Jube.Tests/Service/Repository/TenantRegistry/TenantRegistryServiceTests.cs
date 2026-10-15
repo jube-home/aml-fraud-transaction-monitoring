@@ -25,6 +25,7 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.TenantRegistry;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Service.Repository.TenantRegistry;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
@@ -47,7 +48,6 @@ namespace Jube.Test.Service.Repository.TenantRegistry
                 NullLoggerFactory.Instance);
 
         private readonly List<int> createdTenantRegistryIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -56,6 +56,7 @@ namespace Jube.Test.Service.Repository.TenantRegistry
 
             await dbContext.GetTable<Data.Poco.TenantRegistryVersion>()
                 .Where(w => createdTenantRegistryIds.Contains(w.TenantRegistryId)).DeleteAsync();
+
             await dbContext.TenantRegistry.Where(w => createdTenantRegistryIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -649,6 +650,7 @@ namespace Jube.Test.Service.Repository.TenantRegistry
         public async Task PermissionDeniedMessageIsLocalisedToFrenchAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

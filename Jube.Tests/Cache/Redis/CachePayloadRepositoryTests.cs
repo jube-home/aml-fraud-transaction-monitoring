@@ -19,8 +19,8 @@ using Jube.Cache.Redis;
 using Jube.Data.Poco;
 using Jube.Dictionary;
 using Jube.Extensions;
-using Jube.ResilientRedisConnection;
-using Jube.TaskCancellation.TaskHelper;
+using Jube.ResilientRedisConnection.Interfaces;
+using Jube.TaskCancellation.TaskHelper.Models;
 using Jube.Test.Infrastructure;
 using StackExchange.Redis;
 using Xunit;
@@ -67,6 +67,7 @@ namespace Jube.Test.Cache.Redis
             var payload = new DictionaryNoBoxing<int>();
             payload.Add(1, value);
             payload.Add(2, 42);
+
             return payload;
         }
 
@@ -94,6 +95,7 @@ namespace Jube.Test.Cache.Redis
 
             var keyReferenceDate = $"ReferenceDate:{tenantRegistryId}:{modelGuid:N}";
             var scores = await db.SortedSetRangeByRankWithScoresAsync(keyReferenceDate);
+
             scores.Should().ContainSingle(e => e.Element == $"{entryGuid:N}"
                                                && (long)e.Score == referenceDate.ToUnixTimeMilliSeconds());
         }
@@ -220,6 +222,7 @@ namespace Jube.Test.Cache.Redis
         public void AggregateResponseTimesForBulkInsertGroupsByTaskTypeAndSumsComputeTime()
         {
             var batch = new CachePayloadRemovalBatch { Id = 42 };
+
             var results = new[]
             {
                 new TimedTaskResult(TaskType.SortedSetRemoveReferenceDate, 100, 10),
@@ -230,6 +233,7 @@ namespace Jube.Test.Cache.Redis
             var aggregated = CachePayloadRepository.AggregateResponseTimesForBulkInsert(results, batch);
 
             aggregated.Should().HaveCount(2);
+
             aggregated.Single(a => a.TaskTypeId == (int)TaskType.SortedSetRemoveReferenceDate).ResponseTime
                 .Should().Be(300);
             aggregated.Single(a => a.TaskTypeId == (int)TaskType.SetRemoveAsync).ResponseTime.Should().Be(50);
@@ -244,6 +248,7 @@ namespace Jube.Test.Cache.Redis
             const string key = "SomeSortedSet";
 
             var values = Enumerable.Range(0, 1500).Select(i => (RedisValue)$"member-{i}").ToArray();
+
             foreach (var value in values)
             {
                 await db.SortedSetAddAsync(key, value, 1);

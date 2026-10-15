@@ -27,11 +27,13 @@ namespace Jube.App.Code
         {
             var now = utcNow ?? DateTime.UtcNow;
             var sessionStart = sessionStartUtc ?? now;
+
             var descriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new List<Claim>
                 {
                     new(ClaimTypes.Name, userName),
+                    new(ClaimTypes.NameIdentifier, userName),
                     new(Data.Security.TokenValidity.IssuedMillisecondsClaim,
                         new DateTimeOffset(DateTime.SpecifyKind(sessionStart, DateTimeKind.Utc))
                             .ToUnixTimeMilliseconds()

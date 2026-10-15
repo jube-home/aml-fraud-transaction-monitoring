@@ -42,4 +42,13 @@
     <data name="NotAuthenticated" xml:space="preserve">
     <value>Vous devez être connecté à un tenant pour effectuer cette action.</value>
   </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>La variable est introuvable.</value>
+  </data>
+    <data name="ReallocateNameInvalid" xml:space="preserve">
+    <value>Le nom d'une variable doit commencer par une lettre et ne contenir que des lettres, des chiffres et des traits de soulignement, jusqu'à 64 caractères.</value>
+  </data>
+    <data name="ReallocateProcessingTypeInvalid" xml:space="preserve">
+    <value>Le type de traitement doit être Payload, Dictionary, TtlCounter, Sanction, Abstraction ou AbstractionCalculation.</value>
+  </data>
 </root>

@@ -54,13 +54,11 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
                 NullLoggerFactory.Instance);
 
         private static readonly JsonSerializationHelper jsonSerializationHelper = new();
-
         private readonly List<int> createdCaseIds = [];
         private readonly List<int> createdCaseWorkflowIds = [];
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<int> createdDisplayIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -68,23 +66,30 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
             await using var dbContext = fx.GetDbContext();
 
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             var displayGuids = dbContext.CaseWorkflowDisplay.Where(s => createdDisplayIds.Contains(s.Id))
                 .Select(s => s.Guid);
             var statusGuids = dbContext.CaseWorkflowStatus.Where(s => createdCaseWorkflowStatusIds.Contains(s.Id))
                 .Select(s => s.Guid);
             var workflowGuids = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowDisplayRole>()
                 .Where(w => displayGuids.Contains(w.CaseWorkflowDisplayGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowDisplay.Where(w => createdDisplayIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 .Where(w => statusGuids.Contains(w.CaseWorkflowStatusGuid)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => workflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -115,9 +120,11 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
 
             var callerRoleGuid = await dbContext.UserRegistry
                 .Where(u => u.Name == userName).Select(u => u.RoleRegistryGuid).FirstAsync();
+
             var unrelatedRoleGuid = Guid.NewGuid();
 
             var workflowGuid = Guid.NewGuid();
+
             var workflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -144,6 +151,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
             });
 
             var statusGuid = Guid.NewGuid();
+
             var statusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -173,6 +181,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
             });
 
             var displayGuid = Guid.NewGuid();
+
             var displayId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowDisplay
             {
                 Name = $"{DatabaseFixture.Prefix}Display{Guid.NewGuid():N}"[..40],
@@ -245,6 +254,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -253,6 +263,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -331,6 +342,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
 
             await Assert.ThrowsAsync<NotFoundException>(() => serviceB.ExecuteAsync(Req(scenarioA)));
             await Assert.ThrowsAsync<NotFoundException>(() => serviceA.ExecuteAsync(Req(scenarioB)));
+
             await Assert.ThrowsAsync<NotFoundException>(() => serviceB.ExecuteAsync(
                 new CaseWorkflowDisplayExecutionDto
                     { CaseId = scenarioB.CaseId, CaseWorkflowDisplayId = scenarioA.DisplayId }));
@@ -346,8 +358,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
         public async Task CaseWhoseWorkflowIsNotGrantedToCallersRoleIsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission,
                 grantWorkflowRole: false);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<NotFoundException>(() => service.ExecuteAsync(Req(scenario)));
@@ -357,8 +371,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
         public async Task CaseWhoseStatusIsNotGrantedToCallersRoleIsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission,
                 grantStatusRole: false);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<NotFoundException>(() => service.ExecuteAsync(Req(scenario)));
@@ -368,8 +384,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
         public async Task DisplayNotGrantedToCallersRoleIsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission,
                 grantDisplayRole: false);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<NotFoundException>(() => service.ExecuteAsync(Req(scenario)));
@@ -381,8 +399,10 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
         public async Task InactiveOrDeletedDisplayIsNotFoundAsync(byte active, byte deleted)
         {
             await using var dbContext = fx.GetDbContext();
+
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission,
                 displayActive: active, displayDeleted: deleted);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<NotFoundException>(() => service.ExecuteAsync(Req(scenario)));
@@ -446,6 +466,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
             var forbiddenService = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,
@@ -453,6 +474,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
 
             await service.ExecuteAsync(Req(scenario));
             await Assert.ThrowsAsync<ForbiddenException>(() => forbiddenService.ExecuteAsync(Req(scenario)));
+
             await Assert.ThrowsAsync<NotFoundException>(() => service.ExecuteAsync(
                 new CaseWorkflowDisplayExecutionDto
                     { CaseId = int.MaxValue, CaseWorkflowDisplayId = scenario.DisplayId }));
@@ -474,6 +496,7 @@ namespace Jube.Test.Service.Query.CaseWorkflowDisplayExecution
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

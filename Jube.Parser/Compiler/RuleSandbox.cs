@@ -21,6 +21,7 @@ namespace Jube.Parser.Compiler
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using Models;
 
     public sealed class RuleSandbox : IDisposable
     {
@@ -59,6 +60,7 @@ namespace Jube.Parser.Compiler
                 lock (sync)
                 {
                     var total = 0L;
+
                     foreach (var entry in recency)
                     {
                         total += entry.Bytes;
@@ -107,6 +109,7 @@ namespace Jube.Parser.Compiler
             }
 
             await loadGate.WaitAsync(token).ConfigureAwait(false);
+
             try
             {
                 if (TryGet(key, out cached))
@@ -116,6 +119,7 @@ namespace Jube.Parser.Compiler
 
                 var entry = Load<TDelegate>(key, parsed);
                 Add(entry);
+
                 return (TDelegate)entry.Match;
             }
             finally
@@ -129,6 +133,7 @@ namespace Jube.Parser.Compiler
             ArgumentNullException.ThrowIfNull(invocation);
 
             var run = Task.Run(invocation, token);
+
             try
             {
                 return await run.WaitAsync(executionTimeout, token).ConfigureAwait(false);
@@ -154,6 +159,7 @@ namespace Jube.Parser.Compiler
 
                 recency.Remove(node);
                 Unload(node.Value);
+
                 return true;
             }
         }
@@ -162,15 +168,18 @@ namespace Jube.Parser.Compiler
         private static Entry Load<TDelegate>(string key, RuleParseResult parsed) where TDelegate : Delegate
         {
             var context = new SimpleUnloadableAssemblyLoadContext();
+
             try
             {
                 using var stream = new MemoryStream(parsed.CompiledBinary);
                 var assembly = context.LoadFromStream(stream);
+
                 var method = assembly.GetType(parsed.ClassName)?.GetMethod("Match")
                              ?? throw new InvalidOperationException(
                                  $"The compiled rule does not expose {parsed.ClassName}.Match.");
 
                 var match = Delegate.CreateDelegate(typeof(TDelegate), method);
+
                 return new Entry(key, context, match, parsed.CompiledBinary.LongLength);
             }
             catch
@@ -190,11 +199,13 @@ namespace Jube.Parser.Compiler
                     recency.AddFirst(node);
                     Hits++;
                     match = node.Value.Match;
+
                     return true;
                 }
             }
 
             match = null;
+
             return false;
         }
 
@@ -225,6 +236,7 @@ namespace Jube.Parser.Compiler
         {
             var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(
                 string.Concat(delegateType.FullName, "\n", parsed.ClassName, "\n", parsed.ParsedRuleText)));
+
             return Convert.ToHexString(bytes);
         }
 

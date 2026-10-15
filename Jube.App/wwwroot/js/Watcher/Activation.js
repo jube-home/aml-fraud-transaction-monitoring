@@ -156,6 +156,8 @@ function createMap() {
 }
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("Activation", "readonly", null);
+
     $("#ReplayFrom").kendoDateTimePicker({
         value: new Date(Date.now() - 60000),
         dateInput: true,

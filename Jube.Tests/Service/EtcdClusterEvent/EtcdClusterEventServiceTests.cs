@@ -11,13 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Data.Repository;
 using Jube.Service.EtcdClusterEvent;
 using Jube.Service.Exceptions.EtcdClusterEvent;
 using Jube.Service.Reactivity;
@@ -87,6 +87,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -99,6 +100,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             var firstId = await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged,
                 previousValue: "1",
                 newValue: "2");
+
             var secondId = await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.AlarmRaised,
                 newValue: "NOSPACE");
 
@@ -271,6 +273,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
 
             var descending = await service.ListAsync(search: endpoint, sortField: "endpoint",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.Endpoint).Should().Equal($"{endpoint}C", $"{endpoint}B", $"{endpoint}A");
         }
 
@@ -286,6 +289,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, $"{endpoint}A", EtcdClusterEventType.LeaderChanged);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: endpoint, sortField: "endpoint",
                 sortDirection: ascendingKeyword);
 
@@ -301,6 +305,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
             await CreateEntryAsync(dbContext, $"{endpoint}B", EtcdClusterEventType.LeaderChanged);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: endpoint, sortField: "endpoint",
                 sortDirection: "banana");
 
@@ -312,8 +317,10 @@ namespace Jube.Test.Service.EtcdClusterEvent
         {
             await using var dbContext = fx.GetDbContext();
             var endpoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:2379";
+
             var firstId = await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged,
                 DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged,
                 DateTime.UtcNow);
 
@@ -330,6 +337,7 @@ namespace Jube.Test.Service.EtcdClusterEvent
         {
             await using var dbContext = fx.GetDbContext();
             var endpoint = $"{DatabaseFixture.Prefix}host{Guid.NewGuid():N}:2379";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, endpoint, EtcdClusterEventType.LeaderChanged);

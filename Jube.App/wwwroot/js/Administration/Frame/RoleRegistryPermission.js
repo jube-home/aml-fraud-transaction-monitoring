@@ -44,11 +44,18 @@ $.get("../api/PermissionSpecification",
 
         if (typeof id === "undefined") {
             ReadyNew();
+            window.AskJoobySetPageContext?.("RoleRegistryPermission", "new", null);
         } else {
             $.get(endpoint + "/" + id,
                 function (data) {
                     permissionSpecificationId.data("kendoDropDownList").value(data.permissionSpecificationId);
                     ReadyExisting(data);
+                    window.AskJoobySetPageContext?.("RoleRegistryPermission", "edit", {
+                        id: data.id,
+                        guid: data.guid,
+                        name: data.name,
+                        [parentKeyName]: parentKey
+                    });
                 });
         }
     });

@@ -20,65 +20,59 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Accord.Math;
+using Accord.Math.Distances;
+
 namespace Accord.MachineLearning
 {
-    using System;
-    using System.Collections.Generic;
-    using Accord.Math;
-    using Accord.Math.Distances;
-    using System.Threading;
-    using System.Linq;
-    using Accord.Compat;
-    using System.Threading.Tasks;
-
     /// <summary>
-    ///   k-Medoids clustering using Voronoi iteration algorithm.
+    ///     k-Medoids clustering using Voronoi iteration algorithm.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para> From Wikipedia:</para>
-    /// <para>
-    /// The k-medoids algorithm is a clustering algorithm related to the k-means algorithm and the medoidshift
-    /// algorithm. Both the k-means and k-medoids algorithms are partitional (breaking the dataset up into groups)
-    /// and both attempt to minimize the distance between points labeled to be in a cluster and a point designated
-    /// as the center of that cluster. In contrast to the k-means algorithm, k-medoids chooses datapoints as centers
-    /// (medoids or exemplars) and works with a generalization of the Manhattan Norm to define distance between
-    /// datapoints instead of L2. This method was proposed in 1987[1] for the work with L1 norm and other distances.
-    /// </para>
-    /// <para>
-    /// Voronoi iteration algorithm (or Lloyd algorithm) is one of possible implementations of the k-medoids
-    /// clustering. It was suggested in the [2] and [3].
-    /// </para>
-    /// <para>
-    /// [1] Kaufman, L. and Rousseeuw, P.J. (1987), Clustering by means of Medoids, in Statistical Data Analysis 
-    /// Based on the L1–Norm and Related Methods, edited by Y. Dodge, North-Holland, 405–416.
-    /// [2] T. Hastie, R. Tibshirani, and J.Friedman.The Elements of Statistical Learning, Springer (2001), 468–469.
-    /// [3] H.S.Park , C.H.Jun, A simple and fast algorithm for K-medoids clustering, Expert Systems with Applications,
-    /// 36, (2) (2009), 3336–3341.
-    /// </para>
+    ///     <para> From Wikipedia:</para>
+    ///     <para>
+    ///         The k-medoids algorithm is a clustering algorithm related to the k-means algorithm and the medoidshift
+    ///         algorithm. Both the k-means and k-medoids algorithms are partitional (breaking the dataset up into groups)
+    ///         and both attempt to minimize the distance between points labeled to be in a cluster and a point designated
+    ///         as the center of that cluster. In contrast to the k-means algorithm, k-medoids chooses datapoints as centers
+    ///         (medoids or exemplars) and works with a generalization of the Manhattan Norm to define distance between
+    ///         datapoints instead of L2. This method was proposed in 1987[1] for the work with L1 norm and other distances.
+    ///     </para>
+    ///     <para>
+    ///         Voronoi iteration algorithm (or Lloyd algorithm) is one of possible implementations of the k-medoids
+    ///         clustering. It was suggested in the [2] and [3].
+    ///     </para>
+    ///     <para>
+    ///         [1] Kaufman, L. and Rousseeuw, P.J. (1987), Clustering by means of Medoids, in Statistical Data Analysis
+    ///         Based on the L1–Norm and Related Methods, edited by Y. Dodge, North-Holland, 405–416.
+    ///         [2] T. Hastie, R. Tibshirani, and J.Friedman.The Elements of Statistical Learning, Springer (2001), 468–469.
+    ///         [3] H.S.Park , C.H.Jun, A simple and fast algorithm for K-medoids clustering, Expert Systems with Applications,
+    ///         36, (2) (2009), 3336–3341.
+    ///     </para>
     /// </remarks>
-    /// 
-    /// <seealso cref="VoronoiIteration"/>
-    /// <seealso cref="KMeans"/>
-    /// <seealso cref="MeanShift"/>
-    /// 
+    /// <seealso cref="VoronoiIteration" />
+    /// <seealso cref="KMeans" />
+    /// <seealso cref="MeanShift" />
     /// <example>
-    ///   How to perform K-Medoids clustering with Voronoi iteration algorithm.
-    ///   <code source="Unit Tests\Accord.Tests.MachineLearning\Clustering\KMedoidsVITest.cs" region="doc_learn" />
+    ///     How to perform K-Medoids clustering with Voronoi iteration algorithm.
+    ///     <code source="Unit Tests\Accord.Tests.MachineLearning\Clustering\KMedoidsVITest.cs" region="doc_learn" />
     /// </example>
-    /// 
     [Serializable]
     public class VoronoiIteration<T> : KMedoids<T>
     {
-
         /// <summary>
-        ///   Initializes a new instance of VoronoiIteration algorithm
+        ///     Initializes a new instance of VoronoiIteration algorithm
         /// </summary>
-        /// 
         /// <param name="k">The number of clusters to divide input data.</param>
-        /// <param name="distance">The distance function to use. Default is to
-        /// use the <see cref="Accord.Math.Distance.Manhattan(double[], double[])"/> distance.</param>
-        /// 
+        /// <param name="distance">
+        ///     The distance function to use. Default is to
+        ///     use the <see cref="Distance.Manhattan(double[], double[])" /> distance.
+        /// </param>
         public VoronoiIteration(int k, IDistance<T[]> distance)
             : base(k, distance)
         {
@@ -87,66 +81,22 @@ namespace Accord.MachineLearning
             MaxIterations = 100;
         }
 
-
-
         /// <summary>
-        /// Helper class - cluster infromation.
+        ///     Implementation of the Voronoi Iteration algorithm.
         /// </summary>
-        private class ClusterInfo
-        {
-            /// <summary>
-            /// Index of the medoid point for this cluster.
-            /// </summary>
-            public int MedoidIndex { get; set; }
-
-            /// <summary>
-            /// Cost of this cluster, i.e. sum of distances of all
-            /// cluster member points to the medoid point.
-            /// </summary>
-            public double Cost { get; set; }
-
-            /// <summary>
-            /// Set of member point indices.
-            /// </summary>
-            public HashSet<int> PointIndices { get; private set; }
-
-            /// <summary>
-            /// Initializes new ClusterInfo object.
-            /// </summary>
-            /// <param name="medoidIndex"></param>
-            public ClusterInfo(int medoidIndex)
-            {
-                MedoidIndex = medoidIndex;
-                PointIndices = new HashSet<int>();
-                Reset();
-            }
-
-            /// <summary>
-            /// Reset object to the initial state.
-            /// </summary>
-            public void Reset()
-            {
-                Cost = 0.0;
-                PointIndices.Clear();
-                PointIndices.Add(MedoidIndex);
-            }
-        }
-
-        /// <summary>
-        ///   Implementation of the Voronoi Iteration algorithm.
-        /// </summary>
-        /// 
         protected override int[] Compute(T[][] x, int[] labels, int[] currentMedoidIndicesArray)
         {
             var currentMedoidIndices = new HashSet<int>(currentMedoidIndicesArray);
             if (currentMedoidIndices.Count < currentMedoidIndicesArray.Length)
+            {
                 throw new Exception("Some medoids are not unique");
+            }
 
             var clusters = new ClusterInfo[K];
 
             // Create clusters
-            int clusterIndex = 0;
-            foreach (int medoidIndex in currentMedoidIndices)
+            var clusterIndex = 0;
+            foreach (var medoidIndex in currentMedoidIndices)
             {
                 clusters[clusterIndex] = new ClusterInfo(medoidIndex);
                 clusterIndex++;
@@ -157,7 +107,7 @@ namespace Accord.MachineLearning
                 // Prepare for the new iteration
                 currentMedoidIndices.Clear();
                 clusterIndex = 0;
-                foreach (ClusterInfo cluster in clusters)
+                foreach (var cluster in clusters)
                 {
                     cluster.Reset();
                     currentMedoidIndices.Add(cluster.MedoidIndex);
@@ -170,15 +120,17 @@ namespace Accord.MachineLearning
                 {
                     // Skip current medoids
                     if (currentMedoidIndices.Contains(pointIndex))
+                    {
                         return;
+                    }
 
                     // Find first cluster with minimum cost
-                    T[] point = x[pointIndex];
-                    int minCostClusterIndex = 0;
-                    double minCost = Distance.Distance(point, x[clusters[0].MedoidIndex]);
-                    for (int j = 1; j < clusters.Length; j++)
+                    var point = x[pointIndex];
+                    var minCostClusterIndex = 0;
+                    var minCost = Distance.Distance(point, x[clusters[0].MedoidIndex]);
+                    for (var j = 1; j < clusters.Length; j++)
                     {
-                        double cost = Distance.Distance(point, x[clusters[j].MedoidIndex]);
+                        var cost = Distance.Distance(point, x[clusters[j].MedoidIndex]);
                         if (cost < minCost)
                         {
                             minCost = cost;
@@ -189,7 +141,7 @@ namespace Accord.MachineLearning
                     labels[pointIndex] = minCostClusterIndex;
 
                     // Update cluster info
-                    ClusterInfo cluster = clusters[minCostClusterIndex];
+                    var cluster = clusters[minCostClusterIndex];
                     lock (cluster)
                     {
                         cluster.PointIndices.Add(pointIndex);
@@ -197,24 +149,25 @@ namespace Accord.MachineLearning
                     }
                 });
 
-                double initialTotalCost = clusters.Sum(cluster => cluster.Cost);
+                var initialTotalCost = clusters.Sum(cluster => cluster.Cost);
 
                 // Find best medoid in the each cluster
-                int improvementCount = 0;
+                var improvementCount = 0;
                 Parallel.For(0, clusters.Length, ParallelOptions, i =>
                 {
-                    ClusterInfo cluster = clusters[i];
-                    int currentMedoidIndex = cluster.MedoidIndex;
+                    var cluster = clusters[i];
+                    var currentMedoidIndex = cluster.MedoidIndex;
                     //T[] currentMedoid = x[currentMedoidIndex];
-                    int minCostMedoidIndex = currentMedoidIndex;
-                    double minCost = cluster.Cost;
+                    var minCostMedoidIndex = currentMedoidIndex;
+                    var minCost = cluster.Cost;
 
-                    foreach (int newMedoidIndex in cluster.PointIndices)
+                    foreach (var newMedoidIndex in cluster.PointIndices)
                     {
                         if (newMedoidIndex != currentMedoidIndex)
                         {
-                            T[] newMedoid = x[newMedoidIndex];
-                            double newCost = cluster.PointIndices.Sum(pointIndex => Distance.Distance(x[pointIndex], newMedoid));
+                            var newMedoid = x[newMedoidIndex];
+                            var newCost = cluster.PointIndices.Sum(pointIndex =>
+                                Distance.Distance(x[pointIndex], newMedoid));
                             if (newCost < minCost)
                             {
                                 minCostMedoidIndex = newMedoidIndex;
@@ -235,63 +188,106 @@ namespace Accord.MachineLearning
 
                 // Evaluate improvement
                 if (improvementCount == 0)
+                {
                     break;
+                }
 
-                double finalTotalCost = clusters.Sum(cluster => cluster.Cost);
+                var finalTotalCost = clusters.Sum(cluster => cluster.Cost);
                 if (finalTotalCost >= initialTotalCost)
+                {
                     break;
+                }
             }
 
             // Assign medoids
-            for (int i = 0; i < Clusters.Centroids.Length; i++)
+            for (var i = 0; i < Clusters.Centroids.Length; i++)
+            {
                 Clusters.Centroids[i] = x[clusters[i].MedoidIndex];
+            }
 
             return labels;
+        }
+
+        /// <summary>
+        ///     Helper class - cluster infromation.
+        /// </summary>
+        private class ClusterInfo
+        {
+            /// <summary>
+            ///     Initializes new ClusterInfo object.
+            /// </summary>
+            /// <param name="medoidIndex"></param>
+            public ClusterInfo(int medoidIndex)
+            {
+                MedoidIndex = medoidIndex;
+                PointIndices = new HashSet<int>();
+                Reset();
+            }
+
+            /// <summary>
+            ///     Index of the medoid point for this cluster.
+            /// </summary>
+            public int MedoidIndex { get; set; }
+
+            /// <summary>
+            ///     Cost of this cluster, i.e. sum of distances of all
+            ///     cluster member points to the medoid point.
+            /// </summary>
+            public double Cost { get; set; }
+
+            /// <summary>
+            ///     Set of member point indices.
+            /// </summary>
+            public HashSet<int> PointIndices { get; }
+
+            /// <summary>
+            ///     Reset object to the initial state.
+            /// </summary>
+            public void Reset()
+            {
+                Cost = 0.0;
+                PointIndices.Clear();
+                PointIndices.Add(MedoidIndex);
+            }
         }
     }
 
     /// <summary>
-    ///   k-Medoids clustering using Voronoi iteration algorithm.
+    ///     k-Medoids clustering using Voronoi iteration algorithm.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para> From Wikipedia:</para>
-    /// <para>
-    /// The k-medoids algorithm is a clustering algorithm related to the k-means algorithm and the medoidshift
-    /// algorithm. Both the k-means and k-medoids algorithms are partitional (breaking the dataset up into groups)
-    /// and both attempt to minimize the distance between points labeled to be in a cluster and a point designated
-    /// as the center of that cluster. In contrast to the k-means algorithm, k-medoids chooses datapoints as centers
-    /// (medoids or exemplars) and works with a generalization of the Manhattan Norm to define distance between
-    /// datapoints instead of L2. This method was proposed in 1987[1] for the work with L1 norm and other distances.
-    /// </para>
-    /// <para>
-    /// Voronoi iteration algorithm (or Lloyd algorithm) is one of possible implementations of the k-medoids
-    /// clustering. It was suggested in the [2] and [3].
-    /// </para>
-    /// <para>
-    /// [1] Kaufman, L. and Rousseeuw, P.J. (1987), Clustering by means of Medoids, in Statistical Data Analysis 
-    /// Based on the L1–Norm and Related Methods, edited by Y. Dodge, North-Holland, 405–416.
-    /// [2] T. Hastie, R. Tibshirani, and J.Friedman.The Elements of Statistical Learning, Springer (2001), 468–469.
-    /// [3] H.S.Park , C.H.Jun, A simple and fast algorithm for K-medoids clustering, Expert Systems with Applications,
-    /// 36, (2) (2009), 3336–3341.
-    /// </para>
+    ///     <para> From Wikipedia:</para>
+    ///     <para>
+    ///         The k-medoids algorithm is a clustering algorithm related to the k-means algorithm and the medoidshift
+    ///         algorithm. Both the k-means and k-medoids algorithms are partitional (breaking the dataset up into groups)
+    ///         and both attempt to minimize the distance between points labeled to be in a cluster and a point designated
+    ///         as the center of that cluster. In contrast to the k-means algorithm, k-medoids chooses datapoints as centers
+    ///         (medoids or exemplars) and works with a generalization of the Manhattan Norm to define distance between
+    ///         datapoints instead of L2. This method was proposed in 1987[1] for the work with L1 norm and other distances.
+    ///     </para>
+    ///     <para>
+    ///         Voronoi iteration algorithm (or Lloyd algorithm) is one of possible implementations of the k-medoids
+    ///         clustering. It was suggested in the [2] and [3].
+    ///     </para>
+    ///     <para>
+    ///         [1] Kaufman, L. and Rousseeuw, P.J. (1987), Clustering by means of Medoids, in Statistical Data Analysis
+    ///         Based on the L1–Norm and Related Methods, edited by Y. Dodge, North-Holland, 405–416.
+    ///         [2] T. Hastie, R. Tibshirani, and J.Friedman.The Elements of Statistical Learning, Springer (2001), 468–469.
+    ///         [3] H.S.Park , C.H.Jun, A simple and fast algorithm for K-medoids clustering, Expert Systems with Applications,
+    ///         36, (2) (2009), 3336–3341.
+    ///     </para>
     /// </remarks>
-    /// 
-    /// <seealso cref="VoronoiIteration{T}"/>
-    /// 
+    /// <seealso cref="VoronoiIteration{T}" />
     [Serializable]
     public class VoronoiIteration : VoronoiIteration<double>
     {
         /// <summary>
-        ///   Initializes a new instance of k-Medoids algorithm
+        ///     Initializes a new instance of k-Medoids algorithm
         /// </summary>
-        /// 
-        /// <param name="k">The number of clusters to divide input data.</param>    
-        /// 
+        /// <param name="k">The number of clusters to divide input data.</param>
         public VoronoiIteration(int k)
-            : base(k, new Accord.Math.Distances.Euclidean())
+            : base(k, new Euclidean())
         {
         }
     }
-
 }

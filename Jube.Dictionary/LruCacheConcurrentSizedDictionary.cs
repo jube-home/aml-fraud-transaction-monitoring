@@ -18,7 +18,8 @@ namespace Jube.Dictionary
     using System.Diagnostics.CodeAnalysis;
     using Interfaces;
 
-    public class LruCacheConcurrentSizedDictionary<TKey, TValue> : ISized, IDictionary<TKey, TValue>, ILruCacheConcurrentSizedDictionary<TKey, TValue> where TKey : notnull
+    public class LruCacheConcurrentSizedDictionary<TKey, TValue> : ISized, IDictionary<TKey, TValue>,
+        ILruCacheConcurrentSizedDictionary<TKey, TValue> where TKey : notnull
     {
         private const int QueueBacklogSlack = 10_000;
         private readonly ConcurrentDictionary<TKey, CacheEntry> dict = new();
@@ -51,96 +52,64 @@ namespace Jube.Dictionary
 
         public bool IsFull
         {
-            get
-            {
-                return TotalSize > maxSizeBytes;
-            }
+            get { return TotalSize > maxSizeBytes; }
         }
 
         public long EvictionBytes
         {
-            get
-            {
-                return Interlocked.Read(ref evictionBytes);
-            }
+            get { return Interlocked.Read(ref evictionBytes); }
         }
 
         public long EvictionCount
         {
-            get
-            {
-                return Interlocked.Read(ref evictionCount);
-            }
+            get { return Interlocked.Read(ref evictionCount); }
         }
 
         public long RequestBytes
         {
-            get
-            {
-                return Interlocked.Read(ref requestBytes);
-            }
+            get { return Interlocked.Read(ref requestBytes); }
         }
 
         public long RequestCount
         {
-            get
-            {
-                return Interlocked.Read(ref request);
-            }
+            get { return Interlocked.Read(ref request); }
         }
 
         public long UpdateCount
         {
-            get
-            {
-                return Interlocked.Read(ref update);
-            }
+            get { return Interlocked.Read(ref update); }
         }
 
         public long UpdateBytes
         {
-            get
-            {
-                return Interlocked.Read(ref updateBytes);
-            }
+            get { return Interlocked.Read(ref updateBytes); }
         }
 
         public long AddCounter
         {
-            get
-            {
-                return Interlocked.Read(ref add);
-            }
+            get { return Interlocked.Read(ref add); }
         }
 
         public long AddBytes
         {
-            get
-            {
-                return Interlocked.Read(ref addBytes);
-            }
+            get { return Interlocked.Read(ref addBytes); }
         }
 
         public long RemoveCount
         {
-            get
-            {
-                return Interlocked.Read(ref remove);
-            }
+            get { return Interlocked.Read(ref remove); }
         }
 
         public long RemoveBytes
         {
-            get
-            {
-                return Interlocked.Read(ref removeBytes);
-            }
+            get { return Interlocked.Read(ref removeBytes); }
         }
 
         public bool ContainsKey(TKey key)
         {
             return dict.ContainsKey(key);
         }
+
         public void Add(KeyValuePair<TKey, TValue> item)
         {
             AddOrUpdate(item.Key, item.Value);
@@ -154,40 +123,31 @@ namespace Jube.Dictionary
         public void Clear()
         {
             dict.Clear();
-            while (lruQueue.TryDequeue(out _)) {}
+            while (lruQueue.TryDequeue(out _))
+            {
+            }
+
             Interlocked.Exchange(ref totalSize, 0);
         }
 
         public ICollection<TKey> Keys
         {
-            get
-            {
-                return dict.Keys.ToList();
-            }
+            get { return dict.Keys.ToList(); }
         }
 
         public ICollection<TValue> Values
         {
-            get
-            {
-                return dict.Values.Select(e => e.Value).ToList();
-            }
+            get { return dict.Values.Select(e => e.Value).ToList(); }
         }
 
         public int Count
         {
-            get
-            {
-                return dict.Count;
-            }
+            get { return dict.Count; }
         }
 
         public bool IsReadOnly
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         public TValue this[TKey key]
@@ -198,13 +158,12 @@ namespace Jube.Dictionary
                 {
                     throw new KeyNotFoundException();
                 }
+
                 entry.Accessed = true;
+
                 return entry.Value;
             }
-            set
-            {
-                AddOrUpdate(key, value);
-            }
+            set { AddOrUpdate(key, value); }
         }
 
         public void Add(TKey key, TValue value)
@@ -224,7 +183,7 @@ namespace Jube.Dictionary
             Interlocked.Increment(ref remove);
 
             // ReSharper disable once RedundantAssignment
-            entry = null;//This is important to make sure the GC identifies it.
+            entry = null; //This is important to make sure the GC identifies it.
             EvictIfNeeded();
 
             return true;
@@ -236,15 +195,19 @@ namespace Jube.Dictionary
             {
                 entry.Accessed = true;
                 value = entry.Value;
+
                 return true;
             }
+
             value = default(TValue);
+
             return false;
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            return dict.TryGetValue(item.Key, out var entry) && EqualityComparer<TValue>.Default.Equals(entry.Value, item.Value);
+            return dict.TryGetValue(item.Key, out var entry) &&
+                   EqualityComparer<TValue>.Default.Equals(entry.Value, item.Value);
         }
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
@@ -267,10 +230,7 @@ namespace Jube.Dictionary
 
         public long TotalSize
         {
-            get
-            {
-                return Interlocked.Read(ref totalSize);
-            }
+            get { return Interlocked.Read(ref totalSize); }
         }
 
         public long EstimatedSizeBytes()
@@ -309,15 +269,18 @@ namespace Jube.Dictionary
                 _ =>
                 {
                     addedEntry = new CacheEntry(value, newSize);
+
                     return addedEntry;
                 },
                 (_, existing) =>
                 {
                     updateDelta = newSize - existing.Size;
+
                     updatedEntry = new CacheEntry(value, newSize)
                     {
                         Accessed = true
                     };
+
                     return updatedEntry;
                 });
 
@@ -358,6 +321,7 @@ namespace Jube.Dictionary
             }
 
             isEvicting = true;
+
             try
             {
                 if (isFull)
@@ -411,6 +375,7 @@ namespace Jube.Dictionary
         private void CompactStaleQueueEntries()
         {
             var sweepLimit = lruQueue.Count;
+
             for (var i = 0; i < sweepLimit && lruQueue.TryDequeue(out var key); i++)
             {
                 if (dict.ContainsKey(key))

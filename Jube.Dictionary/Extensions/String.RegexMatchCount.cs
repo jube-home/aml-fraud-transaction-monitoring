@@ -19,7 +19,7 @@ namespace Jube.Dictionary.Extensions
     {
         public static int RegexMatchCount(this string? @this, string pattern)
         {
-            return Regex.Matches(@this ?? "", pattern, RegexOptions.None, RegexSupport.MatchTimeout).Count;
+            return Regex.Matches(@this ?? "", pattern, RegexOptions.None, RegexSupport.matchTimeout).Count;
         }
     }
 }

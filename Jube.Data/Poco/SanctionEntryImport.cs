@@ -1,0 +1,44 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
+using LinqToDB.Mapping;
+using MessagePack;
+
+namespace Jube.Data.Poco
+{
+    [Table]
+    [MessagePackObject]
+    public class SanctionEntryImport
+    {
+        [Column]
+        [PrimaryKey]
+        [Identity]
+        [Key(0)]
+        public int Id { get; set; }
+
+        [Column] [Nullable] [Key(1)] public int? SanctionEntrySourceId { get; set; }
+        [Column] [Nullable] [Key(2)] public DateTime? StartDate { get; set; }
+        [Column] [Nullable] [Key(3)] public DateTime? EndDate { get; set; }
+        [Column] [Nullable] [Key(4)] public int? TotalRows { get; set; }
+        [Column] [Nullable] [Key(5)] public int? InsertedCount { get; set; }
+        [Column] [Nullable] [Key(6)] public int? RevivedCount { get; set; }
+        [Column] [Nullable] [Key(7)] public int? UnchangedCount { get; set; }
+        [Column] [Nullable] [Key(8)] public int? RemovedCount { get; set; }
+        [Column] [Nullable] [Key(9)] public int? RejectedCount { get; set; }
+        [Column] [Nullable] [Key(10)] public byte? Successful { get; set; }
+        [Column] [Nullable] [Key(11)] public string ErrorMessage { get; set; }
+        [Column] [Nullable] [Key(12)] public string CreatedUser { get; set; }
+        [Column] [Nullable] [Key(13)] public DateTime? CreatedDate { get; set; }
+    }
+}

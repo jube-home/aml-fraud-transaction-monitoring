@@ -1,44 +1,51 @@
-﻿// Accord Math Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections.Generic;
+using Accord.Statistics;
 
 namespace Accord.Math
 {
-    using Accord.Statistics;
-    using System;
-    using System.Collections.Generic;
-
     public static partial class Matrix
     {
-
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="startRow">Start row index</param>
         /// <param name="endRow">End row index</param>
         /// <param name="startColumn">Start column index</param>
         /// <param name="endColumn">End column index</param>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[,] Submatrix<T>(this T[,] source,
             int startRow, int endRow, int startColumn, int endColumn)
@@ -47,16 +54,14 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="destination">The matrix where results should be stored.</param>
         /// <param name="startRow">Start row index</param>
         /// <param name="endRow">End row index</param>
         /// <param name="startColumn">Start column index</param>
         /// <param name="endColumn">End column index</param>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[,] Submatrix<T>(this T[,] source, T[,] destination,
             int startRow, int endRow, int startColumn, int endColumn)
@@ -65,13 +70,11 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="rowIndexes">Array of row indices. Pass null to select all indices.</param>
         /// <param name="columnIndexes">Array of column indices. Pass null to select all indices.</param>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[,] Submatrix<T>(this T[,] source, int[] rowIndexes, int[] columnIndexes)
         {
@@ -79,14 +82,12 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="destination">The matrix where results should be stored.</param>
         /// <param name="rowIndexes">Array of row indices. Pass null to select all indices.</param>
         /// <param name="columnIndexes">Array of column indices. Pass null to select all indices.</param>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static void Submatrix<T>(this T[,] source, T[,] destination, int[] rowIndexes, int[] columnIndexes)
         {
@@ -94,12 +95,10 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="rowIndexes">Array of row indices</param>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[,] Submatrix<T>(this T[,] source, int[] rowIndexes)
         {
@@ -107,18 +106,15 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="startRow">Starting row index</param>
         /// <param name="endRow">End row index</param>
         /// <param name="columnIndexes">Array of column indices</param>
-        /// 
         /// <remarks>
-        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+        ///     Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[,] Submatrix<T>(this T[,] source, int startRow, int endRow, int[] columnIndexes)
         {
@@ -126,37 +122,29 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="rowIndexes">Array of row indices</param>
         /// <param name="startColumn">Start column index</param>
         /// <param name="endColumn">End column index</param>
-        /// 
         /// <remarks>
-        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+        ///     Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[,] Submatrix<T>(this T[,] source, int[] rowIndexes, int startColumn, int endColumn)
         {
             return Get(source, rowIndexes, startColumn, endColumn + 1);
         }
 
-
-
-
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="startRow">Start row index</param>
         /// <param name="endRow">End row index</param>
         /// <param name="startColumn">Start column index</param>
         /// <param name="endColumn">End column index</param>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[][] Submatrix<T>(this T[][] source,
             int startRow, int endRow, int startColumn, int endColumn)
@@ -165,17 +153,17 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="rowIndexes">Array of row indices. Pass null to select all indices.</param>
         /// <param name="columnIndexes">Array of column indices. Pass null to select all indices.</param>
-        /// <param name="reuseMemory">Set to true to avoid memory allocations 
-        ///   when possible. This might result on the shallow copies of some
-        ///   elements. Default is false (default is to always provide a true,
-        ///   deep copy of every element in the matrices, using more memory).</param>
-        /// 
+        /// <param name="reuseMemory">
+        ///     Set to true to avoid memory allocations
+        ///     when possible. This might result on the shallow copies of some
+        ///     elements. Default is false (default is to always provide a true,
+        ///     deep copy of every element in the matrices, using more memory).
+        /// </param>
         public static T[][] Submatrix<T>(this T[][] source,
             int[] rowIndexes, int[] columnIndexes, bool reuseMemory = false)
         {
@@ -183,37 +171,33 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="indexes">Array of indices.</param>
         /// <param name="transpose">True to return a transposed matrix; false otherwise.</param>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[][] Submatrix<T>(this T[][] source, int[] indexes, bool transpose = false)
         {
             return Get(source, indexes, transpose);
         }
 
-
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="rowIndexes">Array of row indices</param>
         /// <param name="startColumn">Start column index</param>
         /// <param name="endColumn">End column index</param>
-        /// <param name="reuseMemory">Set to true to avoid memory allocations 
-        ///   when possible. This might result on the shallow copies of some
-        ///   elements. Default is false (default is to always provide a true,
-        ///   deep copy of every element in the matrices, using more memory).</param>
-        /// 
+        /// <param name="reuseMemory">
+        ///     Set to true to avoid memory allocations
+        ///     when possible. This might result on the shallow copies of some
+        ///     elements. Default is false (default is to always provide a true,
+        ///     deep copy of every element in the matrices, using more memory).
+        /// </param>
         /// <remarks>
-        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+        ///     Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[][] Submatrix<T>(this T[][] source, int[] rowIndexes,
             int startColumn, int endColumn, bool reuseMemory = false)
@@ -222,36 +206,30 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a sub matrix extracted from the current matrix.
+        ///     Returns a sub matrix extracted from the current matrix.
         /// </summary>
-        /// 
         /// <param name="source">The matrix to return the submatrix from.</param>
         /// <param name="startRow">Starting row index</param>
         /// <param name="endRow">End row index</param>
         /// <param name="columnIndexes">Array of column indices</param>
-        /// 
         /// <remarks>
-        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+        ///     Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[][] Submatrix<T>(this T[][] source, int startRow, int endRow, int[] columnIndexes)
         {
             return Get(source, startRow, endRow + 1, columnIndexes);
         }
 
-
-
-
         /// <summary>
-        ///   Returns a subvector extracted from the current vector.
+        ///     Returns a subvector extracted from the current vector.
         /// </summary>
-        /// 
         /// <param name="source">The vector to return the subvector from.</param>
         /// <param name="indexes">Array of indices.</param>
-        /// <param name="inPlace">True to return the results in place, changing the
-        ///   original <paramref name="source"/> vector; false otherwise.</param>
-        /// 
+        /// <param name="inPlace">
+        ///     True to return the results in place, changing the
+        ///     original <paramref name="source" /> vector; false otherwise.
+        /// </param>
         [Obsolete("Please use Get instead.")]
         public static T[] Submatrix<T>(this T[] source, int[] indexes, bool inPlace = false)
         {
@@ -259,12 +237,10 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a subvector extracted from the current vector.
+        ///     Returns a subvector extracted from the current vector.
         /// </summary>
-        /// 
         /// <param name="source">The vector to return the subvector from.</param>
         /// <param name="indexes">Array of indices.</param>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[] Submatrix<T>(this T[] source, IList<int> indexes)
         {
@@ -272,16 +248,14 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a subvector extracted from the current vector.
+        ///     Returns a subvector extracted from the current vector.
         /// </summary>
-        /// 
         /// <param name="source">The vector to return the subvector from.</param>
         /// <param name="startRow">Starting index.</param>
         /// <param name="endRow">End index.</param>
         /// <remarks>
-        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+        ///     Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[] Submatrix<T>(this T[] source, int startRow, int endRow)
         {
@@ -289,9 +263,8 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a value extracted from the current vector.
+        ///     Returns a value extracted from the current vector.
         /// </summary>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static T[] Submatrix<T>(this T[] source, int first)
         {
@@ -299,42 +272,35 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a subvector extracted from the current vector.
+        ///     Returns a subvector extracted from the current vector.
         /// </summary>
-        /// 
         /// <param name="source">The vector to return the subvector from.</param>
         /// <param name="indexes">Array of indices.</param>
-        /// 
         [Obsolete("Please use Get instead.")]
         public static List<T> Submatrix<T>(this List<T> source, int[] indexes)
         {
             return Get(source, indexes);
         }
 
-
-
         /// <summary>
-        ///   Obsolete. Please use <see cref="Classes.Separate{T}(T[], int[])"/> instead.
+        ///     Obsolete. Please use <see cref="Classes.Separate{T}(T[], int[])" /> instead.
         /// </summary>
-        /// 
         [Obsolete("Please use Classes.Separate(T[], int[]) instead.")]
         public static T[][] Subgroups<T>(this T[] values, int[] groups)
         {
-            int[] distinct = groups.Distinct().Sorted();
-            int[] regroups = groups.Apply(x => Array.IndexOf(distinct, x));
+            var distinct = groups.Distinct().Sorted();
+            var regroups = groups.Apply(x => Array.IndexOf(distinct, x));
 
-            return Classes.Separate(values, regroups);
+            return values.Separate(regroups);
         }
 
         /// <summary>
-        ///   Obsolete. Please use <see cref="Classes.Separate{T}(T[], int[], int)"/> instead.
+        ///     Obsolete. Please use <see cref="Classes.Separate{T}(T[], int[], int)" /> instead.
         /// </summary>
-        /// 
         [Obsolete("Please use Classes.Separate(T[], int[], int) instead.")]
         public static T[][] Subgroups<T>(this T[] values, int[] groups, int classes)
         {
-            return Classes.Separate(values, groups, classes);
+            return values.Separate(groups, classes);
         }
-
     }
 }

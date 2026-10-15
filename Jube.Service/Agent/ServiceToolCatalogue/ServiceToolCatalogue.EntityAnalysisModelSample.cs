@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,15 +11,22 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Query.EntityAnalysisModelSample;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddEntityAnalysisModelSample(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "EntityAnalysisModelSampleExecute", OperationKind.Read, Idempotent: true, Destructive: false,
-                "Samples archived transactions of an Entity Analysis Model over a date window and returns them as a CSV file.")
-        ]);
+        static partial void AddEntityAnalysisModelSample(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "EntityAnalysisModelSampleExecute", OperationKind.Read, true, false,
+                    "Samples archived transactions of an Entity Analysis Model over a date window and returns them as a CSV file.",
+                    EntityAnalysisModelSampleService.RequiredPermissions)
+            ]);
+        }
     }
 }

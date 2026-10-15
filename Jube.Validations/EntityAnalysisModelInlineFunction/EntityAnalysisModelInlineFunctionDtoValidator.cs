@@ -26,7 +26,6 @@ namespace Jube.Validations.EntityAnalysisModelInlineFunction
     {
         private const int MaxNameLength = 256;
         private const int MaxFunctionScriptLength = 65536;
-
         private static readonly int[] allowedReturnDataTypeIds = [1, 2, 3, 4, 5];
         private static readonly int[] allowedEncryptionIds = [0, 1, 2];
 
@@ -57,6 +56,7 @@ namespace Jube.Validations.EntityAnalysisModelInlineFunction
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelInlineFunctionResources.NameAlreadyExists])

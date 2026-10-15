@@ -51,6 +51,7 @@ namespace Jube.Validations.EntityAnalysisModelInlineScript
                 {
                     var existing = await repository
                         .GetByNameEntityAnalysisModelIdAsync(name, dto.EntityAnalysisModelId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[EntityAnalysisModelInlineScriptResources.NameAlreadyExists])
@@ -64,6 +65,7 @@ namespace Jube.Validations.EntityAnalysisModelInlineScript
                 .MustAsync(async (id, cancellation) =>
                 {
                     var existing = await entityAnalysisInlineScriptRepository.GetByIdAsync(id, cancellation);
+
                     return existing != null;
                 })
                 .WithMessage(_ =>

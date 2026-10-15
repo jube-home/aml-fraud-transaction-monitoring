@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.EntityApproval
 {
     using System;
@@ -42,7 +47,9 @@ namespace Jube.Dto.EntityApproval
         string? MakerUser,
         int ApprovalsRecorded,
         int ApprovalsRequired,
-        bool CanApprove);
+        bool CanApprove,
+        string? Note,
+        string? ReturnedNote);
 
     public sealed record PendingApprovalDto(
         int Kind,

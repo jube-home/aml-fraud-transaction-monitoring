@@ -11,14 +11,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Accord.Neuro;
+using Accord.Statistics;
+
 namespace Jube.Engine.Exhaustive.Algorithms
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Accord.Neuro;
-    using Accord.Statistics;
-
     public class Performance
     {
         private double PercentageCorrect { get; set; }
@@ -32,11 +32,17 @@ namespace Jube.Engine.Exhaustive.Algorithms
 
         public double[] CalculateScores(ActivationNetwork topologyNetwork, double[][] data)
         {
+            return CalculateScores(topologyNetwork.Compute, data);
+        }
+
+        public double[] CalculateScores(Func<double[], double[]> recall, double[][] data)
+        {
             int i;
             Scores = new double[data.Length - 1 + 1];
+
             for (i = 0; i <= data.Length - 1; i++)
             {
-                var output = topologyNetwork.Compute(data[i]);
+                var output = recall(data[i]);
                 Scores[i] = output[0];
             }
 
@@ -71,22 +77,22 @@ namespace Jube.Engine.Exhaustive.Algorithms
                     correct[i] = 0;
                 }
 
-                if (Math.Abs(actualValue - 1) < 0.0001 & Math.Abs(predictedValue - 1) < 0.0001)
+                if ((Math.Abs(actualValue - 1) < 0.0001) & (Math.Abs(predictedValue - 1) < 0.0001))
                 {
                     Tp += 1;
                 }
 
-                if (actualValue == 0 & predictedValue == 0)
+                if ((actualValue == 0) & (predictedValue == 0))
                 {
                     Tn += 1;
                 }
 
-                if (Math.Abs(predictedValue - 1) < 0.0001 & actualValue == 0)
+                if ((Math.Abs(predictedValue - 1) < 0.0001) & (actualValue == 0))
                 {
                     Fp += 1;
                 }
 
-                if (predictedValue == 0 & Math.Abs(actualValue - 1) < 0.0001)
+                if ((predictedValue == 0) & (Math.Abs(actualValue - 1) < 0.0001))
                 {
                     Fn += 1;
                 }
@@ -94,14 +100,38 @@ namespace Jube.Engine.Exhaustive.Algorithms
 
             errorsPredictedActual.Mean();
             PercentageCorrect = correct.Sum() / (double)correct.Length;
-            Correlation = Math.Abs(SpearmansCoeff(predicted, actual));
-            if (Double.IsNaN(Correlation))
+            Correlation = SpearmansCoeff(predicted, actual);
+
+            if (double.IsNaN(Correlation))
             {
                 Correlation = 0;
             }
+
             Score = (PercentageCorrect + Correlation) / 2d;
 
             return Score;
+        }
+
+        public static List<RocPoint> RocPoints(double[] scores, double[][] dependent)
+        {
+            const double minPrediction = 0d;
+            const double maxPrediction = 1d;
+            const double rocStep = (maxPrediction - minPrediction) / 20d;
+            var rocStepThreshold = 0.05d;
+            var calculator = new Performance();
+            var points = new List<RocPoint>();
+
+            for (var j = 0; j < 20; j++)
+            {
+                calculator.CalculatePerformance(scores, dependent, rocStepThreshold);
+
+                points.Add(new RocPoint(rocStepThreshold, calculator.Score, calculator.Tp, calculator.Fp,
+                    calculator.Tn, calculator.Fn));
+
+                rocStepThreshold += rocStep;
+            }
+
+            return points;
         }
 
         private void ResetPerformance()
@@ -117,32 +147,52 @@ namespace Jube.Engine.Exhaustive.Algorithms
 
         public static double SpearmansCoeff(IEnumerable<double> current, IEnumerable<double> other)
         {
-            var enumerable = current as double[] ?? current.ToArray();
-            var doubles = other as double[] ?? other.ToArray();
+            var enumerable = current as double[] ?? [.. current];
+            var doubles = other as double[] ?? [.. other];
+
             if (enumerable.Length != doubles.Length)
             {
                 throw new ArgumentException("Both collections of data must contain an equal number of elements");
             }
 
+            var n = enumerable.Length;
+
+            if (n < 2)
+            {
+                return double.NaN;
+            }
+
             var ranksX = GetRanking(enumerable);
             var ranksY = GetRanking(doubles);
 
-            var diffPair = ranksX.Zip(ranksY, (x, y) => new
+            var meanX = ranksX.Average();
+            var meanY = ranksY.Average();
+
+            double covariance = 0;
+            double varianceX = 0;
+            double varianceY = 0;
+
+            for (var i = 0; i < n; i++)
             {
-                x,
-                y
-            });
-            var sigmaDiff = diffPair.Sum(s => Math.Pow(s.x - s.y, 2));
-            var n = enumerable.Length;
+                var dx = ranksX[i] - meanX;
+                var dy = ranksY[i] - meanY;
+                covariance += dx * dy;
+                varianceX += dx * dx;
+                varianceY += dy * dy;
+            }
 
-            var rho = 1 - 6 * sigmaDiff / (Math.Pow(n, 3) - n);
+            if (varianceX == 0 || varianceY == 0)
+            {
+                return 0;
+            }
 
-            return rho;
+            return covariance / Math.Sqrt(varianceX * varianceY);
         }
 
         private static double[] GetRanking(IEnumerable<double> values)
         {
-            var enumerable = values as double[] ?? values.ToArray();
+            var enumerable = values as double[] ?? [.. values];
+
             var groupedValues = enumerable.OrderByDescending(n => n)
                 .Select((val, i) => new
                 {
@@ -162,14 +212,15 @@ namespace Jube.Engine.Exhaustive.Algorithms
             double[] compareValues)
         {
             var deepCopyDatasetInputs = (double[][])datasetInputs.DeepMemberwiseClone();
+
             for (int i = 0, loopTo = deepCopyDatasetInputs.Length - 1; i <= loopTo; i++)
             {
-                var output = deepCopyDatasetInputs[i][test] * GetRandomNumber(seeded,
-                    deepCopyDatasetInputs[i][test] * 0.8d, deepCopyDatasetInputs[i][test] * 1.2d);
+                var output = deepCopyDatasetInputs[i][test] * GetRandomNumber(seeded, 0.8d, 1.2d);
                 deepCopyDatasetInputs[i][test] = output;
             }
 
             var outputValues = new double[deepCopyDatasetInputs.Length];
+
             for (int i = 0, loopTo1 = deepCopyDatasetInputs.Length - 1; i <= loopTo1; i++)
             {
                 var output = model.Compute(deepCopyDatasetInputs[i]);

@@ -12,6 +12,7 @@
  */
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("ChangePassword", "readonly", null);
     const $change = $("#Change");
     const $messageChange = $("#MessageChange");
     const $existingPassword = $("#ExistingPassword");

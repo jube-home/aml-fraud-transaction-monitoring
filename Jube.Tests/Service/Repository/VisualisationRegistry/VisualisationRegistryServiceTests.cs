@@ -26,6 +26,7 @@ using Jube.Service.Exceptions.Repository.VisualisationRegistry;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
@@ -54,7 +55,6 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
         private readonly List<int> createdRegistryIds = [];
         private readonly List<int> createdRoleRegistryIds = [];
         private readonly List<string> createdUserNames = [];
-
         private string userAdminA = string.Empty;
         private string userAdminB = string.Empty;
         private string userShowInDirectoryOnlyA = string.Empty;
@@ -81,17 +81,21 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             var visualisationRegistryGuids1 = dbContext.VisualisationRegistry
                 .Where(s => createdRegistryIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryRole>()
                 .Where(w => visualisationRegistryGuids1.Contains(w.VisualisationRegistryGuid)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.VisualisationRegistryVersion>()
                 .Where(w => createdRegistryIds.Contains(w.VisualisationRegistryId)).DeleteAsync();
+
             await dbContext.VisualisationRegistry.Where(w => createdRegistryIds.Contains(w.Id)).DeleteAsync();
 
             await dbContext.UserInTenant.Where(w => createdUserNames.Contains(w.User)).DeleteAsync();
             await dbContext.UserRegistry.Where(w => createdUserNames.Contains(w.Name)).DeleteAsync();
+
             await dbContext.RoleRegistryPermission
                 .Where(w => w.RoleRegistryId != null && createdRoleRegistryIds.Contains(w.RoleRegistryId.Value))
                 .DeleteAsync();
+
             await dbContext.RoleRegistry.Where(w => createdRoleRegistryIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -100,6 +104,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
         {
             var suffix = Guid.NewGuid().ToString("N")[..8];
             var roleGuid = Guid.NewGuid();
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleGuid,
@@ -131,6 +136,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             }
 
             var userName = $"{DatabaseFixture.Prefix}UserVisReg{label}{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -153,6 +159,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             });
 
             createdUserNames.Add(userName);
+
             return userName;
         }
 
@@ -272,6 +279,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
 
             log.Entries.Should()
                 .Contain(e => e.Level == "WARN" && e.Message.Contains(fx.Seed.UserWithoutPermission));
+
             log.Entries.Should().NotContain(e => e.Level == "ERROR");
         }
 
@@ -518,6 +526,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
             {
                 await dbContext.VisualisationRegistry.Where(w => w.Id == created.Id)
                     .Set(w => w.ImportId, (int?)null).UpdateAsync();
+
                 await dbContext.GetTable<Data.Poco.Import>().Where(w => w.Id == importId).DeleteAsync();
             }
         }
@@ -541,6 +550,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
 
             var created = await service.InsertAsync(ValidDto());
             createdRegistryIds.Add(created.Id);
+
             await dbContext.VisualisationRegistry.Where(w => w.Id == created.Id)
                 .Set(w => w.Locked, (byte)1).UpdateAsync();
 
@@ -637,6 +647,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
 
             var created = await service.InsertAsync(ValidDto());
             createdRegistryIds.Add(created.Id);
+
             await dbContext.VisualisationRegistry.Where(w => w.Id == created.Id)
                 .Set(w => w.Locked, (byte)1).UpdateAsync();
 
@@ -971,6 +982,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistry
         public async Task InsertWithBlankNameUsesFrenchMessageUnderFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

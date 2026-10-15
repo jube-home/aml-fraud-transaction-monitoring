@@ -13,7 +13,10 @@
 
 using System.ComponentModel;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Dto.Query.EntityAnalysisModelBacktest
 {
@@ -24,7 +27,6 @@ namespace Jube.Dto.Query.EntityAnalysisModelBacktest
         public int Id { get; set; }
 
         [Description("The instance's Guid.")] public Guid Guid { get; set; }
-
         [Description("The model.")] public int EntityAnalysisModelId { get; set; }
 
         [Description("The kind of rule tested.")]

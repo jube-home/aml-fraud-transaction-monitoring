@@ -11,13 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Data.Repository;
 using Jube.Service.ContainerLogEntry;
 using Jube.Service.Exceptions.ContainerLogEntry;
 using Jube.Service.Reactivity;
@@ -278,10 +278,12 @@ namespace Jube.Test.Service.ContainerLogEntry
 
             var ascending = await service.ListAsync(search: prefix, sortField: "containerName",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.ContainerName).Should().Equal($"{prefix}A", $"{prefix}B", $"{prefix}C");
 
             var descending = await service.ListAsync(search: prefix, sortField: "containerName",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.ContainerName).Should().Equal($"{prefix}C", $"{prefix}B", $"{prefix}A");
         }
 
@@ -297,6 +299,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, $"{prefix}A", ContainerLogStreamType.Stdout, "message");
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: prefix, sortField: "containerName",
                 sortDirection: ascendingKeyword);
 
@@ -312,6 +315,7 @@ namespace Jube.Test.Service.ContainerLogEntry
             await CreateEntryAsync(dbContext, $"{prefix}B", ContainerLogStreamType.Stdout, "message");
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: prefix, sortField: "containerName",
                 sortDirection: "banana");
 
@@ -324,8 +328,10 @@ namespace Jube.Test.Service.ContainerLogEntry
             await using var dbContext = fx.GetDbContext();
             var uniqueMessage = $"{DatabaseFixture.Prefix}first{Guid.NewGuid():N}";
             var uniqueMessage2 = $"{DatabaseFixture.Prefix}second{Guid.NewGuid():N}";
+
             await CreateEntryAsync(dbContext, "etcd", ContainerLogStreamType.Stdout, uniqueMessage,
                 DateTime.UtcNow.AddMinutes(-30));
+
             await CreateEntryAsync(dbContext, "etcd", ContainerLogStreamType.Stdout, uniqueMessage2,
                 DateTime.UtcNow);
 
@@ -342,6 +348,7 @@ namespace Jube.Test.Service.ContainerLogEntry
         {
             await using var dbContext = fx.GetDbContext();
             var prefix = $"{DatabaseFixture.Prefix}Cont{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, prefix, ContainerLogStreamType.Stdout, "message");

@@ -14,7 +14,6 @@
 using System;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 namespace Jube.Test.Security.Model;
 
 public sealed class ParentRef

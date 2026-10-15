@@ -38,6 +38,7 @@ namespace Jube.Test.Waf
         public void UpdateSwapsTheActiveRuleSet()
         {
             var registry = new WafRegistry();
+
             var ruleSet = WafRuleSetCompiler.Compile(
             [
                 new WafSignature
@@ -73,6 +74,7 @@ namespace Jube.Test.Waf
                     MatchTimeoutMilliseconds = 50, Drop = 1, Active = 1
                 }
             ], []);
+
             var inspector = new WafInspector(registry, TestDynamicEnvironment.Create());
             var evilInput = new string('a', 40) + "!";
 

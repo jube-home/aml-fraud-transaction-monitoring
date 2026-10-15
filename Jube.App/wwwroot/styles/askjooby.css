@@ -1,0 +1,1319 @@
+#askJoobyPage {
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* !important beats Kendo's JS-set inline height regardless of specificity, so the splitter
+   always exactly fills main[role="main"]'s padded content box with no JS measurement needed --
+   nothing to race the browser's own layout of that box on first paint. */
+#askJoobySplitter {
+    height: 100% !important;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Flex column with one consistent gap, rather than individually-tuned margins on each child --
+   New Conversation, the search box, and the list all get the same breathing room this way, and
+   the list itself fills whatever's left of the pane and scrolls on its own instead of pushing the
+   search box around as it grows. */
+#askJoobyConversationsPane {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+/* Full width, same as the search box directly below it, rather than shrinking to its own text --
+   the two read as one aligned column of controls instead of a narrow button floating above a
+   full-width field. */
+#askJoobyNew {
+    width: 100%;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* Same sizing as #TreeSearch (Models' own tree search box, see jube.css) -- width/box-sizing
+   only, the look itself comes from the k-textbox class and the kendoTextBox() widget (see
+   AskJooby.js), same as that one and the Administration pages' own search boxes.
+   !important because the widget sets its own width once initialised -- same reason
+   .k-textbox.small/.medium/.large above need it, not a specificity fight worth avoiding here. */
+#askJoobyConversationSearch {
+    width: 100% !important;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+#askJoobyConversations {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.askJoobyConversationItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 6px;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+}
+
+.askJoobyConversationItem:hover {
+    background: #f0f8ed;
+}
+
+.askJoobyConversationItem.askJoobyConversationSelected {
+    background: #e3f1dc;
+}
+
+.askJoobyConversationTitleGroup {
+    overflow: hidden;
+}
+
+.askJoobyConversationTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+.askJoobyConversationTime {
+    display: block;
+    font-size: 0.78em;
+    color: #999;
+    margin-top: 2px;
+}
+
+.askJoobyConversationDelete {
+    flex-shrink: 0;
+    margin-left: 8px;
+    padding: 0 4px;
+    color: #999;
+    cursor: pointer;
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+.askJoobyConversationDelete:hover {
+    color: #b00020;
+}
+
+.askJoobyEmptyState {
+    padding: 16px 10px;
+    color: #999;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+#askJoobyChatPane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#askJoobyTranscript {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+}
+
+#askJoobyComposer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px 8px;
+    background: #fafafa;
+}
+
+#askJoobyComposer .k-textarea {
+    flex: 1;
+    min-width: 0;
+    min-height: 34px;
+    max-height: 160px;
+}
+
+#askJoobySend,
+#askJoobyStop,
+#askJoobyGuide {
+    flex-shrink: 0;
+    height: 34px;
+}
+
+#askJoobyUpload {
+    display: none !important;
+}
+
+#askJoobyAttachRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px 14px 2px;
+    border-top: 1px solid #e0e0e0;
+    background: #fafafa;
+}
+
+#askJoobyAttachButton {
+    flex-shrink: 0;
+    height: 30px;
+}
+
+#askJoobyPendingChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+#askJoobyPendingChips:empty {
+    display: none;
+}
+
+.askJoobyPendingChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 200px;
+    background: #fff;
+    border: 1px solid #d5d5d5;
+    border-radius: 999px;
+    padding: 3px 4px 3px 10px;
+    font-size: 0.82em;
+    color: #444;
+}
+
+.askJoobyPendingChipUploading {
+    color: #999;
+    font-style: italic;
+}
+
+.askJoobyPendingChipName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.askJoobyPendingChipRemove {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border: none;
+    background: transparent;
+    color: #888;
+    cursor: pointer;
+    font-size: 1em;
+    line-height: 1;
+    padding: 0;
+}
+
+.askJoobyPendingChipRemove:hover {
+    color: #b00020;
+}
+
+.askJoobyAttachmentChip {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 0.85em;
+    color: #444;
+    text-decoration: none;
+}
+
+a.askJoobyAttachmentChip:hover {
+    background: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+}
+
+.askJoobyRow {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin-bottom: 10px;
+    max-width: 78%;
+}
+
+.askJoobyRowUser {
+    margin-left: auto;
+    flex-direction: row-reverse;
+}
+
+.askJoobyRowAssistant {
+    margin-right: auto;
+}
+
+.askJoobyAvatar {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #eef3ea;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: #fff;
+}
+
+.askJoobyAvatarAssistant {
+    background-image: url("/images/askjooby-avatar.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.askJoobyAvatarUser {
+    background-color: #6a8f5e;
+}
+
+.askJoobyBubbleWrap {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.askJoobyMeta {
+    font-size: 0.72em;
+    color: #aaa;
+    padding: 2px 6px 0;
+}
+
+.askJoobyFeedback {
+    display: flex;
+    gap: 4px;
+    padding: 2px 6px 0;
+}
+
+.askJoobyFeedbackButton {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.85em;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 4px;
+    opacity: 0.55;
+}
+
+.askJoobyFeedbackButton:hover:not(:disabled) {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.askJoobyFeedbackButton:disabled {
+    cursor: default;
+}
+
+.askJoobyFeedbackButton.askJoobyFeedbackChosen {
+    opacity: 1;
+    background: rgba(74, 124, 47, 0.15);
+}
+
+.askJoobyBubble {
+    padding: 8px 12px;
+    border-radius: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+.askJoobyBubble p {
+    margin: 0 0 12px 0;
+}
+
+.askJoobyBubble p:last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyLeakedToolCall {
+    color: #666;
+    font-style: italic;
+}
+
+.askJoobyBubble code {
+    background: rgba(0, 0, 0, 0.07);
+    border-radius: 3px;
+    padding: 1px 4px;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 0.92em;
+}
+
+.askJoobyBubble pre {
+    background: rgba(0, 0, 0, 0.07);
+    border-radius: 6px;
+    padding: 8px;
+    overflow-x: auto;
+    margin: 6px 0;
+}
+
+.askJoobyBubble pre code {
+    background: none;
+    padding: 0;
+}
+
+.askJoobyBubble pre.askJoobyCodeHighlighted {
+    background: #fdfdfd;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.askJoobyBubble pre.askJoobyCodeHighlighted .ace_static_highlight {
+    font-family: Consolas, Monaco, monospace;
+    font-size: 0.92em;
+    line-height: 1.45;
+    background: none;
+}
+
+.askJoobyBubble pre.askJoobyCodeHighlighted .ace_line {
+    white-space: pre;
+}
+
+.askJoobyBubble ul, .askJoobyBubble ol {
+    margin: 4px 0 12px 0;
+    padding-left: 20px;
+}
+
+.askJoobySvgDiagram {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 6px 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+}
+
+/* A ```markdown/```md fenced block rendered as a real document (see AskJoobyRenderCodeBlock) --
+   bordered and lightly shaded, same as .askJoobyCodeHighlighted, so it reads as a distinct
+   embedded document rather than a continuation of the surrounding reply's own prose. */
+.askJoobyRenderedMarkdown {
+    display: block;
+    margin: 6px 0;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    background: #fdfdfd;
+}
+
+.askJoobyRenderedMarkdown > :first-child {
+    margin-top: 0;
+}
+
+.askJoobyRenderedMarkdown > :last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyChartFigure {
+    margin: 8px 0 2px 0;
+}
+
+.askJoobyBubble img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.askJoobyBubble input[type="checkbox"] {
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+.askJoobyTaskDone {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.askJoobyBubble ul:last-child, .askJoobyBubble ol:last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyBubble h1, .askJoobyBubble h2, .askJoobyBubble h3,
+.askJoobyBubble h4, .askJoobyBubble h5, .askJoobyBubble h6 {
+    margin: 14px 0 6px 0;
+    line-height: 1.3;
+    font-weight: 600;
+}
+
+.askJoobyBubble h1:first-child, .askJoobyBubble h2:first-child, .askJoobyBubble h3:first-child,
+.askJoobyBubble h4:first-child, .askJoobyBubble h5:first-child, .askJoobyBubble h6:first-child {
+    margin-top: 0;
+}
+
+.askJoobyBubble h1 {
+    font-size: 1.25em;
+}
+
+.askJoobyBubble h2 {
+    font-size: 1.15em;
+}
+
+.askJoobyBubble h3 {
+    font-size: 1.08em;
+}
+
+.askJoobyBubble h4, .askJoobyBubble h5, .askJoobyBubble h6 {
+    font-size: 1em;
+}
+
+.askJoobyBubble hr {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    margin: 12px 0;
+}
+
+.askJoobyBubble blockquote {
+    margin: 6px 0 12px 0;
+    padding: 2px 10px;
+    border-left: 3px solid rgba(0, 0, 0, 0.15);
+    color: #555;
+}
+
+.askJoobyBubble blockquote:last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyBubble blockquote p {
+    margin: 0 0 4px 0;
+}
+
+.askJoobyBubble blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyBubble a {
+    color: #4a7c2f;
+    word-break: break-word;
+}
+
+.askJoobyBubble table {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin: 6px 0 12px 0;
+    max-width: 100%;
+    font-size: 0.92em;
+    white-space: normal;
+}
+
+.askJoobyBubble table:last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyBubble th, .askJoobyBubble td {
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    padding: 4px 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.askJoobyBubble th {
+    background: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+/* Fixed treatment for the caveat appended after a revision that still failed its
+   second check -- overrides any emphasis the model's own REASON text used, so this
+   always reads as a note, not as shouted **bold**. */
+.askJoobyValidationNote {
+    color: #b00020;
+    font-style: italic;
+    font-weight: normal;
+    font-size: inherit;
+}
+
+.askJoobyValidationNote strong,
+.askJoobyValidationNote em {
+    color: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+}
+
+.askJoobyValidationNote blockquote {
+    color: inherit;
+    border-left-color: rgba(176, 0, 32, 0.35);
+}
+
+.askJoobyBubbleUser {
+    background: #f0f8ed;
+    border-bottom-right-radius: 3px;
+}
+
+.askJoobyBubbleAssistant {
+    background: #f5f5f5;
+    border-bottom-left-radius: 3px;
+}
+
+.askJoobyActivityRow {
+    display: flex;
+    margin-bottom: 6px;
+}
+
+/* A run of pills from one Joobrik reads as one block; the moment a different one turns up, a
+   little air and a hairline above it say so. Only on the change, never between siblings, so the
+   transcript gains a rhythm rather than a grid -- during a fan out the same name can hold the
+   floor for a dozen lines, and without this they all run together as one undifferentiated
+   column. */
+.askJoobyActivityShift {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #ececec;
+}
+
+/* Every pill is one line and exactly one height, open or shut, however long the text behind it
+   runs. A pill that grew with its own text shunted the whole transcript about while a reply was
+   still streaming, and once a pill could be expanded the inconsistency read as two different
+   kinds of thing rather than one thing in two states. The text ellipsises instead; the whole of
+   it is a click away. */
+.askJoobyActivity {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-sizing: border-box;
+    height: 24px;
+    max-width: 100%;
+    color: #666;
+    font-size: 0.82em;
+    background: #f0f0f0;
+    border-radius: 999px;
+    padding: 3px 10px 3px 8px;
+}
+
+.askJoobyActivityText {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.askJoobyActivityHolder {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Discreet on purpose: a small chevron that only darkens on hover, so a transcript of twenty
+   pills does not read as twenty invitations. */
+.askJoobyActivityExpandable {
+    cursor: pointer;
+}
+
+.askJoobyActivityDisclosure {
+    opacity: 0.45;
+    font-size: 1.1em;
+    line-height: 1;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.askJoobyActivityExpandable:hover .askJoobyActivityDisclosure,
+.askJoobyActivityExpandable:focus-visible .askJoobyActivityDisclosure {
+    opacity: 0.9;
+}
+
+.askJoobyActivityOpen .askJoobyActivityDisclosure {
+    transform: rotate(90deg);
+}
+
+/* Sibling of the pill, not a child, so opening one never changes the pill's own height. Same
+   muted palette as the pill it belongs to, monospaced because what it holds is arguments and a
+   tool's own output rather than prose, and scrolled rather than endless. */
+.askJoobyActivityDetail {
+    margin: 4px 0 2px 8px;
+    padding: 8px 10px;
+    max-width: 100%;
+    max-height: 220px;
+    overflow: auto;
+    background: #fafafa;
+    border-left: 2px solid #ddd;
+    border-radius: 0 6px 6px 0;
+    color: #555;
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-size: 0.76em;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* A banner's panel holds a written report or a routing decision rather than a tool's raw output, so it
+   drops the monospace pre-wrap treatment that suits a row count and reads as prose: proportional
+   type, real headings and real tables, and a taller window because a report that has to be
+   scrolled four lines at a time is no easier to read than the squashed pill it came from. */
+.askJoobyActivityDetailRich {
+    max-height: 420px;
+    font-family: inherit;
+    font-size: 0.86em;
+    white-space: normal;
+}
+
+.askJoobyActivityDetailRich > :first-child {
+    margin-top: 0;
+}
+
+.askJoobyActivityDetailRich > :last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyActivityDetailRich table {
+    border-collapse: collapse;
+    margin: 6px 0;
+}
+
+.askJoobyActivityDetailRich th,
+.askJoobyActivityDetailRich td {
+    border: 1px solid #ddd;
+    padding: 3px 7px;
+    text-align: left;
+}
+
+.askJoobyActivityDetailRich code {
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-size: 0.92em;
+}
+
+.askJoobyActivityDetailRich p {
+    margin: 0 0 12px 0;
+}
+
+.askJoobyActivityDetailRich p:last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyActivityDetailRich pre {
+    background: rgba(0, 0, 0, 0.07);
+    border-radius: 6px;
+    padding: 8px;
+    overflow-x: auto;
+    margin: 6px 0;
+}
+
+.askJoobyActivityDetailRich pre code {
+    background: none;
+    padding: 0;
+}
+
+.askJoobyActivityDetailRich ul, .askJoobyActivityDetailRich ol {
+    margin: 4px 0 12px 0;
+    padding-left: 20px;
+}
+
+.askJoobyActivityDetailRich ul:last-child, .askJoobyActivityDetailRich ol:last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyActivityDetailRich img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.askJoobyActivityDetailRich h1, .askJoobyActivityDetailRich h2, .askJoobyActivityDetailRich h3,
+.askJoobyActivityDetailRich h4, .askJoobyActivityDetailRich h5, .askJoobyActivityDetailRich h6 {
+    margin: 14px 0 6px 0;
+    line-height: 1.3;
+    font-weight: 600;
+}
+
+.askJoobyActivityDetailRich h1:first-child, .askJoobyActivityDetailRich h2:first-child,
+.askJoobyActivityDetailRich h3:first-child, .askJoobyActivityDetailRich h4:first-child,
+.askJoobyActivityDetailRich h5:first-child, .askJoobyActivityDetailRich h6:first-child {
+    margin-top: 0;
+}
+
+.askJoobyActivityDetailRich h1 {
+    font-size: 1.25em;
+}
+
+.askJoobyActivityDetailRich h2 {
+    font-size: 1.15em;
+}
+
+.askJoobyActivityDetailRich h3 {
+    font-size: 1.08em;
+}
+
+.askJoobyActivityDetailRich h4, .askJoobyActivityDetailRich h5, .askJoobyActivityDetailRich h6 {
+    font-size: 1em;
+}
+
+.askJoobyActivityDetailRich hr {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    margin: 12px 0;
+}
+
+.askJoobyActivityDetailRich blockquote {
+    margin: 6px 0 12px 0;
+    padding: 2px 10px;
+    border-left: 3px solid rgba(0, 0, 0, 0.15);
+    color: #555;
+}
+
+.askJoobyActivityDetailRich blockquote:last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyActivityDetailRich blockquote p {
+    margin: 0 0 4px 0;
+}
+
+.askJoobyActivityDetailRich blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.askJoobyActivityDetailRich a {
+    color: #4a7c2f;
+    word-break: break-word;
+}
+
+.askJoobyActivity::before {
+    font-size: 1em;
+}
+
+.askJoobyStep::before {
+    content: "\1F527";
+}
+
+.askJoobyStep.askJoobyToolIconed::before {
+    content: none;
+}
+
+.askJoobyToolIcon {
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+    color: #555;
+}
+
+.askJoobyThoughtBubble {
+    background: #f5f5f5;
+    color: #666;
+    font-style: italic;
+    margin-bottom: 6px;
+    max-width: 100%;
+}
+
+.askJoobyThoughtBubble::before {
+    content: "\1F4AD\00A0";
+    font-style: normal;
+}
+
+.askJoobyThoughtBubble code {
+    font-style: normal;
+}
+
+.askJoobyThinkingBubble {
+    background: #f5f5f5;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 6px;
+    max-width: 100%;
+    border-left: 2px solid #ddd;
+}
+
+.askJoobyThinkingBubble::before {
+    content: "\1F9E0\00A0";
+    font-style: normal;
+}
+
+.askJoobyThinkingBubble code {
+    font-style: normal;
+}
+
+/* Names whose reasoning the bubble below is, for a spawned Joobrik's pass. Absent for Jooby's own,
+   which is unambiguous and keeps the plain bubble it has always had. Several Joobriks reason at
+   once during a fan out, so without this their bubbles are indistinguishable from each other. */
+.askJoobyThinkingWho {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    color: #8a63d2;
+    margin-bottom: 2px;
+}
+
+/* Delegation gets a full banner, not a small pill -- spawning a Joobrik is a genuine agent
+   hand-off worth announcing, not a routine tool call. */
+/* Keeps its colour, its width and its weight, and gives up only its height: the same 24px every
+   other pill is, for the reason given above .askJoobyActivity. */
+/* The two agent-boundary banners. Everything that makes them a banner rather than a pill is
+   shared; the colour and the glyph are all that separate them, because the distinction being drawn
+   is which kind of boundary was crossed and not how important it was. A spawn keeps the purple and
+   the buffalo it has always had -- a Joobrik called in to do a piece and report back. A handoff is
+   teal and a clasp, because the whole turn changes hands and nothing comes back to whoever let go
+   of it. */
+.askJoobyDelegationBanner,
+.askJoobyHandoffBanner,
+.askJoobyValidationBanner,
+.askJoobyRevisionBanner,
+.askJoobyGuardBanner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-sizing: border-box;
+    height: 24px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.82em;
+    padding: 3px 12px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+}
+
+.askJoobyDelegationBanner {
+    background: linear-gradient(90deg, #5b3fa0, #8a63d2);
+    box-shadow: 0 2px 6px rgba(91, 63, 160, 0.25);
+}
+
+.askJoobyHandoffBanner {
+    background: linear-gradient(90deg, #11555f, #1f8f92);
+    box-shadow: 0 2px 6px rgba(17, 85, 95, 0.25);
+}
+
+/* Jadek (the validator) owns both of these -- checking the draft, and handing it back to the
+   agent to revise -- so they share one colour, yellow, rather than the mismatched brown/green
+   they used to carry. Dark text rather than the white every other banner uses: white on this
+   yellow fails contrast, where it was fine against the darker purple/teal/red gradients. */
+.askJoobyValidationBanner,
+.askJoobyRevisionBanner {
+    background: linear-gradient(90deg, #a98600, #e0bb00);
+    box-shadow: 0 2px 6px rgba(169, 134, 0, 0.3);
+    color: #3a2e00;
+}
+
+.askJoobyValidationBanner::before,
+.askJoobyRevisionBanner::before {
+    content: "\1F453";
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+/* AgentGuard refusing a message outright is a stop, not a routine status change, so it gets its
+   own red/danger treatment rather than borrowing Jadek's validation banner, which read as the
+   wrong severity entirely. */
+.askJoobyGuardBanner {
+    background: linear-gradient(90deg, #7a1212, #c23b3b);
+    box-shadow: 0 2px 6px rgba(122, 18, 18, 0.3);
+}
+
+.askJoobyGuardBanner::before {
+    content: "\1F6D1";
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+.askJoobyDelegationBanner .askJoobyActivityDisclosure,
+.askJoobyHandoffBanner .askJoobyActivityDisclosure,
+.askJoobyValidationBanner .askJoobyActivityDisclosure,
+.askJoobyRevisionBanner .askJoobyActivityDisclosure,
+.askJoobyGuardBanner .askJoobyActivityDisclosure {
+    opacity: 0.75;
+}
+
+.askJoobyDelegationBanner:hover .askJoobyActivityDisclosure,
+.askJoobyHandoffBanner:hover .askJoobyActivityDisclosure,
+.askJoobyValidationBanner:hover .askJoobyActivityDisclosure,
+.askJoobyRevisionBanner:hover .askJoobyActivityDisclosure,
+.askJoobyGuardBanner:hover .askJoobyActivityDisclosure {
+    opacity: 1;
+}
+
+.askJoobyDelegationBanner::before {
+    content: "\1F403";
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+.askJoobyHandoffBanner::before {
+    content: "\1F91D";
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+/* Shared by the Step/Error pill and both agent-boundary banners (all already flex rows with a gap) --
+   pushed to the far end via margin-left: auto so each pill/banner reads as "what happened ...
+   when", not a prefix competing with the label for attention. See AppendActivityStamp. */
+.askJoobyActivityStamp {
+    margin-left: auto;
+    padding-left: 8px;
+    font-size: 0.85em;
+    opacity: 0.65;
+    white-space: nowrap;
+}
+
+/* Always the last child of the transcript -- a quiet divider marking the end of the chat, the same
+   vertical rhythm (margin-bottom: 10px) as a message row so it reads as part of the flow rather than
+   a stray fragment, but visually a line break (top border), not another bubble. The "Last updated"
+   stamp (see PinAuditLinkToEnd) sits on the left, the audit link on the right -- when there's no
+   stamp yet (a still-empty conversation) the link alone still reads fine centred by the row's own
+   justify-content. */
+.askJoobyAuditLinkRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.askJoobyAuditLinkRow:not(:has(.askJoobyTranscriptStamp)) {
+    justify-content: center;
+}
+
+.askJoobyAuditLinks a {
+    margin-left: 10px;
+}
+
+.askJoobyAuditLinkRow a {
+    color: #888;
+    font-size: 0.8em;
+    text-decoration: none;
+}
+
+.askJoobyAuditLinkRow a:hover {
+    color: #6a8f5e;
+    text-decoration: underline;
+}
+
+/* The end stamp inside .askJoobyAuditLinkRow above, and its mirror image at the very top of the
+   transcript, above the first message -- both quiet, small, and off to the side, never competing
+   with the actual conversation for attention. */
+.askJoobyTranscriptStamp,
+.askJoobyTranscriptStart {
+    color: #aaa;
+    font-size: 0.8em;
+}
+
+.askJoobyTranscriptStart {
+    margin-bottom: 8px;
+}
+
+/* A one-shot row of selectable pills appended after a reply finishes (see
+   AppendSelectionRow/AskClarifyingQuestionTool) -- never replayed from history, only ever live.
+   A "what's next" suggestion and a clarifying question's options are the same interaction from
+   the caller's side (pick one, several, or none of a fixed set, optionally add their own words,
+   then Go), so both use this one control -- there is no separate "clarification" dressing. */
+.askJoobySelectionRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+}
+
+#askJoobyWidgetPanel .askJoobySelectionRow {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+#askJoobyWidgetPanel .askJoobySelectionOption {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+#askJoobyWidgetPanel .askJoobySelectionControls {
+    flex-shrink: 0;
+    width: auto;
+}
+
+/* Holds the optional hint text plus the row's own Go button -- kept as a distinct flex child so
+   it wraps onto its own line under the pills without disturbing their own layout above it. */
+.askJoobySelectionControls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 2px;
+}
+
+/* A pill that toggles selected/unselected on click, not a one-shot send button -- the actual
+   native checkbox is visually hidden (the label/pill itself IS the control), selected state
+   conveyed by fill rather than a checkbox glyph. */
+.askJoobySelectionOption {
+    display: inline-flex;
+    align-items: center;
+    background: #f2f5f0;
+    border: 1px solid #d8e0d4;
+    border-radius: 14px;
+    color: #4a6b43;
+    cursor: pointer;
+    font-size: 0.85em;
+    padding: 4px 12px;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.askJoobySelectionOption input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.askJoobySelectionOption:hover {
+    background: #e5ede2;
+    border-color: #6a8f5e;
+}
+
+.askJoobySelectionOption.askJoobySelectionOptionSelected {
+    background: #4a6b43;
+    border-color: #4a6b43;
+    color: #fff;
+}
+
+.askJoobySelectionOption:has(input:disabled) {
+    cursor: default;
+    opacity: 0.5;
+}
+
+/* Clarification's own hint ("Tick one or more, or just type your own answer below.") --
+   Suggestions never sets one. */
+.askJoobyClarificationHint {
+    color: #888;
+    font-size: 0.8em;
+}
+
+/* The row's own submit action -- lets the caller act on their picks right where they made them,
+   without reaching for the composer's Send further down the page. */
+.askJoobyGoButton {
+    background: #4a6b43;
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.85em;
+    padding: 4px 14px;
+    transition: background 0.15s ease;
+}
+
+.askJoobyGoButton:hover:not(:disabled) {
+    background: #3a5535;
+}
+
+.askJoobyGoButton:disabled {
+    background: #b9c4b4;
+    cursor: default;
+}
+
+.askJoobyError {
+    color: #b00020;
+    background: #fdecec;
+}
+
+.askJoobyError::before {
+    content: "\26A0";
+}
+
+.askJoobyThinking {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f5f5f5;
+    border-radius: 999px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
+    color: #777;
+    font-size: 0.9em;
+}
+
+.askJoobyThinkingWord {
+    letter-spacing: 0.02em;
+    animation: askJoobyCanter 1.1s infinite ease-in-out;
+}
+
+.askJoobyThinkingBuffalo {
+    display: inline-block;
+    font-size: 1.1em;
+    line-height: 1;
+    animation: askJoobyGallop 0.6s infinite ease-in-out;
+}
+
+.askJoobyThinkingBuffalo::before {
+    content: "\1F9AC";
+}
+
+@keyframes askJoobyGallop {
+    0%, 100% {
+        transform: translateY(0) scaleX(1);
+    }
+    50% {
+        transform: translateY(-3px) scaleX(0.9);
+    }
+}
+
+.askJoobyThinkingElapsed {
+    margin-left: 2px;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.55;
+}
+
+@keyframes askJoobyCanter {
+    0%, 80%, 100% {
+        opacity: 0.35;
+        transform: translateY(0);
+    }
+    40% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+}
+
+.askJoobyThinkingDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #aaa;
+    animation: askJoobyPulse 1.1s infinite ease-in-out;
+}
+
+.askJoobyThinkingDot2 {
+    animation-delay: 0.15s;
+}
+
+.askJoobyThinkingDot3 {
+    animation-delay: 0.3s;
+}
+
+@keyframes askJoobyPulse {
+    0%, 80%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+    40% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#askJoobyWidgetLauncher {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    padding: 0;
+}
+
+#askJoobyWidgetLauncher:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+#askJoobyWidgetLauncher:focus-visible {
+    outline: 3px solid #005f7f;
+    outline-offset: 3px;
+}
+
+.askJoobyLauncherIcon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.85);
+    transition: opacity 180ms ease, transform 180ms ease;
+    pointer-events: none;
+}
+
+.askJoobyLauncherIconClosed {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+#askJoobyWidgetLauncher.askJoobyLauncherOpen .askJoobyLauncherIconClosed {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.85);
+}
+
+#askJoobyWidgetLauncher.askJoobyLauncherOpen .askJoobyLauncherIconOpen {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .askJoobyLauncherIcon {
+        transition: none;
+    }
+}
+
+#askJoobyWidgetPanel {
+    position: fixed;
+    right: 20px;
+    bottom: 88px;
+    width: min(760px, 94vw);
+    height: min(960px, 85vh);
+    z-index: 1000;
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#askJoobyWidgetHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: #1f7a6c;
+    color: #fff;
+    font-weight: bold;
+}
+
+#askJoobyWidgetNew {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 1.1em;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#askJoobyWidgetNew:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+#askJoobyWidgetTranscript {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+}
+
+#askJoobyWidgetComposer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 8px 10px;
+    border-top: 1px solid #e0e0e0;
+    background: #fafafa;
+}
+
+#askJoobyWidgetComposer .k-textarea {
+    flex: 1;
+    min-width: 0;
+    min-height: 32px;
+    max-height: 120px;
+}
+
+#askJoobyWidgetSend {
+    flex-shrink: 0;
+    height: 32px;
+}

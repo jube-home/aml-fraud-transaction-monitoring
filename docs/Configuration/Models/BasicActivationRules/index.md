@@ -6,8 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Basic Activation Rules
 Hitherto all processing has served to create an abundance of data surrounding the processing of an event or transaction through at the model,  yet no tangible action has been taken.  For example,  in a transaction fraud prevention platform the requirement might be to decline a transaction if volume exceeds a certain threshold.
 

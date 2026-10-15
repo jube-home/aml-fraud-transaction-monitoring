@@ -48,12 +48,12 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
         private readonly List<int> createdXpathIds = [];
         private readonly List<int> createdOverrideIds = [];
         private readonly List<int> createdActivationRuleOverrideIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.EntityAnalysisModelOverride.Where(w => createdOverrideIds.Contains(w.Id))
                 .DeleteAsync();
             await dbContext.EntityAnalysisModelActivationRuleOverride
@@ -86,6 +86,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
                 Deleted = deletedModel,
                 TenantRegistryId = tenantRegistryId,
             };
+
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
             createdModelIds.Add(model.Id);
 
@@ -100,6 +101,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
                     Deleted = deletedXpath,
                     EnableOverride = (byte)(enableOverride ? 1 : 0),
                 }));
+
             return model;
         }
 
@@ -203,6 +205,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
             var model = await InsertModelAsync(dbContext, tenantA, key);
 
             await InsertActivationRuleOverrideAsync(dbContext, model.Guid, key, "gone", "RuleOne", 0, null, 1);
+
             await InsertActivationRuleOverrideAsync(dbContext, model.Guid, key, "stale", "RuleTwo", 0,
                 DateTime.UtcNow.AddHours(-1));
 
@@ -227,6 +230,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
             var row = keys.Single(w => w.OverrideKey == key);
             row.Values.Should().Be(0);
             row.Overrides.Should().Be(0);
+
             row.EnabledOnModels.Should().Be(1,
                 "the summary is of the keys available, so a key that holds nothing yet must still be offered");
         }
@@ -264,6 +268,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
 
             await InsertOverrideAsync(dbContext, model.Guid, key, "live");
             await InsertOverrideAsync(dbContext, model.Guid, key, "removed", null, 1);
+
             await InsertActivationRuleOverrideAsync(dbContext, model.Guid, key, "stale", "RuleOne", 0,
                 DateTime.UtcNow.AddHours(-1));
 
@@ -311,8 +316,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
             var row = (await service.GetKeysAsync()).Single(w => w.OverrideKey == key);
 
             row.NextExpiryDate.Should().NotBeNull();
+
             row.NextExpiryDate!.Value.UtcDateTime.Should().BeCloseTo(soon, TimeSpan.FromSeconds(5),
                 "the next expiry is the soonest one, being what an operator needs to notice");
+
             row.LastCreatedDate.Should().NotBeNull();
         }
 
@@ -340,6 +347,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -348,6 +356,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -585,6 +594,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
                 Deleted = 1,
                 TenantRegistryId = tenantA
             };
+
             deletedTwin.Id = await dbContext.InsertWithInt32IdentityAsync(deletedTwin);
             createdModelIds.Add(deletedTwin.Id);
 
@@ -636,6 +646,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
 
             values.Should().HaveCount(2,
                 "one value genuinely overridden on two models is two rows, one per model, not a duplicate");
+
             values.Select(v => v.Name).Should().BeEquivalentTo(new[] { first.Name, second.Name });
         }
     }

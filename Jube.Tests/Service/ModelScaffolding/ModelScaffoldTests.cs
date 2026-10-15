@@ -32,6 +32,7 @@ namespace Jube.Test.Service.ModelScaffolding
         {
             var connection = new NpgsqlConnection(ModelScaffold.ConnectionString);
             await connection.OpenAsync();
+
             return connection;
         }
 
@@ -39,6 +40,7 @@ namespace Jube.Test.Service.ModelScaffolding
             params (string Name, object Value)[] parameters)
         {
             await using var command = new NpgsqlCommand(sql, connection);
+
             foreach (var (name, value) in parameters)
             {
                 command.Parameters.AddWithValue(name, value);
@@ -51,13 +53,16 @@ namespace Jube.Test.Service.ModelScaffolding
             NpgsqlConnection connection)
         {
             var edges = new List<(string, string, string)>();
+
             await using var command = new NpgsqlCommand(
                 "SELECT cl.relname, a.attname, pl.relname FROM pg_constraint c " +
                 "JOIN pg_class cl ON cl.oid = c.conrelid JOIN pg_namespace n ON n.oid = cl.relnamespace AND n.nspname = 'public' " +
                 "JOIN pg_class pl ON pl.oid = c.confrelid " +
                 "JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = c.conkey[1] " +
                 "WHERE c.contype = 'f' AND array_length(c.conkey, 1) = 1", connection);
+
             await using var reader = await command.ExecuteReaderAsync();
+
             while (await reader.ReadAsync())
             {
                 edges.Add((reader.GetString(0), reader.GetString(1), reader.GetString(2)));
@@ -70,8 +75,10 @@ namespace Jube.Test.Service.ModelScaffolding
         {
             await using var command = new NpgsqlCommand(
                 $"SELECT \"Guid\" FROM \"{Root}\" WHERE \"Id\" = @id", connection);
+
             command.Parameters.AddWithValue("id",
                 await ModelGraphCopier.ResolveLiveSourceAsync(connection, null, ModelScaffold.ExampleModelId));
+
             return (Guid)(await command.ExecuteScalarAsync()).Required();
         }
 
@@ -81,8 +88,10 @@ namespace Jube.Test.Service.ModelScaffolding
             await using var scaffold = await ModelScaffold.CreateAsync(ModelScaffoldOptions.Isolated);
             await using var connection = await OpenAsync();
             var sourceGuid = await SourceModelGuidAsync(connection);
+
             var sourceModelId = await ModelGraphCopier.ResolveLiveSourceAsync(connection, null,
                 ModelScaffold.ExampleModelId);
+
             var edges = await SingleColumnForeignKeysAsync(connection);
             var excluded = new System.Text.RegularExpressions.Regex(ModelScaffold.DefaultExcludedTablePattern);
 
@@ -93,8 +102,10 @@ namespace Jube.Test.Service.ModelScaffolding
             {
                 var source = await CountAsync(connection, $"SELECT count(*) FROM \"{child}\" WHERE \"{column}\" = @id",
                     ("id", sourceModelId));
+
                 var copy = await CountAsync(connection, $"SELECT count(*) FROM \"{child}\" WHERE \"{column}\" = @id",
                     ("id", scaffold.ModelId));
+
                 Assert.True(source == copy, $"\"{child}\": the source model has {source} rows, the copy {copy}.");
                 Assert.Equal(source, scaffold.CopiedRows.GetValueOrDefault(child));
                 checkedTables++;
@@ -104,7 +115,9 @@ namespace Jube.Test.Service.ModelScaffolding
                 "SELECT table_name FROM information_schema.columns WHERE table_schema = 'public' " +
                 "AND column_name = 'EntityAnalysisModelGuid' AND data_type = 'uuid' " +
                 "AND table_name NOT IN ('EntityAnalysisModel', 'EntityAnalysisModelRole')", connection);
+
             var guidLinked = new List<string>();
+
             await using (var reader = await guidTables.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
@@ -117,9 +130,11 @@ namespace Jube.Test.Service.ModelScaffolding
             {
                 var source = await CountAsync(connection,
                     $"SELECT count(*) FROM \"{table}\" WHERE \"EntityAnalysisModelGuid\" = @g", ("g", sourceGuid));
+
                 var copy = await CountAsync(connection,
                     $"SELECT count(*) FROM \"{table}\" WHERE \"EntityAnalysisModelGuid\" = @g",
                     ("g", scaffold.ModelGuid));
+
                 Assert.True(source == copy, $"\"{table}\": the source model has {source} rows, the copy {copy}.");
                 checkedTables++;
             }
@@ -140,6 +155,7 @@ namespace Jube.Test.Service.ModelScaffolding
             var edges = await SingleColumnForeignKeysAsync(connection);
 
             var mapped = 0;
+
             foreach (var (child, column, parent) in edges.Where(e => scaffold.IdMap.ContainsKey(e.Child) &&
                                                                      scaffold.IdMap.ContainsKey(e.Parent)))
             {
@@ -149,8 +165,10 @@ namespace Jube.Test.Service.ModelScaffolding
                 var stray = await CountAsync(connection,
                     $"SELECT count(*) FROM \"{child}\" WHERE \"Id\" = ANY(@ids) AND \"{column}\" IS NOT NULL " +
                     $"AND NOT (\"{column}\" = ANY(@parents))", ("ids", childIds), ("parents", parentIds));
+
                 Assert.True(stray == 0,
                     $"\"{child}\".\"{column}\" has {stray} copied row(s) pointing outside the copy of \"{parent}\".");
+
                 mapped++;
             }
 
@@ -160,8 +178,10 @@ namespace Jube.Test.Service.ModelScaffolding
             {
                 Assert.Equal(map.Count, map.Values.Distinct().Count());
                 Assert.DoesNotContain(map, kvp => kvp.Key == kvp.Value);
+
                 var present = await CountAsync(connection, $"SELECT count(*) FROM \"{table}\" WHERE \"Id\" = ANY(@ids)",
                     ("ids", map.Values.ToArray()));
+
                 Assert.Equal(map.Count, present);
             }
 
@@ -182,8 +202,10 @@ namespace Jube.Test.Service.ModelScaffolding
             Assert.True(scaffold.OwnsTenant);
 
             await using var connection = await OpenAsync();
+
             Assert.Equal(1, await CountAsync(connection, $"SELECT count(*) FROM \"{Root}\" WHERE \"Guid\" = @g",
                 ("g", ModelScaffold.ExampleModelGuid)));
+
             Assert.Equal(scaffold.ModelId, (int)await CountAsync(connection,
                 $"SELECT \"Id\" FROM \"{Root}\" WHERE \"Guid\" = @g", ("g", ModelScaffold.ExampleModelGuid)));
         }
@@ -195,11 +217,14 @@ namespace Jube.Test.Service.ModelScaffolding
         {
             await using var scaffold = await ModelScaffold.CreateAsync(new ModelScaffoldOptions
                 { ModelGuid = null, Active = active, Locked = locked, CreateCallers = false });
+
             await using var connection = await OpenAsync();
+
             Assert.Equal(active ? 1 : 0, await CountAsync(connection,
                 $"SELECT \"Active\" FROM \"{Root}\" WHERE \"Id\" = @id", ("id", scaffold.ModelId)));
             Assert.Equal(locked ? 1 : 0, await CountAsync(connection,
                 $"SELECT \"Locked\" FROM \"{Root}\" WHERE \"Id\" = @id", ("id", scaffold.ModelId)));
+
             Assert.Equal(string.Empty, scaffold.UserName);
         }
 
@@ -221,6 +246,7 @@ namespace Jube.Test.Service.ModelScaffolding
                 ModelGuid = null, CreateCallers = false,
                 ExcludeTables = ["EntityAnalysisModelAbstractionRule"]
             });
+
             Assert.DoesNotContain("EntityAnalysisModelAbstractionRule", scaffold.IdMap.Keys);
             Assert.True(scaffold.IdMap.ContainsKey("EntityAnalysisModelActivationRule"));
         }
@@ -239,16 +265,19 @@ namespace Jube.Test.Service.ModelScaffolding
             await scaffold.DisposeAsync();
 
             await using var connection = await OpenAsync();
+
             foreach (var (table, map) in idMap)
             {
                 var remaining = await CountAsync(connection,
                     $"SELECT count(*) FROM \"{table}\" WHERE \"Id\" = ANY(@ids)",
                     ("ids", map.Values.ToArray()));
+
                 Assert.True(remaining == 0, $"\"{table}\" still has {remaining} copied row(s).");
             }
 
             Assert.Equal(0,
                 await CountAsync(connection, $"SELECT count(*) FROM \"{Root}\" WHERE \"Guid\" = @g", ("g", modelGuid)));
+
             Assert.Equal(0, await CountAsync(connection,
                 "SELECT count(*) FROM \"EntityAnalysisModelRole\" WHERE \"EntityAnalysisModelGuid\" = @g",
                 ("g", modelGuid)));
@@ -275,10 +304,13 @@ namespace Jube.Test.Service.ModelScaffolding
         private static async Task<List<string>> GuidLinkedAsync(NpgsqlConnection connection)
         {
             var tables = new List<string>();
+
             await using var command = new NpgsqlCommand(
                 "SELECT table_name FROM information_schema.columns WHERE table_schema = 'public' " +
                 "AND column_name = 'EntityAnalysisModelGuid' AND data_type = 'uuid'", connection);
+
             await using var reader = await command.ExecuteReaderAsync();
+
             while (await reader.ReadAsync())
             {
                 tables.Add(reader.GetString(0));
@@ -301,10 +333,12 @@ namespace Jube.Test.Service.ModelScaffolding
             await second.DisposeAsync();
 
             await using var connection = await OpenAsync();
+
             foreach (var (table, map) in first.IdMap)
             {
                 var present = await CountAsync(connection, $"SELECT count(*) FROM \"{table}\" WHERE \"Id\" = ANY(@ids)",
                     ("ids", map.Values.ToArray()));
+
                 Assert.Equal(map.Count, present);
             }
         }
@@ -313,6 +347,7 @@ namespace Jube.Test.Service.ModelScaffolding
         public async Task SuppliedTenant_IsKeptWhenTheScaffoldIsRemovedAsync()
         {
             await using var owner = await ModelScaffold.CreateAsync(ModelScaffoldOptions.Isolated);
+
             var guest = await ModelScaffold.CreateAsync(new ModelScaffoldOptions
                 { TenantRegistryId = owner.TenantRegistryId, ModelGuid = null });
 
@@ -323,8 +358,10 @@ namespace Jube.Test.Service.ModelScaffolding
             await guest.DisposeAsync();
 
             await using var connection = await OpenAsync();
+
             Assert.Equal(1, await CountAsync(connection, "SELECT count(*) FROM \"TenantRegistry\" WHERE \"Id\" = @t",
                 ("t", owner.TenantRegistryId)));
+
             Assert.Equal(1, await CountAsync(connection, $"SELECT count(*) FROM \"{Root}\" WHERE \"Id\" = @id",
                 ("id", owner.ModelId)));
             Assert.Equal(0, await CountAsync(connection, $"SELECT count(*) FROM \"{Root}\" WHERE \"Id\" = @id",
@@ -336,6 +373,7 @@ namespace Jube.Test.Service.ModelScaffolding
         {
             var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
                 ModelScaffold.CreateAsync(new ModelScaffoldOptions { NamePrefix = "NotAFixturePrefix" }));
+
             Assert.Contains(Fixture.Prefix, ex.Message);
         }
 
@@ -343,6 +381,7 @@ namespace Jube.Test.Service.ModelScaffolding
         public async Task MissingSourceModel_FailsNamingTheModel_AndLeavesNothingBehindAsync()
         {
             await using var connection = await OpenAsync();
+
             var tenantsBefore = await CountAsync(connection,
                 "SELECT count(*) FROM \"TenantRegistry\" WHERE \"Name\" LIKE 'ZzTest%'");
 
@@ -351,6 +390,7 @@ namespace Jube.Test.Service.ModelScaffolding
 
             Assert.Contains("Source model 987654321", ex.Message);
             Assert.Contains("does not exist", ex.Message);
+
             Assert.Equal(tenantsBefore, await CountAsync(connection,
                 "SELECT count(*) FROM \"TenantRegistry\" WHERE \"Name\" LIKE 'ZzTest%'"));
         }
@@ -369,6 +409,7 @@ namespace Jube.Test.Service.ModelScaffolding
         {
             const string table = "ZzTestScaffoldNoIdChild";
             await using var connection = await OpenAsync();
+
             await using (var create = new NpgsqlCommand(
                              $"CREATE TABLE \"{table}\" (\"EntityAnalysisModelId\" integer NOT NULL " +
                              $"REFERENCES \"{Root}\"(\"Id\"), \"Value\" integer)", connection))
@@ -386,6 +427,7 @@ namespace Jube.Test.Service.ModelScaffolding
 
                 Assert.Contains($"Table \"{table}\" has no identity \"Id\" column", ex.Message);
                 Assert.Contains("ExcludeTables", ex.Message);
+
                 Assert.Equal(tenantsBefore, await CountAsync(connection,
                     "SELECT count(*) FROM \"TenantRegistry\" WHERE \"Name\" LIKE 'ZzTest%'"));
 

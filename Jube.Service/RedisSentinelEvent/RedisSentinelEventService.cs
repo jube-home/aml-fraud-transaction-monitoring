@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -18,7 +18,7 @@ using Jube.Data.Repository;
 using Jube.Dto.Payload;
 using Jube.Dto.RedisSentinelEvent;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.RedisSentinelEvent;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.RedisSentinelEvent
     public sealed class RedisSentinelEventService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
@@ -55,6 +54,9 @@ namespace Jube.Service.RedisSentinelEvent
             this.permissionValidation = permissionValidation;
             repository = new RedisSentinelEventRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<RedisSentinelEventService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -140,12 +142,16 @@ namespace Jube.Service.RedisSentinelEvent
         {
             using var op = OperationScope.Start("RedisSentinelEvent", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RedisSentinelEvent.List: entry take={clampedTake} user={userName}");
@@ -170,6 +176,7 @@ namespace Jube.Service.RedisSentinelEvent
                     .ConfigureAwait(false);
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"RedisSentinelEvent.List: {dtos.Count} rows user={userName}");
@@ -185,6 +192,7 @@ namespace Jube.Service.RedisSentinelEvent
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"RedisSentinelEvent.List: cancelled user={userName}");

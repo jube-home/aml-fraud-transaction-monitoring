@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,7 +16,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseWorkflowActionRole;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseWorkflowActionRole;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,7 +31,6 @@ namespace Jube.Service.Repository.CaseWorkflowActionRole
     public sealed class CaseWorkflowActionRoleService
     {
         private static readonly int[] permissions = [22];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -56,6 +55,8 @@ namespace Jube.Service.Repository.CaseWorkflowActionRole
             repository = new RuleRepository(dbContext, userName);
             validator = new CaseWorkflowActionRoleDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowActionRoleService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -110,6 +111,7 @@ namespace Jube.Service.Repository.CaseWorkflowActionRole
         {
             using var op = OperationScope.Start("CaseWorkflowActionRole", "ListByCaseWorkflowActionGuid", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowActionRole.ListByCaseWorkflowActionGuid: entry guid={guid} user={userName}");
@@ -118,9 +120,11 @@ namespace Jube.Service.Repository.CaseWorkflowActionRole
             try
             {
                 EnsurePermitted("CaseWorkflowActionRole.ListByCaseWorkflowActionGuid", permissions);
+
                 var dtos = CaseWorkflowActionRoleMapper.ToDto(
                     await repository.GetByCaseWorkflowActionGuidAsync(guid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowActionRole.ListByCaseWorkflowActionGuid: {dtos.Count} rows guid={guid} " +
@@ -142,8 +146,10 @@ namespace Jube.Service.Repository.CaseWorkflowActionRole
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowActionRole.ListByCaseWorkflowActionGuid: unexpected failure guid={guid} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -155,6 +161,7 @@ namespace Jube.Service.Repository.CaseWorkflowActionRole
         {
             using var op = OperationScope.Start("CaseWorkflowActionRole", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowActionRole.Insert: entry user={userName} " +
@@ -168,6 +175,7 @@ namespace Jube.Service.Repository.CaseWorkflowActionRole
                 EnsurePermitted("CaseWorkflowActionRole.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -228,6 +236,7 @@ namespace Jube.Service.Repository.CaseWorkflowActionRole
         {
             using var op = OperationScope.Start("CaseWorkflowActionRole", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowActionRole.Delete: entry id={id} user={userName}");
@@ -248,6 +257,17 @@ namespace Jube.Service.Repository.CaseWorkflowActionRole
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (KeyNotFoundException)
+            {
+                op.Outcome("not_found");
+
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"CaseWorkflowActionRole.Delete: id={id} not found or not visible user={userName}");
+                }
+
                 throw;
             }
             catch (OperationCanceledException)

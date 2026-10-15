@@ -15,6 +15,7 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
 {
     using global::MessagePack;
     using global::MessagePack.Formatters;
+    using Models;
 
     public class EnvelopeDictionaryNoBoxingResolver : IFormatterResolver
     {
@@ -26,7 +27,9 @@ namespace Jube.Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack
         private static readonly IMessagePackFormatter<EnvelopeDictionaryNoBoxing<string>> StringFormatter =
             new EnvelopeDictionaryNoBoxingStringMessagePackFormatter();
 
-        private EnvelopeDictionaryNoBoxingResolver() {}
+        private EnvelopeDictionaryNoBoxingResolver()
+        {
+        }
 
         public IMessagePackFormatter<T> GetFormatter<T>()
         {

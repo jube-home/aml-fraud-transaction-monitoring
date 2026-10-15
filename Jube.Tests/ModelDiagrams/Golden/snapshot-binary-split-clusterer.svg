@@ -1,0 +1,473 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-b2ca0b9d" viewBox="0 0 720 258" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-b2ca0b9d-t jc-b2ca0b9d-d">
+    <title id="jc-b2ca0b9d-t">Bisecting k-means clusters</title>
+    <desc id="jc-b2ca0b9d-d">Cluster centroids of 3 clusters from bisecting k-means, which splits the widest cluster in
+        two until done, over 4 variables. The size bar is the share of training rows in each cluster. Each cell is the
+        centroid value on the standardised scale, restated as a z-score across the clusters so that variables on
+        different scales compare.
+    </desc>
+    <style>
+        .jc-b2ca0b9d{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-b2ca0b9d:not([data-theme="light"]),.jc-b2ca0b9d:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-b2ca0b9d:not([data-theme="light"]),.jc-b2ca0b9d[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-b2ca0b9d
+        text{fill:var(--jc-text);font-size:12px}.jc-b2ca0b9d .bg{fill:var(--jc-surface)}.jc-b2ca0b9d
+        .ttl{font-size:16px;font-weight:600}.jc-b2ca0b9d .sub{fill:var(--jc-text2)}.jc-b2ca0b9d
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-b2ca0b9d .at{fill:var(--jc-text2);font-weight:500}.jc-b2ca0b9d
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-b2ca0b9d
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-b2ca0b9d
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-b2ca0b9d .ref.s0,.jc-b2ca0b9d
+        .ref.s1,.jc-b2ca0b9d .ref.s2,.jc-b2ca0b9d .ref.s3,.jc-b2ca0b9d .ref.s4,.jc-b2ca0b9d .ref.s5,.jc-b2ca0b9d
+        .ref.s6,.jc-b2ca0b9d .ref.s7{stroke:var(--sc)}.jc-b2ca0b9d
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-b2ca0b9d
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-b2ca0b9d
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-b2ca0b9d
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-b2ca0b9d .wh,.jc-b2ca0b9d
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-b2ca0b9d
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-b2ca0b9d
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-b2ca0b9d
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-b2ca0b9d .cd.hollow{fill:var(--jc-surface)}.jc-b2ca0b9d
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-b2ca0b9d
+        .ar.off{fill-opacity:0}.jc-b2ca0b9d .ring{font-size:10px}.jc-b2ca0b9d
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-b2ca0b9d .needle{fill:var(--jc-text);stroke:none}.jc-b2ca0b9d
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-b2ca0b9d
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-b2ca0b9d
+        .big{font-size:28px;font-weight:600}.jc-b2ca0b9d .rg0,.jc-b2ca0b9d .rg1,.jc-b2ca0b9d
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-b2ca0b9d .rg0{fill-opacity:.1}.jc-b2ca0b9d
+        .rg1{fill-opacity:.2}.jc-b2ca0b9d .rg2{fill-opacity:.32}.jc-b2ca0b9d
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-b2ca0b9d
+        .bar.part{fill-opacity:.35}.jc-b2ca0b9d .lgt{fill:var(--jc-text2)}.jc-b2ca0b9d
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-b2ca0b9d
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-b2ca0b9d
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-b2ca0b9d
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-b2ca0b9d .bar{fill:var(--sc)}.jc-b2ca0b9d
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-b2ca0b9d
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-b2ca0b9d
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-b2ca0b9d
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-b2ca0b9d
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-b2ca0b9d
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-b2ca0b9d .mk:hover .pt.h,.jc-b2ca0b9d .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-b2ca0b9d .pt.sm{fill-opacity:.55;stroke:none}.jc-b2ca0b9d
+        .na{fill:var(--jc-grid)}.jc-b2ca0b9d .mk:hover .sl,.jc-b2ca0b9d .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-b2ca0b9d
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-b2ca0b9d
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-b2ca0b9d
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-b2ca0b9d
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-b2ca0b9d
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-b2ca0b9d .ctr{text-anchor:middle}.jc-b2ca0b9d
+        .end{text-anchor:end}.jc-b2ca0b9d .mid{dominant-baseline:central}.jc-b2ca0b9d .mk{outline:none}.jc-b2ca0b9d
+        .m,.jc-b2ca0b9d .pt,.jc-b2ca0b9d .bub,.jc-b2ca0b9d .bar,.jc-b2ca0b9d .ov,.jc-b2ca0b9d .sl,.jc-b2ca0b9d
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-b2ca0b9d .mk:hover .m,.jc-b2ca0b9d .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-b2ca0b9d .mk:hover .pt,.jc-b2ca0b9d .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-b2ca0b9d .mk:hover .bub,.jc-b2ca0b9d .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-b2ca0b9d .mk:hover .bar,.jc-b2ca0b9d .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-b2ca0b9d .mk:hover .ov,.jc-b2ca0b9d .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-b2ca0b9d .mk:hover .sl,.jc-b2ca0b9d .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-b2ca0b9d .mk:hover .box,.jc-b2ca0b9d .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-b2ca0b9d .mk:hover .wk,.jc-b2ca0b9d .mk:focus-visible
+        .wk,.jc-b2ca0b9d .mk:hover .cd,.jc-b2ca0b9d .mk:focus-visible .cd{stroke-width:2.5}.jc-b2ca0b9d .mk:hover
+        .cell,.jc-b2ca0b9d .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-b2ca0b9d .mk:hover
+        .vl,.jc-b2ca0b9d .mk:focus-visible .vl,.jc-b2ca0b9d .mk:hover .cx,.jc-b2ca0b9d .mk:focus-visible
+        .cx{opacity:1}.jc-b2ca0b9d .mk:hover .mkr,.jc-b2ca0b9d .mk:focus-visible .mkr{stroke-width:3}.jc-b2ca0b9d
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-b2ca0b9d
+        .mk:hover .tt,.jc-b2ca0b9d .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-b2ca0b9d
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-b2ca0b9d
+        .tx{fill:var(--jc-text);font-size:12px}.jc-b2ca0b9d .tx.b{font-weight:600}.jc-b2ca0b9d
+        .tsw{fill:var(--sc)}.jc-b2ca0b9d .lg{cursor:default;transition:opacity .15s ease}.jc-b2ca0b9d .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-b2ca0b9d .sr{transition:opacity .15s ease}.jc-b2ca0b9d:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-b2ca0b9d:has(.mk:hover) .mk:not(:hover) .pt,.jc-b2ca0b9d:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-b2ca0b9d:has(.mk:hover) .mk:not(:hover) .bar,.jc-b2ca0b9d:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-b2ca0b9d:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-b2ca0b9d:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-b2ca0b9d .s0{--sc:var(--jc-c0)}.jc-b2ca0b9d .s0
+        .on{fill:var(--jc-ct0)}.jc-b2ca0b9d:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-b2ca0b9d:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-b2ca0b9d:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-b2ca0b9d:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-b2ca0b9d:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-b2ca0b9d
+        .s1{--sc:var(--jc-c1)}.jc-b2ca0b9d .s1 .on{fill:var(--jc-ct1)}.jc-b2ca0b9d:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-b2ca0b9d:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-b2ca0b9d:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-b2ca0b9d:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-b2ca0b9d:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}.jc-b2ca0b9d
+        .s2{--sc:var(--jc-c2)}.jc-b2ca0b9d .s2 .on{fill:var(--jc-ct2)}.jc-b2ca0b9d:has(.lg.s2:hover)
+        .sr:not(.s2){opacity:.16}.jc-b2ca0b9d:has(.sr.s2:hover) .sr:not(.s2){opacity:.3}.jc-b2ca0b9d:has(.sr.s2:hover)
+        .lg:not(.s2){opacity:.4}.jc-b2ca0b9d:has(.sr.s2:hover) .lg.s2
+        .sw{transform:scale(1.35)}.jc-b2ca0b9d:has(.lg.s2:hover) .lg.s2 .sw{transform:scale(1.35)}.jc-b2ca0b9d
+        .s3{--sc:var(--jc-c3)}.jc-b2ca0b9d .s3 .on{fill:var(--jc-ct3)}.jc-b2ca0b9d:has(.lg.s3:hover)
+        .sr:not(.s3){opacity:.16}.jc-b2ca0b9d:has(.sr.s3:hover) .sr:not(.s3){opacity:.3}.jc-b2ca0b9d:has(.sr.s3:hover)
+        .lg:not(.s3){opacity:.4}.jc-b2ca0b9d:has(.sr.s3:hover) .lg.s3
+        .sw{transform:scale(1.35)}.jc-b2ca0b9d:has(.lg.s3:hover) .lg.s3 .sw{transform:scale(1.35)}.jc-b2ca0b9d
+        .s4{--sc:var(--jc-c4)}.jc-b2ca0b9d .s4 .on{fill:var(--jc-ct4)}.jc-b2ca0b9d:has(.lg.s4:hover)
+        .sr:not(.s4){opacity:.16}.jc-b2ca0b9d:has(.sr.s4:hover) .sr:not(.s4){opacity:.3}.jc-b2ca0b9d:has(.sr.s4:hover)
+        .lg:not(.s4){opacity:.4}.jc-b2ca0b9d:has(.sr.s4:hover) .lg.s4
+        .sw{transform:scale(1.35)}.jc-b2ca0b9d:has(.lg.s4:hover) .lg.s4 .sw{transform:scale(1.35)}.jc-b2ca0b9d
+        .s5{--sc:var(--jc-c5)}.jc-b2ca0b9d .s5 .on{fill:var(--jc-ct5)}.jc-b2ca0b9d:has(.lg.s5:hover)
+        .sr:not(.s5){opacity:.16}.jc-b2ca0b9d:has(.sr.s5:hover) .sr:not(.s5){opacity:.3}.jc-b2ca0b9d:has(.sr.s5:hover)
+        .lg:not(.s5){opacity:.4}.jc-b2ca0b9d:has(.sr.s5:hover) .lg.s5
+        .sw{transform:scale(1.35)}.jc-b2ca0b9d:has(.lg.s5:hover) .lg.s5 .sw{transform:scale(1.35)}.jc-b2ca0b9d
+        .s6{--sc:var(--jc-c6)}.jc-b2ca0b9d .s6 .on{fill:var(--jc-ct6)}.jc-b2ca0b9d:has(.lg.s6:hover)
+        .sr:not(.s6){opacity:.16}.jc-b2ca0b9d:has(.sr.s6:hover) .sr:not(.s6){opacity:.3}.jc-b2ca0b9d:has(.sr.s6:hover)
+        .lg:not(.s6){opacity:.4}.jc-b2ca0b9d:has(.sr.s6:hover) .lg.s6
+        .sw{transform:scale(1.35)}.jc-b2ca0b9d:has(.lg.s6:hover) .lg.s6 .sw{transform:scale(1.35)}.jc-b2ca0b9d
+        .s7{--sc:var(--jc-c7)}.jc-b2ca0b9d .s7 .on{fill:var(--jc-ct7)}.jc-b2ca0b9d:has(.lg.s7:hover)
+        .sr:not(.s7){opacity:.16}.jc-b2ca0b9d:has(.sr.s7:hover) .sr:not(.s7){opacity:.3}.jc-b2ca0b9d:has(.sr.s7:hover)
+        .lg:not(.s7){opacity:.4}.jc-b2ca0b9d:has(.sr.s7:hover) .lg.s7
+        .sw{transform:scale(1.35)}.jc-b2ca0b9d:has(.lg.s7:hover) .lg.s7 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-b2ca0b9d,.jc-b2ca0b9d
+        *{transition:none!important;animation:none!important}}.jc-b2ca0b9d .q0{fill:var(--jc-q0)}.jc-b2ca0b9d
+        .qt0{fill:var(--jc-qt0)}.jc-b2ca0b9d .q1{fill:var(--jc-q1)}.jc-b2ca0b9d .qt1{fill:var(--jc-qt1)}.jc-b2ca0b9d
+        .q2{fill:var(--jc-q2)}.jc-b2ca0b9d .qt2{fill:var(--jc-qt2)}.jc-b2ca0b9d .q3{fill:var(--jc-q3)}.jc-b2ca0b9d
+        .qt3{fill:var(--jc-qt3)}.jc-b2ca0b9d .q4{fill:var(--jc-q4)}.jc-b2ca0b9d .qt4{fill:var(--jc-qt4)}.jc-b2ca0b9d
+        .q5{fill:var(--jc-q5)}.jc-b2ca0b9d .qt5{fill:var(--jc-qt5)}.jc-b2ca0b9d .q6{fill:var(--jc-q6)}.jc-b2ca0b9d
+        .qt6{fill:var(--jc-qt6)}.jc-b2ca0b9d .q7{fill:var(--jc-q7)}.jc-b2ca0b9d .qt7{fill:var(--jc-qt7)}.jc-b2ca0b9d
+        .q8{fill:var(--jc-q8)}.jc-b2ca0b9d .qt8{fill:var(--jc-qt8)}.jc-b2ca0b9d .d0{fill:var(--jc-d0)}.jc-b2ca0b9d
+        .dt0{fill:var(--jc-dt0)}.jc-b2ca0b9d .d1{fill:var(--jc-d1)}.jc-b2ca0b9d .dt1{fill:var(--jc-dt1)}.jc-b2ca0b9d
+        .d2{fill:var(--jc-d2)}.jc-b2ca0b9d .dt2{fill:var(--jc-dt2)}.jc-b2ca0b9d .d3{fill:var(--jc-d3)}.jc-b2ca0b9d
+        .dt3{fill:var(--jc-dt3)}.jc-b2ca0b9d .d4{fill:var(--jc-d4)}.jc-b2ca0b9d .dt4{fill:var(--jc-dt4)}.jc-b2ca0b9d
+        .d5{fill:var(--jc-d5)}.jc-b2ca0b9d .dt5{fill:var(--jc-dt5)}.jc-b2ca0b9d .d6{fill:var(--jc-d6)}.jc-b2ca0b9d
+        .dt6{fill:var(--jc-dt6)}.jc-b2ca0b9d .d7{fill:var(--jc-d7)}.jc-b2ca0b9d .dt7{fill:var(--jc-dt7)}.jc-b2ca0b9d
+        .d8{fill:var(--jc-d8)}.jc-b2ca0b9d .dt8{fill:var(--jc-dt8)}.jc-b2ca0b9d .d9{fill:var(--jc-d9)}.jc-b2ca0b9d
+        .dt9{fill:var(--jc-dt9)}.jc-b2ca0b9d .d10{fill:var(--jc-d10)}.jc-b2ca0b9d .dt10{fill:var(--jc-dt10)}.jc-b2ca0b9d
+        .nb{fill:var(--jc-surface);stroke:var(--sc,var(--jc-axis));stroke-width:2}.jc-b2ca0b9d
+        .nt{fill:var(--sc,var(--jc-muted));fill-opacity:.2;stroke:none}.jc-b2ca0b9d .nb.dash{stroke-dasharray:4
+        3}.jc-b2ca0b9d .nd,.jc-b2ca0b9d .eg,.jc-b2ca0b9d .pn{transition:opacity .15s ease}.jc-b2ca0b9d .mk:hover
+        .nb,.jc-b2ca0b9d .mk:focus-visible .nb{stroke:var(--jc-text);stroke-width:3.5}.jc-b2ca0b9d
+        .ep{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:.68;transition:stroke-opacity .15s
+        ease}.jc-b2ca0b9d .ep.en{stroke:var(--jc-axis)}.jc-b2ca0b9d
+        .ep.et{stroke:var(--jc-muted);stroke-opacity:.5}.jc-b2ca0b9d .vt{fill:var(--jc-grid)}.jc-b2ca0b9d
+        .nt.lf{fill-opacity:.38}.jc-b2ca0b9d .ep.ed{stroke-dasharray:5 4}.jc-b2ca0b9d
+        .eh{fill:none;stroke:transparent;stroke-width:12;pointer-events:stroke}.jc-b2ca0b9d .eg:hover .ep,.jc-b2ca0b9d
+        .eg:focus-visible .ep{stroke-opacity:1}.jc-b2ca0b9d .ah{fill:var(--jc-text2);stroke:none}.jc-b2ca0b9d .mk:hover
+        .ah,.jc-b2ca0b9d .mk:focus-visible .ah{fill:var(--jc-text)}.jc-b2ca0b9d
+        .hl{fill:var(--jc-text);fill-opacity:0;stroke:none;transition:fill-opacity .15s ease}.jc-b2ca0b9d .mk:hover
+        .hl,.jc-b2ca0b9d .mk:focus-visible .hl{fill-opacity:.07}.jc-b2ca0b9d
+        .hb{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-b2ca0b9d .mk:hover .bs,.jc-b2ca0b9d .mk:focus-visible
+        .bs{stroke:var(--jc-text);stroke-width:2}.jc-b2ca0b9d
+        .sh{fill:var(--jc-text);fill-opacity:.05;stroke:none}.jc-b2ca0b9d
+        .key{font-size:11px;fill:var(--jc-text2)}.jc-b2ca0b9d .kn{font-size:10.5px;fill:var(--jc-muted)}.jc-b2ca0b9d
+        .ph{font-size:12px;font-weight:600}.jc-b2ca0b9d .pf{fill:none;stroke:var(--jc-grid);stroke-width:1}.jc-b2ca0b9d
+        .tps{pointer-events:none}.jc-b2ca0b9d .dsh{stroke-dasharray:3 3}.jc-b2ca0b9d
+        .ln.thin{stroke-width:1.5}.jc-b2ca0b9d .ln.hi{stroke-width:2.5}.jc-b2ca0b9d
+        .rb{fill:var(--sc);fill-opacity:.85;stroke:none}.jc-b2ca0b9d .mk:hover .rb,.jc-b2ca0b9d .mk:focus-visible
+        .rb{fill-opacity:1;stroke:var(--jc-text);stroke-width:1.5}.jc-b2ca0b9d
+        .ci{stroke:var(--sc);stroke-width:2;fill:none;stroke-linecap:round}.jc-b2ca0b9d
+        .dmd{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5}.jc-b2ca0b9d
+        .dmd.hollow{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-b2ca0b9d .mk:hover .dmd,.jc-b2ca0b9d
+        .mk:focus-visible .dmd{stroke:var(--jc-text);stroke-width:2.5}.jc-b2ca0b9d .mk:hover .ci,.jc-b2ca0b9d
+        .mk:focus-visible .ci{stroke-width:3}.jc-b2ca0b9d
+        .tri{fill:var(--jc-surface);stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:3 2}.jc-b2ca0b9d .mk:hover
+        .tri,.jc-b2ca0b9d .mk:focus-visible .tri{stroke:var(--jc-text);stroke-width:2.5}.jc-b2ca0b9d
+        .cl{fill:var(--sc)}.jc-b2ca0b9d .db{fill:var(--sc);fill-opacity:.42;stroke:var(--sc);stroke-width:1}.jc-b2ca0b9d
+        .ax.dsh{stroke-dasharray:3 3}.jc-b2ca0b9d .sd0{stroke:var(--jc-d0)}.jc-b2ca0b9d
+        .sd1{stroke:var(--jc-d1)}.jc-b2ca0b9d .sd2{stroke:var(--jc-d2)}.jc-b2ca0b9d
+        .sd3{stroke:var(--jc-d3)}.jc-b2ca0b9d .sd4{stroke:var(--jc-d4)}.jc-b2ca0b9d
+        .sd5{stroke:var(--jc-d5)}.jc-b2ca0b9d .sd6{stroke:var(--jc-d6)}.jc-b2ca0b9d
+        .sd7{stroke:var(--jc-d7)}.jc-b2ca0b9d .sd8{stroke:var(--jc-d8)}.jc-b2ca0b9d
+        .sd9{stroke:var(--jc-d9)}.jc-b2ca0b9d .sd10{stroke:var(--jc-d10)}.jc-b2ca0b9d:has(.eg:hover)
+        .eg:not(:hover){opacity:.12}.jc-b2ca0b9d:has(.eg:hover) .nd{opacity:.45}.jc-b2ca0b9d:has(.lg.s0:hover)
+        .nd:not(.s0){opacity:.2}.jc-b2ca0b9d:has(.lg.s0:hover) .eg{opacity:.3}.jc-b2ca0b9d:has(.lg.s1:hover)
+        .nd:not(.s1){opacity:.2}.jc-b2ca0b9d:has(.lg.s1:hover) .eg{opacity:.3}.jc-b2ca0b9d:has(.lg.s2:hover)
+        .nd:not(.s2){opacity:.2}.jc-b2ca0b9d:has(.lg.s2:hover) .eg{opacity:.3}.jc-b2ca0b9d:has(.lg.s3:hover)
+        .nd:not(.s3){opacity:.2}.jc-b2ca0b9d:has(.lg.s3:hover) .eg{opacity:.3}.jc-b2ca0b9d:has(.lg.s4:hover)
+        .nd:not(.s4){opacity:.2}.jc-b2ca0b9d:has(.lg.s4:hover) .eg{opacity:.3}.jc-b2ca0b9d:has(.lg.s5:hover)
+        .nd:not(.s5){opacity:.2}.jc-b2ca0b9d:has(.lg.s5:hover) .eg{opacity:.3}.jc-b2ca0b9d:has(.lg.s6:hover)
+        .nd:not(.s6){opacity:.2}.jc-b2ca0b9d:has(.lg.s6:hover) .eg{opacity:.3}.jc-b2ca0b9d:has(.lg.s7:hover)
+        .nd:not(.s7){opacity:.2}.jc-b2ca0b9d:has(.lg.s7:hover)
+        .eg{opacity:.3}.jc-b2ca0b9d:has(.mk.h0x0:hover,.mk.h0x0:focus-visible) .tp.th0x0
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.h0x1:hover,.mk.h0x1:focus-visible) .tp.th0x1
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.h0x2:hover,.mk.h0x2:focus-visible) .tp.th0x2
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.h0x3:hover,.mk.h0x3:focus-visible) .tp.th0x3
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.z0:hover,.mk.z0:focus-visible) .tp.tz0
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.hc.rr0:hover,.hc.rr0:focus-visible)
+        .hc:not(.rr0){opacity:.4}.jc-b2ca0b9d:has(.mk.h1x0:hover,.mk.h1x0:focus-visible) .tp.th1x0
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.h1x1:hover,.mk.h1x1:focus-visible) .tp.th1x1
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.h1x2:hover,.mk.h1x2:focus-visible) .tp.th1x2
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.h1x3:hover,.mk.h1x3:focus-visible) .tp.th1x3
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.z1:hover,.mk.z1:focus-visible) .tp.tz1
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.hc.rr1:hover,.hc.rr1:focus-visible)
+        .hc:not(.rr1){opacity:.4}.jc-b2ca0b9d:has(.mk.h2x0:hover,.mk.h2x0:focus-visible) .tp.th2x0
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.h2x1:hover,.mk.h2x1:focus-visible) .tp.th2x1
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.h2x2:hover,.mk.h2x2:focus-visible) .tp.th2x2
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.h2x3:hover,.mk.h2x3:focus-visible) .tp.th2x3
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.mk.z2:hover,.mk.z2:focus-visible) .tp.tz2
+        .tt{opacity:1;visibility:visible}.jc-b2ca0b9d:has(.hc.rr2:hover,.hc.rr2:focus-visible)
+        .hc:not(.rr2){opacity:.4}.jc-b2ca0b9d .hc{transition:opacity .15s ease}
+    </style>
+    <rect class="bg" x="0" y="0" width="720" height="258" rx="8"/>
+    <text class="ttl" x="16" y="32">Bisecting k-means clusters</text>
+    <text class="sub" x="16" y="50">3 clusters, centroids standardised across clusters</text>
+    <g transform="translate(124.52 66)">
+        <text class="kn" x="83.96" y="59.06" transform="rotate(-45 83.96 59.06)">amount</text>
+        <text class="kn" x="133.96" y="59.06" transform="rotate(-45 133.96 59.06)">velocity</text>
+        <text class="kn" x="183.96" y="59.06" transform="rotate(-45 183.96 59.06)">merchant_risk</text>
+        <text class="kn" x="233.96" y="59.06" transform="rotate(-45 233.96 59.06)">account_age</text>
+        <text class="key" x="274.96" y="57.06">Size</text>
+        <text class="end mid" x="48.96" y="76.06">Cluster 2</text>
+        <g class="mk h0x0 hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 2 on amount, Centroid z-score acr…: 1.281, Cluster size: 0.3403 (34%), Defining features: account_…, amount, velocity">
+            <title>Cluster 2 on amount, Centroid z-score acr…: 1.281, Cluster size: 0.3403 (34%), Defining features:
+                account_…, amount, velocity
+            </title>
+            <rect class="cell d10" x="58.96" y="63.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt10" x="83.96" y="76.06">1.3</text>
+        </g>
+        <g class="mk h0x1 hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 2 on velocity, Centroid z-score acr…: 1.101, Cluster size: 0.3403 (34%), Defining features: account_…, amount, velocity">
+            <title>Cluster 2 on velocity, Centroid z-score acr…: 1.101, Cluster size: 0.3403 (34%), Defining features:
+                account_…, amount, velocity
+            </title>
+            <rect class="cell d9" x="108.96" y="63.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt9" x="133.96" y="76.06">1.1</text>
+        </g>
+        <g class="mk h0x2 hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 2 on merchant_risk, Centroid z-score acr…: -0.692, Cluster size: 0.3403 (34%), Defining features: account_…, amount, velocity">
+            <title>Cluster 2 on merchant_risk, Centroid z-score acr…: -0.692, Cluster size: 0.3403 (34%), Defining
+                features: account_…, amount, velocity
+            </title>
+            <rect class="cell d3" x="158.96" y="63.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt3" x="183.96" y="76.06">-0.7</text>
+        </g>
+        <g class="mk h0x3 hc rr0" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 2 on account_age, Centroid z-score acr…: -1.298, Cluster size: 0.3403 (34%), Defining features: account_…, amount, velocity">
+            <title>Cluster 2 on account_age, Centroid z-score acr…: -1.298, Cluster size: 0.3403 (34%), Defining
+                features: account_…, amount, velocity
+            </title>
+            <rect class="cell d0" x="208.96" y="63.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt0" x="233.96" y="76.06">-1.3</text>
+        </g>
+        <g class="mk z0 hc rr0 s0" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 2, Size: 0.3403 (34%), Defining features: account_…, amount, velocity">
+            <title>Cluster 2, Size: 0.3403 (34%), Defining features: account_…, amount, velocity</title>
+            <rect class="hb" x="274.96" y="63.06" width="200" height="26"/>
+            <rect class="rb" x="274.96" y="68.06" width="130" height="16" rx="2"/>
+            <text class="tk mid" x="410.96" y="76.06">0.3403 · 34%</text>
+        </g>
+        <text class="end mid" x="48.96" y="102.06">Cluster 3</text>
+        <g class="mk h1x0 hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 3 on amount, Centroid z-score acr…: -0.1218, Cluster size: 0.3333 (33.3%), Defining features: velocity, merchant…, account_…">
+            <title>Cluster 3 on amount, Centroid z-score acr…: -0.1218, Cluster size: 0.3333 (33.3%), Defining features:
+                velocity, merchant…, account_…
+            </title>
+            <rect class="cell d5" x="58.96" y="89.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt5" x="83.96" y="102.06">-0.1</text>
+        </g>
+        <g class="mk h1x1 hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 3 on velocity, Centroid z-score acr…: -1.319, Cluster size: 0.3333 (33.3%), Defining features: velocity, merchant…, account_…">
+            <title>Cluster 3 on velocity, Centroid z-score acr…: -1.319, Cluster size: 0.3333 (33.3%), Defining
+                features: velocity, merchant…, account_…
+            </title>
+            <rect class="cell d0" x="108.96" y="89.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt0" x="133.96" y="102.06">-1.3</text>
+        </g>
+        <g class="mk h1x2 hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 3 on merchant_risk, Centroid z-score acr…: -0.7222, Cluster size: 0.3333 (33.3%), Defining features: velocity, merchant…, account_…">
+            <title>Cluster 3 on merchant_risk, Centroid z-score acr…: -0.7222, Cluster size: 0.3333 (33.3%), Defining
+                features: velocity, merchant…, account_…
+            </title>
+            <rect class="cell d2" x="158.96" y="89.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt2" x="183.96" y="102.06">-0.7</text>
+        </g>
+        <g class="mk h1x3 hc rr1" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 3 on account_age, Centroid z-score acr…: 0.1637, Cluster size: 0.3333 (33.3%), Defining features: velocity, merchant…, account_…">
+            <title>Cluster 3 on account_age, Centroid z-score acr…: 0.1637, Cluster size: 0.3333 (33.3%), Defining
+                features: velocity, merchant…, account_…
+            </title>
+            <rect class="cell d6" x="208.96" y="89.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt6" x="233.96" y="102.06">0.2</text>
+        </g>
+        <g class="mk z1 hc rr1 s0" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 3, Size: 0.3333 (33.3%), Defining features: velocity, merchant…, account_…">
+            <title>Cluster 3, Size: 0.3333 (33.3%), Defining features: velocity, merchant…, account_…</title>
+            <rect class="hb" x="274.96" y="89.06" width="200" height="26"/>
+            <rect class="rb" x="274.96" y="94.06" width="127.35" height="16" rx="2"/>
+            <text class="tk mid" x="408.31" y="102.06">0.3333 · 33%</text>
+        </g>
+        <text class="end mid" x="48.96" y="128.06">Cluster 1</text>
+        <g class="mk h2x0 hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 1 on amount, Centroid z-score acr…: -1.159, Cluster size: 0.3264 (32.6%), Defining features: merchant…, amount, account_…">
+            <title>Cluster 1 on amount, Centroid z-score acr…: -1.159, Cluster size: 0.3264 (32.6%), Defining features:
+                merchant…, amount, account_…
+            </title>
+            <rect class="cell d1" x="58.96" y="115.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt1" x="83.96" y="128.06">-1.2</text>
+        </g>
+        <g class="mk h2x1 hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 1 on velocity, Centroid z-score acr…: 0.218, Cluster size: 0.3264 (32.6%), Defining features: merchant…, amount, account_…">
+            <title>Cluster 1 on velocity, Centroid z-score acr…: 0.218, Cluster size: 0.3264 (32.6%), Defining features:
+                merchant…, amount, account_…
+            </title>
+            <rect class="cell d6" x="108.96" y="115.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt6" x="133.96" y="128.06">0.2</text>
+        </g>
+        <g class="mk h2x2 hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 1 on merchant_risk, Centroid z-score acr…: 1.414, Cluster size: 0.3264 (32.6%), Defining features: merchant…, amount, account_…">
+            <title>Cluster 1 on merchant_risk, Centroid z-score acr…: 1.414, Cluster size: 0.3264 (32.6%), Defining
+                features: merchant…, amount, account_…
+            </title>
+            <rect class="cell d10" x="158.96" y="115.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt10" x="183.96" y="128.06">1.4</text>
+        </g>
+        <g class="mk h2x3 hc rr2" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 1 on account_age, Centroid z-score acr…: 1.135, Cluster size: 0.3264 (32.6%), Defining features: merchant…, amount, account_…">
+            <title>Cluster 1 on account_age, Centroid z-score acr…: 1.135, Cluster size: 0.3264 (32.6%), Defining
+                features: merchant…, amount, account_…
+            </title>
+            <rect class="cell d9" x="208.96" y="115.06" width="50" height="26"/>
+            <text class="lbl ctr mid dt9" x="233.96" y="128.06">1.1</text>
+        </g>
+        <g class="mk z2 hc rr2 s0" tabindex="0" role="graphics-symbol"
+           aria-label="Cluster 1, Size: 0.3264 (32.6%), Defining features: merchant…, amount, account_…">
+            <title>Cluster 1, Size: 0.3264 (32.6%), Defining features: merchant…, amount, account_…</title>
+            <rect class="hb" x="274.96" y="115.06" width="200" height="26"/>
+            <rect class="rb" x="274.96" y="120.06" width="124.69" height="16" rx="2"/>
+            <text class="tk mid" x="405.65" y="128.06">0.3264 · 33%</text>
+        </g>
+        <text class="key" x="0" y="160.06">Centroid z-score across cluste…</text>
+        <text class="kn" x="168.4" y="160.06">-1.414</text>
+        <rect class="cell d0" x="204.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d1" x="220.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d2" x="236.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d3" x="252.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d4" x="268.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d5" x="284.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d6" x="300.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d7" x="316.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d8" x="332.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d9" x="348.22" y="149.06" width="16" height="14"/>
+        <rect class="cell d10" x="364.22" y="149.06" width="16" height="14"/>
+        <text class="kn" x="386.22" y="160.06">+1.414</text>
+    </g>
+    <g class="tps">
+        <g class="tp th0x0">
+            <g class="tt">
+                <rect class="tb" x="218.48" y="103.06" width="271.88" height="78" rx="6"/>
+                <text class="tx b" x="228.48" y="121.06">Cluster 2 on amount</text>
+                <text class="tx" x="228.48" y="138.06">Centroid z-score acr…: 1.281</text>
+                <text class="tx" x="228.48" y="155.06">Cluster size: 0.3403 (34%)</text>
+                <text class="tx" x="228.48" y="172.06">Defining features: account_…, amount, velocity</text>
+            </g>
+        </g>
+        <g class="tp th0x1">
+            <g class="tt">
+                <rect class="tb" x="268.48" y="103.06" width="271.88" height="78" rx="6"/>
+                <text class="tx b" x="278.48" y="121.06">Cluster 2 on velocity</text>
+                <text class="tx" x="278.48" y="138.06">Centroid z-score acr…: 1.101</text>
+                <text class="tx" x="278.48" y="155.06">Cluster size: 0.3403 (34%)</text>
+                <text class="tx" x="278.48" y="172.06">Defining features: account_…, amount, velocity</text>
+            </g>
+        </g>
+        <g class="tp th0x2">
+            <g class="tt">
+                <rect class="tb" x="318.48" y="103.06" width="271.88" height="78" rx="6"/>
+                <text class="tx b" x="328.48" y="121.06">Cluster 2 on merchant_risk</text>
+                <text class="tx" x="328.48" y="138.06">Centroid z-score acr…: -0.692</text>
+                <text class="tx" x="328.48" y="155.06">Cluster size: 0.3403 (34%)</text>
+                <text class="tx" x="328.48" y="172.06">Defining features: account_…, amount, velocity</text>
+            </g>
+        </g>
+        <g class="tp th0x3">
+            <g class="tt">
+                <rect class="tb" x="368.48" y="103.06" width="271.88" height="78" rx="6"/>
+                <text class="tx b" x="378.48" y="121.06">Cluster 2 on account_age</text>
+                <text class="tx" x="378.48" y="138.06">Centroid z-score acr…: -1.298</text>
+                <text class="tx" x="378.48" y="155.06">Cluster size: 0.3403 (34%)</text>
+                <text class="tx" x="378.48" y="172.06">Defining features: account_…, amount, velocity</text>
+            </g>
+        </g>
+        <g class="tp tz0">
+            <g class="tt">
+                <rect class="tb" x="247.6" y="112.06" width="271.88" height="61" rx="6"/>
+                <text class="tx b" x="257.6" y="130.06">Cluster 2</text>
+                <text class="tx" x="257.6" y="147.06">Size: 0.3403 (34%)</text>
+                <text class="tx" x="257.6" y="164.06">Defining features: account_…, amount, velocity</text>
+            </g>
+        </g>
+        <g class="tp th1x0">
+            <g class="tt">
+                <rect class="tb" x="218.48" y="129.06" width="278.36" height="78" rx="6"/>
+                <text class="tx b" x="228.48" y="147.06">Cluster 3 on amount</text>
+                <text class="tx" x="228.48" y="164.06">Centroid z-score acr…: -0.1218</text>
+                <text class="tx" x="228.48" y="181.06">Cluster size: 0.3333 (33.3%)</text>
+                <text class="tx" x="228.48" y="198.06">Defining features: velocity, merchant…, accoun…</text>
+            </g>
+        </g>
+        <g class="tp th1x1">
+            <g class="tt">
+                <rect class="tb" x="268.48" y="129.06" width="278.36" height="78" rx="6"/>
+                <text class="tx b" x="278.48" y="147.06">Cluster 3 on velocity</text>
+                <text class="tx" x="278.48" y="164.06">Centroid z-score acr…: -1.319</text>
+                <text class="tx" x="278.48" y="181.06">Cluster size: 0.3333 (33.3%)</text>
+                <text class="tx" x="278.48" y="198.06">Defining features: velocity, merchant…, accoun…</text>
+            </g>
+        </g>
+        <g class="tp th1x2">
+            <g class="tt">
+                <rect class="tb" x="318.48" y="129.06" width="278.36" height="78" rx="6"/>
+                <text class="tx b" x="328.48" y="147.06">Cluster 3 on merchant_risk</text>
+                <text class="tx" x="328.48" y="164.06">Centroid z-score acr…: -0.7222</text>
+                <text class="tx" x="328.48" y="181.06">Cluster size: 0.3333 (33.3%)</text>
+                <text class="tx" x="328.48" y="198.06">Defining features: velocity, merchant…, accoun…</text>
+            </g>
+        </g>
+        <g class="tp th1x3">
+            <g class="tt">
+                <rect class="tb" x="368.48" y="129.06" width="278.36" height="78" rx="6"/>
+                <text class="tx b" x="378.48" y="147.06">Cluster 3 on account_age</text>
+                <text class="tx" x="378.48" y="164.06">Centroid z-score acr…: 0.1637</text>
+                <text class="tx" x="378.48" y="181.06">Cluster size: 0.3333 (33.3%)</text>
+                <text class="tx" x="378.48" y="198.06">Defining features: velocity, merchant…, accoun…</text>
+            </g>
+        </g>
+        <g class="tp tz1">
+            <g class="tt">
+                <rect class="tb" x="238.47" y="138.06" width="278.36" height="61" rx="6"/>
+                <text class="tx b" x="248.47" y="156.06">Cluster 3</text>
+                <text class="tx" x="248.47" y="173.06">Size: 0.3333 (33.3%)</text>
+                <text class="tx" x="248.47" y="190.06">Defining features: velocity, merchant…, accoun…</text>
+            </g>
+        </g>
+        <g class="tp th2x0">
+            <g class="tt">
+                <rect class="tb" x="218.48" y="155.06" width="279.68" height="78" rx="6"/>
+                <text class="tx b" x="228.48" y="173.06">Cluster 1 on amount</text>
+                <text class="tx" x="228.48" y="190.06">Centroid z-score acr…: -1.159</text>
+                <text class="tx" x="228.48" y="207.06">Cluster size: 0.3264 (32.6%)</text>
+                <text class="tx" x="228.48" y="224.06">Defining features: merchant…, amount, account…</text>
+            </g>
+        </g>
+        <g class="tp th2x1">
+            <g class="tt">
+                <rect class="tb" x="268.48" y="155.06" width="279.68" height="78" rx="6"/>
+                <text class="tx b" x="278.48" y="173.06">Cluster 1 on velocity</text>
+                <text class="tx" x="278.48" y="190.06">Centroid z-score acr…: 0.218</text>
+                <text class="tx" x="278.48" y="207.06">Cluster size: 0.3264 (32.6%)</text>
+                <text class="tx" x="278.48" y="224.06">Defining features: merchant…, amount, account…</text>
+            </g>
+        </g>
+        <g class="tp th2x2">
+            <g class="tt">
+                <rect class="tb" x="318.48" y="155.06" width="279.68" height="78" rx="6"/>
+                <text class="tx b" x="328.48" y="173.06">Cluster 1 on merchant_risk</text>
+                <text class="tx" x="328.48" y="190.06">Centroid z-score acr…: 1.414</text>
+                <text class="tx" x="328.48" y="207.06">Cluster size: 0.3264 (32.6%)</text>
+                <text class="tx" x="328.48" y="224.06">Defining features: merchant…, amount, account…</text>
+            </g>
+        </g>
+        <g class="tp th2x3">
+            <g class="tt">
+                <rect class="tb" x="368.48" y="155.06" width="279.68" height="78" rx="6"/>
+                <text class="tx b" x="378.48" y="173.06">Cluster 1 on account_age</text>
+                <text class="tx" x="378.48" y="190.06">Centroid z-score acr…: 1.135</text>
+                <text class="tx" x="378.48" y="207.06">Cluster size: 0.3264 (32.6%)</text>
+                <text class="tx" x="378.48" y="224.06">Defining features: merchant…, amount, account…</text>
+            </g>
+        </g>
+        <g class="tp tz2">
+            <g class="tt">
+                <rect class="tb" x="234.49" y="164.06" width="279.68" height="61" rx="6"/>
+                <text class="tx b" x="244.49" y="182.06">Cluster 1</text>
+                <text class="tx" x="244.49" y="199.06">Size: 0.3264 (32.6%)</text>
+                <text class="tx" x="244.49" y="216.06">Defining features: merchant…, amount, account…</text>
+            </g>
+        </g>
+    </g>
+</svg>

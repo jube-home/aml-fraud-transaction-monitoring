@@ -45,6 +45,7 @@ $.getScript('/js/ace/ace.js', function () {
         SetEnableHttpEndpoint();
         SetEnableNotification();
         ReadyNew();
+        window.AskJoobySetPageContext?.("CaseWorkflowForm", "new", {[parentKeyName]: parentKey});
     } else {
         $.get(endpoint + "/" + id,
             function (data) {
@@ -84,6 +85,12 @@ $.getScript('/js/ace/ace.js', function () {
                 $("#NotificationDestination").val(data.notificationDestination);
 
                 ReadyExisting(data);
+                window.AskJoobySetPageContext?.("CaseWorkflowForm", "edit", {
+                    id: data.id,
+                    guid: data.guid,
+                    name: data.name,
+                    [parentKeyName]: parentKey
+                });
             });
     }
 });

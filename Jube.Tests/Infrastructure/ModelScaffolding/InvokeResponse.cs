@@ -29,14 +29,13 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         IReadOnlyDictionary<string, string> Headers)
     {
         private JsonDocument? json;
-
         public string Body => Encoding.UTF8.GetString(BodyBytes);
-
         public JsonElement Json => (json ??= JsonDocument.Parse(BodyBytes)).RootElement;
 
         public JsonElement? Find(params string[] path)
         {
             var current = Json;
+
             foreach (var name in path)
             {
                 if (current.ValueKind != JsonValueKind.Object)
@@ -47,6 +46,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 var found = current.EnumerateObject()
                     .Where(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
                     .Select(p => (JsonElement?)p.Value).FirstOrDefault();
+
                 if (found == null)
                 {
                     return null;
@@ -61,12 +61,14 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         public string? String(params string[] path)
         {
             var element = Find(path);
+
             return element is { ValueKind: JsonValueKind.String } ? element.Value.GetString() : element?.ToString();
         }
 
         private double? Number(params string[] path)
         {
             var element = Find(path);
+
             return element is { ValueKind: JsonValueKind.Number } ? element.Value.GetDouble() : null;
         }
 

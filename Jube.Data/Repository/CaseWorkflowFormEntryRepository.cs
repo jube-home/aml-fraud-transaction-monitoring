@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -54,7 +55,8 @@ namespace Jube.Data.Repository
                 !tenantRegistryId.HasValue).ToListAsync(token);
         }
 
-        public async Task<IEnumerable<CaseWorkflowFormEntry>> GetByCaseKeyValueActiveOnlyAsync(string key, string value, CancellationToken token = default)
+        public async Task<IEnumerable<CaseWorkflowFormEntry>> GetByCaseKeyValueActiveOnlyAsync(string key, string value,
+            CancellationToken token = default)
         {
             return await dbContext.CaseWorkflowFormEntry.Where(w
                 => (w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
@@ -81,11 +83,13 @@ namespace Jube.Data.Repository
             ).OrderByDescending(o => o.Id).ToListAsync(token);
         }
 
-        public async Task<CaseWorkflowFormEntry> InsertAsync(CaseWorkflowFormEntry model, CancellationToken token = default)
+        public async Task<CaseWorkflowFormEntry> InsertAsync(CaseWorkflowFormEntry model,
+            CancellationToken token = default)
         {
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
     }

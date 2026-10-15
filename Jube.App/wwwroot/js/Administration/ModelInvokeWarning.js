@@ -71,6 +71,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("ModelInvokeWarning", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

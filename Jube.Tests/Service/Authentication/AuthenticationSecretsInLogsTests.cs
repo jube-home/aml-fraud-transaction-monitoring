@@ -34,7 +34,6 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
     private const string Wrong = "Wr0ng-S3cret-PW!marker";
     private const string MfaCode = "MFA-marker-913700";
     private const string JwtKey = "an-adequately-long-unit-test-signing-key-0123456789";
-
     private readonly List<string> secrets = [Pw, NewPw, Wrong, MfaCode, JwtKey, HashKey];
 
     private static readonly string[] scenarioNames =
@@ -51,6 +50,7 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
         get
         {
             var data = new TheoryData<string>();
+
             foreach (var name in scenarioNames)
             {
                 data.Add(name);
@@ -63,6 +63,7 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
     private async Task RunAsync(string scenario)
     {
         var user = await AddUserAsync("Logs" + Guid.NewGuid().ToString("N"), password: Pw);
+
         switch (scenario)
         {
             case "correct-login": await LoginAsync(user.Name, Pw); break;
@@ -75,6 +76,7 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
             case "expired-password":
                 var expired = await AddUserAsync("LogsExpired" + Guid.NewGuid().ToString("N"),
                     u => u.PasswordExpiryDate = DateTime.UtcNow.AddDays(-1));
+
                 await LoginAsync(expired.Name, Pw);
                 break;
             case "change-at-login": await LoginAsync(user.Name, Pw, d => d.NewPassword = NewPw); break;
@@ -93,6 +95,7 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
             case "mfa-wrong": await LoginAsync(user.Name, Pw, d => d.Mfa = MfaCode, env: [MfaOn]); break;
             case "mfa-provider-down":
                 Mfa.Throw = new InvalidOperationException("provider down");
+
                 try
                 {
                     await LoginAsync(user.Name, Pw, d => d.Mfa = MfaCode, env: [MfaOn]);
@@ -146,6 +149,7 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
                 await using (var db = Fx.GetDbContext())
                 {
                     Mfa.Allow(user.Name, MfaCode);
+
                     await Service(db, NegotiateOn, MfaOn).ByNegotiateMfaAsync(
                         new AuthenticationRequestDto { Mfa = MfaCode },
                         Context(new NegotiateIdentity(true, user.Name)));
@@ -156,11 +160,14 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
                 var hash = HashPassword.Argon2(Pw, HashKey);
                 var real = await AddUserAsync("LogsArgon" + Guid.NewGuid().ToString("N"), storedHash: hash);
                 secrets.AddRange(hash.Split('$').Where(p => p.Length >= 12));
+
                 await using (var db = Fx.GetDbContext())
                 {
                     var service = Service(db, new Argon2PasswordHashScheme());
+
                     await service.ByUserNamePasswordAsync(
                         new AuthenticationRequestDto { UserName = real.Name, Password = Wrong }, Context());
+
                     await service.ByUserNamePasswordAsync(
                         new AuthenticationRequestDto { UserName = real.Name, Password = Pw, NewPassword = NewPw },
                         Context());
@@ -173,6 +180,7 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
                 {
                     var response = await host.PostAsync("/api/Authentication/ByUserNamePassword",
                         new { userName = user.Name, password = Pw }, ("User-Agent", Marker));
+
                     secrets.Add(System.Text.Json.JsonDocument.Parse(response.Body).RootElement.GetProperty("token")
                         .GetString().Required());
                 }
@@ -183,6 +191,7 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
                 {
                     await host.PostAsync("/api/Authentication/ByUserNamePassword",
                         new { userName = user.Name, password = Wrong }, ("User-Agent", Marker));
+
                     await host.PostAsync("/api/Authentication/ByUserNamePassword",
                         new { userName = $"{Prefix}Ghost", password = Wrong }, ("User-Agent", Marker));
                 }
@@ -235,6 +244,7 @@ public sealed class AuthenticationSecretsInLogsTests(DatabaseFixture fx) : Authe
         await RunAsync(scenario);
 
         var text = AllLogText();
+
         foreach (var secret in secrets.Where(s => !String.IsNullOrEmpty(s)).Distinct())
         {
             text.Should().NotContain(secret, $"scenario '{scenario}' must not log a secret");

@@ -19,7 +19,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Engine.EntityAnalysisModelManager.Helpers;
 using Jube.Engine.Sanctions;
 using Jube.Engine.Sanctions.Models;
@@ -108,6 +108,7 @@ namespace Jube.Test.Engine.Sanctions
                 capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
 
             capture.Records.Should().ContainSingle();
+
             capture.Records[0].ElementValue.Should().Be("ANGLO-CARIBBEAN CO., LTD.",
                 "the comma is inside a quoted field and must not be treated as a delimiter");
         }
@@ -178,8 +179,10 @@ namespace Jube.Test.Engine.Sanctions
 
             capture.Records.Should().BeEmpty();
             capture.Rejections.Should().HaveCount(2);
+
             capture.Rejections.Should()
                 .OnlyContain(r => r.ReasonId == SanctionEntryRejectionReason.NoReferenceIndexConfigured);
+
             result.RejectedRows.Should().Be(2);
         }
 
@@ -334,6 +337,7 @@ namespace Jube.Test.Engine.Sanctions
             capture.Rejections[0].ReasonId.Should().Be(SanctionEntryRejectionReason.InsufficientFields);
 
             capture.Records.Should().HaveCountGreaterThan(19000);
+
             result.Hashes.Should().HaveCount(capture.Records.Count,
                 "every real SDN row has a unique OFAC entity number, so every hash should be unique too");
         }
@@ -356,6 +360,7 @@ namespace Jube.Test.Engine.Sanctions
 
             var record = capture.Records.Should()
                 .ContainSingle(r => r.Reference == expectedReference).Subject;
+
             record.ElementValue.Should().Be(expectedElementValue);
         }
 
@@ -368,10 +373,12 @@ namespace Jube.Test.Engine.Sanctions
             parser.Delimiters = [","];
 
             var capture = new Capture();
+
             await SanctionEntryFileImporter.ImportAsync(parser, 1, "1", 0, 0,
                 capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
 
             var record = capture.Records.Single(r => r.Reference == "36");
+
             var sanctionEntry = new SanctionEntry
             {
                 SanctionEntryId = 1,
@@ -384,6 +391,7 @@ namespace Jube.Test.Engine.Sanctions
                         .Select(SanctionEntryFileImporter.NormalizeElementValue)
                 ]
             };
+
             var entries = new ConcurrentDictionary<int, SanctionEntry>();
             entries.TryAdd(sanctionEntry.SanctionEntryId, sanctionEntry);
             var noStopTokens = new ConcurrentDictionary<string, byte>();
@@ -403,12 +411,14 @@ namespace Jube.Test.Engine.Sanctions
             public Task OnRecordAsync(SanctionEntryFileRecord record, CancellationToken token)
             {
                 Records.Add(record);
+
                 return Task.CompletedTask;
             }
 
             public Task OnRejectedAsync(SanctionEntryFileRejection rejection, CancellationToken token)
             {
                 Rejections.Add(rejection);
+
                 return Task.CompletedTask;
             }
         }

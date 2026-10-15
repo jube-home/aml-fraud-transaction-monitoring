@@ -25,7 +25,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
     public class HashCacheAssemblyObservabilityTaskStarter(Context context)
     {
-        private readonly HashSet<string> recordedScriptHashes = new HashSet<string>();
+        private readonly HashSet<string> recordedScriptHashes = [];
         private long hashCacheAssemblyInstanceId;
 
         public async Task StartAsync()
@@ -78,6 +78,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 hashCacheAssemblyInstanceId = model.Id;
 
                 var entryRepository = new HashCacheAssemblyInstanceEntryRepository(dbContext);
+
                 var existingScriptHashes = await entryRepository.GetAllScriptHashesAsync(
                     context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
                 recordedScriptHashes.UnionWith(existingScriptHashes);
@@ -87,6 +88,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 context.Services.Log.Error($"HashCacheAssemblyObservability: Could not establish instance row {ex}");
+
                 return false;
             }
             finally
@@ -113,11 +115,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 var totalBytes = context.Caching.HashCacheAssemblyMetadata.Values.Sum(metadata => metadata.Bytes);
 
                 var instanceRepository = new HashCacheAssemblyInstanceRepository(dbContext);
+
                 await instanceRepository.UpdateCountAndBytesAsync(hashCacheAssemblyInstanceId, scriptHashes.Count,
                     totalBytes,
                     context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
 
                 var journalRepository = new HashCacheAssemblyInstanceJournalRepository(dbContext);
+
                 await journalRepository.InsertAsync(new HashCacheAssemblyInstanceJournal
                 {
                     HashCacheAssemblyInstanceId = hashCacheAssemblyInstanceId,

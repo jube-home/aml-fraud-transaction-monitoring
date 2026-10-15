@@ -12,6 +12,7 @@ namespace Jube.Dictionary.Extensions
         {
             var encoding = Encoding.ASCII;
             using var ms = new MemoryStream(encoding.GetBytes(@this));
+
             return XDocument.Load(ms);
         }
     }

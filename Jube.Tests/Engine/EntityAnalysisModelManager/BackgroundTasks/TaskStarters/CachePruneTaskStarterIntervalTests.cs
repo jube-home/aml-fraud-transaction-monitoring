@@ -34,6 +34,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                     CacheTtlIntervalValue = value
                 }
             };
+
             return model;
         }
 

@@ -13,6 +13,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using Accord.Neuro;
 using FluentAssertions;
 using Jube.Dictionary;
@@ -20,6 +21,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.Exhaustive.Models;
+using Jube.HttpAdaptationProtocol;
 using Jube.Test.Infrastructure;
 using Xunit;
 using Context = Jube.Engine.EntityAnalysisModelInvoke.Context.Context;
@@ -47,6 +49,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                     Abstraction = new PooledDictionary<string, double>(),
                     AbstractionCalculation = new PooledDictionary<string, double>(),
                     ExhaustiveAdaptation = new PooledDictionary<string, double>(),
+                    ExhaustiveAdaptationDetail = new PooledDictionary<string, Adaptation>(),
                     InvokeTaskPerformance = new InvokeTaskPerformance()
                 },
                 Log = TestLog.NoOp,
@@ -61,6 +64,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var neuron = (ActivationNeuron)network.Layers[0].Neurons[0];
             neuron.Weights[0] = 0;
             neuron.Threshold = 0;
+
             return network;
         }
 
@@ -70,6 +74,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var neuron = (ActivationNeuron)network.Layers[0].Neurons[0];
             neuron.Weights[0] = 1;
             neuron.Threshold = 0;
+
             return network;
         }
 
@@ -96,6 +101,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 TopologyNetwork = network
             };
             model.NetworkVariablesInOrder.AddRange(variables);
+
             return model;
         }
 
@@ -121,6 +127,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.ExecuteExhaustiveAdaptation();
 
             var expected = 1 / (1 + Math.Exp(-2 * 2.0));
+
             context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation["Model1"].Should()
                 .BeApproximately(expected, 1e-9);
         }
@@ -136,9 +143,11 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var model = NewModel("Model1", IdentityWeightedSigmoidNetwork(),
                 NewVariable("Field", processingTypeId));
+
             var context = NewContext(model);
 
             var payload = context.EntityAnalysisModelInstanceEntryPayload;
+
             switch (processingTypeId)
             {
                 case 2:
@@ -161,6 +170,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.ExecuteExhaustiveAdaptation();
 
             var expected = 1 / (1 + Math.Exp(-2 * 3.0));
+
             context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation["Model1"].Should()
                 .BeApproximately(expected, 1e-9);
         }
@@ -170,12 +180,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var model = NewModel("Model1", IdentityWeightedSigmoidNetwork(),
                 NewVariable("Field", 99));
+
             var context = NewContext(model);
             context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Field"] = 4.0;
 
             context.ExecuteExhaustiveAdaptation();
 
             var expected = 1 / (1 + Math.Exp(-2 * 4.0));
+
             context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation["Model1"].Should()
                 .BeApproximately(expected, 1e-9);
         }
@@ -185,11 +197,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var model = NewModel("Model1", IdentityWeightedSigmoidNetwork(),
                 NewVariable("Field", 1, 5.0));
+
             var context = NewContext(model);
 
             context.ExecuteExhaustiveAdaptation();
 
             var expected = 1 / (1 + Math.Exp(-2 * 5.0));
+
             context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation["Model1"].Should()
                 .BeApproximately(expected, 1e-9);
         }
@@ -199,12 +213,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var model = NewModel("Model1", IdentityWeightedSigmoidNetwork(),
                 NewVariable("Prefix.Field", 1));
+
             var context = NewContext(model);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Field", 1.5);
 
             context.ExecuteExhaustiveAdaptation();
 
             var expected = 1 / (1 + Math.Exp(-2 * 1.5));
+
             context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation["Model1"].Should()
                 .BeApproximately(expected, 1e-9);
         }
@@ -214,12 +230,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var model = NewModel("Model1", IdentityWeightedSigmoidNetwork(),
                 NewVariable("Field", 1, 10, 2, 2));
+
             var context = NewContext(model);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Field", 14.0);
 
             context.ExecuteExhaustiveAdaptation();
 
             var expected = 1 / (1 + Math.Exp(-2 * 2.0));
+
             context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation["Model1"].Should()
                 .BeApproximately(expected, 1e-9);
         }
@@ -235,8 +253,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var act = context.ExecuteExhaustiveAdaptation;
 
             act.Should().NotThrow();
+
             context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation.ContainsKey("Throws")
                 .Should().BeFalse();
+
             context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation["Second"].Should().Be(0.5);
         }
 
@@ -276,6 +296,71 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
 
             act.Should().NotThrow();
             context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void TheExplainabilityDetailCarriesTheSameValueAsTheScoreAndReconstructsTheRawOutput()
+        {
+            var model = NewModel("Model1", IdentityWeightedSigmoidNetwork(), NewVariable("Field", 1));
+            var context = NewContext(model);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Field", 2.0);
+
+            context.ExecuteExhaustiveAdaptation();
+
+            var payload = context.EntityAnalysisModelInstanceEntryPayload;
+            var detail = payload.ExhaustiveAdaptationDetail["Model1"];
+
+            detail.Value.Should().Be(payload.ExhaustiveAdaptation["Model1"]);
+            detail.Model.Name.Should().Be("Model1");
+            detail.Model.Family.Should().Be(ProtocolConstants.Family.NeuralNetwork);
+            detail.Model.HiddenLayers.Should().Be(0);
+            detail.Model.FeatureCount.Should().Be(1);
+            detail.Contribution.Method.Should().Be(ProtocolConstants.ContributionMethod.LayerwiseRelevance);
+            detail.Contribution.Exact.Should().BeTrue();
+            detail.Contribution.Items.Should().ContainSingle().Which.Name.Should().Be("Field");
+            var rawScore = 1 / (1 + Math.Exp(-2 * 2.0));
+
+            (detail.Contribution.Items.Sum(i => i.Weight!.Value) + detail.Contribution.BaseValue!.Value).Should()
+                .BeApproximately(rawScore, 1e-6);
+        }
+
+        [Fact]
+        public void AnUncalibratedModelReportsNotCalibratedAndAScoreSpaceContribution()
+        {
+            var model = NewModel("Model1", AlwaysHalfNetwork(), NewVariable("Field", 1));
+            var context = NewContext(model);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Field", 1.0);
+
+            context.ExecuteExhaustiveAdaptation();
+
+            var detail = context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptationDetail["Model1"];
+
+            detail.Calibration.Calibrated.Should().BeFalse();
+            detail.Calibration.Method.Should().Be(ProtocolConstants.CalibrationMethod.None);
+            detail.Calibration.Space.Should().Be(ProtocolConstants.ValueSpace.Score);
+            detail.Calibration.Slope.Should().BeNull();
+            detail.Calibration.Intercept.Should().BeNull();
+        }
+
+        [Fact]
+        public void ContributionSourceIsMappedFromTheVariablesProcessingTypeId()
+        {
+            var network = new ActivationNetwork(new SigmoidFunction(), 2, null, 1);
+            var neuron = (ActivationNeuron)network.Layers[0].Neurons[0];
+            neuron.Weights[0] = 1;
+            neuron.Weights[1] = 1;
+            var model = NewModel("Model1", network, NewVariable("Field", 1), NewVariable("Counter", 3));
+            var context = NewContext(model);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Field", 1.0);
+            context.EntityAnalysisModelInstanceEntryPayload.TtlCounter.Add("Counter", 1.0);
+
+            context.ExecuteExhaustiveAdaptation();
+
+            var items = context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptationDetail["Model1"]
+                .Contribution.Items;
+
+            items.Single(i => i.Name == "Field").Source.Should().Be(ProtocolConstants.Source.Payload);
+            items.Single(i => i.Name == "Counter").Source.Should().Be(ProtocolConstants.Source.TtlCounter);
         }
     }
 }

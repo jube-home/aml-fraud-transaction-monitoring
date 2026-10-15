@@ -55,6 +55,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
         {
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
             await GuardSchemaAsync(dbContext);
 
             var watermark = await new GetEntityAnalysisModelSyncWatermarkQuery(dbContext)
@@ -74,6 +75,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
         {
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
             await GuardSchemaAsync(dbContext);
 
             var watermark = await new GetEntityAnalysisModelSyncWatermarkQuery(dbContext)
@@ -96,6 +98,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
         {
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
             await GuardSchemaAsync(dbContext);
 
             var query = new GetEntityAnalysisModelSyncWatermarkQuery(dbContext);
@@ -110,6 +113,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
         {
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
             await GuardSchemaAsync(dbContext);
 
             var query = new GetEntityAnalysisModelSyncWatermarkQuery(dbContext);
@@ -123,6 +127,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             try
             {
                 var roleGuid = Guid.NewGuid();
+
                 roleId = await dbContext.InsertWithInt32IdentityAsync(new RoleRegistry
                 {
                     Guid = roleGuid,

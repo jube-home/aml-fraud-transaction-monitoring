@@ -23,6 +23,7 @@ namespace Jube.App.Middlewares
             context.Response.OnStarting(() =>
             {
                 context.Response.Headers["Connection"] = "close";
+
                 return Task.CompletedTask;
             });
 

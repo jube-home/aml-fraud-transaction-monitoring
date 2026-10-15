@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Engine.EntityAnalysisModelManager.Helpers;
 using Jube.Engine.Sanctions.Models;
 using log4net;
@@ -44,6 +45,7 @@ namespace Jube.Engine.Sanctions
             {
                 tfp.TextFieldType = FieldType.Delimited;
                 var i = 1;
+
                 while (!tfp.EndOfData)
                 {
                     var isDataRow = i > skip;
@@ -74,6 +76,7 @@ namespace Jube.Engine.Sanctions
                                 else
                                 {
                                     rejected = true;
+
                                     await RejectAsync(onRejectedAsync, i, data,
                                             SanctionEntryRejectionReason.NoReferenceIndexConfigured, token)
                                         .ConfigureAwait(false);
@@ -82,6 +85,7 @@ namespace Jube.Engine.Sanctions
                             else
                             {
                                 rejected = true;
+
                                 await RejectAsync(onRejectedAsync, i, data,
                                     SanctionEntryRejectionReason.InsufficientFields, token).ConfigureAwait(false);
 
@@ -101,6 +105,7 @@ namespace Jube.Engine.Sanctions
                         if (isDataRow && !rejected)
                         {
                             rejected = true;
+
                             await RejectAsync(onRejectedAsync, i, null, SanctionEntryRejectionReason.ParseError,
                                 token).ConfigureAwait(false);
                         }
@@ -115,6 +120,7 @@ namespace Jube.Engine.Sanctions
                         if (isDataRow)
                         {
                             totalRows += 1;
+
                             if (rejected)
                             {
                                 rejectedRows += 1;
@@ -122,6 +128,7 @@ namespace Jube.Engine.Sanctions
                         }
 
                         i += 1;
+
                         if (log.IsInfoEnabled)
                         {
                             log.Info($"Sanctions Loader: Moving to record {i}.");
@@ -139,20 +146,8 @@ namespace Jube.Engine.Sanctions
             return new SanctionEntryFileImportResult(seenHashes, totalRows, rejectedRows);
         }
 
-        private static Task RejectAsync(Func<SanctionEntryFileRejection, CancellationToken, Task> onRejectedAsync,
-            int rowNumber, string[] data, SanctionEntryRejectionReason reasonId, CancellationToken token)
-        {
-            if (onRejectedAsync == null)
-            {
-                return Task.CompletedTask;
-            }
-
-            var rawData = data != null ? string.Join(',', data) : null;
-            return onRejectedAsync(new SanctionEntryFileRejection(rowNumber, rawData, reasonId), token);
-        }
-
         public static async Task<IReadOnlyCollection<SanctionEntry>> ReconcileRemovedAsync(
-            SanctionsEntryRepository repository, int sanctionEntrySourceId,
+            SanctionEntryRepository repository, int sanctionEntrySourceId,
             IReadOnlyCollection<string> currentHashes, string userName, ILog log,
             CancellationToken token = default)
         {
@@ -202,6 +197,33 @@ namespace Jube.Engine.Sanctions
             return removed;
         }
 
+        public static string NormalizeElementValue(string raw)
+        {
+            return raw
+                .Normalize(NormalizationForm.FormD)
+                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                .Aggregate(new StringBuilder(), (sb, c) => sb.Append(c))
+                .ToString()
+                .ToLowerInvariant()
+                .Replace("-", "")
+                .Replace(",", "")
+                .Replace(".", "")
+                .Replace("'", "");
+        }
+
+        private static Task RejectAsync(Func<SanctionEntryFileRejection, CancellationToken, Task> onRejectedAsync,
+            int rowNumber, string[] data, SanctionEntryRejectionReason reasonId, CancellationToken token)
+        {
+            if (onRejectedAsync == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            var rawData = data != null ? string.Join(',', data) : null;
+
+            return onRejectedAsync(new SanctionEntryFileRejection(rowNumber, rawData, reasonId), token);
+        }
+
         private static SanctionEntryFileRecord BuildRecord(string[] data, int sanctionEntrySourceId,
             string multiPartStringIndex, int? referenceIndex)
         {
@@ -212,6 +234,7 @@ namespace Jube.Engine.Sanctions
 
             var sb = new StringBuilder();
             var first = true;
+
             foreach (var location in multiPartStringIndex.Split(','))
             {
                 if (first)
@@ -231,20 +254,6 @@ namespace Jube.Engine.Sanctions
             var hash = HashHelper.GetHash(sanctionEntrySourceId + elementValue + reference);
 
             return new SanctionEntryFileRecord(elementValue, reference, hash, string.Join(',', data));
-        }
-
-        public static string NormalizeElementValue(string raw)
-        {
-            return raw
-                .Normalize(NormalizationForm.FormD)
-                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-                .Aggregate(new StringBuilder(), (sb, c) => sb.Append(c))
-                .ToString()
-                .ToLowerInvariant()
-                .Replace("-", "")
-                .Replace(",", "")
-                .Replace(".", "")
-                .Replace("'", "");
         }
     }
 }

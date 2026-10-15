@@ -6,9 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # HTTP Adaptation Protocol
 
 This page is the wire specification for HTTP Adaptation endpoints - R Plumber, Python Flask, or anything else that can
@@ -36,7 +33,7 @@ Jube POSTs the entire `EntityAnalysisModelInstanceEntryPayload` for the transact
 Counters, Abstraction Calculations, Sanctions, any HTTP Adaptations already recalled earlier in the same invocation, and
 so on - as the JSON body, using the endpoint's configured URL. This is not a hand-picked subset: an adaptation can read
 anything already resolved about the transaction, including the `Value` of an adaptation with a lower Priority that has
-already run (see [§6.3](#63-execution-order-priority-and-boosting)).
+already run (see [§5.3](#53-execution-order-priority-and-boosting)).
 
 ```json
 {
@@ -99,7 +96,7 @@ Also accepted, for compatibility with jsonlite's default vector serialisation: a
 | `ArtifactHash`                                    | string                                             |                                                                                                                                                                                                     |
 | `TrainedDate`                                     | date-time                                          |                                                                                                                                                                                                     |
 | `FeatureCount`                                    | integer                                            |                                                                                                                                                                                                     |
-| `Validation`                                      | [`ValidationDescriptor`](#39-validationdescriptor) |                                                                                                                                                                                                     |
+| `Validation`                                      | `ValidationDescriptor`                              |                                                                                                                                                                                                     |
 | `BootstrapReplicates`                             | integer                                            | Bayesian networks: `R` as passed to `bnlearn::boot.strength`.                                                                                                                                       |
 | `LabelsVersion`, `LabelsHash`                     | string                                             | Provenance of the curated `Narrative`/`HumanLabel` template dictionary. No wire member is produced by a generative language model; a phrasing change is traceable the same way a weights change is. |
 | `TopologyVersion`, `TopologyHash`, `TopologyDate` | string, string, date-time                          | Structure, versioned separately from weights, so a re-fit on an unchanged topology doesn't duplicate `ArtifactHash`.                                                                                |

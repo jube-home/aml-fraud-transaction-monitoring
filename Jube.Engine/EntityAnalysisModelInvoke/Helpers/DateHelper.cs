@@ -39,37 +39,47 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Helpers
                 case DateInterval.Day:
                 case DateInterval.DayOfYear:
                     var spanForDays = dateTwo - dateOne;
+
                     return (int)spanForDays.TotalDays;
                 case DateInterval.Hour:
                     var spanForHours = dateTwo - dateOne;
+
                     return (int)spanForHours.TotalHours;
                 case DateInterval.Minute:
                     var spanForMinutes = dateTwo - dateOne;
+
                     return (int)spanForMinutes.TotalMinutes;
                 case DateInterval.Month:
                     return (dateTwo.Year - dateOne.Year) * 12 + (dateTwo.Month - dateOne.Month);
                 case DateInterval.Quarter:
                     var dateOneQuarter = (int)Math.Ceiling(dateOne.Month / 3.0);
                     var dateTwoQuarter = (int)Math.Ceiling(dateTwo.Month / 3.0);
+
                     return 4 * (dateTwo.Year - dateOne.Year) + dateTwoQuarter - dateOneQuarter;
                 case DateInterval.Second:
                     var spanForSeconds = dateTwo - dateOne;
+
                     return (int)spanForSeconds.TotalSeconds;
                 case DateInterval.Weekday:
                     var spanForWeekdays = dateTwo - dateOne;
+
                     return (int)(spanForWeekdays.TotalDays / 7.0);
                 case DateInterval.WeekOfYear:
                     var dateOneModified = dateOne;
                     var dateTwoModified = dateTwo;
+
                     while (dateTwoModified.DayOfWeek != DateTimeFormatInfo.CurrentInfo.FirstDayOfWeek)
                     {
                         dateTwoModified = dateTwoModified.AddDays(-1);
                     }
+
                     while (dateOneModified.DayOfWeek != DateTimeFormatInfo.CurrentInfo.FirstDayOfWeek)
                     {
                         dateOneModified = dateOneModified.AddDays(-1);
                     }
+
                     var spanForWeekOfYear = dateTwoModified - dateOneModified;
+
                     return (int)(spanForWeekOfYear.TotalDays / 7.0);
                 case DateInterval.Year:
                     return dateTwo.Year - dateOne.Year;

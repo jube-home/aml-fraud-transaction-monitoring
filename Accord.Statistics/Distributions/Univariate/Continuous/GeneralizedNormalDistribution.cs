@@ -1,64 +1,79 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Diagnostics;
+using Accord.Math;
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using System;
-    using Accord.Math;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Generalized Normal distribution (also known as Exponential Power distribution).
+    ///     Generalized Normal distribution (also known as Exponential Power distribution).
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   The generalized normal distribution or generalized Gaussian distribution
-    ///   (GGD) is either of two families of parametric continuous probability 
-    ///   distributions on the real line. Both families add a shape parameter to
-    ///   the normal distribution. To distinguish the two families, they are referred
-    ///   to below as "version 1" and "version 2". However this is not a standard 
-    ///   nomenclature.</para>
-    /// <para>
-    ///   Known also as the exponential power distribution, or the generalized error
-    ///   distribution, this is a parametric family of symmetric distributions. It includes
-    ///   all normal and Laplace distributions, and as limiting cases it includes all 
-    ///   continuous uniform distributions on bounded intervals of the real line.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="https://en.wikipedia.org/wiki/Generalized_normal_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Generalized normal distribution. Available on: 
-    ///       https://en.wikipedia.org/wiki/Generalized_normal_distribution </a></description></item>
-    ///   </list></para> 
+    ///     <para>
+    ///         The generalized normal distribution or generalized Gaussian distribution
+    ///         (GGD) is either of two families of parametric continuous probability
+    ///         distributions on the real line. Both families add a shape parameter to
+    ///         the normal distribution. To distinguish the two families, they are referred
+    ///         to below as "version 1" and "version 2". However this is not a standard
+    ///         nomenclature.
+    ///     </para>
+    ///     <para>
+    ///         Known also as the exponential power distribution, or the generalized error
+    ///         distribution, this is a parametric family of symmetric distributions. It includes
+    ///         all normal and Laplace distributions, and as limiting cases it includes all
+    ///         continuous uniform distributions on bounded intervals of the real line.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="https://en.wikipedia.org/wiki/Generalized_normal_distribution">
+    ///                         Wikipedia, The Free Encyclopedia. Generalized normal distribution. Available on:
+    ///                         https://en.wikipedia.org/wiki/Generalized_normal_distribution
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <para>
-    ///   This examples shows how to create a Generalized normal distribution
-    ///   and compute some of its properties.</para>
-    ///   
-    /// <code>
+    ///     <para>
+    ///         This examples shows how to create a Generalized normal distribution
+    ///         and compute some of its properties.
+    ///     </para>
+    ///     <code>
     /// // Creates a new generalized normal distribution with the given parameters
     /// var normal = new GeneralizedNormalDistribution(location: 1, scale: 5, shape: 0.42);
     /// 
@@ -80,256 +95,229 @@ namespace Accord.Statistics.Distributions.Univariate
     /// string str = normal.ToString(CultureInfo.InvariantCulture); // GGD(x; μ = 1, α = 5, β = 0.42)
     /// </code>
     /// </example>
-    /// 
-    /// <seealso cref="NormalDistribution"/>
-    /// <seealso cref="LaplaceDistribution"/>
-    /// 
+    /// <seealso cref="NormalDistribution" />
+    /// <seealso cref="LaplaceDistribution" />
     [Serializable]
     public class GeneralizedNormalDistribution : UnivariateContinuousDistribution
     {
+        private double alpha = 1; // scale α
+
+        private double beta; // shape β
 
         // Distribution parameters
-        private double mean = 0;  // location μ
-        private double alpha = 1; // scale α
-        private double beta = 0;  // shape β
+        private double mean; // location μ
 
         /// <summary>
-        ///   Constructs a Generalized Normal distribution with the given parameters.
+        ///     Constructs a Generalized Normal distribution with the given parameters.
         /// </summary>
-        /// 
         /// <param name="location">The location parameter μ.</param>
         /// <param name="scale">The scale parameter α.</param>
         /// <param name="shape">The shape parameter β.</param>
-        /// 
-        public GeneralizedNormalDistribution([Real] double location, 
+        public GeneralizedNormalDistribution([Real] double location,
             [Positive] double scale, [Positive] double shape)
         {
             initialize(location, scale, shape);
         }
 
         /// <summary>
-        ///   Create an <see cref="LaplaceDistribution"/> distribution using a 
-        ///   <see cref="GeneralizedNormalDistribution"/> specialization.
+        ///     Gets the location value μ (mu) for the distribution.
         /// </summary>
-        /// 
+        public override double Mean
+        {
+            get => mean;
+            set => mean = value;
+        }
+
+        /// <summary>
+        ///     Gets the median for this distribution.
+        /// </summary>
+        /// <value>
+        ///     The distribution's median value.
+        /// </value>
+        public override double Median
+        {
+            get
+            {
+                Debug.Assert(mean.IsEqual(base.Median, 1e-5));
+                return mean;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the mode for this distribution.
+        /// </summary>
+        /// <remarks>
+        ///     In the Generalized Normal Distribution, the mode is
+        ///     equal to the distribution's <see cref="Mean" /> value.
+        /// </remarks>
+        /// <value>
+        ///     The distribution's mode value.
+        /// </value>
+        public override double Mode
+        {
+            get => mean;
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Gets the variance for this distribution.
+        /// </summary>
+        /// <value>
+        ///     The distribution's variance.
+        /// </value>
+        public override double Variance
+        {
+            get => alpha * alpha * Gamma.Function(3.0 / beta) / Gamma.Function(1.0 / beta);
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Gets the support interval for this distribution.
+        /// </summary>
+        /// <value>
+        ///     A <see cref="DoubleRange" /> containing
+        ///     the support interval for this distribution.
+        /// </value>
+        public override DoubleRange Support
+        {
+            get => new(double.NegativeInfinity, double.PositiveInfinity);
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Gets the Entropy for this Normal distribution.
+        /// </summary>
+        public override double Entropy
+        {
+            get
+            {
+                var a = 1.0 / beta;
+                var b = beta / (2 * alpha * Gamma.Function(a));
+                return a - System.Math.Log(b);
+            }
+            set { } //Not Implemented.
+        }
+
+        /// <summary>
+        ///     Create an <see cref="LaplaceDistribution" /> distribution using a
+        ///     <see cref="GeneralizedNormalDistribution" /> specialization.
+        /// </summary>
         /// <param name="location">The Laplace's location parameter μ (mu).</param>
         /// <param name="scale">The Laplace's scale parameter b.</param>
-        /// 
-        /// <returns>A <see cref="GeneralizedNormalDistribution"/> that provides
-        ///  a <see cref="LaplaceDistribution"/>.</returns>
-        /// 
+        /// <returns>
+        ///     A <see cref="GeneralizedNormalDistribution" /> that provides
+        ///     a <see cref="LaplaceDistribution" />.
+        /// </returns>
         public static GeneralizedNormalDistribution Laplace([Real] double location, [Positive] double scale)
         {
             return new GeneralizedNormalDistribution(location, scale, 1);
         }
 
         /// <summary>
-        ///   Create an <see cref="NormalDistribution"/> distribution using a 
-        ///   <see cref="GeneralizedNormalDistribution"/> specialization.
+        ///     Create an <see cref="NormalDistribution" /> distribution using a
+        ///     <see cref="GeneralizedNormalDistribution" /> specialization.
         /// </summary>
-        /// 
         /// <param name="mean">The Normal's mean parameter μ (mu).</param>
         /// <param name="stdDev">The Normal's standard deviation σ (sigma).</param>
-        /// 
-        /// <returns>A <see cref="GeneralizedNormalDistribution"/> that provides
-        ///  a <see cref="NormalDistribution"/> distribution.</returns>
-        /// 
+        /// <returns>
+        ///     A <see cref="GeneralizedNormalDistribution" /> that provides
+        ///     a <see cref="NormalDistribution" /> distribution.
+        /// </returns>
         public static GeneralizedNormalDistribution Normal(double mean, double stdDev)
         {
             return new GeneralizedNormalDistribution(mean, Constants.Sqrt2 * stdDev, 2);
         }
 
         /// <summary>
-        ///   Gets the location value μ (mu) for the distribution.
+        ///     Gets the cumulative distribution function (cdf) for the
+        ///     Generalized Normal distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
-        public override double Mean
-        {
-            get { return mean; }
-            set { mean = value; }
-        }
-
-        /// <summary>
-        ///   Gets the median for this distribution.
-        /// </summary>
-        /// 
-        /// <value>
-        ///   The distribution's median value.
-        /// </value>
-        /// 
-        public override double Median
-        {
-            get
-            {
-                Accord.Diagnostics.Debug.Assert(mean.IsEqual(base.Median, 1e-5));
-                return mean;
-            }
-        }
-
-        /// <summary>
-        ///   Gets the mode for this distribution.
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   In the Generalized Normal Distribution, the mode is
-        ///   equal to the distribution's <see cref="Mean"/> value.
-        /// </remarks>
-        /// 
-        /// <value>
-        ///   The distribution's mode value.
-        /// </value>
-        /// 
-        public override double Mode
-        {
-            get { return mean; }
-            set { } //Not Implemented.
-        }
-
-        /// <summary>
-        ///   Gets the variance for this distribution.
-        /// </summary>
-        /// 
-        /// <value>
-        ///   The distribution's variance.
-        /// </value>
-        /// 
-        public override double Variance
-        {
-            get { return alpha * alpha * Gamma.Function(3.0 / beta) / Gamma.Function(1.0 / beta); }
-            set {} //Not Implemented.
-        }
-
-        /// <summary>
-        ///   Gets the support interval for this distribution.
-        /// </summary>
-        /// 
-        /// <value>
-        ///   A <see cref="DoubleRange" /> containing
-        ///   the support interval for this distribution.
-        /// </value>
-        /// 
-        public override DoubleRange Support
-        {
-            get { return new DoubleRange(Double.NegativeInfinity, Double.PositiveInfinity); }
-            set {} //Not Implemented.
-        }
-
-        /// <summary>
-        ///   Gets the Entropy for this Normal distribution.
-        /// </summary>
-        /// 
-        public override double Entropy
-        {
-            get
-            {
-                double a = 1.0 / beta;
-                double b = beta / (2 * alpha * Gamma.Function(a));
-                return a - Math.Log(b);
-            }
-            set {} //Not Implemented.
-        }
-
-        /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for the
-        ///   Generalized Normal distribution evaluated at point <c>x</c>.
-        /// </summary>
-        /// 
         /// <param name="x">
-        ///   A single point in the distribution range.</param>
-        ///   
+        ///     A single point in the distribution range.
+        /// </param>
         /// <remarks>
-        /// <para>
-        ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.</para>
+        ///     <para>
+        ///         The Cumulative Distribution Function (CDF) describes the cumulative
+        ///         probability that a given value or any value smaller than it will occur.
+        ///     </para>
         /// </remarks>
-        /// 
         /// <example>
-        ///   See <see cref="GeneralizedNormalDistribution"/>.
+        ///     See <see cref="GeneralizedNormalDistribution" />.
         /// </example>
-        /// 
         protected internal override double InnerDistributionFunction(double x)
         {
-            double z = x - mean;
-            double w = Math.Abs(z) / alpha;
+            var z = x - mean;
+            var w = System.Math.Abs(z) / alpha;
 
-            double u = Math.Pow(w, beta);
-            double b = Gamma.LowerIncomplete(1.0 / beta, u);
+            var u = System.Math.Pow(w, beta);
+            var b = Gamma.LowerIncomplete(1.0 / beta, u);
 
             // The regularized Gamma function P is defined as the incomplete 
             // Gamma function divided by the Gamma function itself. This is 
             // exactly part of the formula indicated on Wikipedia's page on 
             // the Generalized Normal Distribution, in the CDF's section.
 
-            double r = 0.5 + 0.5 * Math.Sign(z) * b;
+            var r = 0.5 + 0.5 * System.Math.Sign(z) * b;
 
             return r;
         }
 
-
         /// <summary>
-        ///   Gets the probability density function (pdf) for
-        ///   the Normal distribution evaluated at point <c>x</c>.
+        ///     Gets the probability density function (pdf) for
+        ///     the Normal distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
-        /// <param name="x">A single point in the distribution range. For a
-        ///   univariate distribution, this should be a single double value.
-        ///   For a multivariate distribution, this should be a double array.</param>
-        ///   
+        /// <param name="x">
+        ///     A single point in the distribution range. For a
+        ///     univariate distribution, this should be a single double value.
+        ///     For a multivariate distribution, this should be a double array.
+        /// </param>
         /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
+        ///     The probability of <c>x</c> occurring
+        ///     in the current distribution.
         /// </returns>
-        /// 
         /// <example>
-        ///   See <see cref="GeneralizedNormalDistribution"/>.
-        /// </example> 
-        ///
+        ///     See <see cref="GeneralizedNormalDistribution" />.
+        /// </example>
         protected internal override double InnerProbabilityDensityFunction(double x)
         {
-            double z = Math.Abs(x - mean) / alpha;
+            var z = System.Math.Abs(x - mean) / alpha;
 
-            double a = beta / (2 * alpha * Gamma.Function(1 / beta));
-            double b = Math.Pow(z, beta);
+            var a = beta / (2 * alpha * Gamma.Function(1 / beta));
+            var b = System.Math.Pow(z, beta);
 
-            return a * Math.Exp(-b);
+            return a * System.Math.Exp(-b);
         }
 
-
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public override object Clone()
         {
             return new GeneralizedNormalDistribution(mean, alpha, beta);
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        /// 
         public override string ToString(string format, IFormatProvider formatProvider)
         {
-            return String.Format(formatProvider, "GGD(x; μ = {0}, α = {1}, β = {2})",
+            return string.Format(formatProvider, "GGD(x; μ = {0}, α = {1}, β = {2})",
                 mean.ToString(format, formatProvider),
                 alpha.ToString(format, formatProvider),
                 beta.ToString(format, formatProvider));
         }
 
-
         private void initialize(double mu, double alpha, double beta)
         {
-            this.mean = mu;
+            mean = mu;
             this.alpha = alpha;
             this.beta = beta;
         }
-
     }
 }

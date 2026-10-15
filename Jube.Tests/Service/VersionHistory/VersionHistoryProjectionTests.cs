@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
@@ -30,10 +31,12 @@ namespace Jube.Test.Service.VersionHistory
         public void TheProbeShapesCarryTheValuesTheyAreGivenAsTheyAreRead()
         {
             var dto = new ProbeDto { Name = "n", Items = [2] };
+
             var version = new ProbeVersion
             {
                 Id = 1, Name = "v", Items = [3], Secret = "s", Version = 4, CreatedUser = "u"
             };
+
             var parent = new ProbeParentVersion { Id = 5, ProbeParentId = 6, Name = "p" };
 
             using var scope = new AssertionScope();
@@ -120,9 +123,27 @@ namespace Jube.Test.Service.VersionHistory
         }
 
         [Fact]
+        public void ProjectingAnUnspecifiedCreatedDateStampsItAsUtc()
+        {
+            var fields = VersionHistoryProjection.ExposedFields(typeof(ProbeDto), typeof(ProbeVersion));
+
+            var row = new ProbeVersion
+            {
+                Id = 3, CreatedDate = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Unspecified)
+            };
+
+            var projected = VersionHistoryProjection.Project(row, fields);
+
+            using var scope = new AssertionScope();
+            projected["CreatedDate"].Should().Be(new DateTime(2026, 1, 2, 3, 4, 5));
+            ((DateTime)projected["CreatedDate"]!).Kind.Should().Be(DateTimeKind.Utc);
+        }
+
+        [Fact]
         public void ChangesOutsideTheExposedFieldsAreDropped()
         {
             var fields = VersionHistoryProjection.ExposedFields(typeof(ProbeDto), typeof(ProbeVersion));
+
             var changes = new List<VersionFieldChange>
             {
                 new("Name", "a", "b"),
@@ -139,6 +160,7 @@ namespace Jube.Test.Service.VersionHistory
         {
             var fields = VersionHistoryProjection.ExposedFields(typeof(ProbeDto), typeof(ProbeVersion));
             var oversized = new string('x', 250);
+
             var changes = new List<VersionFieldChange>
             {
                 new("Name", oversized, "short")

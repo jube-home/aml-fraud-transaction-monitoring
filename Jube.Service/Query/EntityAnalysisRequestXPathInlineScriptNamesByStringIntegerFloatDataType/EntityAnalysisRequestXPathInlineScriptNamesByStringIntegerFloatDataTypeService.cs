@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,10 +13,11 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -28,12 +29,11 @@ using Microsoft.Extensions.Localization;
 namespace Jube.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType
 {
     using DataQuery =
-        global::Jube.Data.Query.GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery;
+        GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery;
 
     public sealed class EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeService
     {
         private static readonly int[] permissions = [11, 17, 4, 12];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -59,6 +59,8 @@ namespace Jube.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByString
             this.permissionValidation = permissionValidation;
             query = new DataQuery(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeService> CreateAsync(
             DbContext dbContext, string? userName,
@@ -128,6 +130,7 @@ namespace Jube.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByString
                 "EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType", "Get", userName,
                 tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -152,12 +155,14 @@ namespace Jube.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByString
                     }
 
                     op.Rows(0);
+
                     return [];
                 }
 
                 var dtos = EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeMapper.ToDto(
                     await query.ExecuteAsync(entityAnalysisModelId, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -179,9 +184,11 @@ namespace Jube.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByString
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType.Get: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }

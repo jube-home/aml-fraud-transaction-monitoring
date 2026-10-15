@@ -16,7 +16,7 @@ using Jube.Service.Security;
 
 namespace Jube.Service.Query.CaseNoteByCaseKeyValue
 {
-    using DataDto = global::Jube.Data.Query.GetCaseNoteByCaseKeyValueQuery.Dto;
+    using DataDto = global::Jube.Data.Query.GetCaseNoteByCaseKeyValueQuery.GetCaseNoteByCaseKeyValueQueryDto;
 
     internal static class CaseNoteByCaseKeyValueMapper
     {

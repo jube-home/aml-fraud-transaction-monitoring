@@ -1,154 +1,149 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Statistics.Running
 {
-    using System;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Running (normal) statistics.
+    ///     Running (normal) statistics.
     /// </summary>
-    /// 
     /// <remarks>
-    /// 
-    /// <para>
-    ///   This class computes the running variance using Welford’s method. Running statistics 
-    ///   need only one pass over the data, and do not require all data to be available prior
-    ///   to computing.
-    /// </para>
-    /// 
-    /// <para>    
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://www.johndcook.com/standard_deviation.html">
-    ///       John D. Cook. Accurately computing running variance. Available on:
-    ///       http://www.johndcook.com/standard_deviation.html</a></description></item>
-    ///     <item><description>
-    ///       Chan, Tony F.; Golub, Gene H.; LeVeque, Randall J. (1983). Algorithms for 
-    ///       Computing the Sample Variance: Analysis and Recommendations. The American
-    ///       Statistician 37, 242-247.</description></item>
-    ///     <item><description>
-    ///       Ling, Robert F. (1974). Comparison of Several Algorithms for Computing Sample
-    ///       Means and Variances. Journal of the American Statistical Association, Vol. 69,
-    ///       No. 348, 859-866.</description></item>
-    ///   </list></para>
+    ///     <para>
+    ///         This class computes the running variance using Welford’s method. Running statistics
+    ///         need only one pass over the data, and do not require all data to be available prior
+    ///         to computing.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://www.johndcook.com/standard_deviation.html">
+    ///                         John D. Cook. Accurately computing running variance. Available on:
+    ///                         http://www.johndcook.com/standard_deviation.html
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///             <item>
+    ///                 <description>
+    ///                     Chan, Tony F.; Golub, Gene H.; LeVeque, Randall J. (1983). Algorithms for
+    ///                     Computing the Sample Variance: Analysis and Recommendations. The American
+    ///                     Statistician 37, 242-247.
+    ///                 </description>
+    ///             </item>
+    ///             <item>
+    ///                 <description>
+    ///                     Ling, Robert F. (1974). Comparison of Several Algorithms for Computing Sample
+    ///                     Means and Variances. Journal of the American Statistical Association, Vol. 69,
+    ///                     No. 348, 859-866.
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     [Serializable]
     public class RunningNormalStatistics : IRunningStatistics
     {
-        private int count;
-
-        private double mean;
-        private double sigma;
-
         private double lastMean;
         private double lastSigma;
 
-        /// <summary>
-        /// Gets the current mean of the gathered values.
-        /// </summary>
-        /// 
-        /// <value>The mean of the values.</value>
-        /// 
-        public double Mean { get { return mean; } }
+        private double sigma;
 
         /// <summary>
-        /// Gets the current variance of the gathered values.
+        ///     Initializes a new instance of the <see cref="RunningNormalStatistics" /> class.
         /// </summary>
-        /// 
-        /// <value>The variance of the values.</value>
-        /// 
-        public double Variance
+        public RunningNormalStatistics()
         {
-            get { return (count > 1) ? sigma / (count - 1) : 0.0; }
         }
 
         /// <summary>
-        /// Gets the current standard deviation of the gathered values.
+        ///     Gets the current count of values seen.
         /// </summary>
-        /// 
-        /// <value>The standard deviation of the values.</value>
-        /// 
-        public double StandardDeviation
-        {
-            get { return Math.Sqrt(Variance); }
-        }
-
-        /// <summary>
-        /// Gets the current count of values seen.
-        /// </summary>
-        /// 
         /// <value>The number of samples seen.</value>
-        /// 
-        public int Count
-        {
-            get { return count; }
-        }
+        public int Count { get; private set; }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="RunningNormalStatistics"/> class.
+        ///     Gets the current mean of the gathered values.
         /// </summary>
-        /// 
-        public RunningNormalStatistics() { }
+        /// <value>The mean of the values.</value>
+        public double Mean { get; private set; }
 
         /// <summary>
-        ///   Registers the occurrence of a value.
+        ///     Gets the current variance of the gathered values.
         /// </summary>
-        /// 
-        /// <param name="value">The value to be registered.</param> 
-        /// 
+        /// <value>The variance of the values.</value>
+        public double Variance => Count > 1 ? sigma / (Count - 1) : 0.0;
+
+        /// <summary>
+        ///     Gets the current standard deviation of the gathered values.
+        /// </summary>
+        /// <value>The standard deviation of the values.</value>
+        public double StandardDeviation => System.Math.Sqrt(Variance);
+
+        /// <summary>
+        ///     Registers the occurrence of a value.
+        /// </summary>
+        /// <param name="value">The value to be registered.</param>
         public void Push(double value)
         {
-            count++;
+            Count++;
 
             // See Knuth TAOCP vol 2, 3rd edition, page 232
             // http://www.johndcook.com/standard_deviation.html
 
-            if (count == 1)
+            if (Count == 1)
             {
-                mean = lastMean = value;
+                Mean = lastMean = value;
                 sigma = lastSigma = 0.0;
             }
             else
             {
-                mean = lastMean + (value - lastMean) / count;
-                sigma = (lastSigma + (value - lastMean) * (value - Mean));
+                Mean = lastMean + (value - lastMean) / Count;
+                sigma = lastSigma + (value - lastMean) * (value - Mean);
 
-                lastMean = mean;
+                lastMean = Mean;
                 lastSigma = sigma;
             }
         }
 
         /// <summary>
-        ///   Clears all measures previously computed.
+        ///     Clears all measures previously computed.
         /// </summary>
-        /// 
         public void Clear()
         {
-            count = 0;
+            Count = 0;
 
-            mean = lastMean = 0;
+            Mean = lastMean = 0;
             sigma = lastSigma = 0;
         }
     }

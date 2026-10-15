@@ -11,15 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Data.Query.GetEntityApprovalSubjectByEntityIdQuery
 {
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
+    using EntityApproval;
     using LinqToDB;
     using Models;
-    using Repository;
 
     public sealed class GetEntityApprovalSubjectByEntityIdQuery(DbContext dbContext, int tenantRegistryId)
     {

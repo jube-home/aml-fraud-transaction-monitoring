@@ -79,6 +79,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 {
                     await cacheService.CacheActivationWatcherPublishSubscribe.PublishAsync(
                         context.EntityAnalysisModel.Instance.TenantRegistryId, jsonString);
+
                     Interlocked.Increment(ref context.EntityAnalysisModel.Counters.ActivationWatcherCount);
 
                     context.TraceLog(

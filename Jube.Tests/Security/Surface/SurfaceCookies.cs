@@ -30,6 +30,7 @@ public static class SurfaceCookies
     {
         var cookie = SetCookies(response)
             .LastOrDefault(c => c.StartsWith("authentication-jwt=", StringComparison.Ordinal));
+
         return cookie?.Split(';')[0]["authentication-jwt=".Length..];
     }
 
@@ -45,6 +46,7 @@ public static class SurfaceCookies
             var payload = jwt.Split('.')[1].Replace('-', '+').Replace('_', '/');
             payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
             using var document = JsonDocument.Parse(Convert.FromBase64String(payload));
+
             foreach (var property in document.RootElement.EnumerateObject())
             {
                 if (property.Name.EndsWith("/name", StringComparison.OrdinalIgnoreCase))

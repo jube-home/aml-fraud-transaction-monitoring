@@ -15,7 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     internal static class UnitSupport
     {
-        internal static readonly IReadOnlyDictionary<string, (string Dimension, double Factor)> Units =
+        internal static readonly IReadOnlyDictionary<string, (string Dimension, double Factor)> units =
             new Dictionary<string, (string Dimension, double Factor)>(StringComparer.OrdinalIgnoreCase)
             {
                 ["m"] = ("length", 1.0),
@@ -70,7 +70,7 @@ namespace Jube.Dictionary.Extensions
                 ["tib"] = ("data", 1099511627776.0)
             };
 
-        internal static readonly string[] Temperatures = ["c", "f", "k"];
+        internal static readonly string[] temperatures = ["c", "f", "k"];
 
         internal static double ToKelvin(double value, string unit)
         {

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -17,7 +17,7 @@ using Jube.Data.Repository;
 using Jube.Dto.Payload;
 using Jube.Dto.RedisConnectionMultiplexerMetric;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.RedisConnectionMultiplexerMetric;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,7 +30,6 @@ namespace Jube.Service.RedisConnectionMultiplexerMetric
     public sealed class RedisConnectionMultiplexerMetricService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
         private readonly ILog log;
@@ -54,6 +53,9 @@ namespace Jube.Service.RedisConnectionMultiplexerMetric
             this.permissionValidation = permissionValidation;
             repository = new RedisConnectionMultiplexerMetricRepository(dbContext);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<RedisConnectionMultiplexerMetricService> CreateAsync(DbContext dbContext, string? userName,
             ILog log,
@@ -146,12 +148,16 @@ namespace Jube.Service.RedisConnectionMultiplexerMetric
             using var op = OperationScope.Start("RedisConnectionMultiplexerMetric", "List", userName, tenantRegistryId,
                 auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RedisConnectionMultiplexerMetric.List: entry take={clampedTake} user={userName}");
@@ -199,6 +205,7 @@ namespace Jube.Service.RedisConnectionMultiplexerMetric
                     .ConfigureAwait(false);
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"RedisConnectionMultiplexerMetric.List: {dtos.Count} rows user={userName}");
@@ -214,6 +221,7 @@ namespace Jube.Service.RedisConnectionMultiplexerMetric
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"RedisConnectionMultiplexerMetric.List: cancelled user={userName}");

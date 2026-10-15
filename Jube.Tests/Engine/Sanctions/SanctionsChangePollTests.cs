@@ -37,6 +37,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task InitializeAsync()
         {
             SanctionsTaskStarter.ChangeMarkerReader = DefaultReaderAsync;
+
             host = await ModelEngineHost.StartAsync(new Dictionary<string, string>
             {
                 ["SanctionLoaderChangePoll"] = "200"
@@ -46,6 +47,7 @@ namespace Jube.Test.Engine.Sanctions
         public async Task DisposeAsync()
         {
             SanctionsTaskStarter.ChangeMarkerReader = DefaultReaderAsync;
+
             if (host != null)
             {
                 await host.DisposeAsync();
@@ -63,6 +65,7 @@ namespace Jube.Test.Engine.Sanctions
         private static async Task CleanUpAsync(DatabaseFixture fx, List<int> sourceIds)
         {
             await using var dbContext = fx.GetDbContext();
+
             foreach (var sourceId in sourceIds)
             {
                 await dbContext.SanctionEntry.Where(w => w.SanctionEntrySourceId == sourceId).DeleteAsync();
@@ -76,6 +79,7 @@ namespace Jube.Test.Engine.Sanctions
         private static async Task<int> InsertSourceAsync(DatabaseFixture fx, List<int> sourceIds)
         {
             await using var dbContext = fx.GetDbContext();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new SanctionEntrySource
             {
                 Name = Unique("PollSource"),
@@ -89,6 +93,7 @@ namespace Jube.Test.Engine.Sanctions
                 Skip = 0
             });
             sourceIds.Add(id);
+
             return id;
         }
 
@@ -96,6 +101,7 @@ namespace Jube.Test.Engine.Sanctions
         {
             await using var dbContext = fx.GetDbContext();
             var ids = new List<int>();
+
             foreach (var value in values)
             {
                 ids.Add(await dbContext.InsertWithInt32IdentityAsync(new SanctionEntry
@@ -133,6 +139,7 @@ namespace Jube.Test.Engine.Sanctions
         private static async Task<bool> WaitAsync(Func<bool> condition, TimeSpan timeout)
         {
             var stopwatch = Stopwatch.StartNew();
+
             while (stopwatch.Elapsed < timeout)
             {
                 if (condition())
@@ -159,10 +166,13 @@ namespace Jube.Test.Engine.Sanctions
 
             (await WaitAsync(() => ids.All(Cached), TimeSpan.FromSeconds(15))).Should().BeTrue(
                 "the change poll must see the new import long before SanctionLoaderWait (an hour) elapses");
+
             (await WaitAsync(() => SanctionsTaskStarter.LightRefreshCount > before, TimeSpan.FromSeconds(5)))
                 .Should().BeTrue("the refresh is counted once the entries are cached");
+
             Host.Engine.Context.Sanctions.SanctionsEntries[ids[0]].SanctionEntryReference.Should()
                 .Be("REF-zzpollalpha zzpollbeta");
+
             Host.Engine.Context.Sanctions.SanctionsEntries[ids[0]].SanctionEntrySourceId.Should().Be(sourceId);
         }
 
@@ -182,6 +192,7 @@ namespace Jube.Test.Engine.Sanctions
 
             (await WaitAsync(() => !Cached(ids[0]), TimeSpan.FromSeconds(15))).Should().BeTrue(
                 "an entry soft deleted by an import is removed from memory too, it no longer waits for a restart");
+
             Cached(ids[1]).Should().BeTrue("the entry that is still live stays cached");
         }
 
@@ -202,6 +213,7 @@ namespace Jube.Test.Engine.Sanctions
         {
             var sourceId = await InsertSourceAsync(fx, sourceIds);
             var failures = 0;
+
             SanctionsTaskStarter.ChangeMarkerReader = (_, _) =>
             {
                 failures++;
@@ -209,8 +221,10 @@ namespace Jube.Test.Engine.Sanctions
             };
 
             var ids = await ImportAsync(fx, sourceId, "zzfailalpha zzfailbeta");
+
             (await WaitAsync(() => failures >= 3, TimeSpan.FromSeconds(10))).Should().BeTrue(
                 "the loop keeps polling while the query fails");
+
             Cached(ids[0]).Should().BeFalse("nothing can be refreshed while the fingerprint is unreadable");
             Host.Engine.Context.Tasks.SanctionsTask.IsCompleted.Should().BeFalse("the loop survives a failing query");
 
@@ -231,6 +245,7 @@ namespace Jube.Test.Engine.Sanctions
 
             (await WaitAsync(() => task.IsCompleted, TimeSpan.FromSeconds(10))).Should().BeTrue(
                 "the wait is sliced, so a shutdown does not wait out the loader interval");
+
             stopwatch.Elapsed.Should().BeLessThan(TimeSpan.FromSeconds(10));
         }
     }

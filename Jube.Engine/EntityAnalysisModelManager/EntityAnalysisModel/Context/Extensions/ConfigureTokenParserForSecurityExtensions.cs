@@ -31,6 +31,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 }
 
                 var repository = new RuleScriptTokenRepository(context.Services.DbContext);
+
                 var tokens = (await repository.GetAsync(context.Services.CancellationToken).ConfigureAwait(false))
                     .Select(s => s.Token).ToList();
 

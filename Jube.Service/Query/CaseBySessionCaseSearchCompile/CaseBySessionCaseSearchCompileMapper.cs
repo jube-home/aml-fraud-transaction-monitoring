@@ -11,8 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using Jube.Dto.Query.CaseBySessionCaseSearchCompile;
 using Jube.Data.Query.CaseQuery.Dto;
+using Jube.Dto.Query.CaseBySessionCaseSearchCompile;
 
 namespace Jube.Service.Query.CaseBySessionCaseSearchCompile
 {

@@ -5,9 +5,6 @@ nav_order: 9
 parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # SIGTERM Handling
 
 SIGTERM is handled robustly via the centralisation of a cancellation token in the application. The application

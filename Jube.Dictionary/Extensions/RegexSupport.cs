@@ -15,6 +15,6 @@ namespace Jube.Dictionary.Extensions
 {
     internal static class RegexSupport
     {
-        internal static readonly TimeSpan MatchTimeout = TimeSpan.FromMilliseconds(250);
+        internal static readonly TimeSpan matchTimeout = TimeSpan.FromMilliseconds(250);
     }
 }

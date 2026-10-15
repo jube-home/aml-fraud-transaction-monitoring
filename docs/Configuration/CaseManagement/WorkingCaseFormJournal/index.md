@@ -6,8 +6,6 @@ parent: Case Management
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Working Case Form Journal
 Forms are used to capture structured data and invoke certain automations using the HTTP Endpoint and Notification Functionality.  The data captured during form invocation, which is documented in a separate configuration section of this documentation,  is available for end user review in its entirety.
 

@@ -1,0 +1,758 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 702 372" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-6f1bdfae-t jc-6f1bdfae-d">
+    <title id="jc-6f1bdfae-t">Principal components</title>
+    <desc id="jc-6f1bdfae-d">Principal components: scree plot of 6 components explaining 93% of the variance with a
+        loadings heatmap of 8 features.
+    </desc>
+    <rect class="bg" x="0" y="0" width="702" height="372" rx="8"/>
+    <text class="ttl" x="16" y="32">Principal components</text>
+    <text class="sub" x="16" y="50">Scree plot and loadings of the transaction features</text>
+    <g transform="translate(22 66)">
+        <text class="ph" x="0" y="12">Explained variance</text>
+        <line class="gl" x1="40" y1="226" x2="268" y2="226"/>
+        <text class="kn end mid" x="34" y="226">0%</text>
+        <line class="gl" x1="40" y1="177" x2="268" y2="177"/>
+        <text class="kn end mid" x="34" y="177">25%</text>
+        <line class="gl" x1="40" y1="128" x2="268" y2="128"/>
+        <text class="kn end mid" x="34" y="128">50%</text>
+        <line class="gl" x1="40" y1="79" x2="268" y2="79"/>
+        <text class="kn end mid" x="34" y="79">75%</text>
+        <line class="gl" x1="40" y1="30" x2="268" y2="30"/>
+        <text class="kn end mid" x="34" y="30">100%</text>
+        <g class="mk pcb c0 s0" tabindex="0" role="graphics-symbol"
+           aria-label="PC1, Explained variance: 34%, Cumulative: 34%, Top loadings: amount_z 0.52,   velocity_1h 0.47,   merchant_risk 0.41">
+            <title>PC1, Explained variance: 34%, Cumulative: 34%, Top loadings: amount_z 0.52, velocity_1h 0.47,
+                merchant_risk 0.41
+            </title>
+            <rect class="hb" x="40" y="30" width="38" height="196"/>
+            <rect class="rb" x="47.22" y="159.36" width="23.56" height="66.64" rx="2"/>
+            <text class="kn ctr" x="59" y="240">PC1</text>
+            <text class="lbl ctr on" x="59" y="173.36">34%</text>
+            <g class="tt">
+                <rect class="tb" x="69" y="103.36" width="176.36" height="112" rx="6"/>
+                <rect class="tsw s0" x="79" y="112.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="93" y="121.36">PC1</text>
+                <text class="tx" x="79" y="138.36">Explained variance: 34%</text>
+                <text class="tx" x="79" y="155.36">Cumulative: 34%</text>
+                <text class="tx" x="79" y="172.36">Top loadings: amount_z 0.52</text>
+                <text class="tx" x="79" y="189.36">velocity_1h 0.47</text>
+                <text class="tx" x="79" y="206.36">merchant_risk 0.41</text>
+            </g>
+        </g>
+        <g class="mk pcb c1 s0" tabindex="0" role="graphics-symbol"
+           aria-label="PC2, Explained variance: 21%, Cumulative: 55%, Top loadings: account_age 0.61,   geo_mismatch 0.55,   night_time -0.3">
+            <title>PC2, Explained variance: 21%, Cumulative: 55%, Top loadings: account_age 0.61, geo_mismatch 0.55,
+                night_time -0.3
+            </title>
+            <rect class="hb" x="78" y="30" width="38" height="196"/>
+            <rect class="rb" x="85.22" y="184.84" width="23.56" height="41.16" rx="2"/>
+            <text class="kn ctr" x="97" y="240">PC2</text>
+            <text class="lbl ctr on" x="97" y="198.84">21%</text>
+            <g class="tt">
+                <rect class="tb" x="107" y="128.84" width="192.32" height="112" rx="6"/>
+                <rect class="tsw s0" x="117" y="137.84" width="9" height="9" rx="2"/>
+                <text class="tx b" x="131" y="146.84">PC2</text>
+                <text class="tx" x="117" y="163.84">Explained variance: 21%</text>
+                <text class="tx" x="117" y="180.84">Cumulative: 55%</text>
+                <text class="tx" x="117" y="197.84">Top loadings: account_age 0.61</text>
+                <text class="tx" x="117" y="214.84">geo_mismatch 0.55</text>
+                <text class="tx" x="117" y="231.84">night_time -0.3</text>
+            </g>
+        </g>
+        <g class="mk pcb c2 s0" tabindex="0" role="graphics-symbol"
+           aria-label="PC3, Explained variance: 14%, Cumulative: 69%, Top loadings: night_time 0.72,   balance_ratio 0.36,   channel_atm -0.35">
+            <title>PC3, Explained variance: 14%, Cumulative: 69%, Top loadings: night_time 0.72, balance_ratio 0.36,
+                channel_atm -0.35
+            </title>
+            <rect class="hb" x="116" y="30" width="38" height="196"/>
+            <rect class="rb" x="123.22" y="198.56" width="23.56" height="27.44" rx="2"/>
+            <text class="kn ctr" x="135" y="240">PC3</text>
+            <text class="lbl ctr on" x="135" y="212.56">14%</text>
+            <g class="tt">
+                <rect class="tb" x="145" y="142.56" width="180.2" height="112" rx="6"/>
+                <rect class="tsw s0" x="155" y="151.56" width="9" height="9" rx="2"/>
+                <text class="tx b" x="169" y="160.56">PC3</text>
+                <text class="tx" x="155" y="177.56">Explained variance: 14%</text>
+                <text class="tx" x="155" y="194.56">Cumulative: 69%</text>
+                <text class="tx" x="155" y="211.56">Top loadings: night_time 0.72</text>
+                <text class="tx" x="155" y="228.56">balance_ratio 0.36</text>
+                <text class="tx" x="155" y="245.56">channel_atm -0.35</text>
+            </g>
+        </g>
+        <g class="mk pcb c3 s0" tabindex="0" role="graphics-symbol"
+           aria-label="PC4, Explained variance: 10%, Cumulative: 79%, Top loadings: channel_atm 0.78,   merchant_risk -0.45,   geo_mismatch 0.3">
+            <title>PC4, Explained variance: 10%, Cumulative: 79%, Top loadings: channel_atm 0.78, merchant_risk -0.45,
+                geo_mismatch 0.3
+            </title>
+            <rect class="hb" x="154" y="30" width="38" height="196"/>
+            <rect class="rb" x="161.22" y="206.4" width="23.56" height="19.6" rx="2"/>
+            <text class="kn ctr" x="173" y="240">PC4</text>
+            <text class="kn ctr" x="173" y="202.4">10%</text>
+            <g class="tt">
+                <rect class="tb" x="183" y="150.4" width="192.44" height="112" rx="6"/>
+                <rect class="tsw s0" x="193" y="159.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="207" y="168.4">PC4</text>
+                <text class="tx" x="193" y="185.4">Explained variance: 10%</text>
+                <text class="tx" x="193" y="202.4">Cumulative: 79%</text>
+                <text class="tx" x="193" y="219.4">Top loadings: channel_atm 0.78</text>
+                <text class="tx" x="193" y="236.4">merchant_risk -0.45</text>
+                <text class="tx" x="193" y="253.4">geo_mismatch 0.3</text>
+            </g>
+        </g>
+        <g class="mk pcb c4 s0" tabindex="0" role="graphics-symbol"
+           aria-label="PC5, Explained variance: 8%, Cumulative: 87%, Top loadings: velocity_1h -0.55,   balance_ratio 0.55,   merchant_risk 0.4">
+            <title>PC5, Explained variance: 8%, Cumulative: 87%, Top loadings: velocity_1h -0.55, balance_ratio 0.55,
+                merchant_risk 0.4
+            </title>
+            <rect class="hb" x="192" y="30" width="38" height="196"/>
+            <rect class="rb" x="199.22" y="210.32" width="23.56" height="15.68" rx="2"/>
+            <text class="kn ctr" x="211" y="240">PC5</text>
+            <text class="kn ctr" x="211" y="206.32">8%</text>
+            <g class="tt">
+                <rect class="tb" x="221" y="154.32" width="189.92" height="112" rx="6"/>
+                <rect class="tsw s0" x="231" y="163.32" width="9" height="9" rx="2"/>
+                <text class="tx b" x="245" y="172.32">PC5</text>
+                <text class="tx" x="231" y="189.32">Explained variance: 8%</text>
+                <text class="tx" x="231" y="206.32">Cumulative: 87%</text>
+                <text class="tx" x="231" y="223.32">Top loadings: velocity_1h -0.55</text>
+                <text class="tx" x="231" y="240.32">balance_ratio 0.55</text>
+                <text class="tx" x="231" y="257.32">merchant_risk 0.4</text>
+            </g>
+        </g>
+        <g class="mk pcb c5 s0" tabindex="0" role="graphics-symbol"
+           aria-label="PC6, Explained variance: 6%, Cumulative: 93%, Top loadings: merchant_risk 0.51,   amount_z -0.42,   velocity_1h 0.28">
+            <title>PC6, Explained variance: 6%, Cumulative: 93%, Top loadings: merchant_risk 0.51, amount_z -0.42,
+                velocity_1h 0.28
+            </title>
+            <rect class="hb" x="230" y="30" width="38" height="196"/>
+            <rect class="rb" x="237.22" y="214.24" width="23.56" height="11.76" rx="2"/>
+            <text class="kn ctr" x="249" y="240">PC6</text>
+            <text class="kn ctr" x="249" y="210.24">6%</text>
+            <g class="tt">
+                <rect class="tb" x="259" y="158.24" width="200.6" height="112" rx="6"/>
+                <rect class="tsw s0" x="269" y="167.24" width="9" height="9" rx="2"/>
+                <text class="tx b" x="283" y="176.24">PC6</text>
+                <text class="tx" x="269" y="193.24">Explained variance: 6%</text>
+                <text class="tx" x="269" y="210.24">Cumulative: 93%</text>
+                <text class="tx" x="269" y="227.24">Top loadings: merchant_risk 0.51</text>
+                <text class="tx" x="269" y="244.24">amount_z -0.42</text>
+                <text class="tx" x="269" y="261.24">velocity_1h 0.28</text>
+            </g>
+        </g>
+        <path class="ln s1 thin" d="M59 159.36L97 118.2L135 90.76L173 71.16L211 55.48L249 43.72"/>
+        <circle class="mkr s1" cx="59" cy="159.36" r="3.5"/>
+        <circle class="mkr s1" cx="97" cy="118.2" r="3.5"/>
+        <circle class="mkr s1" cx="135" cy="90.76" r="3.5"/>
+        <circle class="mkr s1" cx="173" cy="71.16" r="3.5"/>
+        <circle class="mkr s1" cx="211" cy="55.48" r="3.5"/>
+        <circle class="mkr s1" cx="249" cy="43.72" r="3.5"/>
+        <line class="ax" x1="40" y1="226" x2="268" y2="226"/>
+        <text class="key" x="208.23" y="24">Cumulative</text>
+        <rect class="cl s1" x="192.23" y="15" width="10" height="3"/>
+        <text class="ph" x="302" y="12">Loadings</text>
+        <text class="kn ctr" x="408.04" y="40">PC1</text>
+        <text class="kn ctr" x="454.04" y="40">PC2</text>
+        <text class="kn ctr" x="500.04" y="40">PC3</text>
+        <text class="kn ctr" x="546.04" y="40">PC4</text>
+        <text class="kn ctr" x="592.04" y="40">PC5</text>
+        <text class="kn ctr" x="638.04" y="40">PC6</text>
+        <text class="tk end mid" x="375.04" y="57">amount_z</text>
+        <g class="mk hc rr0 cc0" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z on PC1, Loading: 0.52, Share of component: 27.8%">
+            <title>amount_z on PC1, Loading: 0.52, Share of component: 27.8%</title>
+            <rect class="cell d8" x="385.04" y="46" width="46" height="22"/>
+            <text class="lbl ctr mid dt8" x="408.04" y="57">0.52</text>
+            <g class="tt">
+                <rect class="tb" x="418.04" y="27" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="45">amount_z on PC1</text>
+                <text class="tx" x="428.04" y="62">Loading: 0.52</text>
+                <text class="tx" x="428.04" y="79">Share of component: 27.8%</text>
+            </g>
+        </g>
+        <g class="mk hc rr0 cc1" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z on PC2, Loading: 0.1, Share of component: 1.1%">
+            <title>amount_z on PC2, Loading: 0.1, Share of component: 1.1%</title>
+            <rect class="cell d6" x="431.04" y="46" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="454.04" y="57">0.1</text>
+            <g class="tt">
+                <rect class="tb" x="464.04" y="27" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="45">amount_z on PC2</text>
+                <text class="tx" x="474.04" y="62">Loading: 0.1</text>
+                <text class="tx" x="474.04" y="79">Share of component: 1.1%</text>
+            </g>
+        </g>
+        <g class="mk hc rr0 cc2" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z on PC3, Loading: -0.3, Share of component: 9.2%">
+            <title>amount_z on PC3, Loading: -0.3, Share of component: 9.2%</title>
+            <rect class="cell d3" x="477.04" y="46" width="46" height="22"/>
+            <text class="lbl ctr mid dt3" x="500.04" y="57">-0.3</text>
+            <g class="tt">
+                <rect class="tb" x="327.84" y="27" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="45">amount_z on PC3</text>
+                <text class="tx" x="337.84" y="62">Loading: -0.3</text>
+                <text class="tx" x="337.84" y="79">Share of component: 9.2%</text>
+            </g>
+        </g>
+        <g class="mk hc rr0 cc3" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z on PC4, Loading: 0.05, Share of component: 0.3%">
+            <title>amount_z on PC4, Loading: 0.05, Share of component: 0.3%</title>
+            <rect class="cell d5" x="523.04" y="46" width="46" height="22"/>
+            <text class="lbl ctr mid dt5" x="546.04" y="57">0.05</text>
+            <g class="tt">
+                <rect class="tb" x="373.84" y="27" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="45">amount_z on PC4</text>
+                <text class="tx" x="383.84" y="62">Loading: 0.05</text>
+                <text class="tx" x="383.84" y="79">Share of component: 0.3%</text>
+            </g>
+        </g>
+        <g class="mk hc rr0 cc4" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z on PC5, Loading: 0.22, Share of component: 5%">
+            <title>amount_z on PC5, Loading: 0.22, Share of component: 5%</title>
+            <rect class="cell d6" x="569.04" y="46" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="592.04" y="57">0.22</text>
+            <g class="tt">
+                <rect class="tb" x="429.68" y="27" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="439.68" y="45">amount_z on PC5</text>
+                <text class="tx" x="439.68" y="62">Loading: 0.22</text>
+                <text class="tx" x="439.68" y="79">Share of component: 5%</text>
+            </g>
+        </g>
+        <g class="mk hc rr0 cc5" tabindex="0" role="graphics-symbol"
+           aria-label="amount_z on PC6, Loading: -0.42, Share of component: 23.7%">
+            <title>amount_z on PC6, Loading: -0.42, Share of component: 23.7%</title>
+            <rect class="cell d2" x="615.04" y="46" width="46" height="22"/>
+            <text class="lbl ctr mid dt2" x="638.04" y="57">-0.42</text>
+            <g class="tt">
+                <rect class="tb" x="459.12" y="27" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="469.12" y="45">amount_z on PC6</text>
+                <text class="tx" x="469.12" y="62">Loading: -0.42</text>
+                <text class="tx" x="469.12" y="79">Share of component: 23.7%</text>
+            </g>
+        </g>
+        <text class="tk end mid" x="375.04" y="79">velocity_1h</text>
+        <g class="mk hc rr1 cc0" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h on PC1, Loading: 0.47, Share of component: 22.7%">
+            <title>velocity_1h on PC1, Loading: 0.47, Share of component: 22.7%</title>
+            <rect class="cell d8" x="385.04" y="68" width="46" height="22"/>
+            <text class="lbl ctr mid dt8" x="408.04" y="79">0.47</text>
+            <g class="tt">
+                <rect class="tb" x="418.04" y="49" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="67">velocity_1h on PC1</text>
+                <text class="tx" x="428.04" y="84">Loading: 0.47</text>
+                <text class="tx" x="428.04" y="101">Share of component: 22.7%</text>
+            </g>
+        </g>
+        <g class="mk hc rr1 cc1" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h on PC2, Loading: -0.18, Share of component: 3.5%">
+            <title>velocity_1h on PC2, Loading: -0.18, Share of component: 3.5%</title>
+            <rect class="cell d4" x="431.04" y="68" width="46" height="22"/>
+            <text class="lbl ctr mid dt4" x="454.04" y="79">-0.18</text>
+            <g class="tt">
+                <rect class="tb" x="464.04" y="49" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="67">velocity_1h on PC2</text>
+                <text class="tx" x="474.04" y="84">Loading: -0.18</text>
+                <text class="tx" x="474.04" y="101">Share of component: 3.5%</text>
+            </g>
+        </g>
+        <g class="mk hc rr1 cc2" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h on PC3, Loading: 0.25, Share of component: 6.4%">
+            <title>velocity_1h on PC3, Loading: 0.25, Share of component: 6.4%</title>
+            <rect class="cell d7" x="477.04" y="68" width="46" height="22"/>
+            <text class="lbl ctr mid dt7" x="500.04" y="79">0.25</text>
+            <g class="tt">
+                <rect class="tb" x="327.84" y="49" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="67">velocity_1h on PC3</text>
+                <text class="tx" x="337.84" y="84">Loading: 0.25</text>
+                <text class="tx" x="337.84" y="101">Share of component: 6.4%</text>
+            </g>
+        </g>
+        <g class="mk hc rr1 cc3" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h on PC4, Loading: 0.1, Share of component: 1%">
+            <title>velocity_1h on PC4, Loading: 0.1, Share of component: 1%</title>
+            <rect class="cell d6" x="523.04" y="68" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="546.04" y="79">0.1</text>
+            <g class="tt">
+                <rect class="tb" x="383.68" y="49" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="393.68" y="67">velocity_1h on PC4</text>
+                <text class="tx" x="393.68" y="84">Loading: 0.1</text>
+                <text class="tx" x="393.68" y="101">Share of component: 1%</text>
+            </g>
+        </g>
+        <g class="mk hc rr1 cc4" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h on PC5, Loading: -0.55, Share of component: 31.2%">
+            <title>velocity_1h on PC5, Loading: -0.55, Share of component: 31.2%</title>
+            <rect class="cell d1" x="569.04" y="68" width="46" height="22"/>
+            <text class="lbl ctr mid dt1" x="592.04" y="79">-0.55</text>
+            <g class="tt">
+                <rect class="tb" x="413.12" y="49" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="423.12" y="67">velocity_1h on PC5</text>
+                <text class="tx" x="423.12" y="84">Loading: -0.55</text>
+                <text class="tx" x="423.12" y="101">Share of component: 31.2%</text>
+            </g>
+        </g>
+        <g class="mk hc rr1 cc5" tabindex="0" role="graphics-symbol"
+           aria-label="velocity_1h on PC6, Loading: 0.28, Share of component: 10.5%">
+            <title>velocity_1h on PC6, Loading: 0.28, Share of component: 10.5%</title>
+            <rect class="cell d7" x="615.04" y="68" width="46" height="22"/>
+            <text class="lbl ctr mid dt7" x="638.04" y="79">0.28</text>
+            <g class="tt">
+                <rect class="tb" x="459.12" y="49" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="469.12" y="67">velocity_1h on PC6</text>
+                <text class="tx" x="469.12" y="84">Loading: 0.28</text>
+                <text class="tx" x="469.12" y="101">Share of component: 10.5%</text>
+            </g>
+        </g>
+        <text class="tk end mid" x="375.04" y="101">merchant_risk</text>
+        <g class="mk hc rr2 cc0" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk on PC1, Loading: 0.41, Share of component: 17.3%">
+            <title>merchant_risk on PC1, Loading: 0.41, Share of component: 17.3%</title>
+            <rect class="cell d8" x="385.04" y="90" width="46" height="22"/>
+            <text class="lbl ctr mid dt8" x="408.04" y="101">0.41</text>
+            <g class="tt">
+                <rect class="tb" x="418.04" y="71" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="89">merchant_risk on PC1</text>
+                <text class="tx" x="428.04" y="106">Loading: 0.41</text>
+                <text class="tx" x="428.04" y="123">Share of component: 17.3%</text>
+            </g>
+        </g>
+        <g class="mk hc rr2 cc1" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk on PC2, Loading: 0.22, Share of component: 5.2%">
+            <title>merchant_risk on PC2, Loading: 0.22, Share of component: 5.2%</title>
+            <rect class="cell d6" x="431.04" y="90" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="454.04" y="101">0.22</text>
+            <g class="tt">
+                <rect class="tb" x="464.04" y="71" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="89">merchant_risk on PC2</text>
+                <text class="tx" x="474.04" y="106">Loading: 0.22</text>
+                <text class="tx" x="474.04" y="123">Share of component: 5.2%</text>
+            </g>
+        </g>
+        <g class="mk hc rr2 cc2" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk on PC3, Loading: -0.05, Share of component: 0.3%">
+            <title>merchant_risk on PC3, Loading: -0.05, Share of component: 0.3%</title>
+            <rect class="cell d5" x="477.04" y="90" width="46" height="22"/>
+            <text class="lbl ctr mid dt5" x="500.04" y="101">-0.05</text>
+            <g class="tt">
+                <rect class="tb" x="327.84" y="71" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="89">merchant_risk on PC3</text>
+                <text class="tx" x="337.84" y="106">Loading: -0.05</text>
+                <text class="tx" x="337.84" y="123">Share of component: 0.3%</text>
+            </g>
+        </g>
+        <g class="mk hc rr2 cc3" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk on PC4, Loading: -0.45, Share of component: 20.7%">
+            <title>merchant_risk on PC4, Loading: -0.45, Share of component: 20.7%</title>
+            <rect class="cell d2" x="523.04" y="90" width="46" height="22"/>
+            <text class="lbl ctr mid dt2" x="546.04" y="101">-0.45</text>
+            <g class="tt">
+                <rect class="tb" x="367.12" y="71" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="377.12" y="89">merchant_risk on PC4</text>
+                <text class="tx" x="377.12" y="106">Loading: -0.45</text>
+                <text class="tx" x="377.12" y="123">Share of component: 20.7%</text>
+            </g>
+        </g>
+        <g class="mk hc rr2 cc4" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk on PC5, Loading: 0.4, Share of component: 16.5%">
+            <title>merchant_risk on PC5, Loading: 0.4, Share of component: 16.5%</title>
+            <rect class="cell d8" x="569.04" y="90" width="46" height="22"/>
+            <text class="lbl ctr mid dt8" x="592.04" y="101">0.4</text>
+            <g class="tt">
+                <rect class="tb" x="413.12" y="71" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="423.12" y="89">merchant_risk on PC5</text>
+                <text class="tx" x="423.12" y="106">Loading: 0.4</text>
+                <text class="tx" x="423.12" y="123">Share of component: 16.5%</text>
+            </g>
+        </g>
+        <g class="mk hc rr2 cc5" tabindex="0" role="graphics-symbol"
+           aria-label="merchant_risk on PC6, Loading: 0.51, Share of component: 34.9%">
+            <title>merchant_risk on PC6, Loading: 0.51, Share of component: 34.9%</title>
+            <rect class="cell d8" x="615.04" y="90" width="46" height="22"/>
+            <text class="lbl ctr mid dt8" x="638.04" y="101">0.51</text>
+            <g class="tt">
+                <rect class="tb" x="459.12" y="71" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="469.12" y="89">merchant_risk on PC6</text>
+                <text class="tx" x="469.12" y="106">Loading: 0.51</text>
+                <text class="tx" x="469.12" y="123">Share of component: 34.9%</text>
+            </g>
+        </g>
+        <text class="tk end mid" x="375.04" y="123">geo_mismatch</text>
+        <g class="mk hc rr3 cc0" tabindex="0" role="graphics-symbol"
+           aria-label="geo_mismatch on PC1, Loading: 0.28, Share of component: 8.1%">
+            <title>geo_mismatch on PC1, Loading: 0.28, Share of component: 8.1%</title>
+            <rect class="cell d7" x="385.04" y="112" width="46" height="22"/>
+            <text class="lbl ctr mid dt7" x="408.04" y="123">0.28</text>
+            <g class="tt">
+                <rect class="tb" x="418.04" y="93" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="111">geo_mismatch on PC1</text>
+                <text class="tx" x="428.04" y="128">Loading: 0.28</text>
+                <text class="tx" x="428.04" y="145">Share of component: 8.1%</text>
+            </g>
+        </g>
+        <g class="mk hc rr3 cc1" tabindex="0" role="graphics-symbol"
+           aria-label="geo_mismatch on PC2, Loading: 0.55, Share of component: 32.7%">
+            <title>geo_mismatch on PC2, Loading: 0.55, Share of component: 32.7%</title>
+            <rect class="cell d9" x="431.04" y="112" width="46" height="22"/>
+            <text class="lbl ctr mid dt9" x="454.04" y="123">0.55</text>
+            <g class="tt">
+                <rect class="tb" x="464.04" y="93" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="111">geo_mismatch on PC2</text>
+                <text class="tx" x="474.04" y="128">Loading: 0.55</text>
+                <text class="tx" x="474.04" y="145">Share of component: 32.7%</text>
+            </g>
+        </g>
+        <g class="mk hc rr3 cc2" tabindex="0" role="graphics-symbol"
+           aria-label="geo_mismatch on PC3, Loading: 0.12, Share of component: 1.5%">
+            <title>geo_mismatch on PC3, Loading: 0.12, Share of component: 1.5%</title>
+            <rect class="cell d6" x="477.04" y="112" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="500.04" y="123">0.12</text>
+            <g class="tt">
+                <rect class="tb" x="327.84" y="93" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="111">geo_mismatch on PC3</text>
+                <text class="tx" x="337.84" y="128">Loading: 0.12</text>
+                <text class="tx" x="337.84" y="145">Share of component: 1.5%</text>
+            </g>
+        </g>
+        <g class="mk hc rr3 cc3" tabindex="0" role="graphics-symbol"
+           aria-label="geo_mismatch on PC4, Loading: 0.3, Share of component: 9.2%">
+            <title>geo_mismatch on PC4, Loading: 0.3, Share of component: 9.2%</title>
+            <rect class="cell d7" x="523.04" y="112" width="46" height="22"/>
+            <text class="lbl ctr mid dt7" x="546.04" y="123">0.3</text>
+            <g class="tt">
+                <rect class="tb" x="373.84" y="93" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="111">geo_mismatch on PC4</text>
+                <text class="tx" x="383.84" y="128">Loading: 0.3</text>
+                <text class="tx" x="383.84" y="145">Share of component: 9.2%</text>
+            </g>
+        </g>
+        <g class="mk hc rr3 cc4" tabindex="0" role="graphics-symbol"
+           aria-label="geo_mismatch on PC5, Loading: -0.1, Share of component: 1%">
+            <title>geo_mismatch on PC5, Loading: -0.1, Share of component: 1%</title>
+            <rect class="cell d4" x="569.04" y="112" width="46" height="22"/>
+            <text class="lbl ctr mid dt4" x="592.04" y="123">-0.1</text>
+            <g class="tt">
+                <rect class="tb" x="429.68" y="93" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="439.68" y="111">geo_mismatch on PC5</text>
+                <text class="tx" x="439.68" y="128">Loading: -0.1</text>
+                <text class="tx" x="439.68" y="145">Share of component: 1%</text>
+            </g>
+        </g>
+        <g class="mk hc rr3 cc5" tabindex="0" role="graphics-symbol"
+           aria-label="geo_mismatch on PC6, Loading: -0.22, Share of component: 6.5%">
+            <title>geo_mismatch on PC6, Loading: -0.22, Share of component: 6.5%</title>
+            <rect class="cell d4" x="615.04" y="112" width="46" height="22"/>
+            <text class="lbl ctr mid dt4" x="638.04" y="123">-0.22</text>
+            <g class="tt">
+                <rect class="tb" x="465.84" y="93" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="475.84" y="111">geo_mismatch on PC6</text>
+                <text class="tx" x="475.84" y="128">Loading: -0.22</text>
+                <text class="tx" x="475.84" y="145">Share of component: 6.5%</text>
+            </g>
+        </g>
+        <text class="tk end mid" x="375.04" y="145">account_age</text>
+        <g class="mk hc rr4 cc0" tabindex="0" role="graphics-symbol"
+           aria-label="account_age on PC1, Loading: -0.22, Share of component: 5%">
+            <title>account_age on PC1, Loading: -0.22, Share of component: 5%</title>
+            <rect class="cell d4" x="385.04" y="134" width="46" height="22"/>
+            <text class="lbl ctr mid dt4" x="408.04" y="145">-0.22</text>
+            <g class="tt">
+                <rect class="tb" x="418.04" y="115" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="133">account_age on PC1</text>
+                <text class="tx" x="428.04" y="150">Loading: -0.22</text>
+                <text class="tx" x="428.04" y="167">Share of component: 5%</text>
+            </g>
+        </g>
+        <g class="mk hc rr4 cc1" tabindex="0" role="graphics-symbol"
+           aria-label="account_age on PC2, Loading: 0.61, Share of component: 40.3%">
+            <title>account_age on PC2, Loading: 0.61, Share of component: 40.3%</title>
+            <rect class="cell d9" x="431.04" y="134" width="46" height="22"/>
+            <text class="lbl ctr mid dt9" x="454.04" y="145">0.61</text>
+            <g class="tt">
+                <rect class="tb" x="464.04" y="115" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="133">account_age on PC2</text>
+                <text class="tx" x="474.04" y="150">Loading: 0.61</text>
+                <text class="tx" x="474.04" y="167">Share of component: 40.3%</text>
+            </g>
+        </g>
+        <g class="mk hc rr4 cc2" tabindex="0" role="graphics-symbol"
+           aria-label="account_age on PC3, Loading: 0.2, Share of component: 4.1%">
+            <title>account_age on PC3, Loading: 0.2, Share of component: 4.1%</title>
+            <rect class="cell d6" x="477.04" y="134" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="500.04" y="145">0.2</text>
+            <g class="tt">
+                <rect class="tb" x="327.84" y="115" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="133">account_age on PC3</text>
+                <text class="tx" x="337.84" y="150">Loading: 0.2</text>
+                <text class="tx" x="337.84" y="167">Share of component: 4.1%</text>
+            </g>
+        </g>
+        <g class="mk hc rr4 cc3" tabindex="0" role="graphics-symbol"
+           aria-label="account_age on PC4, Loading: -0.15, Share of component: 2.3%">
+            <title>account_age on PC4, Loading: -0.15, Share of component: 2.3%</title>
+            <rect class="cell d4" x="523.04" y="134" width="46" height="22"/>
+            <text class="lbl ctr mid dt4" x="546.04" y="145">-0.15</text>
+            <g class="tt">
+                <rect class="tb" x="373.84" y="115" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="133">account_age on PC4</text>
+                <text class="tx" x="383.84" y="150">Loading: -0.15</text>
+                <text class="tx" x="383.84" y="167">Share of component: 2.3%</text>
+            </g>
+        </g>
+        <g class="mk hc rr4 cc4" tabindex="0" role="graphics-symbol"
+           aria-label="account_age on PC5, Loading: 0.35, Share of component: 12.6%">
+            <title>account_age on PC5, Loading: 0.35, Share of component: 12.6%</title>
+            <rect class="cell d7" x="569.04" y="134" width="46" height="22"/>
+            <text class="lbl ctr mid dt7" x="592.04" y="145">0.35</text>
+            <g class="tt">
+                <rect class="tb" x="413.12" y="115" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="423.12" y="133">account_age on PC5</text>
+                <text class="tx" x="423.12" y="150">Loading: 0.35</text>
+                <text class="tx" x="423.12" y="167">Share of component: 12.6%</text>
+            </g>
+        </g>
+        <g class="mk hc rr4 cc5" tabindex="0" role="graphics-symbol"
+           aria-label="account_age on PC6, Loading: 0.25, Share of component: 8.4%">
+            <title>account_age on PC6, Loading: 0.25, Share of component: 8.4%</title>
+            <rect class="cell d7" x="615.04" y="134" width="46" height="22"/>
+            <text class="lbl ctr mid dt7" x="638.04" y="145">0.25</text>
+            <g class="tt">
+                <rect class="tb" x="465.84" y="115" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="475.84" y="133">account_age on PC6</text>
+                <text class="tx" x="475.84" y="150">Loading: 0.25</text>
+                <text class="tx" x="475.84" y="167">Share of component: 8.4%</text>
+            </g>
+        </g>
+        <text class="tk end mid" x="375.04" y="167">night_time</text>
+        <g class="mk hc rr5 cc0" tabindex="0" role="graphics-symbol"
+           aria-label="night_time on PC1, Loading: 0.12, Share of component: 1.5%">
+            <title>night_time on PC1, Loading: 0.12, Share of component: 1.5%</title>
+            <rect class="cell d6" x="385.04" y="156" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="408.04" y="167">0.12</text>
+            <g class="tt">
+                <rect class="tb" x="418.04" y="137" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="155">night_time on PC1</text>
+                <text class="tx" x="428.04" y="172">Loading: 0.12</text>
+                <text class="tx" x="428.04" y="189">Share of component: 1.5%</text>
+            </g>
+        </g>
+        <g class="mk hc rr5 cc1" tabindex="0" role="graphics-symbol"
+           aria-label="night_time on PC2, Loading: -0.3, Share of component: 9.7%">
+            <title>night_time on PC2, Loading: -0.3, Share of component: 9.7%</title>
+            <rect class="cell d3" x="431.04" y="156" width="46" height="22"/>
+            <text class="lbl ctr mid dt3" x="454.04" y="167">-0.3</text>
+            <g class="tt">
+                <rect class="tb" x="464.04" y="137" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="155">night_time on PC2</text>
+                <text class="tx" x="474.04" y="172">Loading: -0.3</text>
+                <text class="tx" x="474.04" y="189">Share of component: 9.7%</text>
+            </g>
+        </g>
+        <g class="mk hc rr5 cc2" tabindex="0" role="graphics-symbol"
+           aria-label="night_time on PC3, Loading: 0.72, Share of component: 52.9%">
+            <title>night_time on PC3, Loading: 0.72, Share of component: 52.9%</title>
+            <rect class="cell d10" x="477.04" y="156" width="46" height="22"/>
+            <text class="lbl ctr mid dt10" x="500.04" y="167">0.72</text>
+            <g class="tt">
+                <rect class="tb" x="321.12" y="137" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="331.12" y="155">night_time on PC3</text>
+                <text class="tx" x="331.12" y="172">Loading: 0.72</text>
+                <text class="tx" x="331.12" y="189">Share of component: 52.9%</text>
+            </g>
+        </g>
+        <g class="mk hc rr5 cc3" tabindex="0" role="graphics-symbol"
+           aria-label="night_time on PC4, Loading: 0.2, Share of component: 4.1%">
+            <title>night_time on PC4, Loading: 0.2, Share of component: 4.1%</title>
+            <rect class="cell d6" x="523.04" y="156" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="546.04" y="167">0.2</text>
+            <g class="tt">
+                <rect class="tb" x="373.84" y="137" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="155">night_time on PC4</text>
+                <text class="tx" x="383.84" y="172">Loading: 0.2</text>
+                <text class="tx" x="383.84" y="189">Share of component: 4.1%</text>
+            </g>
+        </g>
+        <g class="mk hc rr5 cc4" tabindex="0" role="graphics-symbol"
+           aria-label="night_time on PC5, Loading: 0.1, Share of component: 1%">
+            <title>night_time on PC5, Loading: 0.1, Share of component: 1%</title>
+            <rect class="cell d6" x="569.04" y="156" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="592.04" y="167">0.1</text>
+            <g class="tt">
+                <rect class="tb" x="429.68" y="137" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="439.68" y="155">night_time on PC5</text>
+                <text class="tx" x="439.68" y="172">Loading: 0.1</text>
+                <text class="tx" x="439.68" y="189">Share of component: 1%</text>
+            </g>
+        </g>
+        <g class="mk hc rr5 cc5" tabindex="0" role="graphics-symbol"
+           aria-label="night_time on PC6, Loading: -0.02, Share of component: 0.1%">
+            <title>night_time on PC6, Loading: -0.02, Share of component: 0.1%</title>
+            <rect class="cell d5" x="615.04" y="156" width="46" height="22"/>
+            <text class="lbl ctr mid dt5" x="638.04" y="167">-0.02</text>
+            <g class="tt">
+                <rect class="tb" x="465.84" y="137" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="475.84" y="155">night_time on PC6</text>
+                <text class="tx" x="475.84" y="172">Loading: -0.02</text>
+                <text class="tx" x="475.84" y="189">Share of component: 0.1%</text>
+            </g>
+        </g>
+        <text class="tk end mid" x="375.04" y="189">channel_atm</text>
+        <g class="mk hc rr6 cc0" tabindex="0" role="graphics-symbol"
+           aria-label="channel_atm on PC1, Loading: 0.05, Share of component: 0.3%">
+            <title>channel_atm on PC1, Loading: 0.05, Share of component: 0.3%</title>
+            <rect class="cell d5" x="385.04" y="178" width="46" height="22"/>
+            <text class="lbl ctr mid dt5" x="408.04" y="189">0.05</text>
+            <g class="tt">
+                <rect class="tb" x="418.04" y="159" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="177">channel_atm on PC1</text>
+                <text class="tx" x="428.04" y="194">Loading: 0.05</text>
+                <text class="tx" x="428.04" y="211">Share of component: 0.3%</text>
+            </g>
+        </g>
+        <g class="mk hc rr6 cc1" tabindex="0" role="graphics-symbol"
+           aria-label="channel_atm on PC2, Loading: 0.25, Share of component: 6.8%">
+            <title>channel_atm on PC2, Loading: 0.25, Share of component: 6.8%</title>
+            <rect class="cell d7" x="431.04" y="178" width="46" height="22"/>
+            <text class="lbl ctr mid dt7" x="454.04" y="189">0.25</text>
+            <g class="tt">
+                <rect class="tb" x="464.04" y="159" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="177">channel_atm on PC2</text>
+                <text class="tx" x="474.04" y="194">Loading: 0.25</text>
+                <text class="tx" x="474.04" y="211">Share of component: 6.8%</text>
+            </g>
+        </g>
+        <g class="mk hc rr6 cc2" tabindex="0" role="graphics-symbol"
+           aria-label="channel_atm on PC3, Loading: -0.35, Share of component: 12.5%">
+            <title>channel_atm on PC3, Loading: -0.35, Share of component: 12.5%</title>
+            <rect class="cell d3" x="477.04" y="178" width="46" height="22"/>
+            <text class="lbl ctr mid dt3" x="500.04" y="189">-0.35</text>
+            <g class="tt">
+                <rect class="tb" x="321.12" y="159" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="331.12" y="177">channel_atm on PC3</text>
+                <text class="tx" x="331.12" y="194">Loading: -0.35</text>
+                <text class="tx" x="331.12" y="211">Share of component: 12.5%</text>
+            </g>
+        </g>
+        <g class="mk hc rr6 cc3" tabindex="0" role="graphics-symbol"
+           aria-label="channel_atm on PC4, Loading: 0.78, Share of component: 62.2%">
+            <title>channel_atm on PC4, Loading: 0.78, Share of component: 62.2%</title>
+            <rect class="cell d10" x="523.04" y="178" width="46" height="22"/>
+            <text class="lbl ctr mid dt10" x="546.04" y="189">0.78</text>
+            <g class="tt">
+                <rect class="tb" x="367.12" y="159" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="377.12" y="177">channel_atm on PC4</text>
+                <text class="tx" x="377.12" y="194">Loading: 0.78</text>
+                <text class="tx" x="377.12" y="211">Share of component: 62.2%</text>
+            </g>
+        </g>
+        <g class="mk hc rr6 cc4" tabindex="0" role="graphics-symbol"
+           aria-label="channel_atm on PC5, Loading: 0.12, Share of component: 1.5%">
+            <title>channel_atm on PC5, Loading: 0.12, Share of component: 1.5%</title>
+            <rect class="cell d6" x="569.04" y="178" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="592.04" y="189">0.12</text>
+            <g class="tt">
+                <rect class="tb" x="419.84" y="159" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="429.84" y="177">channel_atm on PC5</text>
+                <text class="tx" x="429.84" y="194">Loading: 0.12</text>
+                <text class="tx" x="429.84" y="211">Share of component: 1.5%</text>
+            </g>
+        </g>
+        <g class="mk hc rr6 cc5" tabindex="0" role="graphics-symbol"
+           aria-label="channel_atm on PC6, Loading: -0.28, Share of component: 10.5%">
+            <title>channel_atm on PC6, Loading: -0.28, Share of component: 10.5%</title>
+            <rect class="cell d3" x="615.04" y="178" width="46" height="22"/>
+            <text class="lbl ctr mid dt3" x="638.04" y="189">-0.28</text>
+            <g class="tt">
+                <rect class="tb" x="459.12" y="159" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="469.12" y="177">channel_atm on PC6</text>
+                <text class="tx" x="469.12" y="194">Loading: -0.28</text>
+                <text class="tx" x="469.12" y="211">Share of component: 10.5%</text>
+            </g>
+        </g>
+        <text class="tk end mid" x="375.04" y="211">balance_ratio</text>
+        <g class="mk hc rr7 cc0" tabindex="0" role="graphics-symbol"
+           aria-label="balance_ratio on PC1, Loading: -0.41, Share of component: 17.3%">
+            <title>balance_ratio on PC1, Loading: -0.41, Share of component: 17.3%</title>
+            <rect class="cell d2" x="385.04" y="200" width="46" height="22"/>
+            <text class="lbl ctr mid dt2" x="408.04" y="211">-0.41</text>
+            <g class="tt">
+                <rect class="tb" x="418.04" y="181" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="199">balance_ratio on PC1</text>
+                <text class="tx" x="428.04" y="216">Loading: -0.41</text>
+                <text class="tx" x="428.04" y="233">Share of component: 17.3%</text>
+            </g>
+        </g>
+        <g class="mk hc rr7 cc1" tabindex="0" role="graphics-symbol"
+           aria-label="balance_ratio on PC2, Loading: 0.08, Share of component: 0.7%">
+            <title>balance_ratio on PC2, Loading: 0.08, Share of component: 0.7%</title>
+            <rect class="cell d6" x="431.04" y="200" width="46" height="22"/>
+            <text class="lbl ctr mid dt6" x="454.04" y="211">0.08</text>
+            <g class="tt">
+                <rect class="tb" x="464.04" y="181" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="199">balance_ratio on PC2</text>
+                <text class="tx" x="474.04" y="216">Loading: 0.08</text>
+                <text class="tx" x="474.04" y="233">Share of component: 0.7%</text>
+            </g>
+        </g>
+        <g class="mk hc rr7 cc2" tabindex="0" role="graphics-symbol"
+           aria-label="balance_ratio on PC3, Loading: 0.36, Share of component: 13.2%">
+            <title>balance_ratio on PC3, Loading: 0.36, Share of component: 13.2%</title>
+            <rect class="cell d7" x="477.04" y="200" width="46" height="22"/>
+            <text class="lbl ctr mid dt7" x="500.04" y="211">0.36</text>
+            <g class="tt">
+                <rect class="tb" x="321.12" y="181" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="331.12" y="199">balance_ratio on PC3</text>
+                <text class="tx" x="331.12" y="216">Loading: 0.36</text>
+                <text class="tx" x="331.12" y="233">Share of component: 13.2%</text>
+            </g>
+        </g>
+        <g class="mk hc rr7 cc3" tabindex="0" role="graphics-symbol"
+           aria-label="balance_ratio on PC4, Loading: 0.05, Share of component: 0.3%">
+            <title>balance_ratio on PC4, Loading: 0.05, Share of component: 0.3%</title>
+            <rect class="cell d5" x="523.04" y="200" width="46" height="22"/>
+            <text class="lbl ctr mid dt5" x="546.04" y="211">0.05</text>
+            <g class="tt">
+                <rect class="tb" x="373.84" y="181" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="199">balance_ratio on PC4</text>
+                <text class="tx" x="383.84" y="216">Loading: 0.05</text>
+                <text class="tx" x="383.84" y="233">Share of component: 0.3%</text>
+            </g>
+        </g>
+        <g class="mk hc rr7 cc4" tabindex="0" role="graphics-symbol"
+           aria-label="balance_ratio on PC5, Loading: 0.55, Share of component: 31.2%">
+            <title>balance_ratio on PC5, Loading: 0.55, Share of component: 31.2%</title>
+            <rect class="cell d9" x="569.04" y="200" width="46" height="22"/>
+            <text class="lbl ctr mid dt9" x="592.04" y="211">0.55</text>
+            <g class="tt">
+                <rect class="tb" x="413.12" y="181" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="423.12" y="199">balance_ratio on PC5</text>
+                <text class="tx" x="423.12" y="216">Loading: 0.55</text>
+                <text class="tx" x="423.12" y="233">Share of component: 31.2%</text>
+            </g>
+        </g>
+        <g class="mk hc rr7 cc5" tabindex="0" role="graphics-symbol"
+           aria-label="balance_ratio on PC6, Loading: -0.2, Share of component: 5.4%">
+            <title>balance_ratio on PC6, Loading: -0.2, Share of component: 5.4%</title>
+            <rect class="cell d4" x="615.04" y="200" width="46" height="22"/>
+            <text class="lbl ctr mid dt4" x="638.04" y="211">-0.2</text>
+            <g class="tt">
+                <rect class="tb" x="465.84" y="181" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="475.84" y="199">balance_ratio on PC6</text>
+                <text class="tx" x="475.84" y="216">Loading: -0.2</text>
+                <text class="tx" x="475.84" y="233">Share of component: 5.4%</text>
+            </g>
+        </g>
+        <text class="key" x="302" y="277">Loading</text>
+        <text class="kn" x="352.04" y="277">-0.78</text>
+        <rect class="cell d0" x="381.98" y="266" width="16" height="14"/>
+        <rect class="cell d1" x="397.98" y="266" width="16" height="14"/>
+        <rect class="cell d2" x="413.98" y="266" width="16" height="14"/>
+        <rect class="cell d3" x="429.98" y="266" width="16" height="14"/>
+        <rect class="cell d4" x="445.98" y="266" width="16" height="14"/>
+        <rect class="cell d5" x="461.98" y="266" width="16" height="14"/>
+        <rect class="cell d6" x="477.98" y="266" width="16" height="14"/>
+        <rect class="cell d7" x="493.98" y="266" width="16" height="14"/>
+        <rect class="cell d8" x="509.98" y="266" width="16" height="14"/>
+        <rect class="cell d9" x="525.98" y="266" width="16" height="14"/>
+        <rect class="cell d10" x="541.98" y="266" width="16" height="14"/>
+        <text class="kn" x="563.98" y="277">+0.78</text>
+    </g>
+</svg>

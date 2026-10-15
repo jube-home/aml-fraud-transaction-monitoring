@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
         public static double BaseBeforePercentAdded(this double @this, double percent)
         {
             var factor = 1d + percent / 100d;
+
             return factor == 0 ? double.NaN : CalculationSupport.Finite(@this / factor);
         }
     }

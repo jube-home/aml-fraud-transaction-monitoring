@@ -36,6 +36,7 @@ using Microsoft.Extensions.Options;
 using Xunit;
 using PocoSearchInstance = Jube.Data.Poco.ExhaustiveSearchInstance;
 using PocoPredictedActual = Jube.Data.Poco.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual;
+using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery;
 
 namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram
 {
@@ -53,7 +54,6 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceE
         private readonly List<int> createdPromotedTrialInstanceIds = [];
         private readonly List<int> createdSearchInstanceIds = [];
         private readonly List<int> createdTrialInstanceIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -78,6 +78,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceE
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -225,12 +226,13 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceE
             var instanceId = await SeedAsync(dbContext, fx.Seed.UserWithPermission, errors);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
-            var expected = (await new global::Jube.Data.Query
-                .GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery(dbContext,
-                    fx.Seed.UserWithPermission).ExecuteAsync(instanceId)).ToList();
+            var expected = (await new GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery(dbContext,
+                fx.Seed.UserWithPermission).ExecuteAsync(instanceId)).ToList();
+
             var result = await service.GetAsync(instanceId);
 
             result.Should().HaveCount(expected.Count);
+
             for (var i = 0; i < expected.Count; i++)
             {
                 result[i].Bin.Should().Be(expected[i].Bin);

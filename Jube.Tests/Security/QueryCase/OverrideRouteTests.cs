@@ -29,7 +29,6 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
 {
     protected abstract string Path { get; }
     protected abstract string[] AllowedProperties { get; }
-
     protected abstract string Target(string key, string value, Guid? modelGuid);
 
     protected abstract Task<Scenario> ScenarioAsync(string owner, string key, string value, bool suppressed,
@@ -75,6 +74,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
             r => r.Status == 200 &&
                  FlagFor(r, scenario.ModelGuid, scenario.RuleName == "" ? null : scenario.RuleName) == true,
             Empty, scenario.ModelGuid.ToString(), scenario.RuleName);
+
         await run.AssertCleanAsync(Output);
     }
 
@@ -87,10 +87,13 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
         var b = await ScenarioAsync(UserB, key, "v1", true);
 
         var asA = run.Check(await As(PenTestUser.WithPermission).GetAsync(Target(key, "v1", a.ModelGuid)));
+
         run.Expect(FlagFor(asA, a.ModelGuid, NameOf(a)) == true && FlagFor(asA, b.ModelGuid) == null &&
                    !asA.Body.Contains(b.ModelGuid.ToString(), StringComparison.OrdinalIgnoreCase), asA,
             "A-VIEW", "tenant A must only see its own model");
+
         var asB = run.Check(await As(PenTestUser.TenantB).GetAsync(Target(key, "v1", b.ModelGuid)));
+
         run.Expect(FlagFor(asB, b.ModelGuid, NameOf(b)) == true && FlagFor(asB, a.ModelGuid) == null &&
                    !asB.Body.Contains(a.ModelGuid.ToString(), StringComparison.OrdinalIgnoreCase), asB,
             "B-VIEW", "tenant B must only see its own model");
@@ -104,6 +107,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
         {
             var response = run.Check(await As(user).GetAsync(Target(key, "v1", foreignGuid)));
             var foreignModel = user == PenTestUser.TenantB ? a.ModelGuid : b.ModelGuid;
+
             run.Expect(response.Status == 200 && (user == PenTestUser.TenantB
                     ? FlagFor(response, a.ModelGuid) == null
                     : FlagFor(response, b.ModelGuid) == null) && !response.Body.Contains(
@@ -126,8 +130,10 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
         var expired = await ScenarioAsync(UserA, key, "exp", true, DateTime.UtcNow.AddDays(-1));
         var deleted = await ScenarioAsync(UserA, key, "del", true, overrideDeleted: true);
         var none = await ScenarioAsync(UserA, key, "none", false);
+
         var noXPathOverride = await ScenarioAsync(UserA, QueryCaseSeeder.Unique("Sup"), "x", true,
             xpathOverride: false);
+
         var xpathDeleted = await ScenarioAsync(UserA, QueryCaseSeeder.Unique("Sup"), "x", true, xpathDeleted: true);
         var modelDeleted = await ScenarioAsync(UserA, QueryCaseSeeder.Unique("Sup"), "x", true, modelDeleted: true);
         var client = As(PenTestUser.WithPermission);
@@ -135,6 +141,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
         async Task<bool?> QueryAsync(Scenario s, string value)
         {
             var response = run.Check(await client.GetAsync(Target(s.Key, value, s.ModelGuid)));
+
             return FlagFor(response, s.ModelGuid, NameOf(s));
         }
 
@@ -167,13 +174,16 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
         {
             var response = run.Check(await client.GetAsync(Target(probeKey, probeValue, scenario.ModelGuid)),
                 BlindBound);
+
             if (response.Status != 200)
             {
                 run.Expect(response.Status is 400 or 403 or 404 or 414 or 431, response, "STATUS");
+
                 return;
             }
 
             run.Expect(FlagFor(response, foreign.ModelGuid) == null, response, "FOREIGN-MODEL");
+
             if (keyIsHostile)
             {
                 run.Expect(Empty(response), response, "HOSTILE-KEY-MATCHED", "an unknown key lists nothing");
@@ -203,6 +213,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
         var foreign = await ScenarioAsync(UserB, key, "v1", true);
         var client = As(PenTestUser.WithPermission);
         var modelQ = scenario.ModelGuid.ToString();
+
         var targets = new List<string>
         {
             Path, $"{Path}?overrideKey={Q(key)}", $"{Path}?overrideKeyValue=v1",
@@ -223,6 +234,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
             $"{Path}?overrideKey={Q(key)}&overrideKeyValue={Q(new string('A', 100_000))}",
             $"{Path}?overrideKey={Q(key)}&overrideKeyValue=v1&limit=999999999&offset=-1&tenantRegistryId=1&userName=admin"
         };
+
         for (var i = 0; i < 100; i++)
         {
             targets.Add(
@@ -232,6 +244,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
         await run.ForEachAsync(targets, async target =>
         {
             var response = run.Check(await client.GetAsync(target), BlindBound);
+
             if (response.Status == 200)
             {
                 run.Expect(FlagFor(response, foreign.ModelGuid) == null &&
@@ -243,6 +256,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
                 run.Expect(response.Status is 400 or 403 or 404 or 414 or 431, response, "STATUS");
             }
         });
+
         await run.AssertCleanAsync(Output);
     }
 
@@ -258,6 +272,7 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
 
         var response = run.Check(await client.GetAsync(target));
         var allowed = AllowedProperties.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
         foreach (var row in ArrayOf(response) ?? [])
         {
             foreach (var property in row.EnumerateObject())
@@ -276,9 +291,11 @@ public abstract class OverrideRouteTests(DatabaseFixture fx, ITestOutputHelper o
             var r = run.Check(await As(user).GetAsync(Target(key, "v1", guid)));
             var own = user == PenTestUser.WithPermission ? scenario : foreign;
             var other = user == PenTestUser.WithPermission ? foreign : scenario;
+
             run.Expect(r.Status == 200 && FlagFor(r, own.ModelGuid, NameOf(own)) == true &&
                        FlagFor(r, other.ModelGuid) == null, r, "PARALLEL");
         }, 10);
+
         await run.AssertCleanAsync(Output);
     }
 }

@@ -117,7 +117,6 @@ public static class ModelPayloads
     ];
 
     public static IReadOnlyList<string> Expanded { get; } = Expand(Seeds);
-
     public static IReadOnlyList<string> ExpandedRuleText { get; } = Expand(ruleSeeds);
 
     public static IReadOnlyList<string> Sample(IReadOnlyList<string> source, int every)
@@ -135,6 +134,7 @@ public static class ModelPayloads
     private static List<string> Expand(IEnumerable<string> seeds)
     {
         var result = new List<string>();
+
         foreach (var seed in seeds)
         {
             result.Add(seed);
@@ -160,6 +160,7 @@ public static class ModelPayloads
     private static string MixCase(string value)
     {
         var builder = new StringBuilder(value.Length);
+
         for (var i = 0; i < value.Length; i++)
         {
             builder.Append(i % 2 == 0 ? char.ToUpperInvariant(value[i]) : char.ToLowerInvariant(value[i]));
@@ -171,6 +172,7 @@ public static class ModelPayloads
     private static string HtmlEntities(string value)
     {
         var builder = new StringBuilder(value.Length * 4);
+
         foreach (var c in value)
         {
             builder.Append("&#x").Append(((int)c).ToString("x")).Append(';');
@@ -182,6 +184,7 @@ public static class ModelPayloads
     private static string UnicodeEscapedText(string value)
     {
         var builder = new StringBuilder(value.Length * 6);
+
         foreach (var c in value)
         {
             builder.Append("\\u").Append(((int)c).ToString("x4"));

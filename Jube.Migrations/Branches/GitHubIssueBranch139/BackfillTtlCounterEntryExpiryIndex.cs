@@ -50,6 +50,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
         private void BackfillKey(string redisKey)
         {
             var parts = redisKey.Split(':', 6);
+
             if (parts.Length != 6 || parts[0] != "TtlCounterEntry")
             {
                 return;
@@ -74,6 +75,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
                 var member = $"{timestamp}:{dataValue}";
 
 #pragma warning disable VSTHRD002
+
                 cacheService.ResilientRedisResilientRedisDatabase
                     .SortedSetAddAsync(redisKeyExpiryIndex, member, timestamp)
                     .GetAwaiter().GetResult();

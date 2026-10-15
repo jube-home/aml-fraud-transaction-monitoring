@@ -14,7 +14,7 @@
 using System.Net;
 using Jube.Cache.Observability;
 using Jube.Cache.Redis.CacheUserRegistryApiKey.Events;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using log4net;
 using StackExchange.Redis;
 
@@ -24,7 +24,6 @@ namespace Jube.Cache.Redis.CacheUserRegistryApiKey
     {
         private readonly ConnectionMultiplexer connectionMultiplexer;
         private readonly ILog log;
-
         private readonly IHybridResilientRedisDatabase resilientRedisResilientRedisDatabase;
 
         public CacheUserRegistryApiKeyRepository(ConnectionMultiplexer connectionMultiplexer,
@@ -33,6 +32,7 @@ namespace Jube.Cache.Redis.CacheUserRegistryApiKey
         {
             this.connectionMultiplexer =
                 connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
+
             this.resilientRedisResilientRedisDatabase = resilientRedisResilientRedisDatabase;
             this.log = log;
 
@@ -89,11 +89,13 @@ namespace Jube.Cache.Redis.CacheUserRegistryApiKey
                 SubscribeToSet();
                 SubscribeToRemove();
             }
+
             return;
 
             void SubscribeToSet()
             {
                 var subscriber = connectionMultiplexer.GetSubscriber();
+
                 subscriber.Subscribe(RedisChannel.Pattern("UserRegistryApiKeySet:*"),
                     (_, value) => HandleSetMessage(value));
             }
@@ -101,6 +103,7 @@ namespace Jube.Cache.Redis.CacheUserRegistryApiKey
             void SubscribeToRemove()
             {
                 var subscriber = connectionMultiplexer.GetSubscriber();
+
                 subscriber.Subscribe(RedisChannel.Pattern("UserRegistryApiKeyRemove:*"),
                     (_, value) => HandleRemoveMessage(value));
             }

@@ -28,6 +28,7 @@ using Jube.Service.Exceptions.EntityAnalysisModelReprocessingRuleInstance;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
@@ -80,6 +81,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -96,6 +98,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
         private async Task<int> CreateParentModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -106,6 +109,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -113,6 +117,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             int modelId)
         {
             var repository = new EntityAnalysisModelReprocessingRuleRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModelReprocessingRule
             {
                 EntityAnalysisModelId = modelId,
@@ -130,6 +135,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             }).ConfigureAwait(false);
 
             createdReprocessingRuleIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -334,6 +340,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
         public async Task UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -342,6 +349,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
         public async Task UnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -358,6 +366,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
 
             await using var otherOwnerDb = fx.GetDbContext();
             var otherModelId = await CreateParentModelAsync(otherOwnerDb, fx.Seed.UserTenantB);
+
             var otherRuleId =
                 await CreateParentReprocessingRuleAsync(otherOwnerDb, fx.Seed.UserTenantB, otherModelId);
 
@@ -405,6 +414,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
                 otherTenant.InsertAsync(NewDto(ruleId)));
+
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "EntityAnalysisModelReprocessingRuleIdNotFound");
 
             var rows = await dbContext.GetTable<Data.Poco.EntityAnalysisModelReprocessingRuleInstance>()
@@ -443,6 +453,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(NewDto(0)));
+
             ex.Result.Errors.Should().Contain(e =>
                 e.PropertyName == nameof(EntityAnalysisModelReprocessingRuleInstanceDto
                     .EntityAnalysisModelReprocessingRuleId) &&
@@ -713,6 +724,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var ruleId = await CreateParentReprocessingRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
 
@@ -747,6 +759,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
             names.Should().OnlyHaveUniqueItems();
             names.Should().OnlyContain(n => !n.Contains('_'));
+
             names.Should().Contain(
             [
                 "EntityAnalysisModelReprocessingRuleInstanceList", "EntityAnalysisModelReprocessingRuleInstanceGet",

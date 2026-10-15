@@ -369,6 +369,7 @@ namespace Jube.Test.Dictionary.Extensions
         private static DateTime DateOnCorrectDayOfWeek(DayOfWeek dayOfWeek)
         {
             var date = new DateTime(2024, 6, 9);
+
             while (date.DayOfWeek != dayOfWeek)
             {
                 date = date.AddDays(1);
@@ -503,7 +504,7 @@ namespace Jube.Test.Dictionary.Extensions
                 "D" => sample.ToLongDateString(CultureInfo.InvariantCulture),
                 "T" => sample.ToLongTimeString(CultureInfo.InvariantCulture),
                 "m" => sample.ToMonthDayString(CultureInfo.InvariantCulture),
-                "r" => sample.ToRFC1123String(CultureInfo.InvariantCulture),
+                "r" => sample.ToRfc1123String(CultureInfo.InvariantCulture),
                 "G" => sample.ToShortDateLongTimeString(CultureInfo.InvariantCulture),
                 "d" => sample.ToShortDateString(CultureInfo.InvariantCulture),
                 "g" => sample.ToShortDateTimeString(CultureInfo.InvariantCulture),
@@ -525,6 +526,7 @@ namespace Jube.Test.Dictionary.Extensions
         public void TheStringCultureNameOverloadAgreesWithTheCultureInfoOverload(string formatChar)
         {
             const string cultureName = "fr-FR";
+
             var byName = formatChar switch
             {
                 "F" => sample.ToFullDateTimeString(cultureName),
@@ -532,6 +534,7 @@ namespace Jube.Test.Dictionary.Extensions
                 "s" => sample.ToSortableDateTimeString(cultureName),
                 _ => throw new InvalidOperationException()
             };
+
             var byCultureInfo = formatChar switch
             {
                 "F" => sample.ToFullDateTimeString(new CultureInfo(cultureName)),

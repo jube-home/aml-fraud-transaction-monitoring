@@ -6,9 +6,6 @@ parent: Visualisations
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Role Assignment Overview
 
 Before embarking on this section of documentation it is incumbent to explain that the functionality aims to provide for

@@ -14,6 +14,11 @@
 using System.ComponentModel;
 using Jube.Dto.Validation;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Filter
 {
     [Description("The rows matching a query builder JSON filter, ordered by id and capped; when More is true, call " +

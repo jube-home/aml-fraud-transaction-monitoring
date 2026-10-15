@@ -18,7 +18,8 @@ namespace Jube.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByString
     internal static class EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeMapper
     {
         public static EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeDto ToDto(
-            global::Jube.Data.Query.GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery.Dto
+            global::Jube.Data.Query.GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery.
+                GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQueryDto
                 source) =>
             new()
             {
@@ -29,7 +30,8 @@ namespace Jube.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByString
 
         public static List<EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeDto> ToDto(
             IEnumerable<global::Jube.Data.Query.
-                GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery.Dto> source) =>
+                GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery.
+                GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQueryDto> source) =>
             source.Select(ToDto).ToList();
     }
 }

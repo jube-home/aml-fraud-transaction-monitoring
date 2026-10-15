@@ -139,6 +139,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var function = NewFunction("Greeting", 1, (_, _, _, _) => "Hello",
                 true);
+
             var context = NewContext(function);
 
             context.ExecuteInlineFunctions();
@@ -178,13 +179,17 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void AnExceptionThrownByTheRuleDelegateIsCaughtAndSubsequentFunctionsStillRun()
         {
             var secondEvaluated = false;
+
             var throwing = NewFunction("Throws", 1,
                 (_, _, _, _) => throw new InvalidOperationException("boom"));
+
             var second = NewFunction("Second", 1, (_, _, _, _) =>
             {
                 secondEvaluated = true;
+
                 return "Value";
             });
+
             var context = NewContext(throwing, second);
 
             var act = context.ExecuteInlineFunctions;

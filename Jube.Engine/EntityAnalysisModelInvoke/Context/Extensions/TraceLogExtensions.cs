@@ -18,16 +18,16 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Logs;
 using Jube.Engine.Observability;
+using Jube.Engine.Observability.Models;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 {
     public static class TraceLogExtensions
     {
-        private const int DefaultWarnThresholdMilliseconds = 250;
-
         internal static bool WantsTraceLog(Context context)
         {
             var flags = context.EntityAnalysisModel.Flags;
+
             return context.Log.IsInfoEnabled ||
                    (flags.EnableLogs &&
                     ((flags.EnableLogsInfo && context.LogSampled) || flags.EnableLogsWarnThreshold));
@@ -60,7 +60,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             {
                 var previousElapsedMicroseconds =
                     Interlocked.Exchange(ref context.LastLogEntryElapsedMicroseconds, elapsedMicroseconds);
+
                 sinceLastEntryMicroseconds = elapsedMicroseconds - previousElapsedMicroseconds;
+
                 capturedByWarnThreshold =
                     wantsWarnThresholdCheck && sinceLastEntryMicroseconds >= thresholdMicroseconds;
             }
@@ -73,6 +75,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             {
                 sinceLastEntryMicroseconds =
                     elapsedMicroseconds - Volatile.Read(ref context.LastLogEntryElapsedMicroseconds);
+
                 capturedByWarnThreshold = false;
             }
 
@@ -130,6 +133,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             }
         }
 
+        private const int DefaultWarnThresholdMilliseconds = 250;
+
         private static bool TryClaimWarnThresholdGap(Context context, long elapsedMicroseconds,
             long thresholdMicroseconds, out long sinceLastEntryMicroseconds)
         {
@@ -137,9 +142,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             {
                 var previous = Volatile.Read(ref context.LastLogEntryElapsedMicroseconds);
                 var gap = elapsedMicroseconds - previous;
+
                 if (gap < thresholdMicroseconds)
                 {
                     sinceLastEntryMicroseconds = gap;
+
                     return false;
                 }
 
@@ -147,6 +154,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                         previous) == previous)
                 {
                     sinceLastEntryMicroseconds = gap;
+
                     return true;
                 }
             }

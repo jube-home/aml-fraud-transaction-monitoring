@@ -46,6 +46,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                                     context.Services.Log);
 
                                 var repository = new ActivationWatcherRepository(dbContext);
+
                                 try
                                 {
                                     await repository

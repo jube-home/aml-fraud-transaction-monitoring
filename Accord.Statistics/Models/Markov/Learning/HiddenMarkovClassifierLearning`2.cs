@@ -1,115 +1,136 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Statistics.Distributions;
 
 namespace Accord.Statistics.Models.Markov.Learning
 {
 #pragma warning disable 612, 618
-
-    using System;
-    using System.Threading;
-    using Accord.Math;
-    using Accord.Statistics.Distributions;
-    using Accord.Statistics.Models.Markov.Topology;
-
     /// <summary>
-    ///   Learning algorithm for <see cref="HiddenMarkovClassifier{TDistribution}">
-    ///   arbitrary-density generative hidden Markov sequence classifiers</see>.
+    ///     Learning algorithm for
+    ///     <see cref="HiddenMarkovClassifier{TDistribution}">
+    ///         arbitrary-density generative hidden Markov sequence classifiers
+    ///     </see>
+    ///     .
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   This class acts as a teacher for <see cref="HiddenMarkovClassifier{TDistribution}">
-    ///   classifiers based on arbitrary-density hidden Markov models</see>. The learning
-    ///   algorithm uses a generative approach. It works by training each model in the
-    ///   generative classifier separately.</para>
-    ///   
-    /// <para>
-    ///   This can teach models that use any <see cref="IDistribution">probability
-    ///   distribution</see>. Such <see cref="HiddenMarkovModel{T}">arbitrary-density models
-    ///   </see> can be used for any kind of observation values or vectors. When 
-    ///   
-    /// 
-    ///   be used whenever the sequence of observations is discrete or can be represented
-    ///   by discrete symbols, such as class labels, integers, and so on. If you need
-    ///   to classify sequences of other entities, such as real numbers, vectors (i.e.
-    ///   multivariate observations), then you can use 
-    ///   <see cref="HiddenMarkovClassifierLearning{TDistribution}">generic-density
-    ///   hidden Markov models</see>. Those models can be modeled after any kind of
-    ///   <see cref="IDistribution">probability distribution</see> implementing
-    ///   the <see cref="IDistribution"/> interface.</para>
-    ///   
-    /// <para>
-    ///   For a more thorough explanation on <see cref="HiddenMarkovModel">hidden Markov models</see>
-    ///   with practical examples on gesture recognition, please see 
-    ///   <a href="http://www.codeproject.com/Articles/541428/Sequence-Classifiers-in-Csharp-Part-I-Hidden-Marko">
-    ///   Sequence Classifiers in C#, Part I: Hidden Markov Models</a> [1].</para>
-    ///     
-    /// <para>
-    ///   [1]: <a href="http://www.codeproject.com/Articles/541428/Sequence-Classifiers-in-Csharp-Part-I-Hidden-Marko"> 
-    ///           http://www.codeproject.com/Articles/541428/Sequence-Classifiers-in-Csharp-Part-I-Hidden-Marko </a>
-    /// </para>
+    ///     <para>
+    ///         This class acts as a teacher for
+    ///         <see cref="HiddenMarkovClassifier{TDistribution}">
+    ///             classifiers based on arbitrary-density hidden Markov models
+    ///         </see>
+    ///         . The learning
+    ///         algorithm uses a generative approach. It works by training each model in the
+    ///         generative classifier separately.
+    ///     </para>
+    ///     <para>
+    ///         This can teach models that use any
+    ///         <see cref="IDistribution">
+    ///             probability
+    ///             distribution
+    ///         </see>
+    ///         . Such
+    ///         <see cref="HiddenMarkovModel{T}">
+    ///             arbitrary-density models
+    ///         </see>
+    ///         can be used for any kind of observation values or vectors. When
+    ///         be used whenever the sequence of observations is discrete or can be represented
+    ///         by discrete symbols, such as class labels, integers, and so on. If you need
+    ///         to classify sequences of other entities, such as real numbers, vectors (i.e.
+    ///         multivariate observations), then you can use
+    ///         <see cref="HiddenMarkovClassifierLearning{TDistribution}">
+    ///             generic-density
+    ///             hidden Markov models
+    ///         </see>
+    ///         . Those models can be modeled after any kind of
+    ///         <see cref="IDistribution">probability distribution</see> implementing
+    ///         the <see cref="IDistribution" /> interface.
+    ///     </para>
+    ///     <para>
+    ///         For a more thorough explanation on <see cref="HiddenMarkovModel">hidden Markov models</see>
+    ///         with practical examples on gesture recognition, please see
+    ///         <a href="http://www.codeproject.com/Articles/541428/Sequence-Classifiers-in-Csharp-Part-I-Hidden-Marko">
+    ///             Sequence Classifiers in C#, Part I: Hidden Markov Models
+    ///         </a>
+    ///         [1].
+    ///     </para>
+    ///     <para>
+    ///         [1]:
+    ///         <a href="http://www.codeproject.com/Articles/541428/Sequence-Classifiers-in-Csharp-Part-I-Hidden-Marko">
+    ///             http://www.codeproject.com/Articles/541428/Sequence-Classifiers-in-Csharp-Part-I-Hidden-Marko
+    ///         </a>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    ///   <para>
-    ///   The following example creates a continuous-density hidden Markov model sequence
-    ///   classifier to recognize two classes of univariate observation sequences.</para>
-    ///   <code source="Unit Tests\Accord.Tests.Statistics\Models\Markov\HiddenMarkovClassifier`2Test.cs" region="doc_learn" />
-    /// 
-    ///   <para>
-    ///   The following example creates a continuous-density hidden Markov model sequence
-    ///   classifier to recognize two classes of multivariate sequence of observations.
-    ///   This example uses multivariate Normal distributions as emission densities. </para>
-    ///   
-    ///   <para>
-    ///   When there is insufficient training data, or one of the variables is constant,
-    ///   the Normal distribution estimation may fail with a "Covariance matrix is not
-    ///   positive-definite". In this case, it is possible to sidestep this issue by
-    ///   specifying a small regularization constant to be added to the diagonal elements
-    ///   of the covariance matrix. </para>
-    ///   <code source="Unit Tests\Accord.Tests.Statistics\Models\Markov\HiddenMarkovClassifier`2Test.cs" region="doc_learn_regularization" />
-    /// 
-    ///   <para>
-    ///   The next example shows how to use the learning algorithms in a real-world dataset,
-    ///   including training and testing in separate sets and evaluating its performance:</para>
-    ///   <code source="Unit Tests\Accord.Tests.Statistics\Models\Markov\HiddenMarkovClassifier`2Test.cs" region="doc_learn_pendigits" />
+    ///     <para>
+    ///         The following example creates a continuous-density hidden Markov model sequence
+    ///         classifier to recognize two classes of univariate observation sequences.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.Statistics\Models\Markov\HiddenMarkovClassifier`2Test.cs" region="doc_learn" />
+    ///     <para>
+    ///         The following example creates a continuous-density hidden Markov model sequence
+    ///         classifier to recognize two classes of multivariate sequence of observations.
+    ///         This example uses multivariate Normal distributions as emission densities.
+    ///     </para>
+    ///     <para>
+    ///         When there is insufficient training data, or one of the variables is constant,
+    ///         the Normal distribution estimation may fail with a "Covariance matrix is not
+    ///         positive-definite". In this case, it is possible to sidestep this issue by
+    ///         specifying a small regularization constant to be added to the diagonal elements
+    ///         of the covariance matrix.
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.Statistics\Models\Markov\HiddenMarkovClassifier`2Test.cs"
+    ///         region="doc_learn_regularization" />
+    ///     <para>
+    ///         The next example shows how to use the learning algorithms in a real-world dataset,
+    ///         including training and testing in separate sets and evaluating its performance:
+    ///     </para>
+    ///     <code source="Unit Tests\Accord.Tests.Statistics\Models\Markov\HiddenMarkovClassifier`2Test.cs"
+    ///         region="doc_learn_pendigits" />
     /// </example>
-    /// 
-    /// <seealso cref="HiddenMarkovClassifier{TDistribution, TObservation}"/>
-    /// <seealso cref="HiddenMarkovClassifier"/>
-    /// <seealso cref="HiddenMarkovClassifierLearning"/>
-    /// 
+    /// <seealso cref="HiddenMarkovClassifier{TDistribution, TObservation}" />
+    /// <seealso cref="HiddenMarkovClassifier" />
+    /// <seealso cref="HiddenMarkovClassifierLearning" />
     public class HiddenMarkovClassifierLearning<TDistribution, TObservation> :
         BaseHiddenMarkovClassifierLearning<HiddenMarkovClassifier<TDistribution, TObservation>,
-        HiddenMarkovModel<TDistribution, TObservation>, TDistribution, TObservation>
+            HiddenMarkovModel<TDistribution, TObservation>, TDistribution, TObservation>
         where TDistribution : IDistribution<TObservation>
     {
-
         /// <summary>
-        ///   Creates a new instance of the learning algorithm for a given 
-        ///   Markov sequence classifier using the specified configuration
-        ///   function.
+        ///     Creates a new instance of the learning algorithm for a given
+        ///     Markov sequence classifier using the specified configuration
+        ///     function.
         /// </summary>
-        /// 
         [Obsolete("Please set the learning algorithm using the Learner property.")]
         public HiddenMarkovClassifierLearning(HiddenMarkovClassifier<TDistribution, TObservation> classifier,
             ClassifierLearningAlgorithmConfiguration algorithm)
@@ -118,49 +139,45 @@ namespace Accord.Statistics.Models.Markov.Learning
         }
 
         /// <summary>
-        ///   Creates a new instance of the learning algorithm for a given 
-        ///   Markov sequence classifier.
+        ///     Creates a new instance of the learning algorithm for a given
+        ///     Markov sequence classifier.
         /// </summary>
-        /// 
         public HiddenMarkovClassifierLearning(HiddenMarkovClassifier<TDistribution, TObservation> classifier)
             : base(classifier)
         {
         }
 
         /// <summary>
-        ///   Creates a new instance of the learning algorithm for a given 
-        ///   Markov sequence classifier.
+        ///     Creates a new instance of the learning algorithm for a given
+        ///     Markov sequence classifier.
         /// </summary>
-        /// 
         public HiddenMarkovClassifierLearning()
         {
         }
 
         /// <summary>
-        ///   Creates an instance of the model to be learned. Inheritors of this abstract 
-        ///   class must define this method so new models can be created from the training data.
+        ///     Creates an instance of the model to be learned. Inheritors of this abstract
+        ///     class must define this method so new models can be created from the training data.
         /// </summary>
-        /// 
-        protected override HiddenMarkovClassifier<TDistribution, TObservation> Create(TObservation[][] x, int[] y, int numberOfClasses)
+        protected override HiddenMarkovClassifier<TDistribution, TObservation> Create(TObservation[][] x, int[] y,
+            int numberOfClasses)
         {
             return new HiddenMarkovClassifier<TDistribution, TObservation>(numberOfClasses);
         }
 
         /// <summary>
-        ///   Creates a new <see cref="Threshold">threshold model</see>
-        ///   for the current set of Markov models in this sequence classifier.
+        ///     Creates a new <see cref="Threshold">threshold model</see>
+        ///     for the current set of Markov models in this sequence classifier.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A <see cref="Threshold">threshold Markov model</see>.
+        ///     A <see cref="Threshold">threshold Markov model</see>.
         /// </returns>
-        /// 
         public override HiddenMarkovModel<TDistribution, TObservation> Threshold()
         {
             var models = Classifier.Models;
             var topology = CreateThresholdTopology();
 
-            int states = topology.States;
+            var states = topology.States;
 
             // Create the threshold emission matrix
             var emissions = new TDistribution[states];
@@ -170,10 +187,10 @@ namespace Accord.Statistics.Models.Markov.Learning
             for (int i = 0, modelStartIndex = 0; i < models.Length; i++)
             {
                 // Retrieve the model definition matrices
-                TDistribution[] B = models[i].Emissions;
+                var B = models[i].Emissions;
 
                 // Now, for each state in the model
-                for (int j = 0; j < models[i].States; j++)
+                for (var j = 0; j < models[i].States; j++)
                 {
                     // Copy emissions from the model
                     emissions[j + modelStartIndex] = B[j];
@@ -190,6 +207,5 @@ namespace Accord.Statistics.Models.Markov.Learning
                 Tag = "Non-gesture"
             };
         }
-
     }
 }

@@ -95,6 +95,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("EtcdMemberStatus", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

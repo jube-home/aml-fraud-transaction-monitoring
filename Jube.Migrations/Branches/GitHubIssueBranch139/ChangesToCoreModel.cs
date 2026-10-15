@@ -30,6 +30,10 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
             RemoveTheForeignKeyFromInlineScriptToMakeLessBrittleToImport();
         }
 
+        public override void Down()
+        {
+        }
+
         private void RemoveTheForeignKeyFromInlineScriptToMakeLessBrittleToImport()
         {
             Delete.ForeignKey("FK_EntityAnalysisModelInlineScript_EntityAnalysisInlineScriptId")
@@ -139,7 +143,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
                 .WithColumn("Version").AsInt32().Nullable()
                 .WithColumn("ImportId").AsInt32().Nullable();
 
-            Create.Index().OnTable("EntityAnalysisModelRole").OnColumn("EntityAnalysisModelGuid").Ascending().OnColumn("RoleRegistryGuid");
+            Create.Index().OnTable("EntityAnalysisModelRole").OnColumn("EntityAnalysisModelGuid").Ascending()
+                .OnColumn("RoleRegistryGuid");
 
             Execute.Sql(""" 
                         insert into "EntityAnalysisModelRole"("RoleRegistryGuid", 
@@ -162,11 +167,6 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
                          and r."Deleted" is null
                         or r."Deleted" = 0
                         """);
-        }
-
-        public override void Down()
-        {
-
         }
     }
 }

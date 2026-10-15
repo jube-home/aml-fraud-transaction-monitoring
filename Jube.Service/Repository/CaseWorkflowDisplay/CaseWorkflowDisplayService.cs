@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,10 +15,11 @@ using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.CaseWorkflowDisplay;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Concurrency;
 using Jube.Service.Exceptions.Repository.CaseWorkflowDisplay;
 using Jube.Service.Observability;
@@ -35,7 +36,6 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
     {
         private static readonly int[] permissions = [23];
         private static readonly int[] activeOnlyPermissions = [23, 1];
-
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -60,6 +60,9 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             repository = new RuleRepository(dbContext, userName);
             validator = new CaseWorkflowDisplayDtoValidator(repository, strings);
         }
+
+        public static IReadOnlyList<int> ActiveOnlyPermissions => activeOnlyPermissions;
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseWorkflowDisplayService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -111,6 +114,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.List: entry user={userName}");
@@ -121,6 +125,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
                 EnsurePermitted("CaseWorkflowDisplay.List", permissions);
                 var dtos = CaseWorkflowDisplayMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowDisplay.List: {dtos.Count} rows user={userName}");
@@ -158,6 +163,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.List: entry user={userName} take={take} afterId={afterId}");
@@ -167,10 +173,12 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             {
                 EnsurePermitted("CaseWorkflowDisplay.List", permissions);
                 var clampedTake = Math.Clamp(take, 1, 200);
+
                 var all = CaseWorkflowDisplayMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false))
                     .OrderBy(d => d.Id)
                     .Where(d => afterId == null || d.Id > afterId)
                     .ToList();
+
                 var page = all.Take(clampedTake).ToList();
                 op.Rows(page.Count);
 
@@ -204,6 +212,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.FilterFields: entry user={userName}");
@@ -215,6 +224,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<CaseWorkflowDisplayDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -254,6 +264,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -265,6 +276,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
                 var rows = CaseWorkflowDisplayMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -302,6 +314,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.Count: entry groupBy={groupBy} user={userName}");
@@ -313,6 +326,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
                 var rows = CaseWorkflowDisplayMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -340,6 +354,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "ListByWorkflow", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.ListByWorkflow: entry caseWorkflowId={caseWorkflowId} " +
@@ -349,10 +364,12 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             try
             {
                 EnsurePermitted("CaseWorkflowDisplay.ListByWorkflow", permissions);
+
                 var dtos = CaseWorkflowDisplayMapper.ToDto(
                     await repository.GetByCasesWorkflowIdOrderByIdAsync(caseWorkflowId, token)
                         .ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowDisplay.ListByWorkflow: {dtos.Count} rows " +
@@ -374,8 +391,10 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowDisplay.ListByWorkflow: unexpected failure " +
                           $"caseWorkflowId={caseWorkflowId} user={userName}", ex);
+
                 throw;
             }
         }
@@ -390,6 +409,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "ListByWorkflowIdActiveOnly", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.ListByWorkflowIdActiveOnly: entry id={id} user={userName}");
@@ -398,9 +418,11 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             try
             {
                 EnsurePermitted("CaseWorkflowDisplay.ListByWorkflowIdActiveOnly", activeOnlyPermissions);
+
                 var dtos = CaseWorkflowDisplayMapper.ToDto(
                     await repository.GetByCasesWorkflowIdActiveOnlyAsync(id, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowDisplay.ListByWorkflowIdActiveOnly: {dtos.Count} rows id={id} " +
@@ -422,8 +444,10 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowDisplay.ListByWorkflowIdActiveOnly: unexpected failure id={id} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -438,6 +462,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "ListByWorkflowGuidActiveOnly", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.ListByWorkflowGuidActiveOnly: entry guid={guid} user={userName}");
@@ -446,9 +471,11 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             try
             {
                 EnsurePermitted("CaseWorkflowDisplay.ListByWorkflowGuidActiveOnly", activeOnlyPermissions);
+
                 var dtos = CaseWorkflowDisplayMapper.ToDto(
                     await repository.GetByCasesWorkflowGuidActiveOnlyAsync(guid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowDisplay.ListByWorkflowGuidActiveOnly: {dtos.Count} rows guid={guid} " +
@@ -470,8 +497,10 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"CaseWorkflowDisplay.ListByWorkflowGuidActiveOnly: unexpected failure guid={guid} " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -486,6 +515,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "Get", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.Get: entry id={id} user={userName}");
@@ -496,6 +526,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
                 EnsurePermitted("CaseWorkflowDisplay.Get", permissions);
                 var entity = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
                 var dto = CaseWorkflowDisplayMapper.ToDto(entity);
+
                 if (entity == null && log.IsDebugEnabled)
                 {
                     log.Debug($"CaseWorkflowDisplay.Get: id={id} not found or not visible to tenant " +
@@ -522,6 +553,55 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             }
         }
 
+        [Description("Returns a single Case Workflow Display by Id, or null if it doesn't exist or isn't " +
+                     "visible to the caller's tenant.")]
+        [ServiceOperation("CaseWorkflowDisplayGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<CaseWorkflowDisplayDto?> GetByGuidAsync(
+            [Description("Server-assigned identifier of the Case Workflow Display.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseWorkflowDisplay", "GetByGuid", userName, tenantRegistryId,
+                auditLog,
+                log, serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"CaseWorkflowDisplay.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("CaseWorkflowDisplay.GetByGuid", permissions);
+                var entity = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+                var dto = CaseWorkflowDisplayMapper.ToDto(entity);
+
+                if (entity == null && log.IsDebugEnabled)
+                {
+                    log.Debug($"CaseWorkflowDisplay.GetByGuid: guid={guid} not found or not visible to tenant " +
+                              $"user={userName}");
+                }
+
+                return dto;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseWorkflowDisplay.GetByGuid: unexpected failure guid={guid} user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Creates a new Case Workflow Display under a parent Case Workflow.")]
         [ServiceOperation("CaseWorkflowDisplayCreate", OperationKind.Write, Idempotent = false)]
         public async Task<CaseWorkflowDisplayDto> InsertAsync(CaseWorkflowDisplayDto? model,
@@ -529,6 +609,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "Insert", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.Insert: entry user={userName} name={model?.Name}");
@@ -540,6 +621,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
                 EnsurePermitted("CaseWorkflowDisplay.Insert", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -601,6 +683,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "Validate", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.Validate: entry id={model?.Id} user={userName}");
@@ -613,6 +696,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -641,6 +725,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "Update", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.Update: entry id={model?.Id} user={userName}");
@@ -652,6 +737,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
                 EnsurePermitted("CaseWorkflowDisplay.Update", permissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -691,6 +777,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"CaseWorkflowDisplay.Update: id={model?.Id} not found, not visible, or locked " +
@@ -722,6 +809,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             using var op = OperationScope.Start("CaseWorkflowDisplay", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseWorkflowDisplay.Delete: entry id={id} user={userName}");
@@ -747,6 +835,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             catch (KeyNotFoundException)
             {
                 op.Outcome("not_found");
+
                 if (log.IsWarnEnabled)
                 {
                     log.Warn($"CaseWorkflowDisplay.Delete: id={id} not found, not visible, or locked " +

@@ -46,7 +46,6 @@ namespace Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance
                 NullLoggerFactory.Instance);
 
         private readonly List<int> createdModelIds = [];
-
         private readonly List<int> createdRowIds = [];
 
         public Task InitializeAsync()
@@ -67,6 +66,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -84,6 +84,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance
             string? namePrefix = null)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{namePrefix ?? DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -94,6 +95,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return (saved.Id, saved.Guid);
         }
 
@@ -368,6 +370,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance
         {
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
+
             var modelName = await dbContext.EntityAnalysisModel.Where(m => m.Guid == modelGuid)
                 .Select(m => m.Name).SingleAsync();
 
@@ -389,6 +392,7 @@ namespace Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance
         {
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
+
             var modelName = await dbContext.EntityAnalysisModel.Where(m => m.Guid == modelGuid)
                 .Select(m => m.Name).SingleAsync();
 

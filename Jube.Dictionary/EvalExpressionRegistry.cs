@@ -20,14 +20,13 @@ namespace Jube.Dictionary
     public static class EvalExpressionRegistry
     {
         private const string ParameterName = "value";
-
         private static readonly Interpreter interpreter = new(InterpreterOptions.Default);
 
         private static readonly MethodInfo parseAsDelegateMethod = typeof(Interpreter).GetMethods()
             .Single(m => m is { Name: nameof(Interpreter.ParseAsDelegate), IsGenericMethodDefinition: true });
 
         private static readonly ConcurrentDictionary<string, (Delegate Compiled, int ResultTypeId)> entries = new();
-        
+
         public static readonly IReadOnlyDictionary<int, (Type ClrType, string VbKeyword)> ResultTypes =
             new Dictionary<int, (Type, string)>
             {
@@ -59,6 +58,7 @@ namespace Jube.Dictionary
 
             var delegateType = typeof(Func<,>).MakeGenericType(typeof(string), resultType.ClrType);
             var generic = parseAsDelegateMethod.MakeGenericMethod(delegateType);
+
             var compiled = (Delegate)generic.Invoke(interpreter,
                 [expression, new[] { ParameterName }])!;
 
@@ -70,10 +70,12 @@ namespace Jube.Dictionary
             if (entries.TryGetValue(name, out var entry) && entry.Compiled is Func<string?, TResult> typed)
             {
                 del = typed;
+
                 return true;
             }
 
             del = null;
+
             return false;
         }
 

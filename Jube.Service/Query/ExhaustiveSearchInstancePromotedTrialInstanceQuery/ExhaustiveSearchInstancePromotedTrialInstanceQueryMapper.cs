@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Poco;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceQuery;
 
 namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQuery
@@ -18,19 +19,45 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQuery
     internal static class ExhaustiveSearchInstancePromotedTrialInstanceQueryMapper
     {
         public static ExhaustiveSearchInstancePromotedTrialInstanceQueryDto ToDto(
-            global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceQuery.Dto source) => new()
+            ExhaustiveSearchInstancePromotedTrialInstance source)
         {
-            Id = source.Id,
-            ExhaustiveSearchInstanceTrialInstanceId = source.ExhaustiveSearchInstanceTrialInstanceId,
-            Active = source.Active,
-            Score = FiniteNumber.Of(source.Score),
-            TopologyComplexity = source.TopologyComplexity,
-            Json = source.Json,
-            CreatedDate = source.CreatedDate
-        };
+            return new ExhaustiveSearchInstancePromotedTrialInstanceQueryDto
+            {
+                Id = source.Id,
+                ExhaustiveSearchInstanceTrialInstanceId = source.ExhaustiveSearchInstanceTrialInstanceId
+                    .GetValueOrDefault(),
+                Active = source.Active == 1,
+                Score = FiniteNumber.Of(source.Score.GetValueOrDefault()),
+                TopologyComplexity = source.TopologyComplexity.GetValueOrDefault(),
+                Kind = source.KindId?.ToString(),
+                Json = source.Json,
+                CreatedDate = source.CreatedDate.GetValueOrDefault(),
+                CalibrationMethod = source.CalibrationMethodId?.ToString(),
+                CalibrationInput = source.CalibrationInputId?.ToString(),
+                CalibrationSlope = Finite(source.CalibrationSlope),
+                CalibrationIntercept = Finite(source.CalibrationIntercept),
+                CalibrationEpsilon = Finite(source.CalibrationEpsilon),
+                TrainingPrior = Finite(source.TrainingPrior),
+                CalibrationPrior = Finite(source.CalibrationPrior),
+                BaseRate = Finite(source.BaseRate),
+                BaseRateSource = source.BaseRateSourceId?.ToString(),
+                CalibrationSampleSize = source.CalibrationSampleSize,
+                CalibrationStatus = source.CalibrationStatusId?.ToString(),
+                CalibrationReason = source.CalibrationReason,
+                CalibrationQualityJson = source.CalibrationQualityJson,
+                CalibrationParametersJson = source.CalibrationParametersJson
+            };
+        }
+
+        private static double? Finite(double? value)
+        {
+            return value.HasValue && double.IsFinite(value.Value) ? value : null;
+        }
 
         public static List<ExhaustiveSearchInstancePromotedTrialInstanceQueryDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceQuery.Dto> source) =>
-            source.Select(ToDto).ToList();
+            IEnumerable<ExhaustiveSearchInstancePromotedTrialInstance> source)
+        {
+            return source.Select(ToDto).ToList();
+        }
     }
 }

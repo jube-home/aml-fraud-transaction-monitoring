@@ -18,11 +18,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Jube.ResilientRedisConnection;
+using Jube.ResilientRedisConnection.Interfaces;
 using StackExchange.Redis;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 namespace Jube.Test.Infrastructure
 {
     public sealed class FakeHybridResilientRedisDatabase : IHybridResilientRedisDatabase
@@ -31,7 +30,6 @@ namespace Jube.Test.Infrastructure
         private readonly ConcurrentDictionary<RedisKey, ConcurrentDictionary<RedisValue, byte>> sets = new();
         private readonly ConcurrentDictionary<RedisKey, ConcurrentDictionary<RedisValue, double>> sortedSets = new();
         private readonly ConcurrentDictionary<RedisKey, RedisValue> strings = new();
-
         public ConcurrentQueue<(RedisChannel Channel, RedisValue Message)> PublishedMessages { get; } = new();
         public ConcurrentQueue<(RedisKey Key, TimeSpan? Expiry)> KeyExpirations { get; } = new();
         public string? ThrowOnMethod { get; set; }
@@ -47,10 +45,12 @@ namespace Jube.Test.Infrastructure
         public Task<bool> KeyExistsAsync(RedisKey key, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             var exists = (hashes.TryGetValue(key, out var h) && !h.IsEmpty)
                          || (sets.TryGetValue(key, out var s) && !s.IsEmpty)
                          || (sortedSets.TryGetValue(key, out var z) && !z.IsEmpty)
                          || strings.ContainsKey(key);
+
             return Task.FromResult(exists);
         }
 
@@ -62,18 +62,21 @@ namespace Jube.Test.Infrastructure
             if (hashes.TryRemove(key, out var h))
             {
                 hashes[newKey] = h;
+
                 return true;
             }
 
             if (sets.TryRemove(key, out var s))
             {
                 sets[newKey] = s;
+
                 return true;
             }
 
             if (sortedSets.TryRemove(key, out var z))
             {
                 sortedSets[newKey] = z;
+
                 return true;
             }
 
@@ -83,6 +86,7 @@ namespace Jube.Test.Infrastructure
             }
 
             strings[newKey] = v;
+
             return true;
         }
 
@@ -90,6 +94,7 @@ namespace Jube.Test.Infrastructure
         {
             MaybeThrow();
             KeyExpirations.Enqueue((key, expiry));
+
             return Task.FromResult(true);
         }
 
@@ -107,6 +112,7 @@ namespace Jube.Test.Infrastructure
                     return Task.FromResult(false);
                 default:
                     hash[field] = value;
+
                     return Task.FromResult(!existed);
             }
         }
@@ -123,6 +129,7 @@ namespace Jube.Test.Infrastructure
         {
             MaybeThrow();
             var hash = hashes.GetOrAdd(key, _ => new ConcurrentDictionary<RedisValue, RedisValue>());
+
             foreach (var entry in hashFields)
             {
                 hash[entry.Name] = entry.Value;
@@ -132,6 +139,7 @@ namespace Jube.Test.Infrastructure
         public Task<RedisValue> HashGetAsync(RedisKey key, RedisValue field, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (hashes.TryGetValue(key, out var hash) && hash.TryGetValue(field, out var value))
             {
                 return Task.FromResult(value);
@@ -145,8 +153,10 @@ namespace Jube.Test.Infrastructure
         {
             MaybeThrow();
             hashes.TryGetValue(key, out var hash);
+
             var result = fields.Select(f => hash != null && hash.TryGetValue(f, out var v) ? v : RedisValue.Null)
                 .ToArray();
+
             return Task.FromResult(result);
         }
 
@@ -154,6 +164,7 @@ namespace Jube.Test.Infrastructure
         {
             MaybeThrow();
             var removed = hashes.TryGetValue(key, out var hash) && hash.TryRemove(field, out _);
+
             return Task.FromResult(removed);
         }
 
@@ -167,12 +178,14 @@ namespace Jube.Test.Infrastructure
         public Task<long> HashDeleteAsync(RedisKey key, RedisValue[] fields, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (!hashes.TryGetValue(key, out var hash))
             {
                 return Task.FromResult(0L);
             }
 
             var count = fields.Count(f => hash.TryRemove(f, out _));
+
             return Task.FromResult((long)count);
         }
 
@@ -184,6 +197,7 @@ namespace Jube.Test.Infrastructure
             var current = hash.TryGetValue(field, out var existing) ? (long)existing : 0L;
             var updated = current + value;
             hash[field] = updated;
+
             return Task.FromResult(updated);
         }
 
@@ -195,6 +209,7 @@ namespace Jube.Test.Infrastructure
             var current = hash.TryGetValue(field, out var existing) ? (double)existing : 0d;
             var updated = current + value;
             hash[field] = updated;
+
             return Task.FromResult(updated);
         }
 
@@ -213,6 +228,7 @@ namespace Jube.Test.Infrastructure
         public Task<long> HashStringLengthAsync(RedisKey key, RedisValue field, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (hashes.TryGetValue(key, out var hash) && hash.TryGetValue(field, out var value))
             {
                 return Task.FromResult(value.Length());
@@ -224,6 +240,7 @@ namespace Jube.Test.Infrastructure
         public Task<long> HashLengthAsync(RedisKey key, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             return Task.FromResult(hashes.TryGetValue(key, out var hash) ? hash.Count : 0L);
         }
 
@@ -231,6 +248,7 @@ namespace Jube.Test.Infrastructure
             int pageSize = 250, long cursor = 0, int pageOffset = 0, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             foreach (var entry in HashScan(key, pattern, pageSize, cursor, pageOffset, flags))
             {
                 yield return entry;
@@ -243,12 +261,14 @@ namespace Jube.Test.Infrastructure
             long cursor = 0, int pageOffset = 0, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (!hashes.TryGetValue(key, out var hash))
             {
                 yield break;
             }
 
             var regex = GlobToRegex(pattern);
+
             foreach (var kvp in hash)
             {
                 if (regex == null || regex.IsMatch(kvp.Key.ToString()))
@@ -262,30 +282,35 @@ namespace Jube.Test.Infrastructure
         {
             MaybeThrow();
             var set = sets.GetOrAdd(key, _ => new ConcurrentDictionary<RedisValue, byte>());
+
             return Task.FromResult(set.TryAdd(value, 0));
         }
 
         public Task<bool> SetContainsAsync(RedisKey key, RedisValue value, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             return Task.FromResult(sets.TryGetValue(key, out var set) && set.ContainsKey(value));
         }
 
         public Task<bool> SetRemoveAsync(RedisKey key, RedisValue value, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             return Task.FromResult(sets.TryGetValue(key, out var set) && set.TryRemove(value, out _));
         }
 
         public Task<long> SetRemoveAsync(RedisKey key, RedisValue[] values, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (!sets.TryGetValue(key, out var set))
             {
                 return Task.FromResult(0L);
             }
 
             var count = values.Count(v => set.TryRemove(v, out _));
+
             return Task.FromResult((long)count);
         }
 
@@ -293,6 +318,7 @@ namespace Jube.Test.Infrastructure
         {
             MaybeThrow();
             var members = sets.TryGetValue(key, out var set) ? set.Keys.ToArray() : [];
+
             return Task.FromResult(members);
         }
 
@@ -303,6 +329,7 @@ namespace Jube.Test.Infrastructure
             var zset = sortedSets.GetOrAdd(key, _ => new ConcurrentDictionary<RedisValue, double>());
             var isNew = !zset.ContainsKey(member);
             zset[member] = score;
+
             return Task.FromResult(isNew);
         }
 
@@ -311,12 +338,14 @@ namespace Jube.Test.Infrastructure
             CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (!sortedSets.TryGetValue(key, out var zset))
             {
                 return Task.FromResult(0L);
             }
 
             var count = zset.Values.Count(score => InRange(score, min, max, exclude));
+
             return Task.FromResult((long)count);
         }
 
@@ -325,6 +354,7 @@ namespace Jube.Test.Infrastructure
             CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (!sortedSets.TryGetValue(key, out var zset))
             {
                 return Task.FromResult(0L);
@@ -332,6 +362,7 @@ namespace Jube.Test.Infrastructure
 
             var toRemove = zset.Where(kv => InRange(kv.Value, start, stop, exclude)).Select(kv => kv.Key).ToList();
             var count = toRemove.Count(member => zset.TryRemove(member, out _));
+
             return Task.FromResult((long)count);
         }
 
@@ -343,12 +374,14 @@ namespace Jube.Test.Infrastructure
             var existed = zset.TryGetValue(member, out var existingScore);
             var changed = !existed || !existingScore.Equals(score);
             zset[member] = score;
+
             return Task.FromResult(changed);
         }
 
         public Task<bool> SortedSetRemoveAsync(RedisKey key, RedisValue member, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             return Task.FromResult(sortedSets.TryGetValue(key, out var zset) && zset.TryRemove(member, out _));
         }
 
@@ -356,12 +389,14 @@ namespace Jube.Test.Infrastructure
             CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (!sortedSets.TryGetValue(key, out var zset))
             {
                 return Task.FromResult(0L);
             }
 
             var count = members.Count(m => zset.TryRemove(m, out _));
+
             return Task.FromResult((long)count);
         }
 
@@ -369,6 +404,7 @@ namespace Jube.Test.Infrastructure
             Order order = Order.Ascending, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (!sortedSets.TryGetValue(key, out var zset))
             {
                 return Task.FromResult(Array.Empty<SortedSetEntry>());
@@ -386,6 +422,7 @@ namespace Jube.Test.Infrastructure
 
             var slice = ordered.Skip((int)effectiveStart).Take((int)(effectiveStop - effectiveStart + 1))
                 .Select(kv => new SortedSetEntry(kv.Key, kv.Value)).ToArray();
+
             return Task.FromResult(slice);
         }
 
@@ -395,6 +432,7 @@ namespace Jube.Test.Infrastructure
             Order order = Order.Ascending, long skip = 0, long take = -1, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             if (!sortedSets.TryGetValue(key, out var zset))
             {
                 return Task.FromResult(Array.Empty<SortedSetEntry>());
@@ -416,6 +454,7 @@ namespace Jube.Test.Infrastructure
         {
             MaybeThrow();
             strings[key] = value;
+
             return Task.FromResult(true);
         }
 
@@ -430,6 +469,7 @@ namespace Jube.Test.Infrastructure
         public Task<RedisValue> StringGetAsync(RedisKey key, CommandFlags flags = CommandFlags.None)
         {
             MaybeThrow();
+
             return Task.FromResult(strings.TryGetValue(key, out var value) ? value : RedisValue.Null);
         }
 
@@ -437,6 +477,7 @@ namespace Jube.Test.Infrastructure
         {
             MaybeThrow();
             PublishedMessages.Enqueue((channel, message));
+
             return Task.FromResult(1L);
         }
 
@@ -459,6 +500,7 @@ namespace Jube.Test.Infrastructure
             }
 
             var escaped = Regex.Escape(pattern.ToString()).Replace(@"\*", ".*").Replace(@"\?", ".");
+
             return new Regex($"^{escaped}$");
         }
 
@@ -466,6 +508,7 @@ namespace Jube.Test.Infrastructure
         {
             var aboveMin = exclude is Exclude.Start or Exclude.Both ? score > min : score >= min;
             var belowMax = exclude is Exclude.Stop or Exclude.Both ? score < max : score <= max;
+
             return aboveMin && belowMax;
         }
 

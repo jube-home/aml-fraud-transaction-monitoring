@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,7 @@ namespace Jube.Test.Service.ArchiverStagePerformanceCounter
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -82,6 +84,7 @@ namespace Jube.Test.Service.ArchiverStagePerformanceCounter
         private async Task<(int Id, Guid Guid)> CreateModelAsync(DbContext dbContext, string createdUser)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -92,6 +95,7 @@ namespace Jube.Test.Service.ArchiverStagePerformanceCounter
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return (saved.Id, saved.Guid);
         }
 
@@ -230,6 +234,7 @@ namespace Jube.Test.Service.ArchiverStagePerformanceCounter
 
             var oldDate = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var newDate = DateTime.UtcNow;
+
             await CreateCounterAsync(dbContext, modelGuid, ArchiverStage.BuildArchiveJson, 1000, 10,
                 oldDate);
             await CreateCounterAsync(dbContext, modelGuid, ArchiverStage.RdbmsArchiveWrite, 2000, 10,
@@ -251,6 +256,7 @@ namespace Jube.Test.Service.ArchiverStagePerformanceCounter
 
             var twoHoursAgo = DateTime.UtcNow.AddHours(-2);
             var justNow = DateTime.UtcNow;
+
             await CreateCounterAsync(dbContext, modelGuid, ArchiverStage.BuildArchiveJson, 1000, 10,
                 twoHoursAgo);
             await CreateCounterAsync(dbContext, modelGuid, ArchiverStage.RdbmsArchiveWrite, 2000, 10,
@@ -349,6 +355,7 @@ namespace Jube.Test.Service.ArchiverStagePerformanceCounter
             await CreateCounterAsync(dbContext, modelGuid, ArchiverStage.RdbmsArchiveWrite, 1000, 1);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result =
                 await service.ListAsync(sortField: "totalMicroseconds", sortDirection: ascendingKeyword);
 
@@ -402,6 +409,7 @@ namespace Jube.Test.Service.ArchiverStagePerformanceCounter
             }
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(2, stageId: (int)ArchiverStage.BulkCopyArchiveBuffer,
                 from: DateTime.UtcNow.AddMinutes(-1));
 

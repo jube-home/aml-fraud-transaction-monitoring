@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,10 +14,11 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Data.Query.CaseQuery;
 using Jube.Data.Repository;
 using Jube.Dto.Query.CaseById;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.CaseById;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,12 +32,11 @@ namespace Jube.Service.Query.CaseById
     {
         private const int CaseViewedEventTypeId = 4;
         private static readonly int[] permissions = [1];
-
         private readonly ILog auditLog;
         private readonly CaseEventRepository caseEventRepository;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly global::Jube.Data.Query.CaseQuery.GetCaseByIdQuery query;
+        private readonly GetCaseByIdQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -53,9 +53,11 @@ namespace Jube.Service.Query.CaseById
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            query = new global::Jube.Data.Query.CaseQuery.GetCaseByIdQuery(dbContext, userName);
+            query = new GetCaseByIdQuery(dbContext, userName);
             caseEventRepository = new CaseEventRepository(dbContext, userName);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<CaseByIdService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -113,6 +115,7 @@ namespace Jube.Service.Query.CaseById
         {
             using var op = OperationScope.Start("CaseById", "Get", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"CaseById.Get: entry user={userName} id={id}");
@@ -123,6 +126,7 @@ namespace Jube.Service.Query.CaseById
                 EnsurePermitted("CaseById.Get");
 
                 var queryResults = await query.ExecuteAsync(id, token).ConfigureAwait(false);
+
                 if (queryResults is null)
                 {
                     if (log.IsWarnEnabled)
@@ -143,6 +147,7 @@ namespace Jube.Service.Query.CaseById
 
                 var dto = CaseByIdMapper.ToDto(queryResults);
                 op.Rows(1);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"CaseById.Get: found id={id} user={userName}");

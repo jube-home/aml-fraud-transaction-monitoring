@@ -20,7 +20,6 @@ namespace Jube.Data.Query
     public static class VersionText
     {
         private const int DisplayLimit = 200;
-
         private const string Ellipsis = "...";
 
         public static string Normalise(string text)
@@ -60,16 +59,6 @@ namespace Jube.Data.Query
             return Normalise(Text(after)).Length == 0 ? "Removed" : "Changed";
         }
 
-        private static string Text(object value)
-        {
-            return value switch
-            {
-                null => string.Empty,
-                bool flag => flag ? "true" : "false",
-                _ => Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty
-            };
-        }
-
         public static string Preview(object value)
         {
             return Truncate(Text(value));
@@ -78,6 +67,16 @@ namespace Jube.Data.Query
         public static object Shorten(object value)
         {
             return value is string text ? Truncate(text) : value;
+        }
+
+        private static string Text(object value)
+        {
+            return value switch
+            {
+                null => string.Empty,
+                bool flag => flag ? "true" : "false",
+                _ => Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty
+            };
         }
 
         private static string Truncate(string text)

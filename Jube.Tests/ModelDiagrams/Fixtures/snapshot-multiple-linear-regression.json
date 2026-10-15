@@ -1,0 +1,42 @@
+{
+  "kind": "MultipleLinearRegressionPipeline",
+  "schemaVersion": 1,
+  "inputCount": 4,
+  "variablesInOrder": [
+    "amount",
+    "velocity",
+    "merchant_risk",
+    "account_age"
+  ],
+  "payload": {
+    "standardise": true,
+    "rejectMissing": false,
+    "fillValues": [
+      100.3987070568775,
+      0.05361614298011812,
+      -0.02391008606781746,
+      51.4560884657287
+    ],
+    "means": [
+      102.58255631195196,
+      0.079622995742269,
+      -0.02048567719278582,
+      49.59494777128346
+    ],
+    "standardDeviations": [
+      38.04377605663165,
+      0.9506707245426246,
+      1.0819706879794884,
+      19.502736695814484
+    ],
+    "indicatorInputs": [],
+    "weights": [
+      1.9121151762789201,
+      2.846957356220848,
+      -1.578343618514287,
+      -0.06555943990509548
+    ],
+    "intercept": 7.418027835153756
+  },
+  "calibrator": null
+}

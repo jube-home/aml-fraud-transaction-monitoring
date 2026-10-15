@@ -1,105 +1,104 @@
-﻿// Accord Neural Net Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Neuro
 {
-    using System;
-    using AForge;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Identity activation function.
+    ///     Identity activation function.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   The identity activation function is given by <c>f(x) = x</c>,
-    ///   meaning it simply repasses the neuronal summation output to
-    ///   further neurons untouched. 
+    ///     The identity activation function is given by <c>f(x) = x</c>,
+    ///     meaning it simply repasses the neuronal summation output to
+    ///     further neurons untouched.
     /// </remarks>
-    /// 
     [Serializable]
     public class IdentityFunction : IActivationFunction
     {
-
         /// <summary>
-        ///   Creates a new identity activation function.
+        ///     Creates a new identity activation function.
         /// </summary>
-        /// 
         public IdentityFunction()
         {
         }
 
         /// <summary>
-        ///   Calculates function value.
+        ///     Calculates function value.
         /// </summary>
-        ///
         /// <param name="x">Function input value.</param>
-        /// 
         /// <returns>Function output value, <i>f(x)</i>.</returns>
-        ///
-        /// <remarks>The method calculates function value at point <paramref name="x"/>.</remarks>
-        ///
+        /// <remarks>The method calculates function value at point <paramref name="x" />.</remarks>
         public double Function(double x)
         {
             return x;
         }
 
         /// <summary>
-        ///   Calculates function derivative.
+        ///     Calculates function derivative.
         /// </summary>
-        /// 
         /// <param name="x">Function input value.</param>
-        /// 
         /// <returns>Function derivative, <i>f'(x)</i>.</returns>
-        /// 
-        /// <remarks>The method calculates function derivative at point <paramref name="x"/>.</remarks>
-        ///
+        /// <remarks>The method calculates function derivative at point <paramref name="x" />.</remarks>
         public double Derivative(double x)
         {
             return 1;
         }
 
         /// <summary>
-        /// Calculates function derivative.
+        ///     Calculates function derivative.
         /// </summary>
-        /// 
-        /// <param name="y">Function output value - the value, which was obtained
-        /// with the help of <see cref="Function"/> method.</param>
-        /// 
+        /// <param name="y">
+        ///     Function output value - the value, which was obtained
+        ///     with the help of <see cref="Function" /> method.
+        /// </param>
         /// <returns>Function derivative, <i>f'(x)</i>.</returns>
-        /// 
-        /// <remarks><para>The method calculates the same derivative value as the
-        /// <see cref="Derivative"/> method, but it takes not the input <b>x</b> value
-        /// itself, but the function value, which was calculated previously with
-        /// the help of <see cref="Function"/> method.</para>
-        /// 
-        /// <para><note>Some applications require as function value, as derivative value,
-        /// so they can save the amount of calculations using this method to calculate derivative.</note></para>
+        /// <remarks>
+        ///     <para>
+        ///         The method calculates the same derivative value as the
+        ///         <see cref="Derivative" /> method, but it takes not the input <b>x</b> value
+        ///         itself, but the function value, which was calculated previously with
+        ///         the help of <see cref="Function" /> method.
+        ///     </para>
+        ///     <para>
+        ///         <note>
+        ///             Some applications require as function value, as derivative value,
+        ///             so they can save the amount of calculations using this method to calculate derivative.
+        ///         </note>
+        ///     </para>
         /// </remarks>
-        /// 
         public double Derivative2(double y)
         {
             return 1;
         }
-
     }
 }

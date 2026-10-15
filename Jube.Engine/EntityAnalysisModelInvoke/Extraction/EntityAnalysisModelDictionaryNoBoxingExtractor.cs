@@ -31,9 +31,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
         DynamicEnvironment.DynamicEnvironment environment,
         ILog log)
     {
-        private readonly Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot = entityAnalysisModel.Snapshot;
-        private readonly IReadOnlyDictionary<int, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot> availableSnapshots =
-            availableModels.ToDictionary(kv => kv.Key, kv => kv.Value.Snapshot);
+        private readonly Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot =
+            entityAnalysisModel.Snapshot;
+
+        private readonly
+            IReadOnlyDictionary<int, Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot>
+            availableSnapshots =
+                availableModels.ToDictionary(kv => kv.Key, kv => kv.Value.Snapshot);
 
         public Context.Context CreateContext(
             DictionaryNoBoxing<string> payload, int entityAnalysisModelReprocessingRuleInstanceId)
@@ -149,11 +153,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                                 int.TryParse(xPath.DefaultValue, out var daysBack)
                                     ? DateTime.UtcNow.AddDays(-daysBack)
                                     : DateTime.UtcNow);
+
                             break;
                         case 5:
                             entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name,
                                 xPath.DefaultValue.Equals("true", StringComparison.OrdinalIgnoreCase) ||
                                 xPath.DefaultValue == "1");
+
                             break;
                         case 3:
                         case 6:

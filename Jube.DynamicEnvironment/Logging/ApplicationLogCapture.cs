@@ -14,16 +14,15 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using Jube.DynamicEnvironment.Logging.Models;
 
 namespace Jube.DynamicEnvironment.Logging
 {
     public static class ApplicationLogCapture
     {
         private const int MaxQueueLength = 20000;
-
         private static readonly ConcurrentQueue<ApplicationLogCaptureRecord> queue = new();
         private static long droppedCount;
-
         public static long DroppedCount => Interlocked.Read(ref droppedCount);
 
         public static void Enqueue(ApplicationLogCaptureRecord record)
@@ -31,6 +30,7 @@ namespace Jube.DynamicEnvironment.Logging
             if (queue.Count >= MaxQueueLength)
             {
                 Interlocked.Increment(ref droppedCount);
+
                 return;
             }
 

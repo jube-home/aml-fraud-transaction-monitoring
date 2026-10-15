@@ -1,0 +1,1596 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 784 408" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-f9756e62-t jc-f9756e62-d">
+    <title id="jc-f9756e62-t">Fuzzy fraud risk</title>
+    <desc id="jc-f9756e62-d">Fuzzy membership functions: 3 variables (amount, velocity, risk) and 4 rules.</desc>
+    <rect class="bg" x="0" y="0" width="784" height="408" rx="8"/>
+    <text class="ttl" x="16" y="32">Fuzzy fraud risk</text>
+    <text class="sub" x="16" y="50">Mamdani system: amount and velocity give risk</text>
+    <g transform="translate(22 66)">
+        <rect class="pf" x="0" y="0" width="240" height="190" rx="6"/>
+        <text class="ph" x="10" y="18">amount</text>
+        <line class="gl" x1="30" y1="164" x2="226" y2="164"/>
+        <text class="kn end mid" x="25" y="164">0</text>
+        <line class="gl" x1="30" y1="104" x2="226" y2="104"/>
+        <text class="kn end mid" x="25" y="104">0.5</text>
+        <line class="gl" x1="30" y1="44" x2="226" y2="44"/>
+        <text class="kn end mid" x="25" y="44">1</text>
+        <line class="ax" x1="30" y1="164" x2="226" y2="164"/>
+        <line class="ax" x1="30" y1="164" x2="30" y2="167"/>
+        <text class="kn ctr" x="30" y="179">0</text>
+        <line class="ax" x1="69.2" y1="164" x2="69.2" y2="167"/>
+        <text class="kn ctr" x="69.2" y="179">1000</text>
+        <line class="ax" x1="108.4" y1="164" x2="108.4" y2="167"/>
+        <text class="kn ctr" x="108.4" y="179">2000</text>
+        <line class="ax" x1="147.6" y1="164" x2="147.6" y2="167"/>
+        <text class="kn ctr" x="147.6" y="179">3000</text>
+        <line class="ax" x1="186.8" y1="164" x2="186.8" y2="167"/>
+        <text class="kn ctr" x="186.8" y="179">4000</text>
+        <line class="ax" x1="226" y1="164" x2="226" y2="167"/>
+        <text class="kn ctr" x="226" y="179">5000</text>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 104.2, low: 1, medium: 0, high: 0">
+            <title>amount = 104.2, low: 1, medium: 0, high: 0</title>
+            <rect class="hb" x="30" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="34.08" y1="44" x2="34.08" y2="164"/>
+            <circle class="cx s0" cx="34.08" cy="44" r="3.5"/>
+            <circle class="cx s1" cx="34.08" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="34.08" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="44.08" y="65" width="108.91" height="78" rx="6"/>
+                <text class="tx b" x="54.08" y="83">amount = 104.2</text>
+                <rect class="tsw s0" x="54.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="68.08" y="100">low: 1</text>
+                <rect class="tsw s1" x="54.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="68.08" y="117">medium: 0</text>
+                <rect class="tsw s2" x="54.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="68.08" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 312.5, low: 0.986, medium: 0, high: 0">
+            <title>amount = 312.5, low: 0.986, medium: 0, high: 0</title>
+            <rect class="hb" x="38.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="42.25" y1="44" x2="42.25" y2="164"/>
+            <circle class="cx s0" cx="42.25" cy="45.67" r="3.5"/>
+            <circle class="cx s1" cx="42.25" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="42.25" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="52.25" y="65" width="108.91" height="78" rx="6"/>
+                <text class="tx b" x="62.25" y="83">amount = 312.5</text>
+                <rect class="tsw s0" x="62.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="76.25" y="100">low: 0.986</text>
+                <rect class="tsw s1" x="62.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="76.25" y="117">medium: 0</text>
+                <rect class="tsw s2" x="62.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="76.25" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 520.8, low: 0.755, medium: 0.016, high: 0">
+            <title>amount = 520.8, low: 0.755, medium: 0.016, high: 0</title>
+            <rect class="hb" x="46.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="50.42" y1="44" x2="50.42" y2="164"/>
+            <circle class="cx s0" cx="50.42" cy="73.44" r="3.5"/>
+            <circle class="cx s1" cx="50.42" cy="162.08" r="3.5"/>
+            <circle class="cx s2" cx="50.42" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.42" y="65" width="112.96" height="78" rx="6"/>
+                <text class="tx b" x="70.42" y="83">amount = 520.8</text>
+                <rect class="tsw s0" x="70.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.42" y="100">low: 0.755</text>
+                <rect class="tsw s1" x="70.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="84.42" y="117">medium: 0.016</text>
+                <rect class="tsw s2" x="70.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="84.42" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 729.2, low: 0.523, medium: 0.176, high: 0">
+            <title>amount = 729.2, low: 0.523, medium: 0.176, high: 0</title>
+            <rect class="hb" x="54.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="58.58" y1="44" x2="58.58" y2="164"/>
+            <circle class="cx s0" cx="58.58" cy="101.22" r="3.5"/>
+            <circle class="cx s1" cx="58.58" cy="142.85" r="3.5"/>
+            <circle class="cx s2" cx="58.58" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="68.58" y="65" width="112.96" height="78" rx="6"/>
+                <text class="tx b" x="78.58" y="83">amount = 729.2</text>
+                <rect class="tsw s0" x="78.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="92.58" y="100">low: 0.523</text>
+                <rect class="tsw s1" x="78.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="92.58" y="117">medium: 0.176</text>
+                <rect class="tsw s2" x="78.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="92.58" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 937.5, low: 0.292, medium: 0.337, high: 0">
+            <title>amount = 937.5, low: 0.292, medium: 0.337, high: 0</title>
+            <rect class="hb" x="62.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="66.75" y1="44" x2="66.75" y2="164"/>
+            <circle class="cx s0" cx="66.75" cy="129" r="3.5"/>
+            <circle class="cx s1" cx="66.75" cy="123.62" r="3.5"/>
+            <circle class="cx s2" cx="66.75" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="76.75" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="86.75" y="83">amount = 937.5</text>
+                <rect class="tsw s0" x="86.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="100.75" y="100">low: 0.292</text>
+                <rect class="tsw s1" x="86.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="100.75" y="117">medium: 0.337</text>
+                <rect class="tsw s2" x="86.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="100.75" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 1146, low: 0.06, medium: 0.497, high: 0">
+            <title>amount = 1146, low: 0.06, medium: 0.497, high: 0</title>
+            <rect class="hb" x="70.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="74.92" y1="44" x2="74.92" y2="164"/>
+            <circle class="cx s0" cx="74.92" cy="156.78" r="3.5"/>
+            <circle class="cx s1" cx="74.92" cy="104.38" r="3.5"/>
+            <circle class="cx s2" cx="74.92" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="84.92" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="94.92" y="83">amount = 1146</text>
+                <rect class="tsw s0" x="94.92" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="108.92" y="100">low: 0.06</text>
+                <rect class="tsw s1" x="94.92" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="108.92" y="117">medium: 0.497</text>
+                <rect class="tsw s2" x="94.92" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="108.92" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 1354, low: 0, medium: 0.657, high: 0">
+            <title>amount = 1354, low: 0, medium: 0.657, high: 0</title>
+            <rect class="hb" x="79" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="83.08" y1="44" x2="83.08" y2="164"/>
+            <circle class="cx s0" cx="83.08" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="83.08" cy="85.15" r="3.5"/>
+            <circle class="cx s2" cx="83.08" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="93.08" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="103.08" y="83">amount = 1354</text>
+                <rect class="tsw s0" x="103.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="117.08" y="100">low: 0</text>
+                <rect class="tsw s1" x="103.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="117.08" y="117">medium: 0.657</text>
+                <rect class="tsw s2" x="103.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="117.08" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 1563, low: 0, medium: 0.817, high: 0">
+            <title>amount = 1563, low: 0, medium: 0.817, high: 0</title>
+            <rect class="hb" x="87.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="91.25" y1="44" x2="91.25" y2="164"/>
+            <circle class="cx s0" cx="91.25" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="91.25" cy="65.92" r="3.5"/>
+            <circle class="cx s2" cx="91.25" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="101.25" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="111.25" y="83">amount = 1563</text>
+                <rect class="tsw s0" x="111.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="125.25" y="100">low: 0</text>
+                <rect class="tsw s1" x="111.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="125.25" y="117">medium: 0.817</text>
+                <rect class="tsw s2" x="111.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="125.25" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 1771, low: 0, medium: 0.978, high: 0">
+            <title>amount = 1771, low: 0, medium: 0.978, high: 0</title>
+            <rect class="hb" x="95.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="99.42" y1="44" x2="99.42" y2="164"/>
+            <circle class="cx s0" cx="99.42" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="99.42" cy="46.69" r="3.5"/>
+            <circle class="cx s2" cx="99.42" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="109.42" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="119.42" y="83">amount = 1771</text>
+                <rect class="tsw s0" x="119.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="133.42" y="100">low: 0</text>
+                <rect class="tsw s1" x="119.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="133.42" y="117">medium: 0.978</text>
+                <rect class="tsw s2" x="119.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="133.42" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 1979, low: 0, medium: 0.872, high: 0">
+            <title>amount = 1979, low: 0, medium: 0.872, high: 0</title>
+            <rect class="hb" x="103.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="107.58" y1="44" x2="107.58" y2="164"/>
+            <circle class="cx s0" cx="107.58" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="107.58" cy="59.36" r="3.5"/>
+            <circle class="cx s2" cx="107.58" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="117.58" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="127.58" y="83">amount = 1979</text>
+                <rect class="tsw s0" x="127.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="141.58" y="100">low: 0</text>
+                <rect class="tsw s1" x="127.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="141.58" y="117">medium: 0.872</text>
+                <rect class="tsw s2" x="127.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="141.58" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 2188, low: 0, medium: 0.723, high: 0">
+            <title>amount = 2188, low: 0, medium: 0.723, high: 0</title>
+            <rect class="hb" x="111.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="115.75" y1="44" x2="115.75" y2="164"/>
+            <circle class="cx s0" cx="115.75" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="115.75" cy="77.21" r="3.5"/>
+            <circle class="cx s2" cx="115.75" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="125.75" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="135.75" y="83">amount = 2188</text>
+                <rect class="tsw s0" x="135.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="149.75" y="100">low: 0</text>
+                <rect class="tsw s1" x="135.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="149.75" y="117">medium: 0.723</text>
+                <rect class="tsw s2" x="135.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="149.75" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 2396, low: 0, medium: 0.574, high: 0">
+            <title>amount = 2396, low: 0, medium: 0.574, high: 0</title>
+            <rect class="hb" x="119.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="123.92" y1="44" x2="123.92" y2="164"/>
+            <circle class="cx s0" cx="123.92" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="123.92" cy="95.07" r="3.5"/>
+            <circle class="cx s2" cx="123.92" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="133.92" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="143.92" y="83">amount = 2396</text>
+                <rect class="tsw s0" x="143.92" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="157.92" y="100">low: 0</text>
+                <rect class="tsw s1" x="143.92" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="157.92" y="117">medium: 0.574</text>
+                <rect class="tsw s2" x="143.92" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="157.92" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 2604, low: 0, medium: 0.426, high: 0.17">
+            <title>amount = 2604, low: 0, medium: 0.426, high: 0.17</title>
+            <rect class="hb" x="128" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="132.08" y1="44" x2="132.08" y2="164"/>
+            <circle class="cx s0" cx="132.08" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="132.08" cy="112.93" r="3.5"/>
+            <circle class="cx s2" cx="132.08" cy="143.58" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="142.08" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="152.08" y="83">amount = 2604</text>
+                <rect class="tsw s0" x="152.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="166.08" y="100">low: 0</text>
+                <rect class="tsw s1" x="152.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="166.08" y="117">medium: 0.426</text>
+                <rect class="tsw s2" x="152.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="166.08" y="134">high: 0.17</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 2813, low: 0, medium: 0.277, high: 0.344">
+            <title>amount = 2813, low: 0, medium: 0.277, high: 0.344</title>
+            <rect class="hb" x="136.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="140.25" y1="44" x2="140.25" y2="164"/>
+            <circle class="cx s0" cx="140.25" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="140.25" cy="130.79" r="3.5"/>
+            <circle class="cx s2" cx="140.25" cy="122.75" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="150.25" y="65" width="112.96" height="78" rx="6"/>
+                <text class="tx b" x="160.25" y="83">amount = 2813</text>
+                <rect class="tsw s0" x="160.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="174.25" y="100">low: 0</text>
+                <rect class="tsw s1" x="160.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="174.25" y="117">medium: 0.277</text>
+                <rect class="tsw s2" x="160.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="174.25" y="134">high: 0.344</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="amount = 3021, low: 0, medium: 0.128, high: 0.517">
+            <title>amount = 3021, low: 0, medium: 0.128, high: 0.517</title>
+            <rect class="hb" x="144.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="148.42" y1="44" x2="148.42" y2="164"/>
+            <circle class="cx s0" cx="148.42" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="148.42" cy="148.64" r="3.5"/>
+            <circle class="cx s2" cx="148.42" cy="101.92" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="158.42" y="65" width="112.96" height="78" rx="6"/>
+                <text class="tx b" x="168.42" y="83">amount = 3021</text>
+                <rect class="tsw s0" x="168.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="182.42" y="100">low: 0</text>
+                <rect class="tsw s1" x="168.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="182.42" y="117">medium: 0.128</text>
+                <rect class="tsw s2" x="168.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="182.42" y="134">high: 0.517</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 3229, low: 0, medium: 0, high: 0.691">
+            <title>amount = 3229, low: 0, medium: 0, high: 0.691</title>
+            <rect class="hb" x="152.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="156.58" y1="44" x2="156.58" y2="164"/>
+            <circle class="cx s0" cx="156.58" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="156.58" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="156.58" cy="81.08" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="166.58" y="65" width="105.61" height="78" rx="6"/>
+                <text class="tx b" x="176.58" y="83">amount = 3229</text>
+                <rect class="tsw s0" x="176.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="190.58" y="100">low: 0</text>
+                <rect class="tsw s1" x="176.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="190.58" y="117">medium: 0</text>
+                <rect class="tsw s2" x="176.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="190.58" y="134">high: 0.691</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 3438, low: 0, medium: 0, high: 0.865">
+            <title>amount = 3438, low: 0, medium: 0, high: 0.865</title>
+            <rect class="hb" x="160.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="164.75" y1="44" x2="164.75" y2="164"/>
+            <circle class="cx s0" cx="164.75" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="164.75" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="164.75" cy="60.25" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="174.75" y="65" width="105.61" height="78" rx="6"/>
+                <text class="tx b" x="184.75" y="83">amount = 3438</text>
+                <rect class="tsw s0" x="184.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="198.75" y="100">low: 0</text>
+                <rect class="tsw s1" x="184.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="198.75" y="117">medium: 0</text>
+                <rect class="tsw s2" x="184.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="198.75" y="134">high: 0.865</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 3646, low: 0, medium: 0, high: 1">
+            <title>amount = 3646, low: 0, medium: 0, high: 1</title>
+            <rect class="hb" x="168.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="172.92" y1="44" x2="172.92" y2="164"/>
+            <circle class="cx s0" cx="172.92" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="172.92" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="172.92" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="182.92" y="65" width="105.61" height="78" rx="6"/>
+                <text class="tx b" x="192.92" y="83">amount = 3646</text>
+                <rect class="tsw s0" x="192.92" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="206.92" y="100">low: 0</text>
+                <rect class="tsw s1" x="192.92" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="206.92" y="117">medium: 0</text>
+                <rect class="tsw s2" x="192.92" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="206.92" y="134">high: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 3854, low: 0, medium: 0, high: 1">
+            <title>amount = 3854, low: 0, medium: 0, high: 1</title>
+            <rect class="hb" x="177" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="181.08" y1="44" x2="181.08" y2="164"/>
+            <circle class="cx s0" cx="181.08" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="181.08" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="181.08" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="191.08" y="65" width="105.61" height="78" rx="6"/>
+                <text class="tx b" x="201.08" y="83">amount = 3854</text>
+                <rect class="tsw s0" x="201.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="215.08" y="100">low: 0</text>
+                <rect class="tsw s1" x="201.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="215.08" y="117">medium: 0</text>
+                <rect class="tsw s2" x="201.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="215.08" y="134">high: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 4063, low: 0, medium: 0, high: 1">
+            <title>amount = 4063, low: 0, medium: 0, high: 1</title>
+            <rect class="hb" x="185.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="189.25" y1="44" x2="189.25" y2="164"/>
+            <circle class="cx s0" cx="189.25" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="189.25" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="189.25" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="199.25" y="65" width="105.61" height="78" rx="6"/>
+                <text class="tx b" x="209.25" y="83">amount = 4063</text>
+                <rect class="tsw s0" x="209.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="223.25" y="100">low: 0</text>
+                <rect class="tsw s1" x="209.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="223.25" y="117">medium: 0</text>
+                <rect class="tsw s2" x="209.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="223.25" y="134">high: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 4271, low: 0, medium: 0, high: 1">
+            <title>amount = 4271, low: 0, medium: 0, high: 1</title>
+            <rect class="hb" x="193.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="197.42" y1="44" x2="197.42" y2="164"/>
+            <circle class="cx s0" cx="197.42" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="197.42" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="197.42" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="207.42" y="65" width="105.61" height="78" rx="6"/>
+                <text class="tx b" x="217.42" y="83">amount = 4271</text>
+                <rect class="tsw s0" x="217.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="231.42" y="100">low: 0</text>
+                <rect class="tsw s1" x="217.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="231.42" y="117">medium: 0</text>
+                <rect class="tsw s2" x="217.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="231.42" y="134">high: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 4479, low: 0, medium: 0, high: 1">
+            <title>amount = 4479, low: 0, medium: 0, high: 1</title>
+            <rect class="hb" x="201.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="205.58" y1="44" x2="205.58" y2="164"/>
+            <circle class="cx s0" cx="205.58" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="205.58" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="205.58" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="215.58" y="65" width="105.61" height="78" rx="6"/>
+                <text class="tx b" x="225.58" y="83">amount = 4479</text>
+                <rect class="tsw s0" x="225.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="239.58" y="100">low: 0</text>
+                <rect class="tsw s1" x="225.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="239.58" y="117">medium: 0</text>
+                <rect class="tsw s2" x="225.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="239.58" y="134">high: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 4688, low: 0, medium: 0, high: 1">
+            <title>amount = 4688, low: 0, medium: 0, high: 1</title>
+            <rect class="hb" x="209.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="213.75" y1="44" x2="213.75" y2="164"/>
+            <circle class="cx s0" cx="213.75" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="213.75" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="213.75" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="223.75" y="65" width="105.61" height="78" rx="6"/>
+                <text class="tx b" x="233.75" y="83">amount = 4688</text>
+                <rect class="tsw s0" x="233.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="247.75" y="100">low: 0</text>
+                <rect class="tsw s1" x="233.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="247.75" y="117">medium: 0</text>
+                <rect class="tsw s2" x="233.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="247.75" y="134">high: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount = 4896, low: 0, medium: 0, high: 1">
+            <title>amount = 4896, low: 0, medium: 0, high: 1</title>
+            <rect class="hb" x="217.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="221.92" y1="44" x2="221.92" y2="164"/>
+            <circle class="cx s0" cx="221.92" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="221.92" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="221.92" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="231.92" y="65" width="105.61" height="78" rx="6"/>
+                <text class="tx b" x="241.92" y="83">amount = 4896</text>
+                <rect class="tsw s0" x="241.92" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="255.92" y="100">low: 0</text>
+                <rect class="tsw s1" x="241.92" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="255.92" y="117">medium: 0</text>
+                <rect class="tsw s2" x="241.92" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="255.92" y="134">high: 1</text>
+            </g>
+        </g>
+        <g class="mk fz pv0 s0 u3" tabindex="0" role="graphics-symbol"
+           aria-label="low, Trapezoidal(0, 0, 300, 1200), Peak membership 1 at 154.5, Used by 1 rule">
+            <title>low, Trapezoidal(0, 0, 300, 1200), Peak membership 1 at 154.5, Used by 1 rule</title>
+            <path class="ar"
+                  d="M30 164L30 44L32.04 44L34.08 44L36.13 44L38.17 44L40.21 44L41.76 44L42.25 45.67L44.29 52.61L46.33 59.56L48.38 66.5L50.42 73.44L52.46 80.39L54.5 87.33L56.54 94.28L58.58 101.22L60.63 108.17L62.67 115.11L64.71 122.06L66.75 129L68.79 135.94L70.83 142.89L72.88 149.83L74.92 156.78L76.96 163.72L77.04 164L79 164L81.04 164L83.08 164L85.13 164L87.17 164L89.21 164L91.25 164L93.29 164L95.33 164L97.38 164L99.42 164L101.46 164L103.5 164L105.54 164L107.58 164L109.63 164L111.67 164L113.71 164L115.75 164L117.79 164L119.83 164L121.88 164L123.92 164L125.96 164L128 164L130.04 164L132.08 164L134.13 164L136.17 164L138.21 164L140.25 164L142.29 164L144.33 164L146.38 164L148.42 164L150.46 164L152.5 164L154.54 164L156.58 164L158.63 164L160.67 164L162.71 164L164.75 164L166.79 164L168.83 164L170.88 164L172.92 164L174.96 164L177 164L179.04 164L181.08 164L183.13 164L185.17 164L187.21 164L189.25 164L191.29 164L193.33 164L195.38 164L197.42 164L199.46 164L201.5 164L203.54 164L205.58 164L207.63 164L209.67 164L211.71 164L213.75 164L215.79 164L217.83 164L219.88 164L221.92 164L223.96 164L226 164L226 164Z"/>
+            <path class="ln thin"
+                  d="M30 44L32.04 44L34.08 44L36.13 44L38.17 44L40.21 44L41.76 44L42.25 45.67L44.29 52.61L46.33 59.56L48.38 66.5L50.42 73.44L52.46 80.39L54.5 87.33L56.54 94.28L58.58 101.22L60.63 108.17L62.67 115.11L64.71 122.06L66.75 129L68.79 135.94L70.83 142.89L72.88 149.83L74.92 156.78L76.96 163.72L77.04 164L79 164L81.04 164L83.08 164L85.13 164L87.17 164L89.21 164L91.25 164L93.29 164L95.33 164L97.38 164L99.42 164L101.46 164L103.5 164L105.54 164L107.58 164L109.63 164L111.67 164L113.71 164L115.75 164L117.79 164L119.83 164L121.88 164L123.92 164L125.96 164L128 164L130.04 164L132.08 164L134.13 164L136.17 164L138.21 164L140.25 164L142.29 164L144.33 164L146.38 164L148.42 164L150.46 164L152.5 164L154.54 164L156.58 164L158.63 164L160.67 164L162.71 164L164.75 164L166.79 164L168.83 164L170.88 164L172.92 164L174.96 164L177 164L179.04 164L181.08 164L183.13 164L185.17 164L187.21 164L189.25 164L191.29 164L193.33 164L195.38 164L197.42 164L199.46 164L201.5 164L203.54 164L205.58 164L207.63 164L209.67 164L211.71 164L213.75 164L215.79 164L217.83 164L219.88 164L221.92 164L223.96 164L226 164"/>
+            <text class="ant ctr" x="41.5" y="52">low</text>
+            <g class="tt">
+                <rect class="tb" x="46.06" y="5" width="174.32" height="78" rx="6"/>
+                <rect class="tsw s0" x="56.06" y="14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="70.06" y="23">low</text>
+                <text class="tx" x="56.06" y="40">Trapezoidal(0, 0, 300, 1200)</text>
+                <text class="tx" x="56.06" y="57">Peak membership 1 at 154.5</text>
+                <text class="tx" x="56.06" y="74">Used by 1 rule</text>
+            </g>
+        </g>
+        <g class="mk fz pv0 s1 u1" tabindex="0" role="graphics-symbol"
+           aria-label="medium, Triangular(500, 1800, 3200), Peak membership 1 at 1800, Used by 1 rule">
+            <title>medium, Triangular(500, 1800, 3200), Peak membership 1 at 1800, Used by 1 rule</title>
+            <path class="ar"
+                  d="M30 164L30 164L32.04 164L34.08 164L36.13 164L38.17 164L40.21 164L42.25 164L44.29 164L46.33 164L48.38 164L49.6 164L50.42 162.08L52.46 157.27L54.5 152.46L56.54 147.65L58.58 142.85L60.63 138.04L62.67 133.23L64.71 128.42L66.75 123.62L68.79 118.81L70.83 114L72.88 109.19L74.92 104.38L76.96 99.58L79 94.77L81.04 89.96L83.08 85.15L85.13 80.35L87.17 75.54L89.21 70.73L91.25 65.92L93.29 61.12L95.33 56.31L97.38 51.5L99.42 46.69L100.56 44L101.46 45.96L103.5 50.43L105.54 54.89L107.58 59.36L109.63 63.82L111.67 68.29L113.71 72.75L115.75 77.21L117.79 81.68L119.83 86.14L121.88 90.61L123.92 95.07L125.96 99.54L128 104L130.04 108.46L132.08 112.93L134.13 117.39L136.17 121.86L138.21 126.32L140.25 130.79L142.29 135.25L144.33 139.71L146.38 144.18L148.42 148.64L150.46 153.11L152.5 157.57L154.54 162.04L155.44 164L156.58 164L158.63 164L160.67 164L162.71 164L164.75 164L166.79 164L168.83 164L170.88 164L172.92 164L174.96 164L177 164L179.04 164L181.08 164L183.13 164L185.17 164L187.21 164L189.25 164L191.29 164L193.33 164L195.38 164L197.42 164L199.46 164L201.5 164L203.54 164L205.58 164L207.63 164L209.67 164L211.71 164L213.75 164L215.79 164L217.83 164L219.88 164L221.92 164L223.96 164L226 164L226 164Z"/>
+            <path class="ln thin"
+                  d="M30 164L32.04 164L34.08 164L36.13 164L38.17 164L40.21 164L42.25 164L44.29 164L46.33 164L48.38 164L49.6 164L50.42 162.08L52.46 157.27L54.5 152.46L56.54 147.65L58.58 142.85L60.63 138.04L62.67 133.23L64.71 128.42L66.75 123.62L68.79 118.81L70.83 114L72.88 109.19L74.92 104.38L76.96 99.58L79 94.77L81.04 89.96L83.08 85.15L85.13 80.35L87.17 75.54L89.21 70.73L91.25 65.92L93.29 61.12L95.33 56.31L97.38 51.5L99.42 46.69L100.56 44L101.46 45.96L103.5 50.43L105.54 54.89L107.58 59.36L109.63 63.82L111.67 68.29L113.71 72.75L115.75 77.21L117.79 81.68L119.83 86.14L121.88 90.61L123.92 95.07L125.96 99.54L128 104L130.04 108.46L132.08 112.93L134.13 117.39L136.17 121.86L138.21 126.32L140.25 130.79L142.29 135.25L144.33 139.71L146.38 144.18L148.42 148.64L150.46 153.11L152.5 157.57L154.54 162.04L155.44 164L156.58 164L158.63 164L160.67 164L162.71 164L164.75 164L166.79 164L168.83 164L170.88 164L172.92 164L174.96 164L177 164L179.04 164L181.08 164L183.13 164L185.17 164L187.21 164L189.25 164L191.29 164L193.33 164L195.38 164L197.42 164L199.46 164L201.5 164L203.54 164L205.58 164L207.63 164L209.67 164L211.71 164L213.75 164L215.79 164L217.83 164L219.88 164L221.92 164L223.96 164L226 164"/>
+            <text class="ant ctr" x="100.56" y="52">medium</text>
+            <g class="tt">
+                <rect class="tb" x="110.56" y="5" width="171.2" height="78" rx="6"/>
+                <rect class="tsw s1" x="120.56" y="14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="134.56" y="23">medium</text>
+                <text class="tx" x="120.56" y="40">Triangular(500, 1800, 3200)</text>
+                <text class="tx" x="120.56" y="57">Peak membership 1 at 1800</text>
+                <text class="tx" x="120.56" y="74">Used by 1 rule</text>
+            </g>
+        </g>
+        <g class="mk fz pv0 s2 u0 u2" tabindex="0" role="graphics-symbol"
+           aria-label="high, Trapezoidal(2400, 3600, 5000, 5000), Peak membership 1 at 4297, Used by 2 rules">
+            <title>high, Trapezoidal(2400, 3600, 5000, 5000), Peak membership 1 at 4297, Used by 2 rules</title>
+            <path class="ar"
+                  d="M30 164L30 164L32.04 164L34.08 164L36.13 164L38.17 164L40.21 164L42.25 164L44.29 164L46.33 164L48.38 164L50.42 164L52.46 164L54.5 164L56.54 164L58.58 164L60.63 164L62.67 164L64.71 164L66.75 164L68.79 164L70.83 164L72.88 164L74.92 164L76.96 164L79 164L81.04 164L83.08 164L85.13 164L87.17 164L89.21 164L91.25 164L93.29 164L95.33 164L97.38 164L99.42 164L101.46 164L103.5 164L105.54 164L107.58 164L109.63 164L111.67 164L113.71 164L115.75 164L117.79 164L119.83 164L121.88 164L123.92 164L124.08 164L125.96 159.21L128 154L130.04 148.79L132.08 143.58L134.13 138.38L136.17 133.17L138.21 127.96L140.25 122.75L142.29 117.54L144.33 112.33L146.38 107.13L148.42 101.92L150.46 96.71L152.5 91.5L154.54 86.29L156.58 81.08L158.63 75.88L160.67 70.67L162.71 65.46L164.75 60.25L166.79 55.04L168.83 49.83L170.88 44.63L171.12 44L172.92 44L174.96 44L177 44L179.04 44L181.08 44L183.13 44L185.17 44L187.21 44L189.25 44L191.29 44L193.33 44L195.38 44L197.42 44L199.46 44L201.5 44L203.54 44L205.58 44L207.63 44L209.67 44L211.71 44L213.75 44L215.79 44L217.83 44L219.88 44L221.92 44L223.96 44L226 44L226 164Z"/>
+            <path class="ln thin"
+                  d="M30 164L32.04 164L34.08 164L36.13 164L38.17 164L40.21 164L42.25 164L44.29 164L46.33 164L48.38 164L50.42 164L52.46 164L54.5 164L56.54 164L58.58 164L60.63 164L62.67 164L64.71 164L66.75 164L68.79 164L70.83 164L72.88 164L74.92 164L76.96 164L79 164L81.04 164L83.08 164L85.13 164L87.17 164L89.21 164L91.25 164L93.29 164L95.33 164L97.38 164L99.42 164L101.46 164L103.5 164L105.54 164L107.58 164L109.63 164L111.67 164L113.71 164L115.75 164L117.79 164L119.83 164L121.88 164L123.92 164L124.08 164L125.96 159.21L128 154L130.04 148.79L132.08 143.58L134.13 138.38L136.17 133.17L138.21 127.96L140.25 122.75L142.29 117.54L144.33 112.33L146.38 107.13L148.42 101.92L150.46 96.71L152.5 91.5L154.54 86.29L156.58 81.08L158.63 75.88L160.67 70.67L162.71 65.46L164.75 60.25L166.79 55.04L168.83 49.83L170.88 44.63L171.12 44L172.92 44L174.96 44L177 44L179.04 44L181.08 44L183.13 44L185.17 44L187.21 44L189.25 44L191.29 44L193.33 44L195.38 44L197.42 44L199.46 44L201.5 44L203.54 44L205.58 44L207.63 44L209.67 44L211.71 44L213.75 44L215.79 44L217.83 44L219.88 44L221.92 44L223.96 44L226 44"/>
+            <text class="ant ctr" x="198.45" y="52">high</text>
+            <g class="tt">
+                <rect class="tb" x="208.45" y="5" width="218.96" height="78" rx="6"/>
+                <rect class="tsw s2" x="218.45" y="14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="232.45" y="23">high</text>
+                <text class="tx" x="218.45" y="40">Trapezoidal(2400, 3600, 5000, 5000)</text>
+                <text class="tx" x="218.45" y="57">Peak membership 1 at 4297</text>
+                <text class="tx" x="218.45" y="74">Used by 2 rules</text>
+            </g>
+        </g>
+        <rect class="pf" x="252" y="0" width="240" height="190" rx="6"/>
+        <text class="ph" x="262" y="18">velocity</text>
+        <line class="gl" x1="282" y1="164" x2="478" y2="164"/>
+        <text class="kn end mid" x="277" y="164">0</text>
+        <line class="gl" x1="282" y1="104" x2="478" y2="104"/>
+        <text class="kn end mid" x="277" y="104">0.5</text>
+        <line class="gl" x1="282" y1="44" x2="478" y2="44"/>
+        <text class="kn end mid" x="277" y="44">1</text>
+        <line class="ax" x1="282" y1="164" x2="478" y2="164"/>
+        <line class="ax" x1="282" y1="164" x2="282" y2="167"/>
+        <text class="kn ctr" x="282" y="179">0</text>
+        <line class="ax" x1="331" y1="164" x2="331" y2="167"/>
+        <text class="kn ctr" x="331" y="179">5</text>
+        <line class="ax" x1="380" y1="164" x2="380" y2="167"/>
+        <text class="kn ctr" x="380" y="179">10</text>
+        <line class="ax" x1="429" y1="164" x2="429" y2="167"/>
+        <text class="kn ctr" x="429" y="179">15</text>
+        <line class="ax" x1="478" y1="164" x2="478" y2="167"/>
+        <text class="kn ctr" x="478" y="179">20</text>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 0.4167, slow: 0.731, normal: 0.01, fast: 0.002">
+            <title>velocity = 0.4167, slow: 0.731, normal: 0.01, fast: 0.002</title>
+            <rect class="hb" x="282" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="286.08" y1="44" x2="286.08" y2="164"/>
+            <circle class="cx s0" cx="286.08" cy="76.28" r="3.5"/>
+            <circle class="cx s1" cx="286.08" cy="162.79" r="3.5"/>
+            <circle class="cx s2" cx="286.08" cy="163.72" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="296.08" y="65" width="118.96" height="78" rx="6"/>
+                <text class="tx b" x="306.08" y="83">velocity = 0.4167</text>
+                <rect class="tsw s0" x="306.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="320.08" y="100">slow: 0.731</text>
+                <rect class="tsw s1" x="306.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="320.08" y="117">normal: 0.01</text>
+                <rect class="tsw s2" x="306.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="320.08" y="134">fast: 0.002</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 1.25, slow: 0.932, normal: 0.026, fast: 0.988">
+            <title>velocity = 1.25, slow: 0.932, normal: 0.026, fast: 0.988</title>
+            <rect class="hb" x="290.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="294.25" y1="44" x2="294.25" y2="164"/>
+            <circle class="cx s0" cx="294.25" cy="52.15" r="3.5"/>
+            <circle class="cx s1" cx="294.25" cy="160.87" r="3.5"/>
+            <circle class="cx s2" cx="294.25" cy="45.49" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="304.25" y="65" width="107.08" height="78" rx="6"/>
+                <text class="tx b" x="314.25" y="83">velocity = 1.25</text>
+                <rect class="tsw s0" x="314.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="328.25" y="100">slow: 0.932</text>
+                <rect class="tsw s1" x="314.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="328.25" y="117">normal: 0.026</text>
+                <rect class="tsw s2" x="314.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="328.25" y="134">fast: 0.988</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 2.083, slow: 0.999, normal: 0.061, fast: 1">
+            <title>velocity = 2.083, slow: 0.999, normal: 0.061, fast: 1</title>
+            <rect class="hb" x="298.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="302.42" y1="44" x2="302.42" y2="164"/>
+            <circle class="cx s0" cx="302.42" cy="44.1" r="3.5"/>
+            <circle class="cx s1" cx="302.42" cy="156.71" r="3.5"/>
+            <circle class="cx s2" cx="302.42" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="312.42" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="322.42" y="83">velocity = 2.083</text>
+                <rect class="tsw s0" x="322.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="336.42" y="100">slow: 0.999</text>
+                <rect class="tsw s1" x="322.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="336.42" y="117">normal: 0.061</text>
+                <rect class="tsw s2" x="322.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="336.42" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 2.917, slow: 0.9, normal: 0.127, fast: 1">
+            <title>velocity = 2.917, slow: 0.9, normal: 0.127, fast: 1</title>
+            <rect class="hb" x="306.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="310.58" y1="44" x2="310.58" y2="164"/>
+            <circle class="cx s0" cx="310.58" cy="55.96" r="3.5"/>
+            <circle class="cx s1" cx="310.58" cy="148.82" r="3.5"/>
+            <circle class="cx s2" cx="310.58" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="320.58" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="330.58" y="83">velocity = 2.917</text>
+                <rect class="tsw s0" x="330.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="344.58" y="100">slow: 0.9</text>
+                <rect class="tsw s1" x="330.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="344.58" y="117">normal: 0.127</text>
+                <rect class="tsw s2" x="330.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="344.58" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 3.75, slow: 0.682, normal: 0.236, fast: 1">
+            <title>velocity = 3.75, slow: 0.682, normal: 0.236, fast: 1</title>
+            <rect class="hb" x="314.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="318.75" y1="44" x2="318.75" y2="164"/>
+            <circle class="cx s0" cx="318.75" cy="82.17" r="3.5"/>
+            <circle class="cx s1" cx="318.75" cy="135.71" r="3.5"/>
+            <circle class="cx s2" cx="318.75" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="328.75" y="65" width="107.08" height="78" rx="6"/>
+                <text class="tx b" x="338.75" y="83">velocity = 3.75</text>
+                <rect class="tsw s0" x="338.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="352.75" y="100">slow: 0.682</text>
+                <rect class="tsw s1" x="338.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="352.75" y="117">normal: 0.236</text>
+                <rect class="tsw s2" x="338.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="352.75" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 4.583, slow: 0.434, normal: 0.393, fast: 1">
+            <title>velocity = 4.583, slow: 0.434, normal: 0.393, fast: 1</title>
+            <rect class="hb" x="322.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="326.92" y1="44" x2="326.92" y2="164"/>
+            <circle class="cx s0" cx="326.92" cy="111.89" r="3.5"/>
+            <circle class="cx s1" cx="326.92" cy="116.84" r="3.5"/>
+            <circle class="cx s2" cx="326.92" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="336.92" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="346.92" y="83">velocity = 4.583</text>
+                <rect class="tsw s0" x="346.92" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="360.92" y="100">slow: 0.434</text>
+                <rect class="tsw s1" x="346.92" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="360.92" y="117">normal: 0.393</text>
+                <rect class="tsw s2" x="346.92" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="360.92" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 5.417, slow: 0.232, normal: 0.586, fast: 1">
+            <title>velocity = 5.417, slow: 0.232, normal: 0.586, fast: 1</title>
+            <rect class="hb" x="331" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="335.08" y1="44" x2="335.08" y2="164"/>
+            <circle class="cx s0" cx="335.08" cy="136.11" r="3.5"/>
+            <circle class="cx s1" cx="335.08" cy="93.64" r="3.5"/>
+            <circle class="cx s2" cx="335.08" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="345.08" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="355.08" y="83">velocity = 5.417</text>
+                <rect class="tsw s0" x="355.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="369.08" y="100">slow: 0.232</text>
+                <rect class="tsw s1" x="355.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="369.08" y="117">normal: 0.586</text>
+                <rect class="tsw s2" x="355.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="369.08" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 6.25, slow: 0.105, normal: 0.783, fast: 1">
+            <title>velocity = 6.25, slow: 0.105, normal: 0.783, fast: 1</title>
+            <rect class="hb" x="339.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="343.25" y1="44" x2="343.25" y2="164"/>
+            <circle class="cx s0" cx="343.25" cy="151.45" r="3.5"/>
+            <circle class="cx s1" cx="343.25" cy="70.08" r="3.5"/>
+            <circle class="cx s2" cx="343.25" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="353.25" y="65" width="107.08" height="78" rx="6"/>
+                <text class="tx b" x="363.25" y="83">velocity = 6.25</text>
+                <rect class="tsw s0" x="363.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="377.25" y="100">slow: 0.105</text>
+                <rect class="tsw s1" x="363.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="377.25" y="117">normal: 0.783</text>
+                <rect class="tsw s2" x="363.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="377.25" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 7.083, slow: 0.04, normal: 0.935, fast: 1">
+            <title>velocity = 7.083, slow: 0.04, normal: 0.935, fast: 1</title>
+            <rect class="hb" x="347.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="351.42" y1="44" x2="351.42" y2="164"/>
+            <circle class="cx s0" cx="351.42" cy="159.25" r="3.5"/>
+            <circle class="cx s1" cx="351.42" cy="51.8" r="3.5"/>
+            <circle class="cx s2" cx="351.42" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="361.42" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="371.42" y="83">velocity = 7.083</text>
+                <rect class="tsw s0" x="371.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="385.42" y="100">slow: 0.04</text>
+                <rect class="tsw s1" x="371.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="385.42" y="117">normal: 0.935</text>
+                <rect class="tsw s2" x="371.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="385.42" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 7.917, slow: 0.013, normal: 0.999, fast: 1">
+            <title>velocity = 7.917, slow: 0.013, normal: 0.999, fast: 1</title>
+            <rect class="hb" x="355.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="359.58" y1="44" x2="359.58" y2="164"/>
+            <circle class="cx s0" cx="359.58" cy="162.49" r="3.5"/>
+            <circle class="cx s1" cx="359.58" cy="44.07" r="3.5"/>
+            <circle class="cx s2" cx="359.58" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="369.58" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="379.58" y="83">velocity = 7.917</text>
+                <rect class="tsw s0" x="379.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="393.58" y="100">slow: 0.013</text>
+                <rect class="tsw s1" x="379.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="393.58" y="117">normal: 0.999</text>
+                <rect class="tsw s2" x="379.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="393.58" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 8.75, slow: 0.003, normal: 0.956, fast: 1">
+            <title>velocity = 8.75, slow: 0.003, normal: 0.956, fast: 1</title>
+            <rect class="hb" x="363.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="367.75" y1="44" x2="367.75" y2="164"/>
+            <circle class="cx s0" cx="367.75" cy="163.6" r="3.5"/>
+            <circle class="cx s1" cx="367.75" cy="49.28" r="3.5"/>
+            <circle class="cx s2" cx="367.75" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="377.75" y="65" width="107.08" height="78" rx="6"/>
+                <text class="tx b" x="387.75" y="83">velocity = 8.75</text>
+                <rect class="tsw s0" x="387.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="401.75" y="100">slow: 0.003</text>
+                <rect class="tsw s1" x="387.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="401.75" y="117">normal: 0.956</text>
+                <rect class="tsw s2" x="387.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="401.75" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 9.583, slow: 0.001, normal: 0.818, fast: 1">
+            <title>velocity = 9.583, slow: 0.001, normal: 0.818, fast: 1</title>
+            <rect class="hb" x="371.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="375.92" y1="44" x2="375.92" y2="164"/>
+            <circle class="cx s0" cx="375.92" cy="163.91" r="3.5"/>
+            <circle class="cx s1" cx="375.92" cy="65.81" r="3.5"/>
+            <circle class="cx s2" cx="375.92" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="385.92" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="395.92" y="83">velocity = 9.583</text>
+                <rect class="tsw s0" x="395.92" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="409.92" y="100">slow: 0.001</text>
+                <rect class="tsw s1" x="395.92" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="409.92" y="117">normal: 0.818</text>
+                <rect class="tsw s2" x="395.92" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="409.92" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 10.42, slow: 0, normal: 0.627, fast: 1">
+            <title>velocity = 10.42, slow: 0, normal: 0.627, fast: 1</title>
+            <rect class="hb" x="380" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="384.08" y1="44" x2="384.08" y2="164"/>
+            <circle class="cx s0" cx="384.08" cy="163.98" r="3.5"/>
+            <circle class="cx s1" cx="384.08" cy="88.79" r="3.5"/>
+            <circle class="cx s2" cx="384.08" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="394.08" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="404.08" y="83">velocity = 10.42</text>
+                <rect class="tsw s0" x="404.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="418.08" y="100">slow: 0</text>
+                <rect class="tsw s1" x="404.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="418.08" y="117">normal: 0.627</text>
+                <rect class="tsw s2" x="404.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="418.08" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity = 11.25, slow: 0, normal: 0.43, fast: 1">
+            <title>velocity = 11.25, slow: 0, normal: 0.43, fast: 1</title>
+            <rect class="hb" x="388.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="392.25" y1="44" x2="392.25" y2="164"/>
+            <circle class="cx s0" cx="392.25" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="392.25" cy="112.45" r="3.5"/>
+            <circle class="cx s2" cx="392.25" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="402.25" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="412.25" y="83">velocity = 11.25</text>
+                <rect class="tsw s0" x="412.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="426.25" y="100">slow: 0</text>
+                <rect class="tsw s1" x="412.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="426.25" y="117">normal: 0.43</text>
+                <rect class="tsw s2" x="412.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="426.25" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 12.08, slow: 0, normal: 0.263, fast: 1">
+            <title>velocity = 12.08, slow: 0, normal: 0.263, fast: 1</title>
+            <rect class="hb" x="396.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="400.42" y1="44" x2="400.42" y2="164"/>
+            <circle class="cx s0" cx="400.42" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="400.42" cy="132.39" r="3.5"/>
+            <circle class="cx s2" cx="400.42" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="410.42" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="420.42" y="83">velocity = 12.08</text>
+                <rect class="tsw s0" x="420.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="434.42" y="100">slow: 0</text>
+                <rect class="tsw s1" x="420.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="434.42" y="117">normal: 0.263</text>
+                <rect class="tsw s2" x="420.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="434.42" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 12.92, slow: 0, normal: 0.145, fast: 1">
+            <title>velocity = 12.92, slow: 0, normal: 0.145, fast: 1</title>
+            <rect class="hb" x="404.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="408.58" y1="44" x2="408.58" y2="164"/>
+            <circle class="cx s0" cx="408.58" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="408.58" cy="146.65" r="3.5"/>
+            <circle class="cx s2" cx="408.58" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="418.58" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="428.58" y="83">velocity = 12.92</text>
+                <rect class="tsw s0" x="428.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="442.58" y="100">slow: 0</text>
+                <rect class="tsw s1" x="428.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="442.58" y="117">normal: 0.145</text>
+                <rect class="tsw s2" x="428.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="442.58" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 13.75, slow: 0, normal: 0.071, fast: 1">
+            <title>velocity = 13.75, slow: 0, normal: 0.071, fast: 1</title>
+            <rect class="hb" x="412.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="416.75" y1="44" x2="416.75" y2="164"/>
+            <circle class="cx s0" cx="416.75" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="416.75" cy="155.48" r="3.5"/>
+            <circle class="cx s2" cx="416.75" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="426.75" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="436.75" y="83">velocity = 13.75</text>
+                <rect class="tsw s0" x="436.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="450.75" y="100">slow: 0</text>
+                <rect class="tsw s1" x="436.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="450.75" y="117">normal: 0.071</text>
+                <rect class="tsw s2" x="436.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="450.75" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 14.58, slow: 0, normal: 0.031, fast: 1">
+            <title>velocity = 14.58, slow: 0, normal: 0.031, fast: 1</title>
+            <rect class="hb" x="420.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="424.92" y1="44" x2="424.92" y2="164"/>
+            <circle class="cx s0" cx="424.92" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="424.92" cy="160.26" r="3.5"/>
+            <circle class="cx s2" cx="424.92" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="434.92" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="444.92" y="83">velocity = 14.58</text>
+                <rect class="tsw s0" x="444.92" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="458.92" y="100">slow: 0</text>
+                <rect class="tsw s1" x="444.92" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="458.92" y="117">normal: 0.031</text>
+                <rect class="tsw s2" x="444.92" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="458.92" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 15.42, slow: 0, normal: 0.012, fast: 1">
+            <title>velocity = 15.42, slow: 0, normal: 0.012, fast: 1</title>
+            <rect class="hb" x="429" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="433.08" y1="44" x2="433.08" y2="164"/>
+            <circle class="cx s0" cx="433.08" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="433.08" cy="162.53" r="3.5"/>
+            <circle class="cx s2" cx="433.08" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="443.08" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="453.08" y="83">velocity = 15.42</text>
+                <rect class="tsw s0" x="453.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="467.08" y="100">slow: 0</text>
+                <rect class="tsw s1" x="453.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="467.08" y="117">normal: 0.012</text>
+                <rect class="tsw s2" x="453.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="467.08" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 16.25, slow: 0, normal: 0.004, fast: 1">
+            <title>velocity = 16.25, slow: 0, normal: 0.004, fast: 1</title>
+            <rect class="hb" x="437.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="441.25" y1="44" x2="441.25" y2="164"/>
+            <circle class="cx s0" cx="441.25" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="441.25" cy="163.48" r="3.5"/>
+            <circle class="cx s2" cx="441.25" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="451.25" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="461.25" y="83">velocity = 16.25</text>
+                <rect class="tsw s0" x="461.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="475.25" y="100">slow: 0</text>
+                <rect class="tsw s1" x="461.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="475.25" y="117">normal: 0.004</text>
+                <rect class="tsw s2" x="461.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="475.25" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol"
+           aria-label="velocity = 17.08, slow: 0, normal: 0.001, fast: 1">
+            <title>velocity = 17.08, slow: 0, normal: 0.001, fast: 1</title>
+            <rect class="hb" x="445.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="449.42" y1="44" x2="449.42" y2="164"/>
+            <circle class="cx s0" cx="449.42" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="449.42" cy="163.84" r="3.5"/>
+            <circle class="cx s2" cx="449.42" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="459.42" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="469.42" y="83">velocity = 17.08</text>
+                <rect class="tsw s0" x="469.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="483.42" y="100">slow: 0</text>
+                <rect class="tsw s1" x="469.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="483.42" y="117">normal: 0.001</text>
+                <rect class="tsw s2" x="469.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="483.42" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity = 17.92, slow: 0, normal: 0, fast: 1">
+            <title>velocity = 17.92, slow: 0, normal: 0, fast: 1</title>
+            <rect class="hb" x="453.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="457.58" y1="44" x2="457.58" y2="164"/>
+            <circle class="cx s0" cx="457.58" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="457.58" cy="163.95" r="3.5"/>
+            <circle class="cx s2" cx="457.58" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="467.58" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="477.58" y="83">velocity = 17.92</text>
+                <rect class="tsw s0" x="477.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="491.58" y="100">slow: 0</text>
+                <rect class="tsw s1" x="477.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="491.58" y="117">normal: 0</text>
+                <rect class="tsw s2" x="477.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="491.58" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity = 18.75, slow: 0, normal: 0, fast: 1">
+            <title>velocity = 18.75, slow: 0, normal: 0, fast: 1</title>
+            <rect class="hb" x="461.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="465.75" y1="44" x2="465.75" y2="164"/>
+            <circle class="cx s0" cx="465.75" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="465.75" cy="163.99" r="3.5"/>
+            <circle class="cx s2" cx="465.75" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="475.75" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="485.75" y="83">velocity = 18.75</text>
+                <rect class="tsw s0" x="485.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="499.75" y="100">slow: 0</text>
+                <rect class="tsw s1" x="485.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="499.75" y="117">normal: 0</text>
+                <rect class="tsw s2" x="485.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="499.75" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity = 19.58, slow: 0, normal: 0, fast: 1">
+            <title>velocity = 19.58, slow: 0, normal: 0, fast: 1</title>
+            <rect class="hb" x="469.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="473.92" y1="44" x2="473.92" y2="164"/>
+            <circle class="cx s0" cx="473.92" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="473.92" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="473.92" cy="44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="483.92" y="65" width="111.84" height="78" rx="6"/>
+                <text class="tx b" x="493.92" y="83">velocity = 19.58</text>
+                <rect class="tsw s0" x="493.92" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="507.92" y="100">slow: 0</text>
+                <rect class="tsw s1" x="493.92" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="507.92" y="117">normal: 0</text>
+                <rect class="tsw s2" x="493.92" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="507.92" y="134">fast: 1</text>
+            </g>
+        </g>
+        <g class="mk fz pv1 s0 u3" tabindex="0" role="graphics-symbol"
+           aria-label="slow, Gaussian(2, 2), Peak membership 1 at 2, Used by 1 rule">
+            <title>slow, Gaussian(2, 2), Peak membership 1 at 2, Used by 1 rule</title>
+            <path class="ar"
+                  d="M282 164L282 91.22L284.04 83.66L286.08 76.28L288.13 69.26L290.17 62.77L292.21 57.01L294.25 52.15L296.29 48.32L298.33 45.66L300.38 44.23L301.6 44L302.42 44.1L304.46 45.27L306.5 47.69L308.54 51.29L310.58 55.96L312.63 61.56L314.67 67.91L316.71 74.84L318.75 82.17L320.79 89.7L322.83 97.27L324.88 104.71L326.92 111.89L328.96 118.7L331 125.04L333.04 130.86L335.08 136.11L337.13 140.78L339.17 144.88L341.21 148.43L343.25 151.45L345.29 154L347.33 156.11L349.38 157.85L351.42 159.25L353.46 160.38L355.5 161.26L357.54 161.96L359.58 162.49L361.63 162.9L363.67 163.2L365.71 163.43L367.75 163.6L369.79 163.72L371.83 163.8L373.88 163.87L375.92 163.91L377.96 163.94L380 163.96L382.04 163.97L384.08 163.98L386.13 163.99L388.17 163.99L390.21 164L392.25 164L394.29 164L396.33 164L398.38 164L400.42 164L402.46 164L404.5 164L406.54 164L408.58 164L410.63 164L412.67 164L414.71 164L416.75 164L418.79 164L420.83 164L422.88 164L424.92 164L426.96 164L429 164L431.04 164L433.08 164L435.13 164L437.17 164L439.21 164L441.25 164L443.29 164L445.33 164L447.38 164L449.42 164L451.46 164L453.5 164L455.54 164L457.58 164L459.63 164L461.67 164L463.71 164L465.75 164L467.79 164L469.83 164L471.88 164L473.92 164L475.96 164L478 164L478 164Z"/>
+            <path class="ln thin"
+                  d="M282 91.22L284.04 83.66L286.08 76.28L288.13 69.26L290.17 62.77L292.21 57.01L294.25 52.15L296.29 48.32L298.33 45.66L300.38 44.23L301.6 44L302.42 44.1L304.46 45.27L306.5 47.69L308.54 51.29L310.58 55.96L312.63 61.56L314.67 67.91L316.71 74.84L318.75 82.17L320.79 89.7L322.83 97.27L324.88 104.71L326.92 111.89L328.96 118.7L331 125.04L333.04 130.86L335.08 136.11L337.13 140.78L339.17 144.88L341.21 148.43L343.25 151.45L345.29 154L347.33 156.11L349.38 157.85L351.42 159.25L353.46 160.38L355.5 161.26L357.54 161.96L359.58 162.49L361.63 162.9L363.67 163.2L365.71 163.43L367.75 163.6L369.79 163.72L371.83 163.8L373.88 163.87L375.92 163.91L377.96 163.94L380 163.96L382.04 163.97L384.08 163.98L386.13 163.99L388.17 163.99L390.21 164L392.25 164L394.29 164L396.33 164L398.38 164L400.42 164L402.46 164L404.5 164L406.54 164L408.58 164L410.63 164L412.67 164L414.71 164L416.75 164L418.79 164L420.83 164L422.88 164L424.92 164L426.96 164L429 164L431.04 164L433.08 164L435.13 164L437.17 164L439.21 164L441.25 164L443.29 164L445.33 164L447.38 164L449.42 164L451.46 164L453.5 164L455.54 164L457.58 164L459.63 164L461.67 164L463.71 164L465.75 164L467.79 164L469.83 164L471.88 164L473.92 164L475.96 164L478 164"/>
+            <text class="ant ctr" x="301.6" y="52">slow</text>
+            <g class="tt">
+                <rect class="tb" x="311.6" y="5" width="151.04" height="78" rx="6"/>
+                <rect class="tsw s0" x="321.6" y="14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="335.6" y="23">slow</text>
+                <text class="tx" x="321.6" y="40">Gaussian(2, 2)</text>
+                <text class="tx" x="321.6" y="57">Peak membership 1 at 2</text>
+                <text class="tx" x="321.6" y="74">Used by 1 rule</text>
+            </g>
+        </g>
+        <g class="mk fz pv1 s1 u1 u2" tabindex="0" role="graphics-symbol"
+           aria-label="normal, Gaussian(8, 2.5), Peak membership 1 at 8, Used by 2 rules">
+            <title>normal, Gaussian(8, 2.5), Peak membership 1 at 8, Used by 2 rules</title>
+            <path class="ar"
+                  d="M282 164L282 163.28L284.04 163.07L286.08 162.79L288.13 162.45L290.17 162.03L292.21 161.51L294.25 160.87L296.29 160.09L298.33 159.15L300.38 158.03L302.42 156.71L304.46 155.15L306.5 153.33L308.54 151.23L310.58 148.82L312.63 146.07L314.67 142.98L316.71 139.53L318.75 135.71L320.79 131.52L322.83 126.96L324.88 122.06L326.92 116.84L328.96 111.33L331 105.59L333.04 99.67L335.08 93.64L337.13 87.58L339.17 81.57L341.21 75.7L343.25 70.08L345.29 64.78L347.33 59.91L349.38 55.56L351.42 51.8L353.46 48.72L355.5 46.38L357.54 44.81L359.58 44.07L360.4 44L361.63 44.15L363.67 45.06L365.71 46.78L367.75 49.28L369.79 52.5L371.83 56.38L373.88 60.84L375.92 65.81L377.96 71.18L380 76.86L382.04 82.76L384.08 88.79L386.13 94.85L388.17 100.87L390.21 106.75L392.25 112.45L394.29 117.91L396.33 123.07L398.38 127.9L400.42 132.39L402.46 136.5L404.5 140.25L406.54 143.63L408.58 146.65L410.63 149.32L412.67 151.67L414.71 153.72L416.75 155.48L418.79 156.99L420.83 158.27L422.88 159.35L424.92 160.26L426.96 161L429 161.62L431.04 162.12L433.08 162.53L435.13 162.85L437.17 163.11L439.21 163.32L441.25 163.48L443.29 163.61L445.33 163.71L447.38 163.78L449.42 163.84L451.46 163.88L453.5 163.91L455.54 163.94L457.58 163.95L459.63 163.97L461.67 163.98L463.71 163.98L465.75 163.99L467.79 163.99L469.83 163.99L471.88 164L473.92 164L475.96 164L478 164L478 164Z"/>
+            <path class="ln thin"
+                  d="M282 163.28L284.04 163.07L286.08 162.79L288.13 162.45L290.17 162.03L292.21 161.51L294.25 160.87L296.29 160.09L298.33 159.15L300.38 158.03L302.42 156.71L304.46 155.15L306.5 153.33L308.54 151.23L310.58 148.82L312.63 146.07L314.67 142.98L316.71 139.53L318.75 135.71L320.79 131.52L322.83 126.96L324.88 122.06L326.92 116.84L328.96 111.33L331 105.59L333.04 99.67L335.08 93.64L337.13 87.58L339.17 81.57L341.21 75.7L343.25 70.08L345.29 64.78L347.33 59.91L349.38 55.56L351.42 51.8L353.46 48.72L355.5 46.38L357.54 44.81L359.58 44.07L360.4 44L361.63 44.15L363.67 45.06L365.71 46.78L367.75 49.28L369.79 52.5L371.83 56.38L373.88 60.84L375.92 65.81L377.96 71.18L380 76.86L382.04 82.76L384.08 88.79L386.13 94.85L388.17 100.87L390.21 106.75L392.25 112.45L394.29 117.91L396.33 123.07L398.38 127.9L400.42 132.39L402.46 136.5L404.5 140.25L406.54 143.63L408.58 146.65L410.63 149.32L412.67 151.67L414.71 153.72L416.75 155.48L418.79 156.99L420.83 158.27L422.88 159.35L424.92 160.26L426.96 161L429 161.62L431.04 162.12L433.08 162.53L435.13 162.85L437.17 163.11L439.21 163.32L441.25 163.48L443.29 163.61L445.33 163.71L447.38 163.78L449.42 163.84L451.46 163.88L453.5 163.91L455.54 163.94L457.58 163.95L459.63 163.97L461.67 163.98L463.71 163.98L465.75 163.99L467.79 163.99L469.83 163.99L471.88 164L473.92 164L475.96 164L478 164"/>
+            <text class="ant ctr" x="360.4" y="52">normal</text>
+            <g class="tt">
+                <rect class="tb" x="370.4" y="5" width="151.04" height="78" rx="6"/>
+                <rect class="tsw s1" x="380.4" y="14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="394.4" y="23">normal</text>
+                <text class="tx" x="380.4" y="40">Gaussian(8, 2.5)</text>
+                <text class="tx" x="380.4" y="57">Peak membership 1 at 8</text>
+                <text class="tx" x="380.4" y="74">Used by 2 rules</text>
+            </g>
+        </g>
+        <g class="mk fz pv1 s2 u0" tabindex="0" role="graphics-symbol"
+           aria-label="fast, Sigmoid(0.9, 12.5), Peak membership 1 at 11.35, Used by 1 rule">
+            <title>fast, Sigmoid(0.9, 12.5), Peak membership 1 at 11.35, Used by 1 rule</title>
+            <path class="ar"
+                  d="M282 164L282 164L284.04 163.98L286.08 163.72L288.13 160.26L290.17 127.65L292.21 61.45L294.25 45.49L296.29 44.11L298.33 44.01L300.38 44L302.42 44L304.46 44L306.5 44L308.54 44L310.58 44L312.63 44L314.67 44L316.71 44L318.75 44L320.79 44L322.83 44L324.88 44L326.92 44L328.96 44L331 44L333.04 44L335.08 44L337.13 44L339.17 44L341.21 44L343.25 44L345.29 44L347.33 44L349.38 44L351.42 44L353.46 44L355.5 44L357.54 44L359.58 44L361.63 44L363.67 44L365.71 44L367.75 44L369.79 44L371.83 44L373.88 44L375.92 44L377.96 44L380 44L382.04 44L384.08 44L386.13 44L388.17 44L390.21 44L392.25 44L394.29 44L396.33 44L398.38 44L400.42 44L402.46 44L404.5 44L406.54 44L408.58 44L410.63 44L412.67 44L414.71 44L416.75 44L418.79 44L420.83 44L422.88 44L424.92 44L426.96 44L429 44L431.04 44L433.08 44L435.13 44L437.17 44L439.21 44L441.25 44L443.29 44L445.33 44L447.38 44L449.42 44L451.46 44L453.5 44L455.54 44L457.58 44L459.63 44L461.67 44L463.71 44L465.75 44L467.79 44L469.83 44L471.88 44L473.92 44L475.96 44L478 44L478 164Z"/>
+            <path class="ln thin"
+                  d="M282 164L284.04 163.98L286.08 163.72L288.13 160.26L290.17 127.65L292.21 61.45L294.25 45.49L296.29 44.11L298.33 44.01L300.38 44L302.42 44L304.46 44L306.5 44L308.54 44L310.58 44L312.63 44L314.67 44L316.71 44L318.75 44L320.79 44L322.83 44L324.88 44L326.92 44L328.96 44L331 44L333.04 44L335.08 44L337.13 44L339.17 44L341.21 44L343.25 44L345.29 44L347.33 44L349.38 44L351.42 44L353.46 44L355.5 44L357.54 44L359.58 44L361.63 44L363.67 44L365.71 44L367.75 44L369.79 44L371.83 44L373.88 44L375.92 44L377.96 44L380 44L382.04 44L384.08 44L386.13 44L388.17 44L390.21 44L392.25 44L394.29 44L396.33 44L398.38 44L400.42 44L402.46 44L404.5 44L406.54 44L408.58 44L410.63 44L412.67 44L414.71 44L416.75 44L418.79 44L420.83 44L422.88 44L424.92 44L426.96 44L429 44L431.04 44L433.08 44L435.13 44L437.17 44L439.21 44L441.25 44L443.29 44L445.33 44L447.38 44L449.42 44L451.46 44L453.5 44L455.54 44L457.58 44L459.63 44L461.67 44L463.71 44L465.75 44L467.79 44L469.83 44L471.88 44L473.92 44L475.96 44L478 44"/>
+            <text class="ant ctr" x="393.27" y="52">fast</text>
+            <g class="tt">
+                <rect class="tb" x="403.27" y="5" width="174.32" height="78" rx="6"/>
+                <rect class="tsw s2" x="413.27" y="14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="427.27" y="23">fast</text>
+                <text class="tx" x="413.27" y="40">Sigmoid(0.9, 12.5)</text>
+                <text class="tx" x="413.27" y="57">Peak membership 1 at 11.35</text>
+                <text class="tx" x="413.27" y="74">Used by 1 rule</text>
+            </g>
+        </g>
+        <rect class="pf" x="504" y="0" width="240" height="190" rx="6"/>
+        <text class="ph" x="514" y="18">risk</text>
+        <line class="gl" x1="534" y1="164" x2="730" y2="164"/>
+        <text class="kn end mid" x="529" y="164">0</text>
+        <line class="gl" x1="534" y1="104" x2="730" y2="104"/>
+        <text class="kn end mid" x="529" y="104">0.5</text>
+        <line class="gl" x1="534" y1="44" x2="730" y2="44"/>
+        <text class="kn end mid" x="529" y="44">1</text>
+        <line class="ax" x1="534" y1="164" x2="730" y2="164"/>
+        <line class="ax" x1="534" y1="164" x2="534" y2="167"/>
+        <text class="kn ctr" x="534" y="179">0</text>
+        <line class="ax" x1="583" y1="164" x2="583" y2="167"/>
+        <text class="kn ctr" x="583" y="179">25</text>
+        <line class="ax" x1="632" y1="164" x2="632" y2="167"/>
+        <text class="kn ctr" x="632" y="179">50</text>
+        <line class="ax" x1="681" y1="164" x2="681" y2="167"/>
+        <text class="kn ctr" x="681" y="179">75</text>
+        <line class="ax" x1="730" y1="164" x2="730" y2="167"/>
+        <text class="kn ctr" x="730" y="179">100</text>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 2.083, low: 0.139, medium: 0, high: 0">
+            <title>risk = 2.083, low: 0.139, medium: 0, high: 0</title>
+            <rect class="hb" x="534" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="538.08" y1="44" x2="538.08" y2="164"/>
+            <circle class="cx s0" cx="538.08" cy="147.33" r="3.5"/>
+            <circle class="cx s1" cx="538.08" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="538.08" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="548.08" y="65" width="93.4" height="78" rx="6"/>
+                <text class="tx b" x="558.08" y="83">risk = 2.083</text>
+                <rect class="tsw s0" x="558.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="572.08" y="100">low: 0.139</text>
+                <rect class="tsw s1" x="558.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="572.08" y="117">medium: 0</text>
+                <rect class="tsw s2" x="558.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="572.08" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 6.25, low: 0.417, medium: 0, high: 0">
+            <title>risk = 6.25, low: 0.417, medium: 0, high: 0</title>
+            <rect class="hb" x="542.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="546.25" y1="44" x2="546.25" y2="164"/>
+            <circle class="cx s0" cx="546.25" cy="114" r="3.5"/>
+            <circle class="cx s1" cx="546.25" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="546.25" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="556.25" y="65" width="93.4" height="78" rx="6"/>
+                <text class="tx b" x="566.25" y="83">risk = 6.25</text>
+                <rect class="tsw s0" x="566.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="580.25" y="100">low: 0.417</text>
+                <rect class="tsw s1" x="566.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="580.25" y="117">medium: 0</text>
+                <rect class="tsw s2" x="566.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="580.25" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 10.42, low: 0.694, medium: 0, high: 0">
+            <title>risk = 10.42, low: 0.694, medium: 0, high: 0</title>
+            <rect class="hb" x="550.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="554.42" y1="44" x2="554.42" y2="164"/>
+            <circle class="cx s0" cx="554.42" cy="80.67" r="3.5"/>
+            <circle class="cx s1" cx="554.42" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="554.42" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="564.42" y="65" width="93.4" height="78" rx="6"/>
+                <text class="tx b" x="574.42" y="83">risk = 10.42</text>
+                <rect class="tsw s0" x="574.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="588.42" y="100">low: 0.694</text>
+                <rect class="tsw s1" x="574.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="588.42" y="117">medium: 0</text>
+                <rect class="tsw s2" x="574.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="588.42" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 14.58, low: 0.972, medium: 0, high: 0">
+            <title>risk = 14.58, low: 0.972, medium: 0, high: 0</title>
+            <rect class="hb" x="558.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="562.58" y1="44" x2="562.58" y2="164"/>
+            <circle class="cx s0" cx="562.58" cy="47.33" r="3.5"/>
+            <circle class="cx s1" cx="562.58" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="562.58" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="572.58" y="65" width="93.4" height="78" rx="6"/>
+                <text class="tx b" x="582.58" y="83">risk = 14.58</text>
+                <rect class="tsw s0" x="582.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="596.58" y="100">low: 0.972</text>
+                <rect class="tsw s1" x="582.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="596.58" y="117">medium: 0</text>
+                <rect class="tsw s2" x="582.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="596.58" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 18.75, low: 0.85, medium: 0, high: 0">
+            <title>risk = 18.75, low: 0.85, medium: 0, high: 0</title>
+            <rect class="hb" x="566.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="570.75" y1="44" x2="570.75" y2="164"/>
+            <circle class="cx s0" cx="570.75" cy="62" r="3.5"/>
+            <circle class="cx s1" cx="570.75" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="570.75" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="580.75" y="65" width="89.68" height="78" rx="6"/>
+                <text class="tx b" x="590.75" y="83">risk = 18.75</text>
+                <rect class="tsw s0" x="590.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="604.75" y="100">low: 0.85</text>
+                <rect class="tsw s1" x="590.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="604.75" y="117">medium: 0</text>
+                <rect class="tsw s2" x="590.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="604.75" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 22.92, low: 0.683, medium: 0, high: 0">
+            <title>risk = 22.92, low: 0.683, medium: 0, high: 0</title>
+            <rect class="hb" x="574.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="578.92" y1="44" x2="578.92" y2="164"/>
+            <circle class="cx s0" cx="578.92" cy="82" r="3.5"/>
+            <circle class="cx s1" cx="578.92" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="578.92" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="588.92" y="65" width="93.4" height="78" rx="6"/>
+                <text class="tx b" x="598.92" y="83">risk = 22.92</text>
+                <rect class="tsw s0" x="598.92" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="612.92" y="100">low: 0.683</text>
+                <rect class="tsw s1" x="598.92" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="612.92" y="117">medium: 0</text>
+                <rect class="tsw s2" x="598.92" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="612.92" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 27.08, low: 0.517, medium: 0.083, high: 0">
+            <title>risk = 27.08, low: 0.517, medium: 0.083, high: 0</title>
+            <rect class="hb" x="583" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="587.08" y1="44" x2="587.08" y2="164"/>
+            <circle class="cx s0" cx="587.08" cy="102" r="3.5"/>
+            <circle class="cx s1" cx="587.08" cy="154" r="3.5"/>
+            <circle class="cx s2" cx="587.08" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="597.08" y="65" width="112.96" height="78" rx="6"/>
+                <text class="tx b" x="607.08" y="83">risk = 27.08</text>
+                <rect class="tsw s0" x="607.08" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="621.08" y="100">low: 0.517</text>
+                <rect class="tsw s1" x="607.08" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="621.08" y="117">medium: 0.083</text>
+                <rect class="tsw s2" x="607.08" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="621.08" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 31.25, low: 0.35, medium: 0.25, high: 0">
+            <title>risk = 31.25, low: 0.35, medium: 0.25, high: 0</title>
+            <rect class="hb" x="591.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="595.25" y1="44" x2="595.25" y2="164"/>
+            <circle class="cx s0" cx="595.25" cy="122" r="3.5"/>
+            <circle class="cx s1" cx="595.25" cy="134" r="3.5"/>
+            <circle class="cx s2" cx="595.25" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="605.25" y="65" width="106.24" height="78" rx="6"/>
+                <text class="tx b" x="615.25" y="83">risk = 31.25</text>
+                <rect class="tsw s0" x="615.25" y="91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="629.25" y="100">low: 0.35</text>
+                <rect class="tsw s1" x="615.25" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="629.25" y="117">medium: 0.25</text>
+                <rect class="tsw s2" x="615.25" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="629.25" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 35.42, low: 0.183, medium: 0.417, high: 0">
+            <title>risk = 35.42, low: 0.183, medium: 0.417, high: 0</title>
+            <rect class="hb" x="599.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="603.42" y1="44" x2="603.42" y2="164"/>
+            <circle class="cx s0" cx="603.42" cy="142" r="3.5"/>
+            <circle class="cx s1" cx="603.42" cy="114" r="3.5"/>
+            <circle class="cx s2" cx="603.42" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="613.42" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="623.42" y="83">risk = 35.42</text>
+                <rect class="tsw s0" x="623.42" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="637.42" y="100">low: 0.183</text>
+                <rect class="tsw s1" x="623.42" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="637.42" y="117">medium: 0.417</text>
+                <rect class="tsw s2" x="623.42" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="637.42" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 39.58, low: 0.017, medium: 0.583, high: 0">
+            <title>risk = 39.58, low: 0.017, medium: 0.583, high: 0</title>
+            <rect class="hb" x="607.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="611.58" y1="44" x2="611.58" y2="164"/>
+            <circle class="cx s0" cx="611.58" cy="162" r="3.5"/>
+            <circle class="cx s1" cx="611.58" cy="94" r="3.5"/>
+            <circle class="cx s2" cx="611.58" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="621.58" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="631.58" y="83">risk = 39.58</text>
+                <rect class="tsw s0" x="631.58" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="645.58" y="100">low: 0.017</text>
+                <rect class="tsw s1" x="631.58" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="645.58" y="117">medium: 0.583</text>
+                <rect class="tsw s2" x="631.58" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="645.58" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 43.75, low: 0, medium: 0.75, high: 0">
+            <title>risk = 43.75, low: 0, medium: 0.75, high: 0</title>
+            <rect class="hb" x="615.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="619.75" y1="44" x2="619.75" y2="164"/>
+            <circle class="cx s0" cx="619.75" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="619.75" cy="74" r="3.5"/>
+            <circle class="cx s2" cx="619.75" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="629.75" y="65" width="110.57" height="78" rx="6"/>
+                <text class="tx b" x="639.75" y="83">risk = 43.75</text>
+                <rect class="tsw s0" x="639.75" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="653.75" y="100">low: 0</text>
+                <rect class="tsw s1" x="639.75" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="653.75" y="117">medium: 0.75</text>
+                <rect class="tsw s2" x="639.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="653.75" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 47.92, low: 0, medium: 0.917, high: 0">
+            <title>risk = 47.92, low: 0, medium: 0.917, high: 0</title>
+            <rect class="hb" x="623.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="627.92" y1="44" x2="627.92" y2="164"/>
+            <circle class="cx s0" cx="627.92" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="627.92" cy="54" r="3.5"/>
+            <circle class="cx s2" cx="627.92" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="500.22" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="510.22" y="83">risk = 47.92</text>
+                <rect class="tsw s0" x="510.22" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="524.22" y="100">low: 0</text>
+                <rect class="tsw s1" x="510.22" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="524.22" y="117">medium: 0.917</text>
+                <rect class="tsw s2" x="510.22" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="524.22" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 52.08, low: 0, medium: 0.917, high: 0">
+            <title>risk = 52.08, low: 0, medium: 0.917, high: 0</title>
+            <rect class="hb" x="632" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="636.08" y1="44" x2="636.08" y2="164"/>
+            <circle class="cx s0" cx="636.08" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="636.08" cy="54" r="3.5"/>
+            <circle class="cx s2" cx="636.08" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="508.39" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="518.39" y="83">risk = 52.08</text>
+                <rect class="tsw s0" x="518.39" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="532.39" y="100">low: 0</text>
+                <rect class="tsw s1" x="518.39" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="532.39" y="117">medium: 0.917</text>
+                <rect class="tsw s2" x="518.39" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="532.39" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 56.25, low: 0, medium: 0.75, high: 0">
+            <title>risk = 56.25, low: 0, medium: 0.75, high: 0</title>
+            <rect class="hb" x="640.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="644.25" y1="44" x2="644.25" y2="164"/>
+            <circle class="cx s0" cx="644.25" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="644.25" cy="74" r="3.5"/>
+            <circle class="cx s2" cx="644.25" cy="164" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="523.68" y="65" width="110.57" height="78" rx="6"/>
+                <text class="tx b" x="533.68" y="83">risk = 56.25</text>
+                <rect class="tsw s0" x="533.68" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="547.68" y="100">low: 0</text>
+                <rect class="tsw s1" x="533.68" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="547.68" y="117">medium: 0.75</text>
+                <rect class="tsw s2" x="533.68" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="547.68" y="134">high: 0</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 60.42, low: 0, medium: 0.583, high: 0.017">
+            <title>risk = 60.42, low: 0, medium: 0.583, high: 0.017</title>
+            <rect class="hb" x="648.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="652.42" y1="44" x2="652.42" y2="164"/>
+            <circle class="cx s0" cx="652.42" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="652.42" cy="94" r="3.5"/>
+            <circle class="cx s2" cx="652.42" cy="162" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="524.72" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="534.72" y="83">risk = 60.42</text>
+                <rect class="tsw s0" x="534.72" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="548.72" y="100">low: 0</text>
+                <rect class="tsw s1" x="534.72" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="548.72" y="117">medium: 0.583</text>
+                <rect class="tsw s2" x="534.72" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="548.72" y="134">high: 0.017</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 64.58, low: 0, medium: 0.417, high: 0.183">
+            <title>risk = 64.58, low: 0, medium: 0.417, high: 0.183</title>
+            <rect class="hb" x="656.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="660.58" y1="44" x2="660.58" y2="164"/>
+            <circle class="cx s0" cx="660.58" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="660.58" cy="114" r="3.5"/>
+            <circle class="cx s2" cx="660.58" cy="142" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="532.89" y="65" width="117.7" height="78" rx="6"/>
+                <text class="tx b" x="542.89" y="83">risk = 64.58</text>
+                <rect class="tsw s0" x="542.89" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="556.89" y="100">low: 0</text>
+                <rect class="tsw s1" x="542.89" y="108" width="9" height="9" rx="2"/>
+                <text class="tx b" x="556.89" y="117">medium: 0.417</text>
+                <rect class="tsw s2" x="542.89" y="125" width="9" height="9" rx="2"/>
+                <text class="tx" x="556.89" y="134">high: 0.183</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 68.75, low: 0, medium: 0.25, high: 0.35">
+            <title>risk = 68.75, low: 0, medium: 0.25, high: 0.35</title>
+            <rect class="hb" x="664.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="668.75" y1="44" x2="668.75" y2="164"/>
+            <circle class="cx s0" cx="668.75" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="668.75" cy="134" r="3.5"/>
+            <circle class="cx s2" cx="668.75" cy="122" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="552.51" y="65" width="106.24" height="78" rx="6"/>
+                <text class="tx b" x="562.51" y="83">risk = 68.75</text>
+                <rect class="tsw s0" x="562.51" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="576.51" y="100">low: 0</text>
+                <rect class="tsw s1" x="562.51" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="576.51" y="117">medium: 0.25</text>
+                <rect class="tsw s2" x="562.51" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="576.51" y="134">high: 0.35</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 72.92, low: 0, medium: 0.083, high: 0.517">
+            <title>risk = 72.92, low: 0, medium: 0.083, high: 0.517</title>
+            <rect class="hb" x="672.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="676.92" y1="44" x2="676.92" y2="164"/>
+            <circle class="cx s0" cx="676.92" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="676.92" cy="154" r="3.5"/>
+            <circle class="cx s2" cx="676.92" cy="102" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="553.96" y="65" width="112.96" height="78" rx="6"/>
+                <text class="tx b" x="563.96" y="83">risk = 72.92</text>
+                <rect class="tsw s0" x="563.96" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="577.96" y="100">low: 0</text>
+                <rect class="tsw s1" x="563.96" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="577.96" y="117">medium: 0.083</text>
+                <rect class="tsw s2" x="563.96" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="577.96" y="134">high: 0.517</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 77.08, low: 0, medium: 0, high: 0.683">
+            <title>risk = 77.08, low: 0, medium: 0, high: 0.683</title>
+            <rect class="hb" x="681" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="685.08" y1="44" x2="685.08" y2="164"/>
+            <circle class="cx s0" cx="685.08" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="685.08" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="685.08" cy="82" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="578.5" y="65" width="96.58" height="78" rx="6"/>
+                <text class="tx b" x="588.5" y="83">risk = 77.08</text>
+                <rect class="tsw s0" x="588.5" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="602.5" y="100">low: 0</text>
+                <rect class="tsw s1" x="588.5" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="602.5" y="117">medium: 0</text>
+                <rect class="tsw s2" x="588.5" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="602.5" y="134">high: 0.683</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 81.25, low: 0, medium: 0, high: 0.85">
+            <title>risk = 81.25, low: 0, medium: 0, high: 0.85</title>
+            <rect class="hb" x="689.17" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="693.25" y1="44" x2="693.25" y2="164"/>
+            <circle class="cx s0" cx="693.25" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="693.25" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="693.25" cy="62" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="593.57" y="65" width="89.68" height="78" rx="6"/>
+                <text class="tx b" x="603.57" y="83">risk = 81.25</text>
+                <rect class="tsw s0" x="603.57" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="617.57" y="100">low: 0</text>
+                <rect class="tsw s1" x="603.57" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="617.57" y="117">medium: 0</text>
+                <rect class="tsw s2" x="603.57" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="617.57" y="134">high: 0.85</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 85.42, low: 0, medium: 0, high: 0.972">
+            <title>risk = 85.42, low: 0, medium: 0, high: 0.972</title>
+            <rect class="hb" x="697.33" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="701.42" y1="44" x2="701.42" y2="164"/>
+            <circle class="cx s0" cx="701.42" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="701.42" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="701.42" cy="47.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="594.83" y="65" width="96.58" height="78" rx="6"/>
+                <text class="tx b" x="604.83" y="83">risk = 85.42</text>
+                <rect class="tsw s0" x="604.83" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="618.83" y="100">low: 0</text>
+                <rect class="tsw s1" x="604.83" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="618.83" y="117">medium: 0</text>
+                <rect class="tsw s2" x="604.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="618.83" y="134">high: 0.972</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 89.58, low: 0, medium: 0, high: 0.694">
+            <title>risk = 89.58, low: 0, medium: 0, high: 0.694</title>
+            <rect class="hb" x="705.5" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="709.58" y1="44" x2="709.58" y2="164"/>
+            <circle class="cx s0" cx="709.58" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="709.58" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="709.58" cy="80.67" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="603" y="65" width="96.58" height="78" rx="6"/>
+                <text class="tx b" x="613" y="83">risk = 89.58</text>
+                <rect class="tsw s0" x="613" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="627" y="100">low: 0</text>
+                <rect class="tsw s1" x="613" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="627" y="117">medium: 0</text>
+                <rect class="tsw s2" x="613" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="627" y="134">high: 0.694</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 93.75, low: 0, medium: 0, high: 0.417">
+            <title>risk = 93.75, low: 0, medium: 0, high: 0.417</title>
+            <rect class="hb" x="713.67" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="717.75" y1="44" x2="717.75" y2="164"/>
+            <circle class="cx s0" cx="717.75" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="717.75" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="717.75" cy="114" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="611.17" y="65" width="96.58" height="78" rx="6"/>
+                <text class="tx b" x="621.17" y="83">risk = 93.75</text>
+                <rect class="tsw s0" x="621.17" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="635.17" y="100">low: 0</text>
+                <rect class="tsw s1" x="621.17" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="635.17" y="117">medium: 0</text>
+                <rect class="tsw s2" x="621.17" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="635.17" y="134">high: 0.417</text>
+            </g>
+        </g>
+        <g class="mk" tabindex="0" role="graphics-symbol" aria-label="risk = 97.92, low: 0, medium: 0, high: 0.139">
+            <title>risk = 97.92, low: 0, medium: 0, high: 0.139</title>
+            <rect class="hb" x="721.83" y="44" width="8.17" height="120"/>
+            <line class="vl" x1="725.92" y1="44" x2="725.92" y2="164"/>
+            <circle class="cx s0" cx="725.92" cy="164" r="3.5"/>
+            <circle class="cx s1" cx="725.92" cy="164" r="3.5"/>
+            <circle class="cx s2" cx="725.92" cy="147.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="619.33" y="65" width="96.58" height="78" rx="6"/>
+                <text class="tx b" x="629.33" y="83">risk = 97.92</text>
+                <rect class="tsw s0" x="629.33" y="91" width="9" height="9" rx="2"/>
+                <text class="tx" x="643.33" y="100">low: 0</text>
+                <rect class="tsw s1" x="629.33" y="108" width="9" height="9" rx="2"/>
+                <text class="tx" x="643.33" y="117">medium: 0</text>
+                <rect class="tsw s2" x="629.33" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="643.33" y="134">high: 0.139</text>
+            </g>
+        </g>
+        <g class="mk fz pv2 s0 u3" tabindex="0" role="graphics-symbol"
+           aria-label="low, Triangular(0, 15, 40), Peak membership 1 at 15, Used by 1 rule">
+            <title>low, Triangular(0, 15, 40), Peak membership 1 at 15, Used by 1 rule</title>
+            <path class="ar"
+                  d="M534 164L534 164L536.04 155.67L538.08 147.33L540.13 139L542.17 130.67L544.21 122.33L546.25 114L548.29 105.67L550.33 97.33L552.38 89L554.42 80.67L556.46 72.33L558.5 64L560.54 55.67L562.58 47.33L563.4 44L564.63 47L566.67 52L568.71 57L570.75 62L572.79 67L574.83 72L576.88 77L578.92 82L580.96 87L583 92L585.04 97L587.08 102L589.13 107L591.17 112L593.21 117L595.25 122L597.29 127L599.33 132L601.38 137L603.42 142L605.46 147L607.5 152L609.54 157L611.58 162L612.4 164L613.63 164L615.67 164L617.71 164L619.75 164L621.79 164L623.83 164L625.88 164L627.92 164L629.96 164L632 164L634.04 164L636.08 164L638.13 164L640.17 164L642.21 164L644.25 164L646.29 164L648.33 164L650.38 164L652.42 164L654.46 164L656.5 164L658.54 164L660.58 164L662.63 164L664.67 164L666.71 164L668.75 164L670.79 164L672.83 164L674.88 164L676.92 164L678.96 164L681 164L683.04 164L685.08 164L687.13 164L689.17 164L691.21 164L693.25 164L695.29 164L697.33 164L699.38 164L701.42 164L703.46 164L705.5 164L707.54 164L709.58 164L711.63 164L713.67 164L715.71 164L717.75 164L719.79 164L721.83 164L723.88 164L725.92 164L727.96 164L730 164L730 164Z"/>
+            <path class="ln thin"
+                  d="M534 164L536.04 155.67L538.08 147.33L540.13 139L542.17 130.67L544.21 122.33L546.25 114L548.29 105.67L550.33 97.33L552.38 89L554.42 80.67L556.46 72.33L558.5 64L560.54 55.67L562.58 47.33L563.4 44L564.63 47L566.67 52L568.71 57L570.75 62L572.79 67L574.83 72L576.88 77L578.92 82L580.96 87L583 92L585.04 97L587.08 102L589.13 107L591.17 112L593.21 117L595.25 122L597.29 127L599.33 132L601.38 137L603.42 142L605.46 147L607.5 152L609.54 157L611.58 162L612.4 164L613.63 164L615.67 164L617.71 164L619.75 164L621.79 164L623.83 164L625.88 164L627.92 164L629.96 164L632 164L634.04 164L636.08 164L638.13 164L640.17 164L642.21 164L644.25 164L646.29 164L648.33 164L650.38 164L652.42 164L654.46 164L656.5 164L658.54 164L660.58 164L662.63 164L664.67 164L666.71 164L668.75 164L670.79 164L672.83 164L674.88 164L676.92 164L678.96 164L681 164L683.04 164L685.08 164L687.13 164L689.17 164L691.21 164L693.25 164L695.29 164L697.33 164L699.38 164L701.42 164L703.46 164L705.5 164L707.54 164L709.58 164L711.63 164L713.67 164L715.71 164L717.75 164L719.79 164L721.83 164L723.88 164L725.92 164L727.96 164L730 164"/>
+            <text class="ant ctr" x="563.4" y="52">low</text>
+            <g class="tt">
+                <rect class="tb" x="573.4" y="5" width="157.76" height="78" rx="6"/>
+                <rect class="tsw s0" x="583.4" y="14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="597.4" y="23">low</text>
+                <text class="tx" x="583.4" y="40">Triangular(0, 15, 40)</text>
+                <text class="tx" x="583.4" y="57">Peak membership 1 at 15</text>
+                <text class="tx" x="583.4" y="74">Used by 1 rule</text>
+            </g>
+        </g>
+        <g class="mk fz pv2 s1 u1 u2" tabindex="0" role="graphics-symbol"
+           aria-label="medium, Triangular(25, 50, 75), Peak membership 1 at 50, Used by 2 rules">
+            <title>medium, Triangular(25, 50, 75), Peak membership 1 at 50, Used by 2 rules</title>
+            <path class="ar"
+                  d="M534 164L534 164L536.04 164L538.08 164L540.13 164L542.17 164L544.21 164L546.25 164L548.29 164L550.33 164L552.38 164L554.42 164L556.46 164L558.5 164L560.54 164L562.58 164L564.63 164L566.67 164L568.71 164L570.75 164L572.79 164L574.83 164L576.88 164L578.92 164L580.96 164L583 164L585.04 159L587.08 154L589.13 149L591.17 144L593.21 139L595.25 134L597.29 129L599.33 124L601.38 119L603.42 114L605.46 109L607.5 104L609.54 99L611.58 94L613.63 89L615.67 84L617.71 79L619.75 74L621.79 69L623.83 64L625.88 59L627.92 54L629.96 49L632 44L634.04 49L636.08 54L638.13 59L640.17 64L642.21 69L644.25 74L646.29 79L648.33 84L650.38 89L652.42 94L654.46 99L656.5 104L658.54 109L660.58 114L662.63 119L664.67 124L666.71 129L668.75 134L670.79 139L672.83 144L674.88 149L676.92 154L678.96 159L681 164L683.04 164L685.08 164L687.13 164L689.17 164L691.21 164L693.25 164L695.29 164L697.33 164L699.38 164L701.42 164L703.46 164L705.5 164L707.54 164L709.58 164L711.63 164L713.67 164L715.71 164L717.75 164L719.79 164L721.83 164L723.88 164L725.92 164L727.96 164L730 164L730 164Z"/>
+            <path class="ln thin"
+                  d="M534 164L536.04 164L538.08 164L540.13 164L542.17 164L544.21 164L546.25 164L548.29 164L550.33 164L552.38 164L554.42 164L556.46 164L558.5 164L560.54 164L562.58 164L564.63 164L566.67 164L568.71 164L570.75 164L572.79 164L574.83 164L576.88 164L578.92 164L580.96 164L583 164L585.04 159L587.08 154L589.13 149L591.17 144L593.21 139L595.25 134L597.29 129L599.33 124L601.38 119L603.42 114L605.46 109L607.5 104L609.54 99L611.58 94L613.63 89L615.67 84L617.71 79L619.75 74L621.79 69L623.83 64L625.88 59L627.92 54L629.96 49L632 44L634.04 49L636.08 54L638.13 59L640.17 64L642.21 69L644.25 74L646.29 79L648.33 84L650.38 89L652.42 94L654.46 99L656.5 104L658.54 109L660.58 114L662.63 119L664.67 124L666.71 129L668.75 134L670.79 139L672.83 144L674.88 149L676.92 154L678.96 159L681 164L683.04 164L685.08 164L687.13 164L689.17 164L691.21 164L693.25 164L695.29 164L697.33 164L699.38 164L701.42 164L703.46 164L705.5 164L707.54 164L709.58 164L711.63 164L713.67 164L715.71 164L717.75 164L719.79 164L721.83 164L723.88 164L725.92 164L727.96 164L730 164"/>
+            <text class="ant ctr" x="632" y="52">medium</text>
+            <g class="tt">
+                <rect class="tb" x="464.24" y="5" width="157.76" height="78" rx="6"/>
+                <rect class="tsw s1" x="474.24" y="14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="488.24" y="23">medium</text>
+                <text class="tx" x="474.24" y="40">Triangular(25, 50, 75)</text>
+                <text class="tx" x="474.24" y="57">Peak membership 1 at 50</text>
+                <text class="tx" x="474.24" y="74">Used by 2 rules</text>
+            </g>
+        </g>
+        <g class="mk fz pv2 s2 u0" tabindex="0" role="graphics-symbol"
+           aria-label="high, Triangular(60, 85, 100), Peak membership 1 at 85, Used by 1 rule">
+            <title>high, Triangular(60, 85, 100), Peak membership 1 at 85, Used by 1 rule</title>
+            <path class="ar"
+                  d="M534 164L534 164L536.04 164L538.08 164L540.13 164L542.17 164L544.21 164L546.25 164L548.29 164L550.33 164L552.38 164L554.42 164L556.46 164L558.5 164L560.54 164L562.58 164L564.63 164L566.67 164L568.71 164L570.75 164L572.79 164L574.83 164L576.88 164L578.92 164L580.96 164L583 164L585.04 164L587.08 164L589.13 164L591.17 164L593.21 164L595.25 164L597.29 164L599.33 164L601.38 164L603.42 164L605.46 164L607.5 164L609.54 164L611.58 164L613.63 164L615.67 164L617.71 164L619.75 164L621.79 164L623.83 164L625.88 164L627.92 164L629.96 164L632 164L634.04 164L636.08 164L638.13 164L640.17 164L642.21 164L644.25 164L646.29 164L648.33 164L650.38 164L651.6 164L652.42 162L654.46 157L656.5 152L658.54 147L660.58 142L662.63 137L664.67 132L666.71 127L668.75 122L670.79 117L672.83 112L674.88 107L676.92 102L678.96 97L681 92L683.04 87L685.08 82L687.13 77L689.17 72L691.21 67L693.25 62L695.29 57L697.33 52L699.38 47L700.6 44L701.42 47.33L703.46 55.67L705.5 64L707.54 72.33L709.58 80.67L711.63 89L713.67 97.33L715.71 105.67L717.75 114L719.79 122.33L721.83 130.67L723.88 139L725.92 147.33L727.96 155.67L730 164L730 164Z"/>
+            <path class="ln thin"
+                  d="M534 164L536.04 164L538.08 164L540.13 164L542.17 164L544.21 164L546.25 164L548.29 164L550.33 164L552.38 164L554.42 164L556.46 164L558.5 164L560.54 164L562.58 164L564.63 164L566.67 164L568.71 164L570.75 164L572.79 164L574.83 164L576.88 164L578.92 164L580.96 164L583 164L585.04 164L587.08 164L589.13 164L591.17 164L593.21 164L595.25 164L597.29 164L599.33 164L601.38 164L603.42 164L605.46 164L607.5 164L609.54 164L611.58 164L613.63 164L615.67 164L617.71 164L619.75 164L621.79 164L623.83 164L625.88 164L627.92 164L629.96 164L632 164L634.04 164L636.08 164L638.13 164L640.17 164L642.21 164L644.25 164L646.29 164L648.33 164L650.38 164L651.6 164L652.42 162L654.46 157L656.5 152L658.54 147L660.58 142L662.63 137L664.67 132L666.71 127L668.75 122L670.79 117L672.83 112L674.88 107L676.92 102L678.96 97L681 92L683.04 87L685.08 82L687.13 77L689.17 72L691.21 67L693.25 62L695.29 57L697.33 52L699.38 47L700.6 44L701.42 47.33L703.46 55.67L705.5 64L707.54 72.33L709.58 80.67L711.63 89L713.67 97.33L715.71 105.67L717.75 114L719.79 122.33L721.83 130.67L723.88 139L725.92 147.33L727.96 155.67L730 164"/>
+            <text class="ant ctr" x="700.6" y="52">high</text>
+            <g class="tt">
+                <rect class="tb" x="532.84" y="5" width="157.76" height="78" rx="6"/>
+                <rect class="tsw s2" x="542.84" y="14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="556.84" y="23">high</text>
+                <text class="tx" x="542.84" y="40">Triangular(60, 85, 100)</text>
+                <text class="tx" x="542.84" y="57">Peak membership 1 at 85</text>
+                <text class="tx" x="542.84" y="74">Used by 1 rule</text>
+            </g>
+        </g>
+        <text class="ph" x="2" y="218">Rules</text>
+        <g class="mk q0 rl" tabindex="0" role="graphics-symbol"
+           aria-label="Rule 1, IF amount is high AND velocity is fast, THEN risk is high">
+            <title>Rule 1, IF amount is high AND velocity is fast, THEN risk is high</title>
+            <rect class="sh" x="0" y="230" width="744" height="22"/>
+            <rect class="hl" x="0" y="230" width="744" height="22"/>
+            <text class="mid" x="10" y="241">IF amount is high AND velocity is fast THEN risk is high</text>
+            <g class="tt">
+                <rect class="tb" x="-6" y="170" width="224.84" height="61" rx="6"/>
+                <text class="tx b" x="4" y="188">Rule 1</text>
+                <text class="tx" x="4" y="205">IF amount is high AND velocity is fast</text>
+                <text class="tx" x="4" y="222">THEN risk is high</text>
+            </g>
+        </g>
+        <g class="mk q1 rl" tabindex="0" role="graphics-symbol"
+           aria-label="Rule 2, weight 0.8, IF amount is medium AND velocity is normal, THEN risk is medium">
+            <title>Rule 2, weight 0.8, IF amount is medium AND velocity is normal, THEN risk is medium</title>
+            <rect class="hl" x="0" y="252" width="744" height="22"/>
+            <text class="mid" x="10" y="263">IF amount is medium AND velocity is normal THEN risk is medium (weight
+                0.8)
+            </text>
+            <g class="tt">
+                <rect class="tb" x="-6" y="192" width="260.24" height="61" rx="6"/>
+                <text class="tx b" x="4" y="210">Rule 2, weight 0.8</text>
+                <text class="tx" x="4" y="227">IF amount is medium AND velocity is normal</text>
+                <text class="tx" x="4" y="244">THEN risk is medium</text>
+            </g>
+        </g>
+        <g class="mk q2 rl" tabindex="0" role="graphics-symbol"
+           aria-label="Rule 3, IF amount is high OR velocity is normal, THEN risk is medium">
+            <title>Rule 3, IF amount is high OR velocity is normal, THEN risk is medium</title>
+            <rect class="sh" x="0" y="274" width="744" height="22"/>
+            <rect class="hl" x="0" y="274" width="744" height="22"/>
+            <text class="mid" x="10" y="285">IF amount is high OR velocity is normal THEN risk is medium</text>
+            <g class="tt">
+                <rect class="tb" x="-6" y="214" width="232.16" height="61" rx="6"/>
+                <text class="tx b" x="4" y="232">Rule 3</text>
+                <text class="tx" x="4" y="249">IF amount is high OR velocity is normal</text>
+                <text class="tx" x="4" y="266">THEN risk is medium</text>
+            </g>
+        </g>
+        <g class="mk q3 rl" tabindex="0" role="graphics-symbol"
+           aria-label="Rule 4, IF amount is low AND velocity is slow, THEN risk is low">
+            <title>Rule 4, IF amount is low AND velocity is slow, THEN risk is low</title>
+            <rect class="hl" x="0" y="296" width="744" height="22"/>
+            <text class="mid" x="10" y="307">IF amount is low AND velocity is slow THEN risk is low</text>
+            <g class="tt">
+                <rect class="tb" x="-6" y="236" width="226.76" height="61" rx="6"/>
+                <text class="tx b" x="4" y="254">Rule 4</text>
+                <text class="tx" x="4" y="271">IF amount is low AND velocity is slow</text>
+                <text class="tx" x="4" y="288">THEN risk is low</text>
+            </g>
+        </g>
+    </g>
+</svg>

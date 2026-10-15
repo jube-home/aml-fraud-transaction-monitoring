@@ -23,6 +23,7 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.RoleRegistryPermission;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
@@ -48,7 +49,6 @@ namespace Jube.Test.Service.Repository.RoleRegistryPermission
 
         private readonly List<int> createdGrantIds = [];
         private readonly List<int> createdRoleRegistryIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -57,11 +57,15 @@ namespace Jube.Test.Service.Repository.RoleRegistryPermission
 
             await dbContext.GetTable<Data.Poco.RoleRegistryPermissionVersion>()
                 .Where(w => createdGrantIds.Contains(w.RoleRegistryPermissionId)).DeleteAsync();
+
             await dbContext.RoleRegistryPermission.Where(w => createdGrantIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.RoleRegistryPermissionVersion>()
                 .Where(w => createdRoleRegistryIds.Contains(w.RoleRegistryId ?? -1)).DeleteAsync();
+
             await dbContext.RoleRegistryPermission
                 .Where(w => createdRoleRegistryIds.Contains(w.RoleRegistryId ?? -1)).DeleteAsync();
+
             await dbContext.RoleRegistry.Where(w => createdRoleRegistryIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -83,6 +87,7 @@ namespace Jube.Test.Service.Repository.RoleRegistryPermission
         {
             var roleRegistryGuid = await dbContext.UserRegistry.Where(w => w.Name == userName)
                 .Select(w => w.RoleRegistryGuid).FirstAsync();
+
             return await dbContext.RoleRegistry.Where(w => w.Guid == roleRegistryGuid)
                 .Select(w => w.Id).FirstAsync();
         }
@@ -133,6 +138,7 @@ namespace Jube.Test.Service.Repository.RoleRegistryPermission
             });
 
             createdRoleRegistryIds.Add(id);
+
             return id;
         }
 
@@ -258,6 +264,7 @@ namespace Jube.Test.Service.Repository.RoleRegistryPermission
             await EnsureActorCanManageRoleRegistryPermissionAsync(dbContext, fx.Seed.UserWithPermission);
             await EnsureActorCanManageRoleRegistryPermissionAsync(dbContext,
                 fx.Seed.UserWithPermissionNoApproval);
+
             var tenantRegistryId = await ResolveTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
             var targetRoleRegistryId = await CreateTargetRoleRegistryAsync(dbContext, tenantRegistryId);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
@@ -363,6 +370,7 @@ namespace Jube.Test.Service.Repository.RoleRegistryPermission
             {
                 await dbContext.RoleRegistryPermission.Where(w => w.Id == created.Id)
                     .Set(w => w.ImportId, (int?)null).UpdateAsync();
+
                 await dbContext.GetTable<Data.Poco.Import>().Where(w => w.Id == importId).DeleteAsync();
             }
         }

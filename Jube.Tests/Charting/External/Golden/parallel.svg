@@ -1,0 +1,2438 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-parallel" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-541f5cda-t jc-541f5cda-d">
+    <title id="jc-541f5cda-t">Transaction profile</title>
+    <desc id="jc-541f5cda-d">Parallel coordinates chart of 90 rows across 6 dimensions: Amount, Velocity, Distance km,
+        Hour, Channel, Risk.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Transaction profile</text>
+    <text class="sub" x="16" y="50">Each line is one customer</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="49.44" height="18"/>
+        <rect class="sw" x="16" y="69" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="34" y="75">Retail</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="81.44" y="62" width="70.8" height="18"/>
+        <rect class="sw" x="83.44" y="69" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="101.44" y="75">Corporate</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="170.24" y="62" width="56.88" height="18"/>
+        <rect class="sw" x="172.24" y="69" width="14" height="3" rx="1.5"/>
+        <text class="lgt" x="190.24" y="75">Private</text>
+    </g>
+    <line class="pax" x1="42.07" y1="112" x2="42.07" y2="380"/>
+    <text class="pah ctr" x="42.07" y="104">Amount</text>
+    <line class="pax" x1="39.07" y1="380" x2="42.07" y2="380"/>
+    <text class="pcl mid" x="47.07" y="380">0</text>
+    <line class="pax" x1="39.07" y1="313" x2="42.07" y2="313"/>
+    <text class="pcl mid" x="47.07" y="313">250</text>
+    <line class="pax" x1="39.07" y1="246" x2="42.07" y2="246"/>
+    <text class="pcl mid" x="47.07" y="246">500</text>
+    <line class="pax" x1="39.07" y1="179" x2="42.07" y2="179"/>
+    <text class="pcl mid" x="47.07" y="179">750</text>
+    <line class="pax" x1="39.07" y1="112" x2="42.07" y2="112"/>
+    <text class="pcl mid" x="47.07" y="112">1000</text>
+    <line class="pax" x1="152.38" y1="112" x2="152.38" y2="380"/>
+    <text class="pah ctr" x="152.38" y="104">Velocity</text>
+    <line class="pax" x1="149.38" y1="380" x2="152.38" y2="380"/>
+    <text class="pcl mid" x="157.38" y="380">0</text>
+    <line class="pax" x1="149.38" y1="313" x2="152.38" y2="313"/>
+    <text class="pcl mid" x="157.38" y="313">2.5</text>
+    <line class="pax" x1="149.38" y1="246" x2="152.38" y2="246"/>
+    <text class="pcl mid" x="157.38" y="246">5.0</text>
+    <line class="pax" x1="149.38" y1="179" x2="152.38" y2="179"/>
+    <text class="pcl mid" x="157.38" y="179">7.5</text>
+    <line class="pax" x1="149.38" y1="112" x2="152.38" y2="112"/>
+    <text class="pcl mid" x="157.38" y="112">10.0</text>
+    <line class="pax" x1="262.69" y1="112" x2="262.69" y2="380"/>
+    <text class="pah ctr" x="262.69" y="104">Distance km</text>
+    <line class="pax" x1="259.69" y1="380" x2="262.69" y2="380"/>
+    <text class="pcl mid" x="267.69" y="380">50</text>
+    <line class="pax" x1="259.69" y1="313" x2="262.69" y2="313"/>
+    <text class="pcl mid" x="267.69" y="313">100</text>
+    <line class="pax" x1="259.69" y1="246" x2="262.69" y2="246"/>
+    <text class="pcl mid" x="267.69" y="246">150</text>
+    <line class="pax" x1="259.69" y1="179" x2="262.69" y2="179"/>
+    <text class="pcl mid" x="267.69" y="179">200</text>
+    <line class="pax" x1="259.69" y1="112" x2="262.69" y2="112"/>
+    <text class="pcl mid" x="267.69" y="112">250</text>
+    <line class="pax" x1="373.01" y1="112" x2="373.01" y2="380"/>
+    <text class="pah ctr" x="373.01" y="104">Hour</text>
+    <line class="pax" x1="370.01" y1="380" x2="373.01" y2="380"/>
+    <text class="pcl mid" x="378.01" y="380">0</text>
+    <line class="pax" x1="370.01" y1="324.17" x2="373.01" y2="324.17"/>
+    <text class="pcl mid" x="378.01" y="324.17">5</text>
+    <line class="pax" x1="370.01" y1="268.33" x2="373.01" y2="268.33"/>
+    <text class="pcl mid" x="378.01" y="268.33">10</text>
+    <line class="pax" x1="370.01" y1="212.5" x2="373.01" y2="212.5"/>
+    <text class="pcl mid" x="378.01" y="212.5">15</text>
+    <line class="pax" x1="370.01" y1="156.67" x2="373.01" y2="156.67"/>
+    <text class="pcl mid" x="378.01" y="156.67">20</text>
+    <line class="pax" x1="483.32" y1="112" x2="483.32" y2="380"/>
+    <text class="pah ctr" x="483.32" y="104">Channel</text>
+    <line class="pax" x1="480.32" y1="335.33" x2="483.32" y2="335.33"/>
+    <text class="pcl mid" x="488.32" y="335.33">Card</text>
+    <line class="pax" x1="480.32" y1="246" x2="483.32" y2="246"/>
+    <text class="pcl mid" x="488.32" y="246">Cash</text>
+    <line class="pax" x1="480.32" y1="156.67" x2="483.32" y2="156.67"/>
+    <text class="pcl mid" x="488.32" y="156.67">Transfer</text>
+    <line class="pax" x1="593.63" y1="112" x2="593.63" y2="380"/>
+    <text class="pah ctr" x="593.63" y="104">Risk</text>
+    <line class="pax" x1="590.63" y1="380" x2="593.63" y2="380"/>
+    <text class="pcl mid" x="598.63" y="380">0</text>
+    <line class="pax" x1="590.63" y1="313" x2="593.63" y2="313"/>
+    <text class="pcl mid" x="598.63" y="313">0.25</text>
+    <line class="pax" x1="590.63" y1="246" x2="593.63" y2="246"/>
+    <text class="pcl mid" x="598.63" y="246">0.50</text>
+    <line class="pax" x1="590.63" y1="179" x2="593.63" y2="179"/>
+    <text class="pcl mid" x="598.63" y="179">0.75</text>
+    <line class="pax" x1="590.63" y1="112" x2="593.63" y2="112"/>
+    <text class="pcl mid" x="598.63" y="112">1.00</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 1, Group: Retail, Amount: 120, Velocity: 3, Distance km: 50, Hour: 0, Channel: Card, Risk: 0.15">
+            <title>Row 1, Group: Retail, Amount: 120, Velocity: 3, Distance km: 50, Hour: 0, Channel: Card, Risk: 0.15
+            </title>
+            <path class="hl" d="M42.07 347.84L152.38 299.6L262.69 380L373.01 380L483.32 335.33L593.63 339.8"/>
+            <path class="pl" d="M42.07 347.84L152.38 299.6L262.69 380L373.01 380L483.32 335.33L593.63 339.8"/>
+            <circle class="cx" cx="42.07" cy="347.84" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="299.6" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="380" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="380" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="339.8" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="264.11" y="116" width="107.48" height="146" rx="6"/>
+                <rect class="tsw s0" x="274.11" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="288.11" y="134">Row 1</text>
+                <text class="tx" x="274.11" y="151">Group: Retail</text>
+                <text class="tx" x="274.11" y="168">Amount: 120</text>
+                <text class="tx" x="274.11" y="185">Velocity: 3</text>
+                <text class="tx" x="274.11" y="202">Distance km: 50</text>
+                <text class="tx" x="274.11" y="219">Hour: 0</text>
+                <text class="tx" x="274.11" y="236">Channel: Card</text>
+                <text class="tx" x="274.11" y="253">Risk: 0.15</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 4, Group: Retail, Amount: 58.42, Velocity: 3.641, Distance km: 76.87, Hour: 21, Channel: Card, Risk: 0.4492">
+            <title>Row 4, Group: Retail, Amount: 58.42, Velocity: 3.641, Distance km: 76.87, Hour: 21, Channel: Card,
+                Risk: 0.4492
+            </title>
+            <path class="hl" d="M42.07 364.34L152.38 282.42L262.69 343.99L373.01 145.5L483.32 335.33L593.63 259.6"/>
+            <path class="pl" d="M42.07 364.34L152.38 282.42L262.69 343.99L373.01 145.5L483.32 335.33L593.63 259.6"/>
+            <circle class="cx" cx="42.07" cy="364.34" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="282.42" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="343.99" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="145.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="259.6" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 4</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 58.42</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.641</text>
+                <text class="tx" x="265.83" y="202">Distance km: 76.87</text>
+                <text class="tx" x="265.83" y="219">Hour: 21</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4492</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 7, Group: Retail, Amount: 54.07, Velocity: 1.841, Distance km: 73.9, Hour: 18, Channel: Card, Risk: 0.1923">
+            <title>Row 7, Group: Retail, Amount: 54.07, Velocity: 1.841, Distance km: 73.9, Hour: 18, Channel: Card,
+                Risk: 0.1923
+            </title>
+            <path class="hl" d="M42.07 365.51L152.38 330.67L262.69 347.98L373.01 179L483.32 335.33L593.63 328.45"/>
+            <path class="pl" d="M42.07 365.51L152.38 330.67L262.69 347.98L373.01 179L483.32 335.33L593.63 328.45"/>
+            <circle class="cx" cx="42.07" cy="365.51" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="330.67" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="347.98" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="179" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="328.45" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="259.19" y="116" width="117.32" height="146" rx="6"/>
+                <rect class="tsw s0" x="269.19" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="283.19" y="134">Row 7</text>
+                <text class="tx" x="269.19" y="151">Group: Retail</text>
+                <text class="tx" x="269.19" y="168">Amount: 54.07</text>
+                <text class="tx" x="269.19" y="185">Velocity: 1.841</text>
+                <text class="tx" x="269.19" y="202">Distance km: 73.9</text>
+                <text class="tx" x="269.19" y="219">Hour: 18</text>
+                <text class="tx" x="269.19" y="236">Channel: Card</text>
+                <text class="tx" x="269.19" y="253">Risk: 0.1923</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 10, Group: Retail, Amount: 128.6, Velocity: 4.455, Distance km: 55.62, Hour: 15, Channel: Card, Risk: 0.4433">
+            <title>Row 10, Group: Retail, Amount: 128.6, Velocity: 4.455, Distance km: 55.62, Hour: 15, Channel: Card,
+                Risk: 0.4433
+            </title>
+            <path class="hl" d="M42.07 345.54L152.38 260.61L262.69 372.47L373.01 212.5L483.32 335.33L593.63 261.21"/>
+            <path class="pl" d="M42.07 345.54L152.38 260.61L262.69 372.47L373.01 212.5L483.32 335.33L593.63 261.21"/>
+            <circle class="cx" cx="42.07" cy="345.54" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="260.61" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="372.47" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="212.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="261.21" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 10</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 128.6</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.455</text>
+                <text class="tx" x="265.83" y="202">Distance km: 55.62</text>
+                <text class="tx" x="265.83" y="219">Hour: 15</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4433</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 13, Group: Retail, Amount: 152.2, Velocity: 1.529, Distance km: 78.89, Hour: 12, Channel: Card, Risk: 0.2338">
+            <title>Row 13, Group: Retail, Amount: 152.2, Velocity: 1.529, Distance km: 78.89, Hour: 12, Channel: Card,
+                Risk: 0.2338
+            </title>
+            <path class="hl" d="M42.07 339.22L152.38 339.03L262.69 341.28L373.01 246L483.32 335.33L593.63 317.33"/>
+            <path class="pl" d="M42.07 339.22L152.38 339.03L262.69 341.28L373.01 246L483.32 335.33L593.63 317.33"/>
+            <circle class="cx" cx="42.07" cy="339.22" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="339.03" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="341.28" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="246" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="317.33" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 13</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 152.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 1.529</text>
+                <text class="tx" x="265.83" y="202">Distance km: 78.89</text>
+                <text class="tx" x="265.83" y="219">Hour: 12</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.2338</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 16, Group: Retail, Amount: 96.14, Velocity: 4.206, Distance km: 70.08, Hour: 9, Channel: Card, Risk: 0.4314">
+            <title>Row 16, Group: Retail, Amount: 96.14, Velocity: 4.206, Distance km: 70.08, Hour: 9, Channel: Card,
+                Risk: 0.4314
+            </title>
+            <path class="hl" d="M42.07 354.23L152.38 267.29L262.69 353.1L373.01 279.5L483.32 335.33L593.63 264.38"/>
+            <path class="pl" d="M42.07 354.23L152.38 267.29L262.69 353.1L373.01 279.5L483.32 335.33L593.63 264.38"/>
+            <circle class="cx" cx="42.07" cy="354.23" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="267.29" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="353.1" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="279.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="264.38" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 16</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 96.14</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.206</text>
+                <text class="tx" x="265.83" y="202">Distance km: 70.08</text>
+                <text class="tx" x="265.83" y="219">Hour: 9</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4314</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 19, Group: Retail, Amount: 66.98, Velocity: 2.291, Distance km: 61.04, Hour: 6, Channel: Card, Risk: 0.2736">
+            <title>Row 19, Group: Retail, Amount: 66.98, Velocity: 2.291, Distance km: 61.04, Hour: 6, Channel: Card,
+                Risk: 0.2736
+            </title>
+            <path class="hl" d="M42.07 362.05L152.38 318.59L262.69 365.21L373.01 313L483.32 335.33L593.63 306.67"/>
+            <path class="pl" d="M42.07 362.05L152.38 318.59L262.69 365.21L373.01 313L483.32 335.33L593.63 306.67"/>
+            <circle class="cx" cx="42.07" cy="362.05" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="318.59" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="365.21" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="313" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="306.67" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 19</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 66.98</text>
+                <text class="tx" x="265.83" y="185">Velocity: 2.291</text>
+                <text class="tx" x="265.83" y="202">Distance km: 61.04</text>
+                <text class="tx" x="265.83" y="219">Hour: 6</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.2736</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 22, Group: Retail, Amount: 83.6, Velocity: 3.076, Distance km: 79.89, Hour: 3, Channel: Card, Risk: 0.4139">
+            <title>Row 22, Group: Retail, Amount: 83.6, Velocity: 3.076, Distance km: 79.89, Hour: 3, Channel: Card,
+                Risk: 0.4139
+            </title>
+            <path class="hl" d="M42.07 357.59L152.38 297.57L262.69 339.94L373.01 346.5L483.32 335.33L593.63 269.07"/>
+            <path class="pl" d="M42.07 357.59L152.38 297.57L262.69 339.94L373.01 346.5L483.32 335.33L593.63 269.07"/>
+            <circle class="cx" cx="42.07" cy="357.59" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="297.57" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="339.94" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="346.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="269.07" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 22</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 83.6</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.076</text>
+                <text class="tx" x="265.83" y="202">Distance km: 79.89</text>
+                <text class="tx" x="265.83" y="219">Hour: 3</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4139</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 25, Group: Retail, Amount: 96.43, Velocity: 3.572, Distance km: 65.55, Hour: 0, Channel: Card, Risk: 0.311">
+            <title>Row 25, Group: Retail, Amount: 96.43, Velocity: 3.572, Distance km: 65.55, Hour: 0, Channel: Card,
+                Risk: 0.311
+            </title>
+            <path class="hl" d="M42.07 354.16L152.38 284.27L262.69 359.17L373.01 380L483.32 335.33L593.63 296.66"/>
+            <path class="pl" d="M42.07 354.16L152.38 284.27L262.69 359.17L373.01 380L483.32 335.33L593.63 296.66"/>
+            <circle class="cx" cx="42.07" cy="354.16" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="284.27" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="359.17" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="380" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="296.66" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 25</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 96.43</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.572</text>
+                <text class="tx" x="265.83" y="202">Distance km: 65.55</text>
+                <text class="tx" x="265.83" y="219">Hour: 0</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.311</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 28, Group: Retail, Amount: 120, Velocity: 1.89, Distance km: 66.07, Hour: 21, Channel: Card, Risk: 0.3911">
+            <title>Row 28, Group: Retail, Amount: 120, Velocity: 1.89, Distance km: 66.07, Hour: 21, Channel: Card,
+                Risk: 0.3911
+            </title>
+            <path class="hl" d="M42.07 347.84L152.38 329.34L262.69 358.47L373.01 145.5L483.32 335.33L593.63 275.18"/>
+            <path class="pl" d="M42.07 347.84L152.38 329.34L262.69 358.47L373.01 145.5L483.32 335.33L593.63 275.18"/>
+            <circle class="cx" cx="42.07" cy="347.84" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="329.34" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="358.47" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="145.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="275.18" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 28</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 120</text>
+                <text class="tx" x="265.83" y="185">Velocity: 1.89</text>
+                <text class="tx" x="265.83" y="202">Distance km: 66.07</text>
+                <text class="tx" x="265.83" y="219">Hour: 21</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.3911</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 31, Group: Retail, Amount: 140, Velocity: 4.435, Distance km: 79.84, Hour: 18, Channel: Card, Risk: 0.3451">
+            <title>Row 31, Group: Retail, Amount: 140, Velocity: 4.435, Distance km: 79.84, Hour: 18, Channel: Card,
+                Risk: 0.3451
+            </title>
+            <path class="hl" d="M42.07 342.48L152.38 261.15L262.69 340.02L373.01 179L483.32 335.33L593.63 287.52"/>
+            <path class="pl" d="M42.07 342.48L152.38 261.15L262.69 340.02L373.01 179L483.32 335.33L593.63 287.52"/>
+            <circle class="cx" cx="42.07" cy="342.48" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="261.15" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="340.02" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="179" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="287.52" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 31</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 140</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.435</text>
+                <text class="tx" x="265.83" y="202">Distance km: 79.84</text>
+                <text class="tx" x="265.83" y="219">Hour: 18</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.3451</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 34, Group: Retail, Amount: 94.28, Velocity: 1.516, Distance km: 60.47, Hour: 15, Channel: Card, Risk: 0.3635">
+            <title>Row 34, Group: Retail, Amount: 94.28, Velocity: 1.516, Distance km: 60.47, Hour: 15, Channel: Card,
+                Risk: 0.3635
+            </title>
+            <path class="hl" d="M42.07 354.73L152.38 339.38L262.69 365.98L373.01 212.5L483.32 335.33L593.63 282.57"/>
+            <path class="pl" d="M42.07 354.73L152.38 339.38L262.69 365.98L373.01 212.5L483.32 335.33L593.63 282.57"/>
+            <circle class="cx" cx="42.07" cy="354.73" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="339.38" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="365.98" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="212.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="282.57" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 34</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 94.28</text>
+                <text class="tx" x="265.83" y="185">Velocity: 1.516</text>
+                <text class="tx" x="265.83" y="202">Distance km: 60.47</text>
+                <text class="tx" x="265.83" y="219">Hour: 15</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.3635</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 37, Group: Retail, Amount: 41.59, Velocity: 4.249, Distance km: 70.53, Hour: 12, Channel: Card, Risk: 0.3753">
+            <title>Row 37, Group: Retail, Amount: 41.59, Velocity: 4.249, Distance km: 70.53, Hour: 12, Channel: Card,
+                Risk: 0.3753
+            </title>
+            <path class="hl" d="M42.07 368.86L152.38 266.12L262.69 352.49L373.01 246L483.32 335.33L593.63 279.42"/>
+            <path class="pl" d="M42.07 368.86L152.38 266.12L262.69 352.49L373.01 246L483.32 335.33L593.63 279.42"/>
+            <circle class="cx" cx="42.07" cy="368.86" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="266.12" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="352.49" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="246" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="279.42" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 37</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 41.59</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.249</text>
+                <text class="tx" x="265.83" y="202">Distance km: 70.53</text>
+                <text class="tx" x="265.83" y="219">Hour: 12</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.3753</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 40, Group: Retail, Amount: 83.94, Velocity: 2.226, Distance km: 78.72, Hour: 9, Channel: Card, Risk: 0.3317">
+            <title>Row 40, Group: Retail, Amount: 83.94, Velocity: 2.226, Distance km: 78.72, Hour: 9, Channel: Card,
+                Risk: 0.3317
+            </title>
+            <path class="hl" d="M42.07 357.5L152.38 320.35L262.69 341.51L373.01 279.5L483.32 335.33L593.63 291.11"/>
+            <path class="pl" d="M42.07 357.5L152.38 320.35L262.69 341.51L373.01 279.5L483.32 335.33L593.63 291.11"/>
+            <circle class="cx" cx="42.07" cy="357.5" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="320.35" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="341.51" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="279.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="291.11" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 40</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 83.94</text>
+                <text class="tx" x="265.83" y="185">Velocity: 2.226</text>
+                <text class="tx" x="265.83" y="202">Distance km: 78.72</text>
+                <text class="tx" x="265.83" y="219">Hour: 9</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.3317</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 43, Group: Retail, Amount: 150.2, Velocity: 3.151, Distance km: 55.02, Hour: 6, Channel: Card, Risk: 0.401">
+            <title>Row 43, Group: Retail, Amount: 150.2, Velocity: 3.151, Distance km: 55.02, Hour: 6, Channel: Card,
+                Risk: 0.401
+            </title>
+            <path class="hl" d="M42.07 339.75L152.38 295.55L262.69 373.28L373.01 313L483.32 335.33L593.63 272.53"/>
+            <path class="pl" d="M42.07 339.75L152.38 295.55L262.69 373.28L373.01 313L483.32 335.33L593.63 272.53"/>
+            <circle class="cx" cx="42.07" cy="339.75" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="295.55" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="373.28" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="313" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="272.53" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 43</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 150.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.151</text>
+                <text class="tx" x="265.83" y="202">Distance km: 55.02</text>
+                <text class="tx" x="265.83" y="219">Hour: 6</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.401</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 46, Group: Retail, Amount: 129.8, Velocity: 3.501, Distance km: 74.26, Hour: 3, Channel: Card, Risk: 0.2962">
+            <title>Row 46, Group: Retail, Amount: 129.8, Velocity: 3.501, Distance km: 74.26, Hour: 3, Channel: Card,
+                Risk: 0.2962
+            </title>
+            <path class="hl" d="M42.07 345.2L152.38 286.17L262.69 347.49L373.01 346.5L483.32 335.33L593.63 300.63"/>
+            <path class="pl" d="M42.07 345.2L152.38 286.17L262.69 347.49L373.01 346.5L483.32 335.33L593.63 300.63"/>
+            <circle class="cx" cx="42.07" cy="345.2" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="286.17" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="347.49" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="346.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="300.63" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 46</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 129.8</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.501</text>
+                <text class="tx" x="265.83" y="202">Distance km: 74.26</text>
+                <text class="tx" x="265.83" y="219">Hour: 3</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.2962</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 49, Group: Retail, Amount: 79.45, Velocity: 1.943, Distance km: 76.59, Hour: 0, Channel: Card, Risk: 0.4217">
+            <title>Row 49, Group: Retail, Amount: 79.45, Velocity: 1.943, Distance km: 76.59, Hour: 0, Channel: Card,
+                Risk: 0.4217
+            </title>
+            <path class="hl" d="M42.07 358.71L152.38 327.94L262.69 344.37L373.01 380L483.32 335.33L593.63 266.99"/>
+            <path class="pl" d="M42.07 358.71L152.38 327.94L262.69 344.37L373.01 380L483.32 335.33L593.63 266.99"/>
+            <circle class="cx" cx="42.07" cy="358.71" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="327.94" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="344.37" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="380" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="266.99" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 49</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 79.45</text>
+                <text class="tx" x="265.83" y="185">Velocity: 1.943</text>
+                <text class="tx" x="265.83" y="202">Distance km: 76.59</text>
+                <text class="tx" x="265.83" y="219">Hour: 0</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4217</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 52, Group: Retail, Amount: 75.56, Velocity: 4.411, Distance km: 50.61, Hour: 21, Channel: Card, Risk: 0.2577">
+            <title>Row 52, Group: Retail, Amount: 75.56, Velocity: 4.411, Distance km: 50.61, Hour: 21, Channel: Card,
+                Risk: 0.2577
+            </title>
+            <path class="hl" d="M42.07 359.75L152.38 261.79L262.69 379.18L373.01 145.5L483.32 335.33L593.63 310.93"/>
+            <path class="pl" d="M42.07 359.75L152.38 261.79L262.69 379.18L373.01 145.5L483.32 335.33L593.63 310.93"/>
+            <circle class="cx" cx="42.07" cy="359.75" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="261.79" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="379.18" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="145.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="310.93" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 52</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 75.56</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.411</text>
+                <text class="tx" x="265.83" y="202">Distance km: 50.61</text>
+                <text class="tx" x="265.83" y="219">Hour: 21</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.2577</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 55, Group: Retail, Amount: 85.49, Velocity: 1.507, Distance km: 77.14, Hour: 18, Channel: Card, Risk: 0.4369">
+            <title>Row 55, Group: Retail, Amount: 85.49, Velocity: 1.507, Distance km: 77.14, Hour: 18, Channel: Card,
+                Risk: 0.4369
+            </title>
+            <path class="hl" d="M42.07 357.09L152.38 339.62L262.69 343.64L373.01 179L483.32 335.33L593.63 262.91"/>
+            <path class="pl" d="M42.07 357.09L152.38 339.62L262.69 343.64L373.01 179L483.32 335.33L593.63 262.91"/>
+            <circle class="cx" cx="42.07" cy="357.09" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="339.62" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="343.64" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="179" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="262.91" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 55</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 85.49</text>
+                <text class="tx" x="265.83" y="185">Velocity: 1.507</text>
+                <text class="tx" x="265.83" y="202">Distance km: 77.14</text>
+                <text class="tx" x="265.83" y="219">Hour: 18</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4369</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 58, Group: Retail, Amount: 100.1, Velocity: 4.289, Distance km: 73.52, Hour: 15, Channel: Card, Risk: 0.2171">
+            <title>Row 58, Group: Retail, Amount: 100.1, Velocity: 4.289, Distance km: 73.52, Hour: 15, Channel: Card,
+                Risk: 0.2171
+            </title>
+            <path class="hl" d="M42.07 353.18L152.38 265.04L262.69 348.48L373.01 212.5L483.32 335.33L593.63 321.81"/>
+            <path class="pl" d="M42.07 353.18L152.38 265.04L262.69 348.48L373.01 212.5L483.32 335.33L593.63 321.81"/>
+            <circle class="cx" cx="42.07" cy="353.18" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="265.04" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="348.48" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="212.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="321.81" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 58</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 100.1</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.289</text>
+                <text class="tx" x="265.83" y="202">Distance km: 73.52</text>
+                <text class="tx" x="265.83" y="219">Hour: 15</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.2171</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 61, Group: Retail, Amount: 137.2, Velocity: 2.162, Distance km: 56.22, Hour: 12, Channel: Card, Risk: 0.4464">
+            <title>Row 61, Group: Retail, Amount: 137.2, Velocity: 2.162, Distance km: 56.22, Hour: 12, Channel: Card,
+                Risk: 0.4464
+            </title>
+            <path class="hl" d="M42.07 343.22L152.38 322.06L262.69 371.67L373.01 246L483.32 335.33L593.63 260.36"/>
+            <path class="pl" d="M42.07 343.22L152.38 322.06L262.69 371.67L373.01 246L483.32 335.33L593.63 260.36"/>
+            <circle class="cx" cx="42.07" cy="343.22" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="322.06" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="371.67" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="246" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="260.36" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 61</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 137.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 2.162</text>
+                <text class="tx" x="265.83" y="202">Distance km: 56.22</text>
+                <text class="tx" x="265.83" y="219">Hour: 12</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4464</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 64, Group: Retail, Amount: 131.2, Velocity: 3.226, Distance km: 79.05, Hour: 9, Channel: Card, Risk: 0.1752">
+            <title>Row 64, Group: Retail, Amount: 131.2, Velocity: 3.226, Distance km: 79.05, Hour: 9, Channel: Card,
+                Risk: 0.1752
+            </title>
+            <path class="hl" d="M42.07 344.84L152.38 293.54L262.69 341.07L373.01 279.5L483.32 335.33L593.63 333.05"/>
+            <path class="pl" d="M42.07 344.84L152.38 293.54L262.69 341.07L373.01 279.5L483.32 335.33L593.63 333.05"/>
+            <circle class="cx" cx="42.07" cy="344.84" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="293.54" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="341.07" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="279.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="333.05" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 64</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 131.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.226</text>
+                <text class="tx" x="265.83" y="202">Distance km: 79.05</text>
+                <text class="tx" x="265.83" y="219">Hour: 9</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.1752</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 67, Group: Retail, Amount: 62.25, Velocity: 3.429, Distance km: 69.62, Hour: 6, Channel: Card, Risk: 0.45">
+            <title>Row 67, Group: Retail, Amount: 62.25, Velocity: 3.429, Distance km: 69.62, Hour: 6, Channel: Card,
+                Risk: 0.45
+            </title>
+            <path class="hl" d="M42.07 363.32L152.38 288.09L262.69 353.71L373.01 313L483.32 335.33L593.63 259.41"/>
+            <path class="pl" d="M42.07 363.32L152.38 288.09L262.69 353.71L373.01 313L483.32 335.33L593.63 259.41"/>
+            <circle class="cx" cx="42.07" cy="363.32" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="288.09" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="353.71" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="313" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="259.41" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 67</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 62.25</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.429</text>
+                <text class="tx" x="265.83" y="202">Distance km: 69.62</text>
+                <text class="tx" x="265.83" y="219">Hour: 6</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.45</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 70, Group: Retail, Amount: 48.13, Velocity: 1.998, Distance km: 61.61, Hour: 3, Channel: Card, Risk: 0.1672">
+            <title>Row 70, Group: Retail, Amount: 48.13, Velocity: 1.998, Distance km: 61.61, Hour: 3, Channel: Card,
+                Risk: 0.1672
+            </title>
+            <path class="hl" d="M42.07 367.1L152.38 326.46L262.69 364.45L373.01 346.5L483.32 335.33L593.63 335.18"/>
+            <path class="pl" d="M42.07 367.1L152.38 326.46L262.69 364.45L373.01 346.5L483.32 335.33L593.63 335.18"/>
+            <circle class="cx" cx="42.07" cy="367.1" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="326.46" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="364.45" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="346.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="335.18" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 70</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 48.13</text>
+                <text class="tx" x="265.83" y="185">Velocity: 1.998</text>
+                <text class="tx" x="265.83" y="202">Distance km: 61.61</text>
+                <text class="tx" x="265.83" y="219">Hour: 3</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.1672</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 73, Group: Retail, Amount: 119.1, Velocity: 4.383, Distance km: 79.94, Hour: 0, Channel: Card, Risk: 0.4475">
+            <title>Row 73, Group: Retail, Amount: 119.1, Velocity: 4.383, Distance km: 79.94, Hour: 0, Channel: Card,
+                Risk: 0.4475
+            </title>
+            <path class="hl" d="M42.07 348.09L152.38 262.53L262.69 339.88L373.01 380L483.32 335.33L593.63 260.06"/>
+            <path class="pl" d="M42.07 348.09L152.38 262.53L262.69 339.88L373.01 380L483.32 335.33L593.63 260.06"/>
+            <circle class="cx" cx="42.07" cy="348.09" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="262.53" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="339.88" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="380" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="260.06" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 73</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 119.1</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.383</text>
+                <text class="tx" x="265.83" y="202">Distance km: 79.94</text>
+                <text class="tx" x="265.83" y="219">Hour: 0</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4475</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 76, Group: Retail, Amount: 149.1, Velocity: 1.501, Distance km: 65.02, Hour: 21, Channel: Card, Risk: 0.2093">
+            <title>Row 76, Group: Retail, Amount: 149.1, Velocity: 1.501, Distance km: 65.02, Hour: 21, Channel: Card,
+                Risk: 0.2093
+            </title>
+            <path class="hl" d="M42.07 340.04L152.38 339.76L262.69 359.87L373.01 145.5L483.32 335.33L593.63 323.9"/>
+            <path class="pl" d="M42.07 340.04L152.38 339.76L262.69 359.87L373.01 145.5L483.32 335.33L593.63 323.9"/>
+            <circle class="cx" cx="42.07" cy="340.04" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="339.76" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="359.87" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="145.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="323.9" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 76</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 149.1</text>
+                <text class="tx" x="265.83" y="185">Velocity: 1.501</text>
+                <text class="tx" x="265.83" y="202">Distance km: 65.02</text>
+                <text class="tx" x="265.83" y="219">Hour: 21</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.2093</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 79, Group: Retail, Amount: 105.3, Velocity: 4.326, Distance km: 66.58, Hour: 18, Channel: Card, Risk: 0.4391">
+            <title>Row 79, Group: Retail, Amount: 105.3, Velocity: 4.326, Distance km: 66.58, Hour: 18, Channel: Card,
+                Risk: 0.4391
+            </title>
+            <path class="hl" d="M42.07 351.77L152.38 264.05L262.69 357.78L373.01 179L483.32 335.33L593.63 262.31"/>
+            <path class="pl" d="M42.07 351.77L152.38 264.05L262.69 357.78L373.01 179L483.32 335.33L593.63 262.31"/>
+            <circle class="cx" cx="42.07" cy="351.77" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="264.05" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="357.78" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="179" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="262.31" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 79</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 105.3</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.326</text>
+                <text class="tx" x="265.83" y="202">Distance km: 66.58</text>
+                <text class="tx" x="265.83" y="219">Hour: 18</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4391</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 82, Group: Retail, Amount: 77.89, Velocity: 2.1, Distance km: 79.77, Hour: 15, Channel: Card, Risk: 0.2502">
+            <title>Row 82, Group: Retail, Amount: 77.89, Velocity: 2.1, Distance km: 79.77, Hour: 15, Channel: Card,
+                Risk: 0.2502
+            </title>
+            <path class="hl" d="M42.07 359.13L152.38 323.72L262.69 340.11L373.01 212.5L483.32 335.33L593.63 312.93"/>
+            <path class="pl" d="M42.07 359.13L152.38 323.72L262.69 340.11L373.01 212.5L483.32 335.33L593.63 312.93"/>
+            <circle class="cx" cx="42.07" cy="359.13" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="323.72" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="340.11" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="212.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="312.93" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 82</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 77.89</text>
+                <text class="tx" x="265.83" y="185">Velocity: 2.1</text>
+                <text class="tx" x="265.83" y="202">Distance km: 79.77</text>
+                <text class="tx" x="265.83" y="219">Hour: 15</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.2502</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 85, Group: Retail, Amount: 80.22, Velocity: 3.301, Distance km: 59.89, Hour: 12, Channel: Card, Risk: 0.425">
+            <title>Row 85, Group: Retail, Amount: 80.22, Velocity: 3.301, Distance km: 59.89, Hour: 12, Channel: Card,
+                Risk: 0.425
+            </title>
+            <path class="hl" d="M42.07 358.5L152.38 291.54L262.69 366.75L373.01 246L483.32 335.33L593.63 266.11"/>
+            <path class="pl" d="M42.07 358.5L152.38 291.54L262.69 366.75L373.01 246L483.32 335.33L593.63 266.11"/>
+            <circle class="cx" cx="42.07" cy="358.5" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="291.54" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="366.75" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="246" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="266.11" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 85</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 80.22</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.301</text>
+                <text class="tx" x="265.83" y="202">Distance km: 59.89</text>
+                <text class="tx" x="265.83" y="219">Hour: 12</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.425</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Row 88, Group: Retail, Amount: 83.18, Velocity: 3.356, Distance km: 70.97, Hour: 9, Channel: Card, Risk: 0.2891">
+            <title>Row 88, Group: Retail, Amount: 83.18, Velocity: 3.356, Distance km: 70.97, Hour: 9, Channel: Card,
+                Risk: 0.2891
+            </title>
+            <path class="hl" d="M42.07 357.71L152.38 290.05L262.69 351.9L373.01 279.5L483.32 335.33L593.63 302.51"/>
+            <path class="pl" d="M42.07 357.71L152.38 290.05L262.69 351.9L373.01 279.5L483.32 335.33L593.63 302.51"/>
+            <circle class="cx" cx="42.07" cy="357.71" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="290.05" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="351.9" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="279.5" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="302.51" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s0" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 88</text>
+                <text class="tx" x="265.83" y="151">Group: Retail</text>
+                <text class="tx" x="265.83" y="168">Amount: 83.18</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.356</text>
+                <text class="tx" x="265.83" y="202">Distance km: 70.97</text>
+                <text class="tx" x="265.83" y="219">Hour: 9</text>
+                <text class="tx" x="265.83" y="236">Channel: Card</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.2891</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 2, Group: Corporate, Amount: 468.5, Velocity: 6.175, Distance km: 82.55, Hour: 7, Channel: Transfer, Risk: 0.5938">
+            <title>Row 2, Group: Corporate, Amount: 468.5, Velocity: 6.175, Distance km: 82.55, Hour: 7, Channel:
+                Transfer, Risk: 0.5938
+            </title>
+            <path class="hl" d="M42.07 254.44L152.38 214.51L262.69 336.39L373.01 301.83L483.32 156.67L593.63 220.85"/>
+            <path class="pl" d="M42.07 254.44L152.38 214.51L262.69 336.39L373.01 301.83L483.32 156.67L593.63 220.85"/>
+            <circle class="cx" cx="42.07" cy="254.44" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="214.51" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="336.39" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="301.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="220.85" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 2</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 468.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.175</text>
+                <text class="tx" x="265.83" y="202">Distance km: 82.55</text>
+                <text class="tx" x="265.83" y="219">Hour: 7</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.5938</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 5, Group: Corporate, Amount: 315, Velocity: 4.336, Distance km: 139.6, Hour: 4, Channel: Transfer, Risk: 0.7228">
+            <title>Row 5, Group: Corporate, Amount: 315, Velocity: 4.336, Distance km: 139.6, Hour: 4, Channel:
+                Transfer, Risk: 0.7228
+            </title>
+            <path class="hl" d="M42.07 295.57L152.38 263.79L262.69 259.9L373.01 335.33L483.32 156.67L593.63 186.29"/>
+            <path class="pl" d="M42.07 295.57L152.38 263.79L262.69 259.9L373.01 335.33L483.32 156.67L593.63 186.29"/>
+            <circle class="cx" cx="42.07" cy="295.57" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="263.79" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="259.9" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="186.29" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 5</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 315</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.336</text>
+                <text class="tx" x="265.83" y="202">Distance km: 139.6</text>
+                <text class="tx" x="265.83" y="219">Hour: 4</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7228</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 8, Group: Corporate, Amount: 196.4, Velocity: 5.025, Distance km: 97.16, Hour: 1, Channel: Transfer, Risk: 0.5552">
+            <title>Row 8, Group: Corporate, Amount: 196.4, Velocity: 5.025, Distance km: 97.16, Hour: 1, Channel:
+                Transfer, Risk: 0.5552
+            </title>
+            <path class="hl" d="M42.07 327.36L152.38 245.32L262.69 316.8L373.01 368.83L483.32 156.67L593.63 231.2"/>
+            <path class="pl" d="M42.07 327.36L152.38 245.32L262.69 316.8L373.01 368.83L483.32 156.67L593.63 231.2"/>
+            <circle class="cx" cx="42.07" cy="327.36" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="245.32" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="316.8" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="368.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="231.2" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 8</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 196.4</text>
+                <text class="tx" x="265.83" y="185">Velocity: 5.025</text>
+                <text class="tx" x="265.83" y="202">Distance km: 97.16</text>
+                <text class="tx" x="265.83" y="219">Hour: 1</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.5552</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 11, Group: Corporate, Amount: 242.2, Velocity: 5.618, Distance km: 97.69, Hour: 22, Channel: Transfer, Risk: 0.7377">
+            <title>Row 11, Group: Corporate, Amount: 242.2, Velocity: 5.618, Distance km: 97.69, Hour: 22, Channel:
+                Transfer, Risk: 0.7377
+            </title>
+            <path class="hl" d="M42.07 315.08L152.38 229.43L262.69 316.1L373.01 134.33L483.32 156.67L593.63 182.3"/>
+            <path class="pl" d="M42.07 315.08L152.38 229.43L262.69 316.1L373.01 134.33L483.32 156.67L593.63 182.3"/>
+            <circle class="cx" cx="42.07" cy="315.08" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="229.43" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="316.1" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="134.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="182.3" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 11</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 242.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 5.618</text>
+                <text class="tx" x="265.83" y="202">Distance km: 97.69</text>
+                <text class="tx" x="265.83" y="219">Hour: 22</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7377</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 14, Group: Corporate, Amount: 290.2, Velocity: 3.857, Distance km: 139.6, Hour: 19, Channel: Transfer, Risk: 0.5145">
+            <title>Row 14, Group: Corporate, Amount: 290.2, Velocity: 3.857, Distance km: 139.6, Hour: 19, Channel:
+                Transfer, Risk: 0.5145
+            </title>
+            <path class="hl" d="M42.07 302.23L152.38 276.63L262.69 259.97L373.01 167.83L483.32 156.67L593.63 242.1"/>
+            <path class="pl" d="M42.07 302.23L152.38 276.63L262.69 259.97L373.01 167.83L483.32 156.67L593.63 242.1"/>
+            <circle class="cx" cx="42.07" cy="302.23" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="276.63" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="259.97" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="167.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="242.1" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 14</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 290.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.857</text>
+                <text class="tx" x="265.83" y="202">Distance km: 139.6</text>
+                <text class="tx" x="265.83" y="219">Hour: 19</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.5145</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 17, Group: Corporate, Amount: 346.4, Velocity: 6.448, Distance km: 81.97, Hour: 16, Channel: Transfer, Risk: 0.7468">
+            <title>Row 17, Group: Corporate, Amount: 346.4, Velocity: 6.448, Distance km: 81.97, Hour: 16, Channel:
+                Transfer, Risk: 0.7468
+            </title>
+            <path class="hl" d="M42.07 287.16L152.38 207.18L262.69 337.16L373.01 201.33L483.32 156.67L593.63 179.86"/>
+            <path class="pl" d="M42.07 287.16L152.38 207.18L262.69 337.16L373.01 201.33L483.32 156.67L593.63 179.86"/>
+            <circle class="cx" cx="42.07" cy="287.16" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="207.18" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="337.16" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="201.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="179.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 17</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 346.4</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.448</text>
+                <text class="tx" x="265.83" y="202">Distance km: 81.97</text>
+                <text class="tx" x="265.83" y="219">Hour: 16</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7468</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 20, Group: Corporate, Amount: 416.4, Velocity: 3.524, Distance km: 111.1, Hour: 13, Channel: Transfer, Risk: 0.4725">
+            <title>Row 20, Group: Corporate, Amount: 416.4, Velocity: 3.524, Distance km: 111.1, Hour: 13, Channel:
+                Transfer, Risk: 0.4725
+            </title>
+            <path class="hl" d="M42.07 268.4L152.38 285.56L262.69 298.08L373.01 234.83L483.32 156.67L593.63 253.36"/>
+            <path class="pl" d="M42.07 268.4L152.38 285.56L262.69 298.08L373.01 234.83L483.32 156.67L593.63 253.36"/>
+            <circle class="cx" cx="42.07" cy="268.4" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="285.56" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="298.08" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="234.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="253.36" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 20</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 416.4</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.524</text>
+                <text class="tx" x="265.83" y="202">Distance km: 111.1</text>
+                <text class="tx" x="265.83" y="219">Hour: 13</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4725</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 23, Group: Corporate, Amount: 313, Velocity: 6.221, Distance km: 136.3, Hour: 10, Channel: Transfer, Risk: 0.75">
+            <title>Row 23, Group: Corporate, Amount: 313, Velocity: 6.221, Distance km: 136.3, Hour: 10, Channel:
+                Transfer, Risk: 0.75
+            </title>
+            <path class="hl" d="M42.07 296.12L152.38 213.29L262.69 264.3L373.01 268.33L483.32 156.67L593.63 179"/>
+            <path class="pl" d="M42.07 296.12L152.38 213.29L262.69 264.3L373.01 268.33L483.32 156.67L593.63 179"/>
+            <circle class="cx" cx="42.07" cy="296.12" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="213.29" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="264.3" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="268.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="179" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 23</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 313</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.221</text>
+                <text class="tx" x="265.83" y="202">Distance km: 136.3</text>
+                <text class="tx" x="265.83" y="219">Hour: 10</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.75</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 26, Group: Corporate, Amount: 134.9, Velocity: 4.269, Distance km: 65.65, Hour: 7, Channel: Transfer, Risk: 0.4699">
+            <title>Row 26, Group: Corporate, Amount: 134.9, Velocity: 4.269, Distance km: 65.65, Hour: 7, Channel:
+                Transfer, Risk: 0.4699
+            </title>
+            <path class="hl" d="M42.07 343.85L152.38 265.58L262.69 359.03L373.01 301.83L483.32 156.67L593.63 254.07"/>
+            <path class="pl" d="M42.07 343.85L152.38 265.58L262.69 359.03L373.01 301.83L483.32 156.67L593.63 254.07"/>
+            <circle class="cx" cx="42.07" cy="343.85" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="265.58" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="359.03" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="301.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="254.07" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 26</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 134.9</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.269</text>
+                <text class="tx" x="265.83" y="202">Distance km: 65.65</text>
+                <text class="tx" x="265.83" y="219">Hour: 7</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4699</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 29, Group: Corporate, Amount: 217.4, Velocity: 5.101, Distance km: 122.4, Hour: 4, Channel: Transfer, Risk: 0.7472">
+            <title>Row 29, Group: Corporate, Amount: 217.4, Velocity: 5.101, Distance km: 122.4, Hour: 4, Channel:
+                Transfer, Risk: 0.7472
+            </title>
+            <path class="hl" d="M42.07 321.75L152.38 243.3L262.69 282.95L373.01 335.33L483.32 156.67L593.63 179.76"/>
+            <path class="pl" d="M42.07 321.75L152.38 243.3L262.69 282.95L373.01 335.33L483.32 156.67L593.63 179.76"/>
+            <circle class="cx" cx="42.07" cy="321.75" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="243.3" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="282.95" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="179.76" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 29</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 217.4</text>
+                <text class="tx" x="265.83" y="185">Velocity: 5.101</text>
+                <text class="tx" x="265.83" y="202">Distance km: 122.4</text>
+                <text class="tx" x="265.83" y="219">Hour: 4</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7472</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 32, Group: Corporate, Amount: 436.1, Velocity: 5.548, Distance km: 130.1, Hour: 1, Channel: Transfer, Risk: 0.5119">
+            <title>Row 32, Group: Corporate, Amount: 436.1, Velocity: 5.548, Distance km: 130.1, Hour: 1, Channel:
+                Transfer, Risk: 0.5119
+            </title>
+            <path class="hl" d="M42.07 263.13L152.38 231.3L262.69 272.72L373.01 368.83L483.32 156.67L593.63 242.8"/>
+            <path class="pl" d="M42.07 263.13L152.38 231.3L262.69 272.72L373.01 368.83L483.32 156.67L593.63 242.8"/>
+            <circle class="cx" cx="42.07" cy="263.13" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="231.3" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="272.72" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="368.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="242.8" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 32</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 436.1</text>
+                <text class="tx" x="265.83" y="185">Velocity: 5.548</text>
+                <text class="tx" x="265.83" y="202">Distance km: 130.1</text>
+                <text class="tx" x="265.83" y="219">Hour: 1</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.5119</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 35, Group: Corporate, Amount: 415.1, Velocity: 3.907, Distance km: 51.23, Hour: 22, Channel: Transfer, Risk: 0.7384">
+            <title>Row 35, Group: Corporate, Amount: 415.1, Velocity: 3.907, Distance km: 51.23, Hour: 22, Channel:
+                Transfer, Risk: 0.7384
+            </title>
+            <path class="hl" d="M42.07 268.74L152.38 275.28L262.69 378.36L373.01 134.33L483.32 156.67L593.63 182.1"/>
+            <path class="pl" d="M42.07 268.74L152.38 275.28L262.69 378.36L373.01 134.33L483.32 156.67L593.63 182.1"/>
+            <circle class="cx" cx="42.07" cy="268.74" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="275.28" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="378.36" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="134.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="182.1" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 35</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 415.1</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.907</text>
+                <text class="tx" x="265.83" y="202">Distance km: 51.23</text>
+                <text class="tx" x="265.83" y="219">Hour: 22</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7384</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 38, Group: Corporate, Amount: 249.5, Velocity: 6.427, Distance km: 131.2, Hour: 19, Channel: Transfer, Risk: 0.5527">
+            <title>Row 38, Group: Corporate, Amount: 249.5, Velocity: 6.427, Distance km: 131.2, Hour: 19, Channel:
+                Transfer, Risk: 0.5527
+            </title>
+            <path class="hl" d="M42.07 313.14L152.38 207.76L262.69 271.26L373.01 167.83L483.32 156.67L593.63 231.86"/>
+            <path class="pl" d="M42.07 313.14L152.38 207.76L262.69 271.26L373.01 167.83L483.32 156.67L593.63 231.86"/>
+            <circle class="cx" cx="42.07" cy="313.14" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="207.76" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="271.26" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="167.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="231.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 38</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 249.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.427</text>
+                <text class="tx" x="265.83" y="202">Distance km: 131.2</text>
+                <text class="tx" x="265.83" y="219">Hour: 19</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.5527</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 41, Group: Corporate, Amount: 217.7, Velocity: 3.512, Distance km: 120.9, Hour: 16, Channel: Transfer, Risk: 0.7239">
+            <title>Row 41, Group: Corporate, Amount: 217.7, Velocity: 3.512, Distance km: 120.9, Hour: 16, Channel:
+                Transfer, Risk: 0.7239
+            </title>
+            <path class="hl" d="M42.07 321.66L152.38 285.87L262.69 284.94L373.01 201.33L483.32 156.67L593.63 186"/>
+            <path class="pl" d="M42.07 321.66L152.38 285.87L262.69 284.94L373.01 201.33L483.32 156.67L593.63 186"/>
+            <circle class="cx" cx="42.07" cy="321.66" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="285.87" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="284.94" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="201.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="186" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 41</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 217.7</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.512</text>
+                <text class="tx" x="265.83" y="202">Distance km: 120.9</text>
+                <text class="tx" x="265.83" y="219">Hour: 16</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7239</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 44, Group: Corporate, Amount: 257.5, Velocity: 6.263, Distance km: 68.06, Hour: 13, Channel: Transfer, Risk: 0.5915">
+            <title>Row 44, Group: Corporate, Amount: 257.5, Velocity: 6.263, Distance km: 68.06, Hour: 13, Channel:
+                Transfer, Risk: 0.5915
+            </title>
+            <path class="hl" d="M42.07 310.99L152.38 212.15L262.69 355.8L373.01 234.83L483.32 156.67L593.63 221.48"/>
+            <path class="pl" d="M42.07 310.99L152.38 212.15L262.69 355.8L373.01 234.83L483.32 156.67L593.63 221.48"/>
+            <circle class="cx" cx="42.07" cy="310.99" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="212.15" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="355.8" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="234.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="221.48" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 44</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 257.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.263</text>
+                <text class="tx" x="265.83" y="202">Distance km: 68.06</text>
+                <text class="tx" x="265.83" y="219">Hour: 13</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.5915</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 47, Group: Corporate, Amount: 293.1, Velocity: 4.204, Distance km: 137, Hour: 10, Channel: Transfer, Risk: 0.7039">
+            <title>Row 47, Group: Corporate, Amount: 293.1, Velocity: 4.204, Distance km: 137, Hour: 10, Channel:
+                Transfer, Risk: 0.7039
+            </title>
+            <path class="hl" d="M42.07 301.44L152.38 267.33L262.69 263.42L373.01 268.33L483.32 156.67L593.63 191.36"/>
+            <path class="pl" d="M42.07 301.44L152.38 267.33L262.69 263.42L373.01 268.33L483.32 156.67L593.63 191.36"/>
+            <circle class="cx" cx="42.07" cy="301.44" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="267.33" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="263.42" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="268.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="191.36" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="259.61" y="116" width="116.48" height="146" rx="6"/>
+                <rect class="tsw s1" x="269.61" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="283.61" y="134">Row 47</text>
+                <text class="tx" x="269.61" y="151">Group: Corporate</text>
+                <text class="tx" x="269.61" y="168">Amount: 293.1</text>
+                <text class="tx" x="269.61" y="185">Velocity: 4.204</text>
+                <text class="tx" x="269.61" y="202">Distance km: 137</text>
+                <text class="tx" x="269.61" y="219">Hour: 10</text>
+                <text class="tx" x="269.61" y="236">Channel: Transfer</text>
+                <text class="tx" x="269.61" y="253">Risk: 0.7039</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 50, Group: Corporate, Amount: 394, Velocity: 5.176, Distance km: 109.3, Hour: 7, Channel: Transfer, Risk: 0.6274">
+            <title>Row 50, Group: Corporate, Amount: 394, Velocity: 5.176, Distance km: 109.3, Hour: 7, Channel:
+                Transfer, Risk: 0.6274
+            </title>
+            <path class="hl" d="M42.07 274.4L152.38 241.28L262.69 300.52L373.01 301.83L483.32 156.67L593.63 211.85"/>
+            <path class="pl" d="M42.07 274.4L152.38 241.28L262.69 300.52L373.01 301.83L483.32 156.67L593.63 211.85"/>
+            <circle class="cx" cx="42.07" cy="274.4" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="241.28" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="300.52" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="301.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="211.85" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 50</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 394</text>
+                <text class="tx" x="265.83" y="185">Velocity: 5.176</text>
+                <text class="tx" x="265.83" y="202">Distance km: 109.3</text>
+                <text class="tx" x="265.83" y="219">Hour: 7</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.6274</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 53, Group: Corporate, Amount: 409.2, Velocity: 5.477, Distance km: 84.25, Hour: 4, Channel: Transfer, Risk: 0.6788">
+            <title>Row 53, Group: Corporate, Amount: 409.2, Velocity: 5.477, Distance km: 84.25, Hour: 4, Channel:
+                Transfer, Risk: 0.6788
+            </title>
+            <path class="hl" d="M42.07 270.33L152.38 233.21L262.69 334.1L373.01 335.33L483.32 156.67L593.63 198.09"/>
+            <path class="pl" d="M42.07 270.33L152.38 233.21L262.69 334.1L373.01 335.33L483.32 156.67L593.63 198.09"/>
+            <circle class="cx" cx="42.07" cy="270.33" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="233.21" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="334.1" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="198.09" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 53</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 409.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 5.477</text>
+                <text class="tx" x="265.83" y="202">Distance km: 84.25</text>
+                <text class="tx" x="265.83" y="219">Hour: 4</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.6788</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 56, Group: Corporate, Amount: 217.6, Velocity: 3.961, Distance km: 139.8, Hour: 1, Channel: Transfer, Risk: 0.6598">
+            <title>Row 56, Group: Corporate, Amount: 217.6, Velocity: 3.961, Distance km: 139.8, Hour: 1, Channel:
+                Transfer, Risk: 0.6598
+            </title>
+            <path class="hl" d="M42.07 321.68L152.38 273.85L262.69 259.7L373.01 368.83L483.32 156.67L593.63 203.18"/>
+            <path class="pl" d="M42.07 321.68L152.38 273.85L262.69 259.7L373.01 368.83L483.32 156.67L593.63 203.18"/>
+            <circle class="cx" cx="42.07" cy="321.68" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="273.85" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="259.7" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="368.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="203.18" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 56</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 217.6</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.961</text>
+                <text class="tx" x="265.83" y="202">Distance km: 139.8</text>
+                <text class="tx" x="265.83" y="219">Hour: 1</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.6598</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 59, Group: Corporate, Amount: 129.5, Velocity: 6.402, Distance km: 95.59, Hour: 22, Channel: Transfer, Risk: 0.6491">
+            <title>Row 59, Group: Corporate, Amount: 129.5, Velocity: 6.402, Distance km: 95.59, Hour: 22, Channel:
+                Transfer, Risk: 0.6491
+            </title>
+            <path class="hl" d="M42.07 345.31L152.38 208.43L262.69 318.91L373.01 134.33L483.32 156.67L593.63 206.04"/>
+            <path class="pl" d="M42.07 345.31L152.38 208.43L262.69 318.91L373.01 134.33L483.32 156.67L593.63 206.04"/>
+            <circle class="cx" cx="42.07" cy="345.31" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="208.43" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="318.91" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="134.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="206.04" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 59</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 129.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.402</text>
+                <text class="tx" x="265.83" y="202">Distance km: 95.59</text>
+                <text class="tx" x="265.83" y="219">Hour: 22</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.6491</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 62, Group: Corporate, Amount: 324, Velocity: 3.505, Distance km: 99.24, Hour: 19, Channel: Transfer, Risk: 0.6879">
+            <title>Row 62, Group: Corporate, Amount: 324, Velocity: 3.505, Distance km: 99.24, Hour: 19, Channel:
+                Transfer, Risk: 0.6879
+            </title>
+            <path class="hl" d="M42.07 293.18L152.38 286.08L262.69 314.02L373.01 167.83L483.32 156.67L593.63 195.63"/>
+            <path class="pl" d="M42.07 293.18L152.38 286.08L262.69 314.02L373.01 167.83L483.32 156.67L593.63 195.63"/>
+            <circle class="cx" cx="42.07" cy="293.18" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="286.08" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="314.02" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="167.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="195.63" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 62</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 324</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.505</text>
+                <text class="tx" x="265.83" y="202">Distance km: 99.24</text>
+                <text class="tx" x="265.83" y="219">Hour: 19</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.6879</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 65, Group: Corporate, Amount: 455.7, Velocity: 6.302, Distance km: 139.4, Hour: 16, Channel: Transfer, Risk: 0.6154">
+            <title>Row 65, Group: Corporate, Amount: 455.7, Velocity: 6.302, Distance km: 139.4, Hour: 16, Channel:
+                Transfer, Risk: 0.6154
+            </title>
+            <path class="hl" d="M42.07 257.88L152.38 211.1L262.69 260.24L373.01 201.33L483.32 156.67L593.63 215.07"/>
+            <path class="pl" d="M42.07 257.88L152.38 211.1L262.69 260.24L373.01 201.33L483.32 156.67L593.63 215.07"/>
+            <circle class="cx" cx="42.07" cy="257.88" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="211.1" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="260.24" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="201.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="215.07" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 65</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 455.7</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.302</text>
+                <text class="tx" x="265.83" y="202">Distance km: 139.4</text>
+                <text class="tx" x="265.83" y="219">Hour: 16</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.6154</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 68, Group: Corporate, Amount: 338.2, Velocity: 4.141, Distance km: 80.25, Hour: 13, Channel: Transfer, Risk: 0.7113">
+            <title>Row 68, Group: Corporate, Amount: 338.2, Velocity: 4.141, Distance km: 80.25, Hour: 13, Channel:
+                Transfer, Risk: 0.7113
+            </title>
+            <path class="hl" d="M42.07 289.36L152.38 269.02L262.69 339.47L373.01 234.83L483.32 156.67L593.63 189.36"/>
+            <path class="pl" d="M42.07 289.36L152.38 269.02L262.69 339.47L373.01 234.83L483.32 156.67L593.63 189.36"/>
+            <circle class="cx" cx="42.07" cy="289.36" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="269.02" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="339.47" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="234.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="189.36" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 68</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 338.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.141</text>
+                <text class="tx" x="265.83" y="202">Distance km: 80.25</text>
+                <text class="tx" x="265.83" y="219">Hour: 13</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7113</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 71, Group: Corporate, Amount: 231.4, Velocity: 5.251, Distance km: 112.5, Hour: 10, Channel: Transfer, Risk: 0.5785">
+            <title>Row 71, Group: Corporate, Amount: 231.4, Velocity: 5.251, Distance km: 112.5, Hour: 10, Channel:
+                Transfer, Risk: 0.5785
+            </title>
+            <path class="hl" d="M42.07 317.98L152.38 239.27L262.69 296.28L373.01 268.33L483.32 156.67L593.63 224.97"/>
+            <path class="pl" d="M42.07 317.98L152.38 239.27L262.69 296.28L373.01 268.33L483.32 156.67L593.63 224.97"/>
+            <circle class="cx" cx="42.07" cy="317.98" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="239.27" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="296.28" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="268.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="224.97" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 71</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 231.4</text>
+                <text class="tx" x="265.83" y="185">Velocity: 5.251</text>
+                <text class="tx" x="265.83" y="202">Distance km: 112.5</text>
+                <text class="tx" x="265.83" y="219">Hour: 10</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.5785</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 74, Group: Corporate, Amount: 239, Velocity: 5.405, Distance km: 135.8, Hour: 7, Channel: Transfer, Risk: 0.7295">
+            <title>Row 74, Group: Corporate, Amount: 239, Velocity: 5.405, Distance km: 135.8, Hour: 7, Channel:
+                Transfer, Risk: 0.7295
+            </title>
+            <path class="hl" d="M42.07 315.95L152.38 235.14L262.69 265.02L373.01 301.83L483.32 156.67L593.63 184.49"/>
+            <path class="pl" d="M42.07 315.95L152.38 235.14L262.69 265.02L373.01 301.83L483.32 156.67L593.63 184.49"/>
+            <circle class="cx" cx="42.07" cy="315.95" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="235.14" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="265.02" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="301.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="184.49" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 74</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 239</text>
+                <text class="tx" x="265.83" y="185">Velocity: 5.405</text>
+                <text class="tx" x="265.83" y="202">Distance km: 135.8</text>
+                <text class="tx" x="265.83" y="219">Hour: 7</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7295</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 77, Group: Corporate, Amount: 251, Velocity: 4.017, Distance km: 63.83, Hour: 4, Channel: Transfer, Risk: 0.5389">
+            <title>Row 77, Group: Corporate, Amount: 251, Velocity: 4.017, Distance km: 63.83, Hour: 4, Channel:
+                Transfer, Risk: 0.5389
+            </title>
+            <path class="hl" d="M42.07 312.72L152.38 272.36L262.69 361.46L373.01 335.33L483.32 156.67L593.63 235.57"/>
+            <path class="pl" d="M42.07 312.72L152.38 272.36L262.69 361.46L373.01 335.33L483.32 156.67L593.63 235.57"/>
+            <circle class="cx" cx="42.07" cy="312.72" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="272.36" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="361.46" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="335.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="235.57" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 77</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 251</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.017</text>
+                <text class="tx" x="265.83" y="202">Distance km: 63.83</text>
+                <text class="tx" x="265.83" y="219">Hour: 4</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.5389</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 80, Group: Corporate, Amount: 327.4, Velocity: 6.373, Distance km: 123.5, Hour: 1, Channel: Transfer, Risk: 0.7421">
+            <title>Row 80, Group: Corporate, Amount: 327.4, Velocity: 6.373, Distance km: 123.5, Hour: 1, Channel:
+                Transfer, Risk: 0.7421
+            </title>
+            <path class="hl" d="M42.07 292.26L152.38 209.2L262.69 281.51L373.01 368.83L483.32 156.67L593.63 181.12"/>
+            <path class="pl" d="M42.07 292.26L152.38 209.2L262.69 281.51L373.01 368.83L483.32 156.67L593.63 181.12"/>
+            <circle class="cx" cx="42.07" cy="292.26" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="209.2" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="281.51" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="368.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="181.12" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 80</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 327.4</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.373</text>
+                <text class="tx" x="265.83" y="202">Distance km: 123.5</text>
+                <text class="tx" x="265.83" y="219">Hour: 1</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7421</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 83, Group: Corporate, Amount: 439.5, Velocity: 3.501, Distance km: 129.2, Hour: 22, Channel: Transfer, Risk: 0.4976">
+            <title>Row 83, Group: Corporate, Amount: 439.5, Velocity: 3.501, Distance km: 129.2, Hour: 22, Channel:
+                Transfer, Risk: 0.4976
+            </title>
+            <path class="hl" d="M42.07 262.21L152.38 286.18L262.69 273.87L373.01 134.33L483.32 156.67L593.63 246.65"/>
+            <path class="pl" d="M42.07 262.21L152.38 286.18L262.69 273.87L373.01 134.33L483.32 156.67L593.63 246.65"/>
+            <circle class="cx" cx="42.07" cy="262.21" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="286.18" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="273.87" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="134.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="246.65" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 83</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 439.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 3.501</text>
+                <text class="tx" x="265.83" y="202">Distance km: 129.2</text>
+                <text class="tx" x="265.83" y="219">Hour: 22</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4976</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 86, Group: Corporate, Amount: 342.9, Velocity: 6.338, Distance km: 53.07, Hour: 19, Channel: Transfer, Risk: 0.7488">
+            <title>Row 86, Group: Corporate, Amount: 342.9, Velocity: 6.338, Distance km: 53.07, Hour: 19, Channel:
+                Transfer, Risk: 0.7488
+            </title>
+            <path class="hl" d="M42.07 288.09L152.38 210.14L262.69 375.89L373.01 167.83L483.32 156.67L593.63 179.31"/>
+            <path class="pl" d="M42.07 288.09L152.38 210.14L262.69 375.89L373.01 167.83L483.32 156.67L593.63 179.31"/>
+            <circle class="cx" cx="42.07" cy="288.09" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="210.14" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="375.89" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="167.83" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="179.31" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 86</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 342.9</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.338</text>
+                <text class="tx" x="265.83" y="202">Distance km: 53.07</text>
+                <text class="tx" x="265.83" y="219">Hour: 19</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.7488</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Row 89, Group: Corporate, Amount: 139, Velocity: 4.08, Distance km: 131.9, Hour: 16, Channel: Transfer, Risk: 0.4553">
+            <title>Row 89, Group: Corporate, Amount: 139, Velocity: 4.08, Distance km: 131.9, Hour: 16, Channel:
+                Transfer, Risk: 0.4553
+            </title>
+            <path class="hl" d="M42.07 342.74L152.38 270.65L262.69 270.21L373.01 201.33L483.32 156.67L593.63 257.98"/>
+            <path class="pl" d="M42.07 342.74L152.38 270.65L262.69 270.21L373.01 201.33L483.32 156.67L593.63 257.98"/>
+            <circle class="cx" cx="42.07" cy="342.74" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="270.65" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="270.21" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="201.33" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="257.98" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s1" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 89</text>
+                <text class="tx" x="265.83" y="151">Group: Corporate</text>
+                <text class="tx" x="265.83" y="168">Amount: 139</text>
+                <text class="tx" x="265.83" y="185">Velocity: 4.08</text>
+                <text class="tx" x="265.83" y="202">Distance km: 131.9</text>
+                <text class="tx" x="265.83" y="219">Hour: 16</text>
+                <text class="tx" x="265.83" y="236">Channel: Transfer</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.4553</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s2">
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 3, Group: Private, Amount: 582.2, Velocity: 9.461, Distance km: 171.4, Hour: 14, Channel: Cash, Risk: 1">
+            <title>Row 3, Group: Private, Amount: 582.2, Velocity: 9.461, Distance km: 171.4, Hour: 14, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 223.98L152.38 126.45L262.69 217.36L373.01 223.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 223.98L152.38 126.45L262.69 217.36L373.01 223.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="223.98" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="126.45" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="217.36" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="223.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 3</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 582.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 9.461</text>
+                <text class="tx" x="265.83" y="202">Distance km: 171.4</text>
+                <text class="tx" x="265.83" y="219">Hour: 14</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 6, Group: Private, Amount: 672.8, Velocity: 6.534, Distance km: 223, Hour: 11, Channel: Cash, Risk: 1">
+            <title>Row 6, Group: Private, Amount: 672.8, Velocity: 6.534, Distance km: 223, Hour: 11, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 199.68L152.38 204.9L262.69 148.14L373.01 257.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 199.68L152.38 204.9L262.69 148.14L373.01 257.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="199.68" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="204.9" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="148.14" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="257.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="260.75" y="116" width="114.2" height="146" rx="6"/>
+                <rect class="tsw s2" x="270.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="284.75" y="134">Row 6</text>
+                <text class="tx" x="270.75" y="151">Group: Private</text>
+                <text class="tx" x="270.75" y="168">Amount: 672.8</text>
+                <text class="tx" x="270.75" y="185">Velocity: 6.534</text>
+                <text class="tx" x="270.75" y="202">Distance km: 223</text>
+                <text class="tx" x="270.75" y="219">Hour: 11</text>
+                <text class="tx" x="270.75" y="236">Channel: Cash</text>
+                <text class="tx" x="270.75" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 9, Group: Private, Amount: 816.7, Velocity: 9.191, Distance km: 82.51, Hour: 8, Channel: Cash, Risk: 1">
+            <title>Row 9, Group: Private, Amount: 816.7, Velocity: 9.191, Distance km: 82.51, Hour: 8, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 161.12L152.38 133.69L262.69 336.44L373.01 290.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 161.12L152.38 133.69L262.69 336.44L373.01 290.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="161.12" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="133.69" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="336.44" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="290.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 9</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 816.7</text>
+                <text class="tx" x="265.83" y="185">Velocity: 9.191</text>
+                <text class="tx" x="265.83" y="202">Distance km: 82.51</text>
+                <text class="tx" x="265.83" y="219">Hour: 8</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 12, Group: Private, Amount: 678.3, Velocity: 7.314, Distance km: 194.1, Hour: 5, Channel: Cash, Risk: 1">
+            <title>Row 12, Group: Private, Amount: 678.3, Velocity: 7.314, Distance km: 194.1, Hour: 5, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 198.22L152.38 183.99L262.69 186.88L373.01 324.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 198.22L152.38 183.99L262.69 186.88L373.01 324.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="198.22" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="183.99" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="186.88" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="324.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 12</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 678.3</text>
+                <text class="tx" x="265.83" y="185">Velocity: 7.314</text>
+                <text class="tx" x="265.83" y="202">Distance km: 194.1</text>
+                <text class="tx" x="265.83" y="219">Hour: 5</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 15, Group: Private, Amount: 304.5, Velocity: 8.05, Distance km: 210.7, Hour: 2, Channel: Cash, Risk: 1">
+            <title>Row 15, Group: Private, Amount: 304.5, Velocity: 8.05, Distance km: 210.7, Hour: 2, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 298.41L152.38 164.25L262.69 164.69L373.01 357.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 298.41L152.38 164.25L262.69 164.69L373.01 357.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="298.41" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="164.25" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="164.69" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="357.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 15</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 304.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 8.05</text>
+                <text class="tx" x="265.83" y="202">Distance km: 210.7</text>
+                <text class="tx" x="265.83" y="219">Hour: 2</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 18, Group: Private, Amount: 373.7, Velocity: 8.595, Distance km: 51.23, Hour: 23, Channel: Cash, Risk: 1">
+            <title>Row 18, Group: Private, Amount: 373.7, Velocity: 8.595, Distance km: 51.23, Hour: 23, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 279.84L152.38 149.65L262.69 378.36L373.01 123.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 279.84L152.38 149.65L262.69 378.36L373.01 123.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="279.84" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="149.65" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="378.36" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="123.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 18</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 373.7</text>
+                <text class="tx" x="265.83" y="185">Velocity: 8.595</text>
+                <text class="tx" x="265.83" y="202">Distance km: 51.23</text>
+                <text class="tx" x="265.83" y="219">Hour: 23</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 21, Group: Private, Amount: 828.2, Velocity: 6.874, Distance km: 211.8, Hour: 20, Channel: Cash, Risk: 1">
+            <title>Row 21, Group: Private, Amount: 828.2, Velocity: 6.874, Distance km: 211.8, Hour: 20, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 158.03L152.38 195.79L262.69 163.23L373.01 156.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 158.03L152.38 195.79L262.69 163.23L373.01 156.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="158.03" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="195.79" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="163.23" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 21</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 828.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.874</text>
+                <text class="tx" x="265.83" y="202">Distance km: 211.8</text>
+                <text class="tx" x="265.83" y="219">Hour: 20</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 24, Group: Private, Amount: 876.2, Velocity: 9.442, Distance km: 192.6, Hour: 17, Channel: Cash, Risk: 1">
+            <title>Row 24, Group: Private, Amount: 876.2, Velocity: 9.442, Distance km: 192.6, Hour: 17, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 145.17L152.38 126.96L262.69 188.87L373.01 190.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 145.17L152.38 126.96L262.69 188.87L373.01 190.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="145.17" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="126.96" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="188.87" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="190.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 24</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 876.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 9.442</text>
+                <text class="tx" x="265.83" y="202">Distance km: 192.6</text>
+                <text class="tx" x="265.83" y="219">Hour: 17</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 27, Group: Private, Amount: 532.5, Velocity: 6.52, Distance km: 84.92, Hour: 14, Channel: Cash, Risk: 1">
+            <title>Row 27, Group: Private, Amount: 532.5, Velocity: 6.52, Distance km: 84.92, Hour: 14, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 237.28L152.38 205.27L262.69 333.21L373.01 223.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 237.28L152.38 205.27L262.69 333.21L373.01 223.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="237.28" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="205.27" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="333.21" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="223.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 27</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 532.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.52</text>
+                <text class="tx" x="265.83" y="202">Distance km: 84.92</text>
+                <text class="tx" x="265.83" y="219">Hour: 14</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 30, Group: Private, Amount: 417.2, Velocity: 9.235, Distance km: 223.7, Hour: 11, Channel: Cash, Risk: 1">
+            <title>Row 30, Group: Private, Amount: 417.2, Velocity: 9.235, Distance km: 223.7, Hour: 11, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 268.2L152.38 132.5L262.69 147.26L373.01 257.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 268.2L152.38 132.5L262.69 147.26L373.01 257.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="268.2" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="132.5" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="147.26" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="257.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 30</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 417.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 9.235</text>
+                <text class="tx" x="265.83" y="202">Distance km: 223.7</text>
+                <text class="tx" x="265.83" y="219">Hour: 11</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 33, Group: Private, Amount: 511.7, Velocity: 7.247, Distance km: 169.5, Hour: 8, Channel: Cash, Risk: 0.9864">
+            <title>Row 33, Group: Private, Amount: 511.7, Velocity: 7.247, Distance km: 169.5, Hour: 8, Channel: Cash,
+                Risk: 0.9864
+            </title>
+            <path class="hl" d="M42.07 242.87L152.38 185.77L262.69 219.8L373.01 290.67L483.32 246L593.63 115.65"/>
+            <path class="pl" d="M42.07 242.87L152.38 185.77L262.69 219.8L373.01 290.67L483.32 246L593.63 115.65"/>
+            <circle class="cx" cx="42.07" cy="242.87" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="185.77" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="219.8" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="290.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="115.65" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 33</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 511.7</text>
+                <text class="tx" x="265.83" y="185">Velocity: 7.247</text>
+                <text class="tx" x="265.83" y="202">Distance km: 169.5</text>
+                <text class="tx" x="265.83" y="219">Hour: 8</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.9864</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 36, Group: Private, Amount: 579.7, Velocity: 8.126, Distance km: 117.4, Hour: 5, Channel: Cash, Risk: 1">
+            <title>Row 36, Group: Private, Amount: 579.7, Velocity: 8.126, Distance km: 117.4, Hour: 5, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 224.65L152.38 162.22L262.69 289.72L373.01 324.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 224.65L152.38 162.22L262.69 289.72L373.01 324.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="224.65" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="162.22" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="289.72" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="324.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 36</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 579.7</text>
+                <text class="tx" x="265.83" y="185">Velocity: 8.126</text>
+                <text class="tx" x="265.83" y="202">Distance km: 117.4</text>
+                <text class="tx" x="265.83" y="219">Hour: 5</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 39, Group: Private, Amount: 752.5, Velocity: 8.525, Distance km: 229.5, Hour: 2, Channel: Cash, Risk: 0.945">
+            <title>Row 39, Group: Private, Amount: 752.5, Velocity: 8.525, Distance km: 229.5, Hour: 2, Channel: Cash,
+                Risk: 0.945
+            </title>
+            <path class="hl" d="M42.07 178.33L152.38 151.53L262.69 139.52L373.01 357.67L483.32 246L593.63 126.75"/>
+            <path class="pl" d="M42.07 178.33L152.38 151.53L262.69 139.52L373.01 357.67L483.32 246L593.63 126.75"/>
+            <circle class="cx" cx="42.07" cy="178.33" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="151.53" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="139.52" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="357.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="126.75" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 39</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 752.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 8.525</text>
+                <text class="tx" x="265.83" y="202">Distance km: 229.5</text>
+                <text class="tx" x="265.83" y="219">Hour: 2</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.945</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 42, Group: Private, Amount: 835.9, Velocity: 6.925, Distance km: 142.2, Hour: 23, Channel: Cash, Risk: 1">
+            <title>Row 42, Group: Private, Amount: 835.9, Velocity: 6.925, Distance km: 142.2, Hour: 23, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 155.98L152.38 194.41L262.69 256.41L373.01 123.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 155.98L152.38 194.41L262.69 256.41L373.01 123.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="155.98" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="194.41" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="256.41" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="123.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 42</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 835.9</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.925</text>
+                <text class="tx" x="265.83" y="202">Distance km: 142.2</text>
+                <text class="tx" x="265.83" y="219">Hour: 23</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 45, Group: Private, Amount: 500.7, Velocity: 9.419, Distance km: 147.4, Hour: 20, Channel: Cash, Risk: 0.9027">
+            <title>Row 45, Group: Private, Amount: 500.7, Velocity: 9.419, Distance km: 147.4, Hour: 20, Channel: Cash,
+                Risk: 0.9027
+            </title>
+            <path class="hl" d="M42.07 245.81L152.38 127.57L262.69 249.43L373.01 156.67L483.32 246L593.63 138.09"/>
+            <path class="pl" d="M42.07 245.81L152.38 127.57L262.69 249.43L373.01 156.67L483.32 246L593.63 138.09"/>
+            <circle class="cx" cx="42.07" cy="245.81" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="127.57" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="249.43" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="138.09" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 45</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 500.7</text>
+                <text class="tx" x="265.83" y="185">Velocity: 9.419</text>
+                <text class="tx" x="265.83" y="202">Distance km: 147.4</text>
+                <text class="tx" x="265.83" y="219">Hour: 20</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.9027</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 48, Group: Private, Amount: 245.6, Velocity: 6.509, Distance km: 228.9, Hour: 17, Channel: Cash, Risk: 1">
+            <title>Row 48, Group: Private, Amount: 245.6, Velocity: 6.509, Distance km: 228.9, Hour: 17, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 314.17L152.38 205.55L262.69 140.29L373.01 190.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 314.17L152.38 205.55L262.69 140.29L373.01 190.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="314.17" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="205.55" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="140.29" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="190.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 48</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 245.6</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.509</text>
+                <text class="tx" x="265.83" y="202">Distance km: 228.9</text>
+                <text class="tx" x="265.83" y="219">Hour: 17</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 51, Group: Private, Amount: 576.3, Velocity: 9.276, Distance km: 111.6, Hour: 14, Channel: Cash, Risk: 0.9397">
+            <title>Row 51, Group: Private, Amount: 576.3, Velocity: 9.276, Distance km: 111.6, Hour: 14, Channel: Cash,
+                Risk: 0.9397
+            </title>
+            <path class="hl" d="M42.07 225.56L152.38 131.39L262.69 297.39L373.01 223.67L483.32 246L593.63 128.16"/>
+            <path class="pl" d="M42.07 225.56L152.38 131.39L262.69 297.39L373.01 223.67L483.32 246L593.63 128.16"/>
+            <circle class="cx" cx="42.07" cy="225.56" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="131.39" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="297.39" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="223.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="128.16" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 51</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 576.3</text>
+                <text class="tx" x="265.83" y="185">Velocity: 9.276</text>
+                <text class="tx" x="265.83" y="202">Distance km: 111.6</text>
+                <text class="tx" x="265.83" y="219">Hour: 14</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 0.9397</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 54, Group: Private, Amount: 914, Velocity: 7.183, Distance km: 174.1, Hour: 11, Channel: Cash, Risk: 1">
+            <title>Row 54, Group: Private, Amount: 914, Velocity: 7.183, Distance km: 174.1, Hour: 11, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 135.05L152.38 187.5L262.69 213.75L373.01 257.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 135.05L152.38 187.5L262.69 213.75L373.01 257.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="135.05" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="187.5" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="213.75" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="257.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 54</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 914</text>
+                <text class="tx" x="265.83" y="185">Velocity: 7.183</text>
+                <text class="tx" x="265.83" y="202">Distance km: 174.1</text>
+                <text class="tx" x="265.83" y="219">Hour: 11</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 57, Group: Private, Amount: 726.5, Velocity: 8.201, Distance km: 222, Hour: 8, Channel: Cash, Risk: 0.9813">
+            <title>Row 57, Group: Private, Amount: 726.5, Velocity: 8.201, Distance km: 222, Hour: 8, Channel: Cash,
+                Risk: 0.9813
+            </title>
+            <path class="hl" d="M42.07 185.31L152.38 160.21L262.69 149.55L373.01 290.67L483.32 246L593.63 117.02"/>
+            <path class="pl" d="M42.07 185.31L152.38 160.21L262.69 149.55L373.01 290.67L483.32 246L593.63 117.02"/>
+            <circle class="cx" cx="42.07" cy="185.31" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="160.21" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="149.55" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="290.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="117.02" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="260.75" y="116" width="114.2" height="146" rx="6"/>
+                <rect class="tsw s2" x="270.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="284.75" y="134">Row 57</text>
+                <text class="tx" x="270.75" y="151">Group: Private</text>
+                <text class="tx" x="270.75" y="168">Amount: 726.5</text>
+                <text class="tx" x="270.75" y="185">Velocity: 8.201</text>
+                <text class="tx" x="270.75" y="202">Distance km: 222</text>
+                <text class="tx" x="270.75" y="219">Hour: 8</text>
+                <text class="tx" x="270.75" y="236">Channel: Cash</text>
+                <text class="tx" x="270.75" y="253">Risk: 0.9813</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 60, Group: Private, Amount: 465.2, Velocity: 8.453, Distance km: 78.88, Hour: 5, Channel: Cash, Risk: 1">
+            <title>Row 60, Group: Private, Amount: 465.2, Velocity: 8.453, Distance km: 78.88, Hour: 5, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 255.33L152.38 153.45L262.69 341.3L373.01 324.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 255.33L152.38 153.45L262.69 341.3L373.01 324.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="255.33" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="153.45" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="341.3" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="324.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 60</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 465.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 8.453</text>
+                <text class="tx" x="265.83" y="202">Distance km: 78.88</text>
+                <text class="tx" x="265.83" y="219">Hour: 5</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 63, Group: Private, Amount: 468.3, Velocity: 6.979, Distance km: 196.3, Hour: 2, Channel: Cash, Risk: 1">
+            <title>Row 63, Group: Private, Amount: 468.3, Velocity: 6.979, Distance km: 196.3, Hour: 2, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 254.5L152.38 192.96L262.69 183.97L373.01 357.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 254.5L152.38 192.96L262.69 183.97L373.01 357.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="254.5" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="192.96" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="183.97" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="357.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 63</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 468.3</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.979</text>
+                <text class="tx" x="265.83" y="202">Distance km: 196.3</text>
+                <text class="tx" x="265.83" y="219">Hour: 2</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 66, Group: Private, Amount: 507.7, Velocity: 9.393, Distance km: 209, Hour: 23, Channel: Cash, Risk: 1">
+            <title>Row 66, Group: Private, Amount: 507.7, Velocity: 9.393, Distance km: 209, Hour: 23, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 243.93L152.38 128.28L262.69 166.96L373.01 123.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 243.93L152.38 128.28L262.69 166.96L373.01 123.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="243.93" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="128.28" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="166.96" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="123.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="260.75" y="116" width="114.2" height="146" rx="6"/>
+                <rect class="tsw s2" x="270.75" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="284.75" y="134">Row 66</text>
+                <text class="tx" x="270.75" y="151">Group: Private</text>
+                <text class="tx" x="270.75" y="168">Amount: 507.7</text>
+                <text class="tx" x="270.75" y="185">Velocity: 9.393</text>
+                <text class="tx" x="270.75" y="202">Distance km: 209</text>
+                <text class="tx" x="270.75" y="219">Hour: 23</text>
+                <text class="tx" x="270.75" y="236">Channel: Cash</text>
+                <text class="tx" x="270.75" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 69, Group: Private, Amount: 623.2, Velocity: 6.503, Distance km: 54.91, Hour: 20, Channel: Cash, Risk: 1">
+            <title>Row 69, Group: Private, Amount: 623.2, Velocity: 6.503, Distance km: 54.91, Hour: 20, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 212.98L152.38 205.73L262.69 373.43L373.01 156.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 212.98L152.38 205.73L262.69 373.43L373.01 156.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="212.98" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="205.73" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="373.43" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="156.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 69</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 623.2</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.503</text>
+                <text class="tx" x="265.83" y="202">Distance km: 54.91</text>
+                <text class="tx" x="265.83" y="219">Hour: 20</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 72, Group: Private, Amount: 854.9, Velocity: 9.314, Distance km: 213.3, Hour: 17, Channel: Cash, Risk: 1">
+            <title>Row 72, Group: Private, Amount: 854.9, Velocity: 9.314, Distance km: 213.3, Hour: 17, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 150.87L152.38 130.37L262.69 161.11L373.01 190.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 150.87L152.38 130.37L262.69 161.11L373.01 190.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="150.87" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="130.37" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="161.11" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="190.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 72</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 854.9</text>
+                <text class="tx" x="265.83" y="185">Velocity: 9.314</text>
+                <text class="tx" x="265.83" y="202">Distance km: 213.3</text>
+                <text class="tx" x="265.83" y="219">Hour: 17</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 75, Group: Private, Amount: 742.3, Velocity: 7.12, Distance km: 190.4, Hour: 14, Channel: Cash, Risk: 1">
+            <title>Row 75, Group: Private, Amount: 742.3, Velocity: 7.12, Distance km: 190.4, Hour: 14, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 181.07L152.38 189.17L262.69 191.91L373.01 223.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 181.07L152.38 189.17L262.69 191.91L373.01 223.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="181.07" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="189.17" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="191.91" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="223.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 75</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 742.3</text>
+                <text class="tx" x="265.83" y="185">Velocity: 7.12</text>
+                <text class="tx" x="265.83" y="202">Distance km: 190.4</text>
+                <text class="tx" x="265.83" y="219">Hour: 14</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 78, Group: Private, Amount: 319.9, Velocity: 8.276, Distance km: 88.52, Hour: 11, Channel: Cash, Risk: 1">
+            <title>Row 78, Group: Private, Amount: 319.9, Velocity: 8.276, Distance km: 88.52, Hour: 11, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 294.28L152.38 158.21L262.69 328.38L373.01 257.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 294.28L152.38 158.21L262.69 328.38L373.01 257.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="294.28" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="158.21" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="328.38" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="257.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 78</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 319.9</text>
+                <text class="tx" x="265.83" y="185">Velocity: 8.276</text>
+                <text class="tx" x="265.83" y="202">Distance km: 88.52</text>
+                <text class="tx" x="265.83" y="219">Hour: 11</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 81, Group: Private, Amount: 333.5, Velocity: 8.381, Distance km: 224.6, Hour: 8, Channel: Cash, Risk: 1">
+            <title>Row 81, Group: Private, Amount: 333.5, Velocity: 8.381, Distance km: 224.6, Hour: 8, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 290.63L152.38 155.4L262.69 146.01L373.01 290.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 290.63L152.38 155.4L262.69 146.01L373.01 290.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="290.63" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="155.4" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="146.01" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="290.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 81</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 333.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 8.381</text>
+                <text class="tx" x="265.83" y="202">Distance km: 224.6</text>
+                <text class="tx" x="265.83" y="219">Hour: 8</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 84, Group: Private, Amount: 771.6, Velocity: 7.036, Distance km: 166.8, Hour: 5, Channel: Cash, Risk: 1">
+            <title>Row 84, Group: Private, Amount: 771.6, Velocity: 7.036, Distance km: 166.8, Hour: 5, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 173.2L152.38 191.44L262.69 223.52L373.01 324.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 173.2L152.38 191.44L262.69 223.52L373.01 324.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="173.2" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="191.44" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="223.52" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="324.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 84</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 771.6</text>
+                <text class="tx" x="265.83" y="185">Velocity: 7.036</text>
+                <text class="tx" x="265.83" y="202">Distance km: 166.8</text>
+                <text class="tx" x="265.83" y="219">Hour: 5</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 87, Group: Private, Amount: 866.5, Velocity: 9.363, Distance km: 120.8, Hour: 2, Channel: Cash, Risk: 1">
+            <title>Row 87, Group: Private, Amount: 866.5, Velocity: 9.363, Distance km: 120.8, Hour: 2, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 147.78L152.38 129.08L262.69 285.17L373.01 357.67L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 147.78L152.38 129.08L262.69 285.17L373.01 357.67L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="147.78" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="129.08" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="285.17" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="357.67" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 87</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 866.5</text>
+                <text class="tx" x="265.83" y="185">Velocity: 9.363</text>
+                <text class="tx" x="265.83" y="202">Distance km: 120.8</text>
+                <text class="tx" x="265.83" y="219">Hour: 2</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol"
+           aria-label="Row 90, Group: Private, Amount: 595.8, Velocity: 6.5, Distance km: 229.7, Hour: 23, Channel: Cash, Risk: 1">
+            <title>Row 90, Group: Private, Amount: 595.8, Velocity: 6.5, Distance km: 229.7, Hour: 23, Channel: Cash,
+                Risk: 1
+            </title>
+            <path class="hl" d="M42.07 220.32L152.38 205.8L262.69 139.19L373.01 123.17L483.32 246L593.63 112"/>
+            <path class="pl" d="M42.07 220.32L152.38 205.8L262.69 139.19L373.01 123.17L483.32 246L593.63 112"/>
+            <circle class="cx" cx="42.07" cy="220.32" r="3.5"/>
+            <circle class="cx" cx="152.38" cy="205.8" r="3.5"/>
+            <circle class="cx" cx="262.69" cy="139.19" r="3.5"/>
+            <circle class="cx" cx="373.01" cy="123.17" r="3.5"/>
+            <circle class="cx" cx="483.32" cy="246" r="3.5"/>
+            <circle class="cx" cx="593.63" cy="112" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="255.83" y="116" width="124.04" height="146" rx="6"/>
+                <rect class="tsw s2" x="265.83" y="125" width="9" height="9" rx="2"/>
+                <text class="tx b" x="279.83" y="134">Row 90</text>
+                <text class="tx" x="265.83" y="151">Group: Private</text>
+                <text class="tx" x="265.83" y="168">Amount: 595.8</text>
+                <text class="tx" x="265.83" y="185">Velocity: 6.5</text>
+                <text class="tx" x="265.83" y="202">Distance km: 229.7</text>
+                <text class="tx" x="265.83" y="219">Hour: 23</text>
+                <text class="tx" x="265.83" y="236">Channel: Cash</text>
+                <text class="tx" x="265.83" y="253">Risk: 1</text>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -93,6 +93,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             }).ConfigureAwait(false);
 
             createdIds.Add(id);
+
             return id;
         }
 
@@ -272,10 +273,12 @@ namespace Jube.Test.Service.PostgresReplicationStatus
 
             var ascending = await service.ListAsync(search: applicationName, sortField: "replayLagSeconds",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.ReplayLagSeconds).Should().Equal(1, 2, 3);
 
             var descending = await service.ListAsync(search: applicationName, sortField: "replayLagSeconds",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.ReplayLagSeconds).Should().Equal(3, 2, 1);
         }
 
@@ -291,6 +294,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 7005, applicationName, replayLagSeconds: 1);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: applicationName, sortField: "replayLagSeconds",
                 sortDirection: ascendingKeyword);
 
@@ -306,6 +310,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             await CreateEntryAsync(dbContext, 7007, applicationName, replayLagSeconds: 2);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: applicationName, sortField: "replayLagSeconds",
                 sortDirection: "banana");
 
@@ -317,8 +322,10 @@ namespace Jube.Test.Service.PostgresReplicationStatus
         {
             await using var dbContext = fx.GetDbContext();
             var applicationName = $"{DatabaseFixture.Prefix}App{Guid.NewGuid():N}";
+
             var firstId = await CreateEntryAsync(dbContext, 7008, applicationName,
                 DateTime.UtcNow.AddMinutes(-30));
+
             var secondId = await CreateEntryAsync(dbContext, 7009, applicationName, DateTime.UtcNow);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
@@ -334,6 +341,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
         {
             await using var dbContext = fx.GetDbContext();
             var applicationName = $"{DatabaseFixture.Prefix}App{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, 8000 + i, applicationName);
@@ -353,6 +361,7 @@ namespace Jube.Test.Service.PostgresReplicationStatus
             var applicationName = $"{DatabaseFixture.Prefix}App{Guid.NewGuid():N}";
 
             var pid = 9000;
+
             foreach (var value in new double[] { 1, 2, 3, 4, 5 })
             {
                 await CreateEntryAsync(dbContext, pid++, applicationName, replayLagSeconds: value);

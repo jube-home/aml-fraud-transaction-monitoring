@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,24 +11,33 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.CaseWorkflowRole;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
     {
-        static partial void AddCaseWorkflowRole(List<ServiceToolDescriptor> tools) => tools.AddRange(
-        [
-            new ServiceToolDescriptor(
-                "CaseWorkflowRoleListByCaseWorkflowGuid", OperationKind.Read, Idempotent: true,
-                Destructive: false,
-                "Lists the Role grants for a Case Workflow."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowRoleCreate", OperationKind.Write, Idempotent: false, Destructive: false,
-                "Grants a Role access to a Case Workflow; calling twice creates two grants."),
-            new ServiceToolDescriptor(
-                "CaseWorkflowRoleDelete", OperationKind.Delete, Idempotent: false, Destructive: true,
-                "Removes a Role's grant on a Case Workflow; reversible only by direct database action. " +
-                "A repeat call on an already-removed grant throws rather than succeeding as a no-op, so retries " +
-                "are not safe to assume succeeded.")
-        ]);
+        static partial void AddCaseWorkflowRole(List<ServiceToolDescriptor> tools)
+        {
+            tools.AddRange(
+            [
+                new ServiceToolDescriptor(
+                    "CaseWorkflowRoleListByCaseWorkflowGuid", OperationKind.Read, true,
+                    false,
+                    "Lists the Role grants for a Case Workflow.",
+                    CaseWorkflowRoleService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowRoleCreate", OperationKind.Write, false, false,
+                    "Grants a Role access to a Case Workflow; calling twice creates two grants.",
+                    CaseWorkflowRoleService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowRoleDelete", OperationKind.Delete, false, true,
+                    "Removes a Role's grant on a Case Workflow; reversible only by direct database action. " +
+                    "A repeat call on an already-removed grant throws rather than succeeding as a no-op, so retries " +
+                    "are not safe to assume succeeded.",
+                    CaseWorkflowRoleService.RequiredPermissions)
+            ]);
+        }
     }
 }

@@ -6,9 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Abstraction Calculation
 
 An Abstraction Calculation applies a VB .Net code fragment to the values available in an invocation, and produces one
@@ -62,7 +59,7 @@ Calculation. The parameters available to the page are described in the following
 
 For example, to provide the square of an Abstraction Rule named Sum, add a calculation with the function below:
 
-```vb
+```vb calculation
 Matched = Abstraction.Sum.Times(Abstraction.Sum)
 ```
 
@@ -107,7 +104,7 @@ To create a ratio of declined spend to total spend over one day:
    [TTL Counters](../TTLCounters/index.html) and [Abstraction Rules](../AbstractionRules/index.html).
 2. Create an Abstraction Calculation named `DeclineRate24h` with the function:
 
-```vb
+```vb calculation
 Matched = TTLCounter.DeclinedSpend24h.RatioOf(TTLCounter.TotalSpend24h).ZeroIfUndefined()
 ```
 
@@ -119,7 +116,7 @@ Matched = AbstractionCalculation.DeclineRate24h.MatchGreater(0.3)
 
 More complex ratios, such as a ratio of ratios, are built from the same values:
 
-```vb
+```vb calculation
 Matched = TTLCounter.DeclinedCount.RatioOfRatios(TTLCounter.TotalCount, TTLCounter.DeclinedSpend, TTLCounter.TotalSpend).ZeroIfUndefined()
 ```
 
@@ -155,7 +152,7 @@ Activation Rule, so a rule fails closed, but it is not a usable model input and 
 Add `.ZeroIfUndefined()` to store zero for a result that is not a number or is infinite, as the removed arithmetic types
 did:
 
-```vb
+```vb calculation
 Matched = TTLCounter.DeclinedSpend24h.RatioOf(TTLCounter.TotalSpend24h).ZeroIfUndefined()
 ```
 
@@ -199,7 +196,7 @@ A calculation whose Left or Right name cannot be written as a token (it is blank
 hyphen or a full stop) cannot be converted safely. The migration **deactivates** it rather than guess, and records what
 it was as a comment in the function, so nothing is lost when the old columns are dropped:
 
-```vb
+```text
 ' Converted from Divide: Refunds-Sum / Total.Sales. Rewrite this as a function, then activate it.
 ```
 

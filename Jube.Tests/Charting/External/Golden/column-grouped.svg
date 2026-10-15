@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-9ad0d036-t jc-9ad0d036-d">
+    <title id="jc-9ad0d036-t">Alerts by channel and outcome</title>
+    <desc id="jc-9ad0d036-d">Bar chart with 2 series: Confirmed, False positive. 5 categories, vertical bars. Values
+        range from 0 to 410.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Alerts by channel and outcome</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="44" width="73.32" height="18"/>
+        <rect class="sw" x="16" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="57">Confirmed</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="105.32" y="44" width="94.8" height="18"/>
+        <rect class="sw" x="107.32" y="48" width="10" height="10" rx="2"/>
+        <text class="lgt" x="125.32" y="57">False positive</text>
+    </g>
+    <line class="gl" x1="60.48" y1="364" x2="624" y2="364"/>
+    <text class="tk end mid" x="52.48" y="364">0</text>
+    <line class="gl" x1="60.48" y1="305.6" x2="624" y2="305.6"/>
+    <text class="tk end mid" x="52.48" y="305.6">100</text>
+    <line class="gl" x1="60.48" y1="247.2" x2="624" y2="247.2"/>
+    <text class="tk end mid" x="52.48" y="247.2">200</text>
+    <line class="gl" x1="60.48" y1="188.8" x2="624" y2="188.8"/>
+    <text class="tk end mid" x="52.48" y="188.8">300</text>
+    <line class="gl" x1="60.48" y1="130.4" x2="624" y2="130.4"/>
+    <text class="tk end mid" x="52.48" y="130.4">400</text>
+    <line class="gl" x1="60.48" y1="72" x2="624" y2="72"/>
+    <text class="tk end mid" x="52.48" y="72">500</text>
+    <line class="ax" x1="60.48" y1="364" x2="624" y2="364"/>
+    <text class="tk ctr" x="116.83" y="380">Card present</text>
+    <text class="tk ctr" x="229.54" y="380">Card not present</text>
+    <text class="tk ctr" x="342.24" y="380">Transfer</text>
+    <text class="tk ctr" x="454.94" y="380">ATM</text>
+    <text class="tk ctr" x="567.65" y="380">Cheque</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card present, Confirmed: 120, Error: 12">
+            <title>Card present, Confirmed: 120, Error: 12</title>
+            <path class="bar m"
+                  d="M74.57 364L74.57 297.92A4 4 0 0 1 78.57 293.92L111.83 293.92A4 4 0 0 1 115.83 297.92L115.83 364Z"/>
+            <path class="eb" d="M95.2 300.93L95.2 286.91M91.2 300.93L99.2 300.93M91.2 286.91L99.2 286.91"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="224.92" width="115.96" height="61" rx="6"/>
+                <text class="tx b" x="70.48" y="242.92">Card present</text>
+                <rect class="tsw s0" x="70.48" y="250.92" width="9" height="9" rx="2"/>
+                <text class="tx" x="84.48" y="259.92">Confirmed: 120</text>
+                <text class="tx" x="70.48" y="276.92">Error: 12</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Card not present, Confirmed: 260, Error: 20">
+            <title>Card not present, Confirmed: 260, Error: 20</title>
+            <path class="bar m"
+                  d="M187.27 364L187.27 216.16A4 4 0 0 1 191.27 212.16L224.54 212.16A4 4 0 0 1 228.54 216.16L228.54 364Z"/>
+            <path class="eb" d="M207.9 223.84L207.9 200.48M203.9 223.84L211.9 223.84M203.9 200.48L211.9 200.48"/>
+            <g class="tt">
+                <rect class="tb" x="149.92" y="143.16" width="115.96" height="61" rx="6"/>
+                <text class="tx b" x="159.92" y="161.16">Card not present</text>
+                <rect class="tsw s0" x="159.92" y="169.16" width="9" height="9" rx="2"/>
+                <text class="tx" x="173.92" y="178.16">Confirmed: 260</text>
+                <text class="tx" x="159.92" y="195.16">Error: 20</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Transfer, Confirmed: 90, Error: 9">
+            <title>Transfer, Confirmed: 90, Error: 9</title>
+            <path class="bar m"
+                  d="M299.98 364L299.98 315.44A4 4 0 0 1 303.98 311.44L337.24 311.44A4 4 0 0 1 341.24 315.44L341.24 364Z"/>
+            <path class="eb" d="M320.61 316.7L320.61 306.18M316.61 316.7L324.61 316.7M316.61 306.18L324.61 306.18"/>
+            <g class="tt">
+                <rect class="tb" x="265.99" y="242.44" width="109.24" height="61" rx="6"/>
+                <text class="tx b" x="275.99" y="260.44">Transfer</text>
+                <rect class="tsw s0" x="275.99" y="268.44" width="9" height="9" rx="2"/>
+                <text class="tx" x="289.99" y="277.44">Confirmed: 90</text>
+                <text class="tx" x="275.99" y="294.44">Error: 9</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="ATM, Confirmed: 40, Error: 5">
+            <title>ATM, Confirmed: 40, Error: 5</title>
+            <path class="bar m"
+                  d="M412.68 364L412.68 344.64A4 4 0 0 1 416.68 340.64L449.94 340.64A4 4 0 0 1 453.94 344.64L453.94 364Z"/>
+            <path class="eb" d="M433.31 343.56L433.31 337.72M429.31 343.56L437.31 343.56M429.31 337.72L437.31 337.72"/>
+            <g class="tt">
+                <rect class="tb" x="378.69" y="271.64" width="109.24" height="61" rx="6"/>
+                <text class="tx b" x="388.69" y="289.64">ATM</text>
+                <rect class="tsw s0" x="388.69" y="297.64" width="9" height="9" rx="2"/>
+                <text class="tx" x="402.69" y="306.64">Confirmed: 40</text>
+                <text class="tx" x="388.69" y="323.64">Error: 5</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="Cheque, Confirmed: 15, Error: 3">
+            <title>Cheque, Confirmed: 15, Error: 3</title>
+            <path class="bar m"
+                  d="M525.38 364L525.38 359.24A4 4 0 0 1 529.38 355.24L562.65 355.24A4 4 0 0 1 566.65 359.24L566.65 364Z"/>
+            <path class="eb" d="M546.02 356.99L546.02 353.49M542.02 356.99L550.02 356.99M542.02 353.49L550.02 353.49"/>
+            <g class="tt">
+                <rect class="tb" x="491.4" y="286.24" width="109.24" height="61" rx="6"/>
+                <text class="tx b" x="501.4" y="304.24">Cheque</text>
+                <rect class="tsw s0" x="501.4" y="312.24" width="9" height="9" rx="2"/>
+                <text class="tx" x="515.4" y="321.24">Confirmed: 15</text>
+                <text class="tx" x="501.4" y="338.24">Error: 3</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Card present, False positive: 340">
+            <title>Card present, False positive: 340</title>
+            <path class="bar m"
+                  d="M117.83 364L117.83 169.44A4 4 0 0 1 121.83 165.44L155.1 165.44A4 4 0 0 1 159.1 169.44L159.1 364Z"/>
+            <g class="tt">
+                <rect class="tb" x="69.74" y="113.44" width="137.44" height="44" rx="6"/>
+                <text class="tx b" x="79.74" y="131.44">Card present</text>
+                <rect class="tsw s1" x="79.74" y="139.44" width="9" height="9" rx="2"/>
+                <text class="tx" x="93.74" y="148.44">False positive: 340</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Card not present, False positive: 410">
+            <title>Card not present, False positive: 410</title>
+            <path class="bar m"
+                  d="M230.54 364L230.54 128.56A4 4 0 0 1 234.54 124.56L267.8 124.56A4 4 0 0 1 271.8 128.56L271.8 364Z"/>
+            <g class="tt">
+                <rect class="tb" x="182.45" y="72.56" width="137.44" height="44" rx="6"/>
+                <text class="tx b" x="192.45" y="90.56">Card not present</text>
+                <rect class="tsw s1" x="192.45" y="98.56" width="9" height="9" rx="2"/>
+                <text class="tx" x="206.45" y="107.56">False positive: 410</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Transfer, False positive: 150">
+            <title>Transfer, False positive: 150</title>
+            <path class="bar m"
+                  d="M343.24 364L343.24 280.4A4 4 0 0 1 347.24 276.4L380.5 276.4A4 4 0 0 1 384.5 280.4L384.5 364Z"/>
+            <g class="tt">
+                <rect class="tb" x="295.15" y="224.4" width="137.44" height="44" rx="6"/>
+                <text class="tx b" x="305.15" y="242.4">Transfer</text>
+                <rect class="tsw s1" x="305.15" y="250.4" width="9" height="9" rx="2"/>
+                <text class="tx" x="319.15" y="259.4">False positive: 150</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="ATM, False positive: 90">
+            <title>ATM, False positive: 90</title>
+            <path class="bar m"
+                  d="M455.94 364L455.94 315.44A4 4 0 0 1 459.94 311.44L493.21 311.44A4 4 0 0 1 497.21 315.44L497.21 364Z"/>
+            <g class="tt">
+                <rect class="tb" x="411.22" y="259.44" width="130.72" height="44" rx="6"/>
+                <text class="tx b" x="421.22" y="277.44">ATM</text>
+                <rect class="tsw s1" x="421.22" y="285.44" width="9" height="9" rx="2"/>
+                <text class="tx" x="435.22" y="294.44">False positive: 90</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Cheque, False positive: 60">
+            <title>Cheque, False positive: 60</title>
+            <path class="bar m"
+                  d="M568.65 364L568.65 332.96A4 4 0 0 1 572.65 328.96L605.91 328.96A4 4 0 0 1 609.91 332.96L609.91 364Z"/>
+            <g class="tt">
+                <rect class="tb" x="493.28" y="276.96" width="130.72" height="44" rx="6"/>
+                <text class="tx b" x="503.28" y="294.96">Cheque</text>
+                <rect class="tsw s1" x="503.28" y="302.96" width="9" height="9" rx="2"/>
+                <text class="tx" x="517.28" y="311.96">False positive: 60</text>
+            </g>
+        </g>
+    </g>
+    <text class="at ctr" x="0" y="0" transform="translate(24 218) rotate(-90)">Alerts</text>
+</svg>

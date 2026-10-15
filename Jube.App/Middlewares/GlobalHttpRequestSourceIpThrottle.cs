@@ -29,6 +29,7 @@ namespace Jube.App.Middlewares
             }
 
             var now = clock.GetUtcNow().UtcDateTime;
+
             var updated = windowsByRemoteIp.AddOrUpdate(remoteIp,
                 _ => new Window(1, now),
                 (_, existing) => now - existing.StartUtc > window

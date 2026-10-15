@@ -57,7 +57,6 @@ namespace Jube.Test.Service.RoleGrantAccess
         private readonly List<int> createdModelIds = [];
         private readonly List<int> createdWorkflowIds = [];
         private readonly List<int> createdRegistryIds = [];
-
         protected DatabaseFixture Fx => fx;
 
         public Task InitializeAsync()
@@ -70,6 +69,7 @@ namespace Jube.Test.Service.RoleGrantAccess
             await using var dbContext = fx.GetDbContext();
 
             var roleGuids = createdRoleGuids.ToList();
+
             foreach (var grantName in grantNames)
             {
                 foreach (var roleGuid in roleGuids)
@@ -80,6 +80,7 @@ namespace Jube.Test.Service.RoleGrantAccess
             }
 
             var workflowIds = createdWorkflowIds.ToList();
+
             await dbContext.CaseWorkflowXPath
                 .Where(w => w.CaseWorkflowId != null && workflowIds.Contains(w.CaseWorkflowId.Value)).DeleteAsync();
             await dbContext.CaseWorkflowAction
@@ -94,34 +95,44 @@ namespace Jube.Test.Service.RoleGrantAccess
                 .Where(w => w.CaseWorkflowId != null && workflowIds.Contains(w.CaseWorkflowId.Value)).DeleteAsync();
             await dbContext.CaseWorkflowStatus
                 .Where(w => w.CaseWorkflowId != null && workflowIds.Contains(w.CaseWorkflowId.Value)).DeleteAsync();
+
             await dbContext.CaseWorkflow.Where(w => workflowIds.Contains(w.Id)).DeleteAsync();
 
             var modelIds = createdModelIds.ToList();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
 
             var registryIds = createdRegistryIds.ToList();
+
             await dbContext.VisualisationRegistryParameter
                 .Where(w => w.VisualisationRegistryId != null && registryIds.Contains(w.VisualisationRegistryId.Value))
                 .DeleteAsync();
             await dbContext.VisualisationRegistryDatasource
                 .Where(w => w.VisualisationRegistryId != null && registryIds.Contains(w.VisualisationRegistryId.Value))
                 .DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistry>().Where(w => registryIds.Contains(w.Id))
                 .DeleteAsync();
 
             var userNames = createdUserNames.ToList();
+
             var userIds = await dbContext.UserRegistry.Where(u => userNames.Contains(u.Name)).Select(u => u.Id)
                 .ToListAsync();
+
             await dbContext.GetTable<Data.Poco.UserRegistryApiKey>()
                 .Where(k => k.UserRegistryId != null && userIds.Contains(k.UserRegistryId.Value)).DeleteAsync();
+
             await dbContext.UserInTenant.Where(u => userNames.Contains(u.User)).DeleteAsync();
             await dbContext.UserRegistry.Where(u => userNames.Contains(u.Name)).DeleteAsync();
 
             var roleIds = createdRoleIds.ToList();
+
             await dbContext.GetTable<Data.Poco.RoleRegistryVersion>()
                 .Where(v => roleIds.Contains(v.RoleRegistryId)).DeleteAsync();
+
             await dbContext.RoleRegistry.Where(r => roleIds.Contains(r.Id)).DeleteAsync();
         }
 
@@ -147,6 +158,7 @@ namespace Jube.Test.Service.RoleGrantAccess
             int tenantRegistryId)
         {
             var guid = Guid.NewGuid();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = guid,
@@ -162,6 +174,7 @@ namespace Jube.Test.Service.RoleGrantAccess
 
             createdRoleIds.Add(id);
             createdRoleGuids.Add(guid);
+
             return (id, guid);
         }
 
@@ -169,6 +182,7 @@ namespace Jube.Test.Service.RoleGrantAccess
             int tenantRegistryId)
         {
             var name = $"{DatabaseFixture.Prefix}RG{label}{Guid.NewGuid():N}"[..40];
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -183,10 +197,12 @@ namespace Jube.Test.Service.RoleGrantAccess
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix
             }).ConfigureAwait(false);
+
             await dbContext.InsertAsync(new Data.Poco.UserInTenant { User = name, TenantRegistryId = tenantRegistryId })
                 .ConfigureAwait(false);
 
             createdUserNames.Add(name);
+
             return name;
         }
 
@@ -194,6 +210,7 @@ namespace Jube.Test.Service.RoleGrantAccess
         {
             await using var dbContext = fx.GetDbContext();
             var userId = await dbContext.UserRegistry.Where(u => u.Name == userName).Select(u => u.Id).FirstAsync();
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistryApiKey
             {
                 Guid = Guid.NewGuid(),
@@ -210,6 +227,7 @@ namespace Jube.Test.Service.RoleGrantAccess
         protected async Task<(int Id, Guid Guid)> CreateModelAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var saved = await new Data.Repository.EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission)
                 .InsertAsync(new Data.Poco.EntityAnalysisModel
                 {
@@ -221,6 +239,7 @@ namespace Jube.Test.Service.RoleGrantAccess
                 }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return (saved.Id, saved.Guid);
         }
 
@@ -230,6 +249,7 @@ namespace Jube.Test.Service.RoleGrantAccess
 
             await using var dbContext = fx.GetDbContext();
             var guid = Guid.NewGuid();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}RGWorkflow{Guid.NewGuid():N}"[..40],
@@ -245,6 +265,7 @@ namespace Jube.Test.Service.RoleGrantAccess
             }).ConfigureAwait(false);
 
             createdWorkflowIds.Add(id);
+
             return (id, guid);
         }
 
@@ -252,6 +273,7 @@ namespace Jube.Test.Service.RoleGrantAccess
         {
             await using var dbContext = fx.GetDbContext();
             var guid = Guid.NewGuid();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.VisualisationRegistry
             {
                 Name = $"{DatabaseFixture.Prefix}RGRegistry{Guid.NewGuid():N}"[..40],
@@ -267,6 +289,7 @@ namespace Jube.Test.Service.RoleGrantAccess
             }).ConfigureAwait(false);
 
             createdRegistryIds.Add(id);
+
             return (id, guid);
         }
 
@@ -281,6 +304,7 @@ namespace Jube.Test.Service.RoleGrantAccess
 
             var saved = (await InvokeAsync(service, "InsertAsync", dto, CancellationToken.None)).Required();
             var id = saved.GetType().GetProperty("Id").Required().GetValue(saved).Required();
+
             return (int)id;
         }
 
@@ -295,6 +319,7 @@ namespace Jube.Test.Service.RoleGrantAccess
         protected async Task ForgeGrantAsync(string grantName, Guid parentGuid, Guid roleGuid)
         {
             await using var dbContext = fx.GetDbContext();
+
             await dbContext.ExecuteAsync(
                 $"insert into \"{grantName}\" (\"Guid\", \"{ParentProperty(grantName)}\", \"RoleRegistryGuid\", " +
                 "\"CreatedDate\", \"CreatedUser\", \"Deleted\", \"Version\") values (@g, @p, @r, @d, @u, 0, 1)",
@@ -313,6 +338,7 @@ namespace Jube.Test.Service.RoleGrantAccess
         protected async Task DeleteRoleThroughServiceAsync(int roleId)
         {
             await using var dbContext = fx.GetDbContext();
+
             var service = await RoleRegistryService.CreateAsync(dbContext, fx.Seed.UserWithPermission, TestLog.NoOp,
                 localizers, new NullServiceChangeBus(), TestLog.NoOp);
 
@@ -322,6 +348,7 @@ namespace Jube.Test.Service.RoleGrantAccess
         protected async Task MoveUserToRoleAsync(string userName, Guid roleGuid)
         {
             await using var dbContext = fx.GetDbContext();
+
             (await dbContext.UserRegistry.Where(u => u.Name == userName)
                 .Set(u => u.RoleRegistryGuid, roleGuid).UpdateAsync()).Should().Be(1);
         }
@@ -414,6 +441,7 @@ namespace Jube.Test.Service.RoleGrantAccess
 
             (await subject.HasAccessAsync(world.TenantBUser)).Should()
                 .BeFalse("a grant row naming another tenant's role must not open this tenant's entity");
+
             (await subject.HasAccessAsync(world.UserA)).Should().BeFalse();
         }
 
@@ -433,12 +461,14 @@ namespace Jube.Test.Service.RoleGrantAccess
         {
             var serviceType = typeof(CaseWorkflowStatusRoleService).Assembly
                 .GetType($"Jube.Service.Repository.{grantName}.{grantName}Service").Required();
+
             var create = serviceType.GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .Single(m => m.Name == "CreateAsync" && m.GetParameters().Length == 6 &&
                              m.GetParameters()[5].ParameterType == typeof(CancellationToken));
 
             var created = await InvokeMethodAsync(create, null, dbContext, userName, TestLog.NoOp, localizers,
                 new NullServiceChangeBus(), CancellationToken.None);
+
             return created.Required();
         }
 
@@ -456,6 +486,7 @@ namespace Jube.Test.Service.RoleGrantAccess
             params object?[] arguments)
         {
             object? task;
+
             try
             {
                 task = method.Invoke(target, arguments);
@@ -472,6 +503,7 @@ namespace Jube.Test.Service.RoleGrantAccess
             }
 
             await awaitable.ConfigureAwait(false);
+
             return awaitable.GetType().GetProperty("Result")?.GetValue(awaitable);
         }
     }

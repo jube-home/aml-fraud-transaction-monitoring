@@ -16,14 +16,12 @@ using System.Collections.Generic;
 using System.Threading;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Logs
 {
     public class InvocationLog
     {
         private readonly Lock entriesLock = new();
         private readonly List<InvocationLogEntry> entries = [];
-
         public DateTime AnchorDate { get; set; }
 
         public IReadOnlyList<InvocationLogEntry> Entries
@@ -32,7 +30,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
             {
                 lock (entriesLock)
                 {
-                    return entries.ToArray();
+                    return [.. entries];
                 }
             }
         }

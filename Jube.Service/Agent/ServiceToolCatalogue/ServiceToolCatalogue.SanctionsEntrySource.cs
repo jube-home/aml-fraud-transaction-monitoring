@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
+
+using Jube.Service.Agent.Models;
+using Jube.Service.Repository.SanctionEntrySource;
 
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
@@ -23,16 +26,20 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "SanctionEntrySourceList", OperationKind.Read, true, false,
                     "Lists the configured Sanction Entry Sources (e.g. SDN, BOE, EU) the Sanctions Loader can poll " +
                     "or manually import from, each identified by Id and Name. Landlord-only. Capped at 'take' " +
-                    "rows (max 200); use 'afterId' to page."),
+                    "rows (max 200); use 'afterId' to page.",
+                    SanctionEntrySourceService.RequiredPermissions, SanctionEntrySourceService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "SanctionEntrySourceFilterFields", OperationKind.Read, true, false,
-                    "Lists the fields a query builder JSON filter over Sanction Entry Sources may use."),
+                    "Lists the fields a query builder JSON filter over Sanction Entry Sources may use.",
+                    SanctionEntrySourceService.RequiredPermissions, SanctionEntrySourceService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "SanctionEntrySourceFilter", OperationKind.Read, true, false,
-                    "Returns the Sanction Entry Sources matching query builder JSON, keyset-paged and capped."),
+                    "Returns the Sanction Entry Sources matching query builder JSON, keyset-paged and capped.",
+                    SanctionEntrySourceService.RequiredPermissions, SanctionEntrySourceService.RequiresLandlord),
                 new ServiceToolDescriptor(
                     "SanctionEntrySourceCount", OperationKind.Read, true, false,
-                    "Counts the Sanction Entry Sources matching query builder JSON, optionally grouped by a field.")
+                    "Counts the Sanction Entry Sources matching query builder JSON, optionally grouped by a field.",
+                    SanctionEntrySourceService.RequiredPermissions, SanctionEntrySourceService.RequiresLandlord)
             ]);
         }
     }

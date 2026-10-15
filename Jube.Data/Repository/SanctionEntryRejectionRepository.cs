@@ -21,13 +21,6 @@ namespace Jube.Data.Repository
     using LinqToDB;
     using Poco;
 
-    public enum SanctionEntryRejectionReason
-    {
-        InsufficientFields = 1,
-        NoReferenceIndexConfigured = 2,
-        ParseError = 3
-    }
-
     public class SanctionEntryRejectionRepository(DbContext dbContext)
     {
         public Task<SanctionEntryRejection> GetByIdAsync(int id, CancellationToken token = default)
@@ -43,9 +36,11 @@ namespace Jube.Data.Repository
                 .ToListAsync(token).ConfigureAwait(false);
         }
 
-        public async Task<SanctionEntryRejection> InsertAsync(SanctionEntryRejection model, CancellationToken token = default)
+        public async Task<SanctionEntryRejection> InsertAsync(SanctionEntryRejection model,
+            CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
     }

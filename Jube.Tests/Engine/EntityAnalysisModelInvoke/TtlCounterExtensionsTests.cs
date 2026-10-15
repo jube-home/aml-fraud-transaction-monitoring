@@ -276,6 +276,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewOnlineAggregationContext(referenceDate, counter, "acc-1");
             context.EntityAnalysisModel.Flags.EnableTtlCounter = false;
             var repository = context.EntityAnalysisModel.Services.CacheService.CacheTtlCounterEntryRepository;
+
             await repository.UpsertAsync(context.EntityAnalysisModel.Instance.TenantRegistryId,
                 context.EntityAnalysisModel.Instance.Guid, counter.TtlCounterDataName, "acc-1", counter.Guid,
                 referenceDate, 3);

@@ -112,6 +112,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
 
             context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate.Should()
                 .Be(new DateTime(2018, 08, 19, 21, 41, 37, 247, DateTimeKind.Utc));
+
             context.EntityAnalysisModelInstanceEntryPayload.Payload["TxnDateTime"].AsDateTime().Should()
                 .Be(new DateTime(2018, 08, 19, 21, 41, 37, 247, DateTimeKind.Utc));
         }
@@ -155,6 +156,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
             var context = NewExtractor(model).CreateContext(Stream(DemonstrationPayload));
 
             context.EntityAnalysisModelInstanceEntryPayload.Payload["CurrencyAmount"].AsDouble().Should().Be(123.45);
+
             var archiveKey = context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Should().ContainSingle()
                 .Subject;
             archiveKey.Key.Should().Be("CurrencyAmount");
@@ -179,6 +181,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
             var context = NewExtractor(model).CreateContext(Stream(DemonstrationPayload));
 
             context.EntityAnalysisModelInstanceEntryPayload.Payload["TransactionTypeId"].AsInt().Should().Be(1000);
+
             var archiveKey = context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Should().ContainSingle()
                 .Subject;
             archiveKey.KeyValueInteger.Should().Be(1000);
@@ -216,6 +219,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
             var context = NewExtractor(model).CreateContext(Stream(json));
 
             context.EntityAnalysisModelInstanceEntryPayload.Payload["Flag"].AsBool().Should().Be(expected);
+
             context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Should().ContainSingle()
                 .Which.KeyValueBoolean.Should().Be((byte)(expected ? 1 : 0));
         }
@@ -228,6 +232,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
 
             var expected = new DateTime(2019, 04, 17, 01, 18, 15, DateTimeKind.Utc);
             context.EntityAnalysisModelInstanceEntryPayload.Payload["ActionDate"].AsDateTime().Should().Be(expected);
+
             context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Should().ContainSingle()
                 .Which.KeyValueDate.Should().Be(expected);
         }
@@ -239,6 +244,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
             var context = NewExtractor(model).CreateContext(Stream(DemonstrationPayload));
 
             context.EntityAnalysisModelInstanceEntryPayload.Payload["AccountId"].AsString().Should().Be("Test1");
+
             context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Should().ContainSingle()
                 .Which.KeyValueString.Should().Be("Test1");
         }
@@ -311,6 +317,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
         public void AStringFieldResolvesAConfiguredKvpDictionaryValueIntoTheDictionaryCache()
         {
             var model = NewModel(XPath("AccountId", "$.AccountId", 1));
+
             model.Snapshot.KvpDictionaries[1] = new EntityAnalysisModelDictionary
             {
                 Name = "AccountRisk",
@@ -354,6 +361,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
         {
             var model = NewModel();
             var availableModels = new Dictionary<int, EntityAnalysisModel> { [1] = model };
+
             var extractor = new EntityAnalysisModelJsonExtractor(model, availableModels,
                 TestDynamicEnvironment.Create(), TestLog.NoOp);
 

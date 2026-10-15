@@ -14,9 +14,11 @@
 using System.Diagnostics;
 using Jube.Data.Context;
 using Jube.Data.Security;
+using Jube.Service.Authentication.Models;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.UserLogout;
+using Jube.Service.UserLogout.Models;
 using log4net;
 
 namespace Jube.Service.Authentication
@@ -30,7 +32,6 @@ namespace Jube.Service.Authentication
     {
         private const string Area = "Authentication";
         private static readonly TimeSpan revokeTimeout = TimeSpan.FromSeconds(10);
-
         private readonly ILog auditLog = auditLog ?? LogManager.GetLogger("Jube.Audit");
         private readonly TimeProvider timeProvider = timeProvider ?? TimeProvider.System;
 
@@ -39,6 +40,7 @@ namespace Jube.Service.Authentication
             var identity = request.Identity;
             var remoteIp = request.RemoteIp;
             var userName = identity is { IsAuthenticated: true, Name: { Length: > 0 } name } ? name : null;
+
             using var op = OperationScope.Start(Area, "Logout", userName == null ? null : Safe(userName), null,
                 auditLog, log, new NullServiceChangeBus());
             op.Outcome("no-session");
@@ -59,16 +61,19 @@ namespace Jube.Service.Authentication
             }
 
             var outcome = LogoutOutcome.Revoked;
+
             try
             {
                 using var timeout = new CancellationTokenSource(revokeTimeout);
                 await using var dbContext = dbContextFactory();
+
                 await TokenValidity.RevokeUserBeforeAsync(dbContext, userName, timeProvider.GetUtcNow(),
                     timeout.Token).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 outcome = LogoutOutcome.RevokeFailed;
+
                 log.Error(
                     $"Logout: could not revoke the tokens of user={Safe(userName)} ip={Safe(remoteIp)}; the cookies are cleared but a copied token stays valid until it expires.",
                     ex);
@@ -84,6 +89,7 @@ namespace Jube.Service.Authentication
             }
 
             op.Outcome(outcome == LogoutOutcome.Revoked ? "revoked" : "revoke-failed");
+
             await UserLogoutRecorder.RecordAsync(dbContextFactory, log,
                 new UserLogoutEntry(userName, UserLogoutReason.UserLogout,
                     outcome == LogoutOutcome.Revoked ? UserLogoutOutcome.Revoked : UserLogoutOutcome.RevokeFailed,

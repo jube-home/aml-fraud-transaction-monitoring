@@ -243,6 +243,7 @@ internal static class SqlAttackCatalogue
     public static IReadOnlyList<(string Label, string Sql)> HttpAttacks()
     {
         var attacks = new List<(string, string)>();
+
         foreach (var (kind, sql) in WriteSeeds)
         {
             foreach (var (name, text, neutral) in Variants(sql)
@@ -336,6 +337,7 @@ internal static class SqlAttackCatalogue
         var builder = new StringBuilder(sql.Length);
         var upper = startUpper;
         var inQuote = false;
+
         foreach (var c in sql)
         {
             if (c is '\'' or '"')
@@ -346,6 +348,7 @@ internal static class SqlAttackCatalogue
             builder.Append(!inQuote && char.IsLetter(c)
                 ? upper ? char.ToUpperInvariant(c) : char.ToLowerInvariant(c)
                 : c);
+
             if (!inQuote && char.IsLetter(c))
             {
                 upper = !upper;
@@ -359,6 +362,7 @@ internal static class SqlAttackCatalogue
     {
         var builder = new StringBuilder(sql.Length * 2);
         var inQuote = false;
+
         foreach (var c in sql)
         {
             if (c is '\'' or '"')

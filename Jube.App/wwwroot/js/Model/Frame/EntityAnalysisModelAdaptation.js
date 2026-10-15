@@ -23,6 +23,7 @@ var priority = $("#Priority").kendoNumericTextBox({
 
 if (typeof id === "undefined") {
     ReadyNew();
+    window.AskJoobySetPageContext?.("EntityAnalysisModelAdaptation", "new", {[parentKeyName]: parentKey});
 } else {
     $.get(endpoint + "/" + id,
         function (data) {
@@ -32,6 +33,12 @@ if (typeof id === "undefined") {
             priority.data("kendoNumericTextBox").value(data.priority);
 
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("EntityAnalysisModelAdaptation", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
         });
 }
 

@@ -60,10 +60,10 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["count"] = rows.Where(w => w.Count.HasValue).Select(s => (double)s.Count!.Value).ToArray(),
-                ["sum"] = rows.Where(w => w.Sum.HasValue).Select(s => s.Sum!.Value).ToArray(),
-                ["min"] = rows.Where(w => w.Min.HasValue).Select(s => s.Min!.Value).ToArray(),
-                ["max"] = rows.Where(w => w.Max.HasValue).Select(s => s.Max!.Value).ToArray()
+                ["count"] = [.. rows.Where(w => w.Count.HasValue).Select(s => (double)s.Count!.Value)],
+                ["sum"] = [.. rows.Where(w => w.Sum.HasValue).Select(s => s.Sum!.Value)],
+                ["min"] = [.. rows.Where(w => w.Min.HasValue).Select(s => s.Min!.Value)],
+                ["max"] = [.. rows.Where(w => w.Max.HasValue).Select(s => s.Max!.Value)]
             });
         }
 
@@ -85,6 +85,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.MetricName != null && w.MetricName.ToLower().Contains(lowerSearch)) ||
                     (w.Tags != null && w.Tags.ToLower().Contains(lowerSearch)));
@@ -102,6 +103,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "metricName" => query.OrderByField(o => o.MetricName, descending),

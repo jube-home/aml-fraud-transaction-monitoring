@@ -95,6 +95,7 @@ function ImportSnapshot(id) {
 }
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("PreservationSnapshot", "readonly", null);
     $("#Take").kendoButton({click: TakeSnapshot});
 
     // noinspection JSObsoletePrivateAccessSyntax

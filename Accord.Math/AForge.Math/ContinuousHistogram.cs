@@ -6,34 +6,33 @@
 // contacts@aforgenet.com
 //
 
+using System;
+
 namespace Accord.Math
 {
-    using System;
-    using Accord;
-    using Accord.Compat;
-
     /// <summary>
-    /// Histogram for continuous random values.
+    ///     Histogram for continuous random values.
     /// </summary>
-    /// 
-    /// <remarks><para>The class wraps histogram for continuous stochastic function, which is represented
-    /// by integer array and range of the function. Values of the integer array are treated
-    /// as total amount of hits on the corresponding subranges, which are calculated by splitting the
-    /// specified range into required amount of consequent ranges.</para>
-    /// 
-    /// <para>For example, if the integer array is equal to { 1, 2, 4, 8, 16 } and the range is set
-    /// to [0, 1], then the histogram consists of next subranges:
-    /// <list type="bullet">
-    /// <item>[0.0, 0.2] - 1 hit;</item>
-    /// <item>[0.2, 0.4] - 2 hits;</item>
-    /// <item>[0.4, 0.6] - 4 hits;</item>
-    /// <item>[0.6, 0.8] - 8 hits;</item>
-    /// <item>[0.8, 1.0] - 16 hits.</item>
-    /// </list>
-    /// </para>
-    /// 
-    /// <para>Sample usage:</para>
-    /// <code>
+    /// <remarks>
+    ///     <para>
+    ///         The class wraps histogram for continuous stochastic function, which is represented
+    ///         by integer array and range of the function. Values of the integer array are treated
+    ///         as total amount of hits on the corresponding subranges, which are calculated by splitting the
+    ///         specified range into required amount of consequent ranges.
+    ///     </para>
+    ///     <para>
+    ///         For example, if the integer array is equal to { 1, 2, 4, 8, 16 } and the range is set
+    ///         to [0, 1], then the histogram consists of next subranges:
+    ///         <list type="bullet">
+    ///             <item>[0.0, 0.2] - 1 hit;</item>
+    ///             <item>[0.2, 0.4] - 2 hits;</item>
+    ///             <item>[0.4, 0.6] - 4 hits;</item>
+    ///             <item>[0.6, 0.8] - 8 hits;</item>
+    ///             <item>[0.8, 1.0] - 16 hits.</item>
+    ///         </list>
+    ///     </para>
+    ///     <para>Sample usage:</para>
+    ///     <code>
     /// // create histogram
     /// ContinuousHistogram histogram = new ContinuousHistogram(
     ///     new int[] { 0, 0, 8, 4, 2, 4, 7, 1, 0 }, new Range( 0.0f, 1.0f ) );
@@ -41,46 +40,48 @@ namespace Accord.Math
     /// Console.WriteLine( "mean = " + histogram.Mean + ", std.dev = " + histogram.StdDev );
     /// </code>
     /// </remarks>
-    /// 
     [Serializable]
     public class ContinuousHistogram
     {
-        private int[] values;
-        private Accord.Range range;
-
-        private float mean;
-        private float stdDev;
-        private float median;
-        private float min;
-        private float max;
+        private Range range;
         private int total;
 
         /// <summary>
-        /// Values of the histogram.
+        ///     Initializes a new instance of the <see cref="ContinuousHistogram" /> class.
         /// </summary>
-        /// 
-        public int[] Values
+        /// <param name="values">Values of the histogram.</param>
+        /// <param name="range">Range of random values.</param>
+        /// <remarks>
+        ///     Values of the integer array are treated as total amount of hits on the
+        ///     corresponding subranges, which are calculated by splitting the specified range into
+        ///     required amount of consequent ranges (see <see cref="ContinuousHistogram" /> class
+        ///     description for more information).
+        /// </remarks>
+        public ContinuousHistogram(int[] values, Range range)
         {
-            get { return values; }
+            this.Values = values;
+            this.range = range;
+
+            Update();
         }
 
         /// <summary>
-        /// Range of random values.
+        ///     Values of the histogram.
         /// </summary>
-        /// 
-        public Accord.Range Range
-        {
-            get { return range; }
-        }
+        public int[] Values { get; }
 
         /// <summary>
-        /// Mean value.
+        ///     Range of random values.
         /// </summary>
-        /// 
-        /// <remarks><para>The property allows to retrieve mean value of the histogram.</para>
-        /// 
-        /// <para>Sample usage:</para>
-        /// <code>
+        public Range Range => range;
+
+        /// <summary>
+        ///     Mean value.
+        /// </summary>
+        /// <remarks>
+        ///     <para>The property allows to retrieve mean value of the histogram.</para>
+        ///     <para>Sample usage:</para>
+        ///     <code>
         /// // create histogram
         /// ContinuousHistogram histogram = new ContinuousHistogram(
         ///     new int[] { 0, 0, 8, 4, 2, 4, 7, 1, 0 }, new Range( 0.0f, 1.0f ) );
@@ -88,20 +89,15 @@ namespace Accord.Math
         /// Console.WriteLine( "mean = " + histogram.Mean.ToString( "F3" ) );
         /// </code>
         /// </remarks>
-        /// 
-        public float Mean
-        {
-            get { return mean; }
-        }
+        public float Mean { get; private set; }
 
         /// <summary>
-        /// Standard deviation.
+        ///     Standard deviation.
         /// </summary>
-        /// 
-        /// <remarks><para>The property allows to retrieve standard deviation value of the histogram.</para>
-        /// 
-        /// <para>Sample usage:</para>
-        /// <code>
+        /// <remarks>
+        ///     <para>The property allows to retrieve standard deviation value of the histogram.</para>
+        ///     <para>Sample usage:</para>
+        ///     <code>
         /// // create histogram
         /// ContinuousHistogram histogram = new ContinuousHistogram(
         ///     new int[] { 0, 0, 8, 4, 2, 4, 7, 1, 0 }, new Range( 0.0f, 1.0f ) );
@@ -109,20 +105,15 @@ namespace Accord.Math
         /// Console.WriteLine( "std.dev. = " + histogram.StdDev.ToString( "F3" ) );
         /// </code>
         /// </remarks>
-        /// 
-        public float StdDev
-        {
-            get { return stdDev; }
-        }
+        public float StdDev { get; private set; }
 
         /// <summary>
-        /// Median value.
+        ///     Median value.
         /// </summary>
-        /// 
-        /// <remarks><para>The property allows to retrieve median value of the histogram.</para>
-        /// 
-        /// <para>Sample usage:</para>
-        /// <code>
+        /// <remarks>
+        ///     <para>The property allows to retrieve median value of the histogram.</para>
+        ///     <para>Sample usage:</para>
+        ///     <code>
         /// // create histogram
         /// ContinuousHistogram histogram = new ContinuousHistogram(
         ///     new int[] { 0, 0, 8, 4, 2, 4, 7, 1, 0 }, new Range( 0.0f, 1.0f ) );
@@ -130,21 +121,18 @@ namespace Accord.Math
         /// Console.WriteLine( "median = " + histogram.Median.ToString( "F3" ) );
         /// </code>
         /// </remarks>
-        /// 
-        public float Median
-        {
-            get { return median; }
-        }
+        public float Median { get; private set; }
 
         /// <summary>
-        /// Minimum value.
+        ///     Minimum value.
         /// </summary>
-        /// 
-        /// <remarks><para>The property allows to retrieve minimum value of the histogram with non zero
-        /// hits count.</para>
-        /// 
-        /// <para>Sample usage:</para>
-        /// <code>
+        /// <remarks>
+        ///     <para>
+        ///         The property allows to retrieve minimum value of the histogram with non zero
+        ///         hits count.
+        ///     </para>
+        ///     <para>Sample usage:</para>
+        ///     <code>
         /// // create histogram
         /// ContinuousHistogram histogram = new ContinuousHistogram(
         ///     new int[] { 0, 0, 8, 4, 2, 4, 7, 1, 0 }, new Range( 0.0f, 1.0f ) );
@@ -152,20 +140,18 @@ namespace Accord.Math
         /// Console.WriteLine( "min = " + histogram.Min.ToString( "F3" ) );
         /// </code>
         /// </remarks>
-        public float Min
-        {
-            get { return min; }
-        }
+        public float Min { get; private set; }
 
         /// <summary>
-        /// Maximum value.
+        ///     Maximum value.
         /// </summary>
-        /// 
-        /// <remarks><para>The property allows to retrieve maximum value of the histogram with non zero
-        /// hits count.</para>
-        /// 
-        /// <para>Sample usage:</para>
-        /// <code>
+        /// <remarks>
+        ///     <para>
+        ///         The property allows to retrieve maximum value of the histogram with non zero
+        ///         hits count.
+        ///     </para>
+        ///     <para>Sample usage:</para>
+        ///     <code>
         /// // create histogram
         /// ContinuousHistogram histogram = new ContinuousHistogram(
         ///     new int[] { 0, 0, 8, 4, 2, 4, 7, 1, 0 }, new Range( 0.0f, 1.0f ) );
@@ -173,46 +159,20 @@ namespace Accord.Math
         /// Console.WriteLine( "max = " + histogram.Max.ToString( "F3" ) );
         /// </code>
         /// </remarks>
-        /// 
-        public float Max
-        {
-            get { return max; }
-        }
+        public float Max { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContinuousHistogram"/> class.
+        ///     Get range around median containing specified percentage of values.
         /// </summary>
-        /// 
-        /// <param name="values">Values of the histogram.</param>
-        /// <param name="range">Range of random values.</param>
-        /// 
-        /// <remarks>Values of the integer array are treated as total amount of hits on the
-        /// corresponding subranges, which are calculated by splitting the specified range into
-        /// required amount of consequent ranges (see <see cref="ContinuousHistogram"/> class
-        /// description for more information).
-        /// </remarks>
-        /// 
-        public ContinuousHistogram(int[] values, Accord.Range range)
-        {
-            this.values = values;
-            this.range = range;
-
-            Update();
-        }
-
-        /// <summary>
-        /// Get range around median containing specified percentage of values.
-        /// </summary>
-        /// 
         /// <param name="percent">Values percentage around median.</param>
-        /// 
         /// <returns>Returns the range which containes specifies percentage of values.</returns>
-        /// 
-        /// <remarks><para>The method calculates range of stochastic variable, which summary probability
-        /// comprises the specified percentage of histogram's hits.</para>
-        /// 
-        /// <para>Sample usage:</para>
-        /// <code>
+        /// <remarks>
+        ///     <para>
+        ///         The method calculates range of stochastic variable, which summary probability
+        ///         comprises the specified percentage of histogram's hits.
+        ///     </para>
+        ///     <para>Sample usage:</para>
+        ///     <code>
         /// // create histogram
         /// ContinuousHistogram histogram = new ContinuousHistogram(
         ///     new int[] { 0, 0, 8, 4, 2, 4, 7, 1, 0 }, new Range( 0.0f, 1.0f ) );
@@ -222,56 +182,60 @@ namespace Accord.Math
         /// Console.WriteLine( "50% range = [" + range.Min + ", " + range.Max + "]" );
         /// </code>
         /// </remarks>
-        /// 
-        public Accord.Range GetRange(float percent)
+        public Range GetRange(float percent)
         {
             int min, max, hits;
-            int h = (int)(total * (percent + (1 - percent) / 2));
-            int n = values.Length;
-            int nM1 = n - 1;
+            var h = (int)(total * (percent + (1 - percent) / 2));
+            var n = Values.Length;
+            var nM1 = n - 1;
 
             // skip left portion
             for (min = 0, hits = total; min < n; min++)
             {
-                hits -= values[min];
+                hits -= Values[min];
                 if (hits < h)
+                {
                     break;
+                }
             }
+
             // skip right portion
             for (max = nM1, hits = total; max >= 0; max--)
             {
-                hits -= values[max];
+                hits -= Values[max];
                 if (hits < h)
+                {
                     break;
+                }
             }
+
             // return range between left and right boundaries
-            return new Accord.Range(
-                ((float)min / nM1) * range.Length + range.Min,
-                ((float)max / nM1) * range.Length + range.Min);
+            return new Range(
+                (float)min / nM1 * range.Length + range.Min,
+                (float)max / nM1 * range.Length + range.Min);
         }
 
         /// <summary>
-        /// Update statistical value of the histogram.
+        ///     Update statistical value of the histogram.
         /// </summary>
-        /// 
-        /// <remarks>The method recalculates statistical values of the histogram, like mean,
-        /// standard deviation, etc. The method should be called only in the case if histogram
-        /// values were retrieved through <see cref="Values"/> property and updated after that.
+        /// <remarks>
+        ///     The method recalculates statistical values of the histogram, like mean,
+        ///     standard deviation, etc. The method should be called only in the case if histogram
+        ///     values were retrieved through <see cref="Values" /> property and updated after that.
         /// </remarks>
-        /// 
         public void Update()
         {
             int hits;
-            int i, n = values.Length;
-            int nM1 = n - 1;
+            int i, n = Values.Length;
+            var nM1 = n - 1;
 
-            float rangeLength = range.Length;
-            float rangeMin = range.Min;
+            var rangeLength = range.Length;
+            var rangeMin = range.Min;
 
-            max = 0;
-            min = n;
-            mean = 0;
-            stdDev = 0;
+            Max = 0;
+            Min = n;
+            Mean = 0;
+            StdDev = 0;
             total = 0;
 
             double sum = 0;
@@ -279,46 +243,50 @@ namespace Accord.Math
             // calculate mean, min, max
             for (i = 0; i < n; i++)
             {
-                hits = values[i];
+                hits = Values[i];
 
                 if (hits != 0)
                 {
                     // max
-                    if (i > max)
-                        max = i;
+                    if (i > Max)
+                    {
+                        Max = i;
+                    }
+
                     // min
-                    if (i < min)
-                        min = i;
+                    if (i < Min)
+                    {
+                        Min = i;
+                    }
                 }
 
                 // accumulate total value
                 total += hits;
                 // accumulate mean value
-                sum += (((double)i / nM1) * rangeLength + rangeMin) * hits;
+                sum += ((double)i / nM1 * rangeLength + rangeMin) * hits;
             }
 
             if (total != 0)
             {
-                mean = (float)(sum / total);
+                Mean = (float)(sum / total);
             }
 
-            min = (min / nM1) * rangeLength + rangeMin;
-            max = (max / nM1) * rangeLength + rangeMin;
+            Min = Min / nM1 * rangeLength + rangeMin;
+            Max = Max / nM1 * rangeLength + rangeMin;
 
             // calculate stadard deviation
             sum = 0;
-            double diff;
 
             for (i = 0; i < n; i++)
             {
-                hits = values[i];
-                diff = (((double)i / nM1) * rangeLength + rangeMin) - mean;
+                hits = Values[i];
+                var diff = (double)i / nM1 * rangeLength + rangeMin - Mean;
                 sum += diff * diff * hits;
             }
 
             if (total != 0)
             {
-                stdDev = (float)Math.Sqrt(sum / total);
+                StdDev = (float)System.Math.Sqrt(sum / total);
             }
 
             // calculate median
@@ -326,11 +294,14 @@ namespace Accord.Math
 
             for (m = 0, hits = 0; m < n; m++)
             {
-                hits += values[m];
+                hits += Values[m];
                 if (hits >= halfTotal)
+                {
                     break;
+                }
             }
-            median = ((float)m / nM1) * rangeLength + rangeMin;
+
+            Median = (float)m / nM1 * rangeLength + rangeMin;
         }
     }
 }

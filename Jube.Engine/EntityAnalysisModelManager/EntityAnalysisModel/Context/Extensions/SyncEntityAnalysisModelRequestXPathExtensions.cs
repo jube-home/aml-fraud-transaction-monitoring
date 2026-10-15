@@ -17,7 +17,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Data.Repository;
-    using Parser;
+    using Parser.Models;
 
     public static class SyncEntityAnalysisModelRequestXPathExtensions
     {
@@ -54,6 +54,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     var shadowEntityAnalysisModelRequestXPath =
                         new List<Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.
                             EntityAnalysisModelRequestXPath>();
+
                     var archivePayloadSqlSelect = "select a.\"EntityAnalysisModelInstanceEntryGuid\"," +
                                                   "a.\"CreatedDate\"," +
                                                   $"a.\"ReferenceDate\" AS \"{value.References.ReferenceDateName}\"";
@@ -632,6 +633,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     }
 
                     value.References.ArchivePayloadSqlSelect = archivePayloadSqlSelect;
+
                     value.References.ArchivePayloadSqlBody = " From \"Archive\" a" +
                                                              " inner join \"EntityAnalysisModel\" m on a.\"EntityAnalysisModelId\" = m.\"Id\"  where "
                                                              + "m.\"Guid\" = '" + value.Instance.Guid + "'::uuid"

@@ -21,7 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Query.VisualisationRegistryDatasourceCommandExecution;
 using Jube.Service.Observability;
@@ -32,13 +32,13 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecution.Models;
 using LinqToDB;
+using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using log4net;
 
 namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecution
 {
@@ -56,29 +56,34 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         private readonly List<int> createdDatasourceIds = [];
         private readonly List<int> createdParameterIds = [];
         private readonly List<int> createdRegistryIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var logIds = dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .Where(w => createdDatasourceIds.Contains(w.VisualisationRegistryDatasourceId ?? 0))
                 .Select(w => w.Id);
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLogParameter>()
                 .Where(w => logIds.Contains(w.VisualisationRegistryDatasourceExecutionLogId ?? 0)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .Where(w => createdDatasourceIds.Contains(w.VisualisationRegistryDatasourceId ?? 0)).DeleteAsync();
+
             var datasourceGuids = dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>()
                 .Where(d => createdDatasourceIds.Contains(d.Id)).Select(d => d.Guid);
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceRole>()
                 .Where(w => datasourceGuids.Contains(w.VisualisationRegistryDatasourceGuid)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>()
                 .Where(w => createdDatasourceIds.Contains(w.Id)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.VisualisationRegistryParameter>()
                 .Where(w => createdParameterIds.Contains(w.Id)).DeleteAsync();
+
             var registryGuids = dbContext.GetTable<Data.Poco.VisualisationRegistry>()
                 .Where(r => createdRegistryIds.Contains(r.Id)).Select(r => r.Guid);
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryRole>()
                 .Where(w => registryGuids.Contains(w.VisualisationRegistryGuid)).DeleteAsync();
             await dbContext.GetTable<Data.Poco.VisualisationRegistry>()
@@ -92,6 +97,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             var realConnectionString = Environment.GetEnvironmentVariable("JubeTestConnectionString")
                                        ?? Environment.GetEnvironmentVariable("ConnectionString")
                                        ?? string.Empty;
+
             var dynamicEnvironment = TestDynamicEnvironment.Create(new Dictionary<string, string>
             {
                 ["ReportConnectionString"] = realConnectionString,
@@ -113,6 +119,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             int tenantId, string command, params string[] grantedUsers)
         {
             var registryGuid = Guid.NewGuid();
+
             var registryId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.VisualisationRegistry
             {
                 Name = $"{DatabaseFixture.Prefix}Reg{Guid.NewGuid():N}"[..40],
@@ -128,6 +135,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             createdRegistryIds.Add(registryId);
 
             var datasourceGuid = Guid.NewGuid();
+
             var datasourceId = await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.VisualisationRegistryDatasource
                 {
@@ -147,6 +155,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             foreach (var user in grantedUsers)
             {
                 var roleGuid = (await dbContext.UserRegistry.FirstAsync(u => u.Name == user)).RoleRegistryGuid;
+
                 await dbContext.InsertAsync(new Data.Poco.VisualisationRegistryRole
                 {
                     Guid = Guid.NewGuid(),
@@ -190,6 +199,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
                 CreatedDate = DateTime.UtcNow
             });
             createdParameterIds.Add(id);
+
             return id;
         }
 
@@ -198,6 +208,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             return new JArray(items.Select(i =>
             {
                 var o = new JObject { ["id"] = i.Id };
+
                 if (i.Value != null)
                 {
                     o["value"] = JToken.FromObject(i.Value);
@@ -214,6 +225,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             var tenantId = await TenantOfAsync(dbContext, user);
             var (dsId, regId) = await CreateDatasourceAsync(dbContext, tenantId, TypeAndValueCommand, user);
             var pId = await CreateParameterAsync(dbContext, regId, "P", dataTypeId, defaultValue);
+
             return (dsId, pId);
         }
 
@@ -225,6 +237,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, assumeLocal: assumeLocal);
             var rows = await service.ExecuteAsync(dsId, Params((pId, value)));
             rows.Should().ContainSingle();
+
             return ((string)rows[0]["t"], (string)rows[0]["v"]);
         }
 
@@ -242,6 +255,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         public async Task UnmappedAndNoTenantUsersThrowNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
@@ -253,8 +267,10 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantId = await TenantOfAsync(dbContext, fx.Seed.UserWithoutPermission);
+
             var (dsId, regId) = await CreateDatasourceAsync(dbContext, tenantId, TypeAndValueCommand,
                 fx.Seed.UserWithoutPermission);
+
             var pId = await CreateParameterAsync(dbContext, regId, "P", 1);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
 
@@ -263,6 +279,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
 
             ex.Code.Should().Be("PermissionDenied");
             ex.RequiredSpecifications.Should().BeEquivalentTo([28, 1]);
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .CountAsync(l => l.VisualisationRegistryDatasourceId == dsId)).Should().Be(0);
         }
@@ -311,10 +328,13 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var (dsId, pId) = await SingleParameterAsync(dbContext, 4);
+
             const string command =
                 "SELECT pg_typeof(@P)::text AS t, to_char(@P, 'YYYY-MM-DD\"T\"HH24:MI:SS') AS v";
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>().Where(d => d.Id == dsId)
                 .Set(d => d.Command, command).UpdateAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var rows = await service.ExecuteAsync(dsId, Params((pId, "2024-03-05T10:20:30")));
@@ -329,10 +349,13 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var (dsId, pId) = await SingleParameterAsync(dbContext, 4);
+
             const string command =
                 "SELECT to_char(@P, 'YYYY-MM-DD\"T\"HH24:MI:SS') AS v";
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>().Where(d => d.Id == dsId)
                 .Set(d => d.Command, command).UpdateAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, assumeLocal: true);
 
             var rows = await service.ExecuteAsync(dsId, Params((pId, "2024-07-05T10:20:30")));
@@ -347,9 +370,11 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var (dsId, pId) = await SingleParameterAsync(dbContext, 4);
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>().Where(d => d.Id == dsId)
                 .Set(d => d.Command,
                     "SELECT to_char(@P, 'YYYY-MM-DD\"T\"HH24:MI:SS') AS v").UpdateAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, assumeLocal: true);
 
             var rows = await service.ExecuteAsync(dsId, Params((pId, "2024-03-05T10:20:30+02:00")));
@@ -362,8 +387,10 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var (dsId, pId) = await SingleParameterAsync(dbContext, 4);
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>().Where(d => d.Id == dsId)
                 .Set(d => d.Command, "SELECT @P AS v").UpdateAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var before = DateTime.UtcNow.AddSeconds(-5);
 
@@ -387,8 +414,10 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var (dsId, pId) = await SingleParameterAsync(dbContext, 4, "10");
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>().Where(d => d.Id == dsId)
                 .Set(d => d.Command, "SELECT @P AS v").UpdateAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var rows = await service.ExecuteAsync(dsId, Params((pId, null)));
@@ -410,8 +439,10 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantId = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (dsId, regId) = await CreateDatasourceAsync(dbContext, tenantId, "SELECT @My_Name AS v",
                 fx.Seed.UserWithPermission);
+
             var pId = await CreateParameterAsync(dbContext, regId, "My Name", 1);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
@@ -444,8 +475,10 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var execute = typeof(VisualisationRegistryDatasourceCommandExecutionService)
                 .GetMethod(nameof(VisualisationRegistryDatasourceCommandExecutionService.ExecuteAsync)).Required();
+
             await Assert.ThrowsAsync<ArgumentNullException>(() =>
                 (Task<List<IDictionary<string, object>>>)execute.Invoke(service, [1, null, CancellationToken.None])
                     .Required());
@@ -457,6 +490,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             await using var dbContext = fx.GetDbContext();
             var (dsId, pId) = await SingleParameterAsync(dbContext, 1);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             await Assert.ThrowsAnyAsync<Exception>(() =>
                 service.ExecuteAsync(dsId, Params((pId, "a"), (pId, "b"))));
         }
@@ -467,6 +501,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             await using var dbContext = fx.GetDbContext();
             var (dsId, _) = await SingleParameterAsync(dbContext, 1);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             await Assert.ThrowsAnyAsync<Exception>(() =>
                 service.ExecuteAsync(dsId, new JArray(new JObject { ["value"] = "x" })));
         }
@@ -476,9 +511,11 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantId = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (dsId, _) = await CreateDatasourceAsync(dbContext, tenantId,
                 "SELECT g AS \"Num\", 'r' || g AS \"Txt\", g * 1.5 AS \"Dbl\", NULL::text AS \"Nul\" FROM generate_series(1,3) g ORDER BY g",
                 fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var rows = await service.ExecuteAsync(dsId, []);
@@ -496,13 +533,16 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantId = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (dsId, _) = await CreateDatasourceAsync(dbContext, tenantId, "SELECT 1 AS a WHERE 1 = 0",
                 fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var rows = await service.ExecuteAsync(dsId, []);
 
             rows.Should().BeEmpty();
+
             var log = await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .SingleAsync(l => l.VisualisationRegistryDatasourceId == dsId);
             log.Records.Should().Be(0);
@@ -514,8 +554,10 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantId = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (dsId, regId) = await CreateDatasourceAsync(dbContext, tenantId,
                 "SELECT @A AS a, @B AS b", fx.Seed.UserWithPermission);
+
             var pA = await CreateParameterAsync(dbContext, regId, "A", 2);
             var pB = await CreateParameterAsync(dbContext, regId, "B", 1);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
@@ -529,6 +571,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             log.CreatedUser.Should().Be(fx.Seed.UserWithPermission);
             log.CreatedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(30));
             log.ResponseTime.Should().BeGreaterThanOrEqualTo(0);
+
             var logParams = await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLogParameter>()
                 .Where(p => p.VisualisationRegistryDatasourceExecutionLogId == log.Id).ToListAsync();
             logParams.Should().HaveCount(2);
@@ -541,18 +584,22 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantId = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (dsId, regId) = await CreateDatasourceAsync(dbContext, tenantId,
                 "SELECT * FROM jube_table_that_does_not_exist_xyz WHERE a = @P", fx.Seed.UserWithPermission);
+
             var pId = await CreateParameterAsync(dbContext, regId, "P", 1);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var rows = await service.ExecuteAsync(dsId, Params((pId, "v")));
 
             rows.Should().BeEmpty();
+
             var log = await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .SingleAsync(l => l.VisualisationRegistryDatasourceId == dsId);
             log.Error.Should().NotBeNullOrWhiteSpace();
             log.Records.Should().Be(0);
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLogParameter>()
                 .CountAsync(p => p.VisualisationRegistryDatasourceExecutionLogId == log.Id)).Should().Be(1);
         }
@@ -562,13 +609,16 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantId = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (dsId, _) = await CreateDatasourceAsync(dbContext, tenantId,
                 "DELETE FROM \"UserRegistry\"", fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var rows = await service.ExecuteAsync(dsId, []);
 
             rows.Should().BeEmpty();
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .SingleAsync(l => l.VisualisationRegistryDatasourceId == dsId)).Error.Should().NotBeNullOrWhiteSpace();
         }
@@ -584,6 +634,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
 
             var log = await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .SingleAsync(l => l.VisualisationRegistryDatasourceId == dsId);
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLogParameter>()
                 .SingleAsync(p => p.VisualisationRegistryDatasourceExecutionLogId == log.Id)).Value.Should().BeNull();
         }
@@ -607,13 +658,16 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantA = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (dsId, _) = await CreateDatasourceAsync(dbContext, tenantA, "SELECT 'secretA' AS s",
                 fx.Seed.UserWithPermission, fx.Seed.UserTenantB);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
 
             var rows = await service.ExecuteAsync(dsId, []);
 
             rows.Should().BeEmpty();
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .CountAsync(l => l.VisualisationRegistryDatasourceId == dsId)).Should().Be(0);
         }
@@ -623,15 +677,19 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantB = await TenantOfAsync(dbContext, fx.Seed.UserTenantB);
+
             var (dsId, _) = await CreateDatasourceAsync(dbContext, tenantB, "SELECT 'secretB' AS s",
                 fx.Seed.UserWithPermission, fx.Seed.UserTenantB);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.ExecuteAsync(dsId, [])).Should().BeEmpty();
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .CountAsync(l => l.VisualisationRegistryDatasourceId == dsId)).Should().Be(0);
 
             var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
             (await serviceB.ExecuteAsync(dsId, [])).Should().ContainSingle()
                 .Which["s"].Should().Be("secretB");
         }
@@ -642,8 +700,10 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             await using var dbContext = fx.GetDbContext();
             var tenantA = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
             var tenantB = await TenantOfAsync(dbContext, fx.Seed.UserTenantB);
+
             var (dsId, _) = await CreateDatasourceAsync(dbContext, tenantA, "SELECT 1 AS one",
                 fx.Seed.UserWithPermission);
+
             var (_, regBId) = await CreateDatasourceAsync(dbContext, tenantB, "SELECT 1", fx.Seed.UserTenantB);
             var foreignParam = await CreateParameterAsync(dbContext, regBId, "P", 2);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
@@ -662,6 +722,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.ExecuteAsync(dsId, [])).Should().BeEmpty();
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .CountAsync(l => l.VisualisationRegistryDatasourceId == dsId)).Should().Be(0);
         }
@@ -671,10 +732,13 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         {
             await using var dbContext = fx.GetDbContext();
             var tenantA = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (dsId, _) = await CreateDatasourceAsync(dbContext, tenantA, "SELECT 1 AS one",
                 fx.Seed.UserWithPermission);
+
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>().Where(d => d.Id == dsId)
                 .Set(d => d.Active, (byte)0).UpdateAsync();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             (await service.ExecuteAsync(dsId, [])).Should().BeEmpty();
@@ -786,11 +850,13 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         public void CatalogueDescriptorHasUniqueNameAndOperationAttributeMatches()
         {
             var tools = new List<ServiceToolDescriptor>();
+
             typeof(ServiceToolCatalogue).GetMethod("AddVisualisationRegistryDatasourceCommandExecution",
                 BindingFlags.NonPublic | BindingFlags.Static).Required().Invoke(null, [tools]);
 
             tools.Should().ContainSingle().Which.Name.Should()
                 .Be("VisualisationRegistryDatasourceCommandExecutionExecute");
+
             tools[0].Kind.Should().Be(OperationKind.Read);
             tools[0].Name.Should().NotContain("_");
             ServiceToolCatalogue.All.Select(t => t.Name).Should().OnlyHaveUniqueItems();
@@ -805,6 +871,7 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

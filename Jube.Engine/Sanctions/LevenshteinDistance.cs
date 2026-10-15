@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -27,9 +27,6 @@ namespace Jube.Engine.Sanctions
     {
         public const double DefaultMaxDistanceRatio = 0.3;
         public const double DefaultMaxCoverageRatio = 2.0;
-        private readonly double effectiveMaxCoverageRatio = maxCoverageRatio ?? DefaultMaxCoverageRatio;
-        private readonly double effectiveMaxDistanceRatio = maxDistanceRatio ?? DefaultMaxDistanceRatio;
-
 
         public List<SanctionEntryReturn> CheckMultipartString(
             string multiPartString,
@@ -76,8 +73,27 @@ namespace Jube.Engine.Sanctions
                 }
             });
 
-            return sanctionsEntriesReturn.Values.ToList();
+            return [.. sanctionsEntriesReturn.Values];
         }
+
+        public static double? ParseNullableDistanceRatio(string rawValue)
+        {
+            return !string.IsNullOrWhiteSpace(rawValue)
+                   && double.TryParse(rawValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var value)
+                ? Math.Clamp(value, 0, 1)
+                : null;
+        }
+
+        public static double? ParseNullableCoverageRatio(string rawValue)
+        {
+            return !string.IsNullOrWhiteSpace(rawValue)
+                   && double.TryParse(rawValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var value)
+                ? Math.Max(0, value)
+                : null;
+        }
+
+        private readonly double effectiveMaxCoverageRatio = maxCoverageRatio ?? DefaultMaxCoverageRatio;
+        private readonly double effectiveMaxDistanceRatio = maxDistanceRatio ?? DefaultMaxDistanceRatio;
 
         private int? ScoreMatch(
             string[] inputTokens,
@@ -114,6 +130,7 @@ namespace Jube.Engine.Sanctions
                     }
 
                     var distance = new Levenshtein(entryTokens[i]).DistanceFrom(inputToken);
+
                     if (distance < bestDistance)
                     {
                         bestDistance = distance;
@@ -150,40 +167,26 @@ namespace Jube.Engine.Sanctions
             return Math.Min(maxDistance, ratioBound);
         }
 
-        public static double? ParseNullableDistanceRatio(string rawValue)
-        {
-            return !string.IsNullOrWhiteSpace(rawValue)
-                   && double.TryParse(rawValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var value)
-                ? Math.Clamp(value, 0, 1)
-                : null;
-        }
-
-        public static double? ParseNullableCoverageRatio(string rawValue)
-        {
-            return !string.IsNullOrWhiteSpace(rawValue)
-                   && double.TryParse(rawValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var value)
-                ? Math.Max(0, value)
-                : null;
-        }
-
         private static string[] Tokenize(string raw, ConcurrentDictionary<string, byte> stopTokens)
         {
-            return raw
-                .Normalize(NormalizationForm.FormD)
-                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c)
-                            != UnicodeCategory.NonSpacingMark)
-                .Aggregate(new StringBuilder(), (sb, c) => sb.Append(c))
-                .ToString()
-                .ToLowerInvariant()
-                .Replace("-", " ")
-                .Replace(",", " ")
-                .Replace(".", " ")
-                .Replace("'", "")
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                .Select(t => t.Trim())
-                .Where(t => t.Length > 1 && !stopTokens.ContainsKey(t))
-                .Distinct()
-                .ToArray();
+            return
+            [
+                .. raw
+                    .Normalize(NormalizationForm.FormD)
+                    .Where(c => CharUnicodeInfo.GetUnicodeCategory(c)
+                                != UnicodeCategory.NonSpacingMark)
+                    .Aggregate(new StringBuilder(), (sb, c) => sb.Append(c))
+                    .ToString()
+                    .ToLowerInvariant()
+                    .Replace("-", " ")
+                    .Replace(",", " ")
+                    .Replace(".", " ")
+                    .Replace("'", "")
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(t => t.Trim())
+                    .Where(t => t.Length > 1 && !stopTokens.ContainsKey(t))
+                    .Distinct()
+            ];
         }
     }
 }

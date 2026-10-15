@@ -25,10 +25,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
     using Archiver;
     using Context;
     using Data.Context;
-    using Data.Query;
+    using Data.Helpers;
     using Data.Reporting;
     using Data.Repository;
-    using Data.SyntaxTree;
     using Dictionary;
     using EntityAnalysisModel;
     using EntityAnalysisModelInvoke;
@@ -36,7 +35,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
     using Models;
     using Parser;
     using Parser.Compiler;
+    using Parser.Models;
     using Reprocessing;
+    using Jube.Data.Query.GetArchiveCountsByReferenceDateQuery;
+    using Jube.Data.Query.GetArchiveRangeAndCountsQuery;
+    using Jube.Data.Query.GetNextEntityAnalysisModelsReprocessingRuleInstanceQuery;
 
     public class ReprocessingTaskStarter(Context context)
     {
@@ -52,6 +55,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 {
                     var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                         context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
+
                     try
                     {
                         foreach (var modelKvp in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
@@ -153,6 +157,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             }
 
             var model = modelKvp.Value;
+
             var ranges = await new GetArchiveRangeAndCountsQuery(dbContext)
                 .ExecuteAsync(model.Instance.Guid, token).ConfigureAwait(false);
 
@@ -162,11 +167,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     .ConfigureAwait(false);
 
                 await repository.UpdateCompletedAsync(instanceId, token).ConfigureAwait(false);
+
                 return new ReprocessingRunResult(instanceId, ReprocessingRunOutcome.Completed, 0, 0, 0, 0, 0, null);
             }
 
             var snapshotDate = DateTime.UtcNow;
             var lastReferenceDate = DateTime.SpecifyKind(ranges.Max.Value, DateTimeKind.Unspecified);
+
             var startDate = ReprocessingDateRange.StartDate(lastReferenceDate, instance.ReprocessingIntervalType,
                 instance.ReprocessingIntervalValue);
 
@@ -174,6 +181,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             {
                 var failure =
                     $"The interval {instance.ReprocessingIntervalValue}{instance.ReprocessingIntervalType} is not valid.";
+
                 await repository.UpdateFailedAsync(instanceId, token).ConfigureAwait(false);
 
                 context.Services.Log.Error(
@@ -182,8 +190,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 return new ReprocessingRunResult(instanceId, ReprocessingRunOutcome.Failed, 0, 0, 0, 0, 0, failure);
             }
 
-            var availableCount = await new ArchiveRepository(dbContext)
-                .GetCountsByReferenceDateAsync(model.Instance.Guid, startDate.Value, token).ConfigureAwait(false);
+            var availableCount = await new GetArchiveCountsByReferenceDateQuery(dbContext)
+                .ExecuteAsync(model.Instance.Guid, startDate.Value, token).ConfigureAwait(false);
 
             await repository.UpdateReferenceDateCountAsync(instanceId, availableCount, startDate.Value, token)
                 .ConfigureAwait(false);
@@ -215,9 +223,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             while (!stopped)
             {
                 var fetchStarted = Stopwatch.GetTimestamp();
+
                 var documents = await archiveDatabase.ExecuteReturnPayloadFromArchiveAfterAsync(sql,
                     startDate.Value, lastReferenceDate, snapshotDate, afterReferenceDate, afterGuid, limit,
                     token).ConfigureAwait(false);
+
                 var fetch = Stopwatch.GetElapsedTime(fetchStarted);
 
                 if (documents.Count == 0)
@@ -269,6 +279,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                     stopped = await ReportProgressAsync(repository, instanceId, processed, sampled, matched, errors,
                         progressDate, token).ConfigureAwait(false);
+
                     lastProgress = DateTime.UtcNow;
 
                     if (stopped)
@@ -278,6 +289,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 }
 
                 var written = batch.Count;
+
                 try
                 {
                     var missing = await batch.FlushAsync(dbContext, token).ConfigureAwait(false);
@@ -339,6 +351,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             {
                 await repository.UpdateCountsAsync(instanceId, sampled, matched, processed, errors, referenceDate,
                     token).ConfigureAwait(false);
+
                 return false;
             }
             catch (KeyNotFoundException)
@@ -366,6 +379,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             try
             {
                 var (key, entityAnalysisModel) = modelKvp;
+
                 if (context.Services.Log.IsDebugEnabled)
                 {
                     context.Services.Log.Debug(
@@ -561,6 +575,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             OriginalRuleText = record.CoderRuleScript,
                             ErrorSpans = []
                         };
+
                         parsedRule = parser.TranslateFromDotNotation(parsedRule);
                         parsedRule = parser.Parse(parsedRule);
 
@@ -581,6 +596,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                     {
                         returnTuple.EntityAnalysisModelRuleReprocessingInstance.Failure =
                             "The reprocessing rule is empty or does not parse.";
+
                         return returnTuple;
                     }
 
@@ -612,11 +628,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
 
                         returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile =
                             value;
+
                         var classType =
                             returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile.GetType(
                                 "GatewayRule");
 
                         var methodInfo = classType?.GetMethod("Match");
+
                         if (methodInfo != null)
                         {
                             returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompileDelegate =
@@ -657,6 +675,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         }
 
                         var compile = new Compile();
+
                         compile.CompileCode(gatewayRuleScript.ToString(), context.Services.Log,
                         [
                             Path.Combine(strPathBinary ?? throw new InvalidOperationException(), "log4net.dll"),
@@ -683,7 +702,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             var classType =
                                 returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompile.GetType(
                                     "GatewayRule");
+
                             var methodInfo = classType?.GetMethod("Match");
+
                             if (methodInfo != null)
                             {
                                 returnTuple.EntityAnalysisModelRuleReprocessingInstance
@@ -693,6 +714,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                             }
 
                             context.Caching.HashCacheAssembly.TryAdd(gatewayRuleScriptHash, compile.CompiledAssembly);
+
                             context.Caching.HashCacheAssemblyMetadata.TryAdd(gatewayRuleScriptHash,
                                 new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes,
                                     compile.CompiledAssemblyBinary, gatewayRuleScript.ToString()));
@@ -746,6 +768,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                 returnTuple.EntityAnalysisModelRuleReprocessingInstance.ReprocessingRuleCompileDelegate == null)
             {
                 returnTuple.FoundInstance = false;
+
                 returnTuple.EntityAnalysisModelRuleReprocessingInstance.Failure =
                     "The compiled reprocessing rule does not expose a Match function.";
             }

@@ -13,7 +13,6 @@
 
 namespace Jube.Dictionary.Serialization
 {
-    using Models;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
@@ -28,6 +27,7 @@ namespace Jube.Dictionary.Serialization
                 foreach (var kv in value)
                 {
                     writer.WritePropertyName(kv.Key);
+
                     switch (kv.Value.Type)
                     {
                         case InternalValue.ValueType.String:
@@ -68,6 +68,7 @@ namespace Jube.Dictionary.Serialization
             foreach (var prop in obj.Properties())
             {
                 var token = prop.Value;
+
                 switch (token.Type)
                 {
                     case JTokenType.Float:

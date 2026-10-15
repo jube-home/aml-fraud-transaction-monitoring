@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
 {
     using System;
@@ -29,9 +34,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public ConcurrentQueue<Context> PendingEntityInvoke = new ConcurrentQueue<Context>();
         public ConcurrentQueue<TagMessage> PendingTagging { get; set; } = new ConcurrentQueue<TagMessage>();
         public ConcurrentQueue<Notification> PendingNotifications { get; set; }
-        public ConcurrentQueue<ActivationWatcher> PersistToActivationWatcherAsync { get; set; } = new ConcurrentQueue<ActivationWatcher>();
-        public ConcurrentQueue<EntityAnalysisModelInstanceEntryPayload> PersistToDatabaseAsync { get; } = new ConcurrentQueue<EntityAnalysisModelInstanceEntryPayload>();
-        public ConcurrentQueue<ResponseElevation> ResponseElevationEntries { get; } = new ConcurrentQueue<ResponseElevation>();
+
+        public ConcurrentQueue<ActivationWatcher> PersistToActivationWatcherAsync { get; set; } =
+            new ConcurrentQueue<ActivationWatcher>();
+
+        public ConcurrentQueue<EntityAnalysisModelInstanceEntryPayload> PersistToDatabaseAsync { get; } =
+            new ConcurrentQueue<EntityAnalysisModelInstanceEntryPayload>();
+
+        public ConcurrentQueue<ResponseElevation> ResponseElevationEntries { get; } =
+            new ConcurrentQueue<ResponseElevation>();
+
         // ReSharper disable once CollectionNeverUpdated.Global
         public ConcurrentQueue<DateTime> ActivationWatcherCountJournal { get; } = new ConcurrentQueue<DateTime>();
         public ConcurrentQueue<DateTime> BillingResponseElevationJournal { get; } = new ConcurrentQueue<DateTime>();

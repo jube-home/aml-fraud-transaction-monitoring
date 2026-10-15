@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,10 +14,11 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
-using Jube.Dto.Validation;
 using Jube.Dto.OpenTelemetryExclude;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.OpenTelemetryExclude;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -57,6 +58,9 @@ namespace Jube.Service.OpenTelemetryExclude
             repository = new OpenTelemetryExcludeRepository(dbContext, userName);
             validator = new OpenTelemetryExcludeDtoValidator(strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<OpenTelemetryExcludeService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -108,6 +112,7 @@ namespace Jube.Service.OpenTelemetryExclude
         {
             using var op = OperationScope.Start("OpenTelemetryExclude", "List", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryExclude.List: entry user={userName}");
@@ -118,6 +123,7 @@ namespace Jube.Service.OpenTelemetryExclude
                 EnsurePermitted("OpenTelemetryExclude.List");
                 var dtos = OpenTelemetryExcludeMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 return dtos;
             }
             catch (ForbiddenException)
@@ -148,6 +154,7 @@ namespace Jube.Service.OpenTelemetryExclude
         {
             using var op = OperationScope.Start("OpenTelemetryExclude", "Get", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryExclude.Get: entry id={id} user={userName}");
@@ -157,12 +164,14 @@ namespace Jube.Service.OpenTelemetryExclude
             {
                 EnsurePermitted("OpenTelemetryExclude.Get");
                 var row = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (row == null)
                 {
                     return null;
                 }
 
                 op.Entity(row.Id);
+
                 return OpenTelemetryExcludeMapper.ToDto(row);
             }
             catch (ForbiddenException)
@@ -192,6 +201,7 @@ namespace Jube.Service.OpenTelemetryExclude
         {
             using var op = OperationScope.Start("OpenTelemetryExclude", "Create", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryExclude.Create: entry user={userName}");
@@ -203,6 +213,7 @@ namespace Jube.Service.OpenTelemetryExclude
                 EnsurePermitted("OpenTelemetryExclude.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -262,6 +273,7 @@ namespace Jube.Service.OpenTelemetryExclude
         {
             using var op = OperationScope.Start("OpenTelemetryExclude", "Validate", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryExclude.Validate: entry id={model?.Id} user={userName}");
@@ -274,6 +286,7 @@ namespace Jube.Service.OpenTelemetryExclude
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -304,6 +317,7 @@ namespace Jube.Service.OpenTelemetryExclude
         {
             using var op = OperationScope.Start("OpenTelemetryExclude", "Update", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryExclude.Update: entry id={model?.Id} user={userName}");
@@ -315,6 +329,7 @@ namespace Jube.Service.OpenTelemetryExclude
                 EnsurePermitted("OpenTelemetryExclude.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -327,6 +342,7 @@ namespace Jube.Service.OpenTelemetryExclude
                 }
 
                 ExcludePoco saved;
+
                 try
                 {
                     saved = await repository.UpdateAsync(OpenTelemetryExcludeMapper.ToPoco(model), token)
@@ -396,6 +412,7 @@ namespace Jube.Service.OpenTelemetryExclude
         {
             using var op = OperationScope.Start("OpenTelemetryExclude", "Delete", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"OpenTelemetryExclude.Delete: entry id={id} user={userName}");

@@ -16,8 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Npgsql;
 using Jube.Test.Infrastructure.ModelScaffolding.Models;
+using Npgsql;
 
 namespace Jube.Test.Infrastructure.ModelScaffolding
 {
@@ -46,10 +46,12 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         {
             var exampleModelId = await ResolveLiveSourceAsync(connection, transaction, options.SourceModelId)
                 .ConfigureAwait(false);
+
             await using (var exists = new NpgsqlCommand(
                              $"SELECT count(*) FROM \"{Root}\" WHERE \"Id\" = @id", connection, transaction))
             {
                 exists.Parameters.AddWithValue("id", exampleModelId);
+
                 if ((long)(await exists.ExecuteScalarAsync().ConfigureAwait(false)).Required() == 0)
                 {
                     throw new InvalidOperationException(
@@ -64,6 +66,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             }
 
             var columns = new List<Column>();
+
             await using (var command = new NpgsqlCommand(
                              "SELECT table_name, column_name, data_type, is_nullable, column_default, is_identity " +
                              "FROM information_schema.columns WHERE table_schema = 'public'", connection, transaction))
@@ -74,6 +77,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                     var isIdentity = reader.GetString(5) == "YES" ||
                                      (!await reader.IsDBNullAsync(4).ConfigureAwait(false) &&
                                       reader.GetString(4).StartsWith("nextval", StringComparison.OrdinalIgnoreCase));
+
                     columns.Add(new Column(reader.GetString(0), reader.GetString(1), reader.GetString(2),
                         reader.GetString(3) == "YES", isIdentity));
                 }
@@ -81,6 +85,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
 
             var edges = new List<Edge>();
             var compositeEdges = new List<Edge>();
+
             await using (var command = new NpgsqlCommand(
                              "SELECT cl.relname, a.attname, pl.relname, c.conname, array_length(c.conkey, 1) " +
                              "FROM pg_constraint c JOIN pg_class cl ON cl.oid = c.conrelid " +
@@ -94,6 +99,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 {
                     var edge = new Edge(reader.GetString(0), reader.GetString(1), reader.GetString(2),
                         reader.GetString(3));
+
                     (reader.GetInt32(4) == 1 ? edges : compositeEdges).Add(edge);
                 }
             }
@@ -106,9 +112,11 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             var set = new HashSet<string> { Root };
             set.UnionWith(guidLinked);
             var queue = new Queue<string>([Root, .. guidLinked]);
+
             while (queue.Count > 0)
             {
                 var parent = queue.Dequeue();
+
                 foreach (var edge in edges.Where(e => e.Parent == parent && e.Child != parent))
                 {
                     if (Excluded(edge.Child) || !set.Add(edge.Child))
@@ -136,12 +144,14 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
 
             var order = new List<string>();
             var remaining = new HashSet<string>(set);
+
             while (remaining.Count > 0)
             {
                 var ready = remaining.Where(t => edges
                         .Where(e => e.Child == t && e.Parent != t && set.Contains(e.Parent))
                         .All(e => !remaining.Contains(e.Parent)))
                     .OrderBy(t => t, StringComparer.Ordinal).ToList();
+
                 if (ready.Count == 0)
                 {
                     throw new InvalidOperationException(
@@ -163,16 +173,19 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             foreach (var table in order)
             {
                 var tableColumns = columns.Where(c => c.Table == table).ToList();
+
                 var identity = tableColumns.FirstOrDefault(c => c.IsIdentity && c.Name == "Id") ??
                                throw new InvalidOperationException(
                                    $"Table \"{table}\" has no identity \"Id\" column, so its rows cannot be copied with a fresh " +
                                    "identity. Add the table to ExcludeTables, or extend the scaffold.");
+
                 _ = identity;
 
                 var ownEdges = edges.Where(e => e.Child == table).ToList();
                 var mappedParents = ownEdges.Where(e => e.Parent != table && set.Contains(e.Parent)).ToList();
 
                 var oldIds = new List<long>();
+
                 if (table == Root)
                 {
                     oldIds.Add(exampleModelId);
@@ -181,6 +194,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 {
                     var conditions = mappedParents.Select(e =>
                         $"\"{e.ChildColumn}\" IN (SELECT oldid FROM _idmap WHERE tbl = '{e.Parent}')").ToList();
+
                     if (guidLinked.Contains(table))
                     {
                         conditions.Add(
@@ -196,7 +210,9 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                     await using var select = new NpgsqlCommand(
                         $"SELECT \"Id\" FROM \"{table}\" WHERE {string.Join(" OR ", conditions)} ORDER BY \"Id\"",
                         connection, transaction);
+
                     await using var reader = await select.ExecuteReaderAsync().ConfigureAwait(false);
+
                     while (await reader.ReadAsync().ConfigureAwait(false))
                     {
                         oldIds.Add(Convert.ToInt64(reader.GetValue(0)));
@@ -206,9 +222,11 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 var insertColumns = tableColumns.Where(c => c.Name != "Id").ToList();
                 var expressions = new List<string>();
                 var guards = new List<(string Column, string Sql)>();
+
                 foreach (var column in insertColumns)
                 {
                     var edge = ownEdges.FirstOrDefault(e => e.ChildColumn == column.Name);
+
                     if (edge is { Parent: "TenantRegistry" } || (edge == null && column.Name == "TenantRegistryId"))
                     {
                         expressions.Add("@tenant");
@@ -218,6 +236,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                         var lookup =
                             $"SELECT newid FROM _idmap WHERE tbl = '{edge.Parent}' AND oldid = t.\"{column.Name}\"";
                         expressions.Add($"({lookup})");
+
                         guards.Add((column.Name, column.Nullable
                             ? $"(t.\"{column.Name}\" IS NULL OR EXISTS ({lookup}))"
                             : $"EXISTS ({lookup})"));
@@ -241,6 +260,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                         expressions.Add("gen_random_uuid()");
                     }
                     else
+                    {
                         switch (table)
                         {
                             case Root when column.Name == "Name":
@@ -256,13 +276,16 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                                 expressions.Add($"t.\"{column.Name}\"");
                                 break;
                         }
+                    }
                 }
 
                 var hasGuid = tableColumns.Any(c => c.Name == "Guid" && c.DataType == "uuid");
                 var columnList = string.Join(", ", insertColumns.Select(c => $"\"{c.Name}\""));
+
                 var guardSql = guards.Count == 0
                     ? string.Empty
                     : " AND " + string.Join(" AND ", guards.Select(g => g.Sql));
+
                 var insertSql =
                     $"INSERT INTO \"{table}\" ({columnList}) SELECT {string.Join(", ", expressions)} " +
                     $"FROM \"{table}\" t WHERE t.\"Id\" = @old{guardSql} RETURNING \"Id\"" +
@@ -272,11 +295,13 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 {
                     long newId;
                     Guid? newGuid = null;
+
                     try
                     {
                         await using var insert = new NpgsqlCommand(insertSql, connection, transaction);
                         insert.Parameters.AddWithValue("old", oldId);
                         insert.Parameters.AddWithValue("tenant", tenantRegistryId);
+
                         if (table == Root)
                         {
                             insert.Parameters.AddWithValue("modelGuid", modelGuid);
@@ -286,6 +311,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                         }
 
                         await using var reader = await insert.ExecuteReaderAsync().ConfigureAwait(false);
+
                         if (!await reader.ReadAsync().ConfigureAwait(false))
                         {
                             throw new InvalidOperationException(
@@ -295,6 +321,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                         }
 
                         newId = Convert.ToInt64(reader.GetValue(0));
+
                         if (hasGuid)
                         {
                             newGuid = reader.GetGuid(1);
@@ -334,6 +361,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             }
 
             var idMap = new Dictionary<string, Dictionary<long, long>>();
+
             await using (var command =
                          new NpgsqlCommand("SELECT tbl, oldid, newid FROM _idmap", connection, transaction))
             await using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
@@ -350,6 +378,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             }
 
             var modelId = idMap[Root][exampleModelId];
+
             return ((int)modelId,
                 idMap.ToDictionary(kvp => kvp.Key, IReadOnlyDictionary<long, long> (kvp) => kvp.Value));
         }
@@ -357,11 +386,14 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         public static async Task<List<string>> GuidLinkedTablesAsync(NpgsqlConnection connection)
         {
             var tables = new List<string>();
+
             await using var command = new NpgsqlCommand(
                 "SELECT table_name FROM information_schema.columns WHERE table_schema = 'public' " +
                 $"AND column_name = 'EntityAnalysisModelGuid' AND data_type = 'uuid' AND table_name <> '{Root}'",
                 connection);
+
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 tables.Add(reader.GetString(0));
@@ -374,6 +406,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             params (string Name, object Value)[] parameters)
         {
             await CascadeChildrenAsync(connection, table, whereSql, parameters, 0).ConfigureAwait(false);
+
             await ExecuteAsync(connection, $"DELETE FROM \"{table}\" WHERE {whereSql}", parameters)
                 .ConfigureAwait(false);
         }
@@ -387,6 +420,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             }
 
             var children = new List<(string Child, string ChildColumn, string ParentColumn)>();
+
             await using (var command = new NpgsqlCommand(
                              "SELECT cl.relname, a.attname, af.attname FROM pg_constraint c " +
                              "JOIN pg_class cl ON cl.oid = c.conrelid " +
@@ -397,6 +431,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             {
                 command.Parameters.AddWithValue("table", table);
                 await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
                 while (await reader.ReadAsync().ConfigureAwait(false))
                 {
                     children.Add((reader.GetString(0), reader.GetString(1), reader.GetString(2)));
@@ -407,6 +442,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             {
                 var childWhere = $"\"{childColumn}\" IN (SELECT \"{parentColumn}\" FROM \"{table}\" WHERE {whereSql})";
                 await CascadeChildrenAsync(connection, child, childWhere, parameters, depth + 1).ConfigureAwait(false);
+
                 await ExecuteAsync(connection, $"DELETE FROM \"{child}\" WHERE {childWhere}", parameters)
                     .ConfigureAwait(false);
             }
@@ -422,6 +458,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             params (string Name, object Value)[] parameters)
         {
             await using var command = new NpgsqlCommand(sql, connection, transaction);
+
             foreach (var (name, value) in parameters)
             {
                 command.Parameters.AddWithValue(name, value);

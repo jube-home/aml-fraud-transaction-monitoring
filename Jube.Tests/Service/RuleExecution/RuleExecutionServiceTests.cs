@@ -26,7 +26,7 @@ using Jube.Dto.EntityAnalysisModelInlineFunction;
 using Jube.Dto.EntityAnalysisModelInlineScript;
 using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
 using Jube.Dto.RuleExecution;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityAnalysisModelAbstractionCalculation;
 using Jube.Service.EntityAnalysisModelGatewayRule;
@@ -62,18 +62,24 @@ namespace Jube.Test.Service.RuleExecution
         public async Task DisposeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             foreach (var (id, guid) in createdModels)
             {
                 var listIds = await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                     .Where(w => w.EntityAnalysisModelGuid == guid).Select(s => s.Id).ToListAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelListValue>()
                     .Where(w => listIds.Contains(w.EntityAnalysisModelListId ?? 0)).DeleteAsync();
+
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                     .Where(w => w.EntityAnalysisModelGuid == guid).DeleteAsync();
+
                 await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.EntityAnalysisModelId == id)
                     .DeleteAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == id)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == id).DeleteAsync();
             }
         }
@@ -86,6 +92,7 @@ namespace Jube.Test.Service.RuleExecution
                     Name = $"{DatabaseFixture.Prefix}ExModel{Guid.NewGuid():N}"[..40], Guid = Guid.NewGuid(),
                     Active = 1, Locked = 0, Deleted = 0
                 });
+
             createdModels.Add((model.Id, model.Guid));
 
             foreach (var (name, dataTypeId) in new[] { ("Amount", 3), ("Country", 1) })
@@ -102,6 +109,7 @@ namespace Jube.Test.Service.RuleExecution
                 EntityAnalysisModelGuid = model.Guid, Name = "HighRisk", Active = 1, Deleted = 0,
                 Guid = Guid.NewGuid()
             });
+
             await dbContext.InsertAsync(new Data.Poco.EntityAnalysisModelListValue
             {
                 EntityAnalysisModelListId = listId, ListValue = "IR", Deleted = 0, Guid = Guid.NewGuid()
@@ -115,9 +123,11 @@ namespace Jube.Test.Service.RuleExecution
         {
             var service = await EntityAnalysisModelInvocationContextService.CreateAsync(dbContext,
                 fx.Seed.UserWithPermission, TestLog.NoOp, localizers, new NullServiceChangeBus());
+
             var context = await service.OverlayAsync(new InvocationContextOverlayDto
                 { Context = await service.BlankAsync(modelId), Values = values });
             context.Errors.Should().BeEmpty();
+
             return context;
         }
 
@@ -186,6 +196,7 @@ namespace Jube.Test.Service.RuleExecution
 
             result.Compiled.Should().BeFalse();
             result.Result.Should().BeNull();
+
             result.Errors.Should().NotBeEmpty().And.OnlyContain(e =>
                 e.PropertyName == "CoderRuleScript" && e.ErrorCode == "RuleScriptInvalid");
         }
@@ -209,8 +220,10 @@ namespace Jube.Test.Service.RuleExecution
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext);
+
             var context = await ContextAsync(dbContext, modelId,
                 new() { ["Payload.Amount"] = "21", ["Payload.Country"] = "FR" });
+
             var calculations = await EntityAnalysisModelAbstractionCalculationService.CreateAsync(dbContext,
                 fx.Seed.UserWithPermission, TestLog.NoOp, localizers, new NullServiceChangeBus());
             var functions = await EntityAnalysisModelInlineFunctionService.CreateAsync(dbContext,
@@ -219,6 +232,7 @@ namespace Jube.Test.Service.RuleExecution
             var calculation = await calculations.ExecuteAsync(new EntityAnalysisModelAbstractionCalculationDto
                     { EntityAnalysisModelId = modelId, Name = "Double", FunctionScript = "Return Payload.Amount * 2" },
                 context);
+
             var function = await functions.ExecuteAsync(new EntityAnalysisModelInlineFunctionDto
             {
                 EntityAnalysisModelId = modelId, Name = "Where", ReturnDataTypeId = 1,
@@ -255,6 +269,7 @@ namespace Jube.Test.Service.RuleExecution
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext);
             var context = await ContextAsync(dbContext, modelId, new());
+
             var service = await EntityAnalysisModelInlineScriptService.CreateAsync(dbContext,
                 fx.Seed.UserWithPermission, TestLog.NoOp, localizers, new NullServiceChangeBus());
 
@@ -272,17 +287,21 @@ namespace Jube.Test.Service.RuleExecution
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateModelAsync(dbContext);
             var service = await GatewayServiceAsync(dbContext);
+
             const string json =
                 "{\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Amount\",\"operator\":\"greater\"," +
                 "\"value\":100},{\"id\":\"List.HighRisk\",\"operator\":\"has\",\"value\":\"Payload.Country\"}]}";
 
             var built = await service.BuildRuleFromBuilderJsonAsync(modelId, json);
+
             var bad = await service.BuildRuleFromBuilderJsonAsync(modelId,
                 "{\"condition\":\"AND\",\"rules\":[{\"id\":\"Payload.Amount\",\"operator\":\"begins_with\",\"value\":\"1\"}]}");
 
             built.Valid.Should().BeTrue(string.Join("; ", built.Errors.Select(e => e.Message)));
+
             built.RuleText.Should().Be(
                 "If (Payload.Amount > 100 AND List.HighRisk.contains(Payload.Country)) Then\n  Return True\nEnd If");
+
             var saved = await service.InsertAsync(new EntityAnalysisModelGatewayRuleDto
             {
                 EntityAnalysisModelId = modelId, Name = "Built", RuleScriptTypeId = 1,
@@ -290,11 +309,15 @@ namespace Jube.Test.Service.RuleExecution
                 Json = json, Active = true, GatewaySample = 1
             });
             saved.Id.Should().BeGreaterThan(0);
+
             await dbContext.GetTable<EntityAnalysisModelGatewayRuleVersion>()
                 .Where(w => w.EntityAnalysisModelGatewayRuleId == saved.Id).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>().Where(w => w.Id == saved.Id)
                 .DeleteAsync();
+
             bad.Valid.Should().BeFalse();
+
             bad.Errors.Should().ContainSingle(e =>
                 e.ErrorCode == "OperatorInvalid" && e.PropertyName == "$.rules[0].operator");
         }

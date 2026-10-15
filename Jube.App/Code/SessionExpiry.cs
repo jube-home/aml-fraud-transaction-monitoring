@@ -21,9 +21,8 @@ namespace Jube.App.Code
 
     public static class SessionExpiry
     {
-        public const string HeaderName = "X-Session-Expiry";
-
         private const string ItemsKey = "Jube.SessionExpiry";
+        public const string HeaderName = "X-Session-Expiry";
 
         public static void Publish(HttpContext httpContext, DateTime expiration)
         {
@@ -45,6 +44,7 @@ namespace Jube.App.Code
             }
 
             var claim = httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Exp);
+
             if (long.TryParse(claim, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seconds))
             {
                 return DateTimeOffset.FromUnixTimeSeconds(seconds).UtcDateTime;

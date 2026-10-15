@@ -53,7 +53,6 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
         private readonly List<int> createdRocIds = [];
         private readonly List<int> createdSearchInstanceIds = [];
         private readonly List<int> createdTrialInstanceIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -62,14 +61,17 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
 
             await dbContext.GetTable<global::Jube.Data.Poco.ExhaustiveSearchInstancePromotedTrialInstanceRoc>()
                 .Where(w => createdRocIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<ExhaustiveSearchInstancePromotedTrialInstance>()
                 .Where(w => createdPromotedIds.Contains(w.Id)).DeleteAsync();
             await dbContext.GetTable<ExhaustiveSearchInstanceTrialInstance>()
                 .Where(w => createdTrialInstanceIds.Contains(w.Id)).DeleteAsync();
+
             foreach (var id in createdSearchInstanceIds)
             {
                 await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
                     .Where(w => w.ExhaustiveSearchInstanceId == id).DeleteAsync();
+
                 await dbContext.GetTable<global::Jube.Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
@@ -78,6 +80,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -95,6 +98,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
             bool promoteActive, params (double score, int tp, int tn, int fp, int fn)[] rocPoints)
         {
             var modelRepository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var model = await modelRepository.InsertAsync(new global::Jube.Data.Poco.EntityAnalysisModel
             {
                 Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -178,6 +182,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -186,6 +191,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -206,8 +212,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
         public async Task GetAsyncMapsRocPointsFieldByFieldOrderedByIdAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var seeded = await CreateSearchInstanceWithTrialAsync(dbContext, fx.Seed.UserWithPermission, true,
                 (0.9, 10, 60, 20, 10), (0.4, 40, 40, 10, 10), (0.1, 5, 5, 5, 5));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(seeded.SearchInstanceId);
@@ -240,8 +248,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
         public async Task GetAsyncReturnsEmptyWhenPromotedTrialInstanceIsNotActiveAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var seeded = await CreateSearchInstanceWithTrialAsync(dbContext, fx.Seed.UserWithPermission, false,
                 (0.9, 10, 60, 20, 10));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(seeded.SearchInstanceId);
@@ -253,10 +263,13 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
         public async Task GetAsyncOnlyReturnsPointsOfThePromotedTrialInstanceAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var one = await CreateSearchInstanceWithTrialAsync(dbContext, fx.Seed.UserWithPermission, true,
                 (0.9, 10, 60, 20, 10));
+
             await CreateSearchInstanceWithTrialAsync(dbContext, fx.Seed.UserWithPermission, true,
                 (0.1, 1, 1, 1, 1), (0.2, 1, 1, 1, 1));
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(one.SearchInstanceId);
@@ -268,8 +281,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
         public async Task TenantBCannotSeeTenantARocPointsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var seeded = await CreateSearchInstanceWithTrialAsync(dbContext, fx.Seed.UserWithPermission, true,
                 (0.9, 10, 60, 20, 10));
+
             var tenantA = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var tenantB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
 
@@ -281,8 +296,10 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceR
         public async Task TenantACannotSeeTenantBRocPointsAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var seeded = await CreateSearchInstanceWithTrialAsync(dbContext, fx.Seed.UserTenantB, true,
                 (0.7, 10, 60, 20, 10));
+
             var tenantA = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
             var tenantB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
 

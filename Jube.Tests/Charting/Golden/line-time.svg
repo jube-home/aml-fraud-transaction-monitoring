@@ -1,0 +1,1243 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-6edcec5c" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-6edcec5c-t jc-6edcec5c-d">
+    <title id="jc-6edcec5c-t">Fraud rate over time</title>
+    <desc id="jc-6edcec5c-d">Line chart with 1 series: Fraud rate. Y values range from 50.59 to 100.8.</desc>
+    <style>
+        .jc-6edcec5c{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-6edcec5c:not([data-theme="light"]),.jc-6edcec5c:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-6edcec5c:not([data-theme="light"]),.jc-6edcec5c[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-6edcec5c
+        text{fill:var(--jc-text);font-size:12px}.jc-6edcec5c .bg{fill:var(--jc-surface)}.jc-6edcec5c
+        .ttl{font-size:16px;font-weight:600}.jc-6edcec5c .sub{fill:var(--jc-text2)}.jc-6edcec5c
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-6edcec5c .at{fill:var(--jc-text2);font-weight:500}.jc-6edcec5c
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-6edcec5c
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-6edcec5c
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-6edcec5c .ref.s0,.jc-6edcec5c
+        .ref.s1,.jc-6edcec5c .ref.s2,.jc-6edcec5c .ref.s3,.jc-6edcec5c .ref.s4,.jc-6edcec5c .ref.s5,.jc-6edcec5c
+        .ref.s6,.jc-6edcec5c .ref.s7{stroke:var(--sc)}.jc-6edcec5c
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-6edcec5c
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-6edcec5c
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-6edcec5c
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-6edcec5c .wh,.jc-6edcec5c
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-6edcec5c
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-6edcec5c
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-6edcec5c
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-6edcec5c .cd.hollow{fill:var(--jc-surface)}.jc-6edcec5c
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-6edcec5c
+        .ar.off{fill-opacity:0}.jc-6edcec5c .ring{font-size:10px}.jc-6edcec5c
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-6edcec5c .needle{fill:var(--jc-text);stroke:none}.jc-6edcec5c
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-6edcec5c
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-6edcec5c
+        .big{font-size:28px;font-weight:600}.jc-6edcec5c .rg0,.jc-6edcec5c .rg1,.jc-6edcec5c
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-6edcec5c .rg0{fill-opacity:.1}.jc-6edcec5c
+        .rg1{fill-opacity:.2}.jc-6edcec5c .rg2{fill-opacity:.32}.jc-6edcec5c
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-6edcec5c
+        .bar.part{fill-opacity:.35}.jc-6edcec5c .lgt{fill:var(--jc-text2)}.jc-6edcec5c
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-6edcec5c
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-6edcec5c
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-6edcec5c
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-6edcec5c .bar{fill:var(--sc)}.jc-6edcec5c
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-6edcec5c
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-6edcec5c
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-6edcec5c
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-6edcec5c
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-6edcec5c
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-6edcec5c .mk:hover .pt.h,.jc-6edcec5c .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-6edcec5c .pt.sm{fill-opacity:.55;stroke:none}.jc-6edcec5c
+        .na{fill:var(--jc-grid)}.jc-6edcec5c .mk:hover .sl,.jc-6edcec5c .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-6edcec5c
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-6edcec5c
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-6edcec5c
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-6edcec5c
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-6edcec5c
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-6edcec5c .ctr{text-anchor:middle}.jc-6edcec5c
+        .end{text-anchor:end}.jc-6edcec5c .mid{dominant-baseline:central}.jc-6edcec5c .mk{outline:none}.jc-6edcec5c
+        .m,.jc-6edcec5c .pt,.jc-6edcec5c .bub,.jc-6edcec5c .bar,.jc-6edcec5c .ov,.jc-6edcec5c .sl,.jc-6edcec5c
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-6edcec5c .mk:hover .m,.jc-6edcec5c .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-6edcec5c .mk:hover .pt,.jc-6edcec5c .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-6edcec5c .mk:hover .bub,.jc-6edcec5c .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-6edcec5c .mk:hover .bar,.jc-6edcec5c .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-6edcec5c .mk:hover .ov,.jc-6edcec5c .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-6edcec5c .mk:hover .sl,.jc-6edcec5c .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-6edcec5c .mk:hover .box,.jc-6edcec5c .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-6edcec5c .mk:hover .wk,.jc-6edcec5c .mk:focus-visible
+        .wk,.jc-6edcec5c .mk:hover .cd,.jc-6edcec5c .mk:focus-visible .cd{stroke-width:2.5}.jc-6edcec5c .mk:hover
+        .cell,.jc-6edcec5c .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-6edcec5c .mk:hover
+        .vl,.jc-6edcec5c .mk:focus-visible .vl,.jc-6edcec5c .mk:hover .cx,.jc-6edcec5c .mk:focus-visible
+        .cx{opacity:1}.jc-6edcec5c .mk:hover .mkr,.jc-6edcec5c .mk:focus-visible .mkr{stroke-width:3}.jc-6edcec5c
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-6edcec5c
+        .mk:hover .tt,.jc-6edcec5c .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-6edcec5c
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-6edcec5c
+        .tx{fill:var(--jc-text);font-size:12px}.jc-6edcec5c .tx.b{font-weight:600}.jc-6edcec5c
+        .tsw{fill:var(--sc)}.jc-6edcec5c .lg{cursor:default;transition:opacity .15s ease}.jc-6edcec5c .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-6edcec5c .sr{transition:opacity .15s ease}.jc-6edcec5c:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-6edcec5c:has(.mk:hover) .mk:not(:hover) .pt,.jc-6edcec5c:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-6edcec5c:has(.mk:hover) .mk:not(:hover) .bar,.jc-6edcec5c:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-6edcec5c:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-6edcec5c:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-6edcec5c .s0{--sc:var(--jc-c0)}.jc-6edcec5c .s0
+        .on{fill:var(--jc-ct0)}.jc-6edcec5c:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-6edcec5c:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-6edcec5c:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-6edcec5c:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-6edcec5c:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-6edcec5c,.jc-6edcec5c *{transition:none!important;animation:none!important}}
+    </style>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Fraud rate over time</text>
+    <line class="gl" x1="60.48" y1="364" x2="624" y2="364"/>
+    <text class="tk end mid" x="52.48" y="364">50</text>
+    <line class="gl" x1="60.48" y1="311.33" x2="624" y2="311.33"/>
+    <text class="tk end mid" x="52.48" y="311.33">60</text>
+    <line class="gl" x1="60.48" y1="258.67" x2="624" y2="258.67"/>
+    <text class="tk end mid" x="52.48" y="258.67">70</text>
+    <line class="gl" x1="60.48" y1="206" x2="624" y2="206"/>
+    <text class="tk end mid" x="52.48" y="206">80</text>
+    <line class="gl" x1="60.48" y1="153.33" x2="624" y2="153.33"/>
+    <text class="tk end mid" x="52.48" y="153.33">90</text>
+    <line class="gl" x1="60.48" y1="100.67" x2="624" y2="100.67"/>
+    <text class="tk end mid" x="52.48" y="100.67">100</text>
+    <line class="gl" x1="60.48" y1="48" x2="624" y2="48"/>
+    <text class="tk end mid" x="52.48" y="48">110</text>
+    <text class="tk ctr" x="60.48" y="380">Jan 2026</text>
+    <text class="tk ctr" x="256.76" y="380">Feb 2026</text>
+    <text class="tk ctr" x="434.05" y="380">Mar 2026</text>
+    <line class="ax" x1="60.48" y1="364" x2="624" y2="364"/>
+    <g class="sr s0">
+        <path class="ln"
+              d="M60.48 341.93L66.81 308.79L73.14 302.64L79.48 306.1L85.81 334.83L92.14 360.88L98.47 346.25L104.8 347.37L111.13 347.01L117.47 329.18L123.8 343.58L130.13 335.77L136.46 341.1L142.79 335.8L149.12 315.86L155.46 311.96L161.79 307.08L168.12 306.54L174.45 286.39L180.78 261.31L187.11 268.79L193.45 245.86L199.78 233.15L206.11 235.46L212.44 259.14L218.77 282.38L225.1 288.29L231.44 307.29L237.77 295.6L244.1 305.97L250.43 293.51L256.76 290.97L263.09 263.22L269.43 287.1L275.76 314.1L282.09 284.42L288.42 292.19L294.75 314.92L301.08 342.63L307.42 357.67M332.74 315.32L339.07 343.8L345.41 353.24L351.74 338.61L358.07 335.25L364.4 330.77L370.73 312.86L377.06 287.07L383.4 283.6L389.73 279.8L396.06 290.15L402.39 256.7L408.72 223.85L415.05 232.92L421.39 253.95L427.72 263.22L434.05 235.02L440.38 221.44L446.71 217.3L453.04 196.41L459.38 215.17L465.71 239.3L472.04 222.54L478.37 208.77L484.7 219.7L491.03 216.89L497.37 192.94L503.7 210.76L510.03 212.65L516.36 213.88L522.69 208.18L529.02 219.51L535.36 216.06L541.69 218.9L548.02 188.87L554.35 192.2L560.68 172.73L567.01 176.89L573.35 152.46L579.68 142.23L586.01 114.74L592.34 117.2L598.67 137.7L605 105.25L611.34 96.65L617.67 120.26L624 146.41">
+            <title>Fraud rate</title>
+        </path>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-01, Rate per 10,000: 54.19">
+            <title>Fraud rate, X: 2026-01-01, Rate per 10,000: 54.19</title>
+            <circle class="hit" cx="60.48" cy="341.93" r="9"/>
+            <circle class="pt h" cx="60.48" cy="341.93" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="267.43" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="276.43" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="285.43">Fraud rate</text>
+                <text class="tx" x="70.48" y="302.43">X: 2026-01-01</text>
+                <text class="tx" x="70.48" y="319.43">Rate per 10,000: 54.19</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-02, Rate per 10,000: 60.48">
+            <title>Fraud rate, X: 2026-01-02, Rate per 10,000: 60.48</title>
+            <circle class="hit" cx="66.81" cy="308.79" r="9"/>
+            <circle class="pt h" cx="66.81" cy="308.79" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="234.29" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="243.29" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="252.29">Fraud rate</text>
+                <text class="tx" x="70.48" y="269.29">X: 2026-01-02</text>
+                <text class="tx" x="70.48" y="286.29">Rate per 10,000: 60.48</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-03, Rate per 10,000: 61.65">
+            <title>Fraud rate, X: 2026-01-03, Rate per 10,000: 61.65</title>
+            <circle class="hit" cx="73.14" cy="302.64" r="9"/>
+            <circle class="pt h" cx="73.14" cy="302.64" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="228.14" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="237.14" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="246.14">Fraud rate</text>
+                <text class="tx" x="70.48" y="263.14">X: 2026-01-03</text>
+                <text class="tx" x="70.48" y="280.14">Rate per 10,000: 61.65</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-04, Rate per 10,000: 60.99">
+            <title>Fraud rate, X: 2026-01-04, Rate per 10,000: 60.99</title>
+            <circle class="hit" cx="79.48" cy="306.1" r="9"/>
+            <circle class="pt h" cx="79.48" cy="306.1" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="231.6" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="240.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="249.6">Fraud rate</text>
+                <text class="tx" x="70.48" y="266.6">X: 2026-01-04</text>
+                <text class="tx" x="70.48" y="283.6">Rate per 10,000: 60.99</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-05, Rate per 10,000: 55.54">
+            <title>Fraud rate, X: 2026-01-05, Rate per 10,000: 55.54</title>
+            <circle class="hit" cx="85.81" cy="334.83" r="9"/>
+            <circle class="pt h" cx="85.81" cy="334.83" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="260.33" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="269.33" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="278.33">Fraud rate</text>
+                <text class="tx" x="70.48" y="295.33">X: 2026-01-05</text>
+                <text class="tx" x="70.48" y="312.33">Rate per 10,000: 55.54</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-06, Rate per 10,000: 50.59">
+            <title>Fraud rate, X: 2026-01-06, Rate per 10,000: 50.59</title>
+            <circle class="hit" cx="92.14" cy="360.88" r="9"/>
+            <circle class="pt h" cx="92.14" cy="360.88" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="286.38" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="295.38" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="304.38">Fraud rate</text>
+                <text class="tx" x="70.48" y="321.38">X: 2026-01-06</text>
+                <text class="tx" x="70.48" y="338.38">Rate per 10,000: 50.59</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-07, Rate per 10,000: 53.37">
+            <title>Fraud rate, X: 2026-01-07, Rate per 10,000: 53.37</title>
+            <circle class="hit" cx="98.47" cy="346.25" r="9"/>
+            <circle class="pt h" cx="98.47" cy="346.25" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="271.75" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="280.75" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="289.75">Fraud rate</text>
+                <text class="tx" x="70.48" y="306.75">X: 2026-01-07</text>
+                <text class="tx" x="70.48" y="323.75">Rate per 10,000: 53.37</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-08, Rate per 10,000: 53.16">
+            <title>Fraud rate, X: 2026-01-08, Rate per 10,000: 53.16</title>
+            <circle class="hit" cx="104.8" cy="347.37" r="9"/>
+            <circle class="pt h" cx="104.8" cy="347.37" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="272.87" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="281.87" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="290.87">Fraud rate</text>
+                <text class="tx" x="70.48" y="307.87">X: 2026-01-08</text>
+                <text class="tx" x="70.48" y="324.87">Rate per 10,000: 53.16</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-09, Rate per 10,000: 53.23">
+            <title>Fraud rate, X: 2026-01-09, Rate per 10,000: 53.23</title>
+            <circle class="hit" cx="111.13" cy="347.01" r="9"/>
+            <circle class="pt h" cx="111.13" cy="347.01" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="272.51" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="281.51" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="290.51">Fraud rate</text>
+                <text class="tx" x="70.48" y="307.51">X: 2026-01-09</text>
+                <text class="tx" x="70.48" y="324.51">Rate per 10,000: 53.23</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-10, Rate per 10,000: 56.61">
+            <title>Fraud rate, X: 2026-01-10, Rate per 10,000: 56.61</title>
+            <circle class="hit" cx="117.47" cy="329.18" r="9"/>
+            <circle class="pt h" cx="117.47" cy="329.18" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="254.68" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="263.68" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="272.68">Fraud rate</text>
+                <text class="tx" x="70.48" y="289.68">X: 2026-01-10</text>
+                <text class="tx" x="70.48" y="306.68">Rate per 10,000: 56.61</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-11, Rate per 10,000: 53.88">
+            <title>Fraud rate, X: 2026-01-11, Rate per 10,000: 53.88</title>
+            <circle class="hit" cx="123.8" cy="343.58" r="9"/>
+            <circle class="pt h" cx="123.8" cy="343.58" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="269.08" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="278.08" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="287.08">Fraud rate</text>
+                <text class="tx" x="70.48" y="304.08">X: 2026-01-11</text>
+                <text class="tx" x="70.48" y="321.08">Rate per 10,000: 53.88</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-12, Rate per 10,000: 55.36">
+            <title>Fraud rate, X: 2026-01-12, Rate per 10,000: 55.36</title>
+            <circle class="hit" cx="130.13" cy="335.77" r="9"/>
+            <circle class="pt h" cx="130.13" cy="335.77" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="60.48" y="261.27" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="70.48" y="270.27" width="9" height="9" rx="2"/>
+                <text class="tx b" x="84.48" y="279.27">Fraud rate</text>
+                <text class="tx" x="70.48" y="296.27">X: 2026-01-12</text>
+                <text class="tx" x="70.48" y="313.27">Rate per 10,000: 55.36</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-13, Rate per 10,000: 54.35">
+            <title>Fraud rate, X: 2026-01-13, Rate per 10,000: 54.35</title>
+            <circle class="hit" cx="136.46" cy="341.1" r="9"/>
+            <circle class="pt h" cx="136.46" cy="341.1" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="65.38" y="266.6" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="75.38" y="275.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="89.38" y="284.6">Fraud rate</text>
+                <text class="tx" x="75.38" y="301.6">X: 2026-01-13</text>
+                <text class="tx" x="75.38" y="318.6">Rate per 10,000: 54.35</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-14, Rate per 10,000: 55.36">
+            <title>Fraud rate, X: 2026-01-14, Rate per 10,000: 55.36</title>
+            <circle class="hit" cx="142.79" cy="335.8" r="9"/>
+            <circle class="pt h" cx="142.79" cy="335.8" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="71.71" y="261.3" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="81.71" y="270.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="95.71" y="279.3">Fraud rate</text>
+                <text class="tx" x="81.71" y="296.3">X: 2026-01-14</text>
+                <text class="tx" x="81.71" y="313.3">Rate per 10,000: 55.36</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-15, Rate per 10,000: 59.14">
+            <title>Fraud rate, X: 2026-01-15, Rate per 10,000: 59.14</title>
+            <circle class="hit" cx="149.12" cy="315.86" r="9"/>
+            <circle class="pt h" cx="149.12" cy="315.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="78.04" y="241.36" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="88.04" y="250.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="102.04" y="259.36">Fraud rate</text>
+                <text class="tx" x="88.04" y="276.36">X: 2026-01-15</text>
+                <text class="tx" x="88.04" y="293.36">Rate per 10,000: 59.14</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-16, Rate per 10,000: 59.88">
+            <title>Fraud rate, X: 2026-01-16, Rate per 10,000: 59.88</title>
+            <circle class="hit" cx="155.46" cy="311.96" r="9"/>
+            <circle class="pt h" cx="155.46" cy="311.96" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="84.38" y="237.46" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="94.38" y="246.46" width="9" height="9" rx="2"/>
+                <text class="tx b" x="108.38" y="255.46">Fraud rate</text>
+                <text class="tx" x="94.38" y="272.46">X: 2026-01-16</text>
+                <text class="tx" x="94.38" y="289.46">Rate per 10,000: 59.88</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-17, Rate per 10,000: 60.81">
+            <title>Fraud rate, X: 2026-01-17, Rate per 10,000: 60.81</title>
+            <circle class="hit" cx="161.79" cy="307.08" r="9"/>
+            <circle class="pt h" cx="161.79" cy="307.08" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="90.71" y="232.58" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="100.71" y="241.58" width="9" height="9" rx="2"/>
+                <text class="tx b" x="114.71" y="250.58">Fraud rate</text>
+                <text class="tx" x="100.71" y="267.58">X: 2026-01-17</text>
+                <text class="tx" x="100.71" y="284.58">Rate per 10,000: 60.81</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-18, Rate per 10,000: 60.91">
+            <title>Fraud rate, X: 2026-01-18, Rate per 10,000: 60.91</title>
+            <circle class="hit" cx="168.12" cy="306.54" r="9"/>
+            <circle class="pt h" cx="168.12" cy="306.54" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="97.04" y="232.04" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="107.04" y="241.04" width="9" height="9" rx="2"/>
+                <text class="tx b" x="121.04" y="250.04">Fraud rate</text>
+                <text class="tx" x="107.04" y="267.04">X: 2026-01-18</text>
+                <text class="tx" x="107.04" y="284.04">Rate per 10,000: 60.91</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-19, Rate per 10,000: 64.74">
+            <title>Fraud rate, X: 2026-01-19, Rate per 10,000: 64.74</title>
+            <circle class="hit" cx="174.45" cy="286.39" r="9"/>
+            <circle class="pt h" cx="174.45" cy="286.39" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="103.37" y="211.89" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="113.37" y="220.89" width="9" height="9" rx="2"/>
+                <text class="tx b" x="127.37" y="229.89">Fraud rate</text>
+                <text class="tx" x="113.37" y="246.89">X: 2026-01-19</text>
+                <text class="tx" x="113.37" y="263.89">Rate per 10,000: 64.74</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-20, Rate per 10,000: 69.5">
+            <title>Fraud rate, X: 2026-01-20, Rate per 10,000: 69.5</title>
+            <circle class="hit" cx="180.78" cy="261.31" r="9"/>
+            <circle class="pt h" cx="180.78" cy="261.31" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="113.06" y="186.81" width="135.44" height="61" rx="6"/>
+                <rect class="tsw s0" x="123.06" y="195.81" width="9" height="9" rx="2"/>
+                <text class="tx b" x="137.06" y="204.81">Fraud rate</text>
+                <text class="tx" x="123.06" y="221.81">X: 2026-01-20</text>
+                <text class="tx" x="123.06" y="238.81">Rate per 10,000: 69.5</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-21, Rate per 10,000: 68.08">
+            <title>Fraud rate, X: 2026-01-21, Rate per 10,000: 68.08</title>
+            <circle class="hit" cx="187.11" cy="268.79" r="9"/>
+            <circle class="pt h" cx="187.11" cy="268.79" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="116.03" y="194.29" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="126.03" y="203.29" width="9" height="9" rx="2"/>
+                <text class="tx b" x="140.03" y="212.29">Fraud rate</text>
+                <text class="tx" x="126.03" y="229.29">X: 2026-01-21</text>
+                <text class="tx" x="126.03" y="246.29">Rate per 10,000: 68.08</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-22, Rate per 10,000: 72.43">
+            <title>Fraud rate, X: 2026-01-22, Rate per 10,000: 72.43</title>
+            <circle class="hit" cx="193.45" cy="245.86" r="9"/>
+            <circle class="pt h" cx="193.45" cy="245.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="122.37" y="171.36" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="132.37" y="180.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="146.37" y="189.36">Fraud rate</text>
+                <text class="tx" x="132.37" y="206.36">X: 2026-01-22</text>
+                <text class="tx" x="132.37" y="223.36">Rate per 10,000: 72.43</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-23, Rate per 10,000: 74.85">
+            <title>Fraud rate, X: 2026-01-23, Rate per 10,000: 74.85</title>
+            <circle class="hit" cx="199.78" cy="233.15" r="9"/>
+            <circle class="pt h" cx="199.78" cy="233.15" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="128.7" y="158.65" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="138.7" y="167.65" width="9" height="9" rx="2"/>
+                <text class="tx b" x="152.7" y="176.65">Fraud rate</text>
+                <text class="tx" x="138.7" y="193.65">X: 2026-01-23</text>
+                <text class="tx" x="138.7" y="210.65">Rate per 10,000: 74.85</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-24, Rate per 10,000: 74.41">
+            <title>Fraud rate, X: 2026-01-24, Rate per 10,000: 74.41</title>
+            <circle class="hit" cx="206.11" cy="235.46" r="9"/>
+            <circle class="pt h" cx="206.11" cy="235.46" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="135.03" y="160.96" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="145.03" y="169.96" width="9" height="9" rx="2"/>
+                <text class="tx b" x="159.03" y="178.96">Fraud rate</text>
+                <text class="tx" x="145.03" y="195.96">X: 2026-01-24</text>
+                <text class="tx" x="145.03" y="212.96">Rate per 10,000: 74.41</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-25, Rate per 10,000: 69.91">
+            <title>Fraud rate, X: 2026-01-25, Rate per 10,000: 69.91</title>
+            <circle class="hit" cx="212.44" cy="259.14" r="9"/>
+            <circle class="pt h" cx="212.44" cy="259.14" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="141.36" y="184.64" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="151.36" y="193.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="165.36" y="202.64">Fraud rate</text>
+                <text class="tx" x="151.36" y="219.64">X: 2026-01-25</text>
+                <text class="tx" x="151.36" y="236.64">Rate per 10,000: 69.91</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-26, Rate per 10,000: 65.5">
+            <title>Fraud rate, X: 2026-01-26, Rate per 10,000: 65.5</title>
+            <circle class="hit" cx="218.77" cy="282.38" r="9"/>
+            <circle class="pt h" cx="218.77" cy="282.38" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="151.05" y="207.88" width="135.44" height="61" rx="6"/>
+                <rect class="tsw s0" x="161.05" y="216.88" width="9" height="9" rx="2"/>
+                <text class="tx b" x="175.05" y="225.88">Fraud rate</text>
+                <text class="tx" x="161.05" y="242.88">X: 2026-01-26</text>
+                <text class="tx" x="161.05" y="259.88">Rate per 10,000: 65.5</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-27, Rate per 10,000: 64.37">
+            <title>Fraud rate, X: 2026-01-27, Rate per 10,000: 64.37</title>
+            <circle class="hit" cx="225.1" cy="288.29" r="9"/>
+            <circle class="pt h" cx="225.1" cy="288.29" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="154.02" y="213.79" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="164.02" y="222.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="178.02" y="231.79">Fraud rate</text>
+                <text class="tx" x="164.02" y="248.79">X: 2026-01-27</text>
+                <text class="tx" x="164.02" y="265.79">Rate per 10,000: 64.37</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-28, Rate per 10,000: 60.77">
+            <title>Fraud rate, X: 2026-01-28, Rate per 10,000: 60.77</title>
+            <circle class="hit" cx="231.44" cy="307.29" r="9"/>
+            <circle class="pt h" cx="231.44" cy="307.29" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="160.36" y="232.79" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="170.36" y="241.79" width="9" height="9" rx="2"/>
+                <text class="tx b" x="184.36" y="250.79">Fraud rate</text>
+                <text class="tx" x="170.36" y="267.79">X: 2026-01-28</text>
+                <text class="tx" x="170.36" y="284.79">Rate per 10,000: 60.77</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-29, Rate per 10,000: 62.99">
+            <title>Fraud rate, X: 2026-01-29, Rate per 10,000: 62.99</title>
+            <circle class="hit" cx="237.77" cy="295.6" r="9"/>
+            <circle class="pt h" cx="237.77" cy="295.6" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="166.69" y="221.1" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="176.69" y="230.1" width="9" height="9" rx="2"/>
+                <text class="tx b" x="190.69" y="239.1">Fraud rate</text>
+                <text class="tx" x="176.69" y="256.1">X: 2026-01-29</text>
+                <text class="tx" x="176.69" y="273.1">Rate per 10,000: 62.99</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-30, Rate per 10,000: 61.02">
+            <title>Fraud rate, X: 2026-01-30, Rate per 10,000: 61.02</title>
+            <circle class="hit" cx="244.1" cy="305.97" r="9"/>
+            <circle class="pt h" cx="244.1" cy="305.97" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="173.02" y="231.47" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="183.02" y="240.47" width="9" height="9" rx="2"/>
+                <text class="tx b" x="197.02" y="249.47">Fraud rate</text>
+                <text class="tx" x="183.02" y="266.47">X: 2026-01-30</text>
+                <text class="tx" x="183.02" y="283.47">Rate per 10,000: 61.02</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-01-31, Rate per 10,000: 63.38">
+            <title>Fraud rate, X: 2026-01-31, Rate per 10,000: 63.38</title>
+            <circle class="hit" cx="250.43" cy="293.51" r="9"/>
+            <circle class="pt h" cx="250.43" cy="293.51" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="179.35" y="219.01" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="189.35" y="228.01" width="9" height="9" rx="2"/>
+                <text class="tx b" x="203.35" y="237.01">Fraud rate</text>
+                <text class="tx" x="189.35" y="254.01">X: 2026-01-31</text>
+                <text class="tx" x="189.35" y="271.01">Rate per 10,000: 63.38</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-01, Rate per 10,000: 63.87">
+            <title>Fraud rate, X: 2026-02-01, Rate per 10,000: 63.87</title>
+            <circle class="hit" cx="256.76" cy="290.97" r="9"/>
+            <circle class="pt h" cx="256.76" cy="290.97" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="185.68" y="216.47" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="195.68" y="225.47" width="9" height="9" rx="2"/>
+                <text class="tx b" x="209.68" y="234.47">Fraud rate</text>
+                <text class="tx" x="195.68" y="251.47">X: 2026-02-01</text>
+                <text class="tx" x="195.68" y="268.47">Rate per 10,000: 63.87</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-02, Rate per 10,000: 69.14">
+            <title>Fraud rate, X: 2026-02-02, Rate per 10,000: 69.14</title>
+            <circle class="hit" cx="263.09" cy="263.22" r="9"/>
+            <circle class="pt h" cx="263.09" cy="263.22" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="192.01" y="188.72" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="202.01" y="197.72" width="9" height="9" rx="2"/>
+                <text class="tx b" x="216.01" y="206.72">Fraud rate</text>
+                <text class="tx" x="202.01" y="223.72">X: 2026-02-02</text>
+                <text class="tx" x="202.01" y="240.72">Rate per 10,000: 69.14</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-03, Rate per 10,000: 64.6">
+            <title>Fraud rate, X: 2026-02-03, Rate per 10,000: 64.6</title>
+            <circle class="hit" cx="269.43" cy="287.1" r="9"/>
+            <circle class="pt h" cx="269.43" cy="287.1" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="201.71" y="212.6" width="135.44" height="61" rx="6"/>
+                <rect class="tsw s0" x="211.71" y="221.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="225.71" y="230.6">Fraud rate</text>
+                <text class="tx" x="211.71" y="247.6">X: 2026-02-03</text>
+                <text class="tx" x="211.71" y="264.6">Rate per 10,000: 64.6</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-04, Rate per 10,000: 59.47">
+            <title>Fraud rate, X: 2026-02-04, Rate per 10,000: 59.47</title>
+            <circle class="hit" cx="275.76" cy="314.1" r="9"/>
+            <circle class="pt h" cx="275.76" cy="314.1" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="204.68" y="239.6" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="214.68" y="248.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="228.68" y="257.6">Fraud rate</text>
+                <text class="tx" x="214.68" y="274.6">X: 2026-02-04</text>
+                <text class="tx" x="214.68" y="291.6">Rate per 10,000: 59.47</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-05, Rate per 10,000: 65.11">
+            <title>Fraud rate, X: 2026-02-05, Rate per 10,000: 65.11</title>
+            <circle class="hit" cx="282.09" cy="284.42" r="9"/>
+            <circle class="pt h" cx="282.09" cy="284.42" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="211.01" y="209.92" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="221.01" y="218.92" width="9" height="9" rx="2"/>
+                <text class="tx b" x="235.01" y="227.92">Fraud rate</text>
+                <text class="tx" x="221.01" y="244.92">X: 2026-02-05</text>
+                <text class="tx" x="221.01" y="261.92">Rate per 10,000: 65.11</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-06, Rate per 10,000: 63.64">
+            <title>Fraud rate, X: 2026-02-06, Rate per 10,000: 63.64</title>
+            <circle class="hit" cx="288.42" cy="292.19" r="9"/>
+            <circle class="pt h" cx="288.42" cy="292.19" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="217.34" y="217.69" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="227.34" y="226.69" width="9" height="9" rx="2"/>
+                <text class="tx b" x="241.34" y="235.69">Fraud rate</text>
+                <text class="tx" x="227.34" y="252.69">X: 2026-02-06</text>
+                <text class="tx" x="227.34" y="269.69">Rate per 10,000: 63.64</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-07, Rate per 10,000: 59.32">
+            <title>Fraud rate, X: 2026-02-07, Rate per 10,000: 59.32</title>
+            <circle class="hit" cx="294.75" cy="314.92" r="9"/>
+            <circle class="pt h" cx="294.75" cy="314.92" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="223.67" y="240.42" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="233.67" y="249.42" width="9" height="9" rx="2"/>
+                <text class="tx b" x="247.67" y="258.42">Fraud rate</text>
+                <text class="tx" x="233.67" y="275.42">X: 2026-02-07</text>
+                <text class="tx" x="233.67" y="292.42">Rate per 10,000: 59.32</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-08, Rate per 10,000: 54.06">
+            <title>Fraud rate, X: 2026-02-08, Rate per 10,000: 54.06</title>
+            <circle class="hit" cx="301.08" cy="342.63" r="9"/>
+            <circle class="pt h" cx="301.08" cy="342.63" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="230" y="268.13" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="240" y="277.13" width="9" height="9" rx="2"/>
+                <text class="tx b" x="254" y="286.13">Fraud rate</text>
+                <text class="tx" x="240" y="303.13">X: 2026-02-08</text>
+                <text class="tx" x="240" y="320.13">Rate per 10,000: 54.06</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-09, Rate per 10,000: 51.2">
+            <title>Fraud rate, X: 2026-02-09, Rate per 10,000: 51.2</title>
+            <circle class="hit" cx="307.42" cy="357.67" r="9"/>
+            <circle class="pt h" cx="307.42" cy="357.67" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="239.7" y="283.17" width="135.44" height="61" rx="6"/>
+                <rect class="tsw s0" x="249.7" y="292.17" width="9" height="9" rx="2"/>
+                <text class="tx b" x="263.7" y="301.17">Fraud rate</text>
+                <text class="tx" x="249.7" y="318.17">X: 2026-02-09</text>
+                <text class="tx" x="249.7" y="335.17">Rate per 10,000: 51.2</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-13, Rate per 10,000: 59.24">
+            <title>Fraud rate, X: 2026-02-13, Rate per 10,000: 59.24</title>
+            <circle class="hit" cx="332.74" cy="315.32" r="9"/>
+            <circle class="pt h" cx="332.74" cy="315.32" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="261.66" y="240.82" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="271.66" y="249.82" width="9" height="9" rx="2"/>
+                <text class="tx b" x="285.66" y="258.82">Fraud rate</text>
+                <text class="tx" x="271.66" y="275.82">X: 2026-02-13</text>
+                <text class="tx" x="271.66" y="292.82">Rate per 10,000: 59.24</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-14, Rate per 10,000: 53.84">
+            <title>Fraud rate, X: 2026-02-14, Rate per 10,000: 53.84</title>
+            <circle class="hit" cx="339.07" cy="343.8" r="9"/>
+            <circle class="pt h" cx="339.07" cy="343.8" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="267.99" y="269.3" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="277.99" y="278.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="291.99" y="287.3">Fraud rate</text>
+                <text class="tx" x="277.99" y="304.3">X: 2026-02-14</text>
+                <text class="tx" x="277.99" y="321.3">Rate per 10,000: 53.84</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-15, Rate per 10,000: 52.04">
+            <title>Fraud rate, X: 2026-02-15, Rate per 10,000: 52.04</title>
+            <circle class="hit" cx="345.41" cy="353.24" r="9"/>
+            <circle class="pt h" cx="345.41" cy="353.24" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="274.33" y="278.74" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="284.33" y="287.74" width="9" height="9" rx="2"/>
+                <text class="tx b" x="298.33" y="296.74">Fraud rate</text>
+                <text class="tx" x="284.33" y="313.74">X: 2026-02-15</text>
+                <text class="tx" x="284.33" y="330.74">Rate per 10,000: 52.04</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-16, Rate per 10,000: 54.82">
+            <title>Fraud rate, X: 2026-02-16, Rate per 10,000: 54.82</title>
+            <circle class="hit" cx="351.74" cy="338.61" r="9"/>
+            <circle class="pt h" cx="351.74" cy="338.61" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="280.66" y="264.11" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="290.66" y="273.11" width="9" height="9" rx="2"/>
+                <text class="tx b" x="304.66" y="282.11">Fraud rate</text>
+                <text class="tx" x="290.66" y="299.11">X: 2026-02-16</text>
+                <text class="tx" x="290.66" y="316.11">Rate per 10,000: 54.82</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-17, Rate per 10,000: 55.46">
+            <title>Fraud rate, X: 2026-02-17, Rate per 10,000: 55.46</title>
+            <circle class="hit" cx="358.07" cy="335.25" r="9"/>
+            <circle class="pt h" cx="358.07" cy="335.25" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="286.99" y="260.75" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="296.99" y="269.75" width="9" height="9" rx="2"/>
+                <text class="tx b" x="310.99" y="278.75">Fraud rate</text>
+                <text class="tx" x="296.99" y="295.75">X: 2026-02-17</text>
+                <text class="tx" x="296.99" y="312.75">Rate per 10,000: 55.46</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-18, Rate per 10,000: 56.31">
+            <title>Fraud rate, X: 2026-02-18, Rate per 10,000: 56.31</title>
+            <circle class="hit" cx="364.4" cy="330.77" r="9"/>
+            <circle class="pt h" cx="364.4" cy="330.77" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="293.32" y="256.27" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="303.32" y="265.27" width="9" height="9" rx="2"/>
+                <text class="tx b" x="317.32" y="274.27">Fraud rate</text>
+                <text class="tx" x="303.32" y="291.27">X: 2026-02-18</text>
+                <text class="tx" x="303.32" y="308.27">Rate per 10,000: 56.31</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-19, Rate per 10,000: 59.71">
+            <title>Fraud rate, X: 2026-02-19, Rate per 10,000: 59.71</title>
+            <circle class="hit" cx="370.73" cy="312.86" r="9"/>
+            <circle class="pt h" cx="370.73" cy="312.86" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="299.65" y="238.36" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="309.65" y="247.36" width="9" height="9" rx="2"/>
+                <text class="tx b" x="323.65" y="256.36">Fraud rate</text>
+                <text class="tx" x="309.65" y="273.36">X: 2026-02-19</text>
+                <text class="tx" x="309.65" y="290.36">Rate per 10,000: 59.71</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-20, Rate per 10,000: 64.61">
+            <title>Fraud rate, X: 2026-02-20, Rate per 10,000: 64.61</title>
+            <circle class="hit" cx="377.06" cy="287.07" r="9"/>
+            <circle class="pt h" cx="377.06" cy="287.07" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="305.98" y="212.57" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="315.98" y="221.57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="329.98" y="230.57">Fraud rate</text>
+                <text class="tx" x="315.98" y="247.57">X: 2026-02-20</text>
+                <text class="tx" x="315.98" y="264.57">Rate per 10,000: 64.61</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-21, Rate per 10,000: 65.27">
+            <title>Fraud rate, X: 2026-02-21, Rate per 10,000: 65.27</title>
+            <circle class="hit" cx="383.4" cy="283.6" r="9"/>
+            <circle class="pt h" cx="383.4" cy="283.6" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="312.32" y="209.1" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="322.32" y="218.1" width="9" height="9" rx="2"/>
+                <text class="tx b" x="336.32" y="227.1">Fraud rate</text>
+                <text class="tx" x="322.32" y="244.1">X: 2026-02-21</text>
+                <text class="tx" x="322.32" y="261.1">Rate per 10,000: 65.27</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-22, Rate per 10,000: 65.99">
+            <title>Fraud rate, X: 2026-02-22, Rate per 10,000: 65.99</title>
+            <circle class="hit" cx="389.73" cy="279.8" r="9"/>
+            <circle class="pt h" cx="389.73" cy="279.8" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="318.65" y="205.3" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="328.65" y="214.3" width="9" height="9" rx="2"/>
+                <text class="tx b" x="342.65" y="223.3">Fraud rate</text>
+                <text class="tx" x="328.65" y="240.3">X: 2026-02-22</text>
+                <text class="tx" x="328.65" y="257.3">Rate per 10,000: 65.99</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-23, Rate per 10,000: 64.02">
+            <title>Fraud rate, X: 2026-02-23, Rate per 10,000: 64.02</title>
+            <circle class="hit" cx="396.06" cy="290.15" r="9"/>
+            <circle class="pt h" cx="396.06" cy="290.15" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="324.98" y="215.65" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="334.98" y="224.65" width="9" height="9" rx="2"/>
+                <text class="tx b" x="348.98" y="233.65">Fraud rate</text>
+                <text class="tx" x="334.98" y="250.65">X: 2026-02-23</text>
+                <text class="tx" x="334.98" y="267.65">Rate per 10,000: 64.02</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-24, Rate per 10,000: 70.37">
+            <title>Fraud rate, X: 2026-02-24, Rate per 10,000: 70.37</title>
+            <circle class="hit" cx="402.39" cy="256.7" r="9"/>
+            <circle class="pt h" cx="402.39" cy="256.7" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="331.31" y="182.2" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="341.31" y="191.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="355.31" y="200.2">Fraud rate</text>
+                <text class="tx" x="341.31" y="217.2">X: 2026-02-24</text>
+                <text class="tx" x="341.31" y="234.2">Rate per 10,000: 70.37</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-25, Rate per 10,000: 76.61">
+            <title>Fraud rate, X: 2026-02-25, Rate per 10,000: 76.61</title>
+            <circle class="hit" cx="408.72" cy="223.85" r="9"/>
+            <circle class="pt h" cx="408.72" cy="223.85" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="337.64" y="149.35" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="347.64" y="158.35" width="9" height="9" rx="2"/>
+                <text class="tx b" x="361.64" y="167.35">Fraud rate</text>
+                <text class="tx" x="347.64" y="184.35">X: 2026-02-25</text>
+                <text class="tx" x="347.64" y="201.35">Rate per 10,000: 76.61</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-26, Rate per 10,000: 74.89">
+            <title>Fraud rate, X: 2026-02-26, Rate per 10,000: 74.89</title>
+            <circle class="hit" cx="415.05" cy="232.92" r="9"/>
+            <circle class="pt h" cx="415.05" cy="232.92" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="343.97" y="158.42" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="353.97" y="167.42" width="9" height="9" rx="2"/>
+                <text class="tx b" x="367.97" y="176.42">Fraud rate</text>
+                <text class="tx" x="353.97" y="193.42">X: 2026-02-26</text>
+                <text class="tx" x="353.97" y="210.42">Rate per 10,000: 74.89</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-27, Rate per 10,000: 70.9">
+            <title>Fraud rate, X: 2026-02-27, Rate per 10,000: 70.9</title>
+            <circle class="hit" cx="421.39" cy="253.95" r="9"/>
+            <circle class="pt h" cx="421.39" cy="253.95" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="353.67" y="179.45" width="135.44" height="61" rx="6"/>
+                <rect class="tsw s0" x="363.67" y="188.45" width="9" height="9" rx="2"/>
+                <text class="tx b" x="377.67" y="197.45">Fraud rate</text>
+                <text class="tx" x="363.67" y="214.45">X: 2026-02-27</text>
+                <text class="tx" x="363.67" y="231.45">Rate per 10,000: 70.9</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-02-28, Rate per 10,000: 69.14">
+            <title>Fraud rate, X: 2026-02-28, Rate per 10,000: 69.14</title>
+            <circle class="hit" cx="427.72" cy="263.22" r="9"/>
+            <circle class="pt h" cx="427.72" cy="263.22" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="356.64" y="188.72" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="366.64" y="197.72" width="9" height="9" rx="2"/>
+                <text class="tx b" x="380.64" y="206.72">Fraud rate</text>
+                <text class="tx" x="366.64" y="223.72">X: 2026-02-28</text>
+                <text class="tx" x="366.64" y="240.72">Rate per 10,000: 69.14</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-01, Rate per 10,000: 74.49">
+            <title>Fraud rate, X: 2026-03-01, Rate per 10,000: 74.49</title>
+            <circle class="hit" cx="434.05" cy="235.02" r="9"/>
+            <circle class="pt h" cx="434.05" cy="235.02" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="362.97" y="160.52" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="372.97" y="169.52" width="9" height="9" rx="2"/>
+                <text class="tx b" x="386.97" y="178.52">Fraud rate</text>
+                <text class="tx" x="372.97" y="195.52">X: 2026-03-01</text>
+                <text class="tx" x="372.97" y="212.52">Rate per 10,000: 74.49</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-02, Rate per 10,000: 77.07">
+            <title>Fraud rate, X: 2026-03-02, Rate per 10,000: 77.07</title>
+            <circle class="hit" cx="440.38" cy="221.44" r="9"/>
+            <circle class="pt h" cx="440.38" cy="221.44" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="369.3" y="146.94" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="379.3" y="155.94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="393.3" y="164.94">Fraud rate</text>
+                <text class="tx" x="379.3" y="181.94">X: 2026-03-02</text>
+                <text class="tx" x="379.3" y="198.94">Rate per 10,000: 77.07</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-03, Rate per 10,000: 77.85">
+            <title>Fraud rate, X: 2026-03-03, Rate per 10,000: 77.85</title>
+            <circle class="hit" cx="446.71" cy="217.3" r="9"/>
+            <circle class="pt h" cx="446.71" cy="217.3" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="375.63" y="142.8" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="385.63" y="151.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="399.63" y="160.8">Fraud rate</text>
+                <text class="tx" x="385.63" y="177.8">X: 2026-03-03</text>
+                <text class="tx" x="385.63" y="194.8">Rate per 10,000: 77.85</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-04, Rate per 10,000: 81.82">
+            <title>Fraud rate, X: 2026-03-04, Rate per 10,000: 81.82</title>
+            <circle class="hit" cx="453.04" cy="196.41" r="9"/>
+            <circle class="pt h" cx="453.04" cy="196.41" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="381.96" y="121.91" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="391.96" y="130.91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="405.96" y="139.91">Fraud rate</text>
+                <text class="tx" x="391.96" y="156.91">X: 2026-03-04</text>
+                <text class="tx" x="391.96" y="173.91">Rate per 10,000: 81.82</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-05, Rate per 10,000: 78.26">
+            <title>Fraud rate, X: 2026-03-05, Rate per 10,000: 78.26</title>
+            <circle class="hit" cx="459.38" cy="215.17" r="9"/>
+            <circle class="pt h" cx="459.38" cy="215.17" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="388.3" y="140.67" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="398.3" y="149.67" width="9" height="9" rx="2"/>
+                <text class="tx b" x="412.3" y="158.67">Fraud rate</text>
+                <text class="tx" x="398.3" y="175.67">X: 2026-03-05</text>
+                <text class="tx" x="398.3" y="192.67">Rate per 10,000: 78.26</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-06, Rate per 10,000: 73.68">
+            <title>Fraud rate, X: 2026-03-06, Rate per 10,000: 73.68</title>
+            <circle class="hit" cx="465.71" cy="239.3" r="9"/>
+            <circle class="pt h" cx="465.71" cy="239.3" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="394.63" y="164.8" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="404.63" y="173.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="418.63" y="182.8">Fraud rate</text>
+                <text class="tx" x="404.63" y="199.8">X: 2026-03-06</text>
+                <text class="tx" x="404.63" y="216.8">Rate per 10,000: 73.68</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-07, Rate per 10,000: 76.86">
+            <title>Fraud rate, X: 2026-03-07, Rate per 10,000: 76.86</title>
+            <circle class="hit" cx="472.04" cy="222.54" r="9"/>
+            <circle class="pt h" cx="472.04" cy="222.54" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="400.96" y="148.04" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="410.96" y="157.04" width="9" height="9" rx="2"/>
+                <text class="tx b" x="424.96" y="166.04">Fraud rate</text>
+                <text class="tx" x="410.96" y="183.04">X: 2026-03-07</text>
+                <text class="tx" x="410.96" y="200.04">Rate per 10,000: 76.86</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-08, Rate per 10,000: 79.47">
+            <title>Fraud rate, X: 2026-03-08, Rate per 10,000: 79.47</title>
+            <circle class="hit" cx="478.37" cy="208.77" r="9"/>
+            <circle class="pt h" cx="478.37" cy="208.77" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="407.29" y="134.27" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="417.29" y="143.27" width="9" height="9" rx="2"/>
+                <text class="tx b" x="431.29" y="152.27">Fraud rate</text>
+                <text class="tx" x="417.29" y="169.27">X: 2026-03-08</text>
+                <text class="tx" x="417.29" y="186.27">Rate per 10,000: 79.47</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-09, Rate per 10,000: 77.4">
+            <title>Fraud rate, X: 2026-03-09, Rate per 10,000: 77.4</title>
+            <circle class="hit" cx="484.7" cy="219.7" r="9"/>
+            <circle class="pt h" cx="484.7" cy="219.7" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="416.98" y="145.2" width="135.44" height="61" rx="6"/>
+                <rect class="tsw s0" x="426.98" y="154.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="440.98" y="163.2">Fraud rate</text>
+                <text class="tx" x="426.98" y="180.2">X: 2026-03-09</text>
+                <text class="tx" x="426.98" y="197.2">Rate per 10,000: 77.4</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-10, Rate per 10,000: 77.93">
+            <title>Fraud rate, X: 2026-03-10, Rate per 10,000: 77.93</title>
+            <circle class="hit" cx="491.03" cy="216.89" r="9"/>
+            <circle class="pt h" cx="491.03" cy="216.89" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="419.95" y="142.39" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="429.95" y="151.39" width="9" height="9" rx="2"/>
+                <text class="tx b" x="443.95" y="160.39">Fraud rate</text>
+                <text class="tx" x="429.95" y="177.39">X: 2026-03-10</text>
+                <text class="tx" x="429.95" y="194.39">Rate per 10,000: 77.93</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-11, Rate per 10,000: 82.48">
+            <title>Fraud rate, X: 2026-03-11, Rate per 10,000: 82.48</title>
+            <circle class="hit" cx="497.37" cy="192.94" r="9"/>
+            <circle class="pt h" cx="497.37" cy="192.94" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="426.29" y="118.44" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="436.29" y="127.44" width="9" height="9" rx="2"/>
+                <text class="tx b" x="450.29" y="136.44">Fraud rate</text>
+                <text class="tx" x="436.29" y="153.44">X: 2026-03-11</text>
+                <text class="tx" x="436.29" y="170.44">Rate per 10,000: 82.48</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-12, Rate per 10,000: 79.1">
+            <title>Fraud rate, X: 2026-03-12, Rate per 10,000: 79.1</title>
+            <circle class="hit" cx="503.7" cy="210.76" r="9"/>
+            <circle class="pt h" cx="503.7" cy="210.76" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="435.98" y="136.26" width="135.44" height="61" rx="6"/>
+                <rect class="tsw s0" x="445.98" y="145.26" width="9" height="9" rx="2"/>
+                <text class="tx b" x="459.98" y="154.26">Fraud rate</text>
+                <text class="tx" x="445.98" y="171.26">X: 2026-03-12</text>
+                <text class="tx" x="445.98" y="188.26">Rate per 10,000: 79.1</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-13, Rate per 10,000: 78.74">
+            <title>Fraud rate, X: 2026-03-13, Rate per 10,000: 78.74</title>
+            <circle class="hit" cx="510.03" cy="212.65" r="9"/>
+            <circle class="pt h" cx="510.03" cy="212.65" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="438.95" y="138.15" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="448.95" y="147.15" width="9" height="9" rx="2"/>
+                <text class="tx b" x="462.95" y="156.15">Fraud rate</text>
+                <text class="tx" x="448.95" y="173.15">X: 2026-03-13</text>
+                <text class="tx" x="448.95" y="190.15">Rate per 10,000: 78.74</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-14, Rate per 10,000: 78.5">
+            <title>Fraud rate, X: 2026-03-14, Rate per 10,000: 78.5</title>
+            <circle class="hit" cx="516.36" cy="213.88" r="9"/>
+            <circle class="pt h" cx="516.36" cy="213.88" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="448.64" y="139.38" width="135.44" height="61" rx="6"/>
+                <rect class="tsw s0" x="458.64" y="148.38" width="9" height="9" rx="2"/>
+                <text class="tx b" x="472.64" y="157.38">Fraud rate</text>
+                <text class="tx" x="458.64" y="174.38">X: 2026-03-14</text>
+                <text class="tx" x="458.64" y="191.38">Rate per 10,000: 78.5</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-15, Rate per 10,000: 79.59">
+            <title>Fraud rate, X: 2026-03-15, Rate per 10,000: 79.59</title>
+            <circle class="hit" cx="522.69" cy="208.18" r="9"/>
+            <circle class="pt h" cx="522.69" cy="208.18" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="451.61" y="133.68" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="461.61" y="142.68" width="9" height="9" rx="2"/>
+                <text class="tx b" x="475.61" y="151.68">Fraud rate</text>
+                <text class="tx" x="461.61" y="168.68">X: 2026-03-15</text>
+                <text class="tx" x="461.61" y="185.68">Rate per 10,000: 79.59</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-16, Rate per 10,000: 77.44">
+            <title>Fraud rate, X: 2026-03-16, Rate per 10,000: 77.44</title>
+            <circle class="hit" cx="529.02" cy="219.51" r="9"/>
+            <circle class="pt h" cx="529.02" cy="219.51" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="457.94" y="145.01" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="467.94" y="154.01" width="9" height="9" rx="2"/>
+                <text class="tx b" x="481.94" y="163.01">Fraud rate</text>
+                <text class="tx" x="467.94" y="180.01">X: 2026-03-16</text>
+                <text class="tx" x="467.94" y="197.01">Rate per 10,000: 77.44</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-17, Rate per 10,000: 78.09">
+            <title>Fraud rate, X: 2026-03-17, Rate per 10,000: 78.09</title>
+            <circle class="hit" cx="535.36" cy="216.06" r="9"/>
+            <circle class="pt h" cx="535.36" cy="216.06" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="464.28" y="141.56" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="474.28" y="150.56" width="9" height="9" rx="2"/>
+                <text class="tx b" x="488.28" y="159.56">Fraud rate</text>
+                <text class="tx" x="474.28" y="176.56">X: 2026-03-17</text>
+                <text class="tx" x="474.28" y="193.56">Rate per 10,000: 78.09</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-18, Rate per 10,000: 77.55">
+            <title>Fraud rate, X: 2026-03-18, Rate per 10,000: 77.55</title>
+            <circle class="hit" cx="541.69" cy="218.9" r="9"/>
+            <circle class="pt h" cx="541.69" cy="218.9" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="470.61" y="144.4" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="480.61" y="153.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="494.61" y="162.4">Fraud rate</text>
+                <text class="tx" x="480.61" y="179.4">X: 2026-03-18</text>
+                <text class="tx" x="480.61" y="196.4">Rate per 10,000: 77.55</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-19, Rate per 10,000: 83.25">
+            <title>Fraud rate, X: 2026-03-19, Rate per 10,000: 83.25</title>
+            <circle class="hit" cx="548.02" cy="188.87" r="9"/>
+            <circle class="pt h" cx="548.02" cy="188.87" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="476.94" y="114.37" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="486.94" y="123.37" width="9" height="9" rx="2"/>
+                <text class="tx b" x="500.94" y="132.37">Fraud rate</text>
+                <text class="tx" x="486.94" y="149.37">X: 2026-03-19</text>
+                <text class="tx" x="486.94" y="166.37">Rate per 10,000: 83.25</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-20, Rate per 10,000: 82.62">
+            <title>Fraud rate, X: 2026-03-20, Rate per 10,000: 82.62</title>
+            <circle class="hit" cx="554.35" cy="192.2" r="9"/>
+            <circle class="pt h" cx="554.35" cy="192.2" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="117.7" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="126.7" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="135.7">Fraud rate</text>
+                <text class="tx" x="491.84" y="152.7">X: 2026-03-20</text>
+                <text class="tx" x="491.84" y="169.7">Rate per 10,000: 82.62</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-21, Rate per 10,000: 86.32">
+            <title>Fraud rate, X: 2026-03-21, Rate per 10,000: 86.32</title>
+            <circle class="hit" cx="560.68" cy="172.73" r="9"/>
+            <circle class="pt h" cx="560.68" cy="172.73" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="98.23" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="107.23" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="116.23">Fraud rate</text>
+                <text class="tx" x="491.84" y="133.23">X: 2026-03-21</text>
+                <text class="tx" x="491.84" y="150.23">Rate per 10,000: 86.32</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-22, Rate per 10,000: 85.53">
+            <title>Fraud rate, X: 2026-03-22, Rate per 10,000: 85.53</title>
+            <circle class="hit" cx="567.01" cy="176.89" r="9"/>
+            <circle class="pt h" cx="567.01" cy="176.89" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="102.39" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="111.39" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="120.39">Fraud rate</text>
+                <text class="tx" x="491.84" y="137.39">X: 2026-03-22</text>
+                <text class="tx" x="491.84" y="154.39">Rate per 10,000: 85.53</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-23, Rate per 10,000: 90.17">
+            <title>Fraud rate, X: 2026-03-23, Rate per 10,000: 90.17</title>
+            <circle class="hit" cx="573.35" cy="152.46" r="9"/>
+            <circle class="pt h" cx="573.35" cy="152.46" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="77.96" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="86.96" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="95.96">Fraud rate</text>
+                <text class="tx" x="491.84" y="112.96">X: 2026-03-23</text>
+                <text class="tx" x="491.84" y="129.96">Rate per 10,000: 90.17</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-24, Rate per 10,000: 92.11">
+            <title>Fraud rate, X: 2026-03-24, Rate per 10,000: 92.11</title>
+            <circle class="hit" cx="579.68" cy="142.23" r="9"/>
+            <circle class="pt h" cx="579.68" cy="142.23" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="67.73" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="76.73" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="85.73">Fraud rate</text>
+                <text class="tx" x="491.84" y="102.73">X: 2026-03-24</text>
+                <text class="tx" x="491.84" y="119.73">Rate per 10,000: 92.11</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-25, Rate per 10,000: 97.33">
+            <title>Fraud rate, X: 2026-03-25, Rate per 10,000: 97.33</title>
+            <circle class="hit" cx="586.01" cy="114.74" r="9"/>
+            <circle class="pt h" cx="586.01" cy="114.74" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="121.24" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="130.24" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="139.24">Fraud rate</text>
+                <text class="tx" x="491.84" y="156.24">X: 2026-03-25</text>
+                <text class="tx" x="491.84" y="173.24">Rate per 10,000: 97.33</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-26, Rate per 10,000: 96.86">
+            <title>Fraud rate, X: 2026-03-26, Rate per 10,000: 96.86</title>
+            <circle class="hit" cx="592.34" cy="117.2" r="9"/>
+            <circle class="pt h" cx="592.34" cy="117.2" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="48" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="66">Fraud rate</text>
+                <text class="tx" x="491.84" y="83">X: 2026-03-26</text>
+                <text class="tx" x="491.84" y="100">Rate per 10,000: 96.86</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-27, Rate per 10,000: 92.97">
+            <title>Fraud rate, X: 2026-03-27, Rate per 10,000: 92.97</title>
+            <circle class="hit" cx="598.67" cy="137.7" r="9"/>
+            <circle class="pt h" cx="598.67" cy="137.7" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="63.2" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="72.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="81.2">Fraud rate</text>
+                <text class="tx" x="491.84" y="98.2">X: 2026-03-27</text>
+                <text class="tx" x="491.84" y="115.2">Rate per 10,000: 92.97</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-28, Rate per 10,000: 99.13">
+            <title>Fraud rate, X: 2026-03-28, Rate per 10,000: 99.13</title>
+            <circle class="hit" cx="605" cy="105.25" r="9"/>
+            <circle class="pt h" cx="605" cy="105.25" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="111.75" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="120.75" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="129.75">Fraud rate</text>
+                <text class="tx" x="491.84" y="146.75">X: 2026-03-28</text>
+                <text class="tx" x="491.84" y="163.75">Rate per 10,000: 99.13</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-29, Rate per 10,000: 100.8">
+            <title>Fraud rate, X: 2026-03-29, Rate per 10,000: 100.8</title>
+            <circle class="hit" cx="611.34" cy="96.65" r="9"/>
+            <circle class="pt h" cx="611.34" cy="96.65" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="103.15" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="112.15" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="121.15">Fraud rate</text>
+                <text class="tx" x="491.84" y="138.15">X: 2026-03-29</text>
+                <text class="tx" x="491.84" y="155.15">Rate per 10,000: 100.8</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-30, Rate per 10,000: 96.28">
+            <title>Fraud rate, X: 2026-03-30, Rate per 10,000: 96.28</title>
+            <circle class="hit" cx="617.67" cy="120.26" r="9"/>
+            <circle class="pt h" cx="617.67" cy="120.26" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="48" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="66">Fraud rate</text>
+                <text class="tx" x="491.84" y="83">X: 2026-03-30</text>
+                <text class="tx" x="491.84" y="100">Rate per 10,000: 96.28</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Fraud rate, X: 2026-03-31, Rate per 10,000: 91.31">
+            <title>Fraud rate, X: 2026-03-31, Rate per 10,000: 91.31</title>
+            <circle class="hit" cx="624" cy="146.41" r="9"/>
+            <circle class="pt h" cx="624" cy="146.41" r="3.5"/>
+            <g class="tt">
+                <rect class="tb" x="481.84" y="71.91" width="142.16" height="61" rx="6"/>
+                <rect class="tsw s0" x="491.84" y="80.91" width="9" height="9" rx="2"/>
+                <text class="tx b" x="505.84" y="89.91">Fraud rate</text>
+                <text class="tx" x="491.84" y="106.91">X: 2026-03-31</text>
+                <text class="tx" x="491.84" y="123.91">Rate per 10,000: 91.31</text>
+            </g>
+        </g>
+    </g>
+    <text class="at ctr" x="0" y="0" transform="translate(24 206) rotate(-90)">Rate per 10,000</text>
+</svg>

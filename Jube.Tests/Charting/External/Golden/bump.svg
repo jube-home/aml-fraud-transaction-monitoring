@@ -1,0 +1,499 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-slope" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-f736357e-t jc-f736357e-d">
+    <title id="jc-f736357e-t">Alert volume rank by country</title>
+    <desc id="jc-f736357e-d">Bump chart with 6 series: United Kingdom, Germany, France, Spain, Italy, Poland. Across 5
+        periods: Q1, Q2, Q3, Q4.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Alert volume rank by country</text>
+    <line class="gl" x1="118.21" y1="72" x2="118.21" y2="380"/>
+    <text class="ph ctr" x="118.21" y="64">Q1</text>
+    <line class="gl" x1="220.11" y1="72" x2="220.11" y2="380"/>
+    <text class="ph ctr" x="220.11" y="64">Q2</text>
+    <line class="gl" x1="322" y1="72" x2="322" y2="380"/>
+    <text class="ph ctr" x="322" y="64">Q3</text>
+    <line class="gl" x1="423.9" y1="72" x2="423.9" y2="380"/>
+    <text class="ph ctr" x="423.9" y="64">Q4</text>
+    <line class="gl" x1="525.79" y1="72" x2="525.79" y2="380"/>
+    <text class="ph ctr" x="525.79" y="64">Q1 next</text>
+    <g class="sr s0">
+        <path class="ln"
+              d="M118.21 84C169.16 84 169.16 140.8 220.11 140.8C271.05 140.8 271.05 84 322 84C372.95 84 372.95 197.6 423.9 197.6C474.84 197.6 474.84 84 525.79 84">
+            <title>United Kingdom</title>
+        </path>
+        <path class="hl"
+              d="M118.21 84C169.16 84 169.16 140.8 220.11 140.8C271.05 140.8 271.05 84 322 84C372.95 84 372.95 197.6 423.9 197.6C474.84 197.6 474.84 84 525.79 84"/>
+        <g class="mk s0" tabindex="0" role="graphics-symbol" aria-label="United Kingdom, Q1: 90, Rank: 1 of 6">
+            <title>United Kingdom, Q1: 90, Rank: 1 of 6</title>
+            <circle class="hit" cx="118.21" cy="84" r="13"/>
+            <circle class="pt" cx="118.21" cy="84" r="9"/>
+            <text class="rk ctr mid on" x="118.21" y="84">1</text>
+            <g class="tt">
+                <rect class="tb" x="118.21" y="85" width="124.44" height="61" rx="6"/>
+                <rect class="tsw s0" x="128.21" y="94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="142.21" y="103">United Kingdom</text>
+                <text class="tx" x="128.21" y="120">Q1: 90</text>
+                <text class="tx" x="128.21" y="137">Rank: 1 of 6</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="United Kingdom, Q2: 88, Rank: 2 of 6, Change: -2">
+            <title>United Kingdom, Q2: 88, Rank: 2 of 6, Change: -2</title>
+            <circle class="hit" cx="220.11" cy="140.8" r="13"/>
+            <circle class="pt" cx="220.11" cy="140.8" r="9"/>
+            <text class="rk ctr mid on" x="220.11" y="140.8">2</text>
+            <g class="tt">
+                <rect class="tb" x="157.89" y="141.8" width="124.44" height="78" rx="6"/>
+                <rect class="tsw s0" x="167.89" y="150.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="181.89" y="159.8">United Kingdom</text>
+                <text class="tx" x="167.89" y="176.8">Q2: 88</text>
+                <text class="tx" x="167.89" y="193.8">Rank: 2 of 6</text>
+                <text class="tx" x="167.89" y="210.8">Change: -2</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="United Kingdom, Q3: 95, Rank: 1 of 6, Change: +7">
+            <title>United Kingdom, Q3: 95, Rank: 1 of 6, Change: +7</title>
+            <circle class="hit" cx="322" cy="84" r="13"/>
+            <circle class="pt" cx="322" cy="84" r="9"/>
+            <text class="rk ctr mid on" x="322" y="84">1</text>
+            <g class="tt">
+                <rect class="tb" x="259.78" y="85" width="124.44" height="78" rx="6"/>
+                <rect class="tsw s0" x="269.78" y="94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="283.78" y="103">United Kingdom</text>
+                <text class="tx" x="269.78" y="120">Q3: 95</text>
+                <text class="tx" x="269.78" y="137">Rank: 1 of 6</text>
+                <text class="tx" x="269.78" y="154">Change: +7</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="United Kingdom, Q4: 92, Rank: 3 of 6, Change: -3">
+            <title>United Kingdom, Q4: 92, Rank: 3 of 6, Change: -3</title>
+            <circle class="hit" cx="423.9" cy="197.6" r="13"/>
+            <circle class="pt" cx="423.9" cy="197.6" r="9"/>
+            <text class="rk ctr mid on" x="423.9" y="197.6">3</text>
+            <g class="tt">
+                <rect class="tb" x="361.68" y="100.6" width="124.44" height="78" rx="6"/>
+                <rect class="tsw s0" x="371.68" y="109.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="385.68" y="118.6">United Kingdom</text>
+                <text class="tx" x="371.68" y="135.6">Q4: 92</text>
+                <text class="tx" x="371.68" y="152.6">Rank: 3 of 6</text>
+                <text class="tx" x="371.68" y="169.6">Change: -3</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="United Kingdom, Q1 next: 99, Rank: 1 of 6, Change: +7">
+            <title>United Kingdom, Q1 next: 99, Rank: 1 of 6, Change: +7</title>
+            <circle class="hit" cx="525.79" cy="84" r="13"/>
+            <circle class="pt" cx="525.79" cy="84" r="9"/>
+            <text class="rk ctr mid on" x="525.79" y="84">1</text>
+            <g class="tt">
+                <rect class="tb" x="401.35" y="85" width="124.44" height="78" rx="6"/>
+                <rect class="tsw s0" x="411.35" y="94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="425.35" y="103">United Kingdom</text>
+                <text class="tx" x="411.35" y="120">Q1 next: 99</text>
+                <text class="tx" x="411.35" y="137">Rank: 1 of 6</text>
+                <text class="tx" x="411.35" y="154">Change: +7</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s1">
+        <path class="ln"
+              d="M118.21 197.6C169.16 197.6 169.16 84 220.11 84C271.05 84 271.05 140.8 322 140.8C372.95 140.8 372.95 84 423.9 84C474.84 84 474.84 140.8 525.79 140.8">
+            <title>Germany</title>
+        </path>
+        <path class="hl"
+              d="M118.21 197.6C169.16 197.6 169.16 84 220.11 84C271.05 84 271.05 140.8 322 140.8C372.95 140.8 372.95 84 423.9 84C474.84 84 474.84 140.8 525.79 140.8"/>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Germany, Q1: 80, Rank: 3 of 6">
+            <title>Germany, Q1: 80, Rank: 3 of 6</title>
+            <circle class="hit" cx="118.21" cy="197.6" r="13"/>
+            <circle class="pt" cx="118.21" cy="197.6" r="9"/>
+            <text class="rk ctr mid on" x="118.21" y="197.6">3</text>
+            <g class="tt">
+                <rect class="tb" x="118.21" y="117.6" width="85.01" height="61" rx="6"/>
+                <rect class="tsw s1" x="128.21" y="126.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="142.21" y="135.6">Germany</text>
+                <text class="tx" x="128.21" y="152.6">Q1: 80</text>
+                <text class="tx" x="128.21" y="169.6">Rank: 3 of 6</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Germany, Q2: 91, Rank: 1 of 6, Change: +11">
+            <title>Germany, Q2: 91, Rank: 1 of 6, Change: +11</title>
+            <circle class="hit" cx="220.11" cy="84" r="13"/>
+            <circle class="pt" cx="220.11" cy="84" r="9"/>
+            <text class="rk ctr mid on" x="220.11" y="84">1</text>
+            <g class="tt">
+                <rect class="tb" x="176.27" y="85" width="87.68" height="78" rx="6"/>
+                <rect class="tsw s1" x="186.27" y="94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="200.27" y="103">Germany</text>
+                <text class="tx" x="186.27" y="120">Q2: 91</text>
+                <text class="tx" x="186.27" y="137">Rank: 1 of 6</text>
+                <text class="tx" x="186.27" y="154">Change: +11</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Germany, Q3: 90, Rank: 2 of 6, Change: -1">
+            <title>Germany, Q3: 90, Rank: 2 of 6, Change: -1</title>
+            <circle class="hit" cx="322" cy="140.8" r="13"/>
+            <circle class="pt" cx="322" cy="140.8" r="9"/>
+            <text class="rk ctr mid on" x="322" y="140.8">2</text>
+            <g class="tt">
+                <rect class="tb" x="279.5" y="141.8" width="85.01" height="78" rx="6"/>
+                <rect class="tsw s1" x="289.5" y="150.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="303.5" y="159.8">Germany</text>
+                <text class="tx" x="289.5" y="176.8">Q3: 90</text>
+                <text class="tx" x="289.5" y="193.8">Rank: 2 of 6</text>
+                <text class="tx" x="289.5" y="210.8">Change: -1</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol" aria-label="Germany, Q4: 97, Rank: 1 of 6, Change: +7">
+            <title>Germany, Q4: 97, Rank: 1 of 6, Change: +7</title>
+            <circle class="hit" cx="423.9" cy="84" r="13"/>
+            <circle class="pt" cx="423.9" cy="84" r="9"/>
+            <text class="rk ctr mid on" x="423.9" y="84">1</text>
+            <g class="tt">
+                <rect class="tb" x="381.39" y="85" width="85.01" height="78" rx="6"/>
+                <rect class="tsw s1" x="391.39" y="94" width="9" height="9" rx="2"/>
+                <text class="tx b" x="405.39" y="103">Germany</text>
+                <text class="tx" x="391.39" y="120">Q4: 97</text>
+                <text class="tx" x="391.39" y="137">Rank: 1 of 6</text>
+                <text class="tx" x="391.39" y="154">Change: +7</text>
+            </g>
+        </g>
+        <g class="mk s1" tabindex="0" role="graphics-symbol"
+           aria-label="Germany, Q1 next: 96, Rank: 2 of 6, Change: -1">
+            <title>Germany, Q1 next: 96, Rank: 2 of 6, Change: -1</title>
+            <circle class="hit" cx="525.79" cy="140.8" r="13"/>
+            <circle class="pt" cx="525.79" cy="140.8" r="9"/>
+            <text class="rk ctr mid on" x="525.79" y="140.8">2</text>
+            <g class="tt">
+                <rect class="tb" x="440.78" y="141.8" width="85.01" height="78" rx="6"/>
+                <rect class="tsw s1" x="450.78" y="150.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="464.78" y="159.8">Germany</text>
+                <text class="tx" x="450.78" y="176.8">Q1 next: 96</text>
+                <text class="tx" x="450.78" y="193.8">Rank: 2 of 6</text>
+                <text class="tx" x="450.78" y="210.8">Change: -1</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s2">
+        <path class="ln"
+              d="M118.21 254.4C169.16 254.4 169.16 254.4 220.11 254.4C271.05 254.4 271.05 197.6 322 197.6C372.95 197.6 372.95 140.8 423.9 140.8C474.84 140.8 474.84 197.6 525.79 197.6">
+            <title>France</title>
+        </path>
+        <path class="hl"
+              d="M118.21 254.4C169.16 254.4 169.16 254.4 220.11 254.4C271.05 254.4 271.05 197.6 322 197.6C372.95 197.6 372.95 140.8 423.9 140.8C474.84 140.8 474.84 197.6 525.79 197.6"/>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="France, Q1: 70, Rank: 4 of 6">
+            <title>France, Q1: 70, Rank: 4 of 6</title>
+            <circle class="hit" cx="118.21" cy="254.4" r="13"/>
+            <circle class="pt" cx="118.21" cy="254.4" r="9"/>
+            <text class="rk ctr mid on" x="118.21" y="254.4">4</text>
+            <g class="tt">
+                <rect class="tb" x="118.21" y="174.4" width="84.8" height="61" rx="6"/>
+                <rect class="tsw s2" x="128.21" y="183.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="142.21" y="192.4">France</text>
+                <text class="tx" x="128.21" y="209.4">Q1: 70</text>
+                <text class="tx" x="128.21" y="226.4">Rank: 4 of 6</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="France, Q2: 72, Rank: 4 of 6, Change: +2">
+            <title>France, Q2: 72, Rank: 4 of 6, Change: +2</title>
+            <circle class="hit" cx="220.11" cy="254.4" r="13"/>
+            <circle class="pt" cx="220.11" cy="254.4" r="9"/>
+            <text class="rk ctr mid on" x="220.11" y="254.4">4</text>
+            <g class="tt">
+                <rect class="tb" x="177.71" y="157.4" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s2" x="187.71" y="166.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="201.71" y="175.4">France</text>
+                <text class="tx" x="187.71" y="192.4">Q2: 72</text>
+                <text class="tx" x="187.71" y="209.4">Rank: 4 of 6</text>
+                <text class="tx" x="187.71" y="226.4">Change: +2</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="France, Q3: 85, Rank: 3 of 6, Change: +13">
+            <title>France, Q3: 85, Rank: 3 of 6, Change: +13</title>
+            <circle class="hit" cx="322" cy="197.6" r="13"/>
+            <circle class="pt" cx="322" cy="197.6" r="9"/>
+            <text class="rk ctr mid on" x="322" y="197.6">3</text>
+            <g class="tt">
+                <rect class="tb" x="278.16" y="100.6" width="87.68" height="78" rx="6"/>
+                <rect class="tsw s2" x="288.16" y="109.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="302.16" y="118.6">France</text>
+                <text class="tx" x="288.16" y="135.6">Q3: 85</text>
+                <text class="tx" x="288.16" y="152.6">Rank: 3 of 6</text>
+                <text class="tx" x="288.16" y="169.6">Change: +13</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="France, Q4: 94, Rank: 2 of 6, Change: +9">
+            <title>France, Q4: 94, Rank: 2 of 6, Change: +9</title>
+            <circle class="hit" cx="423.9" cy="140.8" r="13"/>
+            <circle class="pt" cx="423.9" cy="140.8" r="9"/>
+            <text class="rk ctr mid on" x="423.9" y="140.8">2</text>
+            <g class="tt">
+                <rect class="tb" x="381.5" y="141.8" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s2" x="391.5" y="150.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="405.5" y="159.8">France</text>
+                <text class="tx" x="391.5" y="176.8">Q4: 94</text>
+                <text class="tx" x="391.5" y="193.8">Rank: 2 of 6</text>
+                <text class="tx" x="391.5" y="210.8">Change: +9</text>
+            </g>
+        </g>
+        <g class="mk s2" tabindex="0" role="graphics-symbol" aria-label="France, Q1 next: 90, Rank: 3 of 6, Change: -4">
+            <title>France, Q1 next: 90, Rank: 3 of 6, Change: -4</title>
+            <circle class="hit" cx="525.79" cy="197.6" r="13"/>
+            <circle class="pt" cx="525.79" cy="197.6" r="9"/>
+            <text class="rk ctr mid on" x="525.79" y="197.6">3</text>
+            <g class="tt">
+                <rect class="tb" x="440.99" y="100.6" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s2" x="450.99" y="109.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="464.99" y="118.6">France</text>
+                <text class="tx" x="450.99" y="135.6">Q1 next: 90</text>
+                <text class="tx" x="450.99" y="152.6">Rank: 3 of 6</text>
+                <text class="tx" x="450.99" y="169.6">Change: -4</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s3">
+        <path class="ln"
+              d="M118.21 311.2C169.16 311.2 169.16 311.2 220.11 311.2C271.05 311.2 271.05 311.2 322 311.2C372.95 311.2 372.95 311.2 423.9 311.2C474.84 311.2 474.84 254.4 525.79 254.4">
+            <title>Spain</title>
+        </path>
+        <path class="hl"
+              d="M118.21 311.2C169.16 311.2 169.16 311.2 220.11 311.2C271.05 311.2 271.05 311.2 322 311.2C372.95 311.2 372.95 311.2 423.9 311.2C474.84 311.2 474.84 254.4 525.79 254.4"/>
+        <g class="mk s3" tabindex="0" role="graphics-symbol" aria-label="Spain, Q1: 60, Rank: 5 of 6">
+            <title>Spain, Q1: 60, Rank: 5 of 6</title>
+            <circle class="hit" cx="118.21" cy="311.2" r="13"/>
+            <circle class="pt" cx="118.21" cy="311.2" r="9"/>
+            <text class="rk ctr mid on" x="118.21" y="311.2">5</text>
+            <g class="tt">
+                <rect class="tb" x="118.21" y="231.2" width="84.8" height="61" rx="6"/>
+                <rect class="tsw s3" x="128.21" y="240.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="142.21" y="249.2">Spain</text>
+                <text class="tx" x="128.21" y="266.2">Q1: 60</text>
+                <text class="tx" x="128.21" y="283.2">Rank: 5 of 6</text>
+            </g>
+        </g>
+        <g class="mk s3" tabindex="0" role="graphics-symbol" aria-label="Spain, Q2: 65, Rank: 5 of 6, Change: +5">
+            <title>Spain, Q2: 65, Rank: 5 of 6, Change: +5</title>
+            <circle class="hit" cx="220.11" cy="311.2" r="13"/>
+            <circle class="pt" cx="220.11" cy="311.2" r="9"/>
+            <text class="rk ctr mid on" x="220.11" y="311.2">5</text>
+            <g class="tt">
+                <rect class="tb" x="177.71" y="214.2" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s3" x="187.71" y="223.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="201.71" y="232.2">Spain</text>
+                <text class="tx" x="187.71" y="249.2">Q2: 65</text>
+                <text class="tx" x="187.71" y="266.2">Rank: 5 of 6</text>
+                <text class="tx" x="187.71" y="283.2">Change: +5</text>
+            </g>
+        </g>
+        <g class="mk s3" tabindex="0" role="graphics-symbol" aria-label="Spain, Q3: 62, Rank: 5 of 6, Change: -3">
+            <title>Spain, Q3: 62, Rank: 5 of 6, Change: -3</title>
+            <circle class="hit" cx="322" cy="311.2" r="13"/>
+            <circle class="pt" cx="322" cy="311.2" r="9"/>
+            <text class="rk ctr mid on" x="322" y="311.2">5</text>
+            <g class="tt">
+                <rect class="tb" x="279.6" y="214.2" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s3" x="289.6" y="223.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="303.6" y="232.2">Spain</text>
+                <text class="tx" x="289.6" y="249.2">Q3: 62</text>
+                <text class="tx" x="289.6" y="266.2">Rank: 5 of 6</text>
+                <text class="tx" x="289.6" y="283.2">Change: -3</text>
+            </g>
+        </g>
+        <g class="mk s3" tabindex="0" role="graphics-symbol" aria-label="Spain, Q4: 66, Rank: 5 of 6, Change: +4">
+            <title>Spain, Q4: 66, Rank: 5 of 6, Change: +4</title>
+            <circle class="hit" cx="423.9" cy="311.2" r="13"/>
+            <circle class="pt" cx="423.9" cy="311.2" r="9"/>
+            <text class="rk ctr mid on" x="423.9" y="311.2">5</text>
+            <g class="tt">
+                <rect class="tb" x="381.5" y="214.2" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s3" x="391.5" y="223.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="405.5" y="232.2">Spain</text>
+                <text class="tx" x="391.5" y="249.2">Q4: 66</text>
+                <text class="tx" x="391.5" y="266.2">Rank: 5 of 6</text>
+                <text class="tx" x="391.5" y="283.2">Change: +4</text>
+            </g>
+        </g>
+        <g class="mk s3" tabindex="0" role="graphics-symbol" aria-label="Spain, Q1 next: 80, Rank: 4 of 6, Change: +14">
+            <title>Spain, Q1 next: 80, Rank: 4 of 6, Change: +14</title>
+            <circle class="hit" cx="525.79" cy="254.4" r="13"/>
+            <circle class="pt" cx="525.79" cy="254.4" r="9"/>
+            <text class="rk ctr mid on" x="525.79" y="254.4">4</text>
+            <g class="tt">
+                <rect class="tb" x="438.11" y="157.4" width="87.68" height="78" rx="6"/>
+                <rect class="tsw s3" x="448.11" y="166.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="462.11" y="175.4">Spain</text>
+                <text class="tx" x="448.11" y="192.4">Q1 next: 80</text>
+                <text class="tx" x="448.11" y="209.4">Rank: 4 of 6</text>
+                <text class="tx" x="448.11" y="226.4">Change: +14</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s4">
+        <path class="ln"
+              d="M118.21 140.8C169.16 140.8 169.16 197.6 220.11 197.6C271.05 197.6 271.05 254.4 322 254.4C372.95 254.4 372.95 368 423.9 368C474.84 368 474.84 368 525.79 368">
+            <title>Italy</title>
+        </path>
+        <path class="hl"
+              d="M118.21 140.8C169.16 140.8 169.16 197.6 220.11 197.6C271.05 197.6 271.05 254.4 322 254.4C372.95 254.4 372.95 368 423.9 368C474.84 368 474.84 368 525.79 368"/>
+        <g class="mk s4" tabindex="0" role="graphics-symbol" aria-label="Italy, Q1: 85, Rank: 2 of 6">
+            <title>Italy, Q1: 85, Rank: 2 of 6</title>
+            <circle class="hit" cx="118.21" cy="140.8" r="13"/>
+            <circle class="pt" cx="118.21" cy="140.8" r="9"/>
+            <text class="rk ctr mid on" x="118.21" y="140.8">2</text>
+            <g class="tt">
+                <rect class="tb" x="118.21" y="141.8" width="84.8" height="61" rx="6"/>
+                <rect class="tsw s4" x="128.21" y="150.8" width="9" height="9" rx="2"/>
+                <text class="tx b" x="142.21" y="159.8">Italy</text>
+                <text class="tx" x="128.21" y="176.8">Q1: 85</text>
+                <text class="tx" x="128.21" y="193.8">Rank: 2 of 6</text>
+            </g>
+        </g>
+        <g class="mk s4" tabindex="0" role="graphics-symbol" aria-label="Italy, Q2: 79, Rank: 3 of 6, Change: -6">
+            <title>Italy, Q2: 79, Rank: 3 of 6, Change: -6</title>
+            <circle class="hit" cx="220.11" cy="197.6" r="13"/>
+            <circle class="pt" cx="220.11" cy="197.6" r="9"/>
+            <text class="rk ctr mid on" x="220.11" y="197.6">3</text>
+            <g class="tt">
+                <rect class="tb" x="177.71" y="100.6" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s4" x="187.71" y="109.6" width="9" height="9" rx="2"/>
+                <text class="tx b" x="201.71" y="118.6">Italy</text>
+                <text class="tx" x="187.71" y="135.6">Q2: 79</text>
+                <text class="tx" x="187.71" y="152.6">Rank: 3 of 6</text>
+                <text class="tx" x="187.71" y="169.6">Change: -6</text>
+            </g>
+        </g>
+        <g class="mk s4" tabindex="0" role="graphics-symbol" aria-label="Italy, Q3: 70, Rank: 4 of 6, Change: -9">
+            <title>Italy, Q3: 70, Rank: 4 of 6, Change: -9</title>
+            <circle class="hit" cx="322" cy="254.4" r="13"/>
+            <circle class="pt" cx="322" cy="254.4" r="9"/>
+            <text class="rk ctr mid on" x="322" y="254.4">4</text>
+            <g class="tt">
+                <rect class="tb" x="279.6" y="157.4" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s4" x="289.6" y="166.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="303.6" y="175.4">Italy</text>
+                <text class="tx" x="289.6" y="192.4">Q3: 70</text>
+                <text class="tx" x="289.6" y="209.4">Rank: 4 of 6</text>
+                <text class="tx" x="289.6" y="226.4">Change: -9</text>
+            </g>
+        </g>
+        <g class="mk s4" tabindex="0" role="graphics-symbol" aria-label="Italy, Q4: 60, Rank: 6 of 6, Change: -10">
+            <title>Italy, Q4: 60, Rank: 6 of 6, Change: -10</title>
+            <circle class="hit" cx="423.9" cy="368" r="13"/>
+            <circle class="pt" cx="423.9" cy="368" r="9"/>
+            <text class="rk ctr mid on" x="423.9" y="368">6</text>
+            <g class="tt">
+                <rect class="tb" x="381.5" y="271" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s4" x="391.5" y="280" width="9" height="9" rx="2"/>
+                <text class="tx b" x="405.5" y="289">Italy</text>
+                <text class="tx" x="391.5" y="306">Q4: 60</text>
+                <text class="tx" x="391.5" y="323">Rank: 6 of 6</text>
+                <text class="tx" x="391.5" y="340">Change: -10</text>
+            </g>
+        </g>
+        <g class="mk s4" tabindex="0" role="graphics-symbol" aria-label="Italy, Q1 next: 55, Rank: 6 of 6, Change: -5">
+            <title>Italy, Q1 next: 55, Rank: 6 of 6, Change: -5</title>
+            <circle class="hit" cx="525.79" cy="368" r="13"/>
+            <circle class="pt" cx="525.79" cy="368" r="9"/>
+            <text class="rk ctr mid on" x="525.79" y="368">6</text>
+            <g class="tt">
+                <rect class="tb" x="440.99" y="271" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s4" x="450.99" y="280" width="9" height="9" rx="2"/>
+                <text class="tx b" x="464.99" y="289">Italy</text>
+                <text class="tx" x="450.99" y="306">Q1 next: 55</text>
+                <text class="tx" x="450.99" y="323">Rank: 6 of 6</text>
+                <text class="tx" x="450.99" y="340">Change: -5</text>
+            </g>
+        </g>
+    </g>
+    <g class="sr s5">
+        <path class="ln"
+              d="M118.21 368C169.16 368 169.16 368 220.11 368C271.05 368 271.05 368 322 368C372.95 368 372.95 254.4 423.9 254.4C474.84 254.4 474.84 311.2 525.79 311.2">
+            <title>Poland</title>
+        </path>
+        <path class="hl"
+              d="M118.21 368C169.16 368 169.16 368 220.11 368C271.05 368 271.05 368 322 368C372.95 368 372.95 254.4 423.9 254.4C474.84 254.4 474.84 311.2 525.79 311.2"/>
+        <g class="mk s5" tabindex="0" role="graphics-symbol" aria-label="Poland, Q1: 40, Rank: 6 of 6">
+            <title>Poland, Q1: 40, Rank: 6 of 6</title>
+            <circle class="hit" cx="118.21" cy="368" r="13"/>
+            <circle class="pt" cx="118.21" cy="368" r="9"/>
+            <text class="rk ctr mid on" x="118.21" y="368">6</text>
+            <g class="tt">
+                <rect class="tb" x="118.21" y="288" width="84.8" height="61" rx="6"/>
+                <rect class="tsw s5" x="128.21" y="297" width="9" height="9" rx="2"/>
+                <text class="tx b" x="142.21" y="306">Poland</text>
+                <text class="tx" x="128.21" y="323">Q1: 40</text>
+                <text class="tx" x="128.21" y="340">Rank: 6 of 6</text>
+            </g>
+        </g>
+        <g class="mk s5" tabindex="0" role="graphics-symbol" aria-label="Poland, Q2: 45, Rank: 6 of 6, Change: +5">
+            <title>Poland, Q2: 45, Rank: 6 of 6, Change: +5</title>
+            <circle class="hit" cx="220.11" cy="368" r="13"/>
+            <circle class="pt" cx="220.11" cy="368" r="9"/>
+            <text class="rk ctr mid on" x="220.11" y="368">6</text>
+            <g class="tt">
+                <rect class="tb" x="177.71" y="271" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s5" x="187.71" y="280" width="9" height="9" rx="2"/>
+                <text class="tx b" x="201.71" y="289">Poland</text>
+                <text class="tx" x="187.71" y="306">Q2: 45</text>
+                <text class="tx" x="187.71" y="323">Rank: 6 of 6</text>
+                <text class="tx" x="187.71" y="340">Change: +5</text>
+            </g>
+        </g>
+        <g class="mk s5" tabindex="0" role="graphics-symbol" aria-label="Poland, Q3: 60, Rank: 6 of 6, Change: +15">
+            <title>Poland, Q3: 60, Rank: 6 of 6, Change: +15</title>
+            <circle class="hit" cx="322" cy="368" r="13"/>
+            <circle class="pt" cx="322" cy="368" r="9"/>
+            <text class="rk ctr mid on" x="322" y="368">6</text>
+            <g class="tt">
+                <rect class="tb" x="278.16" y="271" width="87.68" height="78" rx="6"/>
+                <rect class="tsw s5" x="288.16" y="280" width="9" height="9" rx="2"/>
+                <text class="tx b" x="302.16" y="289">Poland</text>
+                <text class="tx" x="288.16" y="306">Q3: 60</text>
+                <text class="tx" x="288.16" y="323">Rank: 6 of 6</text>
+                <text class="tx" x="288.16" y="340">Change: +15</text>
+            </g>
+        </g>
+        <g class="mk s5" tabindex="0" role="graphics-symbol" aria-label="Poland, Q4: 75, Rank: 4 of 6, Change: +15">
+            <title>Poland, Q4: 75, Rank: 4 of 6, Change: +15</title>
+            <circle class="hit" cx="423.9" cy="254.4" r="13"/>
+            <circle class="pt" cx="423.9" cy="254.4" r="9"/>
+            <text class="rk ctr mid on" x="423.9" y="254.4">4</text>
+            <g class="tt">
+                <rect class="tb" x="380.05" y="157.4" width="87.68" height="78" rx="6"/>
+                <rect class="tsw s5" x="390.05" y="166.4" width="9" height="9" rx="2"/>
+                <text class="tx b" x="404.05" y="175.4">Poland</text>
+                <text class="tx" x="390.05" y="192.4">Q4: 75</text>
+                <text class="tx" x="390.05" y="209.4">Rank: 4 of 6</text>
+                <text class="tx" x="390.05" y="226.4">Change: +15</text>
+            </g>
+        </g>
+        <g class="mk s5" tabindex="0" role="graphics-symbol"
+           aria-label="Poland, Q1 next: 65, Rank: 5 of 6, Change: -10">
+            <title>Poland, Q1 next: 65, Rank: 5 of 6, Change: -10</title>
+            <circle class="hit" cx="525.79" cy="311.2" r="13"/>
+            <circle class="pt" cx="525.79" cy="311.2" r="9"/>
+            <text class="rk ctr mid on" x="525.79" y="311.2">5</text>
+            <g class="tt">
+                <rect class="tb" x="440.99" y="214.2" width="84.8" height="78" rx="6"/>
+                <rect class="tsw s5" x="450.99" y="223.2" width="9" height="9" rx="2"/>
+                <text class="tx b" x="464.99" y="232.2">Poland</text>
+                <text class="tx" x="450.99" y="249.2">Q1 next: 65</text>
+                <text class="tx" x="450.99" y="266.2">Rank: 5 of 6</text>
+                <text class="tx" x="450.99" y="283.2">Change: -10</text>
+            </g>
+        </g>
+    </g>
+    <text class="dl end mid" x="102.21" y="84">United Kingdom</text>
+    <text class="dl end mid" x="102.21" y="140.8">Italy</text>
+    <text class="dl end mid" x="102.21" y="197.6">Germany</text>
+    <text class="dl end mid" x="102.21" y="254.4">France</text>
+    <text class="dl end mid" x="102.21" y="311.2">Spain</text>
+    <text class="dl end mid" x="102.21" y="368">Poland</text>
+    <text class="dl mid" x="541.79" y="84">United Kingdom</text>
+    <text class="dl mid" x="541.79" y="140.8">Germany</text>
+    <text class="dl mid" x="541.79" y="197.6">France</text>
+    <text class="dl mid" x="541.79" y="254.4">Spain</text>
+    <text class="dl mid" x="541.79" y="311.2">Poland</text>
+    <text class="dl mid" x="541.79" y="368">Italy</text>
+</svg>

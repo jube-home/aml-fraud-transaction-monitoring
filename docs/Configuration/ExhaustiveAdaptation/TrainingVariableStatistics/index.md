@@ -6,8 +6,6 @@ parent: Exhaustive Adaptation
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Exhaustive Adaptation Training Variable Statistics
 One of the first tasks in training a model in Exhaustive is the process of establishing statistics.  Statistics are important for each variable as they are used in Z Score normalisation of variables,  which is an important concept in Machine Learning generally. The statistics are however comprehensively recorded, which provides rich insight about the dataset and problem domain more generally.
 

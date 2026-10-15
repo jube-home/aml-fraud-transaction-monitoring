@@ -181,6 +181,7 @@ function SetSearchKeyCache() {
 if (typeof GetSelectedChildID() === "undefined") {
     setDefaultValueStyle();
     ReadyNew();
+    window.AskJoobySetPageContext?.("EntityAnalysisModelRequestXPath", "new", {[parentKeyName]: parentKey});
     SetSearchKey();
     SetSearchKeyCache();
 } else {
@@ -273,6 +274,12 @@ if (typeof GetSelectedChildID() === "undefined") {
             }
 
             ReadyExisting(data);
+            window.AskJoobySetPageContext?.("EntityAnalysisModelRequestXPath", "edit", {
+                id: data.id,
+                guid: data.guid,
+                name: data.name,
+                [parentKeyName]: parentKey
+            });
             SetSearchKey();
             SetSearchKeyCache();
         });

@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Xunit;
+using Jube.Data.Query.GetEntityAnalysisModelApiUsersQuery;
 
 namespace Jube.Test.Service.RoleGrantAccess
 {
@@ -34,7 +35,8 @@ namespace Jube.Test.Service.RoleGrantAccess
             return (world, new ArrangedSubject("EntityAnalysisModelRole", modelGuid, async userName =>
             {
                 await using var dbContext = Fx.GetDbContext();
-                return (await new Data.Query.GetEntityAnalysisModelApiUsersQuery(dbContext).ExecuteAsync(modelId))
+
+                return (await new GetEntityAnalysisModelApiUsersQuery(dbContext).ExecuteAsync(modelId))
                     .Any(w => w.Username == userName);
             }));
         }

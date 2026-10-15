@@ -46,7 +46,6 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
                 NullLoggerFactory.Instance);
 
         private readonly List<int> createdModelIds = [];
-
         private readonly List<int> createdRowIds = [];
 
         public Task InitializeAsync()
@@ -67,6 +66,7 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -84,6 +84,7 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
             string? namePrefix = null)
         {
             var repository = new EntityAnalysisModelRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {
                 Name = $"{namePrefix ?? DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
@@ -94,6 +95,7 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
             }).ConfigureAwait(false);
 
             createdModelIds.Add(saved.Id);
+
             return (saved.Id, saved.Guid);
         }
 
@@ -375,6 +377,7 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         {
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
+
             var modelName = await dbContext.EntityAnalysisModel.Where(m => m.Guid == modelGuid)
                 .Select(m => m.Name).SingleAsync();
 
@@ -420,6 +423,7 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
             var result = await service.ListAsync();
 
             var mine = result.Rows.Single(r => r.EntityAnalysisModelGuid == modelGuid);
+
             mine.Id.Should().Be(0,
                 "the legacy read path never selected a row identifier -- preserved as-is");
         }
@@ -452,8 +456,10 @@ namespace Jube.Test.Service.EntityAnalysisModelProcessingCounter
         {
             await using var dbContext = fx.GetDbContext();
             var (_, modelGuid) = await CreateModelAsync(dbContext, fx.Seed.LandlordUser);
+
             var modelName = await dbContext.EntityAnalysisModel.Where(m => m.Guid == modelGuid)
                 .Select(m => m.Name).SingleAsync();
+
             await CreateRowAsync(dbContext, modelGuid, activationWatcher: 7);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);

@@ -1,228 +1,203 @@
-﻿// Accord Core Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Accord.Collections
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.Linq;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Ordered dictionary.
+    ///     Ordered dictionary.
     /// </summary>
-    /// 
     /// <remarks>
-    ///   This class provides a ordered dictionary implementation for C#/.NET. Unlike the rest
-    ///   of the framework, this class is available under a MIT license, so please feel free to
-    ///   re-use its source code in your own projects.
+    ///     This class provides a ordered dictionary implementation for C#/.NET. Unlike the rest
+    ///     of the framework, this class is available under a MIT license, so please feel free to
+    ///     re-use its source code in your own projects.
     /// </remarks>
-    /// 
     /// <typeparam name="TKey">The types of the keys in the dictionary.</typeparam>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
-    /// 
     [Serializable]
     public class OrderedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-
-        private List<TKey> list;
         private Dictionary<TKey, TValue> dictionary;
+        private List<TKey> list;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}"/> class.
+        ///     Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class.
         /// </summary>
         public OrderedDictionary()
         {
-            this.dictionary = new Dictionary<TKey, TValue>();
-            this.list = new List<TKey>();
+            dictionary = new Dictionary<TKey, TValue>();
+            list = new List<TKey>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}"/> class.
+        ///     Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class.
         /// </summary>
-        /// 
-        /// <param name="capacity">The initial number of elements that the <see cref="OrderedDictionary{TKey, TValue}"/> can contain.</param>
-        /// 
+        /// <param name="capacity">
+        ///     The initial number of elements that the <see cref="OrderedDictionary{TKey, TValue}" /> can
+        ///     contain.
+        /// </param>
         public OrderedDictionary(int capacity)
         {
-            this.dictionary = new Dictionary<TKey, TValue>(capacity);
-            this.list = new List<TKey>(capacity);
+            dictionary = new Dictionary<TKey, TValue>(capacity);
+            list = new List<TKey>(capacity);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}"/> class.
+        ///     Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class.
         /// </summary>
-        /// 
-        /// <param name="comparer">The IEqualityComparer implementation to use when comparing keys, or null to use 
-        ///     the default EqualityComparer for the type of the key.</param>
-        /// 
+        /// <param name="comparer">
+        ///     The IEqualityComparer implementation to use when comparing keys, or null to use
+        ///     the default EqualityComparer for the type of the key.
+        /// </param>
         public OrderedDictionary(IEqualityComparer<TKey> comparer)
         {
-            this.dictionary = new Dictionary<TKey, TValue>(comparer);
-            this.list = new List<TKey>();
+            dictionary = new Dictionary<TKey, TValue>(comparer);
+            list = new List<TKey>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}"/> class.
+        ///     Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class.
         /// </summary>
-        /// 
-        /// <param name="capacity">The initial number of elements that the <see cref="OrderedDictionary{TKey, TValue}"/> can contain.</param>
-        /// <param name="comparer">The IEqualityComparer implementation to use when comparing keys, or null to use 
-        ///     the default EqualityComparer for the type of the key.</param>
-        /// 
+        /// <param name="capacity">
+        ///     The initial number of elements that the <see cref="OrderedDictionary{TKey, TValue}" /> can
+        ///     contain.
+        /// </param>
+        /// <param name="comparer">
+        ///     The IEqualityComparer implementation to use when comparing keys, or null to use
+        ///     the default EqualityComparer for the type of the key.
+        /// </param>
         public OrderedDictionary(int capacity, IEqualityComparer<TKey> comparer)
         {
-            this.dictionary = new Dictionary<TKey, TValue>(capacity, comparer);
-            this.list = new List<TKey>();
+            dictionary = new Dictionary<TKey, TValue>(capacity, comparer);
+            list = new List<TKey>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}"/> class.
+        ///     Initializes a new instance of the <see cref="OrderedDictionary{TKey, TValue}" /> class.
         /// </summary>
-        /// 
-        /// <param name="dictionary">The System.Collections.Generic.IDictionary`2 whose elements are copied to the
-        ///     new <see cref="OrderedDictionary{TKey, TValue}"/>.</param>
-        /// <param name="comparer">The IEqualityComparer implementation to use when comparing keys, or null to use 
-        ///     the default EqualityComparer for the type of the key.</param>
-        /// 
-
+        /// <param name="dictionary">
+        ///     The System.Collections.Generic.IDictionary`2 whose elements are copied to the
+        ///     new <see cref="OrderedDictionary{TKey, TValue}" />.
+        /// </param>
+        /// <param name="comparer">
+        ///     The IEqualityComparer implementation to use when comparing keys, or null to use
+        ///     the default EqualityComparer for the type of the key.
+        /// </param>
         public OrderedDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
         {
             this.dictionary = new Dictionary<TKey, TValue>(dictionary, comparer);
-            this.list = new List<TKey>();
+            list = new List<TKey>();
         }
 
         /// <summary>
-        ///   Gets the <typeparam ref="TValue"/> at the specified index.
+        ///     Gets or sets the
+        ///     <typeparam ref="TValue" />
+        ///     with the specified key.
         /// </summary>
-        /// 
-        /// <param name="index">The index.</param>
-        /// 
-        public TKey GetKeyByIndex(int index)
-        {
-            return list[index];
-        }
-
-        /// <summary>
-        ///   Gets the <typeparam ref="TValue"/> at the specified index.
-        /// </summary>
-        /// 
-        /// <param name="index">The index.</param>
-        /// 
-        public TValue GetValueByIndex(int index)
-        {
-            return this[GetKeyByIndex(index)];
-        }
-
-        /// <summary>
-        ///   Gets or sets the <typeparam ref="TValue"/> with the specified key.
-        /// </summary>
-        /// 
         /// <param name="key">The key.</param>
-        /// 
         public TValue this[TKey key]
         {
-            get { return dictionary[key]; }
+            get => dictionary[key];
             set
             {
                 dictionary[key] = value;
                 if (!list.Contains(key))
+                {
                     list.Add(key);
+                }
             }
         }
 
         /// <summary>
-        /// Gets an <see cref="T:System.Collections.Generic.ICollection`1" /> containing the keys of the <see cref="T:System.Collections.Generic.IDictionary`2" />.
+        ///     Gets an <see cref="T:System.Collections.Generic.ICollection`1" /> containing the keys of the
+        ///     <see cref="T:System.Collections.Generic.IDictionary`2" />.
         /// </summary>
-        /// 
         /// <value>The keys.</value>
-        /// 
-        public ICollection<TKey> Keys
-        {
-            get { return list; }
-        }
+        public ICollection<TKey> Keys => list;
 
         /// <summary>
-        /// Gets an <see cref="T:System.Collections.Generic.ICollection`1" /> containing the values in the <see cref="T:System.Collections.Generic.IDictionary`2" />.
+        ///     Gets an <see cref="T:System.Collections.Generic.ICollection`1" /> containing the values in the
+        ///     <see cref="T:System.Collections.Generic.IDictionary`2" />.
         /// </summary>
-        /// 
         public ICollection<TValue> Values
         {
             get { return list.Select(x => dictionary[x]).ToList(); }
         }
 
         /// <summary>
-        /// Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        ///     Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
-        /// 
-        public int Count
-        {
-            get { return dictionary.Count;}
-        }
+        public int Count => dictionary.Count;
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.
+        ///     Gets a value indicating whether the <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.
         /// </summary>
-        /// 
         /// <value><c>true</c> if this instance is read only; otherwise, <c>false</c>.</value>
-        /// 
-        public bool IsReadOnly
-        {
-            get { return ((IDictionary<TKey, TValue>)dictionary).IsReadOnly; }
-        }
+        public bool IsReadOnly => ((IDictionary<TKey, TValue>)dictionary).IsReadOnly;
 
         /// <summary>
-        /// Adds an element with the provided key and value to the <see cref="T:System.Collections.Generic.IDictionary`2" />.
+        ///     Adds an element with the provided key and value to the <see cref="T:System.Collections.Generic.IDictionary`2" />.
         /// </summary>
-        /// 
         /// <param name="key">The object to use as the key of the element to add.</param>
         /// <param name="value">The object to use as the value of the element to add.</param>
-        /// 
         public void Add(TKey key, TValue value)
         {
             dictionary.Add(key, value);
             if (!list.Contains(key))
+            {
                 list.Add(key);
+            }
         }
 
         /// <summary>
-        /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        ///     Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
-        /// 
         /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
-        /// 
         public void Add(KeyValuePair<TKey, TValue> item)
         {
             ((IDictionary<TKey, TValue>)dictionary).Add(item);
             if (!list.Contains(item.Key))
+            {
                 list.Add(item.Key);
+            }
         }
 
         /// <summary>
-        /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        ///     Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
-        /// 
         public void Clear()
         {
             dictionary.Clear();
@@ -230,64 +205,70 @@ namespace Accord.Collections
         }
 
         /// <summary>
-        /// Determines whether the <see cref="T:System.Collections.Generic.ICollection`1" /> contains a specific value.
+        ///     Determines whether the <see cref="T:System.Collections.Generic.ICollection`1" /> contains a specific value.
         /// </summary>
-        /// 
         /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
-        /// 
-        /// <returns>true if <paramref name="item" /> is found in the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false.</returns>
-        /// 
+        /// <returns>
+        ///     true if <paramref name="item" /> is found in the <see cref="T:System.Collections.Generic.ICollection`1" />;
+        ///     otherwise, false.
+        /// </returns>
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             return ((IDictionary<TKey, TValue>)dictionary).Contains(item);
         }
 
         /// <summary>
-        /// Determines whether the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key.
+        ///     Determines whether the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the
+        ///     specified key.
         /// </summary>
-        /// 
         /// <param name="key">The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2" />.</param>
-        /// 
-        /// <returns>true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the key; otherwise, false.</returns>
-        /// 
+        /// <returns>
+        ///     true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the key;
+        ///     otherwise, false.
+        /// </returns>
         public bool ContainsKey(TKey key)
         {
             return dictionary.ContainsKey(key);
         }
 
         /// <summary>
-        /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1" /> to an <see cref="T:System.Array" />, starting at a particular <see cref="T:System.Array" /> index.
+        ///     Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1" /> to an
+        ///     <see cref="T:System.Array" />, starting at a particular <see cref="T:System.Array" /> index.
         /// </summary>
-        /// 
-        /// <param name="array">The one-dimensional <see cref="T:System.Array" /> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1" />. The <see cref="T:System.Array" /> must have zero-based indexing.</param>
+        /// <param name="array">
+        ///     The one-dimensional <see cref="T:System.Array" /> that is the destination of the elements copied
+        ///     from <see cref="T:System.Collections.Generic.ICollection`1" />. The <see cref="T:System.Array" /> must have
+        ///     zero-based indexing.
+        /// </param>
         /// <param name="arrayIndex">The zero-based index in <paramref name="array" /> at which copying begins.</param>
-        /// 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            foreach (KeyValuePair<TKey, TValue> pair in this)
+            foreach (var pair in this)
+            {
                 array[arrayIndex++] = pair;
+            }
         }
 
         /// <summary>
-        /// Returns an enumerator that iterates through the collection.
+        ///     Returns an enumerator that iterates through the collection.
         /// </summary>
-        /// 
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
-        /// 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            foreach (TKey key in list)
+            foreach (var key in list)
+            {
                 yield return new KeyValuePair<TKey, TValue>(key, dictionary[key]);
+            }
         }
 
         /// <summary>
-        /// Removes the element with the specified key from the <see cref="T:System.Collections.Generic.IDictionary`2" />.
+        ///     Removes the element with the specified key from the <see cref="T:System.Collections.Generic.IDictionary`2" />.
         /// </summary>
-        /// 
         /// <param name="key">The key of the element to remove.</param>
-        /// 
-        /// <returns>true if the element is successfully removed; otherwise, false.  This method also returns false if <paramref name="key" /> was not found in the original <see cref="T:System.Collections.Generic.IDictionary`2" />.</returns>
-        /// 
+        /// <returns>
+        ///     true if the element is successfully removed; otherwise, false.  This method also returns false if
+        ///     <paramref name="key" /> was not found in the original <see cref="T:System.Collections.Generic.IDictionary`2" />.
+        /// </returns>
         public bool Remove(TKey key)
         {
             if (dictionary.Remove(key))
@@ -300,13 +281,15 @@ namespace Accord.Collections
         }
 
         /// <summary>
-        /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1" />.
+        ///     Removes the first occurrence of a specific object from the
+        ///     <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
-        /// 
         /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
-        /// 
-        /// <returns>true if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also returns false if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.</returns>
-        /// 
+        /// <returns>
+        ///     true if <paramref name="item" /> was successfully removed from the
+        ///     <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also returns false if
+        ///     <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.
+        /// </returns>
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
             if (((IDictionary<TKey, TValue>)dictionary).Remove(item))
@@ -319,28 +302,52 @@ namespace Accord.Collections
         }
 
         /// <summary>
-        /// Gets the value associated with the specified key.
+        ///     Gets the value associated with the specified key.
         /// </summary>
-        /// 
         /// <param name="key">The key whose value to get.</param>
-        /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value" /> parameter. This parameter is passed uninitialized.</param>
-        /// 
-        /// <returns>true if the object that implements <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key; otherwise, false.</returns>
-        /// 
+        /// <param name="value">
+        ///     When this method returns, the value associated with the specified key, if the key is found;
+        ///     otherwise, the default value for the type of the <paramref name="value" /> parameter. This parameter is passed
+        ///     uninitialized.
+        /// </param>
+        /// <returns>
+        ///     true if the object that implements <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an
+        ///     element with the specified key; otherwise, false.
+        /// </returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
             return ((IDictionary<TKey, TValue>)dictionary).TryGetValue(key, out value);
         }
 
         /// <summary>
-        /// Returns an enumerator that iterates through a collection.
+        ///     Returns an enumerator that iterates through a collection.
         /// </summary>
-        /// 
         /// <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
-        /// 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        /// <summary>
+        ///     Gets the
+        ///     <typeparam ref="TValue" />
+        ///     at the specified index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        public TKey GetKeyByIndex(int index)
+        {
+            return list[index];
+        }
+
+        /// <summary>
+        ///     Gets the
+        ///     <typeparam ref="TValue" />
+        ///     at the specified index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        public TValue GetValueByIndex(int index)
+        {
+            return this[GetKeyByIndex(index)];
         }
     }
 }

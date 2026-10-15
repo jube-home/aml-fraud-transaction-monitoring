@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AssemblyName>Accord.Fuzzy</AssemblyName>
+        <RootNamespace>Accord.Fuzzy</RootNamespace>
+        <TargetFramework>net10.0</TargetFramework>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Accord.Core\Accord.Core.csproj"/>
+    </ItemGroup>
+
+</Project>

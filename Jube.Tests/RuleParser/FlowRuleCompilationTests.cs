@@ -17,8 +17,8 @@ using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using Jube.Dictionary;
-using Jube.Parser;
 using Jube.Parser.Compiler;
+using Jube.Parser.Models;
 using Jube.Test.Infrastructure;
 using Xunit;
 using FlowExtensions = global::Jube.Dictionary.Extensions.Extensions;
@@ -88,6 +88,7 @@ namespace Jube.Test.RuleParser
             var kvp = new PooledDictionary<string, double>();
 
             var match = compile.CompiledAssembly.GetType("GatewayRule")!.GetMethod("Match")!;
+
             return (bool)match.Invoke(null, [data, lists, kvp, TestLog.NoOp])!;
         }
 
@@ -121,7 +122,8 @@ namespace Jube.Test.RuleParser
         [InlineData("pay in cash", false)]
         public void AStepThatTakesAListTokenRuns(string narrative, bool expected)
         {
-            const string rule = "Matched = Payload.Narrative.Start().MatchContainsAnyInListIgnoreCase(List.HighRiskTerms)";
+            const string rule =
+                "Matched = Payload.Narrative.Start().MatchContainsAnyInListIgnoreCase(List.HighRiskTerms)";
 
             Evaluate(rule, 0, narrative: narrative, highRiskTerms: ["crypto", "gift card"]).Should().Be(expected);
         }
@@ -177,7 +179,8 @@ namespace Jube.Test.RuleParser
         [InlineData("abc", false)]
         public void AParsedStringFlowFailsClosedOnBadInput(string narrative, bool expected)
         {
-            const string rule = "Matched = Payload.Narrative.Start().ParseDouble().RequireGreater(100).OtherwiseMatch()";
+            const string rule =
+                "Matched = Payload.Narrative.Start().ParseDouble().RequireGreater(100).OtherwiseMatch()";
 
             Evaluate(rule, 0, narrative: narrative).Should().Be(expected);
         }
@@ -198,7 +201,8 @@ namespace Jube.Test.RuleParser
         [InlineData("Dr Bob Smyth", false)]
         public void AnOptionsStringWithCommasAndEqualsSurvivesTranslationAndParsing(string narrative, bool expected)
         {
-            const string rule = "Matched = Payload.Narrative.IsSomehowInList(List.HighRiskTerms, \"lev=2,notitles,minlength=3\")";
+            const string rule =
+                "Matched = Payload.Narrative.IsSomehowInList(List.HighRiskTerms, \"lev=2,notitles,minlength=3\")";
 
             Evaluate(rule, 0, narrative: narrative, highRiskTerms: ["John Smith"]).Should().Be(expected);
         }
@@ -218,7 +222,8 @@ namespace Jube.Test.RuleParser
         [InlineData("Jhon Smyth", false)]
         public void AFuzzyPipelineStepWithOptionsCompilesAndRuns(string narrative, bool expected)
         {
-            const string rule = "Matched = Payload.Narrative.Start().MatchSomehowInListWith(List.HighRiskTerms, \"damerau=1\")";
+            const string rule =
+                "Matched = Payload.Narrative.Start().MatchSomehowInListWith(List.HighRiskTerms, \"damerau=1\")";
 
             Evaluate(rule, 0, narrative: narrative, highRiskTerms: ["John Smith"]).Should().Be(expected);
         }
@@ -267,6 +272,7 @@ namespace Jube.Test.RuleParser
 
             var parser = NewParser();
             var failures = new List<string>();
+
             foreach (var name in flowMethods)
             {
                 var rule = new ParsedRule
@@ -277,6 +283,7 @@ namespace Jube.Test.RuleParser
                 };
 
                 var parsed = parser.Parse(rule);
+
                 if (parsed.ErrorSpans.Any(e => e.Message.Contains("'" + name + "'")))
                 {
                     failures.Add(name);

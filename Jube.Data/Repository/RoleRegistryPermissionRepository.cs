@@ -11,17 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Jube.Data.Context;
+using Jube.Data.Poco;
+using LinqToDB;
+
 namespace Jube.Data.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Context;
-    using LinqToDB;
-    using Poco;
-
     public class RoleRegistryPermissionRepository
     {
         private readonly DbContext dbContext;
@@ -32,6 +32,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -72,6 +73,15 @@ namespace Jube.Data.Repository
                 token);
         }
 
+        public Task<RoleRegistryPermission> GetByGuidAsync(Guid guid, CancellationToken token = default)
+        {
+            return dbContext.RoleRegistryPermission.FirstOrDefaultAsync(w => w.Guid == guid
+                                                                             && w.RoleRegistry.TenantRegistryId ==
+                                                                             tenantRegistryId
+                                                                             && (w.Deleted == 0 || w.Deleted == null),
+                token);
+        }
+
         public async Task<RoleRegistryPermission> InsertAsync(RoleRegistryPermission model,
             CancellationToken token = default)
         {
@@ -80,6 +90,7 @@ namespace Jube.Data.Repository
             model.CreatedDate = DateTime.UtcNow;
             model.Guid = model.Guid == Guid.Empty ? Guid.NewGuid() : model.Guid;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -122,7 +133,7 @@ namespace Jube.Data.Repository
                 CreatedUser = existing.CreatedUser,
                 UpdatedDate = existing.UpdatedDate,
                 UpdatedUser = existing.UpdatedUser,
-                Version = existing.Version,
+                Version = existing.Version
             };
 
             await dbContext.InsertAsync(audit, token: token);

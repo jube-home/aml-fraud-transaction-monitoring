@@ -41,6 +41,7 @@ namespace Jube.Migrations.Baseline
                 .OnColumn("RoleRegistryId").Ascending();
 
             const int numberOfUserRoleRegistryPermissionSpecifications = 37;
+
             for (var i = 1; i <= numberOfUserRoleRegistryPermissionSpecifications; i++)
             {
                 var roleRegistryPermissionEntry = new

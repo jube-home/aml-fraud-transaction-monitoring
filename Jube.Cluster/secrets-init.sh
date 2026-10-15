@@ -54,6 +54,13 @@ JWT_KEY=$(genkey 32)
 PASSWORD_HASHING_KEY=$(genkey 32)
 ENCRYPTION_KEY=$(genkey 32)
 
+ASK_JOOBY_API_KEY="${AskJoobyApiKey:-}"
+if [[ -z "$ASK_JOOBY_API_KEY" ]]; then
+    read -rsp "Ask Jooby inference API key (leave blank to skip; Ask Jooby stays off unless EnableAskJooby=True): " ASK_JOOBY_API_KEY
+    echo
+fi
+ASK_JOOBY_API_KEY="${ASK_JOOBY_API_KEY:-not-needed}"
+
 create_secret PATRONI_SUPERUSER_PASSWORD                 "$PATRONI_SUPERUSER_PASSWORD"
 create_secret PATRONI_REPLICATION_PASSWORD               "$PATRONI_REPLICATION_PASSWORD"
 create_secret PATRONI_ADMIN_PASSWORD                     "$PATRONI_ADMIN_PASSWORD"
@@ -69,6 +76,7 @@ create_secret JWT_KEY                                    "$JWT_KEY"
 create_secret PASSWORD_HASHING_KEY                       "$PASSWORD_HASHING_KEY"
 create_secret PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY "$PRIVATE_KEY_B64"
 create_secret ENCRYPTION_KEY "$ENCRYPTION_KEY"
+create_secret ASK_JOOBY_API_KEY "$ASK_JOOBY_API_KEY"
 
 cat <<EOF
 

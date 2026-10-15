@@ -16,6 +16,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using AdvancedAnalytics.Models;
     using Exhaustive.Models;
     using Models;
     using Models.EntityAnalysisModelInlineScript;
@@ -41,6 +42,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
             ModelGatewayRules = this.previous.ModelGatewayRules;
             EntityAnalysisModelAdaptations = this.previous.EntityAnalysisModelAdaptations;
             ExhaustiveModels = this.previous.ExhaustiveModels;
+            AdvancedAnalyticsModels = this.previous.AdvancedAnalyticsModels;
             EntityAnalysisModelRequestXPaths = this.previous.EntityAnalysisModelRequestXPaths;
             EntityAnalysisModelAbstractionCalculations = this.previous.EntityAnalysisModelAbstractionCalculations;
             EntityAnalysisModelInlineFunctions = this.previous.EntityAnalysisModelInlineFunctions;
@@ -61,6 +63,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public List<EntityModelGatewayRule> ModelGatewayRules { get; set; }
         public List<EntityAnalysisModelHttpAdaptation> EntityAnalysisModelAdaptations { get; set; }
         public List<ExhaustiveSearchInstance> ExhaustiveModels { get; set; }
+        public IReadOnlyList<AdvancedAnalyticsModel> AdvancedAnalyticsModels { get; set; }
         public List<EntityAnalysisModelRequestXPath> EntityAnalysisModelRequestXPaths { get; set; }
 
         public List<EntityAnalysisModelAbstractionCalculation> EntityAnalysisModelAbstractionCalculations { get; set; }
@@ -139,6 +142,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
                 ModelGatewayRules = ModelGatewayRules,
                 EntityAnalysisModelAdaptations = EntityAnalysisModelAdaptations,
                 ExhaustiveModels = ExhaustiveModels,
+                AdvancedAnalyticsModels = AdvancedAnalyticsModels,
                 EntityAnalysisModelRequestXPaths = EntityAnalysisModelRequestXPaths,
                 EntityAnalysisModelAbstractionCalculations = EntityAnalysisModelAbstractionCalculations,
                 EntityAnalysisModelInlineFunctions = EntityAnalysisModelInlineFunctions,

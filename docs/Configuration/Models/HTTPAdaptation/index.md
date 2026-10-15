@@ -6,8 +6,6 @@ parent: Models
 grand_parent: Configuration
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # HTTP Adaptation
 HTTP Adaptation refers to the dispatch of the full transaction payload in a POST body to a remote HTTP endpoint for the receipt of a quantitative score, and optionally a structured explanation of it, in the JSON response body.
 

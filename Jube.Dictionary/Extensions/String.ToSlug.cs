@@ -22,6 +22,7 @@ namespace Jube.Dictionary.Extensions
             var folded = FuzzyNormaliser.FoldDiacritics(@this ?? "").ToLowerInvariant();
             var builder = new System.Text.StringBuilder(folded.Length);
             var pendingHyphen = false;
+
             foreach (var c in folded)
             {
                 if (char.IsAsciiLetterOrDigit(c))

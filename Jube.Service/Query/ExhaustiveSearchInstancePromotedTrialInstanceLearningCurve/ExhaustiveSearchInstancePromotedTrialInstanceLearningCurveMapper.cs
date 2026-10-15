@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Poco;
 using Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve;
 
 namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve
@@ -18,16 +19,15 @@ namespace Jube.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearni
     internal static class ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveMapper
     {
         public static ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveDto ToDto(
-            global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceLearningCurveQuery.Dto source) =>
+            ExhaustiveSearchInstancePromotedTrialInstance source) =>
             new()
             {
-                Score = FiniteNumber.Of(source.Score),
-                CreatedDate = source.CreatedDate
+                Score = FiniteNumber.Of(Math.Round(source.Score.GetValueOrDefault(), 2)),
+                CreatedDate = source.CreatedDate.GetValueOrDefault()
             };
 
         public static List<ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceLearningCurveQuery.Dto>
-                source) =>
+            IEnumerable<ExhaustiveSearchInstancePromotedTrialInstance> source) =>
             source.Select(ToDto).ToList();
     }
 }

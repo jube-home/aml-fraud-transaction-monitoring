@@ -59,6 +59,7 @@ internal static class VisSupport
         var datasourceB = await InsertDatasourceAsync(db, registryB.Id, "DsB");
         var seriesA = Unique("SeriesA");
         var seriesB = Unique("SeriesB");
+
         await db.InsertWithInt32IdentityAsync(new VisualisationRegistryDatasourceSeries
         {
             VisualisationRegistryDatasourceId = datasourceA.Id, Name = seriesA, DataTypeId = 2
@@ -93,6 +94,7 @@ internal static class VisSupport
     {
         var guid = Guid.NewGuid();
         var name = Unique(label);
+
         var id = await db.InsertWithInt32IdentityAsync(new VisualisationRegistry
         {
             Name = name,
@@ -109,6 +111,7 @@ internal static class VisSupport
             CreatedUser = Prefix,
             CreatedDate = DateTime.UtcNow
         });
+
         return new VisRegistryRow(id, guid, name);
     }
 
@@ -117,6 +120,7 @@ internal static class VisSupport
     {
         var guid = Guid.NewGuid();
         var name = Unique(label);
+
         var id = await db.InsertWithInt32IdentityAsync(new VisualisationRegistryParameter
         {
             VisualisationRegistryId = registryId,
@@ -132,6 +136,7 @@ internal static class VisSupport
             CreatedUser = Prefix,
             CreatedDate = DateTime.UtcNow
         });
+
         return new VisParameterRow(id, guid, registryId, name);
     }
 
@@ -139,6 +144,7 @@ internal static class VisSupport
     {
         var guid = Guid.NewGuid();
         var name = Unique(label);
+
         var id = await db.InsertWithInt32IdentityAsync(new VisualisationRegistryDatasource
         {
             VisualisationRegistryId = registryId,
@@ -154,6 +160,7 @@ internal static class VisSupport
             CreatedUser = Prefix,
             CreatedDate = DateTime.UtcNow
         });
+
         return new VisDatasourceRow(id, guid, registryId, name);
     }
 
@@ -167,16 +174,22 @@ internal static class VisSupport
         await using var db = fx.GetDbContext();
         int? tenantA = seed.TenantAId;
         int? tenantB = seed.TenantBId;
+
         var registryIds = db.GetTable<VisualisationRegistry>()
             .Where(w => w.TenantRegistryId == tenantA || w.TenantRegistryId == tenantB).Select(w => (int?)w.Id);
+
         var registryGuids = db.GetTable<VisualisationRegistry>()
             .Where(w => w.TenantRegistryId == tenantA || w.TenantRegistryId == tenantB).Select(w => w.Guid);
+
         var datasourceIds = db.GetTable<VisualisationRegistryDatasource>()
             .Where(w => registryIds.Contains(w.VisualisationRegistryId)).Select(w => (int?)w.Id);
+
         var datasourceGuids = db.GetTable<VisualisationRegistryDatasource>()
             .Where(w => registryIds.Contains(w.VisualisationRegistryId)).Select(w => w.Guid);
+
         var parameterIds = db.GetTable<VisualisationRegistryParameter>()
             .Where(w => registryIds.Contains(w.VisualisationRegistryId)).Select(w => (int?)w.Id);
+
         var parameterGuids = db.GetTable<VisualisationRegistryParameter>()
             .Where(w => registryIds.Contains(w.VisualisationRegistryId)).Select(w => w.Guid);
 
@@ -198,6 +211,7 @@ internal static class VisSupport
             .Where(w => registryGuids.Contains(w.VisualisationRegistryGuid)).DeleteAsync();
         await db.GetTable<VisualisationRegistryVersion>()
             .Where(w => registryIds.Contains(w.VisualisationRegistryId)).DeleteAsync();
+
         await db.GetTable<VisualisationRegistry>()
             .Where(w => w.TenantRegistryId == tenantA || w.TenantRegistryId == tenantB).DeleteAsync();
     }
@@ -250,6 +264,7 @@ internal static class VisSupport
         {
             using var document = JsonDocument.Parse(response.Body);
             var value = Prop(document.RootElement, name);
+
             return value is { ValueKind: JsonValueKind.Number } number ? number.GetInt32() : null;
         }
         catch (JsonException)
@@ -264,6 +279,7 @@ internal static class VisSupport
         {
             using var document = JsonDocument.Parse(response.Body);
             var value = Prop(document.RootElement, name);
+
             return value is { ValueKind: JsonValueKind.String } text ? text.GetString() : null;
         }
         catch (JsonException)
@@ -282,8 +298,10 @@ internal static class VisSupport
         yield return ("anonymous", host.As(PenTestUser.Anonymous));
         yield return ("garbage-bearer", host.As(PenTestUser.Anonymous).WithBearer("garbage.token.value"));
         yield return ("empty-bearer", host.As(PenTestUser.Anonymous).WithBearer(""));
+
         yield return ("truncated-jwt", host.As(PenTestUser.Anonymous)
             .WithBearer(host.TokenFor(PenTestUser.WithPermission)[..40]));
+
         yield return ("without-permission", host.As(PenTestUser.WithoutPermission));
         yield return ("no-tenant", host.As(PenTestUser.NoTenant));
         yield return ("unknown-user", host.As(PenTestUser.UnknownUser));

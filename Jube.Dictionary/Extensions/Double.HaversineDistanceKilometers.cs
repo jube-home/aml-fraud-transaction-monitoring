@@ -28,6 +28,7 @@ namespace Jube.Dictionary.Extensions
             var a = Math.Sin(deltaLatitudeRadians / 2) * Math.Sin(deltaLatitudeRadians / 2) +
                     Math.Cos(latitude1Radians) * Math.Cos(latitude2Radians) *
                     Math.Sin(deltaLongitudeRadians / 2) * Math.Sin(deltaLongitudeRadians / 2);
+
             var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 
             return earthRadiusKilometers * c;

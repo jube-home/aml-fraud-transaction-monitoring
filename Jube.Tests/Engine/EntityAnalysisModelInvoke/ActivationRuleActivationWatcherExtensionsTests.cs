@@ -161,6 +161,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ["ActivationWatcherAllowPersist"] = "True",
                 ["StreamingActivationWatcher"] = "False"
             });
+
             var rule = NewRule();
 
             await context.ActivationRuleActivationWatcherAsync(rule, false, null);
@@ -182,6 +183,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ["ActivationWatcherAllowPersist"] = "False",
                 ["StreamingActivationWatcher"] = "False"
             });
+
             var rule = NewRule();
 
             await context.ActivationRuleActivationWatcherAsync(rule, false, null);
@@ -215,6 +217,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ["ActivationWatcherAllowPersist"] = "True",
                 ["StreamingActivationWatcher"] = "False"
             });
+
             var rule = NewRule();
 
             await context.ActivationRuleActivationWatcherAsync(rule, false, null);
@@ -232,6 +235,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ["ActivationWatcherAllowPersist"] = "False",
                 ["StreamingActivationWatcher"] = "True"
             });
+
             var rule = NewRule();
             var cacheService = TestCacheService.Create(out var redis);
 
@@ -250,6 +254,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ["ActivationWatcherAllowPersist"] = "False",
                 ["StreamingActivationWatcher"] = "False"
             });
+
             var rule = NewRule();
             var cacheService = TestCacheService.Create(out var redis);
 
@@ -267,6 +272,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ["ActivationWatcherAllowPersist"] = "False",
                 ["StreamingActivationWatcher"] = "True"
             });
+
             var rule = NewRule();
             var cacheService = TestCacheService.Create(out var redis);
             redis.ThrowOnMethod = "PublishAsync";
@@ -275,6 +281,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 cacheService);
 
             await act.Should().NotThrowAsync();
+
             context.EntityAnalysisModel.Counters.ActivationWatcherCount.Should().Be(1,
                 "CacheActivationWatcherPublishSubscribe.PublishAsync swallows and logs Redis failures like every " +
                 "other Jube.Cache repository, so the engine never sees the exception and the counter still moves");

@@ -24,9 +24,12 @@ namespace Jube.Migrations.Branches
             UpdateCaseWorkflowFilterForIncorrectCaseWorkflowStatusGuidToName();
         }
 
+        public override void Down()
+        {
+        }
+
         private void UpdateCaseWorkflowFilterForIncorrectCaseWorkflowStatusGuidToName()
         {
-
             Execute.Sql("""
                         update "CaseWorkflowFilter"
                         set "SelectJson" =
@@ -44,17 +47,11 @@ namespace Jube.Migrations.Branches
 
         private void UpdateCaseWorkflowDisplayForNewTokenisationFormat()
         {
-
             Execute.Sql("""
                         update "CaseWorkflowDisplay" set "Html" = 
                         replace("Html",'<div style=''font-size:30px''>[@CurrencyAmount@]</div>','<div style=''font-size:30px''>[@Payload.AccountId@]</div>')
                         where "Html" like '%<div style=''font-size:30px''>[@CurrencyAmount@]</div>%'
                         """);
-        }
-
-        public override void Down()
-        {
-
         }
     }
 }

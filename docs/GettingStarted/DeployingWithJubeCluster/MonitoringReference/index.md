@@ -6,8 +6,6 @@ parent: Deploying with Jube Cluster
 grand_parent: Getting Started
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Jube Cluster Monitoring Reference
 
 Host-level CPU, RAM, and disk metrics are assumed to be collected at the node level and are not covered here. This
@@ -113,6 +111,7 @@ All of the above are also summarised, with a brief purpose statement each, on
 
 Run from the Swarm manager:
 
+{% raw %}
 ```bash
 # All containers
 docker stats --no-stream --format \
@@ -123,6 +122,7 @@ docker stats --no-stream --format \
   "container={{.Name}} cpu={{.CPUPerc}} mem={{.MemPerc}}" \
   $(docker ps -qf "name=<container-name>")
 ```
+{% endraw %}
 
 Suggested thresholds:
 
@@ -1038,16 +1038,20 @@ docker logs --since 60s $(docker ps -qf "name=haproxy") 2>/dev/null \
 
 A container that has restarted recently has likely crashed. Check restart counts across all containers:
 
+{% raw %}
 ```bash
 docker ps --format "table {{.Names}}\t{{.Status}}" | grep -i "restarting\|unhealthy"
 ```
+{% endraw %}
 
 For a numeric restart count per container:
 
+{% raw %}
 ```bash
 docker inspect --format '{{.Name}} restarts={{.RestartCount}} status={{.State.Status}}' \
   $(docker ps -q) 2>/dev/null | sed 's|^/||'
 ```
+{% endraw %}
 
 Alert if `restarts` has increased since the last poll, or if `status` is anything other than `running`.
 

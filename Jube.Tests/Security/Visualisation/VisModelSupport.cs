@@ -30,12 +30,14 @@ internal static class VisModelSupport
     {
         await using var db = fx.GetDbContext();
         var userName = host.UserName(user);
+
         var model = await new EntityAnalysisModelRepository(db, userName).InsertAsync(new EntityAnalysisModel
         {
             Name = VisSupport.Unique("Mdl" + label), Guid = Guid.NewGuid(), Active = 1, Locked = 0, Deleted = 0
         });
 
         var xpathName = VisSupport.Unique("Xp" + label);
+
         await db.InsertWithInt32IdentityAsync(new EntityAnalysisModelRequestXpath
         {
             EntityAnalysisModelId = model.Id, Name = xpathName, DataTypeId = 1, XPath = "$.x", Active = 1, Locked = 0,
@@ -44,6 +46,7 @@ internal static class VisModelSupport
         });
 
         var tagName = VisSupport.Unique("Tg" + label);
+
         await db.InsertWithInt32IdentityAsync(new EntityAnalysisModelTag
         {
             EntityAnalysisModelId = model.Id, Name = tagName, Active = 1, Locked = 0, Deleted = 0,
@@ -52,6 +55,7 @@ internal static class VisModelSupport
         });
 
         var workflowName = VisSupport.Unique("Wf" + label);
+
         var workflow = await new CaseWorkflowRepository(db, userName).InsertAsync(new CaseWorkflow
         {
             Name = workflowName, EntityAnalysisModelId = model.Id, Active = 1, Locked = 0, Deleted = 0,
@@ -64,6 +68,7 @@ internal static class VisModelSupport
         {
             var name = VisSupport.Unique(kind + label);
             children[kind] = name;
+
             return name;
         }
 
@@ -73,6 +78,7 @@ internal static class VisModelSupport
             Deleted = 0, Version = 1, Guid = Guid.NewGuid(), CreatedUser = VisSupport.Prefix,
             CreatedDate = DateTime.UtcNow
         });
+
         await db.InsertWithInt32IdentityAsync(new CaseWorkflowForm
         {
             CaseWorkflowId = workflow.Id, Name = Child("CaseWorkflowForm"), Active = 1, Locked = 0, Deleted = 0,
@@ -98,6 +104,7 @@ internal static class VisModelSupport
             CaseWorkflowId = workflow.Id, Name = Child("CaseWorkflowDisplay"), Active = 1, Locked = 0, Deleted = 0,
             Version = 1, Guid = Guid.NewGuid(), CreatedUser = VisSupport.Prefix, CreatedDate = DateTime.UtcNow
         });
+
         await db.InsertWithInt32IdentityAsync(new CaseWorkflowStatus
         {
             CaseWorkflowId = workflow.Id, Name = Child("CaseWorkflowStatus"), Active = 1, Locked = 0, Deleted = 0,
@@ -121,11 +128,13 @@ internal static class VisModelSupport
     public static async Task SweepAsync(DatabaseFixture fx)
     {
         await using var db = fx.GetDbContext();
+
         var workflowIds = db.GetTable<CaseWorkflow>()
             .Where(w => w.Name != null && w.Name.StartsWith(VisSupport.Prefix + "Wf"))
             .Select(w => (int?)w.Id);
         var modelIds = db.GetTable<EntityAnalysisModel>()
             .Where(w => w.Name != null && w.Name.StartsWith(VisSupport.Prefix + "Mdl")).Select(w => (int?)w.Id);
+
         await db.GetTable<CaseWorkflowXPath>().Where(w => workflowIds.Contains(w.CaseWorkflowId)).DeleteAsync();
         await db.GetTable<CaseWorkflowForm>().Where(w => workflowIds.Contains(w.CaseWorkflowId)).DeleteAsync();
         await db.GetTable<CaseWorkflowAction>().Where(w => workflowIds.Contains(w.CaseWorkflowId)).DeleteAsync();

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,11 +13,13 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query.GetArchiverWarningListQuery;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Dto.ArchiverWarning;
 using Jube.Dto.Payload;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.ArchiverWarning;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -30,12 +32,11 @@ namespace Jube.Service.ArchiverWarning
     public sealed class ArchiverWarningService
     {
         private const int MaxListTake = 100000;
-
         private static readonly int[] permissions = [];
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
-        private readonly ArchiverWarningRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -47,13 +48,31 @@ namespace Jube.Service.ArchiverWarning
         {
             this.log = log;
             this.auditLog = auditLog;
+            this.dbContext = dbContext;
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            repository = new ArchiverWarningRepository(dbContext, userName);
         }
+
+        private void EnsurePermitted(string op)
+        {
+            if (permissionValidation.Landlord)
+            {
+                return;
+            }
+
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"{op}: permission denied (landlord only) user={userName}");
+            }
+
+            throw new ForbiddenException(strings[ArchiverWarningResources.PermissionDenied], permissions);
+        }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static bool RequiresLandlord => true;
 
         public static Task<ArchiverWarningService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -138,12 +157,16 @@ namespace Jube.Service.ArchiverWarning
         {
             using var op = OperationScope.Start("ArchiverWarning", "List", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             var clampedSamplePercentage = samplePercentage.HasValue
                 ? Math.Clamp(samplePercentage.Value, 0.0, 100.0)
                 : (double?)null;
+
             from ??= DateTime.UtcNow.AddHours(-1);
             to ??= DateTime.UtcNow;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"ArchiverWarning.List: entry take={clampedTake} user={userName}");
@@ -153,28 +176,24 @@ namespace Jube.Service.ArchiverWarning
             {
                 EnsurePermitted("ArchiverWarning.List");
 
-                var rows = await repository
-                    .GetLastAsync(permissionValidation.Landlord, clampedTake, from, to, stageId,
-                        clampedSamplePercentage, sortField, sortDirection, token)
+                var result = await new GetArchiverWarningListQuery(dbContext, tenantRegistryId)
+                    .ExecuteAsync(permissionValidation.Landlord, clampedTake, from, to, stageId,
+                        clampedSamplePercentage, MaxListTake, sortField, sortDirection, token)
                     .ConfigureAwait(false);
 
-                var dtos = rows.Select(r => new ArchiverWarningDto(
+                var dtos = result.Rows.Select(r => new ArchiverWarningDto(
                     r.Id, r.OccurredDate.GetValueOrDefault(), r.EntityAnalysisModelGuid, r.EntityAnalysisModelName,
                     r.EntityAnalysisModelInstanceEntryGuid, r.StageId.GetValueOrDefault(),
                     ((ArchiverStage)r.StageId.GetValueOrDefault()).Describe(),
                     r.DurationMicroseconds.GetValueOrDefault(),
                     r.CreatedDate.GetValueOrDefault(), r.Instance)).ToList();
 
-                var total = await repository
-                    .CountAsync(permissionValidation.Landlord, from, to, stageId, clampedSamplePercentage, token)
-                    .ConfigureAwait(false);
+                var total = result.Total;
 
-                var statistics = await repository
-                    .GetStatisticsAsync(permissionValidation.Landlord, from, to, stageId, clampedSamplePercentage,
-                        MaxListTake, token)
-                    .ConfigureAwait(false);
+                var statistics = result.Statistics;
 
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"ArchiverWarning.List: {dtos.Count} rows user={userName}");
@@ -190,6 +209,7 @@ namespace Jube.Service.ArchiverWarning
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"ArchiverWarning.List: cancelled user={userName}");
@@ -203,21 +223,6 @@ namespace Jube.Service.ArchiverWarning
                 log.Error($"ArchiverWarning.List: unexpected failure user={userName}", ex);
                 throw;
             }
-        }
-
-        private void EnsurePermitted(string op)
-        {
-            if (permissionValidation.Landlord)
-            {
-                return;
-            }
-
-            if (log.IsWarnEnabled)
-            {
-                log.Warn($"{op}: permission denied (landlord only) user={userName}");
-            }
-
-            throw new ForbiddenException(strings[ArchiverWarningResources.PermissionDenied], permissions);
         }
     }
 }

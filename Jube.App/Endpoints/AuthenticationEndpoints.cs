@@ -22,7 +22,10 @@ using Jube.Data.Context;
 using Jube.Data.Security;
 using Jube.Dto.Authentication;
 using Jube.Service.Authentication;
+using Jube.Service.Authentication.Interfaces;
+using Jube.Service.Authentication.Models;
 using Jube.Service.UserLogout;
+using Jube.Service.UserLogout.Models;
 using log4net;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authorization;
@@ -89,11 +92,13 @@ namespace Jube.App.Endpoints
                 var identity = httpContext.User.Identity;
 
                 var apiKey = httpContext.Request.Headers.ContainsKey("X-API-KEY");
+
                 var presented = !apiKey && identity is { IsAuthenticated: true, Name: not null }
                     ? new NegotiateIdentity(true, identity.Name)
                     : NegotiateIdentity.Anonymous;
 
                 DateTime? sessionStart = null;
+
                 if (presented.IsAuthenticated
                     && long.TryParse(httpContext.User.FindFirst(TokenValidity.IssuedMillisecondsClaim)?.Value,
                         System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture,
@@ -166,8 +171,10 @@ namespace Jube.App.Endpoints
                     {
                         await using var revokeContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                             dynamicEnvironment.AppSettings("ConnectionString"), log);
+
                         await TokenValidity.RevokeUserBeforeAsync(revokeContext, model.UserName, started, token)
                             .ConfigureAwait(false);
+
                         await RecordPasswordChangeAsync(httpContext, revokeContext, model.UserName)
                             .ConfigureAwait(false);
                     }
@@ -192,10 +199,12 @@ namespace Jube.App.Endpoints
         {
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
+
             try
             {
                 var services = httpContext.RequestServices;
                 var timeProvider = services.GetService<TimeProvider>();
+
                 var service = new AuthenticationLoginService(dbContext, dynamicEnvironment, log,
                     new HttpAuthenticationCookieIssuer(httpContext.Response, dynamicEnvironment, timeProvider),
                     services.GetService<IMfaVerifier>() ?? new RsaMfaVerifier(dynamicEnvironment, log),
@@ -204,6 +213,7 @@ namespace Jube.App.Endpoints
 
                 var identity = httpContext.User.Identity;
                 var callerIdentityApplies = operation is "ByNegotiate" or "ByNegotiateMfa" or "ChangePassword";
+
                 var context = new AuthenticationRequestContext(
                     callerIdentityApplies
                         ? new NegotiateIdentity(identity?.IsAuthenticated ?? false, identity?.Name)
@@ -213,6 +223,7 @@ namespace Jube.App.Endpoints
                     httpContext.Connection.RemoteIpAddress?.ToString());
 
                 var outcome = await run(service, context).ConfigureAwait(false);
+
                 if (afterOutcome != null)
                 {
                     await afterOutcome(httpContext, dbContext, dynamicEnvironment, context, outcome)
@@ -233,6 +244,7 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"{Base}/{operation}: 500", e);
+
                 return TypedResults.StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -247,9 +259,12 @@ namespace Jube.App.Endpoints
             }
 
             var timeProvider = httpContext.RequestServices.GetService<TimeProvider>() ?? TimeProvider.System;
+
             await TokenValidity.RevokeUserBeforeAsync(dbContext, context.Identity.Name, timeProvider.GetUtcNow())
                 .ConfigureAwait(false);
+
             await RecordPasswordChangeAsync(httpContext, dbContext, context.Identity.Name).ConfigureAwait(false);
+
             AuthenticationCookieIssuer.IssueAuthenticationCookies(httpContext.Response, dynamicEnvironment,
                 context.Identity.Name, timeProvider);
         }
@@ -257,6 +272,7 @@ namespace Jube.App.Endpoints
         private static Task RecordPasswordChangeAsync(HttpContext httpContext, DbContext dbContext, string userName)
         {
             var log = httpContext.RequestServices.GetService<ILog>() ?? LogManager.GetLogger("Jube.Audit");
+
             return UserLogoutRecorder.RecordAsync(dbContext, log, new UserLogoutEntry(userName,
                 UserLogoutReason.PasswordChange, UserLogoutOutcome.Revoked,
                 httpContext.Connection.RemoteIpAddress?.ToString(),
@@ -280,7 +296,7 @@ namespace Jube.App.Endpoints
                 AuthenticationOutcomeKind.ValidationFailed => TypedResults.BadRequest(outcome.Validation),
                 AuthenticationOutcomeKind.PasswordStrength => TypedResults.BadRequest(new
                 {
-                    errors = (outcome.Errors ?? Array.Empty<string>()).Select(m => new { errorMessage = m }).ToArray()
+                    errors = (outcome.Errors ?? []).Select(m => new { errorMessage = m }).ToArray()
                 }),
                 AuthenticationOutcomeKind.BadRequestMessage => TypedResults.BadRequest(outcome.Message),
                 _ => TypedResults.StatusCode(StatusCodes.Status500InternalServerError)

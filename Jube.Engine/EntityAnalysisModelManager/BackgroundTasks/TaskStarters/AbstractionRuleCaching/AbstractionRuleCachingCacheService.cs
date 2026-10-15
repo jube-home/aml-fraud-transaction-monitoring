@@ -29,7 +29,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
 
             try
             {
-                if (!entityAnalysisModel.Dependencies.LastAbstractionRuleCache.TryGetValue(distinctSearchKey.SearchKey, out var value))
+                if (!entityAnalysisModel.Dependencies.LastAbstractionRuleCache.TryGetValue(distinctSearchKey.SearchKey,
+                        out var value))
                 {
                     return [];
                 }
@@ -54,14 +55,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                         $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and grouping key {distinctSearchKey.SearchKey} the date threshold for cache keys that have expired is {deleteLineCacheKeys}.");
                 }
 
-                values = await entityAnalysisModel.Services.CacheService.CachePayloadLatestRepository.GetDistinctKeysPreferReplicaAsync(
-                    entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid,
-                    distinctSearchKey.SearchKey,
-                    deleteLineCacheKeys).ConfigureAwait(false);
+                values = await entityAnalysisModel.Services.CacheService.CachePayloadLatestRepository
+                    .GetDistinctKeysPreferReplicaAsync(
+                        entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid,
+                        distinctSearchKey.SearchKey,
+                        deleteLineCacheKeys).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"CacheServiceGetExpiredCacheKeysAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"CacheServiceGetExpiredCacheKeysAsync: has produced an error {ex}");
             }
 
             return values;
@@ -75,7 +78,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
         {
             try
             {
-                var value = await CacheServiceFindCacheKeyValueEntryAsync(entityAnalysisModel.Services.CacheService.CacheAbstractionRepository,
+                var value = await CacheServiceFindCacheKeyValueEntryAsync(
+                    entityAnalysisModel.Services.CacheService.CacheAbstractionRepository,
                     distinctSearchKey, groupingValue, abstractionRuleMatch, abstractionRule,
                     abstractionValue).ConfigureAwait(false);
 
@@ -83,7 +87,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                 {
                     if (abstractionValue > 0)
                     {
-                        await CacheServiceInsertSearchKeyValueAsync(entityAnalysisModel.Services.CacheService.CacheAbstractionRepository,
+                        await CacheServiceInsertSearchKeyValueAsync(
+                            entityAnalysisModel.Services.CacheService.CacheAbstractionRepository,
                             distinctSearchKey, groupingValue,
                             abstractionRuleMatch, abstractionRule,
                             abstractionValue).ConfigureAwait(false);
@@ -91,28 +96,34 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                 }
                 else
                 {
-                    await CacheServiceUpdateOrDeleteSearchKeyValueAsync(entityAnalysisModel.Services.CacheService.CacheAbstractionRepository, distinctSearchKey, groupingValue,
+                    await CacheServiceUpdateOrDeleteSearchKeyValueAsync(
+                        entityAnalysisModel.Services.CacheService.CacheAbstractionRepository, distinctSearchKey,
+                        groupingValue,
                         abstractionRule,
                         abstractionValue).ConfigureAwait(false);
                 }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"CacheServiceUpsertOrDeleteSearchKeyValueAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"CacheServiceUpsertOrDeleteSearchKeyValueAsync: has produced an error {ex}");
             }
         }
 
-        private async Task<double?> CacheServiceFindCacheKeyValueEntryAsync(CacheAbstractionRepository cacheAbstractionRepository,
+        private async Task<double?> CacheServiceFindCacheKeyValueEntryAsync(
+            CacheAbstractionRepository cacheAbstractionRepository,
             DistinctSearchKey distinctSearchKey, string groupingValue,
             KeyValuePair<int, List<DictionaryNoBoxing<string>>> abstractionRuleMatch,
             EntityAnalysisModelAbstractionRule abstractionRule,
             double abstractionValue)
         {
             double? value = null;
+
             try
             {
                 value = await cacheAbstractionRepository.GetPreferReplicaAsync(
-                    entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid, abstractionRule.Name, distinctSearchKey.SearchKey, groupingValue).ConfigureAwait(false);
+                    entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid,
+                    abstractionRule.Name, distinctSearchKey.SearchKey, groupingValue).ConfigureAwait(false);
 
                 if (entityAnalysisModel.Services.Log.IsInfoEnabled)
                 {
@@ -124,7 +135,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"CacheServiceFindCacheKeyValueEntryAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"CacheServiceFindCacheKeyValueEntryAsync: has produced an error {ex}");
             }
 
             return value;
@@ -146,7 +158,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                         $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and for Grouping Value {groupingValue} and Grouping Key {distinctSearchKey.SearchKey} for abstraction rule {key}  has returned aggregated value of {abstractionValue}.  The cache will be searched with the rule name {abstractionRule.Name}. As there are no existing cache values, it will be inserted.");
                 }
 
-                await cacheAbstractionRepository.UpsertAsync(entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid, distinctSearchKey.SearchKey,
+                await cacheAbstractionRepository.UpsertAsync(entityAnalysisModel.Instance.TenantRegistryId,
+                    entityAnalysisModel.Instance.Guid, distinctSearchKey.SearchKey,
                     groupingValue, abstractionRule.Name, abstractionValue).ConfigureAwait(false);
 
                 if (entityAnalysisModel.Services.Log.IsInfoEnabled)
@@ -157,11 +170,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"CacheServiceInsertSearchKeyValueAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"CacheServiceInsertSearchKeyValueAsync: has produced an error {ex}");
             }
         }
 
-        private async Task CacheServiceUpdateOrDeleteSearchKeyValueAsync(CacheAbstractionRepository cacheAbstractionRepository,
+        private async Task CacheServiceUpdateOrDeleteSearchKeyValueAsync(
+            CacheAbstractionRepository cacheAbstractionRepository,
             DistinctSearchKey distinctSearchKey, string groupingValue,
             EntityAnalysisModelAbstractionRule abstractionRule,
             double abstractionValue)
@@ -182,7 +197,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                             $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and for Grouping Value {groupingValue} and Grouping Key {distinctSearchKey.SearchKey} for abstraction rule {abstractionRule.Name}  has returned aggregated value of {abstractionValue}.  The cache will be searched with the rule name {abstractionRule.Name}.  As the abstraction value is zero, it will be deleted to save storage.");
                     }
 
-                    await cacheAbstractionRepository.DeleteAsync(entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid, distinctSearchKey.SearchKey,
+                    await cacheAbstractionRepository.DeleteAsync(entityAnalysisModel.Instance.TenantRegistryId,
+                        entityAnalysisModel.Instance.Guid, distinctSearchKey.SearchKey,
                         groupingValue, abstractionRule.Name).ConfigureAwait(false);
 
                     if (entityAnalysisModel.Services.Log.IsInfoEnabled)
@@ -199,7 +215,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                             $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and for Grouping Value {groupingValue} and Grouping Key {distinctSearchKey.SearchKey} for abstraction rule {abstractionRule.Name}  has returned aggregated value of {abstractionValue}.  The cache will be searched with the rule name {abstractionRule.Name}.  As the abstraction value is not zero, it will be updated.");
                     }
 
-                    await cacheAbstractionRepository.UpsertAsync(entityAnalysisModel.Instance.TenantRegistryId, entityAnalysisModel.Instance.Guid, distinctSearchKey.SearchKey,
+                    await cacheAbstractionRepository.UpsertAsync(entityAnalysisModel.Instance.TenantRegistryId,
+                        entityAnalysisModel.Instance.Guid, distinctSearchKey.SearchKey,
                         groupingValue, abstractionRule.Name, abstractionValue).ConfigureAwait(false);
 
                     if (entityAnalysisModel.Services.Log.IsInfoEnabled)
@@ -211,7 +228,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                entityAnalysisModel.Services.Log.Error($"CacheServiceUpdateOrDeleteSearchKeyValueAsync: has produced an error {ex}");
+                entityAnalysisModel.Services.Log.Error(
+                    $"CacheServiceUpdateOrDeleteSearchKeyValueAsync: has produced an error {ex}");
             }
         }
     }

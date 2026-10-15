@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,7 +22,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Poco;
-using Jube.Data.Repository;
 using Newtonsoft.Json.Linq;
 
 namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
@@ -37,7 +37,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             new();
 
         private string cachedToken;
-
         public string LastError { get; private set; }
 
         public void Dispose()
@@ -49,13 +48,16 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         {
             var body = $"{{\"name\":\"{username}\",\"password\":\"{password}\"}}";
             using var content = new StringContent(body, Encoding.UTF8, "application/json");
+
             using var response = await httpClient.PostAsync($"{baseUrl}/v3/auth/authenticate", content, token)
                 .ConfigureAwait(false);
+
             var text = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
 
             if (!EtcdApiResponse.TryRead(response.StatusCode, text, out var payload, out var error))
             {
                 LastError ??= $"authenticating as {username} at {baseUrl} returned {error}";
+
                 return null;
             }
 
@@ -66,12 +68,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             CancellationToken token)
         {
             var request = new HttpRequestMessage(method, url);
+
             if (string.IsNullOrEmpty(username))
             {
                 return request;
             }
 
             cachedToken ??= await AuthenticateAsync(baseUrl, token).ConfigureAwait(false);
+
             if (cachedToken != null)
             {
                 request.Headers.TryAddWithoutValidation("Authorization", cachedToken);
@@ -91,6 +95,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 
                 var versionJson = await GetJsonAsync($"{baseUrl}/version", token).ConfigureAwait(false);
                 var healthJson = await GetJsonAsync($"{baseUrl}/health", token).ConfigureAwait(false);
+
                 var statusJson = await PostJsonAsync(baseUrl, $"{baseUrl}/v3/maintenance/status", "{}", token)
                     .ConfigureAwait(false);
                 var memberListJson = await PostJsonAsync(baseUrl, $"{baseUrl}/v3/cluster/member/list", "{}", token)
@@ -98,6 +103,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 var alarmJson = await PostJsonAsync(baseUrl, $"{baseUrl}/v3/maintenance/alarm",
                         "{\"action\":\"GET\"}", token)
                     .ConfigureAwait(false);
+
                 var metricsText = await GetTextAsync($"{baseUrl}/metrics", token).ConfigureAwait(false);
 
                 if (statusJson == null)
@@ -110,9 +116,11 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
 
                 string name = null, peerUrls = null, clientUrls = null;
                 bool? isLearner = null;
+
                 if (memberListJson?["members"] is JArray members)
                 {
                     var self = members.FirstOrDefault(m => (string)m["ID"] == thisMemberId);
+
                     if (self != null)
                     {
                         name = (string)self["name"];
@@ -123,6 +131,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 }
 
                 var alarmTypes = new List<string>();
+
                 if (alarmJson?["alarms"] is JArray alarmsArray)
                 {
                     alarmTypes.AddRange(alarmsArray.Select(a => (string)a["alarm"]).Where(a => a != null));
@@ -240,7 +249,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         {
             return string.IsNullOrEmpty(alarms)
                 ? []
-                : alarms.Split(',', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+                : [.. alarms.Split(',', StringSplitOptions.RemoveEmptyEntries)];
         }
 
         private static EtcdClusterEvent NewEvent(EtcdMemberStatus status, EtcdClusterEventType eventType,
@@ -267,6 +276,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             try
             {
                 var text = await httpClient.GetStringAsync(url, token).ConfigureAwait(false);
+
                 return JObject.Parse(text);
             }
             catch (Exception) when (!token.IsCancellationRequested)
@@ -282,12 +292,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             {
                 using var request = await AuthorisedRequestAsync(HttpMethod.Post, baseUrl, url, token)
                     .ConfigureAwait(false);
+
                 request.Content = new StringContent(body, Encoding.UTF8, "application/json");
                 using var response = await httpClient.SendAsync(request, token).ConfigureAwait(false);
 
                 if (response.StatusCode == HttpStatusCode.Unauthorized && retryOnUnauthorized)
                 {
                     cachedToken = null;
+
                     return await PostJsonAsync(baseUrl, url, body, token, retryOnUnauthorized: false)
                         .ConfigureAwait(false);
                 }
@@ -300,6 +312,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 }
 
                 LastError ??= $"{url} returned {error}";
+
                 return null;
             }
             catch (Exception) when (!token.IsCancellationRequested)
@@ -323,6 +336,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
         private static Dictionary<string, double> ParsePrometheusMetrics(string metricsText)
         {
             var values = new Dictionary<string, double>(StringComparer.Ordinal);
+
             if (string.IsNullOrEmpty(metricsText))
             {
                 return values;
@@ -336,6 +350,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 }
 
                 var spaceIndex = line.LastIndexOf(' ');
+
                 if (spaceIndex <= 0)
                 {
                     continue;

@@ -66,6 +66,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ActivatorDelegate = activator,
                 ExecuteAsyncDelegate = execute
             };
+
             script.EntityAnalysisModelInlineScriptEvents.Add(new EntityAnalysisModelInlineScriptEvent
             {
                 EntityAnalysisModelInlineScriptEventType = EntityAnalysisModelInlineScriptEventTypeEnum.Payload
@@ -90,6 +91,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AScriptWithNoPayloadEventIsNeverInvokedAsync()
         {
             var wasActivated = false;
+
             var script = new EntityAnalysisModelInlineScript
             {
                 Id = 1,
@@ -97,15 +99,18 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 ActivatorDelegate = () =>
                 {
                     wasActivated = true;
+
                     return new object();
                 },
                 ExecuteAsyncDelegate = (_, _) => Task.FromResult(true)
             };
+
             script.EntityAnalysisModelInlineScriptEvents.Add(new EntityAnalysisModelInlineScriptEvent
             {
                 EntityAnalysisModelInlineScriptEventType =
                     EntityAnalysisModelInlineScriptEventTypeEnum.AbstractionRuleOverride
             });
+
             var context = NewContext(script);
 
             await context.ExecuteInlineScriptsAsync();
@@ -118,6 +123,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var script = NewPayloadScript("Script1", () => new object(), (_, _) => Task.FromResult(true),
                 ("Greeting", typeof(string), _ => "Hello", false));
+
             var context = NewContext(script);
 
             await context.ExecuteInlineScriptsAsync();
@@ -130,6 +136,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var script = NewPayloadScript("Script1", () => new object(), (_, _) => Task.FromResult(true),
                 ("Count", typeof(int), _ => 7, false));
+
             var context = NewContext(script);
 
             await context.ExecuteInlineScriptsAsync();
@@ -142,6 +149,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var script = NewPayloadScript("Script1", () => new object(), (_, _) => Task.FromResult(true),
                 ("Ratio", typeof(double), _ => 2.5, false));
+
             var context = NewContext(script);
 
             await context.ExecuteInlineScriptsAsync();
@@ -154,6 +162,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var script = NewPayloadScript("Script1", () => new object(), (_, _) => Task.FromResult(true),
                 ("Missing", typeof(string), _ => null!, false));
+
             var context = NewContext(script);
 
             await context.ExecuteInlineScriptsAsync();
@@ -166,6 +175,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var script = NewPayloadScript("Script1", () => new object(), (_, _) => Task.FromResult(true),
                 ("Complex", typeof(Guid), _ => Guid.NewGuid(), false));
+
             var context = NewContext(script);
 
             var act = async () => await context.ExecuteInlineScriptsAsync();
@@ -179,6 +189,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var script = NewPayloadScript("Script1", () => new object(), (_, _) => Task.FromResult(true),
                 ("Ratio", typeof(double), _ => 4.0, true));
+
             var context = NewContext(script);
 
             await context.ExecuteInlineScriptsAsync();
@@ -195,6 +206,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var script = NewPayloadScript("Script1", () => new object(), (_, _) => Task.FromResult(true),
                 ("Ratio", typeof(double), _ => 4.0, false));
+
             var context = NewContext(script);
 
             await context.ExecuteInlineScriptsAsync();
@@ -207,6 +219,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var script = NewPayloadScript("Script1", () => new object(), (_, _) => Task.FromResult(false),
                 ("Ratio", typeof(double), _ => 4.0, false));
+
             var context = NewContext(script);
 
             await context.ExecuteInlineScriptsAsync();
@@ -218,13 +231,17 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task AnExceptionThrownByTheExecuteDelegateIsCaughtAndSubsequentScriptsStillRunAsync()
         {
             var secondActivated = false;
+
             var throwing = NewPayloadScript("Throws", () => new object(),
                 (_, _) => throw new InvalidOperationException("boom"));
+
             var second = NewPayloadScript("Second", () =>
             {
                 secondActivated = true;
+
                 return new object();
             }, (_, _) => Task.FromResult(true));
+
             var context = NewContext(throwing, second);
 
             var act = async () => await context.ExecuteInlineScriptsAsync();
@@ -239,6 +256,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var script = NewPayloadScript("Throws", () => new object(),
                 (_, _) => throw new InvalidOperationException("boom"),
                 ("Ratio", typeof(double), _ => 4.0, false));
+
             var context = NewContext(script);
 
             await context.ExecuteInlineScriptsAsync();
@@ -265,6 +283,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var script = NewPayloadScript("Script1", () => new object(), (_, _) => Task.FromResult(true),
                 ("Greeting", typeof(string), _ => "Hello", false));
+
             var context = NewContext(script);
             context.LogSampled = false;
 

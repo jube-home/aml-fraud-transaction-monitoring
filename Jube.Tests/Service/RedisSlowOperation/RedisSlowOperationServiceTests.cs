@@ -198,6 +198,7 @@ namespace Jube.Test.Service.RedisSlowOperation
 
             await CreateEntryAsync(dbContext, 30, fullCommand, commandName: uniqueCommandName,
                 keyName: uniqueKeyName);
+
             await CreateEntryAsync(dbContext, 31, "OtherCommand OtherKey", commandName: "OTHERCMD",
                 keyName: "OtherKey");
 
@@ -211,6 +212,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             mine[0].KeyName.Should().Be(uniqueKeyName);
 
             var byKey = await service.ListAsync(search: uniqueKeyName);
+
             var mineByKey = byKey.Rows.Where(r => r.Command == fullCommand || r.Command == "OtherCommand OtherKey")
                 .ToList();
             mineByKey.Should().ContainSingle();
@@ -305,10 +307,12 @@ namespace Jube.Test.Service.RedisSlowOperation
 
             var ascending = await service.ListAsync(search: command, sortField: "durationMicroseconds",
                 sortDirection: "asc");
+
             ascending.Rows.Select(r => r.DurationMicroseconds).Should().Equal(1000, 2000, 3000);
 
             var descending = await service.ListAsync(search: command, sortField: "durationMicroseconds",
                 sortDirection: "desc");
+
             descending.Rows.Select(r => r.DurationMicroseconds).Should().Equal(3000, 2000, 1000);
         }
 
@@ -324,6 +328,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 121, command, durationMicroseconds: 1000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: command, sortField: "durationMicroseconds",
                 sortDirection: ascendingKeyword);
 
@@ -339,6 +344,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             await CreateEntryAsync(dbContext, 131, command, durationMicroseconds: 2000);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
             var result = await service.ListAsync(search: command, sortField: "durationMicroseconds",
                 sortDirection: "banana");
 
@@ -366,6 +372,7 @@ namespace Jube.Test.Service.RedisSlowOperation
         {
             await using var dbContext = fx.GetDbContext();
             var command = $"{DatabaseFixture.Prefix}Command{Guid.NewGuid():N}";
+
             for (var i = 0; i < 5; i++)
             {
                 await CreateEntryAsync(dbContext, 150 + i, command);
@@ -385,6 +392,7 @@ namespace Jube.Test.Service.RedisSlowOperation
             var command = $"{DatabaseFixture.Prefix}Command{Guid.NewGuid():N}";
 
             var logId = 160L;
+
             foreach (var value in new long[] { 1, 2, 3, 4, 5 })
             {
                 await CreateEntryAsync(dbContext, logId++, command, durationMicroseconds: value);

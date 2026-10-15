@@ -12,9 +12,8 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using Jube.Data.QueryBuilder;
 using Jube.Dto.Query.QueryBuilder;
+using Jube.Service.Query.QueryBuilder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -23,38 +22,14 @@ namespace Jube.App.Endpoints.Query
 {
     public static class QueryBuilderEndpoints
     {
-        private static readonly List<BuilderOperatorDto> operators = BuilderOperators.All
-            .Where(o => o.Template != null)
-            .Select(o => new BuilderOperatorDto
-            {
-                Type = o.Type, Label = o.Label, Group = o.Group,
-                Arguments = o.Arguments.Select(a => new BuilderOperatorArgumentDto
-                    { Name = a.Name, Kind = a.Kind.ToString().ToLowerInvariant(), Many = a.Many }).ToList(),
-                ApplyTo = o.RuleTextTypes.Select(DataType).ToList(),
-                Template = o.Template
-            }).ToList();
-
         public static void MapQueryBuilderEndpoints(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapGroup("/api/QueryBuilder")
                 .RequireAuthorization()
                 .WithTags("QueryBuilder")
-                .MapGet("Operators", () => Results.Ok(operators))
+                .MapGet("Operators", () => Results.Ok(QueryBuilderService.All))
                 .Produces<List<BuilderOperatorDto>>()
                 .WithName("QueryBuilderOperators");
-        }
-
-        private static string DataType(BuilderFieldType type)
-        {
-            return type switch
-            {
-                BuilderFieldType.String => "string",
-                BuilderFieldType.Integer => "integer",
-                BuilderFieldType.Double => "double",
-                BuilderFieldType.Boolean => "boolean",
-                BuilderFieldType.DateTime => "datetime",
-                _ => "list"
-            };
         }
     }
 }

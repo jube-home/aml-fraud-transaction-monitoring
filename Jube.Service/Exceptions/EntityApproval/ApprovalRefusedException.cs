@@ -13,8 +13,6 @@
 
 namespace Jube.Service.Exceptions.EntityApproval
 {
-    using System.Collections.Generic;
-
     public sealed class ApprovalRefusedException(string message, IReadOnlyList<string> reasons)
         : ServiceException(message)
     {

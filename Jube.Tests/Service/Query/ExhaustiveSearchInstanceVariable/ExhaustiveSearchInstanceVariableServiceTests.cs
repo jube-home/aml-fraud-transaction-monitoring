@@ -21,6 +21,7 @@ using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Dto.Query.ExhaustiveSearchInstanceVariable;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Query.ExhaustiveSearchInstanceVariable;
 using Jube.Service.Observability;
@@ -48,12 +49,15 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
             new ResourceManagerStringLocalizerFactory(Options.Create(new LocalizationOptions()),
                 NullLoggerFactory.Instance);
 
-        private readonly List<int> createdModelIds = [];
         private readonly List<int> createdHistogramIds = [];
+        private readonly List<int> createdModelIds = [];
         private readonly List<int> createdSearchInstanceIds = [];
         private readonly List<int> createdVariableIds = [];
 
-        public Task InitializeAsync() => Task.CompletedTask;
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
 
         public async Task DisposeAsync()
         {
@@ -63,11 +67,13 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
                 .Where(w => createdHistogramIds.Contains(w.Id)).DeleteAsync();
             await dbContext.ExhaustiveSearchInstanceVariable
                 .Where(w => createdVariableIds.Contains(w.Id)).DeleteAsync();
+
             foreach (var id in createdSearchInstanceIds)
             {
                 await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
                     .Where(w => w.ExhaustiveSearchInstanceId == id).DeleteAsync();
-                await dbContext.GetTable<global::Jube.Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id)
+
+                await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == id)
                     .DeleteAsync();
             }
 
@@ -75,6 +81,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
             {
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
+
                 await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).DeleteAsync();
             }
         }
@@ -91,7 +98,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
         private async Task<int> InsertSearchInstanceAsync(DbContext dbContext, string createdUser)
         {
             var model = await new EntityAnalysisModelRepository(dbContext, createdUser).InsertAsync(
-                new global::Jube.Data.Poco.EntityAnalysisModel
+                new Data.Poco.EntityAnalysisModel
                 {
                     Name = $"{DatabaseFixture.Prefix}Model{Guid.NewGuid():N}"[..40],
                     Guid = Guid.NewGuid(),
@@ -102,7 +109,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
             createdModelIds.Add(model.Id);
 
             var searchInstance = await new ExhaustiveSearchInstanceRepository(dbContext, createdUser).InsertAsync(
-                new global::Jube.Data.Poco.ExhaustiveSearchInstance
+                new Data.Poco.ExhaustiveSearchInstance
                 {
                     Name = $"{DatabaseFixture.Prefix}Search{Guid.NewGuid():N}"[..40],
                     Guid = Guid.NewGuid(),
@@ -113,6 +120,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
                     StatusId = 0
                 });
             createdSearchInstanceIds.Add(searchInstance.Id);
+
             return searchInstance.Id;
         }
 
@@ -120,7 +128,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
             byte? normalisationTypeId = 1, params (int? Frequency, double? Start)[] bins)
         {
             var variableId = await dbContext.InsertWithInt32IdentityAsync(
-                new global::Jube.Data.Poco.ExhaustiveSearchInstanceVariable
+                new Data.Poco.ExhaustiveSearchInstanceVariable
                 {
                     ExhaustiveSearchInstanceId = searchInstanceId,
                     Name = name,
@@ -138,6 +146,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
                 });
             createdVariableIds.Add(variableId);
             var sequence = 0;
+
             foreach (var (frequency, start) in bins)
             {
                 createdHistogramIds.Add(await dbContext.InsertWithInt32IdentityAsync(
@@ -158,10 +167,14 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
         {
             var id = await InsertSearchInstanceAsync(dbContext, createdUser);
             await AddVariableAsync(dbContext, id, name, 1, (10, 0.5), (20, 1.5));
+
             return id;
         }
 
-        private static string Nm(string suffix) => $"{DatabaseFixture.Prefix}Var{suffix}{Guid.NewGuid():N}"[..30];
+        private static string Nm(string suffix)
+        {
+            return $"{DatabaseFixture.Prefix}Var{suffix}{Guid.NewGuid():N}"[..30];
+        }
 
         [Theory]
         [InlineData(null)]
@@ -185,6 +198,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -193,6 +207,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -234,6 +249,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
             dto.DistinctValues.Should().Be(8);
             dto.Correlation.Should().Be(0.25);
             dto.CorrelationAbsRank.Should().Be(9);
+
             dto.HistogramValues.Should().BeEquivalentTo([
                 new { Frequency = 10, Bin = 0.5 }, new { Frequency = 20, Bin = 1.5 }
             ]);
@@ -261,8 +277,9 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
         {
             await using var dbContext = fx.GetDbContext();
             var searchInstanceId = await InsertSearchInstanceAsync(dbContext, fx.Seed.UserWithPermission);
+
             var id = await dbContext.InsertWithInt32IdentityAsync(
-                new global::Jube.Data.Poco.ExhaustiveSearchInstanceVariable
+                new Data.Poco.ExhaustiveSearchInstanceVariable
                 {
                     ExhaustiveSearchInstanceId = searchInstanceId, Name = Nm("Nulls")
                 });
@@ -292,6 +309,7 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
             var result = await service.GetAsync(searchInstanceId);
 
             result.Single(r => r.Name == a).HistogramValues.Should().ContainSingle().Which.Frequency.Should().Be(1);
+
             result.Single(r => r.Name == b).HistogramValues.Select(h => h.Frequency).Should()
                 .BeEquivalentTo([2, 3]);
         }
@@ -445,6 +463,163 @@ namespace Jube.Test.Service.Query.ExhaustiveSearchInstanceVariable
 
             names.Should().OnlyHaveUniqueItems();
             names.Should().Contain("ExhaustiveSearchInstanceVariableGet");
+            names.Should().Contain("ExhaustiveSearchInstanceVariableReallocate");
+        }
+
+        [Fact]
+        public async Task ReallocateAsync_PersistsThePrefixedNameAndProcessingTypeAndReturnsTheModelAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var searchInstanceId = await InsertSearchInstanceAsync(dbContext, fx.Seed.UserWithPermission);
+            var variableId = await AddVariableAsync(dbContext, searchInstanceId, Nm("Old"));
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var result = await service.ReallocateAsync(variableId,
+                new ExhaustiveSearchInstanceVariableReallocateDto
+                {
+                    Name = "Reallocated", ProcessingTypeId = 5
+                });
+
+            result.Name.Should().Be("Reallocated");
+            result.ProcessingTypeId.Should().Be(5);
+
+            var reread = (await service.GetAsync(searchInstanceId)).Should().ContainSingle().Subject;
+            reread.Name.Should().Be("Abstraction.Reallocated");
+            reread.ProcessingTypeId.Should().Be(5);
+        }
+
+        [Theory]
+        [InlineData(1, "Payload")]
+        [InlineData(2, "Dictionary")]
+        [InlineData(3, "TtlCounter")]
+        [InlineData(4, "Sanction")]
+        [InlineData(6, "AbstractionCalculation")]
+        public async Task ReallocateAsync_PrefixesEveryKnownProcessingTypeAsync(int processingTypeId, string prefix)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var searchInstanceId = await InsertSearchInstanceAsync(dbContext, fx.Seed.UserWithPermission);
+            var variableId = await AddVariableAsync(dbContext, searchInstanceId, Nm("Old"));
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await service.ReallocateAsync(variableId,
+                new ExhaustiveSearchInstanceVariableReallocateDto
+                {
+                    Name = "Field", ProcessingTypeId = processingTypeId
+                });
+
+            (await service.GetAsync(searchInstanceId)).Should().ContainSingle().Which.Name
+                .Should().Be(prefix + ".Field");
+        }
+
+        [Fact]
+        public async Task ReallocateAsync_UnknownIdThrowsNotFoundAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var ex = await Assert.ThrowsAsync<NotFoundException>(() => service.ReallocateAsync(int.MaxValue,
+                new ExhaustiveSearchInstanceVariableReallocateDto
+                {
+                    Name = "X", ProcessingTypeId = 1
+                }));
+
+            ex.Code.Should().Be("NotFound");
+        }
+
+        [Fact]
+        public async Task ReallocateAsync_ForeignTenantsVariableThrowsNotFoundAndIsUnchangedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var searchInstanceId = await InsertSearchInstanceAsync(dbContext, fx.Seed.UserTenantB);
+            var variableId = await AddVariableAsync(dbContext, searchInstanceId, Nm("Foreign"));
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await Assert.ThrowsAsync<NotFoundException>(() => service.ReallocateAsync(variableId,
+                new ExhaustiveSearchInstanceVariableReallocateDto
+                {
+                    Name = "Hijacked", ProcessingTypeId = 1
+                }));
+
+            var serviceB = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
+            (await serviceB.GetAsync(searchInstanceId)).Should().ContainSingle().Which.Name
+                .Should().NotContain("Hijacked");
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("1abc")]
+        [InlineData("has space")]
+        [InlineData("a.b")]
+        [InlineData("<b>")]
+        public async Task ReallocateAsync_UnsafeNameThrowsValidationFailedAsync(string? name)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var searchInstanceId = await InsertSearchInstanceAsync(dbContext, fx.Seed.UserWithPermission);
+            var variableId = await AddVariableAsync(dbContext, searchInstanceId, Nm("Old"));
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.ReallocateAsync(variableId,
+                new ExhaustiveSearchInstanceVariableReallocateDto
+                {
+                    Name = name, ProcessingTypeId = 1
+                }));
+
+            ex.Code.Should().Be("ValidationFailed");
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(7)]
+        [InlineData(-1)]
+        public async Task ReallocateAsync_UnknownProcessingTypeThrowsValidationFailedAsync(int processingTypeId)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var searchInstanceId = await InsertSearchInstanceAsync(dbContext, fx.Seed.UserWithPermission);
+            var variableId = await AddVariableAsync(dbContext, searchInstanceId, Nm("Old"));
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await Assert.ThrowsAsync<DtoValidationException>(() => service.ReallocateAsync(variableId,
+                new ExhaustiveSearchInstanceVariableReallocateDto
+                {
+                    Name = "Ok", ProcessingTypeId = processingTypeId
+                }));
+        }
+
+        [Fact]
+        public async Task ReallocateAsync_ThrowsForbiddenWhenPermissionMissingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var searchInstanceId = await InsertSearchInstanceAsync(dbContext, fx.Seed.UserWithPermission);
+            var variableId = await AddVariableAsync(dbContext, searchInstanceId, Nm("Old"));
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            var ex = await Assert.ThrowsAsync<ForbiddenException>(() => service.ReallocateAsync(variableId,
+                new ExhaustiveSearchInstanceVariableReallocateDto
+                {
+                    Name = "X", ProcessingTypeId = 1
+                }));
+
+            ex.RequiredSpecifications.Should().BeEquivalentTo([16]);
+        }
+
+        [Fact]
+        public async Task ReallocateAsync_PublishesExactlyOneUpdatedChangeEventAsync()
+        {
+            var bus = new CapturingBus();
+            await using var dbContext = fx.GetDbContext();
+            var searchInstanceId = await InsertSearchInstanceAsync(dbContext, fx.Seed.UserWithPermission);
+            var variableId = await AddVariableAsync(dbContext, searchInstanceId, Nm("Old"));
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
+            await service.ReallocateAsync(variableId,
+                new ExhaustiveSearchInstanceVariableReallocateDto
+                {
+                    Name = "Published", ProcessingTypeId = 1
+                });
+
+            bus.Published.Should().ContainSingle().Which.EntityId.Should().Be(variableId);
         }
     }
 }

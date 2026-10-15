@@ -13,6 +13,7 @@
 
 using System.Net;
 using Jube.Engine.Integrity;
+using Jube.Service.Query.EntityAnalysisModelIntegrity.Interfaces;
 
 namespace Jube.Service.Query.EntityAnalysisModelIntegrity
 {
@@ -32,6 +33,7 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
 
             var models = engine!.Context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
                 .ActiveEntityAnalysisModels;
+
             for (var attempt = 0; attempt < 3; attempt++)
             {
                 try

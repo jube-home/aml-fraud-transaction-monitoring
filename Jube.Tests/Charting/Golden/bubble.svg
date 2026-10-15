@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-2c3cf6ca" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-2c3cf6ca-t jc-2c3cf6ca-d">
+    <title id="jc-2c3cf6ca-t">Merchant risk</title>
+    <desc id="jc-2c3cf6ca-d">Bubble chart with 1 series: Merchants. Y values range from 0.1 to 2.4.</desc>
+    <style>
+        .jc-2c3cf6ca{display:block;width:100%;height:auto;max-width:100%;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-2c3cf6ca:not([data-theme="light"]),.jc-2c3cf6ca:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-2c3cf6ca:not([data-theme="light"]),.jc-2c3cf6ca[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-2c3cf6ca
+        text{fill:var(--jc-text);font-size:12px}.jc-2c3cf6ca .bg{fill:var(--jc-surface)}.jc-2c3cf6ca
+        .ttl{font-size:16px;font-weight:600}.jc-2c3cf6ca .sub{fill:var(--jc-text2)}.jc-2c3cf6ca
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-2c3cf6ca .at{fill:var(--jc-text2);font-weight:500}.jc-2c3cf6ca
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-2c3cf6ca
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-2c3cf6ca
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-2c3cf6ca .ref.s0,.jc-2c3cf6ca
+        .ref.s1,.jc-2c3cf6ca .ref.s2,.jc-2c3cf6ca .ref.s3,.jc-2c3cf6ca .ref.s4,.jc-2c3cf6ca .ref.s5,.jc-2c3cf6ca
+        .ref.s6,.jc-2c3cf6ca .ref.s7{stroke:var(--sc)}.jc-2c3cf6ca
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-2c3cf6ca
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-2c3cf6ca
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-2c3cf6ca
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-2c3cf6ca .wh,.jc-2c3cf6ca
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-2c3cf6ca
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-2c3cf6ca
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-2c3cf6ca
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-2c3cf6ca .cd.hollow{fill:var(--jc-surface)}.jc-2c3cf6ca
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-2c3cf6ca
+        .ar.off{fill-opacity:0}.jc-2c3cf6ca .ring{font-size:10px}.jc-2c3cf6ca
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-2c3cf6ca .needle{fill:var(--jc-text);stroke:none}.jc-2c3cf6ca
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-2c3cf6ca
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-2c3cf6ca
+        .big{font-size:28px;font-weight:600}.jc-2c3cf6ca .rg0,.jc-2c3cf6ca .rg1,.jc-2c3cf6ca
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-2c3cf6ca .rg0{fill-opacity:.1}.jc-2c3cf6ca
+        .rg1{fill-opacity:.2}.jc-2c3cf6ca .rg2{fill-opacity:.32}.jc-2c3cf6ca
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-2c3cf6ca
+        .bar.part{fill-opacity:.35}.jc-2c3cf6ca .lgt{fill:var(--jc-text2)}.jc-2c3cf6ca
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-2c3cf6ca
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-2c3cf6ca
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-2c3cf6ca
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-2c3cf6ca .bar{fill:var(--sc)}.jc-2c3cf6ca
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-2c3cf6ca
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-2c3cf6ca
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-2c3cf6ca
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-2c3cf6ca
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-2c3cf6ca
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-2c3cf6ca .mk:hover .pt.h,.jc-2c3cf6ca .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-2c3cf6ca .pt.sm{fill-opacity:.55;stroke:none}.jc-2c3cf6ca
+        .na{fill:var(--jc-grid)}.jc-2c3cf6ca .mk:hover .sl,.jc-2c3cf6ca .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-2c3cf6ca
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-2c3cf6ca
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-2c3cf6ca
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-2c3cf6ca
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-2c3cf6ca
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-2c3cf6ca .ctr{text-anchor:middle}.jc-2c3cf6ca
+        .end{text-anchor:end}.jc-2c3cf6ca .mid{dominant-baseline:central}.jc-2c3cf6ca .mk{outline:none}.jc-2c3cf6ca
+        .m,.jc-2c3cf6ca .pt,.jc-2c3cf6ca .bub,.jc-2c3cf6ca .bar,.jc-2c3cf6ca .ov,.jc-2c3cf6ca .sl,.jc-2c3cf6ca
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-2c3cf6ca .mk:hover .m,.jc-2c3cf6ca .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-2c3cf6ca .mk:hover .pt,.jc-2c3cf6ca .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-2c3cf6ca .mk:hover .bub,.jc-2c3cf6ca .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-2c3cf6ca .mk:hover .bar,.jc-2c3cf6ca .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-2c3cf6ca .mk:hover .ov,.jc-2c3cf6ca .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-2c3cf6ca .mk:hover .sl,.jc-2c3cf6ca .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-2c3cf6ca .mk:hover .box,.jc-2c3cf6ca .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-2c3cf6ca .mk:hover .wk,.jc-2c3cf6ca .mk:focus-visible
+        .wk,.jc-2c3cf6ca .mk:hover .cd,.jc-2c3cf6ca .mk:focus-visible .cd{stroke-width:2.5}.jc-2c3cf6ca .mk:hover
+        .cell,.jc-2c3cf6ca .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-2c3cf6ca .mk:hover
+        .vl,.jc-2c3cf6ca .mk:focus-visible .vl,.jc-2c3cf6ca .mk:hover .cx,.jc-2c3cf6ca .mk:focus-visible
+        .cx{opacity:1}.jc-2c3cf6ca .mk:hover .mkr,.jc-2c3cf6ca .mk:focus-visible .mkr{stroke-width:3}.jc-2c3cf6ca
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-2c3cf6ca
+        .mk:hover .tt,.jc-2c3cf6ca .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-2c3cf6ca
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-2c3cf6ca
+        .tx{fill:var(--jc-text);font-size:12px}.jc-2c3cf6ca .tx.b{font-weight:600}.jc-2c3cf6ca
+        .tsw{fill:var(--sc)}.jc-2c3cf6ca .lg{cursor:default;transition:opacity .15s ease}.jc-2c3cf6ca .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-2c3cf6ca .sr{transition:opacity .15s ease}.jc-2c3cf6ca:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-2c3cf6ca:has(.mk:hover) .mk:not(:hover) .pt,.jc-2c3cf6ca:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-2c3cf6ca:has(.mk:hover) .mk:not(:hover) .bar,.jc-2c3cf6ca:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-2c3cf6ca:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-2c3cf6ca:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-2c3cf6ca .s0{--sc:var(--jc-c0)}.jc-2c3cf6ca .s0
+        .on{fill:var(--jc-ct0)}.jc-2c3cf6ca:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-2c3cf6ca:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-2c3cf6ca:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-2c3cf6ca:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-2c3cf6ca:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-2c3cf6ca,.jc-2c3cf6ca *{transition:none!important;animation:none!important}}
+    </style>
+    <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
+    <text class="ttl" x="16" y="32">Merchant risk</text>
+    <line class="gl" x1="57.18" y1="346" x2="624" y2="346"/>
+    <text class="tk end mid" x="49.18" y="346">0</text>
+    <line class="gl" x1="57.18" y1="286.4" x2="624" y2="286.4"/>
+    <text class="tk end mid" x="49.18" y="286.4">0.5</text>
+    <line class="gl" x1="57.18" y1="226.8" x2="624" y2="226.8"/>
+    <text class="tk end mid" x="49.18" y="226.8">1.0</text>
+    <line class="gl" x1="57.18" y1="167.2" x2="624" y2="167.2"/>
+    <text class="tk end mid" x="49.18" y="167.2">1.5</text>
+    <line class="gl" x1="57.18" y1="107.6" x2="624" y2="107.6"/>
+    <text class="tk end mid" x="49.18" y="107.6">2.0</text>
+    <line class="gl" x1="57.18" y1="48" x2="624" y2="48"/>
+    <text class="tk end mid" x="49.18" y="48">2.5</text>
+    <line class="gl" x1="57.18" y1="48" x2="57.18" y2="346"/>
+    <text class="tk ctr" x="57.18" y="362">0</text>
+    <line class="gl" x1="120.16" y1="48" x2="120.16" y2="346"/>
+    <text class="tk ctr" x="120.16" y="362">0.5</text>
+    <line class="gl" x1="183.14" y1="48" x2="183.14" y2="346"/>
+    <text class="tk ctr" x="183.14" y="362">1.0</text>
+    <line class="gl" x1="246.12" y1="48" x2="246.12" y2="346"/>
+    <text class="tk ctr" x="246.12" y="362">1.5</text>
+    <line class="gl" x1="309.1" y1="48" x2="309.1" y2="346"/>
+    <text class="tk ctr" x="309.1" y="362">2.0</text>
+    <line class="gl" x1="372.08" y1="48" x2="372.08" y2="346"/>
+    <text class="tk ctr" x="372.08" y="362">2.5</text>
+    <line class="gl" x1="435.06" y1="48" x2="435.06" y2="346"/>
+    <text class="tk ctr" x="435.06" y="362">3.0</text>
+    <line class="gl" x1="498.04" y1="48" x2="498.04" y2="346"/>
+    <text class="tk ctr" x="498.04" y="362">3.5</text>
+    <line class="gl" x1="561.02" y1="48" x2="561.02" y2="346"/>
+    <text class="tk ctr" x="561.02" y="362">4.0</text>
+    <line class="gl" x1="624" y1="48" x2="624" y2="346"/>
+    <text class="tk ctr" x="624" y="362">4.5</text>
+    <line class="ax" x1="57.18" y1="346" x2="624" y2="346"/>
+    <line class="ax" x1="57.18" y1="48" x2="57.18" y2="346"/>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Merchants, Chargeback rate: 0.5, Fraud rate: 0.1, Size: 1200">
+            <title>Merchants, Chargeback rate: 0.5, Fraud rate: 0.1, Size: 1200</title>
+            <circle class="hit" cx="120.16" cy="334.08" r="12.37"/>
+            <circle class="bub" cx="120.16" cy="334.08" r="8.37"/>
+            <g class="tt">
+                <rect class="tb" x="57.18" y="237.71" width="131.6" height="78" rx="6"/>
+                <rect class="tsw s0" x="67.18" y="246.71" width="9" height="9" rx="2"/>
+                <text class="tx b" x="81.18" y="255.71">Merchants</text>
+                <text class="tx" x="67.18" y="272.71">Chargeback rate: 0.5</text>
+                <text class="tx" x="67.18" y="289.71">Fraud rate: 0.1</text>
+                <text class="tx" x="67.18" y="306.71">Size: 1200</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Merchants, Chargeback rate: 1.2, Fraud rate: 0.4, Size: 5400">
+            <title>Merchants, Chargeback rate: 1.2, Fraud rate: 0.4, Size: 5400</title>
+            <circle class="hit" cx="208.33" cy="298.32" r="18.4"/>
+            <circle class="bub" cx="208.33" cy="298.32" r="14.4"/>
+            <g class="tt">
+                <rect class="tb" x="142.53" y="195.92" width="131.6" height="78" rx="6"/>
+                <rect class="tsw s0" x="152.53" y="204.92" width="9" height="9" rx="2"/>
+                <text class="tx b" x="166.53" y="213.92">Merchants</text>
+                <text class="tx" x="152.53" y="230.92">Chargeback rate: 1.2</text>
+                <text class="tx" x="152.53" y="247.92">Fraud rate: 0.4</text>
+                <text class="tx" x="152.53" y="264.92">Size: 5400</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Merchants, Chargeback rate: 2.5, Fraud rate: 0.9, Size: 800">
+            <title>Merchants, Chargeback rate: 2.5, Fraud rate: 0.9, Size: 800</title>
+            <circle class="hit" cx="372.08" cy="238.72" r="11.39"/>
+            <circle class="bub" cx="372.08" cy="238.72" r="7.39"/>
+            <g class="tt">
+                <rect class="tb" x="306.28" y="143.33" width="131.6" height="78" rx="6"/>
+                <rect class="tsw s0" x="316.28" y="152.33" width="9" height="9" rx="2"/>
+                <text class="tx b" x="330.28" y="161.33">Merchants</text>
+                <text class="tx" x="316.28" y="178.33">Chargeback rate: 2.5</text>
+                <text class="tx" x="316.28" y="195.33">Fraud rate: 0.9</text>
+                <text class="tx" x="316.28" y="212.33">Size: 800</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Merchants, Chargeback rate: 3.1, Fraud rate: 1.6, Size: 15000">
+            <title>Merchants, Chargeback rate: 3.1, Fraud rate: 1.6, Size: 15000</title>
+            <circle class="hit" cx="447.66" cy="155.28" r="26"/>
+            <circle class="bub" cx="447.66" cy="155.28" r="22"/>
+            <g class="tt">
+                <rect class="tb" x="381.86" y="48" width="131.6" height="78" rx="6"/>
+                <rect class="tsw s0" x="391.86" y="57" width="9" height="9" rx="2"/>
+                <text class="tx b" x="405.86" y="66">Merchants</text>
+                <text class="tx" x="391.86" y="83">Chargeback rate: 3.1</text>
+                <text class="tx" x="391.86" y="100">Fraud rate: 1.6</text>
+                <text class="tx" x="391.86" y="117">Size: 15000</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Merchants, Chargeback rate: 4.4, Fraud rate: 2.4, Size: 2200">
+            <title>Merchants, Chargeback rate: 4.4, Fraud rate: 2.4, Size: 2200</title>
+            <circle class="hit" cx="611.4" cy="59.92" r="14.28"/>
+            <circle class="bub" cx="611.4" cy="59.92" r="10.28"/>
+            <g class="tt">
+                <rect class="tb" x="492.4" y="59.64" width="131.6" height="78" rx="6"/>
+                <rect class="tsw s0" x="502.4" y="68.64" width="9" height="9" rx="2"/>
+                <text class="tx b" x="516.4" y="77.64">Merchants</text>
+                <text class="tx" x="502.4" y="94.64">Chargeback rate: 4.4</text>
+                <text class="tx" x="502.4" y="111.64">Fraud rate: 2.4</text>
+                <text class="tx" x="502.4" y="128.64">Size: 2200</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="Merchants, Chargeback rate: 0.8, Fraud rate: 0.3, Size: 300">
+            <title>Merchants, Chargeback rate: 0.8, Fraud rate: 0.3, Size: 300</title>
+            <circle class="hit" cx="157.95" cy="310.24" r="9.69"/>
+            <circle class="bub" cx="157.95" cy="310.24" r="5.69"/>
+            <g class="tt">
+                <rect class="tb" x="92.15" y="216.55" width="131.6" height="78" rx="6"/>
+                <rect class="tsw s0" x="102.15" y="225.55" width="9" height="9" rx="2"/>
+                <text class="tx b" x="116.15" y="234.55">Merchants</text>
+                <text class="tx" x="102.15" y="251.55">Chargeback rate: 0.8</text>
+                <text class="tx" x="102.15" y="268.55">Fraud rate: 0.3</text>
+                <text class="tx" x="102.15" y="285.55">Size: 300</text>
+            </g>
+        </g>
+    </g>
+    <text class="at ctr" x="340.59" y="380">Chargeback rate</text>
+    <text class="at ctr" x="0" y="0" transform="translate(24 197) rotate(-90)">Fraud rate</text>
+</svg>

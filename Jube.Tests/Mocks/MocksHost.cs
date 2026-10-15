@@ -39,8 +39,10 @@ namespace Jube.Test.Mocks
         private MocksHost(WebApplication app)
         {
             this.app = app;
+
             baseAddress = new Uri(app.Services.GetRequiredService<IServer>().Features
                 .Get<IServerAddressesFeature>().Required().Addresses.Single());
+
             client = new HttpClient { BaseAddress = baseAddress };
         }
 
@@ -61,6 +63,7 @@ namespace Jube.Test.Mocks
             var app = builder.Build();
             map(app);
             await app.StartAsync();
+
             return new MocksHost(app);
         }
 
@@ -72,9 +75,11 @@ namespace Jube.Test.Mocks
             }
 
             using var message = new HttpRequestMessage(new HttpMethod(request.Method), request.Path);
+
             if (request.Body != null)
             {
                 message.Content = new ByteArrayContent(Encoding.UTF8.GetBytes(request.Body));
+
                 if (request.ContentType != null)
                 {
                     message.Content.Headers.TryAddWithoutValidation("Content-Type", request.ContentType);
@@ -92,14 +97,17 @@ namespace Jube.Test.Mocks
 
             using var response = await client.SendAsync(message);
             var body = await response.Content.ReadAsStringAsync();
+
             var headers = response.Headers.Select(h => (h.Key, string.Join("|", h.Value)))
                 .Concat(response.Content.Headers.Select(h => (h.Key, string.Join("|", h.Value))))
                 .Where(h => h.Key is not ("Date" or "Server"))
                 .OrderBy(h => h.Key, StringComparer.Ordinal)
                 .Select(h => $"{h.Key}: {h.Item2}");
+
             var contentType = response.Content.Headers.TryGetValues("Content-Type", out var values)
                 ? values.Single()
                 : null;
+
             return Normalise(new MockResponse((int)response.StatusCode, contentType, body,
                 string.Join("\n", headers)));
         }
@@ -112,6 +120,7 @@ namespace Jube.Test.Mocks
             var body = Encoding.UTF8.GetBytes(request.Body ?? string.Empty);
             var head = new StringBuilder();
             head.Append($"{request.Method} {request.Path} HTTP/1.1\r\nHost: {baseAddress.Authority}\r\n");
+
             foreach (var key in request.ClientKeys.Required())
             {
                 head.Append($"client-key: {key}\r\n");
@@ -134,14 +143,17 @@ namespace Jube.Test.Mocks
             var status = int.Parse(lines[0].Split(' ')[1]);
             var headerPairs = lines.Skip(1).Select(l => l.Split(": ", 2)).ToList();
             var rest = text[(split + 4)..];
+
             if (headerPairs.Any(h => h[0].Equals("Transfer-Encoding", StringComparison.OrdinalIgnoreCase)))
             {
                 var decoded = new StringBuilder();
                 var position = 0;
+
                 while (true)
                 {
                     var eol = rest.IndexOf("\r\n", position, StringComparison.Ordinal);
                     var size = Convert.ToInt32(rest[position..eol], 16);
+
                     if (size == 0)
                     {
                         break;
@@ -156,8 +168,10 @@ namespace Jube.Test.Mocks
 
             var contentType = headerPairs.FirstOrDefault(h =>
                 h[0].Equals("Content-Type", StringComparison.OrdinalIgnoreCase))?[1];
+
             var headers = headerPairs.Where(h => h[0] is not ("Date" or "Server"))
                 .Select(h => $"{Canonical(h[0])}: {h[1]}").OrderBy(h => h, StringComparer.Ordinal);
+
             return Normalise(new MockResponse(status, contentType, rest, string.Join("\n", headers)));
         }
 

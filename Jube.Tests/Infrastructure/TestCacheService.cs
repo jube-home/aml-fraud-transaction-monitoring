@@ -34,6 +34,7 @@ namespace Jube.Test.Infrastructure
             var cacheService = (CacheService)RuntimeHelpers.GetUninitializedObject(typeof(CacheService));
 
             cacheService.ResilientRedisResilientRedisDatabase = redis;
+
             cacheService.CacheActivationCaseIdempotencyRepository =
                 new CacheActivationCaseIdempotencyRepository(redis, log);
             cacheService.CacheActivationNotificationIdempotencyRepository =
@@ -46,9 +47,12 @@ namespace Jube.Test.Infrastructure
                 new CacheActivationWatcherPublishSubscribe(redis, log);
             cacheService.CacheSanctionRepository = new CacheSanctionRepository(redis, log);
             cacheService.CacheReferenceDateRepository = new CacheReferenceDateRepository(redis, log);
+
             cacheService.CachePayloadLatestRepository =
                 new CachePayloadLatestRepository(postgresConnectionString, redis, log);
+
             cacheService.CacheWalRepository = new CacheWalRepository(redis, log);
+
             cacheService.CachePayloadRepository = new CachePayloadRepository(inertMultiplexer, redis,
                 postgresConnectionString, log, false, true, 10_000_000,
                 false, false, false,

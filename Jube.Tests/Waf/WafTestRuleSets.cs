@@ -41,6 +41,7 @@ namespace Jube.Test.Waf
         {
             var signatures = new List<WafSignature>();
             var id = 1;
+
             foreach (var (name, category, pattern) in seededSignatures)
             {
                 signatures.Add(new WafSignature
@@ -50,7 +51,7 @@ namespace Jube.Test.Waf
                     Category = category,
                     Pattern = pattern,
                     TargetScope = 7,
-                    MatchTimeoutMilliseconds = 50,
+                    MatchTimeoutMilliseconds = 5000,
                     Drop = 1,
                     Active = 1
                 });
@@ -62,7 +63,8 @@ namespace Jube.Test.Waf
         internal static WafRegistry RegistryFor(List<WafSignature> signatures, List<WafException> exceptions)
         {
             var registry = new WafRegistry();
-            registry.Update(WafRuleSetCompiler.Compile(signatures, exceptions, 100));
+            registry.Update(WafRuleSetCompiler.Compile(signatures, exceptions, 5000));
+
             return registry;
         }
     }

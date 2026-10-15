@@ -72,6 +72,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("OverlayNetworkTaskDrift", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

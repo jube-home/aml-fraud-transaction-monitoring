@@ -18,12 +18,14 @@ namespace Jube.Dictionary.Extensions
         public static bool IsValidDomainName(this string? @this)
         {
             var value = (@this ?? "").Trim().TrimEnd('.');
+
             if (value.Length is 0 or > 253)
             {
                 return false;
             }
 
             var labels = value.Split('.');
+
             if (labels.Length < 2 || labels[^1].All(char.IsAsciiDigit))
             {
                 return false;

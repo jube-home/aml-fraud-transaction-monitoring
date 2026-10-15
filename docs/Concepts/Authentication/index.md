@@ -5,9 +5,6 @@ nav_order: 2
 parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Authentication Concepts
 
 The Jube user interface sits atop of an API stage that can viewed by a Swagger interface as follows:
@@ -275,11 +272,9 @@ order by "CreatedDate" desc
 message or a token-validation exception message. Username/Password and Negotiate failures already have a small fixed
 `FailureTypeId` vocabulary that needs no free text, so `FailureMessage` is left null for those.
 
-Previously, only successful OAuth sign-ins were ever recorded here -- every OAuth failure path returned without writing
-a `UserLogin` row at all, despite this page's claim otherwise. That gap is now closed: every OAuth failure branch (no
-usable claim, no matching/active User Registry, a database error, a remote/IdP failure, a local token-validation
-failure, or any other unexpected exception) now records a `UserLogin` row with `Failed = 1` and an appropriate
-`FailureTypeId`, exactly as Username/Password and Negotiate already did.
+Every OAuth failure branch (no usable claim, no matching/active User Registry, a database error, a remote/IdP failure,
+a local token-validation failure, or any other unexpected exception) records a `UserLogin` row with `Failed = 1` and an
+appropriate `FailureTypeId`, exactly as Username/Password and Negotiate do.
 
 ## Logout and the Logout Audit Trail
 

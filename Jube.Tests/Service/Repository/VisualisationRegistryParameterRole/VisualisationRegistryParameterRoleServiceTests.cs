@@ -24,6 +24,7 @@ using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.Repository.VisualisationRegistryParameterRole;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
@@ -33,7 +34,8 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using VisualisationRegistryParameterRoleService = Jube.Service.Repository.VisualisationRegistryParameterRole.VisualisationRegistryParameterRoleService;
+using VisualisationRegistryParameterRoleService =
+    Jube.Service.Repository.VisualisationRegistryParameterRole.VisualisationRegistryParameterRoleService;
 
 namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
 {
@@ -63,6 +65,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
 
             await dbContext.GetTable<Data.Poco.VisualisationRegistryParameterRole>()
                 .Where(w => parameterGuids.Contains(w.VisualisationRegistryParameterGuid)).DeleteAsync();
+
             await dbContext.VisualisationRegistryParameter
                 .Where(w => createdVisualisationRegistryParameterIds.Contains(w.Id)).DeleteAsync();
             await dbContext.VisualisationRegistry
@@ -71,9 +74,11 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
                 .Where(w => createdUserNames.Contains(w.User)).DeleteAsync();
             await dbContext.UserRegistry
                 .Where(w => createdUserNames.Contains(w.Name)).DeleteAsync();
+
             await dbContext.RoleRegistryPermission
                 .Where(w => w.RoleRegistryId != null && createdRoleRegistryIds.Contains(w.RoleRegistryId.Value))
                 .DeleteAsync();
+
             await dbContext.RoleRegistry
                 .Where(w => createdRoleRegistryIds.Contains(w.Id)).DeleteAsync();
         }
@@ -94,6 +99,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             var suffix = Guid.NewGuid().ToString("N")[..8];
             var roleGuid = Guid.NewGuid();
+
             var roleId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
             {
                 Guid = roleGuid,
@@ -125,6 +131,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             }
 
             var userName = $"{DatabaseFixture.Prefix}User{label}{suffix}";
+
             await dbContext.InsertAsync(new Data.Poco.UserRegistry
             {
                 Guid = Guid.NewGuid(),
@@ -139,8 +146,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
                 CreatedDate = DateTime.UtcNow,
                 CreatedUser = DatabaseFixture.Prefix,
             }).ConfigureAwait(false);
+
             await dbContext.InsertAsync(new Data.Poco.UserInTenant
                 { User = userName, TenantRegistryId = tenantRegistryId }).ConfigureAwait(false);
+
             createdUserNames.Add(userName);
 
             return (userName, roleGuid);
@@ -151,6 +160,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             int tenantRegistryId, string createdUser)
         {
             var suffix = Guid.NewGuid().ToString("N")[..8];
+
             var visualisationRegistryId = await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.VisualisationRegistry
                 {
@@ -167,6 +177,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             createdVisualisationRegistryIds.Add(visualisationRegistryId);
 
             var parameterGuid = Guid.NewGuid();
+
             var visualisationRegistryParameterId = await dbContext.InsertWithInt32IdentityAsync(
                 new Data.Poco.VisualisationRegistryParameter
                 {
@@ -220,10 +231,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (_, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId, [],
                 "NoAdminSpec");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.InsertAsync(
@@ -251,10 +265,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var saved = await service.InsertAsync(new VisualisationRegistryParameterRoleDto
@@ -273,8 +290,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var act = () => service.InsertAsync(new VisualisationRegistryParameterRoleDto
@@ -291,8 +310,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var act = () => service.InsertAsync(new VisualisationRegistryParameterRoleDto
@@ -310,10 +331,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryIdA = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
             var tenantRegistryIdB = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserTenantB);
+
             var (userNameA, roleRegistryGuidA) = await CreateUserWithSpecAsync(dbContext, tenantRegistryIdA,
                 [VisualisationRegistryParameterAdministrationSpec], "AdminA");
+
             var (_, _, parameterGuidB) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryIdB,
                 fx.Seed.UserTenantB);
+
             var service = await BuildServiceAsync(dbContext, userNameA);
 
             var act = () => service.InsertAsync(new VisualisationRegistryParameterRoleDto
@@ -330,10 +354,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, _) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var act = () => service.InsertAsync(new VisualisationRegistryParameterRoleDto
@@ -351,11 +378,15 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryIdA = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
             var tenantRegistryIdB = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserTenantB);
+
             var (userNameA, _) = await CreateUserWithSpecAsync(dbContext, tenantRegistryIdA,
                 [VisualisationRegistryParameterAdministrationSpec], "AdminA");
+
             var (_, roleRegistryGuidB) = await CreateUserWithSpecAsync(dbContext, tenantRegistryIdB, [], "OtherB");
+
             var (_, _, parameterGuidA) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryIdA,
                 userNameA);
+
             var service = await BuildServiceAsync(dbContext, userNameA);
 
             var act = () => service.InsertAsync(new VisualisationRegistryParameterRoleDto
@@ -372,13 +403,16 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
 
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, userName, serviceChangeBus: bus);
+
             var saved = await service.InsertAsync(new VisualisationRegistryParameterRoleDto
             {
                 VisualisationRegistryParameterGuid = parameterGuid,
@@ -396,6 +430,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, _) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
 
@@ -417,11 +452,15 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
+
             var service = await BuildServiceAsync(dbContext, userName);
+
             await service.InsertAsync(new VisualisationRegistryParameterRoleDto
             {
                 VisualisationRegistryParameterGuid = parameterGuid,
@@ -451,13 +490,18 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryIdA = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
             var tenantRegistryIdB = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserTenantB);
+
             var (userNameA, _) = await CreateUserWithSpecAsync(dbContext, tenantRegistryIdA,
                 [VisualisationRegistryParameterAdministrationSpec], "AdminA");
+
             var (userNameB, roleRegistryGuidB) = await CreateUserWithSpecAsync(dbContext, tenantRegistryIdB,
                 [VisualisationRegistryParameterAdministrationSpec], "AdminB");
+
             var (_, _, parameterGuidB) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryIdB,
                 userNameB);
+
             var serviceB = await BuildServiceAsync(dbContext, userNameB);
+
             await serviceB.InsertAsync(new VisualisationRegistryParameterRoleDto
             {
                 VisualisationRegistryParameterGuid = parameterGuidB,
@@ -475,16 +519,21 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
+
             var service = await BuildServiceAsync(dbContext, userName);
+
             var saved = await service.InsertAsync(new VisualisationRegistryParameterRoleDto
             {
                 VisualisationRegistryParameterGuid = parameterGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             await service.DeleteAsync(saved.Id);
 
             var grants = await service.GetByVisualisationRegistryParameterGuidAsync(parameterGuid);
@@ -497,12 +546,16 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
+
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, userName, serviceChangeBus: bus);
+
             var saved = await service.InsertAsync(new VisualisationRegistryParameterRoleDto
             {
                 VisualisationRegistryParameterGuid = parameterGuid,
@@ -525,8 +578,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, _) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             await Assert.ThrowsAsync<KeyNotFoundException>(() => service.DeleteAsync(int.MaxValue));
@@ -538,13 +593,18 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryIdA = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
             var tenantRegistryIdB = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserTenantB);
+
             var (userNameA, _) = await CreateUserWithSpecAsync(dbContext, tenantRegistryIdA,
                 [VisualisationRegistryParameterAdministrationSpec], "AdminA");
+
             var (userNameB, roleRegistryGuidB) = await CreateUserWithSpecAsync(dbContext, tenantRegistryIdB,
                 [VisualisationRegistryParameterAdministrationSpec], "AdminB");
+
             var (_, _, parameterGuidB) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryIdB,
                 userNameB);
+
             var serviceB = await BuildServiceAsync(dbContext, userNameB);
+
             var savedB = await serviceB.InsertAsync(new VisualisationRegistryParameterRoleDto
             {
                 VisualisationRegistryParameterGuid = parameterGuidB,
@@ -560,8 +620,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, _) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, userName, serviceChangeBus: bus);
 
@@ -595,6 +657,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
                 VisualisationRegistryParameterGuid = Guid.NewGuid(),
                 RoleRegistryGuid = Guid.NewGuid(),
             });
+
             await act.Should().ThrowAsync<ForbiddenException>();
 
             capturingLog.Entries.Should().Contain(e => e.Level == "WARN");
@@ -606,13 +669,16 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
 
             var capturingAuditLog = new TestLog();
             var service = await BuildServiceAsync(dbContext, userName, auditLog: capturingAuditLog);
+
             await service.InsertAsync(new VisualisationRegistryParameterRoleDto
             {
                 VisualisationRegistryParameterGuid = parameterGuid,
@@ -627,6 +693,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
 
@@ -639,6 +706,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         public void CatalogueListsUniqueVisualisationRegistryParameterRoleToolNames()
         {
             var tools = ServiceToolCatalogue.All;
+
             var names = tools.Where(t => t.Name.StartsWith("VisualisationRegistryParameterRole"))
                 .Select(t => t.Name).ToList();
 
@@ -647,6 +715,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
                 "VisualisationRegistryParameterRoleCreate",
                 "VisualisationRegistryParameterRoleDelete",
             ]);
+
             names.Should().OnlyHaveUniqueItems();
         }
 
@@ -655,10 +724,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var first = await service.InsertAsync(new VisualisationRegistryParameterRoleDto
@@ -673,6 +745,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             });
 
             second.Id.Should().Be(first.Id);
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryParameterRole>().CountAsync(w =>
                 w.VisualisationRegistryParameterGuid == parameterGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -683,10 +756,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var first = await service.InsertAsync(new VisualisationRegistryParameterRoleDto
@@ -694,7 +770,9 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
                 VisualisationRegistryParameterGuid = parameterGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             await service.DeleteAsync(first.Id);
+
             var again = await service.InsertAsync(new VisualisationRegistryParameterRoleDto
             {
                 VisualisationRegistryParameterGuid = parameterGuid,
@@ -702,6 +780,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             });
 
             again.Id.Should().NotBe(first.Id, "a soft-deleted grant must not block granting again");
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryParameterRole>().CountAsync(w =>
                 w.VisualisationRegistryParameterGuid == parameterGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -712,10 +791,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             await service.InsertAsync(new VisualisationRegistryParameterRoleDto
@@ -723,11 +805,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
                 VisualisationRegistryParameterGuid = parameterGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             var repeated = await service.InsertAsync(new VisualisationRegistryParameterRoleDto
             {
                 VisualisationRegistryParameterGuid = parameterGuid,
                 RoleRegistryGuid = roleRegistryGuid,
             });
+
             await service.DeleteAsync(repeated.Id);
 
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryParameterRole>().CountAsync(w =>
@@ -741,10 +825,13 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
+
             var service = await BuildServiceAsync(dbContext, userName);
 
             var (_, _, parameterGuidTwo) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
@@ -762,6 +849,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             });
 
             two.Id.Should().NotBe(one.Id);
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryParameterRole>().CountAsync(w =>
                 w.VisualisationRegistryParameterGuid == parameterGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);
@@ -775,16 +863,20 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
         {
             await using var dbContext = fx.GetDbContext();
             var tenantRegistryId = await GetTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+
             var (userName, roleRegistryGuid) = await CreateUserWithSpecAsync(dbContext, tenantRegistryId,
                 [VisualisationRegistryParameterAdministrationSpec], "Admin");
+
             var (_, _, parameterGuid) = await CreateVisualisationRegistryParameterAsync(dbContext, tenantRegistryId,
                 userName);
 
             var ids = new ConcurrentBag<int>();
+
             await Task.WhenAll(Enumerable.Range(0, 8).Select(async _ =>
             {
                 await using var raceContext = fx.GetDbContext();
                 var raceService = await BuildServiceAsync(raceContext, userName);
+
                 var saved = await raceService.InsertAsync(new VisualisationRegistryParameterRoleDto
                 {
                     VisualisationRegistryParameterGuid = parameterGuid,
@@ -794,6 +886,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameterRole
             }));
 
             ids.Distinct().Should().ContainSingle("every racing grant must resolve to the one live row");
+
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryParameterRole>().CountAsync(w =>
                 w.VisualisationRegistryParameterGuid == parameterGuid
                 && w.RoleRegistryGuid == roleRegistryGuid && (w.Deleted == 0 || w.Deleted == null))).Should().Be(1);

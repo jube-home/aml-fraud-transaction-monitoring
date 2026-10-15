@@ -1,65 +1,74 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
 
 namespace Accord.Statistics.Distributions.Multivariate
 {
-    using System;
-    using Accord.Math;
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.Compat;
-
     /// <summary>
-    ///   Joint distribution assuming independence between vector components.
+    ///     Joint distribution assuming independence between vector components.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   In probability and statistics, given at least two random variables <c>X</c>, 
-    ///   <c>Y</c>, ..., that are defined on a probability space, the joint probability 
-    ///   distribution for <c>X</c>, <c>Y</c>, ... is a probability distribution that 
-    ///   gives the probability that each of X, Y, ... falls in any particular range or
-    ///   discrete set of values specified for that variable. In the case of only two 
-    ///   random variables, this is called a bivariate distribution, but the concept 
-    ///   generalizes to any number of random variables, giving a multivariate distribution.
-    /// </para>
-    /// 
-    /// <para>
-    ///   This class is also available in a generic version, allowing for any
-    ///   choice of component distribution (<see cref="Independent{TDistribution}"/>.
-    /// </para>
-    /// 
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Joint_probability_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Beta distribution. 
-    ///       Available from: http://en.wikipedia.org/wiki/Joint_probability_distribution </a></description></item>
-    ///   </list></para>
+    ///     <para>
+    ///         In probability and statistics, given at least two random variables <c>X</c>,
+    ///         <c>Y</c>, ..., that are defined on a probability space, the joint probability
+    ///         distribution for <c>X</c>, <c>Y</c>, ... is a probability distribution that
+    ///         gives the probability that each of X, Y, ... falls in any particular range or
+    ///         discrete set of values specified for that variable. In the case of only two
+    ///         random variables, this is called a bivariate distribution, but the concept
+    ///         generalizes to any number of random variables, giving a multivariate distribution.
+    ///     </para>
+    ///     <para>
+    ///         This class is also available in a generic version, allowing for any
+    ///         choice of component distribution (<see cref="Independent{TDistribution}" />.
+    ///     </para>
+    ///     <para>
+    ///         References:
+    ///         <list type="bullet">
+    ///             <item>
+    ///                 <description>
+    ///                     <a href="http://en.wikipedia.org/wiki/Joint_probability_distribution">
+    ///                         Wikipedia, The Free Encyclopedia. Beta distribution.
+    ///                         Available from: http://en.wikipedia.org/wiki/Joint_probability_distribution
+    ///                     </a>
+    ///                 </description>
+    ///             </item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
-    /// 
     /// <para>
-    ///   The following example shows how to declare and initialize an Independent Joint
-    ///   Gaussian Distribution using known means and variances for each component.</para>
-    ///   
+    ///     The following example shows how to declare and initialize an Independent Joint
+    ///     Gaussian Distribution using known means and variances for each component.
+    /// </para>
     /// <code>
     ///   // Declare two normal distributions
     ///   NormalDistribution pa = new NormalDistribution(4.2, 1); // p(a)
@@ -81,39 +90,34 @@ namespace Accord.Statistics.Distributions.Multivariate
     ///   
     ///   bool equal = p1 == p2; // at this point, equal should be true.
     /// </code>
-    /// 
-    /// <seealso cref="Independent{TDistribution}"/>
-    /// 
+    /// <seealso cref="Independent{TDistribution}" />
     [Serializable]
     public class Independent : Independent<IUnivariateDistribution>
     {
-
         /// <summary>
-        ///   Initializes a new instance of the <see cref="Independent&lt;TDistribution&gt;"/> class.
+        ///     Initializes a new instance of the <see cref="Independent&lt;TDistribution&gt;" /> class.
         /// </summary>
-        /// 
         /// <param name="components">The components.</param>
-        /// 
         public Independent(params IUnivariateDistribution[] components)
-            : base(components) { }
-
+            : base(components)
+        {
+        }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public override object Clone()
         {
             var clone = new IUnivariateDistribution[Components.Length];
-            for (int i = 0; i < clone.Length; i++)
+            for (var i = 0; i < clone.Length; i++)
+            {
                 clone[i] = (IUnivariateDistribution)Components[i].Clone();
+            }
 
             return new Independent(clone);
         }
-
     }
 }

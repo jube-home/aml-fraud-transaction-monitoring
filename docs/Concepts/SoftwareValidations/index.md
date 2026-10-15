@@ -5,9 +5,6 @@ nav_order: 10
 parent: Concepts
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Native .NET MVC Pipeline
 
 Jube is substantially a .NET ASP.NET application and uses the native MVC pipeline. It follows that certain injection
@@ -134,7 +131,7 @@ Noting the Assert Select Only Parser.
 The rules engine operates by the compilation of .NET code dynamically, on model synchronisation. It stands to reason
 that this would be a significant attack vector. The validation is more comprehensively explained in the Rule Parser
 section of
-the [Rule Compilation Algorithm](/aml-fraud-transaction-monitoring/Configuration/Models/RuleCompilationAlgorithm/), but
+the [Rule Compilation Algorithm](../../Configuration/Models/RuleCompilationAlgorithm/index.html), but
 it suffices to say that .NET code is filtered on a token basis for allowed tokens only.
 
 In addition to the token allow-list, the parser rejects rule text that nests expressions beyond a fixed depth
@@ -374,7 +371,7 @@ memory stays bounded because the work streams rather than materialises. Each nee
 to mean anything, and none is a statement about speed.
 
 A throughput floor measured on whatever hardware the gate lands on cannot distinguish a regression from a busy
-neighbour. A floor of 2,000 records a second previously failed a reprocessing test that recorded 741 on four cores,
+neighbour. A floor of 2,000 records a second once failed a reprocessing test that recorded 741 on four cores,
 while the same run's own stage breakdown showed sanctions screening consuming 34.5 ms of each of 4,914 re-invocations:
 the floor was measuring sanctions latency, not reprocessing. Performance testing is worth doing, but it belongs in its
 own suite on hardware of known capacity, where a number can be compared with the same number from yesterday.

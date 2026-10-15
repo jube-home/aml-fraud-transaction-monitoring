@@ -12,6 +12,7 @@
  */
 
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Reactivity.Models;
 
 namespace Jube.Service.Reactivity
 {
@@ -22,7 +23,6 @@ namespace Jube.Service.Reactivity
     public sealed class NullServiceChangeBus : IServiceChangeBus
     {
         public Task PublishAsync(ServiceChangeEvent change, CancellationToken token = default) => Task.CompletedTask;
-
         public IDisposable Subscribe(Func<ServiceChangeEvent, Task> handler) => NullSubscription.Instance;
 
         private sealed class NullSubscription : IDisposable

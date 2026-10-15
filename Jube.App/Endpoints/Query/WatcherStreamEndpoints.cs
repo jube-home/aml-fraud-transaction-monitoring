@@ -47,12 +47,14 @@ namespace Jube.App.Endpoints.Query
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"GET {Base}/Stream: entry user={user}");
             }
 
             int tenantRegistryId;
+
             try
             {
                 await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -71,6 +73,7 @@ namespace Jube.App.Endpoints.Query
                 }
 
                 httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+
                 return;
             }
             catch (ForbiddenException)
@@ -81,12 +84,14 @@ namespace Jube.App.Endpoints.Query
                 }
 
                 httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+
                 return;
             }
 
             var issuedMilliseconds = httpContext.User.FindFirst(TokenValidity.IssuedMillisecondsClaim)?.Value;
             var connectionId = Guid.NewGuid().ToString("N");
             using var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+
             var channel = registry.Track(connectionId, user, issuedMilliseconds, tenantRegistryId,
                 cancellationTokenSource);
 
@@ -110,8 +115,10 @@ namespace Jube.App.Endpoints.Query
                 while (!cancellationTokenSource.IsCancellationRequested)
                 {
                     var readTask = channel.Reader.WaitToReadAsync(cancellationTokenSource.Token).AsTask();
+
                     var heartbeatTask = Task.Delay(TimeSpan.FromSeconds(heartbeatIntervalSeconds),
                         cancellationTokenSource.Token);
+
                     var completed = await Task.WhenAny(readTask, heartbeatTask);
 
                     if (completed == heartbeatTask)
@@ -130,6 +137,7 @@ namespace Jube.App.Endpoints.Query
                     {
                         await httpContext.Response.WriteAsync($"event: activation\ndata: {payload}\n\n",
                             cancellationTokenSource.Token);
+
                         await httpContext.Response.Body.FlushAsync(cancellationTokenSource.Token);
                     }
                 }

@@ -1,0 +1,332 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-sankey" viewBox="0 0 720 420" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-2a54befd-t jc-2a54befd-d">
+    <title id="jc-2a54befd-t">Alert disposition</title>
+    <desc id="jc-2a54befd-d">Sankey chart with 11 nodes and 13 links, total flow 1280.</desc>
+    <rect class="bg" x="0" y="0" width="720" height="420" rx="8"/>
+    <text class="ttl" x="16" y="32">Alert disposition</text>
+    <text class="sub" x="16" y="50">Alerts flowing from source to outcome</text>
+    <text class="sk mid" x="40" y="157.81">Card</text>
+    <text class="sk mid" x="207.5" y="187.06">Rules</text>
+    <text class="sk mid" x="40" y="346.25">Transfer</text>
+    <text class="sk mid" x="40" y="264.06">Cash</text>
+    <text class="sk mid" x="207.5" y="351.06">Model</text>
+    <text class="sk mid" x="375" y="201.28">Reviewed</text>
+    <text class="sk end mid" x="684" y="287.75">Auto closed</text>
+    <text class="sk end mid" x="516.5" y="373.02">Escalated</text>
+    <text class="sk end mid" x="684" y="149.02">Cleared</text>
+    <text class="sk end mid" x="684" y="357.91">SAR filed</text>
+    <text class="sk end mid" x="684" y="393.17">No action</text>
+    <g class="mk s0 lk l0 k0 k5 k6 k9 k10 k11 k12 m0 m1 m5 m6 m7 m8 m9 m10" tabindex="0" role="graphics-symbol"
+       aria-label="Card to Rules, Flow: 420, 61.8% of Card outflow, 50% of Rules inflow">
+        <title>Card to Rules, Flow: 420, 61.8% of Card outflow, 50% of Rules inflow</title>
+        <path class="lkp" d="M34 76C110.75 76 110.75 86 187.5 86L187.5 187.06C110.75 187.06 110.75 177.06 34 177.06Z"/>
+        <g class="tt">
+            <rect class="tb" x="118.75" y="92.53" width="140.6" height="78" rx="6"/>
+            <rect class="tsw s0" x="128.75" y="101.53" width="9" height="9" rx="2"/>
+            <text class="tx b" x="142.75" y="110.53">Card to Rules</text>
+            <text class="tx" x="128.75" y="127.53">Flow: 420</text>
+            <text class="tx" x="128.75" y="144.53">61.8% of Card outflow</text>
+            <text class="tx" x="128.75" y="161.53">50% of Rules inflow</text>
+        </g>
+    </g>
+    <g class="mk s2 lk l1 k1 k5 k6 k9 k10 k11 k12 m1 m2 m5 m6 m7 m8 m9 m10" tabindex="0" role="graphics-symbol"
+       aria-label="Transfer to Rules, Flow: 300, 62.5% of Transfer outflow, 35.7% of Rules inflow">
+        <title>Transfer to Rules, Flow: 300, 62.5% of Transfer outflow, 35.7% of Rules inflow</title>
+        <path class="lkp"
+              d="M34 288.5C110.75 288.5 110.75 215.94 187.5 215.94L187.5 288.13C110.75 288.13 110.75 360.69 34 360.69Z"/>
+        <g class="tt">
+            <rect class="tb" x="118.75" y="249.31" width="161.72" height="78" rx="6"/>
+            <rect class="tsw s2" x="128.75" y="258.31" width="9" height="9" rx="2"/>
+            <text class="tx b" x="142.75" y="267.31">Transfer to Rules</text>
+            <text class="tx" x="128.75" y="284.31">Flow: 300</text>
+            <text class="tx" x="128.75" y="301.31">62.5% of Transfer outflow</text>
+            <text class="tx" x="128.75" y="318.31">35.7% of Rules inflow</text>
+        </g>
+    </g>
+    <g class="mk s3 lk l2 k2 k5 k6 k9 k10 k11 k12 m1 m3 m5 m6 m7 m8 m9 m10" tabindex="0" role="graphics-symbol"
+       aria-label="Cash to Rules, Flow: 120, 100% of Cash outflow, 14.3% of Rules inflow">
+        <title>Cash to Rules, Flow: 120, 100% of Cash outflow, 14.3% of Rules inflow</title>
+        <path class="lkp"
+              d="M34 249.63C110.75 249.63 110.75 187.06 187.5 187.06L187.5 215.94C110.75 215.94 110.75 278.5 34 278.5Z"/>
+        <g class="tt">
+            <rect class="tb" x="118.75" y="193.78" width="139.88" height="78" rx="6"/>
+            <rect class="tsw s3" x="128.75" y="202.78" width="9" height="9" rx="2"/>
+            <text class="tx b" x="142.75" y="211.78">Cash to Rules</text>
+            <text class="tx" x="128.75" y="228.78">Flow: 120</text>
+            <text class="tx" x="128.75" y="245.78">100% of Cash outflow</text>
+            <text class="tx" x="128.75" y="262.78">14.3% of Rules inflow</text>
+        </g>
+    </g>
+    <g class="mk s0 lk l3 k3 k7 k8 k9 k10 k11 k12 m0 m4 m5 m6 m7 m8 m9 m10" tabindex="0" role="graphics-symbol"
+       aria-label="Card to Model, Flow: 260, 38.2% of Card outflow, 59.1% of Model inflow">
+        <title>Card to Model, Flow: 260, 38.2% of Card outflow, 59.1% of Model inflow</title>
+        <path class="lkp"
+              d="M34 177.06C110.75 177.06 110.75 298.13 187.5 298.13L187.5 360.69C110.75 360.69 110.75 239.62 34 239.62Z"/>
+        <g class="tt">
+            <rect class="tb" x="118.75" y="229.88" width="141.32" height="78" rx="6"/>
+            <rect class="tsw s0" x="128.75" y="238.88" width="9" height="9" rx="2"/>
+            <text class="tx b" x="142.75" y="247.88">Card to Model</text>
+            <text class="tx" x="128.75" y="264.88">Flow: 260</text>
+            <text class="tx" x="128.75" y="281.88">38.2% of Card outflow</text>
+            <text class="tx" x="128.75" y="298.88">59.1% of Model inflow</text>
+        </g>
+    </g>
+    <g class="mk s2 lk l4 k4 k7 k8 k9 k10 k11 k12 m2 m4 m5 m6 m7 m8 m9 m10" tabindex="0" role="graphics-symbol"
+       aria-label="Transfer to Model, Flow: 180, 37.5% of Transfer outflow, 40.9% of Model inflow">
+        <title>Transfer to Model, Flow: 180, 37.5% of Transfer outflow, 40.9% of Model inflow</title>
+        <path class="lkp"
+              d="M34 360.69C110.75 360.69 110.75 360.69 187.5 360.69L187.5 404C110.75 404 110.75 404 34 404Z"/>
+        <g class="tt">
+            <rect class="tb" x="118.75" y="326" width="161.72" height="78" rx="6"/>
+            <rect class="tsw s2" x="128.75" y="335" width="9" height="9" rx="2"/>
+            <text class="tx b" x="142.75" y="344">Transfer to Model</text>
+            <text class="tx" x="128.75" y="361">Flow: 180</text>
+            <text class="tx" x="128.75" y="378">37.5% of Transfer outflow</text>
+            <text class="tx" x="128.75" y="395">40.9% of Model inflow</text>
+        </g>
+    </g>
+    <g class="mk s1 lk l5 k0 k1 k2 k5 k9 k10 k11 k12 m0 m1 m2 m3 m5 m7 m8 m9 m10" tabindex="0" role="graphics-symbol"
+       aria-label="Rules to Reviewed, Flow: 600, 71.4% of Rules outflow, 66.7% of Reviewed inflow">
+        <title>Rules to Reviewed, Flow: 600, 71.4% of Rules outflow, 66.7% of Reviewed inflow</title>
+        <path class="lkp"
+              d="M201.5 86C278.25 86 278.25 93 355 93L355 237.38C278.25 237.38 278.25 230.38 201.5 230.38Z"/>
+        <g class="tt">
+            <rect class="tb" x="286.25" y="122.69" width="161.6" height="78" rx="6"/>
+            <rect class="tsw s1" x="296.25" y="131.69" width="9" height="9" rx="2"/>
+            <text class="tx b" x="310.25" y="140.69">Rules to Reviewed</text>
+            <text class="tx" x="296.25" y="157.69">Flow: 600</text>
+            <text class="tx" x="296.25" y="174.69">71.4% of Rules outflow</text>
+            <text class="tx" x="296.25" y="191.69">66.7% of Reviewed inflow</text>
+        </g>
+    </g>
+    <g class="mk s1 lk l6 k0 k1 k2 k6 m0 m1 m2 m3 m6" tabindex="0" role="graphics-symbol"
+       aria-label="Rules to Auto closed, Flow: 240, 28.6% of Rules outflow, 63.2% of Auto closed inflow">
+        <title>Rules to Auto closed, Flow: 240, 28.6% of Rules outflow, 63.2% of Auto closed inflow</title>
+        <path class="lkp"
+              d="M201.5 230.38C445.75 230.38 445.75 242.03 690 242.03L690 299.78C445.75 299.78 445.75 288.13 201.5 288.13Z"/>
+        <g class="tt">
+            <rect class="tb" x="453.75" y="226.08" width="172.04" height="78" rx="6"/>
+            <rect class="tsw s1" x="463.75" y="235.08" width="9" height="9" rx="2"/>
+            <text class="tx b" x="477.75" y="244.08">Rules to Auto closed</text>
+            <text class="tx" x="463.75" y="261.08">Flow: 240</text>
+            <text class="tx" x="463.75" y="278.08">28.6% of Rules outflow</text>
+            <text class="tx" x="463.75" y="295.08">63.2% of Auto closed inflow</text>
+        </g>
+    </g>
+    <g class="mk s4 lk l7 k3 k4 k7 k9 k10 k11 k12 m0 m2 m4 m5 m7 m8 m9 m10" tabindex="0" role="graphics-symbol"
+       aria-label="Model to Reviewed, Flow: 300, 68.2% of Model outflow, 33.3% of Reviewed inflow">
+        <title>Model to Reviewed, Flow: 300, 68.2% of Model outflow, 33.3% of Reviewed inflow</title>
+        <path class="lkp"
+              d="M201.5 298.13C278.25 298.13 278.25 237.38 355 237.38L355 309.56C278.25 309.56 278.25 370.31 201.5 370.31Z"/>
+        <g class="tt">
+            <rect class="tb" x="286.25" y="264.84" width="161.6" height="78" rx="6"/>
+            <rect class="tsw s4" x="296.25" y="273.84" width="9" height="9" rx="2"/>
+            <text class="tx b" x="310.25" y="282.84">Model to Reviewed</text>
+            <text class="tx" x="296.25" y="299.84">Flow: 300</text>
+            <text class="tx" x="296.25" y="316.84">68.2% of Model outflow</text>
+            <text class="tx" x="296.25" y="333.84">33.3% of Reviewed inflow</text>
+        </g>
+    </g>
+    <g class="mk s4 lk l8 k3 k4 k8 m0 m2 m4 m6" tabindex="0" role="graphics-symbol"
+       aria-label="Model to Auto closed, Flow: 140, 31.8% of Model outflow, 36.8% of Auto closed inflow">
+        <title>Model to Auto closed, Flow: 140, 31.8% of Model outflow, 36.8% of Auto closed inflow</title>
+        <path class="lkp"
+              d="M201.5 370.31C445.75 370.31 445.75 299.78 690 299.78L690 333.47C445.75 333.47 445.75 404 201.5 404Z"/>
+        <g class="tt">
+            <rect class="tb" x="453.75" y="312.89" width="172.04" height="78" rx="6"/>
+            <rect class="tsw s4" x="463.75" y="321.89" width="9" height="9" rx="2"/>
+            <text class="tx b" x="477.75" y="330.89">Model to Auto closed</text>
+            <text class="tx" x="463.75" y="347.89">Flow: 140</text>
+            <text class="tx" x="463.75" y="364.89">31.8% of Model outflow</text>
+            <text class="tx" x="463.75" y="381.89">36.8% of Auto closed inflow</text>
+        </g>
+    </g>
+    <g class="mk s5 lk l9 k0 k1 k2 k3 k4 k5 k7 k9 k11 k12 m0 m1 m2 m3 m4 m5 m7 m9 m10" tabindex="0"
+       role="graphics-symbol"
+       aria-label="Reviewed to Escalated, Flow: 210, 23.3% of Reviewed outflow, 100% of Escalated inflow">
+        <title>Reviewed to Escalated, Flow: 210, 23.3% of Reviewed outflow, 100% of Escalated inflow</title>
+        <path class="lkp"
+              d="M369 259.03C445.75 259.03 445.75 347.75 522.5 347.75L522.5 398.29C445.75 398.29 445.75 309.56 369 309.56Z"/>
+        <g class="tt">
+            <rect class="tb" x="453.75" y="289.66" width="169.04" height="78" rx="6"/>
+            <rect class="tsw s5" x="463.75" y="298.66" width="9" height="9" rx="2"/>
+            <text class="tx b" x="477.75" y="307.66">Reviewed to Escalated</text>
+            <text class="tx" x="463.75" y="324.66">Flow: 210</text>
+            <text class="tx" x="463.75" y="341.66">23.3% of Reviewed outflow</text>
+            <text class="tx" x="463.75" y="358.66">100% of Escalated inflow</text>
+        </g>
+    </g>
+    <g class="mk s5 lk l10 k0 k1 k2 k3 k4 k5 k7 k10 m0 m1 m2 m3 m4 m5 m8" tabindex="0" role="graphics-symbol"
+       aria-label="Reviewed to Cleared, Flow: 690, 76.7% of Reviewed outflow, 100% of Cleared inflow">
+        <title>Reviewed to Cleared, Flow: 690, 76.7% of Reviewed outflow, 100% of Cleared inflow</title>
+        <path class="lkp" d="M369 93C529.5 93 529.5 66 690 66L690 232.03C529.5 232.03 529.5 259.03 369 259.03Z"/>
+        <g class="tt">
+            <rect class="tb" x="352.46" y="123.52" width="169.04" height="78" rx="6"/>
+            <rect class="tsw s5" x="362.46" y="132.52" width="9" height="9" rx="2"/>
+            <text class="tx b" x="376.46" y="141.52">Reviewed to Cleared</text>
+            <text class="tx" x="362.46" y="158.52">Flow: 690</text>
+            <text class="tx" x="362.46" y="175.52">76.7% of Reviewed outflow</text>
+            <text class="tx" x="362.46" y="192.52">100% of Cleared inflow</text>
+        </g>
+    </g>
+    <g class="mk s7 lk l11 k0 k1 k2 k3 k4 k5 k7 k9 k11 m0 m1 m2 m3 m4 m5 m7 m9" tabindex="0" role="graphics-symbol"
+       aria-label="Escalated to SAR filed, Flow: 120, 57.1% of Escalated outflow, 100% of SAR filed inflow">
+        <title>Escalated to SAR filed, Flow: 120, 57.1% of Escalated outflow, 100% of SAR filed inflow</title>
+        <path class="lkp"
+              d="M536.5 347.75C613.25 347.75 613.25 343.47 690 343.47L690 372.34C613.25 372.34 613.25 376.63 536.5 376.63Z"/>
+        <g class="tt">
+            <rect class="tb" x="435.61" y="321.05" width="169.64" height="78" rx="6"/>
+            <rect class="tsw s7" x="445.61" y="330.05" width="9" height="9" rx="2"/>
+            <text class="tx b" x="459.61" y="339.05">Escalated to SAR filed</text>
+            <text class="tx" x="445.61" y="356.05">Flow: 120</text>
+            <text class="tx" x="445.61" y="373.05">57.1% of Escalated outflow</text>
+            <text class="tx" x="445.61" y="390.05">100% of SAR filed inflow</text>
+        </g>
+    </g>
+    <g class="mk s7 lk l12 k0 k1 k2 k3 k4 k5 k7 k9 k12 m0 m1 m2 m3 m4 m5 m7 m10" tabindex="0" role="graphics-symbol"
+       aria-label="Escalated to No action, Flow: 90, 42.9% of Escalated outflow, 100% of No action inflow">
+        <title>Escalated to No action, Flow: 90, 42.9% of Escalated outflow, 100% of No action inflow</title>
+        <path class="lkp"
+              d="M536.5 376.63C613.25 376.63 613.25 382.34 690 382.34L690 404C613.25 404 613.25 398.29 536.5 398.29Z"/>
+        <g class="tt">
+            <rect class="tb" x="435.61" y="326" width="169.64" height="78" rx="6"/>
+            <rect class="tsw s7" x="445.61" y="335" width="9" height="9" rx="2"/>
+            <text class="tx b" x="459.61" y="344">Escalated to No action</text>
+            <text class="tx" x="445.61" y="361">Flow: 90</text>
+            <text class="tx" x="445.61" y="378">42.9% of Escalated outflow</text>
+            <text class="tx" x="445.61" y="395">100% of No action inflow</text>
+        </g>
+    </g>
+    <g class="mk s0 nd n0 a0 a1 a4 a5 a6 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
+       aria-label="Card, Inflow: 0, Outflow: 680">
+        <title>Card, Inflow: 0, Outflow: 680</title>
+        <rect class="bar" x="20" y="76" width="14" height="163.63" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="40" y="127.81" width="89" height="61" rx="6"/>
+            <rect class="tsw s0" x="50" y="136.81" width="9" height="9" rx="2"/>
+            <text class="tx b" x="64" y="145.81">Card</text>
+            <text class="tx" x="50" y="162.81">Inflow: 0</text>
+            <text class="tx" x="50" y="179.81">Outflow: 680</text>
+        </g>
+    </g>
+    <g class="mk s1 nd n1 a0 a1 a2 a3 a5 a6 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
+       aria-label="Rules, Inflow: 840, Outflow: 840">
+        <title>Rules, Inflow: 840, Outflow: 840</title>
+        <rect class="bar" x="187.5" y="86" width="14" height="202.12" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="207.5" y="157.06" width="89" height="61" rx="6"/>
+            <rect class="tsw s1" x="217.5" y="166.06" width="9" height="9" rx="2"/>
+            <text class="tx b" x="231.5" y="175.06">Rules</text>
+            <text class="tx" x="217.5" y="192.06">Inflow: 840</text>
+            <text class="tx" x="217.5" y="209.06">Outflow: 840</text>
+        </g>
+    </g>
+    <g class="mk s2 nd n2 a1 a2 a4 a5 a6 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
+       aria-label="Transfer, Inflow: 0, Outflow: 480">
+        <title>Transfer, Inflow: 0, Outflow: 480</title>
+        <rect class="bar" x="20" y="288.5" width="14" height="115.5" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="40" y="316.25" width="89" height="61" rx="6"/>
+            <rect class="tsw s2" x="50" y="325.25" width="9" height="9" rx="2"/>
+            <text class="tx b" x="64" y="334.25">Transfer</text>
+            <text class="tx" x="50" y="351.25">Inflow: 0</text>
+            <text class="tx" x="50" y="368.25">Outflow: 480</text>
+        </g>
+    </g>
+    <g class="mk s3 nd n3 a1 a3 a5 a6 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
+       aria-label="Cash, Inflow: 0, Outflow: 120">
+        <title>Cash, Inflow: 0, Outflow: 120</title>
+        <rect class="bar" x="20" y="249.63" width="14" height="28.88" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="40" y="234.06" width="89" height="61" rx="6"/>
+            <rect class="tsw s3" x="50" y="243.06" width="9" height="9" rx="2"/>
+            <text class="tx b" x="64" y="252.06">Cash</text>
+            <text class="tx" x="50" y="269.06">Inflow: 0</text>
+            <text class="tx" x="50" y="286.06">Outflow: 120</text>
+        </g>
+    </g>
+    <g class="mk s4 nd n4 a0 a2 a4 a5 a6 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
+       aria-label="Model, Inflow: 440, Outflow: 440">
+        <title>Model, Inflow: 440, Outflow: 440</title>
+        <rect class="bar" x="187.5" y="298.13" width="14" height="105.87" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="207.5" y="321.06" width="89" height="61" rx="6"/>
+            <rect class="tsw s4" x="217.5" y="330.06" width="9" height="9" rx="2"/>
+            <text class="tx b" x="231.5" y="339.06">Model</text>
+            <text class="tx" x="217.5" y="356.06">Inflow: 440</text>
+            <text class="tx" x="217.5" y="373.06">Outflow: 440</text>
+        </g>
+    </g>
+    <g class="mk s5 nd n5 a0 a1 a2 a3 a4 a5 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
+       aria-label="Reviewed, Inflow: 900, Outflow: 900">
+        <title>Reviewed, Inflow: 900, Outflow: 900</title>
+        <rect class="bar" x="355" y="93" width="14" height="216.56" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="375" y="171.28" width="90.86" height="61" rx="6"/>
+            <rect class="tsw s5" x="385" y="180.28" width="9" height="9" rx="2"/>
+            <text class="tx b" x="399" y="189.28">Reviewed</text>
+            <text class="tx" x="385" y="206.28">Inflow: 900</text>
+            <text class="tx" x="385" y="223.28">Outflow: 900</text>
+        </g>
+    </g>
+    <g class="mk s6 nd n6 a0 a1 a2 a3 a4 a6" tabindex="0" role="graphics-symbol"
+       aria-label="Auto closed, Inflow: 380, Outflow: 0">
+        <title>Auto closed, Inflow: 380, Outflow: 0</title>
+        <rect class="bar" x="690" y="242.03" width="14" height="91.44" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="602.08" y="220.75" width="101.92" height="61" rx="6"/>
+            <rect class="tsw s6" x="612.08" y="229.75" width="9" height="9" rx="2"/>
+            <text class="tx b" x="626.08" y="238.75">Auto closed</text>
+            <text class="tx" x="612.08" y="255.75">Inflow: 380</text>
+            <text class="tx" x="612.08" y="272.75">Outflow: 0</text>
+        </g>
+    </g>
+    <g class="mk s7 nd n7 a0 a1 a2 a3 a4 a5 a7 a9 a10" tabindex="0" role="graphics-symbol"
+       aria-label="Escalated, Inflow: 210, Outflow: 210">
+        <title>Escalated, Inflow: 210, Outflow: 210</title>
+        <rect class="bar" x="522.5" y="347.75" width="14" height="50.53" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="542.5" y="343" width="91.49" height="61" rx="6"/>
+            <rect class="tsw s7" x="552.5" y="352" width="9" height="9" rx="2"/>
+            <text class="tx b" x="566.5" y="361">Escalated</text>
+            <text class="tx" x="552.5" y="378">Inflow: 210</text>
+            <text class="tx" x="552.5" y="395">Outflow: 210</text>
+        </g>
+    </g>
+    <g class="mk s8 nd n8 a0 a1 a2 a3 a4 a5 a8" tabindex="0" role="graphics-symbol"
+       aria-label="Cleared, Inflow: 690, Outflow: 0">
+        <title>Cleared, Inflow: 690, Outflow: 0</title>
+        <rect class="bar" x="690" y="66" width="14" height="166.03" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="624.12" y="82.02" width="79.88" height="61" rx="6"/>
+            <rect class="tsw s8" x="634.12" y="91.02" width="9" height="9" rx="2"/>
+            <text class="tx b" x="648.12" y="100.02">Cleared</text>
+            <text class="tx" x="634.12" y="117.02">Inflow: 690</text>
+            <text class="tx" x="634.12" y="134.02">Outflow: 0</text>
+        </g>
+    </g>
+    <g class="mk s9 nd n9 a0 a1 a2 a3 a4 a5 a7 a9" tabindex="0" role="graphics-symbol"
+       aria-label="SAR filed, Inflow: 120, Outflow: 0">
+        <title>SAR filed, Inflow: 120, Outflow: 0</title>
+        <rect class="bar" x="690" y="343.47" width="14" height="28.88" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="615.81" y="290.91" width="88.19" height="61" rx="6"/>
+            <rect class="tsw s9" x="625.81" y="299.91" width="9" height="9" rx="2"/>
+            <text class="tx b" x="639.81" y="308.91">SAR filed</text>
+            <text class="tx" x="625.81" y="325.91">Inflow: 120</text>
+            <text class="tx" x="625.81" y="342.91">Outflow: 0</text>
+        </g>
+    </g>
+    <g class="mk s10 nd n10 a0 a1 a2 a3 a4 a5 a7 a10" tabindex="0" role="graphics-symbol"
+       aria-label="No action, Inflow: 90, Outflow: 0">
+        <title>No action, Inflow: 90, Outflow: 0</title>
+        <rect class="bar" x="690" y="382.34" width="14" height="21.66" rx="2"/>
+        <g class="tt">
+            <rect class="tb" x="615.81" y="326.17" width="88.19" height="61" rx="6"/>
+            <rect class="tsw s10" x="625.81" y="335.17" width="9" height="9" rx="2"/>
+            <text class="tx b" x="639.81" y="344.17">No action</text>
+            <text class="tx" x="625.81" y="361.17">Inflow: 90</text>
+            <text class="tx" x="625.81" y="378.17">Outflow: 0</text>
+        </g>
+    </g>
+</svg>

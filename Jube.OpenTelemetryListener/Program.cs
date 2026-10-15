@@ -32,6 +32,7 @@ app.MapPost("/v1/{signal}", async (string signal, HttpRequest request) =>
     var body = memoryStream.ToArray();
 
     var contents = "";
+
     if (logContents)
     {
         var strings = ProtobufStringScanner.ExtractStrings(body);

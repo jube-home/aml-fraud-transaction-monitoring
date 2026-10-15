@@ -15,7 +15,11 @@ using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
 namespace Jube.Dto.Repository.RoleRegistryPermission
 {
     [FormEndpoint("RoleRegistryPermission")]
@@ -36,6 +40,10 @@ namespace Jube.Dto.Repository.RoleRegistryPermission
         [Lookup("PermissionSpecification", TextField = "name", ValueField = "id")]
         [ListColumn(Order = 10, Title = "Permission")]
         public int PermissionSpecificationId { get; set; }
+
+        [Description("Globally-addressable identifier for this row, stable across environments and the form "
+                     + "in which every other area refers to it. Server-assigned. Read-only.")]
+        public Guid Guid { get; set; }
 
         [Description("When true, this permission grant is enforced. When false, it is ignored and the Role " +
                      "does not receive the permission.")]

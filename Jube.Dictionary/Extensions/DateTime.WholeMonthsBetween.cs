@@ -20,6 +20,7 @@ namespace Jube.Dictionary.Extensions
             var start = @this <= other ? @this : other;
             var end = @this <= other ? other : @this;
             var months = (end.Year - start.Year) * 12 + end.Month - start.Month;
+
             if (start.AddMonths(months) > end)
             {
                 months--;

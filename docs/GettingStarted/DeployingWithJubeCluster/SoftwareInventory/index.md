@@ -6,9 +6,6 @@ parent: Deploying with Jube Cluster
 grand_parent: Getting Started
 ---
 
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from
-Jube's developer — real sovereignty, zero vendor lock-in.
-
 # Software Inventory
 
 Every container image, package and runtime version that makes up the `Jube.Cluster` Docker Swarm stack, as defined in

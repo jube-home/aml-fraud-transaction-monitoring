@@ -43,15 +43,14 @@ namespace Jube.Test.Service.ModelScaffolding
                 NullLoggerFactory.Instance);
 
         private static readonly TimeSpan patience = TimeSpan.FromSeconds(45);
-
         private readonly List<string> deadInstances = [];
         private readonly List<int> scheduleIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
         {
             await using var dbContext = database.GetDbContext();
+
             foreach (var instance in deadInstances)
             {
                 await dbContext.EntityAnalysisModelEngineSnapshot.Where(w => w.Instance == instance).DeleteAsync();
@@ -68,6 +67,7 @@ namespace Jube.Test.Service.ModelScaffolding
         private async Task<ModelScaffold> CreateModelAsync()
         {
             int tenantRegistryId;
+
             await using (var dbContext = database.GetDbContext())
             {
                 tenantRegistryId = await dbContext.UserInTenant
@@ -81,13 +81,16 @@ namespace Jube.Test.Service.ModelScaffolding
                 ModelGuid = null,
                 TenantRegistryId = tenantRegistryId
             });
+
             await ModelSync.SyncAsync(fixture.Engine, model);
+
             return model;
         }
 
         private async Task<DateTime?> SynchronisedDateAsync(ModelScaffold model)
         {
             await using var dbContext = database.GetDbContext();
+
             return await dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
                 .Where(w => w.TenantRegistryId == model.TenantRegistryId)
                 .Select(s => s.SynchronisedDate)
@@ -97,8 +100,10 @@ namespace Jube.Test.Service.ModelScaffolding
         private async Task ScheduleAsync(DateTimeOffset? scheduleDate)
         {
             await using var dbContext = database.GetDbContext();
+
             var service = await ScheduleService.CreateAsync(dbContext, database.Seed.UserWithPermission,
                 TestLog.NoOp, localizers, new NullServiceChangeBus(), TestLog.NoOp);
+
             var saved = await service.InsertAsync(new EntityAnalysisModelSynchronisationScheduleDto
             {
                 ScheduleDate = scheduleDate
@@ -109,9 +114,11 @@ namespace Jube.Test.Service.ModelScaffolding
         private async Task<DateTime> WaitForSynchronisationAfterAsync(ModelScaffold model, DateTime? baseline)
         {
             var deadline = DateTime.UtcNow + patience;
+
             while (DateTime.UtcNow < deadline)
             {
                 var current = await SynchronisedDateAsync(model);
+
                 if (current is { } moved && (baseline is null || moved > baseline))
                 {
                     return moved;
@@ -148,10 +155,12 @@ namespace Jube.Test.Service.ModelScaffolding
             {
                 (await SynchronisedDateAsync(model)).Should().Be(baseline,
                     "a schedule that is not yet due is not a pending synchronisation");
+
                 await Task.Delay(250);
             }
 
             var moved = await WaitForSynchronisationAfterAsync(model, baseline);
+
             moved.Should().BeOnOrAfter(due.UtcDateTime.AddSeconds(-1),
                 "the engine synchronises once the scheduled time has passed");
         }
@@ -214,6 +223,7 @@ namespace Jube.Test.Service.ModelScaffolding
             await using var model = await CreateModelAsync();
             var dead = Instance("ZzDeadSync");
             await SeedDeadEngineAsync(model, dead, TimeSpan.FromMinutes(30));
+
             (await IntegrityAsync(model)).Checks.Should().ContainSingle(c => c.Code == "EngineNodeStale"
                                                                              && c.Message.Contains(dead));
 
@@ -239,6 +249,7 @@ namespace Jube.Test.Service.ModelScaffolding
             await WaitForSynchronisationAfterAsync(model, await SynchronisedDateAsync(model));
 
             await using var dbContext = database.GetDbContext();
+
             (await dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry.CountAsync(w => w.Instance == alive))
                 .Should().Be(1);
         }
@@ -246,6 +257,7 @@ namespace Jube.Test.Service.ModelScaffolding
         private static async Task UntilAsync(Func<Task<bool>> condition, string because)
         {
             var deadline = DateTime.UtcNow + patience;
+
             while (DateTime.UtcNow < deadline)
             {
                 if (await condition())
@@ -262,12 +274,14 @@ namespace Jube.Test.Service.ModelScaffolding
         private async Task<int> SnapshotCountAsync(string instance)
         {
             await using var dbContext = database.GetDbContext();
+
             return await dbContext.EntityAnalysisModelEngineSnapshot.CountAsync(w => w.Instance == instance);
         }
 
         private async Task<int> NodeRowCountAsync(string instance)
         {
             await using var dbContext = database.GetDbContext();
+
             return await dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
                 .CountAsync(w => w.Instance == instance);
         }
@@ -276,6 +290,7 @@ namespace Jube.Test.Service.ModelScaffolding
         {
             var name = $"{prefix}{Guid.NewGuid():N}"[..24];
             deadInstances.Add(name);
+
             return name;
         }
 
@@ -283,6 +298,7 @@ namespace Jube.Test.Service.ModelScaffolding
         {
             var heartbeat = DateTime.UtcNow - age;
             await using var dbContext = database.GetDbContext();
+
             await dbContext.InsertAsync(new EntityAnalysisModelSynchronisationNodeStatusEntry
             {
                 Instance = instance,
@@ -290,6 +306,7 @@ namespace Jube.Test.Service.ModelScaffolding
                 HeartbeatDate = heartbeat,
                 SynchronisedDate = heartbeat
             });
+
             await dbContext.InsertAsync(new EntityAnalysisModelEngineSnapshot
             {
                 Instance = instance,
@@ -304,8 +321,10 @@ namespace Jube.Test.Service.ModelScaffolding
             ModelScaffold model)
         {
             await using var dbContext = database.GetDbContext();
+
             var service = await EntityAnalysisModelIntegrityService.CreateAsync(dbContext, null,
                 database.Seed.UserWithPermission, TestLog.NoOp, localizers, new NullServiceChangeBus());
+
             return await service.CheckAsync(model.ModelId);
         }
     }

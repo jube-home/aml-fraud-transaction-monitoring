@@ -141,6 +141,7 @@ $.get("/api/Completions/ByCaseWorkflowId",
             SetConditionalRegularExpressionFormatting();
             SetBoldLineMatched();
             ReadyNew();
+            window.AskJoobySetPageContext?.("CaseWorkflowXPath", "new", {[parentKeyName]: parentKey});
         } else {
             $.get(endpoint + "/" + id,
                 function (data) {
@@ -209,6 +210,12 @@ $.get("/api/Completions/ByCaseWorkflowId",
                     SetBoldLineMatched();
 
                     ReadyExisting(data);
+                    window.AskJoobySetPageContext?.("CaseWorkflowXPath", "edit", {
+                        id: data.id,
+                        guid: data.guid,
+                        name: data.name,
+                        [parentKeyName]: parentKey
+                    });
                 });
         }
 

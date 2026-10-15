@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -16,24 +16,22 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Dto.Query.RuleVocabulary;
 using Jube.Parser;
-using ParserVocabulary = Jube.Parser.RuleVocabulary;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.RuleVocabulary;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using log4net;
 using Microsoft.Extensions.Localization;
+using ParserVocabulary = Jube.Parser.RuleVocabulary;
 
 namespace Jube.Service.Query.RuleVocabulary
 {
     public sealed class RuleVocabularyService
     {
         private const int MaxTake = 200;
-
         private static readonly int[] permissions = [8, 10, 13, 14, 16, 17, 25, 26];
-
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -56,6 +54,8 @@ namespace Jube.Service.Query.RuleVocabulary
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<RuleVocabularyService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -137,6 +137,7 @@ namespace Jube.Service.Query.RuleVocabulary
                     .ToList();
 
                 var clampedTake = Math.Clamp(take, 1, MaxTake);
+
                 return new RuleWordPageDto
                 {
                     More = words.Count > clampedTake,
@@ -193,6 +194,7 @@ namespace Jube.Service.Query.RuleVocabulary
         {
             var installation = (await new RuleScriptTokenRepository(dbContext).GetAsync(token).ConfigureAwait(false))
                 .Select(s => s.Token);
+
             return ParserVocabulary.Build(installation);
         }
 
@@ -200,6 +202,7 @@ namespace Jube.Service.Query.RuleVocabulary
         {
             using var op = OperationScope.Start("RuleVocabulary", operation, userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"RuleVocabulary.{operation}: entry user={userName}");
@@ -209,6 +212,7 @@ namespace Jube.Service.Query.RuleVocabulary
             {
                 token.ThrowIfCancellationRequested();
                 EnsurePermitted($"RuleVocabulary.{operation}");
+
                 return await body().ConfigureAwait(false);
             }
             catch (ForbiddenException)

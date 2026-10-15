@@ -45,7 +45,6 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
         private readonly List<int> createdSeriesIds = [];
         private readonly List<int> createdDatasourceIds = [];
         private readonly List<int> createdRegistryIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -54,6 +53,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
 
             await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceSeries>()
                 .Where(w => createdSeriesIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.VisualisationRegistryDatasource
                 .Where(w => createdDatasourceIds.Contains(w.Id)).DeleteAsync();
             await dbContext.VisualisationRegistry
@@ -72,6 +72,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
         private async Task<int> CreateVisualisationRegistryAsync(DbContext dbContext, string createdUser)
         {
             var repository = new Data.Repository.VisualisationRegistryRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.VisualisationRegistry
             {
                 Name = $"{DatabaseFixture.Prefix}Registry{Guid.NewGuid():N}"[..40],
@@ -82,6 +83,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
             }).ConfigureAwait(false);
 
             createdRegistryIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -89,6 +91,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
             string createdUser, byte? deleted = 0)
         {
             var repository = new Data.Repository.VisualisationRegistryDatasourceRepository(dbContext, createdUser);
+
             var saved = await repository.InsertAsync(new Data.Poco.VisualisationRegistryDatasource
             {
                 VisualisationRegistryId = visualisationRegistryId,
@@ -100,6 +103,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
             }).ConfigureAwait(false);
 
             createdDatasourceIds.Add(saved.Id);
+
             return saved.Id;
         }
 
@@ -123,6 +127,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
             var datasourceId = await CreateDatasourceAsync(dbContext, registryId, userName, datasourceDeleted);
             await CreateSeriesAsync(dbContext, datasourceId, "Frequency", 2);
             await CreateSeriesAsync(dbContext, datasourceId, "ActivationRuleName", 1);
+
             return datasourceId;
         }
 
@@ -159,6 +164,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
         public async Task ListByVisualisationRegistryDatasourceIdReturnsSeriesAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var datasourceId =
                 await CreateRegistryDatasourceWithSeriesAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
@@ -202,8 +208,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
         public async Task ListExcludesSeriesOfSoftDeletedDatasourceAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var datasourceId = await CreateRegistryDatasourceWithSeriesAsync(dbContext, fx.Seed.UserWithPermission,
                 datasourceDeleted: 1);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var series = await service.GetByVisualisationRegistryDatasourceIdAsync(datasourceId);
@@ -243,6 +251,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
         {
             await using var dbContext = fx.GetDbContext();
             var capturingAuditLog = new TestLog();
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 auditLog: capturingAuditLog);
 
@@ -255,8 +264,10 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
         public async Task ListDoesNotPublishChangeEventAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var datasourceId =
                 await CreateRegistryDatasourceWithSeriesAsync(dbContext, fx.Seed.UserWithPermission);
+
             var bus = new CapturingBus();
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
 
@@ -269,12 +280,14 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
         public void CatalogueListsUniqueVisualisationRegistryDatasourceSeriesToolNames()
         {
             var tools = ServiceToolCatalogue.All;
+
             var names = tools.Where(t => t.Name.StartsWith("VisualisationRegistryDatasourceSeries"))
                 .Select(t => t.Name).ToList();
 
             names.Should().BeEquivalentTo([
                 "VisualisationRegistryDatasourceSeriesListByVisualisationRegistryDatasourceId",
             ]);
+
             names.Should().OnlyHaveUniqueItems();
         }
     }

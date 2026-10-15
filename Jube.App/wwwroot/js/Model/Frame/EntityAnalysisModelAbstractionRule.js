@@ -190,6 +190,7 @@ $.get("../api/GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloat
             ExpandCollapseOffset();
             SetAggregationParams();
             ReadyNew();
+            window.AskJoobySetPageContext?.("EntityAnalysisModelAbstractionRule", "new", {[parentKeyName]: parentKey});
         } else {
             $.get(endpoint + "/" + id,
                 function (data) {
@@ -225,6 +226,12 @@ $.get("../api/GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloat
                         ExpandCollapseOffset();
                     }
                     ReadyExisting(data);
+                    window.AskJoobySetPageContext?.("EntityAnalysisModelAbstractionRule", "edit", {
+                        id: data.id,
+                        guid: data.guid,
+                        name: data.name,
+                        [parentKeyName]: parentKey
+                    });
                 });
         }
     });

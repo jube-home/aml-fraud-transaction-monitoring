@@ -30,22 +30,6 @@ namespace Jube.Test.Repository
     {
         private readonly List<int> createdIds = [];
 
-        public Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task DisposeAsync()
-        {
-            if (createdIds.Count == 0)
-            {
-                return;
-            }
-
-            await using var dbContext = fx.GetDbContext();
-            await dbContext.DictionaryEvalExpression.Where(w => createdIds.Contains(w.Id)).DeleteAsync();
-        }
-
         private async Task<int> SeedAsync(string name, string expression, int resultTypeId, byte? compiled = null,
             string? compileError = null)
         {
@@ -61,7 +45,24 @@ namespace Jube.Test.Repository
             });
 
             createdIds.Add(id);
+
             return id;
+        }
+
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
+        {
+            if (createdIds.Count == 0)
+            {
+                return;
+            }
+
+            await using var dbContext = fx.GetDbContext();
+            await dbContext.DictionaryEvalExpression.Where(w => createdIds.Contains(w.Id)).DeleteAsync();
         }
 
         [Fact]

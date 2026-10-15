@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -15,7 +15,8 @@ using System.ComponentModel;
 using Jube.Cache;
 using Jube.Cache.Redis.Models;
 using Jube.Data.Context;
-using Jube.Data.Query;
+using Jube.Data.Query.GetModelListsQuery;
+using Jube.Data.Query.GetRuleParseEnvironmentQuery;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelAbstractionRule;
 using Jube.Dto.Query.EntityAnalysisModelHistorySimulation;
@@ -26,7 +27,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesW
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation;
 using Jube.Parser;
 using Jube.Resources;
-using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelHistorySimulation;
 using Jube.Service.Observability;
 using Jube.Service.Query.EntityAnalysisModelInvocationContext;
@@ -41,9 +42,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
     {
         private const int SampleSize = 20;
         private const int DefaultCacheFetchLimit = 100;
-
         private static readonly int[] permissions = [1, 40];
-
         private readonly ILog auditLog;
         private readonly CacheService? cacheService;
         private readonly DbContext dbContext;
@@ -68,6 +67,8 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
             this.serviceChangeBus = serviceChangeBus;
             this.strings = strings;
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<EntityAnalysisModelHistorySimulationService> CreateAsync(DbContext dbContext,
             CacheService? cacheService, string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -134,6 +135,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
         {
             using var op = OperationScope.Start("EntityAnalysisModelHistorySimulation", "AbstractionAggregation",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             try
             {
                 ArgumentNullException.ThrowIfNull(rule);
@@ -142,6 +144,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
                 var result = await SimulateAbstractionAsync(rule, context, token).ConfigureAwait(false);
                 op.Entity(rule.EntityAnalysisModelId);
                 op.Rows(result.InWindow);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -162,8 +165,10 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelHistorySimulation.AbstractionAggregation: unexpected failure " +
                           $"user={userName}", ex);
+
                 throw;
             }
         }
@@ -183,13 +188,17 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
         {
             using var op = OperationScope.Start("EntityAnalysisModelHistorySimulation", "TtlCounterValue",
                 userName, tenantRegistryId, auditLog, log, serviceChangeBus);
+
             try
             {
                 ArgumentNullException.ThrowIfNull(context);
                 EnsurePermitted("EntityAnalysisModelHistorySimulation.TtlCounterValue");
+
                 var result = await ReadTtlCounterAsync(entityAnalysisModelTtlCounterId, context, token)
                     .ConfigureAwait(false);
+
                 op.Entity(entityAnalysisModelTtlCounterId);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -210,8 +219,10 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error($"EntityAnalysisModelHistorySimulation.TtlCounterValue: unexpected failure user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -236,7 +247,9 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
 
             var xPaths = (await new EntityAnalysisModelRequestXpathRepository(dbContext, tenantRegistryId)
                 .GetByEntityAnalysisModelIdOrderByIdAsync(model.Id, token).ConfigureAwait(false)).ToList();
+
             var searchKeyXPath = xPaths.FirstOrDefault(x => x.Name == rule.SearchKey && x.Active == 1);
+
             if (searchKeyXPath == null)
             {
                 return Refused(result, "SearchKey", "SearchKeyNotFound",
@@ -245,6 +258,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
             }
 
             result.SearchKeyValue = ContextValue(context, "Payload." + rule.SearchKey);
+
             if (result.SearchKeyValue == null)
             {
                 return Refused(result, "Context", "SearchKeyValueUnset",
@@ -265,6 +279,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
             if (searchKeyXPath.SearchKeyCache == 1)
             {
                 result.CacheBacked = true;
+
                 var cached = await cacheService.CacheAbstractionRepository.GetAsync(tenantRegistryId, model.Guid,
                 [
                     new EntityAnalysisModelIdAbstractionRuleNameSearchKeySearchValue
@@ -273,17 +288,23 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
                         SearchValue = result.SearchKeyValue
                     }
                 ]).ConfigureAwait(false);
+
                 result.Simulated = true;
+
                 result.Value = InvocationContextBuilder.FormatValue(
                     cached.TryGetValue(settings.Name, out var value) ? value : 0d);
+
                 return result;
             }
 
             var environment = await new GetRuleParseEnvironmentQuery(dbContext, tenantRegistryId)
                 .ExecuteAsync(model.Id, RuleParse.AbstractionRule, token).ConfigureAwait(false);
+
             var ruleText = rule.RuleScriptTypeId == 1 ? rule.BuilderRuleScript : rule.CoderRuleScript;
+
             var parsed = RuleParse.Execute(ruleText ?? string.Empty, RuleParse.AbstractionRule, environment, log,
                 RuleParse.EngineReferences(RuleParse.AbstractionRule), false, rule.RuleScriptTypeId == 1, true);
+
             if (!parsed.Compiled)
             {
                 result.Errors = parsed.ErrorSpans.Count == 0
@@ -298,21 +319,28 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
                         ErrorCode = "RuleScriptInvalid", Message = s.Message, Line = s.Line, Start = s.Start,
                         Length = s.Length
                     }).ToList();
+
                 return result;
             }
 
             result.FetchLimit = Math.Min(model.CacheFetchLimit ?? DefaultCacheFetchLimit,
                 searchKeyXPath.SearchKeyFetchLimit ?? DefaultCacheFetchLimit);
+
             var exclude = context.EntityAnalysisModelInstanceEntryGuid ?? Guid.Empty;
+
             var keys = await cacheService.CachePayloadRepository.GetSortedSetKeysAsync(tenantRegistryId, model.Guid,
                 settings.SearchKey, result.SearchKeyValue, result.FetchLimit, exclude).ConfigureAwait(false);
+
             var payloads = await cacheService.CachePayloadRepository.GetPayloadBatchAsync(tenantRegistryId,
                 model.Guid, keys.Distinct().ToList(), exclude).ConfigureAwait(false);
+
             var parseIndex = xPaths.Where(x => x.Cache == 1 && x.CacheIndexId.HasValue)
                 .GroupBy(x => x.CacheIndexId!.Value)
                 .ToDictionary(g => g.Key, g => g.First().Name);
+
             var referenceDateName = model.ReferenceDateName ?? string.Empty;
             var decoded = CachedPayloadDecoder.Decode(payloads, parseIndex, referenceDateName);
+
             var history = keys.Select(k => decoded.GetValueOrDefault(k.ToString()))
                 .Where(d => d != null)
                 .ToList();
@@ -322,7 +350,9 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
 
             var lists = await new GetModelListsQuery(dbContext, tenantRegistryId)
                 .ExecuteAsync(model.Id, token).ConfigureAwait(false);
+
             var current = RuleRunner.ToInputs(EntityAnalysisModelInvocationContextMapper.ToContext(context), lists);
+
             var simulation = await AbstractionAggregationSimulator.SimulateAsync(parsed, settings,
                     new SearchKeySettings(settings.SearchKey, searchKeyXPath.SearchKeyTtlInterval ?? "d",
                         searchKeyXPath.SearchKeyTtlIntervalValue ?? 0, result.FetchLimit, false),
@@ -337,12 +367,15 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
             result.WindowTo = simulation.WindowTo;
             result.WindowShortenedBySearchKey = simulation.WindowShortenedBySearchKey;
             result.Value = InvocationContextBuilder.FormatValue(simulation.Value);
+
             result.RuntimeError = simulation.Error == null
                 ? null
                 : $"{simulation.Error.GetType().Name}: {simulation.Error.Message}";
+
             result.Sample = simulation.MatchedInWindow.Take(SampleSize)
                 .Select(d => d.ToDictionary(kv => kv.Key, kv => (string?)kv.Value.AsString()))
                 .ToList();
+
             return result;
         }
 
@@ -351,12 +384,14 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
         {
             var counter = await new EntityAnalysisModelTtlCounterRepository(dbContext, tenantRegistryId)
                 .GetByIdAsync(entityAnalysisModelTtlCounterId, token).ConfigureAwait(false);
+
             if (counter?.EntityAnalysisModelId == null)
             {
                 throw new NotFoundException(strings[EntityAnalysisModelHistorySimulationResources.TtlCounterNotFound]);
             }
 
             var model = await RequireModelAsync(counter.EntityAnalysisModelId.Value, token).ConfigureAwait(false);
+
             var result = new TtlCounterValueResultDto
             {
                 Name = counter.Name ?? string.Empty,
@@ -371,6 +406,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
                     Error("Context", "ContextModelMismatch",
                         strings[EntityAnalysisModelHistorySimulationResources.ContextModelMismatch])
                 ];
+
                 return result;
             }
 
@@ -381,10 +417,12 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
                     Error("EnableTtlCounter", "TtlCountersDisabled",
                         strings[EntityAnalysisModelHistorySimulationResources.TtlCountersDisabled])
                 ];
+
                 return result;
             }
 
             result.DataValue = ContextValue(context, "Payload." + counter.TtlCounterDataName);
+
             if (result.DataValue == null)
             {
                 result.Errors =
@@ -393,6 +431,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
                         string.Format(strings[EntityAnalysisModelHistorySimulationResources.ValueUnset],
                             "Payload." + counter.TtlCounterDataName))
                 ];
+
                 return result;
             }
 
@@ -403,15 +442,19 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
                     Error("Cache", "CacheUnavailable",
                         strings[EntityAnalysisModelHistorySimulationResources.CacheUnavailable])
                 ];
+
                 return result;
             }
 
             double value;
+
             if (result.OnlineAggregation)
             {
                 var referenceDate = context.ReferenceDate ?? DateTime.UtcNow;
+
                 result.WindowFrom = TtlCounterExtensions.ApplyTtlCounterInterval(referenceDate,
                     counter.TtlCounterInterval, counter.TtlCounterValue ?? 0);
+
                 value = await cacheService.CacheTtlCounterEntryRepository.GetAggregationPreferReplicaAsync(
                         tenantRegistryId, model.Guid, counter.Guid, result.DataName, result.DataValue,
                         result.WindowFrom.Value, referenceDate)
@@ -426,6 +469,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
 
             result.Read = true;
             result.Value = InvocationContextBuilder.FormatValue(value);
+
             return result;
         }
 
@@ -452,6 +496,7 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
             string propertyName, string errorCode, string message)
         {
             result.Errors = [Error(propertyName, errorCode, message)];
+
             return result;
         }
 

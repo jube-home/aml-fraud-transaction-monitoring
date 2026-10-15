@@ -74,6 +74,7 @@ dataSourceEntity.bind("requestEnd", function (e) {
 });
 
 $(document).ready(function () {
+    window.AskJoobySetPageContext?.("CaseCreationWarning", "readonly", null);
     $grid = $("#grid");
 
     $grid.kendoGrid({

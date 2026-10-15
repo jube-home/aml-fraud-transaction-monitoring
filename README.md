@@ -1,4 +1,11 @@
-![Image](logo.png)
+<p align="center">
+  <img src="banner.png" alt="Jube. Open-source agentic AI for transaction monitoring. Just ask Jooby." width="100%">
+</p>
+
+# Jube
+
+**Open-source agentic AI for transaction monitoring. “Just ask Jooby.”** Real-time AML and fraud monitoring, run by a
+Herd of AI agents called Joobriks, with outcomes a regulator can follow.
 
 [![Jube Build and Unit Tests](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/jube-build-unit-tests.yml/badge.svg?branch=master)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/jube-build-unit-tests.yml)
 [![Jube Build and End-to-End Tests](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/jube-build-end-to-end-tests.yml/badge.svg?branch=master)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/jube-build-end-to-end-tests.yml)
@@ -6,211 +13,55 @@
 [![Trivy Container Scan](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/trivy.yml/badge.svg?branch=master)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/trivy.yml)
 [![OWASP ZAP DAST](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/zap.yml/badge.svg?branch=master)](https://github.com/jube-home/aml-fraud-transaction-monitoring/actions/workflows/zap.yml)
 
-Jube is an **open source AML software** and **open source fraud detection software** platform for real-time detection of
-suspicious transactions, AML case management, and fraud prevention.
+**Ask Jooby.** No menu to learn, no query language, no ticket to raise. Type the question the way you'd ask a colleague,
+and the Herd does the legwork, showing every step. 150+ Joobriks across five domains, 700+ real platform functions, and
+every step validated by the platform before anything reaches you.
 
-[Jube is fully open-source (AGPLv3)](https://github.com/jube-home/aml-fraud-transaction-monitoring)
-with all features available and no vendor lock-in, Jube is transparent,
-auditable, and extensible—keeping your data under your control while enabling rapid adaptation to new products,
-workflows, regulations, or payment schemes.
+**The platform underneath.** Jube was real-time transaction monitoring long before Jooby arrived. Every Joobrik stands
+on it, and all of it is in the open: explainable ML, hybrid detection (rules, velocity and sanctions, plus supervised
+and unsupervised ML), real-time and horizontally scalable, case management, a rule builder compliance can edit,
+cloud-native and multi-tenant, on your infrastructure with no lock-in.
 
-Jube combines real-time transaction monitoring, adaptive machine learning, rule-based detection, and workflow-driven
-case management into a single, scalable system.
+## Quickstart
 
-Designed for compliance teams, financial institutions, and fintechs, Jube provides:
+With Docker installed, Jube is a copy and paste away. It builds from source, so give the first start a few minutes.
 
-- Accurate and interpretable risk scoring using supervised and unsupervised machine learning models
-- Rule-based detection with thresholds, velocity checks, aggregation counts, and sanctions screening
-- Workflow-driven AML and fraud case management with automated escalation and full audit trails
-- Cloud-native deployment with Docker and Kubernetes support, multi-tenancy, configuration preservation, and
-  high-performance caching for low-latency decisioning
-
-Jube ensures accuracy, transparency, and auditability, making it ideal for organizations that must meet strict
-regulatory requirements while monitoring large transaction volumes.
-
-![Open source AML software case management dashboard](/CaseManagementListing.png)
-
-![Open source fraud detection software performance metrics](/ExhaustivePerformance.png)
-
----
-
-## Key Features
-
-- Trusted **open source AML and fraud detection software** for compliance and fraud prevention
-- Real-time transaction monitoring
-- Hybrid detection engine: combining rule‑based logic for **open source AML and fraud detection**
-- Adaptive machine learning models for AML and fraud risk scoring
-- Workflow-driven AML and fraud case management
-- Fully **open source AML and fraud detection software** under AGPLv3
-
-### Adaptive Machine Learning — Exhaustive Adaptation
-
-Jube leverages adaptive machine learning for AML and fraud detection, combining anomaly detection, supervised risk
-models, and continuous model training to identify both known and emerging threats, while deriving behavioral features
-for interpretable and actionable risk insights.
-
-- Unsupervised learning identifies deviations from normal customer behavior for anomaly detection
-- Supervised learning models detect known fraud and AML patterns based on historical data
-- A hybrid approach combines supervised and unsupervised methods
-- “Exhaustive Adaptation” evolves the model topology — trying different neural-network
-  structures and variables — to find well‑generalized, computationally efficient models as data patterns change
-- Behavioral feature abstraction derives signals such as transaction volume, velocity, and geolocation to improve ML
-  model interpretability
-
-![Adaptive machine learning model performance for AML and fraud detection](/ExhaustiveLearningCurve.png)
-
-![Variable statistics used in open source AML and fraud detection software](/ExhaustiveVariableStatistics.png)
-
-![Top-performing model topology for open source AML software and fraud detection](/ExhaustiveWinningModelTopology.png)
-
-![Score model testing results in open source AML and fraud detection software](/ExhaustiveScoreModelTesting.png)
-
-### Real-Time Transaction Monitoring
-
-Jube’s real-time transaction monitoring engine detects suspicious activity instantly, enabling financial institutions
-and fintechs to respond to fraud and AML risks as they occur. The engine combines low-latency processing, scalable
-architecture, and reliable storage to handle large transaction volumes efficiently.
-
-- Stateless, horizontally scalable architecture
-- Low-latency, in-memory processing with Redis for real-time state mutable state
-- Frequently accessed immutable state stored locally also to minimize network overhead, reduce
-  serialization/deserialization, and
-  increase server density, ensuring fast, scalable decisioning under high load
-- Durable storage and audit logs with PostgreSQL
-- AMQP integration (RabbitMQ) for inbound and outbound events
-- Full support for synchronous and asynchronous interfaces via HTTP, AMQP, and hybrid modes
-- Asynchronous archival of decision payloads for analytics and reporting
-- Real-time reprocessing of past data available for integration of fresh intelligence and analysis of exposure
-
-### Case Management for Compliance
-
-Jube delivers workflow-driven AML and fraud case management with automated escalation, full audit trails, and document
-versioning, giving compliance teams an end-to-end solution for investigating suspicious transactions efficiently.
-
-- Multiple case streams (AML, fraud, compliance)
-- Workflow-driven dashboards for investigators
-- Document upload and versioning (EDD, CDD, ID verification)
-- Automatic case escalation via activation rules
-- Full audit trails for all actions
-
-![Workflow-driven case management example in open source AML software](/Case.png)
-
-![Visualization dashboard for open source fraud detection software](/Visualisation.png)
-
-![Automated case activation monitoring in open source AML and fraud detection software](/ActivationWatcher.png)
-
-### Flexible Rule Engine
-
-Jube’s rules engine supports thresholds, velocity checks, aggregation counts, and sanctions screening, fully integrated
-with ML outputs for comprehensive detection.
-
-- Threshold-based detection
-- Velocity and aggregation checks
-- Automatically check transactions and counterparties against global sanctions lists for
-  regulatory compliance
-- Time-to-live counters and overrides
-- Fully integrates with ML outputs for combined detection
-- Online or background preparation of velocity and other aggregations depending on data volume
-
-![Rule builder interface for open source AML and fraud detection software](/RuleBuilder.png)
-
-![Rule coding for open source AML and fraud detection software](/RuleCoder.png)
-
-![Manual sanctions screening in open source AML software](/ManualSanctions.png)
-
-### Cloud-Native
-
-Jube’s architecture is **purpose-built for open source fraud detection and AML transaction monitoring**. It’s fully
-containerized (Docker, Kubernetes), supports multi-tenancy, and is highly scalable — making it a top-tier **AML and
-fraud
-detection software open source** solution.
-
-The platform preserves configuration, enabling institutions to back up, restore, and migrate rules, workflows, and ML
-settings. This ensures operational continuity and smooth system upgrades or deployments.
-
-Jube supports multi-tenancy, allowing financial institutions or service providers to monitor transactions for multiple
-sub-clients (brands or business units) within a single deployment. Each tenant can maintain independent rules,
-workflows, and ML configurations.
-
-![Open source AML and fraud detection software API integration](/Swagger.png)
-
----
-
-## Getting Started
-
-A Docker Compose file is available (`docker-compose.yml`) to quickly set up and orchestrate an installation of Jube,
-provided Docker is installed. Jube can be up and running in minutes with the following shell script:
-
-This base `docker-compose.yml` install is for evaluation and development only - it is **not** intended for
-production use. It runs a single node with secrets passed as plain shell Environment Variables and Postgres
-connected as superuser. Production deployments should instead follow the
-[Deploying with Jube Cluster](https://jube-home.github.io/aml-fraud-transaction-monitoring/GettingStarted/DeployingWithJubeCluster)
-documentation, which covers a load-balanced, highly available, clustered deployment with robust secret management.
-
-```shell
+```bash
 git clone https://github.com/jube-home/aml-fraud-transaction-monitoring
 cd aml-fraud-transaction-monitoring
-export DockerComposePostgresPassword='SuperSecretPasswordToChangeForPg'
+export DockerComposePostgresPassword='IMPORTANT:_ChangeThisKey_SuperSecretPasswordToChangeForPg'
 export DockerComposeJWTKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 export DockerComposeApiHmacKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 export DockerComposePasswordHashingKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 export DockerComposeElementSymmetricEncryptionKey='IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
+export DockerComposeEnableAskJooby=False
+export DockerComposeAskJoobyApiKey='OPTIONAL_IMPORTANT:_ChangeThisKey_~%pvif3KRo!3Mkm1oMC50TvAPi%{mUt<9sBm>DPjGZyfYYWssseVrNUqLQE}mz{L_UsingThisKeyIsDangerous'
 docker compose up -d
 ```
 
-Every value above must be changed from the example shown - these are placeholders, not defaults you can leave in
-place. None of them are hardcoded in `docker-compose.yml` itself: `DockerComposePostgresPassword` bootstraps the
-bundled `postgres` container's own superuser password, and is packed by `docker-compose.yml` into the
-otherwise-static `ConnectionString`/`ReportConnectionString` values, so it's the one value you set once and it's
-used consistently everywhere it's needed. See
-[Environment Variables](docs/Concepts/EnvironmentVariables/index.md) for what `JWTKey`, `ApiHmacKey`,
-`PasswordHashingKey`, and `ElementSymmetricEncryptionKey` do - leaving `ElementSymmetricEncryptionKey` at its
-placeholder means any value encrypted via the Inline Script AES helper (see
-[Field Level Encryption](docs/Concepts/FieldEncryption/index.md)) is trivially reversible by anyone with a copy of
-this documentation.
+1. **Change every value.** They are placeholders, not defaults. Make each key at least as long as the
+   example. [What each key does](https://jube-home.github.io/aml-fraud-transaction-monitoring/Concepts/EnvironmentVariables/).
+2. **Open [localhost:5001](http://localhost:5001).** Sign in as `Administrator / Administrator` and change it on first
+   login.
 
-Copy and paste the full block of shell script above into the terminal. The Jube software will be cloned locally:
+**Want Ask Jooby?** DigitalOcean Serverless Inference is the default provider, but it can be changed to any
+OpenAI-compatible endpoint. Put $20 in a prepaid DigitalOcean account, paste in your inference key, set
+`DockerComposeEnableAskJooby=True`, and Ask Jooby is alive.
 
-![Copy Paste Shell From GitHub](CopyPasteShellFromGitHub.png)
+**Ready for production?** The single-node stack is for evaluation; [Jube Cluster](https://jube-home.github.io/aml-fraud-transaction-monitoring/GettingStarted/DeployingWithJubeCluster/) takes the same platform to
+scale. It is a highly available, quorum-based Docker Swarm cluster: multiple Jube instances behind HAProxy,
+PostgreSQL under Patroni and Redis under Sentinel, failing over automatically. Add capacity as volume grows, update
+online one member at a time, and recover to any point in time from continuous WAL archiving.
 
-The software will be built locally after it has been cloned (Jube is not available in Docker Hub, and is
-instead built from source). Once the Jube Docker image has been built, Docker Compose will ensure that the remaining
-dependencies in the form of
-Postgres and Redis are available, and then orchestrate:
+## Learn more
 
-![Building and Starting](BuildingAndStarting.png)
+The Herd, the platform underneath, security, training and support all live in two places.
 
-Navigate to http://localhost:5001/:
-
-![Login](Login.png)
-
-The default username/password is Administrator / Administrator, requiring change on first login:
-
-![PasswordChange.png](PasswordChange.png)
-
-Upon change, navigation to the menu takes place:
-
-![Landing.png](Landing.png)
-
----
-
-## Documentation
-
-Jube provides comprehensive, high-quality documentation to guide teams through installation, configuration, and
-operation of the platform.
-
-Refer to the [Getting Started](https://jube-home.github.io/aml-fraud-transaction-monitoring/GettingStarted) guide in
-the [official documentation](https://jube-home.github.io/aml-fraud-transaction-monitoring) for step-by-step instructions
-on deploying and configuring Jube effectively.
-
----
-
-## Support
-
-🚀 Get to pre-production in weeks, not months, with private [training](https://www.jube.io/jube-training) direct from Jube's developer — real sovereignty, zero vendor lock-in.
-
----
+|                                                                                      |                                                                  |
+|--------------------------------------------------------------------------------------|------------------------------------------------------------------|
+| **[Documentation →](https://jube-home.github.io/aml-fraud-transaction-monitoring/)** | Install, configure and run Jube, from first login to production. |
+| **[jube.io →](https://jube.io/)**                                                    | Meet the Joobriks, see the platform, and talk to the developer.  |
 
 ## Licence
 
-Jube is licenced under AGPL-3.0-or-later.
+[AGPLv3](LICENSE).

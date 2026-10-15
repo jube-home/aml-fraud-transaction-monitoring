@@ -1,0 +1,50 @@
+{
+  "kind": "LogisticRegressionPipeline",
+  "schemaVersion": 1,
+  "inputCount": 3,
+  "variablesInOrder": [
+    "amount",
+    "velocity",
+    "noise"
+  ],
+  "payload": {
+    "standardise": true,
+    "rejectMissing": false,
+    "fillValues": [
+      0.2089105882723401,
+      -0.0928871669307757,
+      0.5061045482317472
+    ],
+    "means": [
+      0.10486018754664697,
+      -0.016042539050469175,
+      0.4947851902841344
+    ],
+    "standardDeviations": [
+      1.1805650469354818,
+      1.1481367594180023,
+      0.28051298525985885
+    ],
+    "indicatorInputs": [
+      1
+    ],
+    "weights": [
+      1.5963982657367788,
+      -0.815495717103676,
+      0.09817599372516501,
+      0.049752074232523015
+    ],
+    "intercept": -1.016194303663706,
+    "trainingPrior": 0.35,
+    "baseRate": 0.35
+  },
+  "calibrator": {
+    "method": "Platt",
+    "parameters": [
+      0.813581038735717,
+      -0.1873059861192511,
+      0.0,
+      1E-06
+    ]
+  }
+}

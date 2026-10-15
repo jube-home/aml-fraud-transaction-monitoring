@@ -19,9 +19,7 @@ namespace Jube.ResilientNpgsqlConnection
     public static class PostgresErrorClassification
     {
         public const string ReadOnlyTransaction = "25006";
-
         private const string ConnectionExceptionClass = "08";
-
         private const string InsufficientResourcesClass = "53";
 
         public static bool IsRetryable(PostgresException exception)

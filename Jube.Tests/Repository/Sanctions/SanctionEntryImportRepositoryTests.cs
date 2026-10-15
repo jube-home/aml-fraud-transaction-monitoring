@@ -29,9 +29,22 @@ namespace Jube.Test.Repository.Sanctions
     {
         private int sourceId;
 
+        private SanctionEntryImport NewImport(byte? successful = null)
+        {
+            return new SanctionEntryImport
+            {
+                SanctionEntrySourceId = sourceId,
+                StartDate = DateTime.UtcNow,
+                CreatedUser = DatabaseFixture.Prefix,
+                CreatedDate = DateTime.UtcNow,
+                Successful = successful
+            };
+        }
+
         public async Task InitializeAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             sourceId = await dbContext.InsertWithInt32IdentityAsync(new SanctionEntrySource
             {
                 Name = $"{DatabaseFixture.Prefix}SanctionSource{Guid.NewGuid():N}"[..40],
@@ -47,18 +60,6 @@ namespace Jube.Test.Repository.Sanctions
             await using var dbContext = fx.GetDbContext();
             await dbContext.SanctionEntryImport.Where(w => w.SanctionEntrySourceId == sourceId).DeleteAsync();
             await dbContext.SanctionEntrySource.Where(w => w.Id == sourceId).DeleteAsync();
-        }
-
-        private SanctionEntryImport NewImport(byte? successful = null)
-        {
-            return new SanctionEntryImport
-            {
-                SanctionEntrySourceId = sourceId,
-                StartDate = DateTime.UtcNow,
-                CreatedUser = DatabaseFixture.Prefix,
-                CreatedDate = DateTime.UtcNow,
-                Successful = successful
-            };
         }
 
         [Fact]
@@ -127,6 +128,7 @@ namespace Jube.Test.Repository.Sanctions
         {
             await using var dbContext = fx.GetDbContext();
             var repository = new SanctionEntryImportRepository(dbContext);
+
             var otherSourceId = await dbContext.InsertWithInt32IdentityAsync(new SanctionEntrySource
             {
                 Name = $"{DatabaseFixture.Prefix}SanctionSourceOther{Guid.NewGuid():N}"[..40],
@@ -139,6 +141,7 @@ namespace Jube.Test.Repository.Sanctions
             try
             {
                 var ours = await repository.InsertAsync(NewImport());
+
                 var other = await repository.InsertAsync(new SanctionEntryImport
                 {
                     SanctionEntrySourceId = otherSourceId,

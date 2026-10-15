@@ -55,7 +55,6 @@ namespace Jube.Test.Service.Query.CaseById
         private readonly List<int> createdCaseWorkflowStatusIds = [];
         private readonly List<int> createdCaseWorkflowXPathIds = [];
         private readonly List<int> createdModelIds = [];
-
         public Task InitializeAsync() => Task.CompletedTask;
 
         public async Task DisposeAsync()
@@ -64,24 +63,35 @@ namespace Jube.Test.Service.Query.CaseById
 
             await dbContext.GetTable<Data.Poco.CaseEvent>()
                 .Where(w => w.CaseId != null && createdCaseIds.Contains(w.CaseId.Value)).DeleteAsync();
+
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowXPathGuids = dbContext.CaseWorkflowXPath
                 .Where(s => createdCaseWorkflowXPathIds.Contains(s.Id)).Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowXPathRole>()
                 .Where(w => caseWorkflowXPathGuids.Contains(w.CaseWorkflowXPathGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowXPath.Where(w => createdCaseWorkflowXPathIds.Contains(w.Id)).DeleteAsync();
+
             var caseWorkflowStatusGuids = dbContext.CaseWorkflowStatus
                 .Where(s => createdCaseWorkflowStatusIds.Contains(s.Id)).Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowStatusRole>()
                 .Where(w => caseWorkflowStatusGuids.Contains(w.CaseWorkflowStatusGuid)).DeleteAsync();
+
             var caseWorkflowGuids = dbContext.CaseWorkflow.Where(s => createdCaseWorkflowIds.Contains(s.Id))
                 .Select(s => s.Guid);
+
             await dbContext.GetTable<Data.Poco.CaseWorkflowRole>()
                 .Where(w => caseWorkflowGuids.Contains(w.CaseWorkflowGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowStatus.Where(w => createdCaseWorkflowStatusIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflow.Where(w => createdCaseWorkflowIds.Contains(w.Id)).DeleteAsync();
+
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
 
@@ -110,10 +120,12 @@ namespace Jube.Test.Service.Query.CaseById
 
             var callerRoleGuid = await dbContext.UserRegistry
                 .Where(u => u.Name == userName).Select(u => u.RoleRegistryGuid).FirstAsync();
+
             var unrelatedRoleGuid = Guid.NewGuid();
             var visualisationGuid = Guid.NewGuid();
 
             var workflowGuid = Guid.NewGuid();
+
             var workflowId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflow
             {
                 Name = $"{DatabaseFixture.Prefix}Workflow{Guid.NewGuid():N}"[..40],
@@ -140,6 +152,7 @@ namespace Jube.Test.Service.Query.CaseById
             });
 
             var statusGuid = Guid.NewGuid();
+
             var statusId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowStatus
             {
                 Name = $"{DatabaseFixture.Prefix}Status{Guid.NewGuid():N}"[..40],
@@ -172,12 +185,14 @@ namespace Jube.Test.Service.Query.CaseById
             {
                 await CreateXPathAsync(dbContext, userName, workflowId, "Amount", "$.payload.Amount",
                     grantXPathRole ? callerRoleGuid : unrelatedRoleGuid);
+
                 await CreateXPathAsync(dbContext, userName, workflowId, "Missing", "$.payload.Nope",
                     callerRoleGuid);
             }
 
             var entryGuid = Guid.NewGuid();
             var created = DateTime.UtcNow.AddDays(-2);
+
             var caseId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.Case
             {
                 EntityAnalysisModelInstanceEntryGuid = entryGuid,
@@ -209,6 +224,7 @@ namespace Jube.Test.Service.Query.CaseById
             string xPath, Guid roleGuid)
         {
             var guid = Guid.NewGuid();
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowXPath
             {
                 CaseWorkflowId = workflowId,
@@ -265,6 +281,7 @@ namespace Jube.Test.Service.Query.CaseById
         public async Task CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UserNoTenant));
         }
@@ -273,6 +290,7 @@ namespace Jube.Test.Service.Query.CaseById
         public async Task CreateWithUnknownUserThrowsNotAuthenticatedAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             await Assert.ThrowsAsync<NotAuthenticatedException>(() =>
                 BuildServiceAsync(dbContext, fx.Seed.UnknownUser));
         }
@@ -319,12 +337,16 @@ namespace Jube.Test.Service.Query.CaseById
             dto.DiaryUser.Should().Be("diaryUser");
             dto.Rating.Should().Be(7);
             dto.LastClosedStatus.Should().Be(3);
+
             dto.ClosedStatusMigrationDate.UtcDateTime.Should()
                 .BeCloseTo(poco.ClosedStatusMigrationDate.Required(), TimeSpan.FromSeconds(1));
+
             dto.ForeColor.Should().Be("#112233");
             dto.BackColor.Should().Be("#445566");
+
             Newtonsoft.Json.Linq.JToken.DeepEquals(Newtonsoft.Json.Linq.JToken.Parse(dto.Json.Required()),
                 Newtonsoft.Json.Linq.JToken.Parse(CaseJson)).Should().BeTrue();
+
             dto.EnableVisualisation.Should().BeTrue();
             dto.VisualisationRegistryGuid.Should().Be(scenario.VisualisationGuid);
             dto.EntityAnalysisModelId.Should().Be(scenario.ModelId);
@@ -410,8 +432,10 @@ namespace Jube.Test.Service.Query.CaseById
         public async Task CaseWhoseWorkflowIsNotGrantedToCallersRoleIsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission,
                 grantWorkflowRole: false);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<NotFoundException>(() => service.GetAsync(scenario.CaseId));
@@ -422,8 +446,10 @@ namespace Jube.Test.Service.Query.CaseById
         public async Task CaseWhoseStatusIsNotGrantedToCallersRoleIsNotFoundAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission,
                 grantStatusRole: false);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             await Assert.ThrowsAsync<NotFoundException>(() => service.GetAsync(scenario.CaseId));
@@ -443,8 +469,10 @@ namespace Jube.Test.Service.Query.CaseById
         public async Task XPathNotGrantedToCallersRoleIsOmittedFromFormattedPayloadAsync()
         {
             await using var dbContext = fx.GetDbContext();
+
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission,
                 grantXPathRole: false);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var dto = await service.GetAsync(scenario.CaseId);
@@ -514,6 +542,7 @@ namespace Jube.Test.Service.Query.CaseById
             var serviceChangeBus = new CapturingBus();
             await using var dbContext = fx.GetDbContext();
             var scenario = await CreateScenarioAsync(dbContext, fx.Seed.UserWithPermission);
+
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission,
                 serviceChangeBus: serviceChangeBus);
             var forbiddenService = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission,
@@ -540,6 +569,7 @@ namespace Jube.Test.Service.Query.CaseById
         public async Task PermissionDeniedMessageResolvesForFrenchCultureAsync()
         {
             var original = CultureInfo.CurrentUICulture;
+
             try
             {
                 CultureInfo.CurrentUICulture = new CultureInfo("fr");

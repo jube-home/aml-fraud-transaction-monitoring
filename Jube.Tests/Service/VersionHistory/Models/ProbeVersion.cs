@@ -11,7 +11,13 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
+
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
 
 namespace Jube.Test.Service.VersionHistory.Models
 {
@@ -23,5 +29,6 @@ namespace Jube.Test.Service.VersionHistory.Models
         public string? Secret { get; set; }
         public int? Version { get; set; }
         public string? CreatedUser { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }

@@ -70,6 +70,12 @@
     border-left: 1px dotted;
 }
 
+#DatasetColumnsGrid td {
+    white-space: normal;
+    word-break: break-word;
+    vertical-align: top;
+}
+
 .errorMessage {
     padding-left: 3px;
     padding-top: 3px;
@@ -80,6 +86,68 @@
 .fieldlist {
     margin: 0 0 -1em;
     padding: 0;
+}
+
+.hint {
+    color: #8e8e8e;
+    padding-left: 2px;
+}
+
+.fieldlist + .hint {
+    margin-top: 1.4em;
+}
+
+.statistics-classes-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.statistics-monte-carlo-phase label {
+    margin-right: 12px;
+}
+
+.narrative {
+    background: #fff8e1;
+    border: 1px solid #f0c36d;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 10px 0 16px;
+}
+
+.narrative:empty {
+    display: none;
+}
+
+.narrative p {
+    margin: 0 0 8px;
+    line-height: 1.4;
+}
+
+.narrative p:last-child {
+    margin-bottom: 0;
+}
+
+.narrative-heading {
+    font-weight: 600;
+    margin: 18px 0 4px;
+}
+
+#TopologyChart {
+    overflow: auto;
+    max-height: 82vh;
+    margin-top: 10px;
+    border: 1px solid #e5e5e5;
+}
+
+#sliders {
+    margin-bottom: 4px;
+}
+
+#SlidersPlaceholder {
+    margin-top: 8px;
 }
 
 .fieldlist li {
@@ -294,14 +362,20 @@
 }
 
 .footerCopyright {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-left: 3px;
+    padding: 2px 6px;
     position: fixed;
     bottom: 0;
     float: left;
     width: auto;
     white-space: nowrap;
+    font-size: 11px;
+    color: #9a9a9a;
+    opacity: 0.8;
+    transition: opacity 120ms ease;
+}
+
+.footerCopyright:hover {
+    opacity: 1;
 }
 
 .icon {
@@ -333,6 +407,67 @@
     max-width: 1100px;
 }
 
+.copyrightPage {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 12px 4px 40px;
+}
+
+.copyrightLogo {
+    width: 160px;
+    margin-bottom: 24px;
+}
+
+.copyrightPage h1 {
+    margin: 0 0 4px;
+    font-size: 1.5em;
+}
+
+.copyrightMeta {
+    margin: 0 0 28px;
+    color: #767676;
+    font-size: 13px;
+}
+
+.copyrightBody p {
+    margin: 0 0 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.copyrightBody a,
+.copyrightLink a {
+    color: #005f7f;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.copyrightBody a:hover,
+.copyrightLink a:hover {
+    text-decoration: underline;
+}
+
+.copyrightLink {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid rgb(206, 206, 210);
+}
+
+.changePasswordPage {
+    max-width: 360px;
+}
+
+.changePasswordPage h1 {
+    margin: 0 0 4px;
+    font-size: 1.4em;
+}
+
+.changePasswordSubtitle {
+    margin: 0 0 24px;
+    color: #767676;
+    font-size: 13px;
+}
+
 .fieldGroup {
     display: inline-block;
     vertical-align: top;
@@ -354,13 +489,336 @@
     height: 200px;
 }
 
-.tenantSwitcher {
-    position: fixed;
-    bottom: 0;
+:root {
+    --jube-topbar-height: 44px;
+    --jube-sidebar-width: 230px;
+    --jube-main-gap: 16px;
+}
+
+header {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-bottom: 1px solid rgb(206, 206, 210);
+    padding: 10px 20px;
+}
+
+body.jube-authenticated header {
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+    height: var(--jube-topbar-height);
+    box-sizing: border-box;
+    gap: 10px;
+    padding: 0 12px;
+    background-color: #f3f3f4;
+    border-top: 1px solid rgb(206, 206, 210);
+}
+
+.loginHeaderLogo {
+    height: 28px;
+    width: auto;
+}
+
+#sidebarToggle {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#sidebarToggle:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+#sidebarToggle:focus-visible {
+    outline: 2px solid #005f7f;
+    outline-offset: 2px;
+}
+
+.sidebarToggleIcon,
+.sidebarToggleIcon::before,
+.sidebarToggleIcon::after {
+    display: block;
+    width: 16px;
+    height: 2px;
+    background: #444;
+    border-radius: 1px;
+}
+
+.sidebarToggleIcon {
+    position: relative;
+}
+
+.sidebarToggleIcon::before,
+.sidebarToggleIcon::after {
+    content: "";
+    position: absolute;
+    left: 0;
+}
+
+.sidebarToggleIcon::before {
+    top: -5px;
+}
+
+.sidebarToggleIcon::after {
+    top: 5px;
+}
+
+#topbarBrandLink {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+    padding: 2px;
+    border-radius: 4px;
+}
+
+#topbarBrandLink:focus-visible {
+    outline: 2px solid #005f7f;
+    outline-offset: 2px;
+}
+
+#topbarBrandLogo {
+    height: 28px;
+    transition: opacity 120ms ease;
+}
+
+#topbarBrandLink:hover #topbarBrandLogo {
+    opacity: 0.8;
+}
+
+#currentPageLabel {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 440px;
+    margin-left: 14px;
+    padding-left: 14px;
+    border-left: 1px solid rgb(206, 206, 210);
+    font-size: 13px;
+    font-weight: 500;
+    color: #767676;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#currentPageLabel:empty {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+}
+
+#topbarSpacer {
+    flex: 1 1 auto;
+}
+
+#tenantSwitcherMenuItem {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+#tenantSwitcherMenuItem #Tenant {
+    width: 160px;
+}
+
+.topbarMenu {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.topbarMenuToggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font: inherit;
+    line-height: 1;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    justify-content: center;
+    box-sizing: border-box;
+    background: transparent;
+    border: 1px solid rgb(206, 206, 210);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.topbarMenuToggle:hover {
+    background: #e8e8ea;
+}
+
+.topbarMenuToggle:focus-visible {
+    outline: 2px solid #005f7f;
+    outline-offset: 2px;
+}
+
+.topbarMenuIcon {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+}
+
+.topbarMenuToggle-resources {
+    color: #1f7a6c;
+}
+
+.topbarMenuToggle-resources:hover {
+    background: rgba(31, 122, 108, 0.1);
+}
+
+.topbarMenuToggle-account {
+    color: #005f7f;
+}
+
+.topbarMenuToggle-account:hover {
+    background: rgba(0, 95, 127, 0.1);
+}
+
+.topbarMenuPanel {
+    position: absolute;
+    top: calc(100% + 4px);
     right: 0;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-right: 3px;
+    min-width: 170px;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+    z-index: 1002;
+}
+
+.topbarMenuPanel[hidden] {
+    display: none;
+}
+
+.topbarMenuPanel li {
+    margin: 0;
+}
+
+.topbarMenuPanel a {
+    display: block;
+    padding: 7px 10px;
+    border-radius: 4px;
+    color: #222;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.topbarMenuPanel a:hover {
+    background: #f0f0f0;
+}
+
+nav#sidebar {
+    position: fixed;
+    top: var(--jube-topbar-height);
+    left: 0;
+    bottom: 0;
+    width: var(--jube-sidebar-width);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background-color: #f8f8f9;
+    border-right: 1px solid rgb(206, 206, 210);
+    z-index: 999;
+    transition: width 160ms ease;
+}
+
+nav#sidebar .k-panelbar {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+}
+
+#sidebarFooter {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    border-top: 1px solid rgb(206, 206, 210);
+    font-size: 11px;
+    color: #9a9a9a;
+}
+
+nav#sidebar .k-panelbar > .k-item > .k-link {
+    font-weight: 600;
+}
+
+#sidebar .sidebarFeatured > a {
+    color: #1f7a6c;
+}
+
+#sidebar .sidebarFeatured > a:hover,
+#sidebar .sidebarFeatured > a.k-state-hover {
+    color: #19675a;
+}
+
+.sidebarItemIcon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    margin-bottom: -3px;
+    color: inherit;
+}
+
+body.sidebarCollapsed nav#sidebar {
+    width: 0;
+    overflow: hidden;
+    border-right-color: transparent;
+}
+
+main[role="main"] {
+    box-sizing: border-box;
+}
+
+body.jube-authenticated main[role="main"] {
+    position: fixed;
+    top: calc(var(--jube-topbar-height) + var(--jube-main-gap));
+    right: var(--jube-main-gap);
+    bottom: var(--jube-main-gap);
+    left: calc(var(--jube-sidebar-width) + var(--jube-main-gap) * 2);
+    margin: 0;
+    padding: 16px 20px 20px;
+    overflow-y: auto;
+    overflow-x: auto;
+    background: #fff;
+    border: 1px solid rgb(206, 206, 210);
+    border-radius: 6px;
+    transition: left 160ms ease;
+}
+
+body.jube-authenticated.sidebarCollapsed main[role="main"] {
+    left: var(--jube-main-gap);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    nav#sidebar,
+    body.jube-authenticated main[role="main"] {
+        transition: none;
+    }
+}
+
+/* Tree.js (and similarly #askJoobySplitter) set an explicit pixel height on the splitter from
+   JS, computed from main's padded content box; that JS measurement can momentarily race the
+   browser's own layout of main on first paint and come out a little too tall. Forcing height via
+   an !important rule here (which beats a plain inline style regardless of specificity) makes the
+   fit correct from the very first frame, with the JS-set pixel height only taking over again once
+   a real window resize asks Kendo to recompute pane positions against it. */
+#Splitter {
+    height: 100% !important;
+    box-sizing: border-box;
 }
 
 .cellLinkMiddle {
@@ -435,4 +893,133 @@
 
 .jube-toolbar-filters label {
     font-weight: normal;
+}
+
+.dataset-distinct-values-table {
+    width: auto;
+    min-width: 260px;
+    border-collapse: collapse;
+    margin: 6px 0 6px 30px;
+}
+
+.dataset-distinct-values-table th,
+.dataset-distinct-values-table td {
+    border: 1px solid #ddd;
+    padding: 4px 10px;
+    text-align: left;
+}
+
+.dataset-distinct-values-empty {
+    margin: 6px 0 6px 30px;
+    color: #888;
+}
+
+.loginPage {
+    display: flex;
+    justify-content: center;
+    padding: 64px 20px;
+}
+
+.loginCard {
+    width: 100%;
+    max-width: 360px;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid rgb(206, 206, 210);
+    border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+    padding: 32px 28px 28px;
+    text-align: center;
+}
+
+.loginCardLogo {
+    width: 140px;
+    margin-bottom: 18px;
+}
+
+.loginCardSubtitle {
+    margin: 0 0 24px;
+    font-size: 13px;
+    color: #767676;
+}
+
+.loginCard .tTStyle,
+.changePasswordPage .tTStyle {
+    text-align: left;
+}
+
+.loginCard .tTStyle tr:nth-child(even),
+.loginCard .tTStyle tr:nth-child(odd),
+.changePasswordPage .tTStyle tr:nth-child(even),
+.changePasswordPage .tTStyle tr:nth-child(odd) {
+    background: transparent;
+}
+
+.loginCard .tTStyle td:nth-child(1),
+.changePasswordPage .tTStyle td:nth-child(1) {
+    width: auto;
+    padding: 0 0 4px;
+}
+
+.loginCard .tTStyle td:nth-child(2),
+.changePasswordPage .tTStyle td:nth-child(2) {
+    padding: 0 0 14px;
+}
+
+.loginCard .tTStyle label,
+.changePasswordPage .tTStyle label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #444;
+}
+
+.loginCard .k-textbox,
+.changePasswordPage .k-textbox {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.loginActions {
+    margin-top: 6px;
+    text-align: left;
+}
+
+.loginActions #Login,
+.loginActions #Change {
+    width: 100%;
+}
+
+.loginActions #MessageAuthenticate,
+.loginActions #MessageChange {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+.loginCardActions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.loginPrimaryLink {
+    display: inline-block;
+    padding: 8px 18px;
+    background: #005f7f;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.loginPrimaryLink:hover {
+    background: #004763;
+}
+
+.loginErrorMessage {
+    margin-top: 14px;
+    font-size: 12px;
 }

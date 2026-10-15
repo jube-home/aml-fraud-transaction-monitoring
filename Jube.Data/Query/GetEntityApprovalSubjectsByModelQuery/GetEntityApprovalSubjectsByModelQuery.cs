@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Repository.Models;
+
 namespace Jube.Data.Query.GetEntityApprovalSubjectsByModelQuery
 {
     using System;
@@ -19,9 +21,9 @@ namespace Jube.Data.Query.GetEntityApprovalSubjectsByModelQuery
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
+    using EntityApproval;
     using LinqToDB;
     using Models;
-    using Repository;
 
     public sealed class GetEntityApprovalSubjectsByModelQuery(DbContext dbContext, int tenantRegistryId)
     {

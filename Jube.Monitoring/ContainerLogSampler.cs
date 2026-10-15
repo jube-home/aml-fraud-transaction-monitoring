@@ -24,6 +24,7 @@ namespace Jube.Monitoring
             var results = new List<ContainerLogEntry>();
 
             var containers = await client.GetContainersAsync().ConfigureAwait(false);
+
             if (containers == null)
             {
                 return results;
@@ -32,6 +33,7 @@ namespace Jube.Monitoring
             foreach (var container in containers)
             {
                 var containerId = (string?)container["Id"];
+
                 if (containerId == null)
                 {
                     continue;
@@ -50,15 +52,18 @@ namespace Jube.Monitoring
                 var since = $"{sinceNanos / 1_000_000_000}.{sinceNanos % 1_000_000_000:D9}";
 
                 var lines = await client.GetContainerLogsAsync(containerId, since).ConfigureAwait(false);
+
                 if (lines is not { Count: > 0 })
                 {
                     continue;
                 }
 
                 var maxNanos = lastNanos;
+
                 foreach (var (streamType, line) in lines)
                 {
                     var (occurredDate, nanos, message) = ParseLine(line);
+
                     if (nanos > maxNanos)
                     {
                         maxNanos = nanos;
@@ -90,6 +95,7 @@ namespace Jube.Monitoring
             }
 
             var totalNanos = (parsed.UtcTicks - DateTimeOffset.UnixEpoch.Ticks) * 100;
+
             var message = separatorIndex >= 0 && separatorIndex + 1 < line.Length
                 ? line[(separatorIndex + 1)..]
                 : string.Empty;

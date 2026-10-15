@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Service.Agent.Models;
+using Jube.Service.EntityAnalysisInlineScript;
+
 namespace Jube.Service.Agent.ServiceToolCatalogue
 {
     public static partial class ServiceToolCatalogue
@@ -22,16 +25,20 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisInlineScriptList", OperationKind.Read, true, false,
                     "Lists registered Inline Scripts from the system-wide catalogue, keyset-paged and capped. " +
-                    "Not tenant-scoped."),
+                    "Not tenant-scoped.",
+                    EntityAnalysisInlineScriptService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisInlineScriptFilterFields", OperationKind.Read, true, false,
-                    "Lists the fields a query builder JSON filter over Entity Analysis Inline Scripts may use."),
+                    "Lists the fields a query builder JSON filter over Entity Analysis Inline Scripts may use.",
+                    EntityAnalysisInlineScriptService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisInlineScriptFilter", OperationKind.Read, true, false,
-                    "Returns the Entity Analysis Inline Scripts matching query builder JSON, keyset-paged and capped."),
+                    "Returns the Entity Analysis Inline Scripts matching query builder JSON, keyset-paged and capped.",
+                    EntityAnalysisInlineScriptService.ListPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisInlineScriptCount", OperationKind.Read, true, false,
-                    "Counts the Entity Analysis Inline Scripts matching query builder JSON, optionally grouped by a field.")
+                    "Counts the Entity Analysis Inline Scripts matching query builder JSON, optionally grouped by a field.",
+                    EntityAnalysisInlineScriptService.ListPermissions)
             ]);
         }
     }

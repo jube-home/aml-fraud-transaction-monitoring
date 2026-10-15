@@ -36,6 +36,7 @@ namespace Jube.Validations.Repository.CaseWorkflowFilter
             {
                 using var document = System.Text.Json.JsonDocument.Parse(value,
                     new System.Text.Json.JsonDocumentOptions { MaxDepth = 64 });
+
                 return true;
             }
             catch (System.Text.Json.JsonException)
@@ -69,6 +70,7 @@ namespace Jube.Validations.Repository.CaseWorkflowFilter
                 {
                     var existing = await repository
                         .GetByNameCaseWorkflowIdAsync(name, dto.CaseWorkflowId, cancellation);
+
                     return existing == null || existing.Id == dto.Id;
                 })
                 .WithMessage(_ => localiser[CaseWorkflowFilterResources.NameAlreadyExists])

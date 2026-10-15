@@ -22,6 +22,7 @@ namespace Jube.Monitoring
             var results = new List<HaProxyServerStatus>();
 
             string csv;
+
             try
             {
                 csv = await httpClient.GetStringAsync(statsUrl).ConfigureAwait(false);
@@ -32,6 +33,7 @@ namespace Jube.Monitoring
             }
 
             var lines = csv.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
             if (lines.Length == 0)
             {
                 return results;
@@ -39,6 +41,7 @@ namespace Jube.Monitoring
 
             var header = lines[0].TrimStart('#', ' ').Split(',');
             var columnIndex = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
             for (var i = 0; i < header.Length; i++)
             {
                 columnIndex[header[i].Trim()] = i;
@@ -52,6 +55,7 @@ namespace Jube.Monitoring
             foreach (var line in lines.Skip(1))
             {
                 var fields = line.Split(',');
+
                 if (typeIndex >= fields.Length || fields[typeIndex] != "2")
                 {
                     continue;
@@ -90,18 +94,21 @@ namespace Jube.Monitoring
             }
 
             var value = fields[index].Trim();
+
             return value.Length == 0 ? null : value;
         }
 
         private static int? IntField(string[] fields, Dictionary<string, int> columnIndex, string name)
         {
             var value = Field(fields, columnIndex, name);
+
             return value != null && int.TryParse(value, out var parsed) ? parsed : null;
         }
 
         private static long? LongField(string[] fields, Dictionary<string, int> columnIndex, string name)
         {
             var value = Field(fields, columnIndex, name);
+
             return value != null && long.TryParse(value, out var parsed) ? parsed : null;
         }
     }

@@ -1,48 +1,56 @@
-﻿// Accord Statistics Library
-// The Accord.NET Framework
+﻿// Accord.NET Framework (originally)
 // http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2017
 // cesarsouza at gmail.com
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+// Relicensed to MIT per the author's own explicit grant made when the
+// upstream project was archived (2020-11-19):
+// https://github.com/accord-net/framework
+// "I am also willing to change the license of any file where I am the
+// single author... to MIT so people can reuse individual pieces of code
+// more easily." -- Cesar De Souza
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+using System;
+using Accord.Math.Differentiation;
+using Accord.Math.Integration;
+using Accord.Math.Optimization;
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using System;
-    using Accord.Math.Differentiation;
-    using Accord.Math.Integration;
-    using Accord.Math.Optimization;
-    using AForge;
-
     /// <summary>
-    ///   General continuous distribution.
+    ///     General continuous distribution.
     /// </summary>
-    /// 
     /// <remarks>
-    /// <para>
-    ///   The general continuous distribution provides the automatic calculation for 
-    ///   a variety of distribution functions and measures given only definitions for
-    ///   the Probability Density Function (PDF) or the Cumulative Distribution Function
-    ///   (CDF). Values such as the Expected value, Variance, Entropy and others are
-    ///   computed through numeric integration.</para>
+    ///     <para>
+    ///         The general continuous distribution provides the automatic calculation for
+    ///         a variety of distribution functions and measures given only definitions for
+    ///         the Probability Density Function (PDF) or the Cumulative Distribution Function
+    ///         (CDF). Values such as the Expected value, Variance, Entropy and others are
+    ///         computed through numeric integration.
+    ///     </para>
     /// </remarks>
-    /// 
     /// <example>
-    /// <code>
+    ///     <code>
     /// // Let's suppose we have a formula that defines a probability distribution
     /// // but we dont know much else about it. We don't know the form of its cumulative
     /// // distribution function, for example. We would then like to know more about
@@ -80,234 +88,92 @@ namespace Accord.Statistics.Distributions.Univariate
     /// double chf = distribution.CumulativeHazardFunction(x: 1.4); // 0.21776177055276186
     /// </code>
     /// </example>
-    /// 
     public class GeneralContinuousDistribution : UnivariateContinuousDistribution
     {
+        private Func<double, double> cdf;
+        private double? entropy;
+
+        private double? mean;
 
         // distribution parameters
         private IUnivariateIntegration method;
-        private Func<double, double> pdf;
-        private Func<double, double> cdf;
-        private DoubleRange support;
-
-        private double? mean;
-        private double? variance;
-        private double? entropy;
         private double? mode;
-
+        private Func<double, double> pdf;
+        private DoubleRange support;
+        private double? variance;
 
         /// <summary>
-        ///   Creates a new <see cref="GeneralContinuousDistribution"/> with the given PDF and CDF functions.
+        ///     Creates a new <see cref="GeneralContinuousDistribution" /> with the given PDF and CDF functions.
         /// </summary>
-        /// 
         /// <param name="support">The distribution's support over the real line.</param>
         /// <param name="density">A probability density function.</param>
         /// <param name="distribution">A cumulative distribution function.</param>
-        /// 
         public GeneralContinuousDistribution(DoubleRange support,
             Func<double, double> density, Func<double, double> distribution)
         {
             if (density == null)
+            {
                 throw new ArgumentNullException("density");
+            }
 
             if (distribution == null)
+            {
                 throw new ArgumentNullException("distribution");
+            }
 
-            this.method = new InfiniteAdaptiveGaussKronrod(100);
-            this.pdf = density;
-            this.cdf = distribution;
+            method = new InfiniteAdaptiveGaussKronrod(100);
+            pdf = density;
+            cdf = distribution;
             this.support = support;
         }
 
         /// <summary>
-        ///   Creates a new <see cref="GeneralContinuousDistribution"/> with the given PDF and CDF functions.
+        ///     Creates a new <see cref="GeneralContinuousDistribution" /> with the given PDF and CDF functions.
         /// </summary>
-        /// 
         /// <param name="distribution">A distribution whose properties will be numerically estimated.</param>
-        /// 
         public GeneralContinuousDistribution(UnivariateContinuousDistribution distribution)
         {
             if (distribution == null)
+            {
                 throw new ArgumentNullException("distribution");
+            }
 
-            this.method = new InfiniteAdaptiveGaussKronrod(100);
-            this.pdf = distribution.ProbabilityDensityFunction;
-            this.cdf = distribution.DistributionFunction;
-            this.support = distribution.Support;
+            method = new InfiniteAdaptiveGaussKronrod(100);
+            pdf = distribution.ProbabilityDensityFunction;
+            cdf = distribution.DistributionFunction;
+            support = distribution.Support;
         }
 
-        /// <summary>
-        ///   Creates a new <see cref="GeneralContinuousDistribution"/> 
-        ///   from an existing <see cref="UnivariateContinuousDistribution">
-        ///   continuous distribution</see>.
-        /// </summary>
-        /// 
-        /// <param name="distribution">The distribution.</param>
-        /// 
-        /// <returns>A <see cref="GeneralContinuousDistribution"/> representing the same
-        /// <paramref name="distribution"/> but whose measures and functions are computed
-        /// using numerical integration and differentiation.</returns>
-        /// 
-        public static GeneralContinuousDistribution FromDistribution(UnivariateContinuousDistribution distribution)
+        private GeneralContinuousDistribution()
         {
-            GeneralContinuousDistribution dist = new GeneralContinuousDistribution();
-            dist.support = distribution.Support;
-            dist.pdf = distribution.ProbabilityDensityFunction;
-            dist.cdf = distribution.DistributionFunction;
-            return dist;
         }
 
         /// <summary>
-        ///   Creates a new <see cref="GeneralContinuousDistribution"/> 
-        ///   using only a probability density function definition.
+        ///     Gets the support interval for this distribution.
         /// </summary>
-        /// 
-        /// <param name="pdf">A probability density function.</param>
-        /// 
-        /// <returns>A <see cref="GeneralContinuousDistribution"/> created from the 
-        /// <paramref name="pdf"/> whose measures and functions are computed using 
-        /// numerical integration and differentiation.</returns>
-        /// 
-        public static GeneralContinuousDistribution FromDensityFunction(Func<double, double> pdf)
-        {
-            var range = new DoubleRange(double.NegativeInfinity, double.PositiveInfinity);
-            var method = createDefaultIntegrationMethod();
-            return FromDensityFunction(range, pdf, method);
-        }
-
-        /// <summary>
-        ///   Creates a new <see cref="GeneralContinuousDistribution"/> 
-        ///   using only a probability density function definition.
-        /// </summary>
-        /// 
-        /// <param name="support">The distribution's support over the real line.</param>
-        /// <param name="pdf">A probability density function.</param>
-        /// 
-        /// <returns>A <see cref="GeneralContinuousDistribution"/> created from the 
-        /// <paramref name="pdf"/> whose measures and functions are computed using 
-        /// numerical integration and differentiation.</returns>
-        /// 
-        public static GeneralContinuousDistribution FromDensityFunction(
-            DoubleRange support, Func<double, double> pdf)
-        {
-            var method = createDefaultIntegrationMethod();
-            return FromDensityFunction(support, pdf, method);
-        }
-
-        /// <summary>
-        ///   Creates a new <see cref="GeneralContinuousDistribution"/> 
-        ///   using only a cumulative distribution function definition.
-        /// </summary>
-        /// 
-        /// <param name="cdf">A cumulative distribution function.</param>
-        /// 
-        /// <returns>A <see cref="GeneralContinuousDistribution"/> created from the 
-        /// <paramref name="cdf"/> whose measures and functions are computed using 
-        /// numerical integration and differentiation.</returns>
-        /// 
-        public static GeneralContinuousDistribution FromDistributionFunction(Func<double, double> cdf)
-        {
-            var range = new DoubleRange(double.NegativeInfinity, double.PositiveInfinity);
-            var method = createDefaultIntegrationMethod();
-            return FromDistributionFunction(range, cdf, method);
-        }
-
-        /// <summary>
-        ///   Creates a new <see cref="GeneralContinuousDistribution"/> 
-        ///   using only a cumulative distribution function definition.
-        /// </summary>
-        /// 
-        /// <param name="support">The distribution's support over the real line.</param>
-        /// <param name="cdf">A cumulative distribution function.</param>
-        /// 
-        /// <returns>A <see cref="GeneralContinuousDistribution"/> created from the 
-        /// <paramref name="cdf"/> whose measures and functions are computed using 
-        /// numerical integration and differentiation.</returns>
-        /// 
-        public static GeneralContinuousDistribution FromDistributionFunction(
-            DoubleRange support, Func<double, double> cdf)
-        {
-            var method = createDefaultIntegrationMethod();
-            return FromDistributionFunction(support, cdf, method);
-        }
-
-        /// <summary>
-        ///   Creates a new <see cref="GeneralContinuousDistribution"/> 
-        ///   using only a probability density function definition.
-        /// </summary>
-        /// 
-        /// <param name="support">The distribution's support over the real line.</param>
-        /// <param name="pdf">A probability density function.</param>
-        /// <param name="method">The integration method to use for numerical computations.</param>
-        /// 
-        /// <returns>A <see cref="GeneralContinuousDistribution"/> created from the 
-        /// <paramref name="pdf"/> whose measures and functions are computed using 
-        /// numerical integration and differentiation.</returns>
-        /// 
-        public static GeneralContinuousDistribution FromDensityFunction(
-            DoubleRange support, Func<double, double> pdf, IUnivariateIntegration method)
-        {
-            GeneralContinuousDistribution dist = new GeneralContinuousDistribution();
-            dist.support = support;
-            dist.pdf = pdf;
-            dist.method = method;
-            return dist;
-        }
-
-        /// <summary>
-        ///   Creates a new <see cref="GeneralContinuousDistribution"/> 
-        ///   using only a cumulative distribution function definition.
-        /// </summary>
-        /// 
-        /// <param name="support">The distribution's support over the real line.</param>
-        /// <param name="cdf">A cumulative distribution function.</param>
-        /// <param name="method">The integration method to use for numerical computations.</param>
-        /// 
-        /// <returns>A <see cref="GeneralContinuousDistribution"/> created from the 
-        /// <paramref name="cdf"/> whose measures and functions are computed using 
-        /// numerical integration and differentiation.</returns>
-        /// 
-        public static GeneralContinuousDistribution FromDistributionFunction(
-            DoubleRange support, Func<double, double> cdf, IUnivariateIntegration method)
-        {
-            GeneralContinuousDistribution dist = new GeneralContinuousDistribution();
-            dist.support = support;
-            dist.cdf = cdf;
-            dist.method = method;
-            return dist;
-        }
-
-        /// <summary>
-        ///   Gets the support interval for this distribution.
-        /// </summary>
-        /// 
         /// <value>
-        ///   A <see cref="DoubleRange"/> containing
-        ///   the support interval for this distribution.
+        ///     A <see cref="DoubleRange" /> containing
+        ///     the support interval for this distribution.
         /// </value>
-        /// 
         public override DoubleRange Support
         {
-            get { return support; }
-            set { support = value; }
+            get => support;
+            set => support = value;
         }
 
-
         /// <summary>
-        ///   Gets the mean for this distribution.
+        ///     Gets the mean for this distribution.
         /// </summary>
-        /// 
         /// <value>The distribution's mean value.</value>
-        /// 
         public override double Mean
         {
             get
             {
                 if (mean == null)
                 {
-                    method.Function = (x) =>
+                    method.Function = x =>
                     {
-                        double p = ProbabilityDensityFunction(x);
+                        var p = ProbabilityDensityFunction(x);
                         return x * p;
                     };
 
@@ -318,23 +184,21 @@ namespace Accord.Statistics.Distributions.Univariate
 
                 return mean.Value;
             }
-            set { throw new NotImplementedException();}
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the variance for this distribution.
+        ///     Gets the variance for this distribution.
         /// </summary>
-        /// 
         /// <value>The distribution's variance.</value>
-        /// 
         public override double Variance
         {
             get
             {
                 if (variance == null)
                 {
-                    double u = Mean;
-                    method.Function = (x) => (x * x) * ProbabilityDensityFunction(x);
+                    var u = Mean;
+                    method.Function = x => x * x * ProbabilityDensityFunction(x);
                     method.Range = support;
                     method.Compute();
                     variance = method.Area - u * u;
@@ -342,22 +206,20 @@ namespace Accord.Statistics.Distributions.Univariate
 
                 return variance.Value;
             }
-            set { throw new NotImplementedException();}
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the entropy for this distribution.
+        ///     Gets the entropy for this distribution.
         /// </summary>
-        /// 
         /// <value>The distribution's entropy.</value>
-        /// 
         public override double Entropy
         {
             get
             {
                 if (entropy == null)
                 {
-                    method.Function = (x) => ProbabilityDensityFunction(x) * LogProbabilityDensityFunction(x);
+                    method.Function = x => ProbabilityDensityFunction(x) * LogProbabilityDensityFunction(x);
                     method.Range = support;
                     method.Compute();
                     entropy = method.Area;
@@ -365,17 +227,15 @@ namespace Accord.Statistics.Distributions.Univariate
 
                 return entropy.Value;
             }
-            set { throw new NotImplementedException();}
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the mode for this distribution.
+        ///     Gets the mode for this distribution.
         /// </summary>
-        /// 
         /// <value>
-        ///   The distribution's mode value.
+        ///     The distribution's mode value.
         /// </value>
-        /// 
         public override double Mode
         {
             get
@@ -383,65 +243,199 @@ namespace Accord.Statistics.Distributions.Univariate
                 if (mode == null)
                 {
                     var range = GetRange(0.99);
-                    double lower = range.Min;
-                    double upper = range.Max;
+                    var lower = range.Min;
+                    var upper = range.Max;
                     mode = BrentSearch.Maximize(ProbabilityDensityFunction, lower, upper);
                 }
 
                 return mode.Value;
             }
-            set { throw new NotImplementedException();}
+            set => throw new NotImplementedException();
         }
 
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Creates a new <see cref="GeneralContinuousDistribution" />
+        ///     from an existing
+        ///     <see cref="UnivariateContinuousDistribution">
+        ///         continuous distribution
+        ///     </see>
+        ///     .
         /// </summary>
-        /// 
+        /// <param name="distribution">The distribution.</param>
+        /// <returns>
+        ///     A <see cref="GeneralContinuousDistribution" /> representing the same
+        ///     <paramref name="distribution" /> but whose measures and functions are computed
+        ///     using numerical integration and differentiation.
+        /// </returns>
+        public static GeneralContinuousDistribution FromDistribution(UnivariateContinuousDistribution distribution)
+        {
+            var dist = new GeneralContinuousDistribution();
+            dist.support = distribution.Support;
+            dist.pdf = distribution.ProbabilityDensityFunction;
+            dist.cdf = distribution.DistributionFunction;
+            return dist;
+        }
+
+        /// <summary>
+        ///     Creates a new <see cref="GeneralContinuousDistribution" />
+        ///     using only a probability density function definition.
+        /// </summary>
+        /// <param name="pdf">A probability density function.</param>
+        /// <returns>
+        ///     A <see cref="GeneralContinuousDistribution" /> created from the
+        ///     <paramref name="pdf" /> whose measures and functions are computed using
+        ///     numerical integration and differentiation.
+        /// </returns>
+        public static GeneralContinuousDistribution FromDensityFunction(Func<double, double> pdf)
+        {
+            var range = new DoubleRange(double.NegativeInfinity, double.PositiveInfinity);
+            var method = createDefaultIntegrationMethod();
+            return FromDensityFunction(range, pdf, method);
+        }
+
+        /// <summary>
+        ///     Creates a new <see cref="GeneralContinuousDistribution" />
+        ///     using only a probability density function definition.
+        /// </summary>
+        /// <param name="support">The distribution's support over the real line.</param>
+        /// <param name="pdf">A probability density function.</param>
+        /// <returns>
+        ///     A <see cref="GeneralContinuousDistribution" /> created from the
+        ///     <paramref name="pdf" /> whose measures and functions are computed using
+        ///     numerical integration and differentiation.
+        /// </returns>
+        public static GeneralContinuousDistribution FromDensityFunction(
+            DoubleRange support, Func<double, double> pdf)
+        {
+            var method = createDefaultIntegrationMethod();
+            return FromDensityFunction(support, pdf, method);
+        }
+
+        /// <summary>
+        ///     Creates a new <see cref="GeneralContinuousDistribution" />
+        ///     using only a cumulative distribution function definition.
+        /// </summary>
+        /// <param name="cdf">A cumulative distribution function.</param>
+        /// <returns>
+        ///     A <see cref="GeneralContinuousDistribution" /> created from the
+        ///     <paramref name="cdf" /> whose measures and functions are computed using
+        ///     numerical integration and differentiation.
+        /// </returns>
+        public static GeneralContinuousDistribution FromDistributionFunction(Func<double, double> cdf)
+        {
+            var range = new DoubleRange(double.NegativeInfinity, double.PositiveInfinity);
+            var method = createDefaultIntegrationMethod();
+            return FromDistributionFunction(range, cdf, method);
+        }
+
+        /// <summary>
+        ///     Creates a new <see cref="GeneralContinuousDistribution" />
+        ///     using only a cumulative distribution function definition.
+        /// </summary>
+        /// <param name="support">The distribution's support over the real line.</param>
+        /// <param name="cdf">A cumulative distribution function.</param>
+        /// <returns>
+        ///     A <see cref="GeneralContinuousDistribution" /> created from the
+        ///     <paramref name="cdf" /> whose measures and functions are computed using
+        ///     numerical integration and differentiation.
+        /// </returns>
+        public static GeneralContinuousDistribution FromDistributionFunction(
+            DoubleRange support, Func<double, double> cdf)
+        {
+            var method = createDefaultIntegrationMethod();
+            return FromDistributionFunction(support, cdf, method);
+        }
+
+        /// <summary>
+        ///     Creates a new <see cref="GeneralContinuousDistribution" />
+        ///     using only a probability density function definition.
+        /// </summary>
+        /// <param name="support">The distribution's support over the real line.</param>
+        /// <param name="pdf">A probability density function.</param>
+        /// <param name="method">The integration method to use for numerical computations.</param>
+        /// <returns>
+        ///     A <see cref="GeneralContinuousDistribution" /> created from the
+        ///     <paramref name="pdf" /> whose measures and functions are computed using
+        ///     numerical integration and differentiation.
+        /// </returns>
+        public static GeneralContinuousDistribution FromDensityFunction(
+            DoubleRange support, Func<double, double> pdf, IUnivariateIntegration method)
+        {
+            var dist = new GeneralContinuousDistribution();
+            dist.support = support;
+            dist.pdf = pdf;
+            dist.method = method;
+            return dist;
+        }
+
+        /// <summary>
+        ///     Creates a new <see cref="GeneralContinuousDistribution" />
+        ///     using only a cumulative distribution function definition.
+        /// </summary>
+        /// <param name="support">The distribution's support over the real line.</param>
+        /// <param name="cdf">A cumulative distribution function.</param>
+        /// <param name="method">The integration method to use for numerical computations.</param>
+        /// <returns>
+        ///     A <see cref="GeneralContinuousDistribution" /> created from the
+        ///     <paramref name="cdf" /> whose measures and functions are computed using
+        ///     numerical integration and differentiation.
+        /// </returns>
+        public static GeneralContinuousDistribution FromDistributionFunction(
+            DoubleRange support, Func<double, double> cdf, IUnivariateIntegration method)
+        {
+            var dist = new GeneralContinuousDistribution();
+            dist.support = support;
+            dist.cdf = cdf;
+            dist.method = method;
+            return dist;
+        }
+
+        /// <summary>
+        ///     Gets the cumulative distribution function (cdf) for
+        ///     this distribution evaluated at point <c>x</c>.
+        /// </summary>
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         protected internal override double InnerDistributionFunction(double x)
         {
             if (cdf != null)
+            {
                 return cdf(x);
+            }
 
             method.Function = pdf;
-            method.Range = new DoubleRange(Double.NegativeInfinity, x);
+            method.Range = new DoubleRange(double.NegativeInfinity, x);
             method.Compute();
             return method.Area;
         }
 
         /// <summary>
-        ///   Gets the probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///     Gets the probability density function (pdf) for
+        ///     this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// 
         /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
+        ///     The probability of <c>x</c> occurring
+        ///     in the current distribution.
         /// </returns>
-        /// 
         protected internal override double InnerProbabilityDensityFunction(double x)
         {
             if (pdf != null)
+            {
                 return pdf(x);
+            }
 
             return FiniteDifferences.Derivative(cdf, x, 1, 1e-6);
         }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///     Creates a new object that is a copy of the current instance.
         /// </summary>
-        /// 
         /// <returns>
-        ///   A new object that is a copy of this instance.
+        ///     A new object that is a copy of this instance.
         /// </returns>
-        /// 
         public override object Clone()
         {
-            GeneralContinuousDistribution c = new GeneralContinuousDistribution();
+            var c = new GeneralContinuousDistribution();
 
             c.pdf = pdf;
             c.cdf = cdf;
@@ -451,25 +445,17 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String" /> that represents this instance.
+        ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
-        /// 
         /// <param name="format">The format.</param>
         /// <param name="formatProvider">The format provider.</param>
-        /// 
         /// <returns>
-        ///   A <see cref="System.String" /> that represents this instance.
+        ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        /// 
         public override string ToString(string format, IFormatProvider formatProvider)
         {
-            return String.Format(formatProvider, "Continuous(x)");
+            return string.Format(formatProvider, "Continuous(x)");
         }
-
-        private GeneralContinuousDistribution()
-        {
-        }
-
 
         private static InfiniteAdaptiveGaussKronrod createDefaultIntegrationMethod()
         {

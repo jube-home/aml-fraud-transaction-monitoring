@@ -30,6 +30,7 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
+
             return model;
         }
 
@@ -60,8 +61,11 @@ namespace Jube.Data.Repository
 
             return SummaryStatistics.Build(new Dictionary<string, double[]>
             {
-                ["lagBytes"] = rows.Where(w => w.LagBytes.HasValue)
-                    .Select(s => (double)s.LagBytes!.Value).ToArray()
+                ["lagBytes"] =
+                [
+                    .. rows.Where(w => w.LagBytes.HasValue)
+                        .Select(s => (double)s.LagBytes!.Value)
+                ]
             });
         }
 
@@ -83,6 +87,7 @@ namespace Jube.Data.Repository
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var lowerSearch = search.ToLower();
+
                 query = query.Where(w =>
                     (w.Name != null && w.Name.ToLower().Contains(lowerSearch)) ||
                     (w.Host != null && w.Host.ToLower().Contains(lowerSearch)) ||
@@ -103,6 +108,7 @@ namespace Jube.Data.Repository
             string sortField, string sortDirection)
         {
             var descending = !string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+
             return sortField switch
             {
                 "name" => query.OrderByField(o => o.Name, descending),

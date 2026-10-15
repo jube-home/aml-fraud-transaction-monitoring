@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Repository;
+using Jube.Data.Repository.Models;
 using Jube.Migrations.Branches.ListDictionaryValueUniqueness.Helpers;
 using Jube.Service.Concurrency;
 using Jube.Test.Infrastructure;

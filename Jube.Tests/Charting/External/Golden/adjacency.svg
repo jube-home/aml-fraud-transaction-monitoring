@@ -1,0 +1,622 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 520 480" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-d7629e87-t jc-d7629e87-d">
+    <title id="jc-d7629e87-t">Account transfer network</title>
+    <desc id="jc-d7629e87-d">Matrix of 8 rows and 8 columns, ordered by hierarchical clustering.</desc>
+    <rect class="bg" x="0" y="0" width="520" height="480" rx="8"/>
+    <text class="ttl" x="16" y="32">Account transfer network</text>
+    <text class="tk end mid" x="23.48" y="72.75">E</text>
+    <text class="tk end mid" x="23.48" y="122.25">A</text>
+    <text class="tk end mid" x="23.48" y="171.75">G</text>
+    <text class="tk end mid" x="23.48" y="221.25">C</text>
+    <text class="tk end mid" x="23.48" y="270.75">F</text>
+    <text class="tk end mid" x="23.48" y="320.25">H</text>
+    <text class="tk end mid" x="23.48" y="369.75">B</text>
+    <text class="tk end mid" x="23.48" y="419.25">D</text>
+    <text class="tk ctr" x="56.26" y="460">E</text>
+    <text class="tk ctr" x="105.83" y="460">A</text>
+    <text class="tk ctr" x="155.39" y="460">G</text>
+    <text class="tk ctr" x="204.96" y="460">C</text>
+    <text class="tk ctr" x="254.52" y="460">F</text>
+    <text class="tk ctr" x="304.09" y="460">H</text>
+    <text class="tk ctr" x="353.65" y="460">B</text>
+    <text class="tk ctr" x="403.22" y="460">D</text>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / E, Value: 0">
+        <title>E / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="100.75">E / E</text>
+            <text class="tx" x="41.48" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / A, Value: 4">
+        <title>E / A, Value: 4</title>
+        <rect class="cell m q6" x="81.05" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="100.75">E / A</text>
+            <text class="tx" x="83.87" y="117.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / G, Value: 4">
+        <title>E / G, Value: 4</title>
+        <rect class="cell m q6" x="130.61" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="100.75">E / G</text>
+            <text class="tx" x="133.43" y="117.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / C, Value: 6">
+        <title>E / C, Value: 6</title>
+        <rect class="cell m q8" x="180.18" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="100.75">E / C</text>
+            <text class="tx" x="183" y="117.75">Value: 6</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / F, Value: 0">
+        <title>E / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="100.75">E / F</text>
+            <text class="tx" x="232.56" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / H, Value: 0">
+        <title>E / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="100.75">E / H</text>
+            <text class="tx" x="282.13" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / B, Value: 0">
+        <title>E / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="100.75">E / B</text>
+            <text class="tx" x="331.69" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="E / D, Value: 0">
+        <title>E / D, Value: 0</title>
+        <rect class="cell m q0" x="378.44" y="48" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="82.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="100.75">E / D</text>
+            <text class="tx" x="374.08" y="117.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / E, Value: 4">
+        <title>A / E, Value: 4</title>
+        <rect class="cell m q6" x="31.48" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="86.25">A / E</text>
+            <text class="tx" x="41.48" y="103.25">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / A, Value: 0">
+        <title>A / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="86.25">A / A</text>
+            <text class="tx" x="83.87" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / G, Value: 3">
+        <title>A / G, Value: 3</title>
+        <rect class="cell m q4" x="130.61" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="86.25">A / G</text>
+            <text class="tx" x="133.43" y="103.25">Value: 3</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / C, Value: 5">
+        <title>A / C, Value: 5</title>
+        <rect class="cell m q7" x="180.18" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="86.25">A / C</text>
+            <text class="tx" x="183" y="103.25">Value: 5</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / F, Value: 0">
+        <title>A / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="86.25">A / F</text>
+            <text class="tx" x="232.56" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / H, Value: 0">
+        <title>A / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="86.25">A / H</text>
+            <text class="tx" x="282.13" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / B, Value: 0">
+        <title>A / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="86.25">A / B</text>
+            <text class="tx" x="331.69" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="A / D, Value: 0">
+        <title>A / D, Value: 0</title>
+        <rect class="cell m q0" x="378.44" y="97.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="68.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="86.25">A / D</text>
+            <text class="tx" x="374.08" y="103.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / E, Value: 4">
+        <title>G / E, Value: 4</title>
+        <rect class="cell m q6" x="31.48" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="135.75">G / E</text>
+            <text class="tx" x="41.48" y="152.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / A, Value: 3">
+        <title>G / A, Value: 3</title>
+        <rect class="cell m q4" x="81.05" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="135.75">G / A</text>
+            <text class="tx" x="83.87" y="152.75">Value: 3</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / G, Value: 0">
+        <title>G / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="135.75">G / G</text>
+            <text class="tx" x="133.43" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / C, Value: 0">
+        <title>G / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="135.75">G / C</text>
+            <text class="tx" x="183" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / F, Value: 0">
+        <title>G / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="135.75">G / F</text>
+            <text class="tx" x="232.56" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / H, Value: 0">
+        <title>G / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="135.75">G / H</text>
+            <text class="tx" x="282.13" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / B, Value: 0">
+        <title>G / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="135.75">G / B</text>
+            <text class="tx" x="331.69" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="G / D, Value: 0">
+        <title>G / D, Value: 0</title>
+        <rect class="cell m q0" x="378.44" y="147" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="117.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="135.75">G / D</text>
+            <text class="tx" x="374.08" y="152.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / E, Value: 6">
+        <title>C / E, Value: 6</title>
+        <rect class="cell m q8" x="31.48" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="185.25">C / E</text>
+            <text class="tx" x="41.48" y="202.25">Value: 6</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / A, Value: 5">
+        <title>C / A, Value: 5</title>
+        <rect class="cell m q7" x="81.05" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="185.25">C / A</text>
+            <text class="tx" x="83.87" y="202.25">Value: 5</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / G, Value: 0">
+        <title>C / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="185.25">C / G</text>
+            <text class="tx" x="133.43" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / C, Value: 0">
+        <title>C / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="185.25">C / C</text>
+            <text class="tx" x="183" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / F, Value: 0">
+        <title>C / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="185.25">C / F</text>
+            <text class="tx" x="232.56" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / H, Value: 0">
+        <title>C / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="185.25">C / H</text>
+            <text class="tx" x="282.13" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / B, Value: 0">
+        <title>C / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="185.25">C / B</text>
+            <text class="tx" x="331.69" y="202.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="C / D, Value: 1">
+        <title>C / D, Value: 1</title>
+        <rect class="cell m q1" x="378.44" y="196.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="167.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="185.25">C / D</text>
+            <text class="tx" x="374.08" y="202.25">Value: 1</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / E, Value: 0">
+        <title>F / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="234.75">F / E</text>
+            <text class="tx" x="41.48" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / A, Value: 0">
+        <title>F / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="234.75">F / A</text>
+            <text class="tx" x="83.87" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / G, Value: 0">
+        <title>F / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="234.75">F / G</text>
+            <text class="tx" x="133.43" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / C, Value: 0">
+        <title>F / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="234.75">F / C</text>
+            <text class="tx" x="183" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / F, Value: 0">
+        <title>F / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="234.75">F / F</text>
+            <text class="tx" x="232.56" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / H, Value: 0">
+        <title>F / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="234.75">F / H</text>
+            <text class="tx" x="282.13" y="251.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / B, Value: 4">
+        <title>F / B, Value: 4</title>
+        <rect class="cell m q6" x="328.87" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="234.75">F / B</text>
+            <text class="tx" x="331.69" y="251.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="F / D, Value: 6">
+        <title>F / D, Value: 6</title>
+        <rect class="cell m q8" x="378.44" y="246" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="216.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="234.75">F / D</text>
+            <text class="tx" x="374.08" y="251.75">Value: 6</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / E, Value: 0">
+        <title>H / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="284.25">H / E</text>
+            <text class="tx" x="41.48" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / A, Value: 0">
+        <title>H / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="284.25">H / A</text>
+            <text class="tx" x="83.87" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / G, Value: 0">
+        <title>H / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="284.25">H / G</text>
+            <text class="tx" x="133.43" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / C, Value: 0">
+        <title>H / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="284.25">H / C</text>
+            <text class="tx" x="183" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / F, Value: 0">
+        <title>H / F, Value: 0</title>
+        <rect class="cell m q0" x="229.74" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="284.25">H / F</text>
+            <text class="tx" x="232.56" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / H, Value: 0">
+        <title>H / H, Value: 0</title>
+        <rect class="cell m q0" x="279.31" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="284.25">H / H</text>
+            <text class="tx" x="282.13" y="301.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / B, Value: 2">
+        <title>H / B, Value: 2</title>
+        <rect class="cell m q3" x="328.87" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="284.25">H / B</text>
+            <text class="tx" x="331.69" y="301.25">Value: 2</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="H / D, Value: 3">
+        <title>H / D, Value: 3</title>
+        <rect class="cell m q4" x="378.44" y="295.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="266.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="284.25">H / D</text>
+            <text class="tx" x="374.08" y="301.25">Value: 3</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / E, Value: 0">
+        <title>B / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="333.75">B / E</text>
+            <text class="tx" x="41.48" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / A, Value: 0">
+        <title>B / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="333.75">B / A</text>
+            <text class="tx" x="83.87" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / G, Value: 0">
+        <title>B / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="333.75">B / G</text>
+            <text class="tx" x="133.43" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / C, Value: 0">
+        <title>B / C, Value: 0</title>
+        <rect class="cell m q0" x="180.18" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="333.75">B / C</text>
+            <text class="tx" x="183" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / F, Value: 4">
+        <title>B / F, Value: 4</title>
+        <rect class="cell m q6" x="229.74" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="333.75">B / F</text>
+            <text class="tx" x="232.56" y="350.75">Value: 4</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / H, Value: 2">
+        <title>B / H, Value: 2</title>
+        <rect class="cell m q3" x="279.31" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="333.75">B / H</text>
+            <text class="tx" x="282.13" y="350.75">Value: 2</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / B, Value: 0">
+        <title>B / B, Value: 0</title>
+        <rect class="cell m q0" x="328.87" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="333.75">B / B</text>
+            <text class="tx" x="331.69" y="350.75">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="B / D, Value: 5">
+        <title>B / D, Value: 5</title>
+        <rect class="cell m q7" x="378.44" y="345" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="315.75" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="333.75">B / D</text>
+            <text class="tx" x="374.08" y="350.75">Value: 5</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / E, Value: 0">
+        <title>D / E, Value: 0</title>
+        <rect class="cell m q0" x="31.48" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="31.48" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="41.48" y="383.25">D / E</text>
+            <text class="tx" x="41.48" y="400.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / A, Value: 0">
+        <title>D / A, Value: 0</title>
+        <rect class="cell m q0" x="81.05" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="73.87" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="83.87" y="383.25">D / A</text>
+            <text class="tx" x="83.87" y="400.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / G, Value: 0">
+        <title>D / G, Value: 0</title>
+        <rect class="cell m q0" x="130.61" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="123.43" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="133.43" y="383.25">D / G</text>
+            <text class="tx" x="133.43" y="400.25">Value: 0</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / C, Value: 1">
+        <title>D / C, Value: 1</title>
+        <rect class="cell m q1" x="180.18" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="173" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="183" y="383.25">D / C</text>
+            <text class="tx" x="183" y="400.25">Value: 1</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / F, Value: 6">
+        <title>D / F, Value: 6</title>
+        <rect class="cell m q8" x="229.74" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="222.56" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="232.56" y="383.25">D / F</text>
+            <text class="tx" x="232.56" y="400.25">Value: 6</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / H, Value: 3">
+        <title>D / H, Value: 3</title>
+        <rect class="cell m q4" x="279.31" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="272.13" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="282.13" y="383.25">D / H</text>
+            <text class="tx" x="282.13" y="400.25">Value: 3</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / B, Value: 5">
+        <title>D / B, Value: 5</title>
+        <rect class="cell m q7" x="328.87" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="321.69" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="331.69" y="383.25">D / B</text>
+            <text class="tx" x="331.69" y="400.25">Value: 5</text>
+        </g>
+    </g>
+    <g class="mk" tabindex="0" role="graphics-symbol" aria-label="D / D, Value: 0">
+        <title>D / D, Value: 0</title>
+        <rect class="cell m q0" x="378.44" y="394.5" width="49.57" height="49.5"/>
+        <g class="tt">
+            <rect class="tb" x="364.08" y="365.25" width="63.92" height="44" rx="6"/>
+            <text class="tx b" x="374.08" y="383.25">D / D</text>
+            <text class="tx" x="374.08" y="400.25">Value: 0</text>
+        </g>
+    </g>
+    <rect class="q8" x="444" y="48" width="12" height="24.94"/>
+    <rect class="q7" x="444" y="72.44" width="12" height="24.94"/>
+    <rect class="q6" x="444" y="96.89" width="12" height="24.94"/>
+    <rect class="q5" x="444" y="121.33" width="12" height="24.94"/>
+    <rect class="q4" x="444" y="145.78" width="12" height="24.94"/>
+    <rect class="q3" x="444" y="170.22" width="12" height="24.94"/>
+    <rect class="q2" x="444" y="194.67" width="12" height="24.94"/>
+    <rect class="q1" x="444" y="219.11" width="12" height="24.94"/>
+    <rect class="q0" x="444" y="243.56" width="12" height="24.94"/>
+    <line class="ax" x1="456" y1="268" x2="460" y2="268"/>
+    <text class="tk mid" x="464" y="268">0</text>
+    <line class="ax" x1="456" y1="231.33" x2="460" y2="231.33"/>
+    <text class="tk mid" x="464" y="231.33">1</text>
+    <line class="ax" x1="456" y1="194.67" x2="460" y2="194.67"/>
+    <text class="tk mid" x="464" y="194.67">2</text>
+    <line class="ax" x1="456" y1="158" x2="460" y2="158"/>
+    <text class="tk mid" x="464" y="158">3</text>
+    <line class="ax" x1="456" y1="121.33" x2="460" y2="121.33"/>
+    <text class="tk mid" x="464" y="121.33">4</text>
+    <line class="ax" x1="456" y1="84.67" x2="460" y2="84.67"/>
+    <text class="tk mid" x="464" y="84.67">5</text>
+    <line class="ax" x1="456" y1="48" x2="460" y2="48"/>
+    <text class="tk mid" x="464" y="48">6</text>
+</svg>

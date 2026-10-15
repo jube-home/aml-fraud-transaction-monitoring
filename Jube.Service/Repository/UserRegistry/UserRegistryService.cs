@@ -1,4 +1,4 @@
-/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,19 +14,23 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Data.Security;
 using Jube.Dto.Filter;
-using Jube.Dto.Validation;
 using Jube.Dto.Repository.UserRegistry;
+using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Service.Agent.Models;
 using Jube.Service.Concurrency;
 using Jube.Service.Exceptions.Repository.UserRegistry;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
-using Jube.Service.Security;
+using Jube.Service.UserLogout;
+using Jube.Service.UserLogout.Models;
 using Jube.Validations.Repository.UserRegistry;
 using log4net;
 using Microsoft.Extensions.Localization;
+using PermissionValidation = Jube.Service.Security.PermissionValidation;
 using RulePoco = Jube.Data.Poco.UserRegistry;
 
 namespace Jube.Service.Repository.UserRegistry
@@ -64,6 +68,8 @@ namespace Jube.Service.Repository.UserRegistry
             var roleRegistryRepository = new RoleRegistryRepository(dbContext, userName);
             validator = new UserRegistryDtoValidator(repository, roleRegistryRepository, strings);
         }
+
+        public static IReadOnlyList<int> RequiredPermissions => permissions;
 
         public static Task<UserRegistryService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -121,6 +127,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "List", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.List: entry user={userName}");
@@ -131,6 +138,7 @@ namespace Jube.Service.Repository.UserRegistry
                 EnsurePermitted("UserRegistry.List");
                 var dtos = UserRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserRegistry.List: {dtos.Count} rows user={userName}");
@@ -146,6 +154,7 @@ namespace Jube.Service.Repository.UserRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserRegistry.List: cancelled user={userName}");
@@ -171,6 +180,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "ListByRoleRegistryGuid", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug(
@@ -180,9 +190,11 @@ namespace Jube.Service.Repository.UserRegistry
             try
             {
                 EnsurePermitted("UserRegistry.ListByRoleRegistryGuid");
+
                 var dtos = UserRegistryMapper.ToDto(await repository
                     .GetByRoleRegistryGuidAsync(roleRegistryGuid, token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -199,6 +211,7 @@ namespace Jube.Service.Repository.UserRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(
@@ -210,9 +223,11 @@ namespace Jube.Service.Repository.UserRegistry
             catch (Exception ex)
             {
                 op.Error(ex);
+
                 log.Error(
                     $"UserRegistry.ListByRoleRegistryGuid: unexpected failure roleRegistryGuid={roleRegistryGuid} user={userName}",
                     ex);
+
                 throw;
             }
         }
@@ -227,6 +242,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "Get", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.Get: entry id={id} user={userName}");
@@ -236,6 +252,7 @@ namespace Jube.Service.Repository.UserRegistry
             {
                 EnsurePermitted("UserRegistry.Get");
                 var userRegistry = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
                 if (userRegistry == null)
                 {
                     if (log.IsDebugEnabled)
@@ -247,6 +264,7 @@ namespace Jube.Service.Repository.UserRegistry
                 }
 
                 op.Entity(userRegistry.Id);
+
                 return UserRegistryMapper.ToDto(userRegistry);
             }
             catch (ForbiddenException)
@@ -257,6 +275,7 @@ namespace Jube.Service.Repository.UserRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserRegistry.Get: cancelled id={id} user={userName}");
@@ -268,6 +287,66 @@ namespace Jube.Service.Repository.UserRegistry
             {
                 op.Error(ex);
                 log.Error($"UserRegistry.Get: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Returns one user account by its Guid, scoped to the calling user's tenant. " +
+                     "Returns null when the row does not exist or is not visible to the caller.")]
+        [ServiceOperation("UserRegistryGetByGuid", OperationKind.Read, Idempotent = true)]
+        public async Task<UserRegistryDto?> GetByGuidAsync(
+            [Description("Globally-addressable Guid of the user account.")]
+            Guid guid,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("UserRegistry", "GetByGuid", userName, tenantRegistryId, auditLog, log,
+                serviceChangeBus);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"UserRegistry.GetByGuid: entry guid={guid} user={userName}");
+            }
+
+            try
+            {
+                EnsurePermitted("UserRegistry.GetByGuid");
+                var userRegistry = await repository.GetByGuidAsync(guid, token).ConfigureAwait(false);
+
+                if (userRegistry == null)
+                {
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug(
+                            $"UserRegistry.GetByGuid: guid={guid} not found or not visible to tenant user={userName}");
+                    }
+
+                    return null;
+                }
+
+                op.Entity(userRegistry.Id);
+
+                return UserRegistryMapper.ToDto(userRegistry);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"UserRegistry.GetByGuid: cancelled guid={guid} user={userName}");
+                }
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"UserRegistry.GetByGuid: unexpected failure guid={guid} user={userName}", ex);
                 throw;
             }
         }
@@ -284,7 +363,9 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "ListPaged", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             var clampedTake = Math.Clamp(take, 1, MaxListTake);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.ListPaged: entry take={clampedTake} afterId={afterId} user={userName}");
@@ -313,6 +394,7 @@ namespace Jube.Service.Repository.UserRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserRegistry.ListPaged: cancelled user={userName}");
@@ -337,6 +419,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "FilterFields", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.FilterFields: entry user={userName}");
@@ -348,6 +431,7 @@ namespace Jube.Service.Repository.UserRegistry
                 await Task.CompletedTask.ConfigureAwait(false);
                 var result = DtoFilter.Fields<UserRegistryDto>();
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -387,6 +471,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "Filter", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.Filter: entry take={take} afterId={afterId} user={userName}");
@@ -398,6 +483,7 @@ namespace Jube.Service.Repository.UserRegistry
                 var rows = UserRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Filter(rows, builderJson, take, afterId, d => d.Id);
                 op.Rows(result.Items.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -434,6 +520,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "Count", userName,
                 tenantRegistryId, auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.Count: entry groupBy={groupBy} user={userName}");
@@ -445,6 +532,7 @@ namespace Jube.Service.Repository.UserRegistry
                 var rows = UserRegistryMapper.ToDto(await repository.GetAsync(token).ConfigureAwait(false));
                 var result = DtoFilter.Count(rows, builderJson, groupBy);
                 op.Rows(result.Count);
+
                 return result;
             }
             catch (ForbiddenException)
@@ -476,6 +564,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "Create", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.Create: entry user={userName} name={model?.Name}");
@@ -487,6 +576,7 @@ namespace Jube.Service.Repository.UserRegistry
                 EnsurePermitted("UserRegistry.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -502,6 +592,7 @@ namespace Jube.Service.Repository.UserRegistry
 
                 newPoco.PasswordLocked = 0;
                 newPoco.InheritedId = null;
+
                 var saved = await UniqueViolation.GuardAsync(() => repository.InsertAsync(newPoco, token),
                         r => new DtoValidationException(r), strings[UserRegistryResources.NameAlreadyExists])
                     .ConfigureAwait(false);
@@ -530,6 +621,7 @@ namespace Jube.Service.Repository.UserRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserRegistry.Create: cancelled user={userName}");
@@ -555,6 +647,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "Validate", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.Validate: entry id={model?.Id} user={userName}");
@@ -567,6 +660,7 @@ namespace Jube.Service.Repository.UserRegistry
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
+
                 return ValidationResultMapper.ToDto(results);
             }
             catch (ForbiddenException)
@@ -600,6 +694,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "Update", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.Update: entry id={model?.Id} user={userName}");
@@ -611,6 +706,7 @@ namespace Jube.Service.Repository.UserRegistry
                 EnsurePermitted("UserRegistry.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+
                 if (!results.IsValid)
                 {
                     if (log.IsWarnEnabled)
@@ -623,12 +719,15 @@ namespace Jube.Service.Repository.UserRegistry
                 }
 
                 RulePoco saved;
+
                 try
                 {
                     var poco = UserRegistryMapper.ToPoco(model);
+
                     if (model.PasswordLocked is null)
                     {
                         var current = await repository.GetByIdAsync(model.Id, token).ConfigureAwait(false);
+
                         if (current is null)
                         {
                             throw new KeyNotFoundException();
@@ -681,6 +780,7 @@ namespace Jube.Service.Repository.UserRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserRegistry.Update: cancelled id={model?.Id} user={userName}");
@@ -705,6 +805,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "UpdatePassword", userName, tenantRegistryId,
                 auditLog, log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.UpdatePassword: entry id={model?.Id} user={userName}");
@@ -716,12 +817,14 @@ namespace Jube.Service.Repository.UserRegistry
                 EnsurePermitted("UserRegistry.UpdatePassword");
 
                 var userRegistry = await repository.GetByIdAsync(model.Id, token).ConfigureAwait(false);
+
                 if (userRegistry == null)
                 {
                     throw new KeyNotFoundException();
                 }
 
-                var generatedPassword = Data.Security.HashPassword.CreateSecurePassword(16);
+                var generatedPassword = HashPassword.CreateSecurePassword(16);
+
                 var response = new UserRegistryPasswordResponseDto
                 {
                     Password = generatedPassword,
@@ -729,12 +832,13 @@ namespace Jube.Service.Repository.UserRegistry
                 };
 
                 var password = generatedPassword;
+
                 if (model.WirePasswordHash)
                 {
-                    password = Data.Security.HashPassword.Sha256(password + userRegistry.Name);
+                    password = HashPassword.Sha256(password + userRegistry.Name);
                 }
 
-                var hashedPassword = Data.Security.HashPassword.Argon2(password,
+                var hashedPassword = HashPassword.Argon2(password,
                     dynamicEnvironment.AppSettings("PasswordHashingKey"));
 
                 await repository.SetPasswordAsync(model.Id, hashedPassword, response.PasswordExpiryDate?.UtcDateTime,
@@ -758,6 +862,7 @@ namespace Jube.Service.Repository.UserRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserRegistry.UpdatePassword: cancelled id={model?.Id} user={userName}");
@@ -784,6 +889,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "Delete", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.Delete: entry id={id} user={userName}");
@@ -829,6 +935,7 @@ namespace Jube.Service.Repository.UserRegistry
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
+
                 if (log.IsDebugEnabled)
                 {
                     log.Debug($"UserRegistry.Delete: cancelled id={id} user={userName}");
@@ -852,6 +959,7 @@ namespace Jube.Service.Repository.UserRegistry
         {
             using var op = OperationScope.Start("UserRegistry", "RevokeTokens", userName, tenantRegistryId, auditLog,
                 log, serviceChangeBus);
+
             if (log.IsDebugEnabled)
             {
                 log.Debug($"UserRegistry.RevokeTokens: entry id={id} user={userName}");
@@ -867,10 +975,10 @@ namespace Jube.Service.Repository.UserRegistry
                         .RevokeTokensAsync(id, TimeProvider.System.GetUtcNow(), token)
                         .ConfigureAwait(false);
 
-                    await UserLogout.UserLogoutRecorder.RecordAsync(dbContext, log,
-                        new UserLogout.UserLogoutEntry(revokedUserName,
-                            UserLogout.UserLogoutReason.RevokedByAdministrator,
-                            UserLogout.UserLogoutOutcome.Revoked, CutByUser: userName)).ConfigureAwait(false);
+                    await UserLogoutRecorder.RecordAsync(dbContext, log,
+                        new UserLogoutEntry(revokedUserName,
+                            UserLogoutReason.RevokedByAdministrator,
+                            UserLogoutOutcome.Revoked, CutByUser: userName)).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
                 {

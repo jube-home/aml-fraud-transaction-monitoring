@@ -34,6 +34,7 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.userName = userName;
+
             tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
@@ -81,6 +82,7 @@ namespace Jube.Data.Repository
             model.CreatedDate = DateTime.UtcNow;
             model.Version = 1;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
+
             return model;
         }
 
@@ -89,6 +91,7 @@ namespace Jube.Data.Repository
         {
             await using var transaction =
                 await dbContext.BeginTransactionAsync(IsolationLevel.ReadCommitted, token);
+
             try
             {
                 await dbContext.ExecuteAsync("SELECT pg_advisory_xact_lock(@key)", token, new DataParameter("key",
@@ -125,6 +128,7 @@ namespace Jube.Data.Repository
                 model.ReferenceDate = null;
                 model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
                 await transaction.CommitAsync(token);
+
                 return model;
             }
             catch

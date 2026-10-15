@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Cache.Models;
+
 namespace Jube.Cache
 {
     public sealed class RedisConnectionDiagnosticsCounters

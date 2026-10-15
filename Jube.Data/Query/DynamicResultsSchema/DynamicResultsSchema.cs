@@ -16,7 +16,7 @@ namespace Jube.Data.Query.DynamicResultsSchema
     using System;
     using System.Collections.Generic;
 
-    public static class DynamicResultSchema
+    public static class DynamicResultsSchema
     {
         public static DateTimeOffset ToUtcOffset(DateTime dt)
         {
@@ -46,7 +46,7 @@ namespace Jube.Data.Query.DynamicResultsSchema
             };
         }
 
-        public static DynamicResultSchemaDto Build(IEnumerable<IDictionary<string, object>> records)
+        public static DynamicResultsSchemaDto Build(IEnumerable<IDictionary<string, object>> records)
         {
             var schema = new Dictionary<string, string>();
             var rows = new List<Dictionary<string, object>>();
@@ -73,7 +73,7 @@ namespace Jube.Data.Query.DynamicResultsSchema
                 rows.Add(row);
             }
 
-            return new DynamicResultSchemaDto
+            return new DynamicResultsSchemaDto
             {
                 Schema = schema,
                 Rows = rows
@@ -81,7 +81,7 @@ namespace Jube.Data.Query.DynamicResultsSchema
         }
     }
 
-    public class DynamicResultSchemaDto
+    public class DynamicResultsSchemaDto
     {
         public Dictionary<string, string> Schema { get; set; }
         public List<Dictionary<string, object>> Rows { get; set; }
